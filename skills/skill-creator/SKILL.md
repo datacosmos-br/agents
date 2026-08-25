@@ -1,13 +1,12 @@
 ---
 name: skill-creator
-description: "Author or fork a skill only after proving none exists. USE FOR: creating skills within the waza token budget, search-first reuse checks, scaffolding SKILL.md. DO NOT USE FOR: duplicating builtins or shared skills - compose those instead."
+description: Use when asked to create, build, or fork a skill for {config.AiHub.paths.agents_home}/skills. Search existing skills and opencode builtins first (search-first), then author one tight SKILL.md within the waza token budget. Prevents duplicate or bloated skills.
+bundle: governance
+scope: universal
 license: MIT
 metadata:
-  bundle: "governance"
-  scope: "universal"
-  version: "1.0.0"
+  version: 1.0.0
 ---
-
 
 # Skill Creator
 

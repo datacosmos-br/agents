@@ -1,40 +1,82 @@
 ---
 name: sprint-closure
-description: "Use at an increment/sprint boundary before declaring it Done. USE FOR: all-or-nothing closure with empty residue set (dead code, shims, un-rewired consumers, open worktree/PR/Bead), proving the increment runs on the integration lane, net-LOC accounting. DO NOT USE FOR: per-change gating (verification-loop); tracker semantics (beads-orchestrator)."
-license: MIT
-metadata:
-  bundle: verification
-  scope: universal
+description: Use at the end of a sprint/increment, before declaring it Done or starting the next one. Enforces all-or-nothing closure — empty residue set (dead code, compat shims, un-rewired consumers/tests, open worktree/PR/Bead) plus proof the increment runs on the integration lane. Prevents carry-over.
+bundle: verification
+scope: universal
 ---
 
 # Sprint Closure
 
-Authority: CORE Laws 29, 4, 21, 30. Per-change gate: `verification/loop`. Not restated here.
+## Authority
 
-## Shape and entry
+`UNIVERSAL_CORE` Law 29 (all-or-nothing), 4 (one owner, no old+new), 21 (finish to
+Done), 28 (complete cutover). Per-change gate: `verification/loop`. Tracker
+semantics: `beads/orchestrator`. Not restated here.
 
-Milestone → increment epics (ordered) → child Beads with one `lane:<name>` each (`increment:<epic-id>` in a release lane). Starts only when the previous closed; ships to the integration lane, never a waiting branch. Scope fixed at entry; discoveries filed (`-t discovered-from`). Entry: previous CLOSED · lane clean · owner+scope on every Bead.
+## Scrum shape
 
-## Residue set — must be EMPTY (binary checks)
+Milestone → increment epics (ordered, hard deps) → child Beads. Every open Bead
+carries exactly one `lane:<name>` and, inside a release lane, one
+`increment:<epic-id>`. An increment is a SPRINT: it starts only when the previous
+one is closed, and it ships to the integration lane — not to a branch that waits.
+
+Scope is fixed at entry. New work discovered mid-sprint is filed
+(`-t discovered-from`) and assigned to an increment — never silently absorbed,
+never deferred to "later".
+
+## Entry criteria
+
+1. Previous increment CLOSED (this contract satisfied, not asserted).
+2. Integration lane clean: no uncommitted drift, no unpushed commits, gates green.
+3. Every Bead in the increment has an owner and a bounded path scope.
+
+## Residue set — must be EMPTY (binary, per increment)
+
+Each item is a command, not an opinion. Scope = paths the increment touched.
 
 | Residue | Binary check |
 | --- | --- |
-| Dead code | Increment symbols with zero references anywhere |
-| Shims/fallbacks | Zero compat paths for old behavior |
-| Consumers/tests | Zero callers or tests on superseded contracts |
-| Worktree/MR | No increment worktree; `gt mq list` clean |
-| Convoy/hook/Bead | `gt convoy status`, `gt hook show`, children all closed |
+| Dead code | Symbols added/left by the increment with zero references across src + tests + consumers (structural search, not grep-only). |
+| Compatibility code | Zero shim/alias/wrapper/fallback/`deprecated` path introduced or retained for the old behavior. |
+| Un-rewired consumers | Every caller of a changed contract uses the new one; zero references to the superseded symbol remain. |
+| Un-rewired tests | Zero test asserts the removed behavior or imports a deleted path; tests exercise the public surface. |
+| Open worktree | No lane worktree for this increment still registered. |
+| Open PR | No PR for this increment still open; merged or closed with reason. |
+| Open Bead | No child Bead of the increment still open/in_progress. |
 
-Superseded code is DELETED in the replacing cycle — cleanup bead/TODO/"later" = the violation (Law 30). Refactor lands net-negative in LOC (`git diff --shortstat` in exit report) or not at all; net-positive only if purely additive — state it.
+Superseded code is DELETED in the same cycle that replaces it. "Kept until later"
+is old+new coexistence (Law 4) — a defect, not a transition.
+
+**Deletion cannot be deferred (Law 30).** Filing a cleanup bead, a TODO, a
+comment or a follow-up sprint to delete later does not satisfy any row above —
+that promise IS the violation. A refactor lands net-negative in LOC or it does
+not land: measure `git diff --shortstat` for the cycle and state the number in
+the exit report. Net-positive is allowed only when the increment is purely
+additive (new capability, no replacement) — say so explicitly and name what it
+replaced, or nothing. Cannot delete now → the change is too big: shrink it.
 
 ## Running on the integration lane
 
-Real public surface exercised at the merged SHA (artifact captured); `verification/loop` green there. `main` promotion is operator-gated — never proof.
+Production quality is proved by USE, not by green gates. Required:
+
+- The increment's behavior is exercised through the REAL public surface (CLI,
+  API, service, import of the shipped artifact) on the integration lane, at the
+  merged SHA — artifact captured.
+- `verification/loop` completed at that SHA (gates are the floor; real use is the
+  ceiling).
+
+Formal promotion to `main`/production stays operator-gated (`governance/rules`
+§Stop). Integration-lane running is the enforceable bar; `main` promotion is a
+separate, explicitly approved act. Never claim `main` promotion as sprint proof.
 
 ## Exit report
 
-SHA, gates, residue table (command+result per row), net LOC, real-surface artifact, Beads/convoys/worktrees closed. Non-empty row = NOT closed: fix in-sprint or STOP.
+Per increment: SHA, gates, residue table with the command + result for each row,
+**net LOC for the cycle**, real-surface artifact, Beads closed, PRs merged,
+worktrees removed. Any non-empty residue row = increment NOT closed. Fix
+in-sprint or STOP and surface it — never carry over silently.
 
-## Context Budget
+## Context budget
 
-Load: CORE + this + `verification/loop`. Skip role playbooks unless held.
+Load: `UNIVERSAL_CORE` + this skill + `verification/loop` at closure time.
+Skip: worker/orchestrator playbooks unless you also hold that role.

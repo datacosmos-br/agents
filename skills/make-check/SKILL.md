@@ -1,13 +1,12 @@
 ---
 name: make-check
-description: "Choose and run the canonical Make verb for any build, test, lint, format or validation. USE FOR: pre-run gate discovery, validation routing, evidence capture. DO NOT USE FOR: inventing targets that do not exist."
+description: Use before running any build, test, lint, format, or validation. Find and run the canonical Make verb instead of ad-hoc tool invocations that bypass guards, locks, and evidence. The Makefile is the source of truth for how to validate.
+bundle: governance
+scope: universal
 license: MIT
 metadata:
-  bundle: "governance"
-  scope: "universal"
-  version: "1.0.0"
+  version: 1.0.0
 ---
-
 
 # Make Check
 

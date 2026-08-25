@@ -1,48 +1,65 @@
 ---
 name: inviolable-rules
-description: "Mandatory universal governance for every plan, edit, validate, merge and close. USE FOR: truth-with-evidence gates, root-cause execution, Beads tracker discipline, Gas Town lane lifecycle (hook/sling/done/mq), role boundaries. DO NOT USE FOR: domain law and role procedures — their own skills own those."
-license: MIT
-metadata:
-  bundle: governance
-  scope: universal
+description: Mandatory universal governance for plan, edit, validate, merge, close.
+bundle: governance
+scope: universal
 ---
 
 # Inviolable Rules
 
-Universal only. Domain → project law. [references/gates.md](references/gates.md) · [references/practices.md](references/practices.md) · `UNIVERSAL_CORE`.
+Universal only. Domain → project law. [references/gates.md](references/gates.md). `UNIVERSAL_CORE`.
 
 ## Start Gate
 
-Read request, CORE, project law, Bead, decisions. Verify root/branch/worktree/owners/WIP. Bead claimed; never hand-edit `.beads/`.
+1. Read request, `UNIVERSAL_CORE`, project law, Bead, decisions.
+2. Record intent; verify root/branch/worktree/paths/owners/consumers/WIP.
+3. Confirm native validation commands.
+4. Bead claimed. Beads = SSOT. No competing plan; no hand-edit `.beads/`.
 
 ## Truth And Anti-Deception Gate
 
-Done = command+cwd+exit+output+scope+blocker. Fake green = P0. Self-report ≠ proof.
+Done = command+cwd+exit+output+scope+blocker. Fake green = P0. No bypass; self-report ≠ proof.
 
-## Role Gate — Gas Town
+## Role Gate
 
-Mayor dispatches (`gt sling`, convoys, `gt mountain`). Refinery owns merges (`gt mq`). Polecat finishes via `gt done --status COMPLETED|ESCALATED|DEFERRED`. Witness watches polecats; Deacon/dogs watch infra. ≤5 lanes per worker.
+Orch: semantics, evidence, merge/rollout/close. Worker: 1 Bead/branch/worktree → push → PR. ≤5 lanes. See `beads/orchestrator`/`beads/worker`/`beads/audit`.
 
-## Execution And Incident Gates
+## Execution Gate
 
-Make/CLI only (`governance/make`). Fix forward; never stash/reset/force-push unknown WIP. Warnings block. Remote is ground truth; no temporary fix; missing tool is RED.
+Make/CLI only (`governance/make`). Fix forward; never stash/reset/force-push unknown WIP. Re-read; root-cause; adopt hunks. Warnings block. Full delivery or STOP+question. See [references/gates.md](references/gates.md).
+
+## Incident Gate
+
+Rules born from outages that ALREADY happened: remote is ground truth; never mutate the shared venv from a lane; no temporary fix; a missing tool is RED, never green. Detail: [references/gates.md](references/gates.md).
 
 ## Complete Refactor Gate
 
-Complete base → migrate all consumers → delete superseded. No old+new coexistence.
+Complete base → migrate all → delete superseded. No old+new. See [references/gates.md](references/gates.md).
 
 ## Tracker And Mirror Gate
 
-Beads before GitHub. Update Bead at every state change. Only orch mutates semantics.
+Beads before GitHub; sync. Update Bead each state change. Only orch mutates semantics.
+
+## Continuous-Green Gate
+
+See [references/gates.md](references/gates.md). Procedure: `verification/loop`.
 
 ## Green Checkpoint Gate
 
-Short validated slices: commit explicit paths → push → land via merge queue (`gt done`; Refinery merges). `--pre-verified` only after rebase onto target. Procedure: `verification/loop`.
+See [references/gates.md](references/gates.md).
 
-## Session Gate
+## Workspace And Test Laws
 
-Start: `gt prime` + `gt hook status`. Pause: `gt handoff -c`. Resume: `gt resume`. Blockers: `gt escalate`.
+See [references/gates.md](references/gates.md). `UNIVERSAL_CORE` P0.
+
+## Evidence And Review Gate
+
+See [references/gates.md](references/gates.md).
+
+## Session And Reporting Gate
+
+See [references/gates.md](references/gates.md).
 
 ## Stop Only For A Real Blocker
 
-Destructive action, security/privacy, prod promotion, authority conflict → one precise question. Else continue.
+Stop for destructive action, competing contracts, security/privacy, `main`/prod promotion, final release, authority conflict, material scope change. One Bead question; else continue.

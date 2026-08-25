@@ -1,56 +1,25 @@
 ---
 name: doc-drift
-description: >-
-  Detect and fix documentation drift across town and all rigs.
-  Runs conventions check, extinct-flag grep, live-reference validation,
-  auto-fix via gt doctor --fix, and creates evidence bead.
-allowed-tools: "Bash(gt *), Bash(bd *), Bash(git *)"
-version: "1.0.0"
-author: "Gas Town"
+description: "Execute documentation-drift fixes across town and rigs. USE FOR: acting on a governance-audit finding or an explicit operator flag (--auto-fix); conventions check, extinct-flag grep, live-reference validation. DO NOT USE FOR: deciding what counts as drift (governance-audit recommends; this skill executes); editing generated projections by hand."
+license: MIT
+metadata:
+  bundle: docs
+  scope: universal
 ---
 
-# Doc Drift — Continuous Standardization
+# Doc Drift — Executor
 
-Usage: /doc-drift [--rig <name>] [--auto-fix]
+Runs only on a `governance-audit` finding reference or explicit operator request.
 
-Arguments: $ARGUMENTS
+## Steps
 
-## Step 1: Conventions check
+1. **Conventions**: `bd doctor --check=conventions && bd lint`.
+2. **Extinct flags/contracts**: grep `docs/`, skills, AGENTS.md for flags, APIs, or contracts current code no longer supports. Acceptable only in extinction notes.
+3. **Live references**: verify every cited command, script, helper, symbol exists in the runtime; update stale references in place.
+4. **Auto-fix** (`--auto-fix` only): `gt doctor --fix`; normalize command frontmatter to canonical bodies; align `.gitignore` patterns across rigs to canonical set.
+5. **Evidence**: record commands, outputs, fixes applied on the audit bead (or a new bead in the owning context: town → `hq-*`, rig → `<prefix>-*`). Commit changes.
 
-Run beads conventions and lint:
+## Critical rules
 
-```bash
-bd doctor --check=conventions
-bd lint
-```
-
-If `--auto-fix` is set, run `gt doctor --fix` and re-run conventions until clean.
-
-## Step 2: Extinct flags/contracts
-
-Grep `docs/`, `.claude/`, `skills/`, and `AGENTS.md` for flags, APIs, or
-contracts the current code no longer supports. Acceptable only in extinction
-notes or gate definitions.
-
-## Step 3: Live references
-
-Verify every command, script, helper, and symbol cited in docs/skills actually
-exists in the current runtime. Update stale references in place.
-
-## Step 4: Auto-fix (only with --auto-fix)
-
-Canonical fixes:
-
-- `gt doctor --fix` — config, beads, hooks, gitignore
-- Normalize `.claude/commands/` frontmatter to canonical bodies
-- Archive stale `.omo/plans/` and `.omo/drafts/` to `.omo/archive/`
-- Align `.gitignore` patterns across rigs to canonical set
-
-## Step 5: Evidence and bead
-
-Create a bead in the owning context:
-
-- town root → `hq-*`
-- rig root → `<prefix>-*`
-
-Record command, output, and fixes applied. Commit changes and close the bead.
+- No finding, no run — recommendations come from `governance-audit`, execution lives here.
+- Fix sources, never hand-edit generated projections; regenerate instead.

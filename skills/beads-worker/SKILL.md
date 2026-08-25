@@ -1,45 +1,40 @@
 ---
 name: beads-worker
-description: "Contract for implementing an assigned bead in a Gas Town lane. USE FOR: executing claimed work on your hook, atomic cycles with evidence, finishing via gt done merge queue. DO NOT USE FOR: dispatch or tracker semantics (beads-orchestrator); audits (governance-audit)."
-license: MIT
-metadata:
-  bundle: beads
-  scope: universal
+description: Execution-lane contract for implementing beads — bead reading, shared epic/feature worktree lane, short atomic cycles, validator handoff, evidence notes, PR closure, conflict escalation. Use when implementing an assigned bead.
+bundle: beads
+scope: universal
 ---
 
 # Beads Worker
-## Session Start
 
-```bash
-gt prime          # role context
-gt hook status    # durable assignment survives restarts
-bd show <id>      # NOTES: continue from evidence
-```
+## Authority
 
-Only orch-assigned beads. Skip blocked (`bd blocked`). One bead, one path scope in the shared epic/feature lane.## During — Short Atomic Cycles
+See `UNIVERSAL_CORE`; `governance/rules` §Execution / §Continuous-Green / §Evidence. Not restated here.
 
-1. One bounded outcome per cycle: edit → gates → commit → evidence.
-2. ZERO-RED: never commit/push with lint/type errors in scope — fix in-cycle.
-3. Cooperative fix-forward: adopt concurrent useful hunks; never clobber other lanes.
-4. Evidence: `bd update <id> --append-notes "<slice>: cmd/cwd/exit/decisive"`
-5. Discovered work filed immediately (`-t discovered-from`); living docs in same change.
+## Before Claiming
 
-## Finish — Merge Queue
+1. Only beads assigned or handed by orch. `bd show`: read NOTES; continue from evidence.
+2. Skip blocked (`bd blocked`); verify moved-DB blockers.
+3. One bead, one path scope in the **shared** epic/feature worktree (never per-agent worktree).
 
-```bash
-gt done --status COMPLETED   # submit branch → refinery merges
-gt done --status ESCALATED   # blocker; skip MR
-gt done --status DEFERRED    # paused; issue stays open
-```
+## During
 
-`--pre-verified` only after rebase onto target with gates re-run. Never open PRs by hand; Refinery owns merges. Report `READY_FOR_REVIEW`/`NEEDS_FIX`/`BLOCKED`: branch, SHA, diffstat, gates, risks.
-
-Leave ZERO residue: superseded code deleted, consumers/tests rewired, no shim — else NOT `READY_FOR_REVIEW`. See `verification/closure`.
+- SHORT ATOMIC CYCLES: one bounded outcome; commit + push + Bead evidence; validator PASS before orch integrates.
+- ZERO-RED: never commit/push/handoff with lint/type errors in scope — fix in-cycle.
+- COOPERATIVE FIX-FORWARD: adopt concurrent useful hunks; never clobber or revert other lanes.
+- Evidence: `bd update <id> --append-notes "<date> <slice>: cmd=… cwd=… exit=… decisive=… not-verified=…"`
+- File discovered work immediately (`-t discovered-from`). Living docs in the same change.
 
 ## Conflict Escalation
 
-Foreign/blocked claim → stop, re-read, confirm with orch. Overlap → serialize via orch. Unresolvable → `gt escalate` with both states.
+Re-parented/blocked/foreign claim → stop, re-read, confirm with orch. Overlapping PRs → serialize via orch. Duplicates → link; orch dedupes. Unresolvable → one precise question with both states.
+
+## Closure Path
+
+Report `READY_FOR_REVIEW`, `NEEDS_FIX`, or `BLOCKED` with branch, SHA, diffstat, gates, real-use, PR/CI, risks. Push + PR. Merge/close/rollout = orch only.
+
+Leave ZERO residue for your Bead: superseded code deleted, all consumers and tests rewired, no shim. A Bead whose increment cannot close because of your slice is NOT `READY_FOR_REVIEW`. See `verification/closure`.
 
 ## Context Budget
 
-Load: CORE + governance/rules + this + project AGENTS (+ domain law on marker).
+Load: UNIVERSAL_CORE + governance/rules + this skill + project AGENTS (+ provider domain law when marker active).

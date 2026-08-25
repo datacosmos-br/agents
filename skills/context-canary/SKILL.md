@@ -1,13 +1,12 @@
 ---
 name: context-canary
-description: "Detect context drift early via a tiny repeated per-response signal. USE FOR: long or high-risk sessions, post-compaction recovery, instruction-rot checks. DO NOT USE FOR: short tasks without drift risk."
+description: Use in long or high-risk sessions to detect context drift, compaction loss, or instruction rot before hard constraints fail. Emit a tiny per-response signal and run a recovery protocol when it trips.
+bundle: communication
+scope: universal
 license: MIT
 metadata:
-  bundle: "communication"
-  scope: "universal"
-  version: "1.0.0"
+  version: 1.0.0
 ---
-
 
 # Context Canary
 

@@ -1,47 +1,40 @@
 ---
 name: beads-orchestrator
-description: "Orchestrator-only governance for Beads semantics and Gas Town dispatch. USE FOR: assigning lanes via gt sling, convoy/mountain batching, merge-queue oversight, dedup/supersede/re-parent of issues, claim convergence. DO NOT USE FOR: implementing a bead (beads-worker); standing audits (governance-audit)."
-license: MIT
-metadata:
-  bundle: beads
-  scope: universal
+description: Orchestrator-only Beads semantic governance — consolidation, re-parenting, dedup, supersede, migration, sequencing, conflict convergence. Use when organizing the tracker, mutating issue semantics, or preparing the graph before GitHub sync. Workers load beads-worker; auditors load governance-audit.
+bundle: beads
+scope: universal
 ---
 
 # Beads Orchestrator
 
+## Authority
+
+See `UNIVERSAL_CORE` roles; `governance/rules` §Tracker / §Role. Only orch mutates issue semantics; `bd` CLI only; never hand-edit `.beads/`.
+
 ## Claims Protocol
 
-Only orch mutates issue semantics (`bd` CLI only, never hand-edit `.beads/`). One owner per objective; orch owns epic/feature/hotfix **roots**, workers get **child** Beads. 30-min abandonment: stale Bead/lane/WIP is FREE — claim and continue (`gt unsling`, `bd reclaim`).
+`assignee` = ownership. One operational owner per objective; never touch another owner's lane.
 
-## Dispatch — Gas Town Surface
+## Lane control
 
-```bash
-gt ready                    # work available across town
-gt sling <bead> [target]    # hook + start (auto-spawns polecat for rigs)
-gt convoy create <ids>      # batch tracking; auto-closes when all land
-gt mountain <epic-id>       # stage+launch epic waves (stall detection)
-```
-
-## Queue Oversight
-
-```bash
-gt mq list | status | retry <id>
-gt convoy status            # progress, tracked issues, workers
-```
-
-Validator PASS on pushed SHA before integrate; GitFlow integrate only. Increment closes ONLY with empty residue + integration-lane run — see `verification/closure`.
+- 30-min abandonment: stale Bead/lane/worktree/PR/WIP is FREE — claim and continue.
+- Ownership shape: orch owns epic/feature/hotfix/bugfix **root**; workers get **child** Beads.
+- Lightweight-first: cheapest tier for mechanical work; escalate after one failed light attempt.
+- Validator PASS on pushed SHA before integrate. GitFlow integrate only; null merges are not shortcuts.
+- Increment/sprint boundary: close only with an EMPTY residue set + integration-lane run. Never carry over. See `verification/closure`.
 
 ## Semantic-Mutation Rules (bd)
 
 1. Re-parent: `bd dep remove` then `bd dep add -t parent-child`.
 2. Epics: `-t tracks` for epic→task ordering (not blocked-by-task).
 3. Fix stale `status=blocked` via `bd update --status open` when deps cleared.
-4. Fold = absorb loser DoD into survivor + close. Epic ≥70% done, ≤2 open children → drain; rewrite survivor description in same pass.
+4. Fold = absorb loser DoD into survivor + `bd close --reason`. Epic ≥70% done, ≤2 open children → drain.
+5. Rewrite survivor description in the same pass.
 
 ## Conflict Convergence
 
-Re-read before every mutation batch; graph changed → STOP and re-audit. Detail: [references/conflicts.md](references/conflicts.md) · [references/consolidation.md](references/consolidation.md).
+Re-read before every mutation batch; if graph changed, STOP and re-audit. Detail: [references/conflicts.md](references/conflicts.md), [references/consolidation.md](references/consolidation.md).
 
 ## Context Budget
 
-Load: CORE + this + project AGENTS. Skip worker playbooks; domain law on marker.
+Load: UNIVERSAL_CORE + this skill (+ project AGENTS). Skip: worker playbooks; domain law unless marker active.

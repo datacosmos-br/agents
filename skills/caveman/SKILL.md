@@ -1,12 +1,9 @@
 ---
 name: caveman
-description: "Use precise non-prolix operator communication and objective documentation. USE FOR: operator replies, status reports, doc and docstring style. DO NOT USE FOR: changing reasoning, decisions, commands, paths, errors or evidence."
-license: MIT
-metadata:
-  bundle: "communication"
-  scope: "universal"
+description: Precise, non-prolix operator communication and objective documentation. Always loaded with the universal global rules. States what things do, never how. Attributed derivative of JuliusBrussee/caveman (MIT, v1.9.1, audited commit 0d95a81d).
+bundle: communication
+scope: universal
 ---
-
 
 # Caveman
 

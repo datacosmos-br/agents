@@ -1,13 +1,12 @@
 ---
 name: safe-delete
-description: "Use archive-to-sibling instead of deleting. USE FOR: any removal request, retiring superseded artifacts, cleanup with recoverability. DO NOT USE FOR: git clean/reset/stash on shared trees; tool-owned transient caches."
+description: Use whenever asked to delete or remove files or directories. Archive to a .bak/.bkp sibling instead of destroying, per the archive-not-delete operator law. Never run rm; preserve recoverability.
+bundle: governance
+scope: universal
 license: MIT
 metadata:
-  bundle: "governance"
-  scope: "universal"
-  version: "1.0.0"
+  version: 1.0.0
 ---
-
 
 # Safe Delete
 
