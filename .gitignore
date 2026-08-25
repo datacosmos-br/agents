@@ -1,0 +1,10 @@
+results/
+.waza-cache/
+coverage.txt
+*.exe
+.env.local
+__pycache__/
+.skills-archive/
+agents.bkp/
+.agents.bkp/
+.archive/
