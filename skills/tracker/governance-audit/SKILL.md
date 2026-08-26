@@ -19,27 +19,19 @@ bead/worktree/PR.
 ## Tracker Hygiene Checklist
 
 1. `in_progress` AND dependency-blocked (state conflict).
-2. Stale `blocked` status; blocks on closed issues.
+2. Stale `blocked`; blocks on closed issues.
 3. Epics with NULL descriptions; placeholder titles.
-4. Claim concentration (one assignee holding the board) — risk report.
+4. Claim concentration — risk report.
 5. Zombie lanes: `in_progress` without a live worker.
 6. Priority inflation: P0+P1 dwarfing P2.
-7. Epic overlap on one directive → propose fold;
-   ≥70% closed + ≤2 open →
-   drain;
-bulk-touched `updated_at` → audit content, not dates.
+7. Epic overlap → propose fold; ≥70% closed + ≤2 open → drain; bulk-touched `updated_at` → audit content, not dates.
 
 Copy-paste recipes: [references/audit-recipes.md](references/audit-recipes.md).
 
 ## Content Staleness
 
-- Dead references: `ls` every cited plan/ADR path; closed ancestor IDs cited
-  as live context.
-- Dual paths: same artifact in two locations — record the live one, propose
-  reconciliation.
-- Source vs projection: `config.AiHub.paths.agents_home` and project sources are authority; tool
-  homes are projections — audit diffs, regenerate from source, never edit
-  projections.
+- Dead references: `ls` every cited plan/ADR path; closed ancestor IDs cited as live context.
+- Dual paths / source vs projection: authority = agents_home + project sources; tool homes are projections — audit diffs, regenerate, never edit projections.
 
 ## Report Format
 

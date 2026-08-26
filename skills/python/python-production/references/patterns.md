@@ -1,11 +1,3 @@
----
-name: python-production
-description: Python production code patterns and anti-patterns. Use when writing Python code.
-user-invocable: false
----
-
-# Python Production Patterns
-
 ## Configuration: Dataclasses Over Dicts
 
 - Use `@dataclass` with type annotations for structured config. Dicts hide bugs.
@@ -137,20 +129,6 @@ user-invocable: false
   ```
 
 ## Design Principles
-
-- **Composition over inheritance**: inject dependencies, don't subclass for code reuse
-- **Functions over classes for stateless operations**: if your class has no `__init__` state and one method, it should be a function
-- **Use `enum.Enum` for fixed sets**, not string constants:
-  ```python
-  # BAD
-  mode = "read"  # typo-prone, no IDE completion
-
-  # GOOD
-  class Mode(enum.Enum):
-      READ = "read"
-      WRITE = "write"
-  ```
-
 ## String Formatting
 
 - **f-strings** for simple interpolation: `f"Hello, {name}"`

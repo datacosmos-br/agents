@@ -18,7 +18,7 @@ RESULTS_DIR ?= results
 BASELINE_DIR := $(RESULTS_DIR)/baseline
 LATEST_DIR := $(RESULTS_DIR)/latest
 
-SKILLS := $(patsubst skills/%/SKILL.md,%,$(wildcard skills/*/SKILL.md))
+SKILLS := $(patsubst skills/%/SKILL.md,%,$(wildcard skills/*/*/SKILL.md))
 SKILL_TARGET := $(if $(SKILL),$(SKILL),.)
 
 .DEFAULT_GOAL := help

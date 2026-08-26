@@ -1,6 +1,6 @@
 ---
 name: skill-creator
-description: Use when asked to create, build, or fork a skill for {config.AiHub.paths.agents_home}/skills. Search existing skills and opencode builtins first (search-first), then author one tight SKILL.md within the waza token budget. Prevents duplicate or bloated skills.
+description: "Create or fork a skill for the ~/.agents authority (skills/<theme>/<name>/SKILL.md). USE FOR: authoring a new skill for a proven recurring workflow. DO NOT USE FOR: duplicating opencode builtins/shared skills (compose instead); one-off tasks."
 bundle: governance
 scope: universal
 license: MIT
@@ -25,11 +25,11 @@ project-fit, never a copy of a generic template.
 
 ## Workflow
 
-1. **Search first:** `ls {config.AiHub.paths.agents_home}/skills`, check builtins, `rg` the concept.
+1. **Search first:** `ls ~/.agents/skills/<theme>/`, check builtins, `rg` the concept.
    If it exists, extend or compose — do not create.
-2. **Scaffold** `{config.AiHub.paths.agents_home}/skills/<name>/SKILL.md` with frontmatter:
-   `name`, `description` (start "Use when/for ...", name concrete triggers), and
-   optional `license`/`metadata.version`.
+2. **Scaffold** `~/.agents/skills/<theme>/<name>/SKILL.md` with frontmatter:
+   `name`, `description` ("USE FOR ... DO NOT USE FOR ..."), `license`,
+   `metadata.bundle` (= theme dir) + `metadata.scope`.
 3. **Body:** short sections — Use for / Do not use for / Workflow / Critical
    rules. Ground every instruction in this project's reality (Make verbs, facades,
    bd), not boilerplate.
