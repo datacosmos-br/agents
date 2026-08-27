@@ -7,9 +7,12 @@ tags:
 - basic
 - happy-path
 inputs:
-  prompt: 'Apply the diegosouzapw-architecture-documentation-creator capability to the provided fixture. Exercise these requirements: diegosouzapw, architecture, documentation, creator, create, comprehensive, technical, systems, including, data. Return a concrete result.'
+  prompt: 'Create concise architecture documentation for the supplied function, covering its responsibility, input/output data flow, dependency boundary, and validation considerations.'
   files:
   - path: sample.py
 expected:
+  output_contains:
+  - data flow
+  - validation
   outcomes:
   - type: task_completed

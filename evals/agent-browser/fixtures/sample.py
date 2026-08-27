@@ -1,3 +1,2 @@
-def hello(name):
-    """Greet someone by name."""
-    return f"Hello, {name}!"
+PAGE = """<form><input name='name'><button>Submit</button></form>
+<output id='greeting'>Hello, Ada!</output>"""

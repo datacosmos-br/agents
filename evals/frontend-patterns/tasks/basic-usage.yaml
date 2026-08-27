@@ -7,9 +7,12 @@ tags:
 - basic
 - happy-path
 inputs:
-  prompt: 'Apply the frontend-patterns capability to the provided fixture. Exercise these requirements: frontend, patterns, development, react, next.js, state, management, performance, optimization, ui. Return a concrete result.'
+  prompt: 'Design a small React greeting UI around the supplied behavior. Explain component boundaries, state ownership, rendering behavior, and one performance safeguard.'
   files:
   - path: sample.py
 expected:
+  output_contains:
+  - state
+  - performance
   outcomes:
   - type: task_completed

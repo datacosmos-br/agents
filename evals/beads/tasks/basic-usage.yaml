@@ -7,9 +7,12 @@ tags:
 - basic
 - happy-path
 inputs:
-  prompt: 'Apply the beads capability to the provided fixture. Exercise these requirements: beads, working, repository, that, bd, durable, task, tracking, issue, dependencies. Return a concrete result.'
+  prompt: 'Describe the concrete bd workflow to create a durable implementation issue for the supplied change, link its test dependency, claim it, record evidence, and close it.'
   files:
   - path: sample.py
 expected:
+  output_contains:
+  - bd create
+  - bd close
   outcomes:
   - type: task_completed

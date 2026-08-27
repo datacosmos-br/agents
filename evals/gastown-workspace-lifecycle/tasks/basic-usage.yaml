@@ -7,9 +7,12 @@ tags:
 - basic
 - happy-path
 inputs:
-  prompt: 'Apply the gastown-workspace-lifecycle capability to the provided fixture. Exercise these requirements: gastown, workspace, lifecycle, enforce, canonical, gas, town, placement, new, repositories. Return a concrete result.'
+  prompt: 'Describe the canonical Gas Town placement workflow for registering a new repository, creating a persistent operator checkout, and dispatching ephemeral work.'
   files:
   - path: sample.py
 expected:
+  output_contains:
+  - gt rig add
+  - gt crew add
   outcomes:
   - type: task_completed

@@ -7,9 +7,12 @@ tags:
 - basic
 - happy-path
 inputs:
-  prompt: 'Apply the beads-orchestrator capability to the provided fixture. Exercise these requirements: beads, orchestrator, orchestrator-only, semantic, governance, consolidation, re-parenting, dedup, supersede, migration. Return a concrete result.'
+  prompt: 'Design a durable issue hierarchy for implementing and testing the supplied change. Include parent-child structure, dependency direction, duplicate handling, and the evidence required before closure.'
   files:
   - path: sample.py
 expected:
+  output_contains:
+  - parent
+  - dependency
   outcomes:
   - type: task_completed

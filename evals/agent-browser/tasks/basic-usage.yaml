@@ -7,9 +7,12 @@ tags:
 - basic
 - happy-path
 inputs:
-  prompt: 'Apply the agent-browser capability to the provided fixture. Exercise these requirements: agent, browser, automates, interactions, web, testing, form, filling, screenshots, data. Return a concrete result.'
+  prompt: 'Open the supplied web form, fill the name field with Ada, submit it, and report the rendered greeting and screenshot evidence.'
   files:
   - path: sample.py
 expected:
+  output_contains:
+  - Hello, Ada!
+  - screenshot
   outcomes:
   - type: task_completed

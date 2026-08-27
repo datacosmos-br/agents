@@ -7,9 +7,12 @@ tags:
 - basic
 - happy-path
 inputs:
-  prompt: 'Apply the jamie-bitflight-python3-bug capability to the provided fixture. Exercise these requirements: jamie, bitflight, python3, bug, debug, functional, issues, python, specs, logs. Return a concrete result.'
+  prompt: 'Diagnose the supplied Python function as a functional bug report. State expected behavior, a reproducible input, likely failure evidence, and the focused regression test.'
   files:
   - path: sample.py
 expected:
+  output_contains:
+  - expected
+  - regression test
   outcomes:
   - type: task_completed

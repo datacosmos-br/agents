@@ -116,6 +116,33 @@ def test_generic_eval_scaffold_fails_closed(tmp_path: Path) -> None:
     assert {item.code for item in findings} == {"eval-generic", "eval-skill"}
 
 
+def test_function_in_realistic_prompt_is_not_a_generic_assertion(
+    tmp_path: Path,
+) -> None:
+    skill = tmp_path / "skills" / "example"
+    skill.mkdir(parents=True)
+    (skill / "SKILL.md").write_text(
+        "---\nname: example\ndescription: example, validation\n---\n# Example\n",
+        encoding="utf-8",
+    )
+    tasks = tmp_path / "evals" / "example" / "tasks"
+    tasks.mkdir(parents=True)
+    (tasks.parent / "eval.yaml").write_text(
+        "config:\n"
+        "  required_skills: [example]\n"
+        "  skill_directories: [../../skills/example]\n"
+        "graders:\n- type: prompt\n  name: material\n",
+        encoding="utf-8",
+    )
+    (tasks / "basic.yaml").write_text(
+        "inputs:\n  prompt: Explain this function.\n"
+        "expected:\n  output_contains: [validation]\n",
+        encoding="utf-8",
+    )
+
+    assert validate(_catalog(tmp_path)) == []
+
+
 def test_orphan_skill_directory_fails_closed(tmp_path: Path) -> None:
     orphan = tmp_path / "skills" / "learned" / "agents"
     orphan.mkdir(parents=True)

@@ -108,7 +108,13 @@ def _eval_findings(root: Path, skill_names: set[str]) -> list[Finding]:
                 findings.append(
                     Finding(task_relative, "eval-generic", "generic task prompt")
                 )
-            if "output_contains" in str(task) and "function" in str(task):
+            expected = task.get("expected") if isinstance(task, dict) else None
+            output_contains = (
+                expected.get("output_contains") if isinstance(expected, dict) else None
+            )
+            if isinstance(output_contains, list) and any(
+                value == "function" for value in output_contains
+            ):
                 findings.append(
                     Finding(task_relative, "eval-generic", "generic function assertion")
                 )
