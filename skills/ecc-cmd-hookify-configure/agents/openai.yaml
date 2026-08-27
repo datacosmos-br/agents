@@ -1,0 +1,10 @@
+name: ecc-cmd-hookify-configure
+description: ECC /hookify-configure command mapped to Kimi skill
+tools:
+  - Read
+  - Edit
+  - Write
+  - Bash
+  - Grep
+  - Glob
+model: gpt-5.5

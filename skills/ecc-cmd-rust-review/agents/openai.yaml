@@ -1,0 +1,10 @@
+name: ecc-cmd-rust-review
+description: ECC /rust-review command mapped to Kimi skill
+tools:
+  - Read
+  - Edit
+  - Write
+  - Bash
+  - Grep
+  - Glob
+model: gpt-5.5

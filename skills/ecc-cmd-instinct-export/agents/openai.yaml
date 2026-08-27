@@ -1,0 +1,10 @@
+name: ecc-cmd-instinct-export
+description: ECC /instinct-export command mapped to Kimi skill
+tools:
+  - Read
+  - Edit
+  - Write
+  - Bash
+  - Grep
+  - Glob
+model: gpt-5.5

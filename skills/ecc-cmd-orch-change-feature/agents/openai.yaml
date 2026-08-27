@@ -1,0 +1,10 @@
+name: ecc-cmd-orch-change-feature
+description: ECC /orch-change-feature command mapped to Kimi skill
+tools:
+  - Read
+  - Edit
+  - Write
+  - Bash
+  - Grep
+  - Glob
+model: gpt-5.5

@@ -1,0 +1,124 @@
+#!/usr/bin/env bash
+# mcp-sync-apply — Copy generated MCP configs to live agent surfaces.
+# Companion to mcp-sync. Run once per client/config location.
+#
+# Usage: mcp-sync-apply [--dry-run] [--agent <name>]
+
+set -euo pipefail
+
+GENERATED_DIR="${HOME}/.agents/mcp/generated"
+ERRORS=0
+
+error() { echo "  [ERROR] $1" >&2; ((ERRORS++)); }
+ok()    { echo "  [OK]    $1"; }
+
+DRY_RUN=false
+TARGET_AGENT=""
+
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --dry-run) DRY_RUN=true; shift ;;
+        --agent)   TARGET_AGENT="$2"; shift 2 ;;
+        *) error "Unknown option: $1"; exit 1 ;;
+    esac
+done
+
+echo "=== MCP Config Copy Apply ==="
+echo ""
+
+copy_config() {
+    local src="$1"
+    local dst="$2"
+    local label="$3"
+    local parent
+    parent="$(dirname "$dst")"
+
+    [[ -f "$src" ]] || { error "Source not found: $src"; return; }
+
+    if [[ -f "$dst" && ! -L "$dst" ]] && cmp -s "$src" "$dst"; then
+        ok "$label already converged"
+        return
+    fi
+
+    if $DRY_RUN; then
+        error "Live config drift for $label: $src -> $dst"
+        return
+    fi
+
+    mkdir -p "$parent"
+
+    if [[ -L "$dst" ]]; then
+        unlink "$dst"
+    elif [[ -e "$dst" ]]; then
+        mv "$dst" "${dst}.bak.$(date +%s)"
+    fi
+    cp --archive --reflink=auto --no-target-directory "$src" "$dst"
+    ok "$label copied from $src"
+}
+
+apply_codex() {
+    local src="$GENERATED_DIR/config.codex.toml"
+    local dst="${HOME}/.codex/config.toml"
+    copy_config "$src" "$dst" "Codex config.toml"
+}
+
+apply_claude() {
+    copy_config "$GENERATED_DIR/.mcp.json" "${HOME}/.claude/mcp-config.json" "Claude MCP config"
+}
+
+apply_kimi() {
+    copy_config "$GENERATED_DIR/kimi.mcp.json" "${HOME}/.kimi-code/mcp.json" "Kimi MCP config"
+}
+
+apply_gemini() {
+    copy_config "$GENERATED_DIR/settings.gemini.json" "${HOME}/.gemini/settings.json" "Gemini settings"
+}
+
+apply_cursor() {
+    copy_config "$GENERATED_DIR/mcp.cursor.json" "${HOME}/.config/cursor-mcp.json" "Cursor MCP config"
+}
+
+apply_vscode() {
+    copy_config "$GENERATED_DIR/mcp.vscode.json" "${HOME}/.config/Code/User/mcp.json" "VS Code MCP config"
+}
+
+apply_opencode() {
+    copy_config "$GENERATED_DIR/opencode.mcp.json" "${HOME}/.config/opencode/mcp.json" "OpenCode MCP config"
+}
+
+apply_aider() {
+    copy_config "$GENERATED_DIR/.aider.mcp.yml" "${HOME}/.aider.mcp.yml" "Aider MCP bridge config"
+}
+
+# ── main ─────────────────────────────────────────────────────────────────────
+
+if [[ -n "$TARGET_AGENT" ]]; then
+    case "$TARGET_AGENT" in
+        claude) apply_claude ;;
+        codex)  apply_codex ;;
+        kimi)   apply_kimi ;;
+        gemini) apply_gemini ;;
+        cursor) apply_cursor ;;
+        vscode) apply_vscode ;;
+        opencode) apply_opencode ;;
+        aider) apply_aider ;;
+        *) error "Unknown agent: $TARGET_AGENT"; exit 1 ;;
+    esac
+else
+    apply_claude
+    apply_codex
+    apply_kimi
+    apply_gemini
+    apply_cursor
+    apply_vscode
+    apply_opencode
+    apply_aider
+fi
+
+echo ""
+if [[ "$ERRORS" -eq 0 ]]; then
+    echo "All configs copied."
+else
+    echo "Completed with $ERRORS error(s)."
+fi
+exit "$ERRORS"

@@ -1,0 +1,10 @@
+name: learned
+description: ECC skill learned
+tools:
+  - Read
+  - Edit
+  - Write
+  - Bash
+  - Grep
+  - Glob
+model: gpt-5.5

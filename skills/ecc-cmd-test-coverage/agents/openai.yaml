@@ -1,0 +1,10 @@
+name: ecc-cmd-test-coverage
+description: ECC /test-coverage command mapped to Kimi skill
+tools:
+  - Read
+  - Edit
+  - Write
+  - Bash
+  - Grep
+  - Glob
+model: gpt-5.5
