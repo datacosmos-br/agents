@@ -23,6 +23,22 @@ from agents_governance.temp import (
 )
 
 
+@pytest.fixture(autouse=True)
+def local_storage_manifest(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> Path:
+    config = tmp_path / "config" / "environment.d"
+    config.mkdir(parents=True, exist_ok=True)
+    (config / "storage.toml").write_text(
+        "version = 1\n"
+        "[policy]\n"
+        f'global_temp = "{tmp_path / "ephemeral"}"\n'
+        "global_temp_max_bytes = 1073741824\n"
+        "repositories = []\n",
+        encoding="utf-8",
+    )
+    monkeypatch.setenv("XDG_CONFIG_HOME", str(tmp_path / "config"))
+    return config
+
+
 def git_repo(path: Path) -> Path:
     path.mkdir()
     subprocess.run(["git", "init", "-q", str(path)], check=True)
@@ -74,12 +90,14 @@ def test_repository_audit_rejects_legacy_archives(tmp_path: Path) -> None:
     assert [(item.path, item.kind) for item in items] == [(archive, "residue")]
 
 
-def test_managed_temp_is_repo_local_physical_directory(tmp_path: Path) -> None:
+def test_managed_temp_uses_machine_authorized_physical_directory(
+    tmp_path: Path,
+) -> None:
     repo = git_repo(tmp_path / "repo")
 
     destination = managed_temp(repo)
 
-    assert destination == repo / ".test-tmp"
+    assert destination == tmp_path / "ephemeral"
     assert destination.is_dir()
     assert not destination.is_symlink()
     assert destination.stat().st_mode & 0o777 == 0o700
@@ -251,7 +269,7 @@ def test_global_audit_uses_only_machine_local_registered_roots(
 ) -> None:
     repo = git_repo(tmp_path / "repo")
     config = tmp_path / "config" / "environment.d"
-    config.mkdir(parents=True)
+    config.mkdir(parents=True, exist_ok=True)
     (config / "storage.toml").write_text(
         "version = 1\n"
         "[policy]\n"

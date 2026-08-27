@@ -1,4 +1,4 @@
-"""Bounded, repository-local scratch execution and conservative garbage collection."""
+"""Bounded scratch execution and conservative garbage collection."""
 
 from __future__ import annotations
 
@@ -118,9 +118,15 @@ def resolve_repo(cwd: Path) -> Path:
 
 
 def managed_temp(repo: Path) -> Path:
-    """Return the repository-local scratch owner without following symlinks."""
+    """Return the machine-authorized ephemeral root without following symlinks."""
 
-    destination = repo.resolve() / ".test-tmp"
+    _ = repo
+    policy = storage_manifest().get("policy", {})
+    if not isinstance(policy, dict):
+        raise TypeError("storage policy must be a table")
+    destination = _expand_local_path(
+        str(policy.get("global_temp", "${HOME}/.local/tmp"))
+    )
     if destination.is_symlink():
         raise RuntimeError(f"scratch root must not be a symlink: {destination}")
     destination.mkdir(mode=0o700, parents=True, exist_ok=True)
@@ -149,7 +155,7 @@ def _mkdir(path: Path) -> Path:
 
 
 def create_run(repo: Path) -> tuple[Path, IO[str]]:
-    scratch = Path(tempfile.mkdtemp(prefix="run.", dir=managed_temp(repo)))
+    scratch = Path(tempfile.mkdtemp(prefix="r.", dir=managed_temp(repo)))
     for name in KNOWN_DIRS:
         _mkdir(scratch / name)
     marker = {
@@ -533,7 +539,7 @@ def gc(
                 continue
     eligible: list[Path] = []
     blocked: list[TempFinding] = []
-    for candidate in sorted(root.glob("run.*")):
+    for candidate in sorted(root.glob("r.*")):
         marker = candidate / MARKER
         if candidate.is_symlink() or not marker.is_file():
             blocked.append(
@@ -541,6 +547,15 @@ def gc(
                     candidate, "unknown", "preserve: missing trusted run marker"
                 )
             )
+            continue
+        try:
+            marker_data = json.loads(marker.read_text(encoding="utf-8"))
+        except (OSError, TypeError, ValueError, json.JSONDecodeError):
+            blocked.append(
+                TempFinding(candidate, "unknown", "preserve: invalid run marker")
+            )
+            continue
+        if marker_data.get("repo") != str(repo.resolve()):
             continue
         completed = candidate in successful
         if not completed and clock - marker.stat().st_mtime < policy.orphan_age_seconds:
@@ -580,7 +595,7 @@ def gc(
 
 def status(repo: Path) -> dict[str, object]:
     root = managed_temp(repo)
-    runs = tuple(root.glob("run.*"))
+    runs = tuple(root.glob("r.*"))
     return {
         "repo": str(repo.resolve()),
         "scratch_root": str(root),
