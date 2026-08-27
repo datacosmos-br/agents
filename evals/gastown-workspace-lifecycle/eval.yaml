@@ -1,6 +1,6 @@
-name: agent-sort-eval
-description: Evaluation suite for agent-sort.
-skill: agent-sort
+name: gastown-workspace-lifecycle-eval
+description: Evaluation suite for gastown-workspace-lifecycle.
+skill: gastown-workspace-lifecycle
 schemaVersion: "1.0"
 version: "1.0"
 config:
