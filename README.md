@@ -2,9 +2,9 @@
 
 `~/.agents` is the sole owner of universal skills, rules, commands, agent
 profiles, validation, and projection policy. AI Hub may configure or invoke this
-authority; it does not regenerate or compete with it. SkillShare and ECC are
-retired sources: useful generic capabilities are agents-owned skills; no ECC
-package, command, rule, projection, or synchronization surface remains.
+authority; it does not regenerate or compete with it. Legacy third-party skill
+sources are retired: useful generic capabilities are agents-owned skills, and
+no legacy package, command, rule, projection, or synchronization surface remains.
 
 ## Surfaces
 

@@ -48,7 +48,7 @@ Run it first when:
 - the content is launch, outreach, or reputation-sensitive
 
 Reuse the resulting `VOICE PROFILE` here instead of rebuilding a second voice model.
-If the user wants Affaan / ECC voice specifically, still treat `brand-voice` as the source of truth and feed it the best live or source-derived material available.
+For any named product or author voice, treat `brand-voice` as the source of truth and feed it the best live or source-derived material available.
 
 ## Hard Bans
 

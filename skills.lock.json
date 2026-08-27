@@ -15,26 +15,13 @@
     },
     {
       "class": "on_demand",
-      "digest": "06ac13982811ea360c135cfb2a7d43ab1fa0eb89249273d0c2695b59d8457265",
+      "digest": "511a96b9b5268e1d8f10d357e0612ba6510f109b672c33b7c466e62b9d6075a2",
       "distributions": [
         "personal"
       ],
       "max_lines": 500,
       "max_tokens": 5000,
       "name": "agent-introspection-debugging",
-      "owner": "agents",
-      "provenance": "adopted",
-      "updates": "manual"
-    },
-    {
-      "class": "on_demand",
-      "digest": "25a33b00c6ee3c41228cf7b395e1b1db0abfbfa097e852ff6dfb8a06456b4cc7",
-      "distributions": [
-        "personal"
-      ],
-      "max_lines": 500,
-      "max_tokens": 5000,
-      "name": "agent-sort",
       "owner": "agents",
       "provenance": "adopted",
       "updates": "manual"
@@ -160,7 +147,7 @@
     },
     {
       "class": "on_demand",
-      "digest": "ec14dbe66974e0747cfa2d235d80f435822cba31e37a5e461e04d68fc532da61",
+      "digest": "44e8853f0cb41e2346202e50edc235c71e3b7f9024a53c2e6a52297dbad326b9",
       "distributions": [
         "personal"
       ],
@@ -226,7 +213,7 @@
     },
     {
       "class": "on_demand",
-      "digest": "277620ca84b82e87d3ed95f484706906aadfef5baa417936698338333510af0a",
+      "digest": "ceae53d9e2aa50ac127c0c87b0008e21dc3eb1ff54625969998a595048db0d33",
       "distributions": [
         "personal",
         "project-generic"
@@ -240,7 +227,7 @@
     },
     {
       "class": "on_demand",
-      "digest": "7a9a51e2a32d67d7e9604e8e60624736fdb4054faededff9a92cd2597c9299ed",
+      "digest": "d70436ed8c0906966fa0ac71669cc10cc369850c3f6710a1956a1f5d8897076d",
       "distributions": [
         "personal"
       ],
@@ -344,7 +331,7 @@
     },
     {
       "class": "on_demand",
-      "digest": "e12f71daa5997fbf2b4bbd7a1322300420d14bdbe09e746dca6c2e24931016a0",
+      "digest": "7665fb835198d9917eb132252341f7007467c8b821aea1a2d8e0f91c79a18509",
       "distributions": [
         "personal"
       ],
@@ -478,7 +465,7 @@
     },
     {
       "class": "on_demand",
-      "digest": "884a8879b7a2789d3c64352cd65e64c688bb190b8cc7f30931343bf93da65277",
+      "digest": "b74f70f39195b2a6f9b357b37bab02efcbdeb93d52ce14d0d89725643896af9c",
       "distributions": [
         "technology:javascript"
       ],
@@ -660,7 +647,7 @@
     },
     {
       "class": "on_demand",
-      "digest": "bd9c4e0e67936dccebcbebfec53b77a6aaa15dce9785b9f96cf3a0fe9675e30a",
+      "digest": "d7fe5202e8d85a09f4851c3383c51f44726ae67b82e2b7e8e45090be87334f90",
       "distributions": [
         "personal"
       ],
@@ -738,7 +725,7 @@
     },
     {
       "class": "on_demand",
-      "digest": "7a957059ea2843a27239471c9be9cc25b2d6fd9f9b539b4aeaab4d5cea4b7c8f",
+      "digest": "c0ebecf7e842fef08efaa4568a86d97f04e1df8d55773841f1a75f298321e025",
       "distributions": [
         "personal"
       ],
@@ -764,7 +751,7 @@
     },
     {
       "class": "on_demand",
-      "digest": "e35d4f2a4192e12ced129deb97b8e339d64dd6e63d002e51f35ed2f9f00ecca8",
+      "digest": "275654ec856494040e620352307c573d4555f6dcf6195b12435a8b6ca9b21691",
       "distributions": [
         "technology:python"
       ],
@@ -830,7 +817,7 @@
     },
     {
       "class": "on_demand",
-      "digest": "86109d67ad3d98586807edcbeac9d5b02fcc15e7776a1eb2628cc51bfef5fa54",
+      "digest": "9b6f9e9666105b64c1f762da8a22d941edb0bde37373b09754bc24b0ffab674f",
       "distributions": [
         "personal"
       ],
