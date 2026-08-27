@@ -191,9 +191,10 @@ spec: ## verify eval coverage vs SKILL.md requirements
 
 coverage: ## require every canonical skill to have full Waza grader coverage
 	$(call BANNER,coverage · all skills fully covered)
-	@artifact=$$(mktemp "$(CURDIR)/.test-tmp/coverage.XXXXXX.json"); \
-	  waza coverage . --format json > "$$artifact" && uv run agentsctl waza-coverage "$$artifact"; \
-	  status=$$?; unlink "$$artifact"; exit $$status
+	@uv run agentsctl temp run -- sh -eu -c 'artifact=$$(mktemp "$$TMPDIR/coverage.XXXXXX.json"); \
+	  trap '\''unlink "$$artifact"'\'' EXIT; \
+	  waza coverage . --format json > "$$artifact"; \
+	  uv run agentsctl waza-coverage "$$artifact"'
 
 run: preflight ## execute eval benchmark (BASELINE=1 adds A/B with-vs-without skills)
 	$(call BANNER,run · model=$(if $(MODEL),$(MODEL),waza-default) $(if $(SKILL),[$(SKILL)],[discover all]))
