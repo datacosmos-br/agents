@@ -181,7 +181,7 @@ def managed_env(repo: Path, scratch: Path) -> dict[str, str]:
     environment = os.environ.copy()
     shared = cache_root()
     mappings = {
-        "TMPDIR": scratch / "tmp",
+        "TMPDIR": scratch,
         "GOTMPDIR": scratch / "go-tmp",
         "GOCACHE": scratch / "go-build",
         "GOMODCACHE": shared / "go-mod",
@@ -300,11 +300,9 @@ def run_command(
         exit_code = 70
     retained = True
     if exit_code == 0:
-        allowed = KNOWN_DIRS | {MARKER, LOCK}
-        if {entry.name for entry in scratch.iterdir()} <= allowed:
-            _remove_owned_tree(scratch, allow_owned_symlinks=True)
-            scratch.rmdir()
-            retained = False
+        _remove_owned_tree(scratch, allow_owned_symlinks=True)
+        scratch.rmdir()
+        retained = False
     report = RunReport(
         command=tuple(command),
         repo=str(repo),
