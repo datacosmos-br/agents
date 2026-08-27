@@ -5,11 +5,13 @@ from __future__ import annotations
 import fnmatch
 import re
 from dataclasses import dataclass
+from pathlib import Path
 
 import yaml
 
 from .catalog import Catalog
 from .tokens import bpe_tokens
+from .waza import findings as waza_config_findings
 
 _LINK = re.compile(r"\[[^\]]+\]\(([^)]+)\)")
 _FENCED_CODE = re.compile(r"^```.*?^```\s*$", re.MULTILINE | re.DOTALL)
@@ -42,11 +44,111 @@ def _frontmatter(text: str) -> tuple[dict[str, object], str]:
     return loaded, text[marker + 5 :]
 
 
+def _eval_findings(root: Path, skill_names: set[str]) -> list[Finding]:
+    """Reject missing, generic, or structurally empty Waza specifications."""
+
+    eval_root = root / "evals"
+    if not eval_root.exists():
+        return []
+    findings: list[Finding] = []
+    for name in sorted(skill_names):
+        directory = eval_root / name
+        config_path = directory / "eval.yaml"
+        relative = config_path.relative_to(root).as_posix()
+        if not config_path.is_file():
+            findings.append(Finding(relative, "eval-missing", "missing eval.yaml"))
+            continue
+        try:
+            config = yaml.safe_load(config_path.read_text(encoding="utf-8"))
+        except yaml.YAMLError as error:
+            findings.append(Finding(relative, "eval-yaml", str(error)))
+            continue
+        if not isinstance(config, dict):
+            findings.append(Finding(relative, "eval-schema", "eval must be a mapping"))
+            continue
+        settings = config.get("config")
+        required = (
+            settings.get("required_skills") if isinstance(settings, dict) else None
+        )
+        directories = (
+            settings.get("skill_directories") if isinstance(settings, dict) else None
+        )
+        if required != [name] or directories != [f"../../skills/{name}"]:
+            findings.append(
+                Finding(
+                    relative, "eval-skill", "eval must bind exactly its canonical skill"
+                )
+            )
+        graders = config.get("graders")
+        if "relevant_content" in str(graders):
+            findings.append(
+                Finding(
+                    relative,
+                    "eval-generic",
+                    "generic relevant_content grader is forbidden",
+                )
+            )
+        task_paths = sorted((directory / "tasks").glob("*.yaml"))
+        if not task_paths:
+            findings.append(Finding(relative, "eval-tasks", "no task specifications"))
+        for task_path in task_paths:
+            task_relative = task_path.relative_to(root).as_posix()
+            try:
+                task = yaml.safe_load(task_path.read_text(encoding="utf-8"))
+            except yaml.YAMLError as error:
+                findings.append(Finding(task_relative, "eval-yaml", str(error)))
+                continue
+            inputs = task.get("inputs") if isinstance(task, dict) else None
+            prompt = inputs.get("prompt") if isinstance(inputs, dict) else None
+            if not isinstance(prompt, str) or not prompt.strip():
+                findings.append(
+                    Finding(task_relative, "eval-prompt", "empty task prompt")
+                )
+            elif prompt.strip() == "Help me with this task":
+                findings.append(
+                    Finding(task_relative, "eval-generic", "generic task prompt")
+                )
+            expected = task.get("expected") if isinstance(task, dict) else None
+            output_contains = (
+                expected.get("output_contains") if isinstance(expected, dict) else None
+            )
+            if isinstance(output_contains, list) and any(
+                value == "function" for value in output_contains
+            ):
+                findings.append(
+                    Finding(task_relative, "eval-generic", "generic function assertion")
+                )
+    return findings
+
+
 def validate(catalog: Catalog) -> list[Finding]:
     """Validate every active skill and return all blocking findings."""
 
     findings: list[Finding] = []
+    if (catalog.root / "config" / "skills.json").is_file():
+        findings.extend(
+            Finding("config/skills.json", "distribution", message)
+            for message in catalog.distribution_errors()
+        )
+    if (catalog.root / ".waza.yaml").is_file():
+        for waza_item in waza_config_findings(catalog.root):
+            findings.append(
+                Finding(
+                    waza_item.path.relative_to(catalog.root).as_posix(),
+                    "eval-model-drift",
+                    f"model {waza_item.actual!r} != project default {waza_item.expected!r}",
+                )
+            )
     names: set[str] = set()
+    for directory in sorted((catalog.root / "skills").iterdir()):
+        if directory.is_dir() and not (directory / "SKILL.md").is_file():
+            findings.append(
+                Finding(
+                    directory.relative_to(catalog.root).as_posix(),
+                    "orphan-skill-directory",
+                    "skill namespace directory has no SKILL.md",
+                )
+            )
     technology_names = {
         skill
         for profile in catalog.technology_profiles().values()
@@ -174,4 +276,5 @@ def validate(catalog: Catalog) -> list[Finding]:
                             f"unsafe or missing: {target}",
                         )
                     )
+    findings.extend(_eval_findings(catalog.root, names))
     return findings

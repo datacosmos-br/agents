@@ -150,7 +150,7 @@ echo "  4. Using Claude Code? CLAUDE.md has all the context."
 After writing, make it executable: `chmod +x setup.sh`
 
 **setup.sh Rules:**
-- Must work on fresh clone with zero manual steps beyond `.env` editing
+- Must work on a freshly registered Gas Town rig with zero manual steps beyond `.env` editing
 - Check for prerequisites with clear error messages
 - Use `set -euo pipefail` for safety
 - Echo progress so the user knows what is happening
@@ -171,8 +171,10 @@ After writing, make it executable: `chmod +x setup.sh`
 ## Quick Start
 
 \`\`\`bash
-git clone https://github.com/{org}/{repo}.git
-cd {repo}
+cd ~/gt
+gt rig add {repo} https://github.com/{org}/{repo}.git
+gt crew add operator --rig {repo}
+cd ~/gt/{repo}/crew/operator
 ./setup.sh
 \`\`\`
 

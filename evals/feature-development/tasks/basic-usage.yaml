@@ -1,0 +1,18 @@
+id: basic-usage-001
+name: Basic Usage
+description: 'Test that the skill handles a typical request correctly.
+
+  '
+tags:
+- basic
+- happy-path
+inputs:
+  prompt: 'Complete this feature development task: provide the implementation, update interfaces and consumers, add tests and documentation, and report validation evidence.'
+  files:
+  - path: src/account_status.py
+expected:
+  outcomes:
+  - type: task_completed
+  output_contains:
+  - tests
+  - validation

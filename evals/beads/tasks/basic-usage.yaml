@@ -1,16 +1,18 @@
 id: basic-usage-001
 name: Basic Usage
-description: |
-  Test that the skill handles a typical request correctly.
+description: 'Test that the skill handles a typical request correctly.
+
+  '
 tags:
-  - basic
-  - happy-path
+- basic
+- happy-path
 inputs:
-  prompt: "Help me with this task"
+  prompt: 'Describe the concrete bd workflow to create a durable implementation issue for the supplied change, link its test dependency, claim it, record evidence, and close it.'
   files:
-    - path: sample.py
+  - path: sample.py
 expected:
   output_contains:
-    - "function"
+  - bd create
+  - bd close
   outcomes:
-    - type: task_completed
+  - type: task_completed

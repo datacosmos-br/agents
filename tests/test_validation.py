@@ -19,6 +19,7 @@ def _catalog(tmp_path: Path) -> Catalog:
         },
         "classification": [],
         "default": {"class": "on_demand", "provenance": "adopted", "updates": "manual"},
+        "personal": ["example"] if (tmp_path / "skills" / "example").is_dir() else [],
     }
     (tmp_path / "config" / "skills.json").write_text(
         json.dumps(config), encoding="utf-8"
@@ -89,4 +90,96 @@ def test_description_rejects_prose(tmp_path: Path) -> None:
 
     assert [(item.code, item.message) for item in findings] == [
         ("description", "description must be a comma-separated keyword list")
+    ]
+
+
+def test_generic_eval_scaffold_fails_closed(tmp_path: Path) -> None:
+    skill = tmp_path / "skills" / "example"
+    skill.mkdir(parents=True)
+    (skill / "SKILL.md").write_text(
+        "---\nname: example\ndescription: example, validation\n---\n# Example\n",
+        encoding="utf-8",
+    )
+    tasks = tmp_path / "evals" / "example" / "tasks"
+    tasks.mkdir(parents=True)
+    (tasks.parent / "eval.yaml").write_text(
+        "config: {}\ngraders:\n- name: relevant_content\n",
+        encoding="utf-8",
+    )
+    (tasks / "basic.yaml").write_text(
+        "inputs:\n  prompt: Help me with this task\nexpected:\n  output_contains: function\n",
+        encoding="utf-8",
+    )
+
+    findings = validate(_catalog(tmp_path))
+
+    assert {item.code for item in findings} == {"eval-generic", "eval-skill"}
+
+
+def test_function_in_realistic_prompt_is_not_a_generic_assertion(
+    tmp_path: Path,
+) -> None:
+    skill = tmp_path / "skills" / "example"
+    skill.mkdir(parents=True)
+    (skill / "SKILL.md").write_text(
+        "---\nname: example\ndescription: example, validation\n---\n# Example\n",
+        encoding="utf-8",
+    )
+    tasks = tmp_path / "evals" / "example" / "tasks"
+    tasks.mkdir(parents=True)
+    (tasks.parent / "eval.yaml").write_text(
+        "config:\n"
+        "  required_skills: [example]\n"
+        "  skill_directories: [../../skills/example]\n"
+        "graders:\n- type: prompt\n  name: material\n",
+        encoding="utf-8",
+    )
+    (tasks / "basic.yaml").write_text(
+        "inputs:\n  prompt: Explain this function.\n"
+        "expected:\n  output_contains: [validation]\n",
+        encoding="utf-8",
+    )
+
+    assert validate(_catalog(tmp_path)) == []
+
+
+def test_orphan_skill_directory_fails_closed(tmp_path: Path) -> None:
+    orphan = tmp_path / "skills" / "learned" / "agents"
+    orphan.mkdir(parents=True)
+    (orphan / "openai.yaml").write_text("name: learned\n", encoding="utf-8")
+
+    findings = validate(_catalog(tmp_path))
+
+    assert [(item.code, item.path) for item in findings] == [
+        ("orphan-skill-directory", "skills/learned")
+    ]
+
+
+def test_eval_model_must_match_project_owner(tmp_path: Path) -> None:
+    skill = tmp_path / "skills" / "example"
+    skill.mkdir(parents=True)
+    (skill / "SKILL.md").write_text(
+        "---\nname: example\ndescription: example, validation\n---\n# Example\n",
+        encoding="utf-8",
+    )
+    (tmp_path / ".waza.yaml").write_text(
+        "defaults:\n  model: gpt-5.4\n", encoding="utf-8"
+    )
+    tasks = tmp_path / "evals" / "example" / "tasks"
+    tasks.mkdir(parents=True)
+    (tasks.parent / "eval.yaml").write_text(
+        "config:\n  model: claude-sonnet-4.6\n"
+        "  required_skills: [example]\n"
+        "  skill_directories: [../../skills/example]\n"
+        "graders: []\n",
+        encoding="utf-8",
+    )
+    (tasks / "basic.yaml").write_text(
+        "inputs:\n  prompt: Validate the example skill.\n", encoding="utf-8"
+    )
+
+    findings = validate(_catalog(tmp_path))
+
+    assert [(item.code, item.path) for item in findings] == [
+        ("eval-model-drift", "evals/example/eval.yaml")
     ]

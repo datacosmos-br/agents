@@ -1,16 +1,18 @@
 id: basic-usage-001
 name: Basic Usage
-description: |
-  Test that the skill handles a typical request correctly.
+description: 'Test that the skill handles a typical request correctly.
+
+  '
 tags:
-  - basic
-  - happy-path
+- basic
+- happy-path
 inputs:
-  prompt: "Help me with this task"
+  prompt: 'Create concise architecture documentation for the supplied function, covering its responsibility, input/output data flow, dependency boundary, and validation considerations.'
   files:
-    - path: sample.py
+  - path: sample.py
 expected:
   output_contains:
-    - "function"
+  - data flow
+  - validation
   outcomes:
-    - type: task_completed
+  - type: task_completed

@@ -1,16 +1,18 @@
 id: basic-usage-001
 name: Basic Usage
-description: |
-  Test that the skill handles a typical request correctly.
+description: 'Test that the skill handles a typical request correctly.
+
+  '
 tags:
-  - basic
-  - happy-path
+- basic
+- happy-path
 inputs:
-  prompt: "Help me with this task"
+  prompt: 'Design a small React greeting UI around the supplied behavior. Explain component boundaries, state ownership, rendering behavior, and one performance safeguard.'
   files:
-    - path: sample.py
+  - path: sample.py
 expected:
   output_contains:
-    - "function"
+  - state
+  - performance
   outcomes:
-    - type: task_completed
+  - type: task_completed

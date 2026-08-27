@@ -148,8 +148,8 @@ java -version
 # Force refresh dependencies
 ./gradlew build --refresh-dependencies
 
-# Clear Gradle build cache
-./gradlew clean && rm -rf .gradle/build-cache/
+# Rebuild without reusing the project build cache
+./gradlew clean build --no-build-cache
 
 # Run with debug output
 ./gradlew build --debug 2>&1 | tail -50

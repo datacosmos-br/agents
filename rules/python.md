@@ -176,12 +176,11 @@ Errors must travel up **with their semantics intact** — no laundering, no demo
 - **No `try/except/raise generic`.** Wrapping the original error in a less-specific one is a defect. Either propagate as-is, or translate to a *more*-specific class with `from exc`.
 - **Surface batched failures honestly.** When processing N items, don't return only the successes. Return both via `FlextResult.partition(rs)` (or equivalent) so the caller sees what failed and why.
 
-### Resilience ≠ silence
+### Resilience ≠ alternate behavior
 
-- **Retries**, **circuit breakers**, **timeouts**, and **fallbacks** are valid resilience mechanisms — but each must be **explicit and observable**:
+- **Retries**, **circuit breakers**, and **timeouts** may bound or repeat the same canonical operation; fallback behavior is forbidden.
   - Use the `r[T]` retry combinator (or the project's `Resilience` mixin); never wrap in `while True: try/except`.
-  - Every fallback must be logged structurally and exposed in the result metadata so the caller knows a fallback happened.
-  - A retried-and-still-failing call returns `r.fail(...)` — it does not invent a success.
+  - A retried-and-still-failing call returns `r.fail(...)` — it does not switch implementations, invent a success, or route around the owner.
 - **Idempotency keys, dedup, and graceful degradation** are features, not exception-eating. Implement them with explicit `r[T]` flow, not by catching and ignoring.
 
 ### Productivity through directness

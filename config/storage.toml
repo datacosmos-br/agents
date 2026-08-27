@@ -1,0 +1,8 @@
+version = 1
+repositories = []
+
+[policy]
+global_temp = "${HOME}/.local/tmp"
+global_temp_max_bytes = 5368709120
+report_max_bytes = 104857600
+orphan_age_days = 7

@@ -14,6 +14,7 @@ on:
       - 'hooks/**'
       - 'rules/**'
       - 'Makefile'
+      - '.mise.toml'
       - 'pyproject.toml'
       - 'uv.lock'
 
@@ -27,6 +28,7 @@ jobs:
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - uses: astral-sh/setup-uv@d0d8abe699bfb85fec6de9f7adb5ae17292296ff # v6
+      - uses: jdx/mise-action@5228313ee0372e111a38da051671ca30fc5a96db # v3
       - name: Install pinned Waza
         run: |
           install -d -m 700 "$HOME/bin"
@@ -41,12 +43,10 @@ jobs:
           grep ' waza-linux-amd64$' checksums.txt | sha256sum --check --strict -
           install -m 755 waza-linux-amd64 "$HOME/bin/waza"
           echo "$HOME/bin" >> "$GITHUB_PATH"
-      - name: Run offline governance gates
+      - name: Run complete offline pipeline
         run: |
           uv sync --all-groups
-          uv run agentsctl validate
-          waza tokens check ./skills --strict
-          make spec
+          make ci
       - name: Upload results
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4

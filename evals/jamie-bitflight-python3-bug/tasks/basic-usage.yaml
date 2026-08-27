@@ -1,16 +1,18 @@
 id: basic-usage-001
 name: Basic Usage
-description: |
-  Test that the skill handles a typical request correctly.
+description: 'Test that the skill handles a typical request correctly.
+
+  '
 tags:
-  - basic
-  - happy-path
+- basic
+- happy-path
 inputs:
-  prompt: "Help me with this task"
+  prompt: 'Diagnose the supplied Python function as a functional bug report. State expected behavior, a reproducible input, likely failure evidence, and the focused regression test.'
   files:
-    - path: sample.py
+  - path: sample.py
 expected:
   output_contains:
-    - "function"
+  - expected
+  - regression test
   outcomes:
-    - type: task_completed
+  - type: task_completed

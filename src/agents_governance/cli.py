@@ -8,6 +8,7 @@ import sys
 from pathlib import Path
 
 from .catalog import Catalog
+from .cleanup import clean_generated
 from .dolt import audit as dolt_audit
 from .dolt import repair as dolt_repair
 from .normalize import normalize, normalize_descriptions
@@ -15,9 +16,15 @@ from .projection import Projector
 from .security import audit as security_audit
 from .temp import findings as temp_findings
 from .temp import gc as temp_gc
-from .temp import run_command
+from .temp import gc_all as temp_gc_all
+from .temp import global_findings as temp_global_findings
+from .temp import repository_findings, run_command
 from .temp import status as temp_status
 from .validation import validate
+from .waza import apply as apply_waza_config
+from .waza import classify_preflight
+from .waza import default_model as waza_default_model
+from .waza import findings as waza_config_findings
 
 
 def _root() -> Path:
@@ -96,7 +103,7 @@ def _normalize(root: Path, apply: bool) -> int:
             f"{item.name}: {item.tokens} tokens/{item.lines} lines -> {item.destination}"
         )
     print(f"{'APPLIED' if apply else 'DRY-RUN'}: {len(changes)} skill(s)")
-    return 0
+    return int(bool(changes) and not apply)
 
 
 def _descriptions(root: Path, apply: bool) -> int:
@@ -104,7 +111,7 @@ def _descriptions(root: Path, apply: bool) -> int:
     for item in changes:
         print(f"{item.name}: {item.destination}")
     print(f"{'APPLIED' if apply else 'DRY-RUN'}: {len(changes)} description(s)")
-    return 0
+    return int(bool(changes) and not apply)
 
 
 def _waza_artifact(path: Path) -> int:
@@ -127,8 +134,72 @@ def _waza_artifact(path: Path) -> int:
     return 0
 
 
-def _temp_audit(as_json: bool) -> int:
-    items = temp_findings()
+def _waza_coverage(path: Path) -> int:
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        total = payload.get("total_skills") if isinstance(payload, dict) else None
+        covered = payload.get("covered") if isinstance(payload, dict) else None
+        partial = payload.get("partial") if isinstance(payload, dict) else None
+        uncovered = payload.get("uncovered") if isinstance(payload, dict) else None
+        if not isinstance(total, int) or total <= 0:
+            raise ValueError("coverage has no skills")
+        if covered != total or partial != 0 or uncovered != 0:
+            raise ValueError(
+                f"coverage incomplete: {covered}/{total} covered, "
+                f"{partial} partial, {uncovered} uncovered"
+            )
+    except (OSError, ValueError, json.JSONDecodeError) as error:
+        print(f"FAIL: invalid Waza coverage artifact {path}: {error}", file=sys.stderr)
+        return 1
+    print(f"PASS: Waza eval coverage is {covered}/{total}")
+    return 0
+
+
+def _waza_config(root: Path, apply: bool, print_model: bool) -> int:
+    model = waza_default_model(root)
+    if print_model:
+        print(model)
+        return 0
+    changes = apply_waza_config(root) if apply else waza_config_findings(root)
+    for item in changes:
+        relative = item.path.relative_to(root)
+        print(f"{relative}: model {item.actual!r} -> {item.expected!r}")
+    if changes and not apply:
+        print(
+            f"FAIL: {len(changes)} Waza eval model projection(s) drifted",
+            file=sys.stderr,
+        )
+        return 1
+    print(
+        f"{'APPLIED' if apply else 'PASS'}: Waza model={model}; "
+        f"{len(changes)} change(s)"
+    )
+    return 0
+
+
+def _waza_preflight(path: Path, model: str) -> int:
+    result = classify_preflight(path, model)
+    stream = sys.stdout if result.status == 0 else sys.stderr
+    print(f"{result.status.name}: {result.message}", file=stream)
+    return int(result.status)
+
+
+def _clean(root: Path) -> int:
+    try:
+        removed = clean_generated(root)
+    except (OSError, RuntimeError) as error:
+        print(f"FAIL: {error}", file=sys.stderr)
+        return 2
+    for path in removed:
+        print(f"REMOVED: {path}")
+    print(f"PASS: cleaned {len(removed)} generated path(s)")
+    return 0
+
+
+def _temp_audit(root: Path, as_json: bool, global_scope: bool) -> int:
+    items = repository_findings(root)
+    if global_scope:
+        items = [*temp_findings(), *items]
     blocking = [item for item in items if item.kind in {"prohibited", "residue"}]
     if as_json:
         print(
@@ -158,7 +229,8 @@ def _temp_audit(as_json: bool) -> int:
             file=sys.stderr,
         )
         return 1
-    print("PASS: no registered /tmp residue or filesystem pressure")
+    scope = "system and repository" if global_scope else "repository"
+    print(f"PASS: no blocking temporary-filesystem findings in {scope} scope")
     return 0
 
 
@@ -172,14 +244,41 @@ def _temp_status(root: Path, as_json: bool) -> int:
     return 0
 
 
-def _temp_gc(root: Path, apply: bool) -> int:
-    eligible, blocked = temp_gc(root, apply=apply)
+def _temp_gc(root: Path, apply: bool, all_repositories: bool) -> int:
+    eligible, blocked = (
+        temp_gc_all(apply=apply) if all_repositories else temp_gc(root, apply=apply)
+    )
     action = "REMOVED" if apply else "ELIGIBLE"
     for path in eligible:
         print(f"{action}: {path}")
     for item in blocked:
         print(f"{item.path}: {item.message}", file=sys.stderr)
     return 0
+
+
+def _temp_global(as_json: bool) -> int:
+    items = temp_global_findings()
+    blocking = [item for item in items if item.kind in {"prohibited", "residue"}]
+    if as_json:
+        print(
+            json.dumps(
+                [
+                    {
+                        "path": str(item.path),
+                        "kind": item.kind,
+                        "message": item.message,
+                        "size_bytes": item.size_bytes,
+                    }
+                    for item in items
+                ],
+                indent=2,
+                sort_keys=True,
+            )
+        )
+    else:
+        for item in items:
+            print(f"{item.path}: {item.kind}: {item.message}")
+    return int(bool(blocking))
 
 
 def _temp_run(root: Path, command: list[str]) -> int:
@@ -265,18 +364,35 @@ def parser() -> argparse.ArgumentParser:
     descriptions.add_argument("--apply", action="store_true")
     waza_artifact = commands.add_parser("waza-artifact")
     waza_artifact.add_argument("path", type=Path)
+    waza_coverage = commands.add_parser("waza-coverage")
+    waza_coverage.add_argument("path", type=Path)
+    waza_config = commands.add_parser("waza-config")
+    waza_config_mode = waza_config.add_mutually_exclusive_group(required=True)
+    waza_config_mode.add_argument("--check", action="store_true")
+    waza_config_mode.add_argument("--apply", action="store_true")
+    waza_config_mode.add_argument("--model", action="store_true")
+    waza_preflight = commands.add_parser("waza-preflight")
+    waza_preflight.add_argument("--model", required=True)
+    waza_preflight.add_argument("--output", required=True, type=Path)
+    commands.add_parser("clean")
     temporary = commands.add_parser("temp")
     temp_commands = temporary.add_subparsers(dest="temp_command", required=True)
     temp_audit = temp_commands.add_parser("audit")
     temp_audit.add_argument("--json", action="store_true")
+    temp_audit.add_argument("--global", dest="global_scope", action="store_true")
     temp_status_parser = temp_commands.add_parser("status")
     temp_status_parser.add_argument("--json", action="store_true")
     temp_run = temp_commands.add_parser("run")
     temp_run.add_argument("argv", nargs=argparse.REMAINDER)
     temp_gc_parser = temp_commands.add_parser("gc")
+    temp_gc_parser.add_argument("--all", action="store_true")
     gc_mode = temp_gc_parser.add_mutually_exclusive_group(required=True)
     gc_mode.add_argument("--dry-run", action="store_true")
     gc_mode.add_argument("--apply", action="store_true")
+    for name in ("inventory", "verify"):
+        command = temp_commands.add_parser(name)
+        command.add_argument("--global", dest="global_scope", action="store_true")
+        command.add_argument("--json", action="store_true")
     dolt = commands.add_parser("dolt")
     dolt_commands = dolt.add_subparsers(dest="dolt_command", required=True)
     dolt_audit_parser = dolt_commands.add_parser("audit")
@@ -308,16 +424,28 @@ def main(argv: list[str] | None = None) -> int:
         return _descriptions(root, args.apply)
     if args.command == "waza-artifact":
         return _waza_artifact(args.path)
+    if args.command == "waza-coverage":
+        return _waza_coverage(args.path)
+    if args.command == "waza-config":
+        return _waza_config(root, args.apply, args.model)
+    if args.command == "waza-preflight":
+        return _waza_preflight(args.output, args.model)
+    if args.command == "clean":
+        return _clean(root)
     if args.command == "temp":
         try:
             if args.temp_command == "audit":
-                return _temp_audit(args.json)
+                return _temp_audit(root, args.json, args.global_scope)
             if args.temp_command == "status":
                 return _temp_status(root, args.json)
             if args.temp_command == "run":
-                return _temp_run(root, args.argv)
+                return _temp_run(Path.cwd().resolve(), args.argv)
             if args.temp_command == "gc":
-                return _temp_gc(root, args.apply)
+                return _temp_gc(root, args.apply, args.all)
+            if args.temp_command in {"inventory", "verify"}:
+                if not args.global_scope:
+                    raise ValueError("--global is required")
+                return _temp_global(args.json)
             raise AssertionError(args.temp_command)
         except (OSError, RuntimeError, ValueError) as error:
             print(f"FAIL: {error}", file=sys.stderr)

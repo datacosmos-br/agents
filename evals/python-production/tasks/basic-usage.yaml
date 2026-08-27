@@ -1,16 +1,15 @@
 id: basic-usage-001
 name: Basic Usage
-description: |
-  Test that the skill handles a typical request correctly.
+description: 'Test that the skill handles a typical request correctly.
+
+  '
 tags:
-  - basic
-  - happy-path
+- basic
+- happy-path
 inputs:
-  prompt: "Help me with this task"
+  prompt: 'Apply the python-production capability to the provided fixture. Exercise these requirements: python, production, patterns, anti-patterns, writing. Return a concrete result. Exercise the following parameter contract: Never use mutable defaults** — they persist across calls:.'
   files:
-    - path: sample.py
+  - path: sample.py
 expected:
-  output_contains:
-    - "function"
   outcomes:
-    - type: task_completed
+  - type: task_completed

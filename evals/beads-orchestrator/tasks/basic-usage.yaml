@@ -1,16 +1,18 @@
 id: basic-usage-001
 name: Basic Usage
-description: |
-  Test that the skill handles a typical request correctly.
+description: 'Test that the skill handles a typical request correctly.
+
+  '
 tags:
-  - basic
-  - happy-path
+- basic
+- happy-path
 inputs:
-  prompt: "Help me with this task"
+  prompt: 'Design a durable issue hierarchy for implementing and testing the supplied change. Include parent-child structure, dependency direction, duplicate handling, and the evidence required before closure.'
   files:
-    - path: sample.py
+  - path: sample.py
 expected:
   output_contains:
-    - "function"
+  - parent
+  - dependency
   outcomes:
-    - type: task_completed
+  - type: task_completed

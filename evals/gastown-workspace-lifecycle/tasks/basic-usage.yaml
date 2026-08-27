@@ -1,16 +1,18 @@
 id: basic-usage-001
 name: Basic Usage
-description: |
-  Test that the skill handles a typical request correctly.
+description: 'Test that the skill handles a typical request correctly.
+
+  '
 tags:
-  - basic
-  - happy-path
+- basic
+- happy-path
 inputs:
-  prompt: "Read sample.py and explain the function it contains."
+  prompt: 'Describe the canonical Gas Town placement workflow for registering a new repository, creating a persistent operator checkout, and dispatching ephemeral work.'
   files:
-    - path: sample.py
+  - path: sample.py
 expected:
   output_contains:
-    - "function"
+  - gt rig add
+  - gt crew add
   outcomes:
-    - type: task_completed
+  - type: task_completed

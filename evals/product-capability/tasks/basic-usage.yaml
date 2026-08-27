@@ -1,16 +1,15 @@
 id: basic-usage-001
 name: Basic Usage
-description: |
-  Test that the skill handles a typical request correctly.
+description: 'Test that the skill handles a typical request correctly.
+
+  '
 tags:
-  - basic
-  - happy-path
+- basic
+- happy-path
 inputs:
-  prompt: "Help me with this task"
+  prompt: 'Apply the product-capability capability to the provided fixture. Exercise these requirements: product, capability, translate, prd, intent, roadmap, asks, discussions, implementation-ready, plan. Return a concrete result. Exercise the following parameter contract: issue, discussion, PRD, roadmap note, founder message; relevant repo docs, contracts, schemas, routes, existing workflows; PRODUCT.md`, design docs, RFCs, migration notes, operating-model docs; auth, billing, compliance, rollout, backwards compatibility, performance, review policy.'
   files:
-    - path: sample.py
+  - path: sample.py
 expected:
-  output_contains:
-    - "function"
   outcomes:
-    - type: task_completed
+  - type: task_completed

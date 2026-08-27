@@ -1,16 +1,15 @@
 id: basic-usage-001
 name: Basic Usage
-description: |
-  Test that the skill handles a typical request correctly.
+description: 'Test that the skill handles a typical request correctly.
+
+  '
 tags:
-  - basic
-  - happy-path
+- basic
+- happy-path
 inputs:
-  prompt: "Help me with this task"
+  prompt: 'Apply the backend-patterns capability to the provided fixture. Exercise these requirements: backend, patterns, architecture, api, design, database, optimization, server-side, best, practices. Return a concrete result.'
   files:
-    - path: sample.py
+  - path: sample.py
 expected:
-  output_contains:
-    - "function"
   outcomes:
-    - type: task_completed
+  - type: task_completed

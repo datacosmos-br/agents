@@ -1,11 +1,12 @@
 id: edge-case-001
-name: Edge Case - Empty Input
-description: |
-  Test that the skill handles edge cases gracefully.
+name: Edge Case - Ambiguous Input
+description: 'Test that the skill handles incomplete or ambiguous input fail-closed.
+
+  '
 tags:
-  - edge-case
+- edge-case
 inputs:
-  prompt: ""
+  prompt: 'Handle an incomplete or ambiguous investor-materials request safely. Relevant capability: investor, materials, create, update, pitch, decks, one-pagers, memos, accelerator, applications. State any blocking constraint explicitly.'
 expected:
   outcomes:
-    - type: task_completed
+  - type: task_completed

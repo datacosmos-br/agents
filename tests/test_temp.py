@@ -1,5 +1,6 @@
 import json
 import os
+import signal
 import subprocess
 import sys
 import time
@@ -13,11 +14,49 @@ from agents_governance.temp import (
     create_run,
     findings,
     gc,
+    global_findings,
     managed_env,
     managed_temp,
+    repository_findings,
     resolve_repo,
     run_command,
+    storage_manifest,
 )
+
+
+@pytest.fixture(autouse=True)
+def local_storage_manifest(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> Path:
+    config = tmp_path / "config" / "environment.d"
+    config.mkdir(parents=True, exist_ok=True)
+    (config / "storage.toml").write_text(
+        "version = 1\n"
+        "[policy]\n"
+        f'global_temp = "{tmp_path / "ephemeral"}"\n'
+        "global_temp_max_bytes = 1073741824\n"
+        "repositories = []\n",
+        encoding="utf-8",
+    )
+    manifest = config / "storage.toml"
+    monkeypatch.setenv("AGENTS_STORAGE_CONFIG", str(manifest))
+    return manifest
+
+
+def test_storage_manifest_requires_explicit_owner(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.delenv("AGENTS_STORAGE_CONFIG")
+
+    with pytest.raises(RuntimeError, match="AGENTS_STORAGE_CONFIG is required"):
+        storage_manifest()
+
+
+def test_storage_manifest_rejects_relative_path(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("AGENTS_STORAGE_CONFIG", "config/storage.toml")
+
+    with pytest.raises(RuntimeError, match="must be an absolute path"):
+        storage_manifest()
 
 
 def git_repo(path: Path) -> Path:
@@ -53,12 +92,32 @@ def test_audit_detects_database_and_classifies_small_lock_as_ephemeral(
     ]
 
 
-def test_managed_temp_is_repo_local_physical_directory(tmp_path: Path) -> None:
+def test_repository_audit_detects_unexpanded_home_directory(tmp_path: Path) -> None:
+    literal_home = tmp_path / "$HOME"
+    literal_home.mkdir()
+
+    items = repository_findings(tmp_path)
+
+    assert [(item.path, item.kind) for item in items] == [(literal_home, "residue")]
+
+
+def test_repository_audit_rejects_legacy_archives(tmp_path: Path) -> None:
+    archive = tmp_path / ".skills-archive"
+    archive.mkdir()
+
+    items = repository_findings(tmp_path)
+
+    assert [(item.path, item.kind) for item in items] == [(archive, "residue")]
+
+
+def test_managed_temp_uses_machine_authorized_physical_directory(
+    tmp_path: Path,
+) -> None:
     repo = git_repo(tmp_path / "repo")
 
     destination = managed_temp(repo)
 
-    assert destination == repo / ".test-tmp"
+    assert destination == tmp_path / "ephemeral"
     assert destination.is_dir()
     assert not destination.is_symlink()
     assert destination.stat().st_mode & 0o777 == 0o700
@@ -152,6 +211,30 @@ def test_run_terminates_owned_process_group_when_wrapper_is_terminated(
         os.kill(pid, 0)
 
 
+def test_repeated_signal_cannot_interrupt_owned_group_cleanup(tmp_path: Path) -> None:
+    repo = git_repo(tmp_path / "repo")
+    child_pid = tmp_path / "child.pid"
+    script = (
+        "from pathlib import Path; from agents_governance.temp import run_command; "
+        f"raise SystemExit(run_command(['sh','-c','echo $$ > {child_pid}; trap \\\"\\\" TERM; sleep 30'], Path({str(repo)!r})).exit_code)"
+    )
+    wrapper = subprocess.Popen([sys.executable, "-c", script])
+    for _ in range(100):
+        if child_pid.is_file():
+            break
+        time.sleep(0.02)
+    assert child_pid.is_file()
+    pid = int(child_pid.read_text(encoding="utf-8"))
+
+    wrapper.send_signal(signal.SIGTERM)
+    time.sleep(0.1)
+    wrapper.send_signal(signal.SIGTERM)
+
+    assert wrapper.wait(timeout=10) == 128 + int(signal.SIGTERM)
+    with pytest.raises(ProcessLookupError):
+        os.kill(pid, 0)
+
+
 def test_gc_preserves_young_unknown_symlink_database_and_locked_runs(
     tmp_path: Path,
 ) -> None:
@@ -199,3 +282,29 @@ def test_gc_removes_only_old_marked_owned_run(tmp_path: Path) -> None:
     assert eligible == [run]
     assert blocked == []
     assert not run.exists()
+
+
+def test_global_audit_uses_only_machine_local_registered_roots(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    repo = git_repo(tmp_path / "repo")
+    config = tmp_path / "config" / "environment.d"
+    config.mkdir(parents=True, exist_ok=True)
+    (config / "storage.toml").write_text(
+        "version = 1\n"
+        "[policy]\n"
+        f'global_temp = "{tmp_path / "ephemeral"}"\n'
+        "global_temp_max_bytes = 16\n"
+        "[[repositories]]\n"
+        f'path = "{repo}"\n',
+        encoding="utf-8",
+    )
+    ephemeral = tmp_path / "ephemeral"
+    ephemeral.mkdir()
+    (ephemeral / "growth").write_bytes(b"x" * 17)
+    monkeypatch.setenv("AGENTS_STORAGE_CONFIG", str(config / "storage.toml"))
+    monkeypatch.setattr("agents_governance.temp.SYSTEM_TEMP", tmp_path / "system-tmp")
+
+    items = global_findings()
+
+    assert [(item.path, item.kind) for item in items] == [(ephemeral, "prohibited")]

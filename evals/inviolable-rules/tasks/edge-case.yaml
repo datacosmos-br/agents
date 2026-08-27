@@ -1,11 +1,12 @@
 id: edge-case-001
-name: Edge Case - Empty Input
-description: |
-  Test that the skill handles edge cases gracefully.
+name: Edge Case - Ambiguous Input
+description: 'Test that the skill handles incomplete or ambiguous input fail-closed.
+
+  '
 tags:
-  - edge-case
+- edge-case
 inputs:
-  prompt: ""
+  prompt: 'Handle an incomplete or ambiguous inviolable-rules request safely. Relevant capability: inviolable, rules, mandatory, universal, governance, plan, edit, validate, merge, close. State any blocking constraint explicitly.'
 expected:
   outcomes:
-    - type: task_completed
+  - type: task_completed

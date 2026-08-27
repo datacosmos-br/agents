@@ -1,16 +1,27 @@
 id: basic-usage-001
 name: Basic Usage
-description: |
-  Test that the skill handles a typical request correctly.
+description: 'Test that the skill designs a strict atomic schema cutover.
+
+  '
 tags:
-  - basic
-  - happy-path
+- basic
+- happy-path
 inputs:
-  prompt: "Help me with this task"
+  prompt: 'Apply the majiayu000 config schema migrator capability for a migration
+    requiring an atomic strict cutover of all consumers and a public-interface
+    review. Plan a configuration schema migration from cli_tools to adapters. The
+    schema is consumed by a CLI, daemon, generated YAML, deployment, tests, and
+    documentation. Explain the required operator gate for the public contract and
+    the evidence required before publishing the PR. Do not retain compatibility.'
   files:
-    - path: sample.py
+  - path: sample.py
 expected:
   output_contains:
-    - "function"
+  - atomic
+  - operator
+  - PR
+  output_not_contains:
+  - deprecation window
+  - backward compatibility
   outcomes:
-    - type: task_completed
+  - type: task_completed

@@ -1,6 +1,6 @@
 ---
 name: security-review
-description: security,scanner,triage,secrets,containers,dependencies,input,closure
+description: security, review, scanner, triage, secrets, containers, dependencies, input, closure
 ---
 
 # Security review

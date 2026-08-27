@@ -1,0 +1,12 @@
+id: edge-case-001
+name: Edge Case - Ambiguous Input
+description: 'Test that the skill handles incomplete or ambiguous input fail-closed.
+
+  '
+tags:
+- edge-case
+inputs:
+  prompt: 'The requested behavior conflicts with the fixture interface. Preserve the interface and state the exact conflict instead of adding a compatibility workaround.'
+expected:
+  outcomes:
+  - type: task_completed

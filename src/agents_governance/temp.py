@@ -1,4 +1,4 @@
-"""Bounded, repository-local scratch execution and conservative garbage collection."""
+"""Bounded scratch execution and conservative garbage collection."""
 
 from __future__ import annotations
 
@@ -11,6 +11,7 @@ import sys
 import tempfile
 import threading
 import time
+import tomllib
 from collections.abc import Sequence
 from dataclasses import asdict, dataclass
 from datetime import UTC, datetime
@@ -117,12 +118,32 @@ def resolve_repo(cwd: Path) -> Path:
 
 
 def managed_temp(repo: Path) -> Path:
-    """Return the repository-local scratch owner without following symlinks."""
+    """Return the machine-authorized ephemeral root without following symlinks."""
 
-    destination = repo.resolve() / ".test-tmp"
+    _ = repo
+    policy = storage_manifest().get("policy", {})
+    if not isinstance(policy, dict):
+        raise TypeError("storage policy must be a table")
+    destination = _expand_local_path(
+        str(policy.get("global_temp", "${HOME}/.local/tmp"))
+    )
     if destination.is_symlink():
         raise RuntimeError(f"scratch root must not be a symlink: {destination}")
     destination.mkdir(mode=0o700, parents=True, exist_ok=True)
+    filesystem = subprocess.run(
+        ["stat", "-f", "-c", "%T", str(destination)],
+        check=True,
+        capture_output=True,
+        text=True,
+    ).stdout.strip()
+    if filesystem == "btrfs":
+        subprocess.run(
+            ["chattr", "+C", str(destination)],
+            check=True,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.PIPE,
+            text=True,
+        )
     return destination
 
 
@@ -134,7 +155,7 @@ def _mkdir(path: Path) -> Path:
 
 
 def create_run(repo: Path) -> tuple[Path, IO[str]]:
-    scratch = Path(tempfile.mkdtemp(prefix="run.", dir=managed_temp(repo)))
+    scratch = Path(tempfile.mkdtemp(prefix="r.", dir=managed_temp(repo)))
     for name in KNOWN_DIRS:
         _mkdir(scratch / name)
     marker = {
@@ -160,7 +181,7 @@ def managed_env(repo: Path, scratch: Path) -> dict[str, str]:
     environment = os.environ.copy()
     shared = cache_root()
     mappings = {
-        "TMPDIR": scratch / "tmp",
+        "TMPDIR": scratch,
         "GOTMPDIR": scratch / "go-tmp",
         "GOCACHE": scratch / "go-build",
         "GOMODCACHE": shared / "go-mod",
@@ -260,10 +281,14 @@ def run_command(
         exit_code = process.wait()
     except _RunInterrupted as error:
         interrupted_signal = error.signum
+        for watched in previous_handlers:
+            signal.signal(watched, signal.SIG_IGN)
         _terminate_group(process)
         exit_code = 128 + error.signum
     except KeyboardInterrupt:
         interrupted_signal = int(signal.SIGINT)
+        for watched in previous_handlers:
+            signal.signal(watched, signal.SIG_IGN)
         _terminate_group(process)
         exit_code = 128 + int(signal.SIGINT)
     finally:
@@ -275,11 +300,9 @@ def run_command(
         exit_code = 70
     retained = True
     if exit_code == 0:
-        allowed = KNOWN_DIRS | {MARKER, LOCK}
-        if {entry.name for entry in scratch.iterdir()} <= allowed:
-            _remove_owned_tree(scratch, allow_owned_symlinks=True)
-            scratch.rmdir()
-            retained = False
+        _remove_owned_tree(scratch, allow_owned_symlinks=True)
+        scratch.rmdir()
+        retained = False
     report = RunReport(
         command=tuple(command),
         repo=str(repo),
@@ -341,6 +364,115 @@ def findings(temp_root: Path = SYSTEM_TEMP) -> list[TempFinding]:
         if kind != "unknown" or nested:
             result.append(TempFinding(entry, kind, message, _tree_size(entry)))
     return sorted(result, key=lambda item: str(item.path))
+
+
+def storage_manifest() -> dict[str, object]:
+    """Load the exact storage manifest selected by the execution owner."""
+    configured = os.environ.get("AGENTS_STORAGE_CONFIG")
+    if not configured:
+        raise RuntimeError("AGENTS_STORAGE_CONFIG is required")
+    path = Path(configured).expanduser()
+    if not path.is_absolute():
+        raise RuntimeError("AGENTS_STORAGE_CONFIG must be an absolute path")
+    try:
+        data = tomllib.loads(path.read_text(encoding="utf-8"))
+    except (OSError, tomllib.TOMLDecodeError) as error:
+        raise RuntimeError(f"storage manifest unavailable: {error}") from error
+    if data.get("version") != 1:
+        raise RuntimeError("unsupported storage manifest version")
+    return data
+
+
+def _expand_local_path(raw: str) -> Path:
+    values = {
+        "HOME": str(Path.home()),
+        "XDG_CONFIG_HOME": str(_xdg("XDG_CONFIG_HOME", ".config")),
+        "XDG_CACHE_HOME": str(_xdg("XDG_CACHE_HOME", ".cache")),
+        "XDG_STATE_HOME": str(_xdg("XDG_STATE_HOME", ".local/state")),
+    }
+    expanded = raw
+    for name, value in values.items():
+        expanded = expanded.replace(f"${{{name}}}", value)
+    if "$" in expanded:
+        raise RuntimeError(f"unresolved path variable: {raw}")
+    result = Path(expanded)
+    if not result.is_absolute():
+        raise RuntimeError(f"storage path must be absolute: {raw}")
+    return result
+
+
+def registered_repositories() -> tuple[Path, ...]:
+    entries = storage_manifest().get("repositories", [])
+    if not isinstance(entries, list):
+        raise TypeError("storage repositories must be an array")
+    result: list[Path] = []
+    for entry in entries:
+        if not isinstance(entry, dict) or not isinstance(entry.get("path"), str):
+            raise TypeError("invalid storage repository entry")
+        path = _expand_local_path(entry["path"])
+        if not path.is_dir() or resolve_repo(path) != path.resolve():
+            raise RuntimeError(f"registered repository is not a Git root: {path}")
+        result.append(path.resolve())
+    return tuple(dict.fromkeys(result))
+
+
+def global_findings() -> list[TempFinding]:
+    """Audit system temp and every explicitly registered repository."""
+    result = list(findings(SYSTEM_TEMP))
+    for repo in registered_repositories():
+        result.extend(repository_findings(repo))
+    policy = storage_manifest().get("policy", {})
+    if not isinstance(policy, dict):
+        raise TypeError("storage policy must be a table")
+    global_temp = _expand_local_path(
+        str(policy.get("global_temp", "${HOME}/.local/tmp"))
+    )
+    maximum = int(policy.get("global_temp_max_bytes", 256 << 20))
+    size = _tree_size(global_temp)
+    if size > maximum:
+        result.append(
+            TempFinding(
+                global_temp,
+                "prohibited",
+                f"global ephemeral storage exceeds {maximum} bytes",
+                size,
+            )
+        )
+    return sorted(result, key=lambda item: str(item.path))
+
+
+def gc_all(*, apply: bool) -> tuple[list[Path], list[TempFinding]]:
+    eligible: list[Path] = []
+    blocked: list[TempFinding] = []
+    for repo in registered_repositories():
+        repo_eligible, repo_blocked = gc(repo, apply=apply)
+        eligible.extend(repo_eligible)
+        blocked.extend(repo_blocked)
+    return eligible, blocked
+
+
+def repository_findings(root: Path) -> list[TempFinding]:
+    """Detect shell-expansion residue that must never exist below a repository."""
+
+    result: list[TempFinding] = []
+    prohibited = {
+        "$HOME": "unexpanded home-directory variable created repository-local state",
+        "~": "unexpanded home-directory variable created repository-local state",
+        ".archive": "repository-local legacy archive coexists with canonical authority",
+        ".skills-archive": "repository-local legacy skill archive coexists with canonical authority",
+    }
+    for name, message in prohibited.items():
+        candidate = root / name
+        if candidate.exists() or candidate.is_symlink():
+            result.append(
+                TempFinding(
+                    candidate,
+                    "residue",
+                    message,
+                    _tree_size(candidate),
+                )
+            )
+    return result
 
 
 def _locked(path: Path) -> bool:
@@ -409,7 +541,7 @@ def gc(
                 continue
     eligible: list[Path] = []
     blocked: list[TempFinding] = []
-    for candidate in sorted(root.glob("run.*")):
+    for candidate in sorted(root.glob("r.*")):
         marker = candidate / MARKER
         if candidate.is_symlink() or not marker.is_file():
             blocked.append(
@@ -417,6 +549,15 @@ def gc(
                     candidate, "unknown", "preserve: missing trusted run marker"
                 )
             )
+            continue
+        try:
+            marker_data = json.loads(marker.read_text(encoding="utf-8"))
+        except (OSError, TypeError, ValueError, json.JSONDecodeError):
+            blocked.append(
+                TempFinding(candidate, "unknown", "preserve: invalid run marker")
+            )
+            continue
+        if marker_data.get("repo") != str(repo.resolve()):
             continue
         completed = candidate in successful
         if not completed and clock - marker.stat().st_mtime < policy.orphan_age_seconds:
@@ -456,7 +597,7 @@ def gc(
 
 def status(repo: Path) -> dict[str, object]:
     root = managed_temp(repo)
-    runs = tuple(root.glob("run.*"))
+    runs = tuple(root.glob("r.*"))
     return {
         "repo": str(repo.resolve()),
         "scratch_root": str(root),
