@@ -90,9 +90,9 @@ are multiple consumption names for one secret, not schema compatibility.
 | Generic | Project `.agents` | Repository-independent engineering capability only. |
 | Technology | Matching projects | Detect markers/dependencies before physical installation. |
 | FLEXT | Proven FLEXT projects | Source semantics from the FLEXT owner; generator may live in FLEXT Infra. |
-| Suspended | Nowhere | `beads*`, `gastown-workspace-lifecycle`, and `crew-commit` during this increment. |
+| Personal governance | Agent homes | `gascity-workspace-lifecycle` and `gascity-change-lifecycle`; never project to projects. |
 
-Project content must not teach AI Hub, `.agents`, Beads, or Gas Town development
+Project content must not teach AI Hub, `.agents`, tracker, or orchestrator development
 workflows. It must not contain a local absolute path, symlink, or cross-repo
 reference. Projection uses physical copies and reflinks when available.
 
@@ -155,4 +155,3 @@ conversations. Force-push and deletion stay disabled. Linear history stays
 disabled because it rejects merge commits. See
 [GitHub protected branches](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches)
 and [merge methods](https://docs.github.com/en/pull-requests/how-tos/merge-and-close-pull-requests/merging-a-pull-request).
-

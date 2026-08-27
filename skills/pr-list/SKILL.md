@@ -3,7 +3,7 @@ name: pr-list
 description: pr, list, github, prs, formatted, ascii, table, supports, filters, like
 allowed-tools: Bash(gh pr list:*)
 version: 1.0.0
-author: Gas Town
+author: .agents
 ---
 
 # PR List - Formatted Pull Request Table

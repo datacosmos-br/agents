@@ -7,9 +7,8 @@ tags:
 - basic
 - happy-path
 inputs:
-  prompt: 'Apply the pr-sheriff capability to the provided fixture. Exercise these requirements: pr, sheriff, triage, prs, easy-wins, crew, assignments, prints, recommendations, inline. Return a concrete result.'
-  files:
-  - path: sample.py
+  prompt: 'Act as PR sheriff: triage reviews, checks, unresolved threads, integration drift, and landing readiness for the explicitly configured repository. Return evidence for every classification.'
 expected:
-  outcomes:
-  - type: task_completed
+  output_contains:
+  - integration
+  - checks

@@ -43,10 +43,10 @@ See [references/gates.md](../references/gates.md).
 
 ## Workspace And Test Laws
 
-See [references/gates.md](../references/gates.md). `UNIVERSAL_CORE` P0. Project
-checkouts belong to Gas Town: new repository → rig; persistent operator work →
-crew; ephemeral agent work → sling/polecat. No loose clone, manual worktree, or
-project/build/checkpoint staging in `/tmp`.
+See [references/gates.md](../references/gates.md). `UNIVERSAL_CORE` P0. Workspace
+identity and placement follow `rules/gascity.md`. While runtime is suspended,
+create no workspace. No loose clone, manual worktree, symlink, cross-repository
+reference, or project/build/checkpoint staging in `/tmp`.
 
 ## Evidence And Review Gate
 

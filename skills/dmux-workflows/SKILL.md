@@ -105,26 +105,15 @@ Pane 3: "Review src/api/ for test coverage gaps"
 1. **Independent tasks only.** Don't parallelize tasks that depend on each other's output.
 2. **Clear boundaries.** Each pane should work on distinct files or concerns.
 3. **Merge strategically.** Review pane output before merging to avoid conflicts.
-4. **Use Gas Town lanes.** For file-conflict-prone project work, sling one Bead per pane.
+4. **Use declared isolation.** File-changing panes require separate Gas City runs and non-overlapping ownership.
 5. **Resource awareness.** Each pane uses API tokens — keep total panes under 5-6.
 
-## Git Worktree Integration
+## Change isolation
 
-For tasks that touch overlapping files:
-
-```bash
-# Create worktrees for isolation
-gt sling <auth-bead> <rig>
-gt sling <billing-bead> <rig>
-
-# Run agents in separate worktrees
-# Pane 1: cd ../feature-auth && claude
-# Pane 2: cd ../feature-billing && claude
-
-# Merge branches when done
-git merge feat/auth
-git merge feat/billing
-```
+Do not use dmux itself to create branches or worktrees. Each file-changing pane
+must be represented by a declared Gas City agent/formula/run/session and land
+through the repository PR contract. While runtime is suspended, use dmux only
+for independent read-only analysis.
 
 ## Complementary Tools
 
@@ -138,6 +127,6 @@ git merge feat/billing
 ## Troubleshooting
 
 - **Pane not responding:** Check if the agent session is waiting for input. Use `m` to read output.
-- **Merge conflicts:** Use Gas Town polecat lanes to isolate file changes per pane.
+- **Merge conflicts:** stop parallel writes and resolve ownership before resuming.
 - **High token usage:** Reduce number of parallel panes. Each pane is a full agent session.
 - **tmux not found:** Install with `brew install tmux` (macOS) or `apt install tmux` (Linux).

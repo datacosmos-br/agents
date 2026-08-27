@@ -14,7 +14,7 @@ agents.bkp/
 /mcp/generated/
 /mcp/shared-mcp.json
 
-# Gas Town rig `agents` adopts this tree via ~/gt/agents symlink; ignore runtime/ephemeral only
+# Existing checkout runtime/ephemeral state only; symlink adoption is prohibited.
 # (gt town-level mayor/refinery/witness live in ~/gt, NOT here, so not ignored here):
 /.beads/
 /.beads.gate.lock

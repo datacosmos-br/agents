@@ -1,53 +1,26 @@
 ---
 name: doc-drift
-description: doc, drift, detect, fix, documentation, across, town, all, rigs, runs
-allowed-tools: Bash(gt *), Bash(bd *), Bash(git *)
-version: 1.0.0
-author: Gas Town
+description: doc, drift, documentation, gascity, packs, commands, validation
+allowed-tools: Bash(git *)
+version: 2.0.0
+author: .agents
 ---
 
-# Doc Drift — Continuous Standardization
+# Documentation drift
 
-Usage: /doc-drift [--rig <name>] [--auto-fix]
+Compare active documentation with code, declared configuration, and canonical
+upstream documentation. Treat commands and schemas as executable interfaces.
 
-Arguments: $ARGUMENTS
+1. Read repository law and owner configuration.
+2. Inventory commands, flags, paths, schemas, versions, and generated files.
+3. Verify each claim against owning code or a pinned upstream source.
+4. Remove extinct contracts and update consumers, fixtures, and evals.
+5. Change generated output only through its owner and prove fixed point.
+6. Run native documentation, validation, and contradiction gates.
 
-## Step 1: Conventions check
+For Gas City, use `rules/gascity.md`: version 1.4.1 and native
+city/rig/Pack V2/agent/formula/run/session primitives. Runtime inspection or
+repair is prohibited while Gas City is suspended.
 
-Run beads conventions and lint:
-
-```bash
-bd doctor --check=conventions
-bd lint
-```
-
-If `--auto-fix` is set, run `gt doctor --fix` and re-run conventions until clean.
-
-## Step 2: Extinct flags/contracts
-
-Grep `docs/`, `.claude/`, `skills/`, and `AGENTS.md` for flags, APIs, or
-contracts the current code no longer supports. Acceptable only in extinction
-notes or gate definitions.
-
-## Step 3: Live references
-
-Verify every command, script, helper, and symbol cited in docs/skills actually
-exists in the current runtime. Update stale references in place.
-
-## Step 4: Auto-fix (only with --auto-fix)
-
-Canonical fixes:
-
-- `gt doctor --fix` — config, beads, hooks, gitignore
-- Normalize `.claude/commands/` frontmatter to canonical bodies
-- Archive stale `.omo/plans/` and `.omo/drafts/` to `.omo/archive/`
-- Align `.gitignore` patterns across rigs to canonical set
-
-## Step 5: Evidence and bead
-
-Create a bead in the owning context:
-
-- town root → `hq-*`
-- rig root → `<prefix>-*`
-
-Record command, output, and fixes applied. Commit changes and close the bead.
+Never auto-fix unknown state, invent a replacement command, invoke a suspended
+tracker, or report convergence without decisive gate output.

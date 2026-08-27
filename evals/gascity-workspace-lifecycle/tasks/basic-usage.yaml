@@ -1,0 +1,16 @@
+id: basic-usage-001
+name: Basic Usage
+description: 'Test that the skill handles a typical request correctly.
+
+  '
+tags:
+- basic
+- happy-path
+inputs:
+  prompt: 'Explain the Gas City workspace lifecycle using a declared city, project rig, pinned Pack V2, agent, formula, run, session, and provider-selected placement without starting the suspended runtime.'
+expected:
+  output_contains:
+  - city.toml
+  - Pack V2
+  outcomes:
+  - type: task_completed

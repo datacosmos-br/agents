@@ -23,7 +23,7 @@ LATEST_DIR := $(RESULTS_DIR)/latest
 SKILLS := $(patsubst skills/%/SKILL.md,%,$(wildcard skills/*/SKILL.md))
 
 .DEFAULT_GOAL := help
-.PHONY: help status setup models audit check static shell build ci security temp dolt sync mcp adjust normalize descriptions test preflight validate-live rate baseline suggest spec coverage run gate compare validate clean
+.PHONY: help status setup models audit check static shell build ci security temp sync mcp adjust normalize descriptions test preflight validate-live rate baseline suggest spec coverage run gate compare validate clean
 .DELETE_ON_ERROR:
 
 define BANNER
@@ -75,7 +75,7 @@ static: ## lint, format, and Python type analysis
 
 shell: ## shell scripts and GitHub workflow syntax
 	$(call BANNER,shell · shellcheck + actionlint)
-	@shellcheck bin/dolt-guard hooks/quality-gate.sh hooks/session-init.sh
+	@shellcheck hooks/quality-gate.sh hooks/session-init.sh
 	@actionlint .github/workflows/*.yml
 
 build: ## build source and wheel artifacts
@@ -103,10 +103,6 @@ temp: ## audit /tmp; STATUS=Y reports; APPLY=Y collects safe old owned runs
 	$(call BANNER,temp · bounded scratch governance)
 	@if [ -n "$(STATUS)" ]; then uv run agentsctl temp status; elif [ -n "$(APPLY)" ]; then uv run agentsctl temp gc --apply; else uv run agentsctl temp audit --global; fi
 
-dolt: ## fail unless Gas Town exclusively uses 127.0.0.1:3307
-	$(call BANNER,dolt · exclusive canonical endpoint)
-	@uv run agentsctl dolt audit $(if $(APPLY),--apply,)
-
 sync: ## check skills, commands, and rules projections; APPLY=Y reconciles
 	$(call BANNER,sync · $(or $(SCOPE),personal) $(or $(SURFACE),all) copies $(if $(TARGET),[$(TARGET)],[all]))
 	@uv run agentsctl project --scope $(or $(SCOPE),personal) --surface $(or $(SURFACE),all) $(if $(APPLY),--apply,--check) $(if $(TARGET),--target $(TARGET),)
@@ -117,7 +113,7 @@ mcp: ## synchronize MCP through the canonical ai-hub owner
 	  ai-hub mcp --action sync $(if $(APPLY),,--dry-run)
 
 discover-projects: ## show automatic project/FLEXT/technology classification
-	$(call BANNER,discover · canonical Gas Town project checkouts)
+	$(call BANNER,discover · configured project roots)
 	@uv run agentsctl discover-projects
 
 adjust: ## Waza suggestions by default; APPLY=Y edits the canonical skill

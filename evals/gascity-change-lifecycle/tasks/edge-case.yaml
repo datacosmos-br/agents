@@ -6,7 +6,7 @@ description: 'Test that the skill handles incomplete or ambiguous input fail-clo
 tags:
 - edge-case
 inputs:
-  prompt: 'Triage every PR in the organization, but no repository allowlist is configured. Fail closed, do not scan, and identify the missing scope contract.'
+  prompt: 'The request proposes gc commit followed by gc done. Reject both invented commands and identify the distinct Gas City dispatch and repository landing owners.'
 expected:
   outcomes:
   - type: task_completed

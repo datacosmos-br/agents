@@ -3,7 +3,7 @@ name: ghi-list
 description: ghi, list, github, issues, formatted, ascii, table, supports, filters, like
 allowed-tools: Bash(gh issue list:*)
 version: 1.0.0
-author: Gas Town
+author: .agents
 ---
 
 # GHI List - Formatted GitHub Issues Table

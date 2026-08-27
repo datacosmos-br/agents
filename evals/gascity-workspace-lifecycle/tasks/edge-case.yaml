@@ -6,7 +6,7 @@ description: 'Test that the skill handles incomplete or ambiguous input fail-clo
 tags:
 - edge-case
 inputs:
-  prompt: 'Triage every PR in the organization, but no repository allowlist is configured. Fail closed, do not scan, and identify the missing scope contract.'
+  prompt: 'A request says only “convert gt done to gc done.” Reject the invented command and request the declared city, rig, agent, formula, and integration contract.'
 expected:
   outcomes:
   - type: task_completed

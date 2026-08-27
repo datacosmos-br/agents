@@ -1,7 +1,7 @@
 # Master v6 execution package
 
 Six repositories must land independently on their configured integration
-branches. Gas Town, Beads, and Dolt are suspended for this increment. Git and
+branches. Gas City, Beads, and Dolt are suspended for this increment. Git and
 GitHub are the execution path.
 
 This directory is the durable handoff for new sessions. Start here, read the
@@ -16,10 +16,10 @@ conversation-only versions of master plans v1-v5 for this increment.
 
 The operator fixed these decisions:
 
-- Do not invoke, modify, inspect operationally, or depend on Gas Town.
+- Do not invoke, modify, inspect operationally, or depend on Gas City runtime.
 - Do not invoke Beads or Dolt during the pause.
-- Preserve existing Gas Town/Dolt audit code, but keep it dormant and outside
-  default gates.
+- Remove obsolete workflow-specific runtime audit surfaces instead of retaining
+  competing dormant implementations.
 - Use Git and GitHub directly.
 - Use persistent repository-local Git worktrees. Do not use `/tmp`, loose
   clones, symlinks, stash, rebase, force-push, or destructive reset.
