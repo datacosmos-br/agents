@@ -113,9 +113,8 @@ def profile_config(name: str) -> dict[str, object]:
             raise KeyringError(f"invalid aliases for profile: {name}")
     exports = config.get("shell_variables", [])
     declared = {*variables, *raw_aliases}
-    if (
-        not isinstance(exports, list)
-        or any(not isinstance(item, str) or item not in declared for item in exports)
+    if not isinstance(exports, list) or any(
+        not isinstance(item, str) or item not in declared for item in exports
     ):
         raise KeyringError(f"invalid shell_variables for profile: {name}")
     return config
@@ -402,8 +401,8 @@ def execute_auto(directory: str | None, consumer: str, command: list[str]) -> in
 
 def remove(profile: str, name: str, confirmed: bool) -> int:
     config = profile_config(profile)
-    if not confirmed or name not in config["variables"]:
-        raise KeyringError("explicit --yes and a declared variable are required")
+    if not confirmed or name not in declared_export_names(config):
+        raise KeyringError("explicit --yes and a declared name are required")
     process = subprocess.run(
         ["secret-tool", "clear", "application", APP, "profile", profile, "name", name],
         check=False,

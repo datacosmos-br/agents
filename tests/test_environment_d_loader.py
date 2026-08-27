@@ -34,6 +34,35 @@ def test_bootstrap_does_not_query_the_keyring(
     assert "env-keyring" not in output
 
 
+@pytest.mark.parametrize("shell", ["bash", "zsh", "fish"])
+def test_bootstrap_clears_canonical_and_aliased_secrets(
+    shell: str,
+    capsys: pytest.CaptureFixture[str],
+    tmp_path: Path,
+) -> None:
+    namespace = _loader_namespace()
+    emit_bootstrap = namespace["emit_bootstrap"]
+    assert callable(emit_bootstrap)
+    environment = tmp_path / "environment.d"
+    secrets = environment / "secrets"
+    secrets.mkdir(parents=True)
+    (secrets / "profiles.toml").write_text(
+        """version = 1
+[profiles.github]
+variables = ["GITHUB_TOKEN"]
+aliases = { GH_TOKEN = "GITHUB_TOKEN", MISE_GITHUB_TOKEN = "GITHUB_TOKEN" }
+""",
+        encoding="utf-8",
+    )
+    emit_bootstrap.__globals__["ENV_ROOT"] = environment
+
+    emit_bootstrap(shell, False)
+
+    output = capsys.readouterr().out
+    for name in ("GITHUB_TOKEN", "GH_TOKEN", "MISE_GITHUB_TOKEN"):
+        assert name in output
+
+
 def test_generic_validator_rejects_plaintext_secrets_and_system_tmp(
     tmp_path: Path,
 ) -> None:

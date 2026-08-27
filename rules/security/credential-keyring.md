@@ -12,6 +12,9 @@ environment files, units, logs, backups, command arguments, or source control.
 Clear inherited credentials before loading the authorized profile. Missing or
 unauthorized credentials fail closed. Do not add plaintext fallback, duplicate
 stores, wrapper-only access, placeholder credentials, or silent degradation.
+Cleanup includes canonical names and every declared alias. Removing a declared
+alias clears only a legacy physical record with that exact name; it never follows
+the alias to remove its canonical source.
 
 Non-interactive commands use `env-keyring auto-exec`: the working directory
 selects the authorized profile and credentials exist only in the child process.

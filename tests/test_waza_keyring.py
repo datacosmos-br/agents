@@ -1,6 +1,8 @@
 """Waza online commands must receive credentials only through the keyring owner."""
 
+import os
 import runpy
+import subprocess
 from pathlib import Path
 from typing import Any, cast
 
@@ -77,6 +79,88 @@ aliases = { CONSUMER_TOKEN = "MISSING_TOKEN" }
 
     with pytest.raises(keyring_error, match="invalid aliases"):
         profile_config("test")
+
+
+def test_remove_alias_clears_only_the_exact_legacy_record(tmp_path: Path) -> None:
+    config_home = tmp_path / "config"
+    manifest = config_home / "environment.d" / "secrets" / "profiles.toml"
+    manifest.parent.mkdir(parents=True)
+    manifest.write_text(
+        """version = 1
+[profiles.test]
+variables = ["GITHUB_TOKEN"]
+aliases = { GH_TOKEN = "GITHUB_TOKEN" }
+""",
+        encoding="utf-8",
+    )
+    commands = tmp_path / "commands"
+    tools = tmp_path / "bin"
+    tools.mkdir()
+    secret_tool = tools / "secret-tool"
+    secret_tool.write_text(
+        '#!/bin/sh\nprintf "%s\\n" "$@" > "$COMMAND_CAPTURE"\n',
+        encoding="utf-8",
+    )
+    secret_tool.chmod(0o700)
+    environment = {
+        **os.environ,
+        "COMMAND_CAPTURE": str(commands),
+        "PATH": f"{tools}:{os.environ['PATH']}",
+        "XDG_CONFIG_HOME": str(config_home),
+        "XDG_STATE_HOME": str(tmp_path / "state"),
+    }
+    root = Path(__file__).parents[1]
+
+    command = [
+        str(root / "bin" / "env-keyring"),
+        "remove",
+        "--profile",
+        "test",
+        "--name",
+        "GH_TOKEN",
+    ]
+    result = subprocess.run(
+        [*command, "--yes"],
+        check=False,
+        capture_output=True,
+        text=True,
+        env=environment,
+    )
+
+    assert result.returncode == 0
+    assert result.stdout == ""
+    assert result.stderr == ""
+    assert commands.read_text(encoding="utf-8").splitlines() == [
+        "clear",
+        "application",
+        "dev-environment",
+        "profile",
+        "test",
+        "name",
+        "GH_TOKEN",
+    ]
+    events = tmp_path / "state" / "env-keyring" / "events.jsonl"
+    assert '"name": "GH_TOKEN"' in events.read_text(encoding="utf-8")
+
+    commands.unlink()
+    missing_confirmation = subprocess.run(
+        command,
+        check=False,
+        capture_output=True,
+        text=True,
+        env=environment,
+    )
+    undeclared = subprocess.run(
+        [*command[:-1], "UNDECLARED_TOKEN", "--yes"],
+        check=False,
+        capture_output=True,
+        text=True,
+        env=environment,
+    )
+
+    assert missing_confirmation.returncode == 78
+    assert undeclared.returncode == 78
+    assert not commands.exists()
 
 
 def test_shell_exports_fetch_only_explicit_ambient_values(tmp_path: Path) -> None:
