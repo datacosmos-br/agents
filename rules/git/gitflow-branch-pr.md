@@ -5,11 +5,11 @@ description: Publishing work — creating a branch, commit, push, or opening a P
 # Branch and PR — parameterized GitFlow (ADR-0016)
 
 Work only on `feature/<slug>`, `bugfix/<slug>`, `hotfix/<slug>`, or
-`release/<version>` via `gt sling` — never on the checkout of `main` or the
+`release/<version>` on an isolated, declared change branch — never on the checkout of `main` or the
 integration base. Forbidden lane prefixes: `epic/`, `cycle/`, `agent/`, `wip/`.
 
-- Lifecycle owner: Gas Town `gt sling` / `gt hook` / `gt done` / `gt convoy`.
-  AI Hub does not create worktrees or branches and does not open pull requests.
+- Orchestration identity comes from the declared Gas City contract. Gas City
+  runtime remains suspended; the repository owns Git branches and pull requests.
 - Integration base = project `config/workspace.yaml` → `integration.branch`
   (ai-hub: `dev`). Never invent `develop`.
 - One git root per PR; never mix two repositories in one commit or PR.
@@ -17,7 +17,7 @@ integration base. Forbidden lane prefixes: `epic/`, `cycle/`, `agent/`, `wip/`.
   pre-commit/pre-push/CI validate — do not re-run the full gate matrix by hand
   before every commit (`UNIVERSAL_CORE` Law 7).
 - Land opens/updates the PR; merge into the integration base with `--no-ff`;
-  revalidate on the base; then `gt done`.
+  revalidate on the base and record the integration SHA.
 - Promotion to `main` waits for explicit operator approval.
 
 Detail and receipts: `docs/worktrees.md`, ADR-0016. Do not duplicate here.

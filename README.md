@@ -25,23 +25,24 @@ mutable skill directories are forbidden.
 Personal targets receive workflows and non-technological capabilities. They do
 not receive technology profiles.
 
-Registered Gas Town project checkouts receive only:
+Registered project checkouts receive only:
 
 1. explicitly classified project-generic skills;
 2. technology skills selected from detected project markers or dependencies;
 3. FLEXT-owned skills when, and only when, the project is detected as a FLEXT
    consumer.
 
-Gas Town, Beads, AI Hub, `~/.agents`, operator workflow, and repository-local
+Orchestrator, tracker, AI Hub, `~/.agents`, operator workflow, and repository-local
 development contracts are private and must never enter generic project
 projections. FLEXT is a conditional framework source, not a universal project
 template.
 
 ## Workspace and storage
 
-Gas Town owns project placement: rigs for registered repositories, crew
-checkouts for persistent operator work, and sling/polecat lanes for ephemeral
-agent work. Loose clones and manual worktrees are not execution surfaces.
+Gas City configuration owns project identity and placement through native city,
+rig, Pack V2, agent, formula, run, and session primitives. Its runtime is
+currently suspended, so only existing checkouts are execution surfaces; loose
+clones and manual worktrees remain prohibited.
 
 Storage placement and bounded scratch are owned by [`rules/storage.md`](rules/storage.md).
 Managed build/test commands use unique repository-local scratch; shells retain

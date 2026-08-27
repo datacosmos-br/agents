@@ -3,7 +3,7 @@
 
 1. Truth: never claim done/green/resolved without command, exit code, decisive output.
 2. Root cause: no bypass, fallback, shim, suppression, stub, hardcode, or old+new coexistence.
-3. Beads first: claim/update bead before file write, shell, or multi-step work; update after every repo-state change.
+3. Tracker first: claim/update the canonical tracker before file writes or multi-step work. If its runtime is explicitly suspended, preserve evidence locally and do not declare the phase DONE.
 4. Research first: inspect code, docs, canonical sources before acting; never invent APIs, flags, facts, or behavior.
 5. Owner first: use the project's declared facades/primitives; do not reimplement them locally.
 6. Gate discipline: if a gate blocks, stop and escalate with the exact command/edit; never route around it.
@@ -11,7 +11,7 @@
 8. Divergence: FF push rejected → integrate by cooperation: `git merge --no-ff` the integration base into your lane, resolve conflicts, revalidate, land. Never rebase or force-push a shared branch; never discard another actor's work.
 9. Escalation: impossible rule → exact error. Rule conflict → present both with numbers. Unclear → one targeted question. Never guess.
 10. Precedence: NEWEST > OLDEST. USER REQUEST > BEADS > ADRs > SKILLs > DOCS > default. Adjust lower/older to higher/newer. Doubt → ASK USER FIRST.
-11. Workspace placement: never create a loose project clone or ad-hoc worktree. Register a new repository with `gt rig add`; create persistent operator work with `gt crew add --rig <rig>`; use `gt sling` for ephemeral agent work. Staging and backups stay on the destination filesystem, never `/tmp`.
+11. Workspace placement: follow the declared Gas City city/rig/Pack V2 contract in `rules/gascity.md`. While its runtime is suspended, operate only in the existing checkout and create no clone, worktree, city, rig, agent, formula, run, or session. Staging and backups stay on the destination filesystem, never `/tmp`.
 12. Phase closure: a phase is DONE only after its approved PR is merged into the configured integration branch and its Bead is closed with evidence. Commit, push, review, or green CI alone is not phase completion.
 <!-- /AIHUB-INVIOLABLE-LAW-PRELUDE -->
 
@@ -35,29 +35,15 @@
 <!-- AIHUB-AGENTS-SCOPE-LOCAL-BEGIN -->
 <!-- project-specific notes below -->
 
-## Lane lifecycle
+## Change lifecycle
 
-Gas Town owns the whole lane lifecycle. This project owns config, services, MCP, CRG, and workspace policy. Work flows through the rig's canonical Gas Town surface:
-
-- `gt sling <bead>` spawns a polecat worktree/branch
-- polecat commits, runs `gt done` → merge queue
-- Refinery rebases, verifies, merges and closes the bead
-
-```bash
-gt sling <bead-id> <rig>
-gt hook status
-gt done
-gt convoy status
-```
-
-This project must not create worktrees or branches itself, push, or open pull requests manually; the Refinery owns merges to the default branch. Stop at the integration lane unless the operator explicitly asks to promote.
+Gas City configuration owns orchestration identity and dispatch; the repository owns Git, native gates, PR review, and landing. The canonical static contract is `rules/gascity.md`. Gas City runtime is currently suspended, so no orchestration command may be invoked or inferred. Work in the existing checkout and stop at the configured integration branch unless the operator explicitly asks to promote.
 
 ## Clone and temporary-filesystem law
 
-- New project: `gt rig add <rig> <git-url>` from the town root.
-- Persistent human/operator checkout: `gt crew add <name> --rig <rig>`.
-- Ephemeral agent checkout: `gt sling <bead-id> <rig>`.
-- Raw `git clone`, manual `git worktree add`, and loose checkouts outside the rig/crew/polecat hierarchy are prohibited for project work.
+- New workspace placement is defined declaratively by the Gas City city, rig, and Pack V2 configuration.
+- While runtime is suspended, creating or registering any workspace is prohibited.
+- Raw clones, manual worktrees, symlinks, cross-repository references, and loose checkouts are prohibited for project work.
 - `/tmp` is not a workspace, clone staging area, backup destination, build cache, or report store. Storage and scratch follow `rules/storage.md`; run `make temp` to audit structural violations.
 
 ## Sprint closure
@@ -90,9 +76,9 @@ Universal law owns closure. Local delta only:
 
 - ai-hub Beads/Dolt is the shared user database on the primary checkout (`config.AiHub.paths.ai_hub`), not a per-worktree private DB.
 - Related multi-repo set for shared doc/policy work is declared in configuration.
-- Gas Town owns lane lifecycle; ai-hub owns living runtime registration for beads, serena, CRG, LSP/observer state, and maintenance daemons.
+- Gas City configuration owns orchestration identity; ai-hub owns living runtime registration for tools, CRG, LSP/observer state, and maintenance daemons.
 - Rules, managed hooks, and product hook inventory are SSOT under `config/`; foreign agent hooks are warnings like foreign MCPs; managed product hooks stay disabled at the product and route through one socket executor per event type.
-- Worktrees created by Gas Town run `make setup` so mise/venv are reconstructed for the lane (`.venv` may be a symlink per the designed layout).
+- Every declared workspace must reconstruct dependencies locally; cross-repository dependency links are prohibited.
 - CI codegen must emit `CI=Y` on generated `ci.yml` / `ci-matrix.yml` / Dockerfiles; under `CI=Y`, `make check` skips executing ruff, pyrefly, and pytest.
 - Workspace/worktree watch is incremental and state-driven from last hook or MCP touch (configurable interval and parallelism); first use builds or copies from the parent workspace.
 - Rope/LSP activation shares the same observer/MCP/hooks funnel; any git-stored LSP artifacts come from the project generator templates.
@@ -110,12 +96,12 @@ This project uses **bd (beads)** for issue tracking. Run `bd prime` to see full 
 ```bash
 bd ready              # Find available work
 bd show <id>          # View issue details (server)
-bd where <id>         # CANONICAL locator (db + prefix) — NEVER gt show (embedded STALE)
+bd where <id>         # canonical locator when tracker runtime is restored
 bd update <id> --claim --parent <epic> --assignee "..." --append-notes "..."
 bd link <a> <b>       # dependency (default "blocks"; --type parent-child|related)
 bd set-state <id> mode:co-tracked   # event + label (co-track Mayor P0 live)
 bd close <id> --reason "..."        # only Owner may close
-gt dolt status         # lifecycle: start / stop / restart (0-downtime) / sql (REPL, NO -e)
+# Runtime commands are suspended by operator instruction.
 ```
 
 ### Rules
@@ -123,11 +109,11 @@ gt dolt status         # lifecycle: start / stop / restart (0-downtime) / sql (R
 - Use `bd` for ALL task tracking — do NOT use TodoWrite, TaskCreate, or markdown TODO lists
 - Run `bd prime` for detailed command reference and session close protocol
 - Use `bd remember` for persistent knowledge — do NOT use MEMORY.md files
-- Town root é `cd ~/gt` ANTES de qualquer write; `gt dolt status` confirma PID steady (nunca escrever durante flap).
+- Tracker runtime is suspended; do not execute these commands until explicitly restored.
 
-**Arquitetura canônica (P0):** único Dolt server `:3307` (data dir `~/gt/.dolt-data`); **um db por rig** via `routes.jsonl` (`routing.mode: explicit`; SSOT `~/.gt/mayor/rigs.json`): `hq`(town `hq-`) · `gastown`(`gtf-`) · `aihub`(`aihub-`) · `agents`(`ag-`, embedded `~/.agents`) · `flext`/`flext-`/`cosmos`/`cosmos-`/… Sync=`refs/dolt/data` no git remote; `.beads/issues.jsonl` = export passivo. Fonte: `docs/design/dolt-storage.md:§2.3`. **Fora do town-root ou `bd --global`(→beads_global) achata tudo no `hq` → contaminação** (ex.: `gtf-*(gastown)` achatado em `hq`).
+**Runtime suspension (P0):** Beads, Dolt, and Gas City are unavailable. Do not select an endpoint, embedded database, alternate server, or substitute tracker.
 
-**NEVER — origem das "centenas de comandos errados":** inventar flags `--owner`(não existe; Owner=coluna IMUTÁVEL)/`--prefix`(não existe em `bd list`)/`gt agents state`(use `bd set-state`) — sempre `… --help` primeiro. `bd create --deps` existe na CLI atual; para editar dependências de uma bead existente use `bd link`. Nunca usar `gt show` como truth (use `bd where` / `bd -C ~/gt show`); `gt bead move <id> <prefix>` em bead VIVO (= copy + **CLOSE** source, `bead.go:35-38`); `bd --global`. Reparent in-process = `bd update --parent <epic> <id>` (mesmo db, não-fecha).
+**NEVER:** invent flags, routing, ownership, endpoints, or compatibility behavior. Consult the installed CLI help only after runtime is restored.
 
 ## Agent Context Profiles
 
@@ -183,5 +169,5 @@ bd prime                # Refresh Beads context
 - Run `bd prime` when Beads context is missing or stale. Codex 0.129.0+ can load Beads context automatically through native hooks; use `/hooks` to inspect or toggle them.
 - Keep persistent project memory in Beads via `bd remember`; do not create ad hoc memory files.
 
-**Arquitetura canônica:** único Dolt server `:3307` (`~/gt/.dolt-data`); **um db por rig** (`routes.jsonl`, `routing.mode: explicit`; SSOT `~/.gt/mayor/rigs.json`): town=`hq`, gastown=`gastown`(prefix `gtf`), `aihub`, agents=`agents`(`ag-`). Fora do `cd ~/gt` ou `bd --global`(→beads_global) achata tudo no `hq` → contaminação. Doutrina completa: `.agents/skills/beads/SKILL.md` §"Gas Town Canonical Doctrine" + `AGENTS.md` §"Beads Issue Tracker".
+**Runtime suspension:** do not invoke Beads, Dolt, Gas City, or a substitute ledger until the operator explicitly restores the canonical runtime.
 <!-- END BEADS CODEX SETUP -->

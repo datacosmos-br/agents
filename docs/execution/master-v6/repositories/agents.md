@@ -6,9 +6,9 @@
 |---|---|
 | Remote | `https://github.com/marlon-costa-dc/agents.git` |
 | Integration branch | `dev` |
-| Active lane | `fix/exhaustive-pipeline-audit` |
-| Active PR | `#4` — `fix: make governance pipelines fail closed` |
-| Snapshot state | Branch clean and published; PR `UNSTABLE`; evaluation workflow failing |
+| Active lane | `feat/gascity-governance-migration` |
+| Active PR | To be opened after validation |
+| Snapshot state | PR #4 merged into `dev`; Gas City governance migration in progress |
 | Final state | `LANDED_VERIFIED_PENDING_TRACKER` |
 
 Read [shared contracts](../01-shared-contracts.md) and
@@ -33,7 +33,7 @@ rewrite of evals. Preserve the former and rebuild the latter.
   false-green evals.
 - CI currently fails because the temp runner expects a machine-local storage
   manifest.
-- Default `make check` invokes the suspended Dolt audit.
+- The obsolete Dolt audit surface was removed from the owner CLI and gates.
 - `make sync` reports stale personal generic/ECC entries.
 - Project projections are not converged.
 - 76 skill suites and 228 scenarios were mechanically normalized; examples
@@ -57,9 +57,9 @@ rewrite of evals. Preserve the former and rebuild the latter.
 
 ### Excluded or dormant
 
-- Operational Gas Town/Beads/Dolt access.
-- Changes to the Gas Town repository.
-- Distribution of suspended Gas Town/Beads workflows.
+- Operational Gas City/tracker/database access.
+- Changes outside `.agents`.
+- Distribution of personal Gas City/tracker workflows to projects.
 - Promotion from `dev` to `main`.
 
 ## Phases

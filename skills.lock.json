@@ -2,6 +2,19 @@
   "skills": [
     {
       "class": "on_demand",
+      "digest": "26e6faed48d5d0c21fe7721bb917e941e302fd34d08f599b7ba124549052b2d6",
+      "distributions": [
+        "project-generic"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "add-language-rules",
+      "owner": "agents",
+      "provenance": "adopted",
+      "updates": "manual"
+    },
+    {
+      "class": "on_demand",
       "digest": "898c8b510b4a25d6ff31c0e81976eb0b782d3c4e49710a13d2e1eac599c363ea",
       "distributions": [
         "personal"
@@ -56,7 +69,6 @@
       "class": "on_demand",
       "digest": "deed86e125a0079a2cb882791e0ff6177089e8635a6d88a3abc1a8bf8a3ca6c8",
       "distributions": [
-        "personal",
         "project-generic"
       ],
       "max_lines": 500,
@@ -83,7 +95,6 @@
       "class": "on_demand",
       "digest": "5dc29864231524fcf9adbf3317dc053ed694e89b0fdf12034a562808cec48003",
       "distributions": [
-        "personal",
         "project-generic"
       ],
       "max_lines": 500,
@@ -95,7 +106,7 @@
     },
     {
       "class": "router",
-      "digest": "5afdd121b67a00190ead92ee5bf681da711a9aabe46e1c2ef330bbf77dc2737f",
+      "digest": "82d5e8483a330e500103f131d47ab215f46f2e3ba72c96bda67dbb631d0e89d3",
       "distributions": [
         "personal"
       ],
@@ -188,7 +199,7 @@
       "class": "on_demand",
       "digest": "0de76b2be702c1f5fd08c14a0d56465d1642466997f7a9072274e4d751a21cfa",
       "distributions": [
-        "personal"
+        "project-generic"
       ],
       "max_lines": 500,
       "max_tokens": 5000,
@@ -201,7 +212,6 @@
       "class": "on_demand",
       "digest": "fe812609342935856831ff6151ea0880be7dd0315fd66c47e73b230bf77b0667",
       "distributions": [
-        "personal",
         "project-generic"
       ],
       "max_lines": 500,
@@ -215,7 +225,6 @@
       "class": "on_demand",
       "digest": "ceae53d9e2aa50ac127c0c87b0008e21dc3eb1ff54625969998a595048db0d33",
       "distributions": [
-        "personal",
         "project-generic"
       ],
       "max_lines": 500,
@@ -266,19 +275,6 @@
     },
     {
       "class": "on_demand",
-      "digest": "d1f6350de2a63193c03254e327d282c99f13b61c735f7ed4c22860b2e2aeb196",
-      "distributions": [
-        "personal"
-      ],
-      "max_lines": 500,
-      "max_tokens": 5000,
-      "name": "crew-commit",
-      "owner": "agents",
-      "provenance": "adopted",
-      "updates": "manual"
-    },
-    {
-      "class": "on_demand",
       "digest": "85235fbc6cbeec3c551cfcea5a50682187af46e1011095aa716146c02409ce22",
       "distributions": [
         "personal"
@@ -286,6 +282,19 @@
       "max_lines": 500,
       "max_tokens": 5000,
       "name": "crosspost",
+      "owner": "agents",
+      "provenance": "adopted",
+      "updates": "manual"
+    },
+    {
+      "class": "on_demand",
+      "digest": "662cfdcbe5ace07c30e86829903c387ebb507bc39b79bd21a24b65808259770d",
+      "distributions": [
+        "project-generic"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "database-migration",
       "owner": "agents",
       "provenance": "adopted",
       "updates": "manual"
@@ -331,7 +340,7 @@
     },
     {
       "class": "on_demand",
-      "digest": "7665fb835198d9917eb132252341f7007467c8b821aea1a2d8e0f91c79a18509",
+      "digest": "ab4d0fc7a5fe9f36b7477689ee046c2098685f1a46dd62fbdd2cae07b4e7757b",
       "distributions": [
         "personal"
       ],
@@ -344,7 +353,7 @@
     },
     {
       "class": "on_demand",
-      "digest": "c28fd9f53958fffd2162d5e9a016b58712f8218c93ebf823d5087113f800c40f",
+      "digest": "59b9fb2df86a4c7a997a8d0a900bfae9e80f9a7fc5160815888b3b83fc9dc246",
       "distributions": [
         "personal"
       ],
@@ -357,7 +366,7 @@
     },
     {
       "class": "on_demand",
-      "digest": "888f63b40eec18d8ae416bed841fcfdde767dfdeb454d4ed317cadf3ffb751fe",
+      "digest": "98ac6faccac6cae44de982927a21c72dbea50cf96002bc110c7eae81b1a36d9a",
       "distributions": [
         "personal"
       ],
@@ -372,7 +381,6 @@
       "class": "on_demand",
       "digest": "c57bded7609b54bad780c43e10c2913471552a2bfb8bd67c1caedd5a0b36e23d",
       "distributions": [
-        "personal",
         "project-generic"
       ],
       "max_lines": 500,
@@ -386,7 +394,6 @@
       "class": "on_demand",
       "digest": "d26a35e41a797ed724559323f355609af2642568b01a524108d0d5ada411c5e2",
       "distributions": [
-        "personal",
         "project-generic"
       ],
       "max_lines": 500,
@@ -413,7 +420,7 @@
       "class": "on_demand",
       "digest": "75dae7c023ec1d940f239954c13df47e004c1e85e8c4569080b9c515c799db0a",
       "distributions": [
-        "personal"
+        "project-generic"
       ],
       "max_lines": 500,
       "max_tokens": 5000,
@@ -450,6 +457,19 @@
     },
     {
       "class": "on_demand",
+      "digest": "8fae3fa3f28a26d714b1be52307d202cc0a18e8773280bea59c7d93d2833f802",
+      "distributions": [
+        "project-generic"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "feature-development",
+      "owner": "agents",
+      "provenance": "adopted",
+      "updates": "manual"
+    },
+    {
+      "class": "on_demand",
       "digest": "d85582e28f0ae8b744b19eb1f5d21f152948864a46a81174d9434bb82726c10a",
       "distributions": [
         "technology:typescript",
@@ -478,20 +498,33 @@
     },
     {
       "class": "on_demand",
-      "digest": "6cebf11c2cd02aa3d8de4b7117f59396ac162ebff305522d81e374c2d1f6a56e",
+      "digest": "b0e4a2dfdb2a18714aec8ae90d95d140eef591188456cb827928c5c49aceb82d",
       "distributions": [
         "personal"
       ],
       "max_lines": 500,
       "max_tokens": 5000,
-      "name": "gastown-workspace-lifecycle",
+      "name": "gascity-change-lifecycle",
       "owner": "agents",
       "provenance": "adopted",
       "updates": "manual"
     },
     {
       "class": "on_demand",
-      "digest": "cf6b43c18caa5a6165f87be6e509f42e509de8374d86cb4872871838ed42c348",
+      "digest": "93e8b3cc2a891d925d7deadade47691db38d966e10b6e7d193e1c81d461b0a30",
+      "distributions": [
+        "personal"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "gascity-workspace-lifecycle",
+      "owner": "agents",
+      "provenance": "adopted",
+      "updates": "manual"
+    },
+    {
+      "class": "on_demand",
+      "digest": "ddb04cb7dd2b5fc7ed84085cae7ed1640ae40a093fcc010b225a6774d2e4c749",
       "distributions": [
         "personal"
       ],
@@ -569,7 +602,7 @@
     },
     {
       "class": "router",
-      "digest": "7d1ad9f5be03d1bea5eba1eb63bdcab45339c3fd1b6c00f5a6a41d14c8ececb8",
+      "digest": "e1386875f9bd5bdcd6a8e9dcbbf3032264b1d8c11583401ab2fc151a97f74b65",
       "distributions": [
         "personal"
       ],
@@ -595,7 +628,7 @@
     },
     {
       "class": "on_demand",
-      "digest": "49abbf094d5be959b3f93220ae7a178dd34f95e71e28183ed1790968970d769c",
+      "digest": "dd36f2a9ceb51723346f38744347b86d431038b313870b897a669d7290cec3b7",
       "distributions": [
         "technology:python"
       ],
@@ -699,7 +732,7 @@
     },
     {
       "class": "on_demand",
-      "digest": "ccf73da1a87d6b26bdfefbba5566d19855ef92a25b27fe3763148e2446dbf74e",
+      "digest": "1585eadd2976bbc73662d482af5402bde0c077dc576a4cf5f1fa9f20709049f4",
       "distributions": [
         "personal"
       ],
@@ -712,7 +745,7 @@
     },
     {
       "class": "on_demand",
-      "digest": "f0b2433881a9e5674a4f87df599f5221fea969bd533ef83d0437fad904567c60",
+      "digest": "475d57d43894e52d7590734d203269e0a2ae22c9a8ca97dffb0428fd433a92cb",
       "distributions": [
         "personal"
       ],
@@ -803,9 +836,8 @@
     },
     {
       "class": "on_demand",
-      "digest": "d2bc5b0eac5a1bded0ee7fd0e1ce0d6f89b8914496f83f236b4969bb334f781a",
+      "digest": "70b484f45c5a4bcea1bc5694adfe51b1ab8f12d74006e73faf1250abb580741f",
       "distributions": [
-        "personal",
         "project-generic"
       ],
       "max_lines": 500,
@@ -832,7 +864,6 @@
       "class": "on_demand",
       "digest": "1dbfa12b85c4b4742a464fc63166400be15a1dfa5964681bd2e5b212c59fe057",
       "distributions": [
-        "personal",
         "project-generic"
       ],
       "max_lines": 500,
@@ -851,45 +882,6 @@
       "max_lines": 500,
       "max_tokens": 5000,
       "name": "skill-creator",
-      "owner": "agents",
-      "provenance": "adopted",
-      "updates": "manual"
-    },
-    {
-      "class": "on_demand",
-      "digest": "cb610c56564f1e55305b7475ba186960d6b8b5ee13f5462feeec6f251e32325b",
-      "distributions": [
-        "personal"
-      ],
-      "max_lines": 500,
-      "max_tokens": 5000,
-      "name": "source-command-add-language-rules",
-      "owner": "agents",
-      "provenance": "adopted",
-      "updates": "manual"
-    },
-    {
-      "class": "on_demand",
-      "digest": "36579fbbcf32e3e35a91c6ab1b0ee76d315d01bb20caff5369828db58b7e9a99",
-      "distributions": [
-        "personal"
-      ],
-      "max_lines": 500,
-      "max_tokens": 5000,
-      "name": "source-command-database-migration",
-      "owner": "agents",
-      "provenance": "adopted",
-      "updates": "manual"
-    },
-    {
-      "class": "on_demand",
-      "digest": "7d132cedb8ecaafd798504658f49e286fe275c0089de8644551a084a24bc008e",
-      "distributions": [
-        "personal"
-      ],
-      "max_lines": 500,
-      "max_tokens": 5000,
-      "name": "source-command-feature-development",
       "owner": "agents",
       "provenance": "adopted",
       "updates": "manual"
@@ -937,7 +929,6 @@
       "class": "on_demand",
       "digest": "e2d72d6c7549c144120ca7b773239e2e10d5f8063d7e0a9a8396554df48da2c9",
       "distributions": [
-        "personal",
         "project-generic"
       ],
       "max_lines": 500,
@@ -951,7 +942,6 @@
       "class": "on_demand",
       "digest": "3b7d3de54a92e498163fbe9313b930ec544d7f9c6a506ab2b420f5c72086fb7c",
       "distributions": [
-        "personal",
         "project-generic"
       ],
       "max_lines": 500,

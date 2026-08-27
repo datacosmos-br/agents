@@ -32,14 +32,9 @@ Recommended agent: `debugger`
 Hand-off prompt: ask the available debugger agent to receive the failure,
 identify its root cause, implement the correction, and return validation evidence.
 
-## Project lanes
+## Project changes
 
-If the task requires changing project code, attach it to a verified Bead and
-let Gas Town create the ephemeral lane:
-
-```bash
-gt sling <bead-id> <rig>
-```
-
-For persistent operator work use `gt crew add <name> --rig <rig>`. Never create
-a raw clone or manual worktree.
+Changing project code requires a declared Gas City city, rig, agent, formula,
+run, and session plus the repository's native Git and PR contract. While Gas
+City runtime is suspended, delegate only work that stays in the existing
+checkout; never create a clone, worktree, run, session, or substitute lane.

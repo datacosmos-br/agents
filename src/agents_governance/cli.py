@@ -9,8 +9,6 @@ from pathlib import Path
 
 from .catalog import Catalog
 from .cleanup import clean_generated
-from .dolt import audit as dolt_audit
-from .dolt import repair as dolt_repair
 from .normalize import normalize, normalize_descriptions
 from .projection import Projector
 from .security import audit as security_audit
@@ -299,25 +297,6 @@ def _temp_run(root: Path, command: list[str]) -> int:
     return report.exit_code
 
 
-def _dolt_audit(town: Path, as_json: bool, apply: bool) -> int:
-    if apply:
-        for path in dolt_repair(town):
-            print(f"CONVERGED: {path}")
-    findings = dolt_audit(town)
-    if as_json:
-        print(
-            json.dumps([item.as_dict() for item in findings], indent=2, sort_keys=True)
-        )
-    else:
-        for item in findings:
-            print(f"{item.path}: {item.code}: {item.message}", file=sys.stderr)
-    if findings:
-        print(f"FAIL: {len(findings)} noncanonical Dolt route(s)", file=sys.stderr)
-        return 1
-    print("PASS: Gas Town Dolt is exclusively 127.0.0.1:3307")
-    return 0
-
-
 def _security_triage(roots: tuple[Path, ...], as_json: bool) -> int:
     findings = security_audit(roots)
     if as_json:
@@ -393,12 +372,6 @@ def parser() -> argparse.ArgumentParser:
         command = temp_commands.add_parser(name)
         command.add_argument("--global", dest="global_scope", action="store_true")
         command.add_argument("--json", action="store_true")
-    dolt = commands.add_parser("dolt")
-    dolt_commands = dolt.add_subparsers(dest="dolt_command", required=True)
-    dolt_audit_parser = dolt_commands.add_parser("audit")
-    dolt_audit_parser.add_argument("--town", type=Path, default=Path.home() / "gt")
-    dolt_audit_parser.add_argument("--json", action="store_true")
-    dolt_audit_parser.add_argument("--apply", action="store_true")
     security = commands.add_parser("security-triage")
     security.add_argument("roots", nargs="*", type=Path)
     security.add_argument("--json", action="store_true")
@@ -450,10 +423,6 @@ def main(argv: list[str] | None = None) -> int:
         except (OSError, RuntimeError, ValueError) as error:
             print(f"FAIL: {error}", file=sys.stderr)
             return 2
-    if args.command == "dolt":
-        if args.dolt_command == "audit":
-            return _dolt_audit(args.town.resolve(), args.json, args.apply)
-        raise AssertionError(args.dolt_command)
     if args.command == "security-triage":
         roots = tuple(path.resolve() for path in args.roots) or (Path.cwd().resolve(),)
         return _security_triage(roots, args.json)

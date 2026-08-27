@@ -6,7 +6,7 @@ description: 'Test that the skill handles incomplete or ambiguous input fail-clo
 tags:
 - edge-case
 inputs:
-  prompt: 'Handle an incomplete or ambiguous doc-drift request safely. Relevant capability: doc, drift, detect, fix, documentation, across, town, all, rigs, runs. State any blocking constraint explicitly.'
+  prompt: 'Fix the Gas City docs, but no owner configuration or canonical source is provided. Treat this documentation-drift request as blocked and name the missing validation inputs without inventing commands.'
 expected:
   outcomes:
   - type: task_completed

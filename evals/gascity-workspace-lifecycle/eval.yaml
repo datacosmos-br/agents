@@ -1,6 +1,6 @@
-name: gastown-workspace-lifecycle-eval
-description: Evaluation suite for gastown-workspace-lifecycle.
-skill: gastown-workspace-lifecycle
+name: gascity-workspace-lifecycle-eval
+description: Evaluation suite for gascity-workspace-lifecycle.
+skill: gascity-workspace-lifecycle
 schemaVersion: '1.0'
 version: '1.0'
 config:
@@ -10,9 +10,9 @@ config:
   executor: copilot-sdk
   model: gpt-5.4
   skill_directories:
-  - ../../skills/gastown-workspace-lifecycle
+  - ../../skills/gascity-workspace-lifecycle
   required_skills:
-  - gastown-workspace-lifecycle
+  - gascity-workspace-lifecycle
 metrics:
 - name: task_completion
   weight: 1.0

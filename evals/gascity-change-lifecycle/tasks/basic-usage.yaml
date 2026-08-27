@@ -1,0 +1,13 @@
+id: basic-usage-001
+name: Basic Usage
+description: 'Test that the skill handles a typical request correctly.
+
+  '
+tags:
+- basic
+- happy-path
+inputs:
+  prompt: 'Describe the Gas City change lifecycle: declared formula dispatch, run and session observation, native Git gates, PR landing, and validation on the integration SHA.'
+expected:
+  outcomes:
+  - type: task_completed

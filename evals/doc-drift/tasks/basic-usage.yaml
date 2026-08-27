@@ -7,9 +7,7 @@ tags:
 - basic
 - happy-path
 inputs:
-  prompt: 'Apply the doc-drift capability to the provided fixture. Exercise these requirements: doc, drift, detect, fix, documentation, across, town, all, rigs, runs. Return a concrete result.'
-  files:
-  - path: sample.py
+  prompt: 'Audit documentation drift in Gas City Pack commands and report the validation evidence. Compare the declared Pack V2 schema and command examples with their canonical owners; do not execute the suspended runtime.'
 expected:
   outcomes:
   - type: task_completed

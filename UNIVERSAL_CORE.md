@@ -55,8 +55,8 @@ Goldens = structure only. Literals only for immutable external protocols.
     scope change — one precise question. Else evidence and continue.
     See `inviolable-rules` §Stop Only For A Real Blocker.
 13. **Short validated slices.** Land small green stages; commit explicit paths; FF push.
-    GitFlow lifecycle is owner-owned: `gt sling` / `gt hook` / `gt done` /
-    `gt convoy` (Gas Town); base = project `integration.branch` (never invent
+    Orchestration identity is declared through Gas City native primitives and
+    repository Git/PR owns landing; base = project `integration.branch` (never invent
     `develop` / `epic/*`). Cycle: commit → push → land (PR) → merge `--no-ff`
     into base → revalidate → finish. FLEXT is consumed ONLY as the official
     GitHub artifacts pinned `@0.12.0-dev` in `pyproject.toml`; never bind,
@@ -141,7 +141,7 @@ Goldens = structure only. Literals only for immutable external protocols.
    every correlated Bead, WIP, lane, worktree and PR. "Lane occupied" never
    blocks: adopt, preserve, validate and fix-forward all of it; destroy
    nothing, integrate everything useful.
-2. **Lane ownership.** Work only inside your Gas Town lane, never on the
+2. **Lane ownership.** Work only inside the existing authorized checkout, never on the
    integration base; keep the base pulled current. Use and prefer MCP tools,
    skills and the canonical Make verbs for everything; large-scale refactors
    always run through `make mod`/ast-grep search-and-replace, never manual

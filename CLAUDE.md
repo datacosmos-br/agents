@@ -3,7 +3,7 @@
 
 1. Truth: never claim done/green/resolved without command, exit code, decisive output.
 2. Root cause: no bypass, fallback, shim, suppression, stub, hardcode, or old+new coexistence.
-3. Beads first: claim/update bead before file write, shell, or multi-step work; update after every repo-state change.
+3. Tracker first: claim/update the canonical tracker before file writes or multi-step work. If its runtime is explicitly suspended, preserve evidence locally and do not declare the phase DONE.
 4. Research first: inspect code, docs, canonical sources before acting; never invent APIs, flags, facts, or behavior.
 5. Owner first: use the project's declared facades/primitives; do not reimplement them locally.
 6. Gate discipline: if a gate blocks, stop and escalate with the exact command/edit; never route around it.
@@ -11,7 +11,7 @@
 8. Divergence: FF push rejected → integrate by cooperation: `git merge --no-ff` the integration base into your lane, resolve conflicts, revalidate, land. Never rebase or force-push a shared branch; never discard another actor's work.
 9. Escalation: impossible rule → exact error. Rule conflict → present both with numbers. Unclear → one targeted question. Never guess.
 10. Precedence: NEWEST > OLDEST. USER REQUEST > BEADS > ADRs > SKILLs > DOCS > default. Adjust lower/older to higher/newer. Doubt → ASK USER FIRST.
-11. Workspace placement: never create a loose project clone or ad-hoc worktree. Register a new repository with `gt rig add`; create persistent operator work with `gt crew add --rig <rig>`; use `gt sling` for ephemeral agent work. Staging and backups stay on the destination filesystem, never `/tmp`.
+11. Workspace placement: follow the declared Gas City city/rig/Pack V2 contract in `rules/gascity.md`. While its runtime is suspended, operate only in the existing checkout and create no clone, worktree, city, rig, agent, formula, run, or session. Staging and backups stay on the destination filesystem, never `/tmp`.
 12. Phase closure: a phase is DONE only after its approved PR is merged into the configured integration branch and its Bead is closed with evidence. Commit, push, review, or green CI alone is not phase completion.
 <!-- /AIHUB-INVIOLABLE-LAW-PRELUDE -->
 
@@ -78,10 +78,9 @@ When working inside a repository, load that repository's `AGENTS.md` and `CLAUDE
 
 ## Clone and temporary-filesystem law
 
-- New project: `gt rig add <rig> <git-url>` from the town root.
-- Persistent human/operator checkout: `gt crew add <name> --rig <rig>`.
-- Ephemeral agent checkout: `gt sling <bead-id> <rig>`.
-- Raw `git clone`, manual `git worktree add`, and loose checkouts outside the rig/crew/polecat hierarchy are prohibited for project work.
+- New workspace placement is defined declaratively by the Gas City city, rig, and Pack V2 configuration.
+- While runtime is suspended, creating or registering any workspace is prohibited.
+- Raw clones, manual worktrees, symlinks, cross-repository references, and loose checkouts are prohibited for project work.
 - `/tmp` is not a workspace, clone staging area, backup destination, build cache, or report store. Storage and scratch follow `rules/storage.md`; run `make temp` to audit structural violations.
 
 ## Issue Tracker
