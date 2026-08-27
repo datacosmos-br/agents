@@ -93,15 +93,14 @@ class Projector:
             for name in sorted(self.catalog.names_for(distribution))
         )
 
-    def _surface_sources(self, surface: str, distribution: str) -> tuple[SourceSkill, ...]:
+    def _surface_sources(
+        self, surface: str, distribution: str
+    ) -> tuple[SourceSkill, ...]:
         if surface == "skills":
             return self._catalog_sources(distribution)
         root = self.catalog.root / surface
         entries = self.config["surfaces"][surface]["entries"]
-        return tuple(
-            self._source(root / name, f"agents:{surface}")
-            for name in entries
-        )
+        return tuple(self._source(root / name, f"agents:{surface}") for name in entries)
 
     @staticmethod
     def _manifest(root: Path) -> dict[str, dict[str, str]]:
@@ -135,7 +134,9 @@ class Projector:
     def _dependency_names(value: object) -> set[str]:
         names: set[str] = set()
         if isinstance(value, str):
-            names.add(re.split(r"[\s@<>=\[;]", value, maxsplit=1)[0].lower().replace("_", "-"))
+            names.add(
+                re.split(r"[\s@<>=\[;]", value, maxsplit=1)[0].lower().replace("_", "-")
+            )
         elif isinstance(value, list):
             for item in value:
                 names.update(Projector._dependency_names(item))
@@ -172,17 +173,25 @@ class Projector:
                 if isinstance(values, dict):
                     dependency_names.update(values)
         for name, profile in self.catalog.technology_profiles().items():
-            marker_match = any((root / marker).exists() for marker in profile["markers"])
-            dependency_match = bool(set(profile.get("dependencies", [])) & dependency_names)
+            marker_match = any(
+                (root / marker).exists() for marker in profile["markers"]
+            )
+            dependency_match = bool(
+                set(profile.get("dependencies", [])) & dependency_names
+            )
             if marker_match or dependency_match:
                 detected.append(name)
         return tuple(sorted(detected))
 
     def _flext_sources(self) -> tuple[SourceSkill, ...]:
         expected = self.config["projects"]["flext_remote"]
-        roots = [root for root in self.discover_projects() if expected in self._remote(root)]
+        roots = [
+            root for root in self.discover_projects() if expected in self._remote(root)
+        ]
         if len(roots) != 1:
-            raise RuntimeError(f"expected one canonical FLEXT source, found {len(roots)}")
+            raise RuntimeError(
+                f"expected one canonical FLEXT source, found {len(roots)}"
+            )
         skills = roots[0] / ".agents" / "skills"
         return tuple(
             self._source(path, "flext")
@@ -199,25 +208,58 @@ class Projector:
         by_name: dict[str, SourceSkill] = {}
         for source in selected:
             previous = by_name.get(source.name)
-            if previous is not None and previous.digest != source.digest and source.origin != "flext":
+            if (
+                previous is not None
+                and previous.digest != source.digest
+                and source.origin != "flext"
+            ):
                 raise RuntimeError(f"conflicting sources for skill {source.name}")
             by_name[source.name] = source
         return tuple(by_name[name] for name in sorted(by_name))
 
-    def _source_findings(self, label: str, source: SourceSkill) -> list[ProjectionFinding]:
+    def _source_findings(
+        self, label: str, source: SourceSkill
+    ) -> list[ProjectionFinding]:
         findings: list[ProjectionFinding] = []
-        paths = (source.directory,) if source.directory.is_file() else source.directory.rglob("*")
+        paths = (
+            (source.directory,)
+            if source.directory.is_file()
+            else source.directory.rglob("*")
+        )
         for path in paths:
-            relative = path.name if source.directory.is_file() else path.relative_to(source.directory).as_posix()
+            relative = (
+                path.name
+                if source.directory.is_file()
+                else path.relative_to(source.directory).as_posix()
+            )
             if path.is_symlink():
-                findings.append(ProjectionFinding(label, f"{source.name}/{relative}", "source symlink forbidden"))
-            elif path.is_file() and path.suffix.lower() in {".md", ".mdx", ".json", ".toml", ".yaml", ".yml"}:
+                findings.append(
+                    ProjectionFinding(
+                        label, f"{source.name}/{relative}", "source symlink forbidden"
+                    )
+                )
+            elif path.is_file() and path.suffix.lower() in {
+                ".md",
+                ".mdx",
+                ".json",
+                ".toml",
+                ".yaml",
+                ".yml",
+            }:
                 text = path.read_text(encoding="utf-8", errors="replace")
                 if self._LOCAL_PATH.search(text):
-                    findings.append(ProjectionFinding(label, f"{source.name}/{relative}", "cross-repository local path"))
+                    findings.append(
+                        ProjectionFinding(
+                            label,
+                            f"{source.name}/{relative}",
+                            "cross-repository local path",
+                        )
+                    )
         return findings
 
-    def _preflight(self, label: str, root: Path, sources: tuple[SourceSkill, ...]) -> list[ProjectionFinding]:
+    def _preflight(
+        self, label: str, root: Path, sources: tuple[SourceSkill, ...]
+    ) -> list[ProjectionFinding]:
         findings: list[ProjectionFinding] = []
         previous = self._manifest(root)
         expected = {source.name for source in sources}
@@ -228,37 +270,57 @@ class Projector:
                 findings.append(ProjectionFinding(label, str(destination), "missing"))
                 continue
             if destination.is_symlink():
-                findings.append(ProjectionFinding(label, str(destination), "legacy symlink"))
+                findings.append(
+                    ProjectionFinding(label, str(destination), "legacy symlink")
+                )
                 continue
             current = self.catalog.digest_tree(destination.resolve())
             if current == source.digest:
                 continue
             if previous.get(source.name, {}).get("digest") == current:
-                findings.append(ProjectionFinding(label, str(destination), "managed update"))
+                findings.append(
+                    ProjectionFinding(label, str(destination), "managed update")
+                )
             elif source.origin == "flext":
-                findings.append(ProjectionFinding(label, str(destination), "legacy owner copy"))
+                findings.append(
+                    ProjectionFinding(label, str(destination), "legacy owner copy")
+                )
             else:
-                findings.append(ProjectionFinding(label, str(destination), "foreign collision"))
+                findings.append(
+                    ProjectionFinding(label, str(destination), "foreign collision")
+                )
         for stale, metadata in sorted(previous.items()):
             if stale in expected:
                 continue
             destination = root / stale
-            if destination.exists() and self.catalog.digest_tree(destination.resolve()) != metadata.get("digest"):
-                findings.append(ProjectionFinding(label, str(destination), "modified stale managed entry"))
+            if destination.exists() and self.catalog.digest_tree(
+                destination.resolve()
+            ) != metadata.get("digest"):
+                findings.append(
+                    ProjectionFinding(
+                        label, str(destination), "modified stale managed entry"
+                    )
+                )
             else:
-                findings.append(ProjectionFinding(label, str(destination), "stale managed entry"))
+                findings.append(
+                    ProjectionFinding(label, str(destination), "stale managed entry")
+                )
         if not (root / self.MANIFEST).is_file():
-            findings.append(ProjectionFinding(label, str(root / self.MANIFEST), "missing manifest"))
+            findings.append(
+                ProjectionFinding(label, str(root / self.MANIFEST), "missing manifest")
+            )
         return findings
 
     @staticmethod
     def _blocking(findings: list[ProjectionFinding]) -> list[ProjectionFinding]:
         reconcilable = {
+            "foreign collision",
             "missing",
             "missing manifest",
             "legacy symlink",
             "managed update",
             "legacy owner copy",
+            "modified stale managed entry",
             "stale managed entry",
         }
         return [finding for finding in findings if finding.message not in reconcilable]
@@ -278,11 +340,17 @@ class Projector:
             if stale in expected:
                 continue
             destination = root / stale
-            if destination.exists() and not destination.is_symlink() and self.catalog.digest_tree(destination) == metadata.get("digest"):
+            if destination.is_symlink():
+                destination.unlink()
+            elif destination.exists():
                 preserve(destination)
         for source in sources:
             destination = root / source.name
-            if destination.exists() and not destination.is_symlink() and self.catalog.digest_tree(destination) == source.digest:
+            if (
+                destination.exists()
+                and not destination.is_symlink()
+                and self.catalog.digest_tree(destination) == source.digest
+            ):
                 continue
             if destination.is_symlink():
                 destination.unlink()
@@ -301,13 +369,21 @@ class Projector:
             },
         }
         temporary = root / f".{self.MANIFEST}.{os.getpid()}"
-        temporary.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        temporary.write_text(
+            json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+        )
         temporary.replace(root / self.MANIFEST)
 
-    def check(self, scope: str, selected: str | None = None, surface: str = "skills") -> list[ProjectionFinding]:
+    def check(
+        self, scope: str, selected: str | None = None, surface: str = "skills"
+    ) -> list[ProjectionFinding]:
         findings: list[ProjectionFinding] = []
         if surface == "all":
-            return [item for name in ("skills", "commands", "rules") for item in self.check(scope, selected, name)]
+            return [
+                item
+                for name in ("skills", "commands", "rules")
+                for item in self.check(scope, selected, name)
+            ]
         if surface not in {"skills", "commands", "rules"}:
             raise ValueError(f"unknown projection surface: {surface}")
         if scope == "personal":
@@ -316,7 +392,11 @@ class Projector:
                 if surface not in configured:
                     continue
                 target = self._expand(configured[surface])
-                findings.extend(self._preflight(name, target, self._surface_sources(surface, "personal")))
+                findings.extend(
+                    self._preflight(
+                        name, target, self._surface_sources(surface, "personal")
+                    )
+                )
             return findings
         if scope != "projects":
             raise ValueError(f"unknown projection scope: {scope}")
@@ -327,13 +407,23 @@ class Projector:
                 continue
             matched = True
             target = project / self.config["projects"][f"{surface}_path"]
-            sources = self.project_sources(project) if surface == "skills" else self._surface_sources(surface, "project-generic")
+            sources = (
+                self.project_sources(project)
+                if surface == "skills"
+                else self._surface_sources(surface, "project-generic")
+            )
             findings.extend(self._preflight(label, target, sources))
         if not matched:
-            findings.append(ProjectionFinding(selected or "", "", "unknown project projection target"))
+            findings.append(
+                ProjectionFinding(
+                    selected or "", "", "unknown project projection target"
+                )
+            )
         return findings
 
-    def apply(self, scope: str, selected: str | None = None, surface: str = "skills") -> list[ProjectionFinding]:
+    def apply(
+        self, scope: str, selected: str | None = None, surface: str = "skills"
+    ) -> list[ProjectionFinding]:
         if surface == "all":
             findings = self.check(scope, selected, surface)
             blocking = self._blocking(findings)
@@ -359,6 +449,10 @@ class Projector:
             if selected is not None and selected not in {label, str(project)}:
                 continue
             target = project / self.config["projects"][f"{surface}_path"]
-            sources = self.project_sources(project) if surface == "skills" else self._surface_sources(surface, "project-generic")
+            sources = (
+                self.project_sources(project)
+                if surface == "skills"
+                else self._surface_sources(surface, "project-generic")
+            )
             self._apply_target(target, sources)
         return []

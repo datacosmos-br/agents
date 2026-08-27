@@ -30,7 +30,9 @@ def _projector(tmp_path: Path, target: Path) -> Projector:
         "technologies": {},
         "default": {"class": "on_demand", "provenance": "adopted", "updates": "manual"},
     }
-    (tmp_path / "config" / "skills.json").write_text(json.dumps(skills_config), encoding="utf-8")
+    (tmp_path / "config" / "skills.json").write_text(
+        json.dumps(skills_config), encoding="utf-8"
+    )
     projections = {
         "version": 2,
         "surfaces": {"commands": {"entries": []}, "rules": {"entries": []}},
@@ -42,7 +44,9 @@ def _projector(tmp_path: Path, target: Path) -> Projector:
             "flext_remote": "flext-sh/flext",
         },
     }
-    (tmp_path / "config" / "projections.json").write_text(json.dumps(projections), encoding="utf-8")
+    (tmp_path / "config" / "projections.json").write_text(
+        json.dumps(projections), encoding="utf-8"
+    )
     return Projector(Catalog(tmp_path))
 
 
@@ -67,10 +71,12 @@ def test_commands_and_rules_are_independently_projected(tmp_path: Path) -> None:
     projector = _projector(tmp_path, target)
     commands_target = tmp_path / "commands-target"
     rules_target = tmp_path / "rules-target"
-    projector.config["personal_targets"]["test"].update({
-        "commands": str(commands_target),
-        "rules": str(rules_target),
-    })
+    projector.config["personal_targets"]["test"].update(
+        {
+            "commands": str(commands_target),
+            "rules": str(rules_target),
+        }
+    )
     projector.config["surfaces"] = {
         "commands": {"entries": ["review.md"]},
         "rules": {"entries": ["security"]},
@@ -84,12 +90,14 @@ def test_commands_and_rules_are_independently_projected(tmp_path: Path) -> None:
     assert projector.apply("personal", surface="commands") == []
     assert projector.apply("personal", surface="rules") == []
     assert (commands_target / "review.md").read_text(encoding="utf-8") == "# Review\n"
-    assert (rules_target / "security" / "closure.md").read_text(encoding="utf-8") == "# Closure\n"
+    assert (rules_target / "security" / "closure.md").read_text(
+        encoding="utf-8"
+    ) == "# Closure\n"
     assert projector.check("personal", surface="commands") == []
     assert projector.check("personal", surface="rules") == []
 
 
-def test_foreign_collision_is_preserved(tmp_path: Path) -> None:
+def test_foreign_collision_is_archived_before_explicit_apply(tmp_path: Path) -> None:
     target = tmp_path / "target"
     projector = _projector(tmp_path, target)
     foreign = target / "example"
@@ -99,11 +107,38 @@ def test_foreign_collision_is_preserved(tmp_path: Path) -> None:
 
     findings = projector.apply("personal")
 
-    assert findings[0].message == "foreign collision"
-    assert marker.read_text(encoding="utf-8") == "preserve"
+    assert findings == []
+    assert (foreign / "SKILL.md").is_file()
+    archived = list((target / ".agents-archive").glob("example.*.bak/foreign.txt"))
+    assert len(archived) == 1
+    assert archived[0].read_text(encoding="utf-8") == "preserve"
 
 
-def test_legacy_destination_symlink_is_removed_and_replaced_with_copy(tmp_path: Path) -> None:
+def test_modified_stale_managed_entry_is_archived(tmp_path: Path) -> None:
+    target = tmp_path / "target"
+    projector = _projector(tmp_path, target)
+    assert projector.apply("personal") == []
+    stale = target / "example"
+    (stale / "operator.txt").write_text("preserve", encoding="utf-8")
+    projector.catalog.config["classification"] = [
+        {
+            "pattern": "example",
+            "class": "router",
+            "provenance": "retired",
+            "updates": "forbidden",
+        }
+    ]
+
+    assert projector.apply("personal") == []
+    assert not stale.exists()
+    archived = list((target / ".agents-archive").glob("example.*.bak/operator.txt"))
+    assert len(archived) == 1
+    assert archived[0].read_text(encoding="utf-8") == "preserve"
+
+
+def test_legacy_destination_symlink_is_removed_and_replaced_with_copy(
+    tmp_path: Path,
+) -> None:
     target = tmp_path / "target"
     projector = _projector(tmp_path, target)
     foreign = tmp_path / "foreign"
@@ -145,7 +180,9 @@ def test_structured_markers_detect_technologies(tmp_path: Path) -> None:
     assert projector.detected_technologies(project) == ("go",)
 
 
-def test_flext_source_overrides_same_named_generic_skill(tmp_path: Path, monkeypatch) -> None:
+def test_flext_source_overrides_same_named_generic_skill(
+    tmp_path: Path, monkeypatch
+) -> None:
     target = tmp_path / "target"
     projector = _projector(tmp_path, target)
     projector.catalog.config["project_generic"] = ["example"]
@@ -155,7 +192,9 @@ def test_flext_source_overrides_same_named_generic_skill(tmp_path: Path, monkeyp
     flext_skill.mkdir(parents=True)
     (flext_skill / "SKILL.md").write_text("flext owner\n", encoding="utf-8")
     monkeypatch.setattr(projector, "is_flext_project", lambda _root: True)
-    monkeypatch.setattr(projector, "_flext_sources", lambda: (projector._source(flext_skill, "flext"),))
+    monkeypatch.setattr(
+        projector, "_flext_sources", lambda: (projector._source(flext_skill, "flext"),)
+    )
 
     sources = projector.project_sources(project)
 
@@ -179,14 +218,16 @@ def test_linux_copy_requests_reflink(monkeypatch, tmp_path: Path) -> None:
 
     Projector._copy_tree(source, destination)
 
-    assert calls == [[
-        "cp",
-        "--archive",
-        "--reflink=auto",
-        "--no-target-directory",
-        str(source),
-        str(destination),
-    ]]
+    assert calls == [
+        [
+            "cp",
+            "--archive",
+            "--reflink=auto",
+            "--no-target-directory",
+            str(source),
+            str(destination),
+        ]
+    ]
 
 
 def test_unknown_project_target_fails_closed(tmp_path: Path) -> None:
