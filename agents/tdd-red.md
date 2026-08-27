@@ -3,6 +3,7 @@ name: tdd-red
 description: "Guide test-first development by writing failing tests that describe desired behaviour from GitHub issue context before implementation exists."
 tools: Read, Write, Edit, Bash, Grep, Glob
 color: red
+model: ai-hub-primary
 ---
 
 # TDD Red Phase - Write Failing Tests First

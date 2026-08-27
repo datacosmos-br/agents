@@ -7,6 +7,7 @@ from pathlib import Path
 from agents_governance.temp import TempPolicy, run_command
 
 FAST_POLICY = TempPolicy(poll_seconds=0.01)
+STORAGE_CONFIG = Path(__file__).parents[1] / "config" / "storage.toml"
 
 
 def _git_repo(path: Path) -> Path:
@@ -25,6 +26,7 @@ def test_two_go_tests_use_distinct_owned_runs(monkeypatch, tmp_path: Path) -> No
     )
     monkeypatch.setenv("XDG_CACHE_HOME", str(tmp_path / "cache"))
     monkeypatch.setenv("XDG_STATE_HOME", str(tmp_path / "state"))
+    monkeypatch.setenv("AGENTS_STORAGE_CONFIG", str(STORAGE_CONFIG))
 
     with ThreadPoolExecutor(max_workers=2) as pool:
         reports = tuple(
@@ -54,6 +56,7 @@ def test_python_node_and_rust_commands_use_bounded_runner(
     (source / "lib.rs").write_text("pub fn answer() -> u8 { 42 }\n", encoding="utf-8")
     monkeypatch.setenv("XDG_CACHE_HOME", str(tmp_path / "cache"))
     monkeypatch.setenv("XDG_STATE_HOME", str(tmp_path / "state"))
+    monkeypatch.setenv("AGENTS_STORAGE_CONFIG", str(STORAGE_CONFIG))
 
     commands = (
         ["python", "-c", "print('python-ok')"],

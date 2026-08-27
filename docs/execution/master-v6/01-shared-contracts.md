@@ -41,16 +41,20 @@ unrelated keyring profiles and secrets remain untouched.
 
 ## Waza contract
 
-`.waza.yaml` is the only model owner. `agentsctl waza-config` exposes exactly:
+`config/model-pipeline.json` is the only model-pipeline owner. It contains only the
+stable alias `ai-hub-primary`. `agentsctl model-pipeline` exposes exactly:
 
-```text
---check
---apply
---model
-```
+- `check` — validate every generated repository surface without writing;
+- `apply` — materialize the alias and reach a fixed point;
+- `resolve` — print only the stable alias;
+- `probe` — require the injected provider to publish that exact alias.
 
-The modes are mutually exclusive. `--apply` changes only model projections and
-must produce no diff on the second run.
+Concrete provider models, model families, tiers, variants, effort levels, and
+caller overrides are forbidden in this repository. The upstream model pipeline
+owns their selection.
+
+`apply` changes only generated model projections and unsupported model metadata;
+it must produce no diff on the second run.
 
 Every active skill has three semantic scenarios:
 

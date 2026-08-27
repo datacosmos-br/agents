@@ -67,6 +67,7 @@ Universal law owns closure. Local delta only:
 - MCP/stdio bridges must not hang indefinitely; daemon restarts must keep the stdio bridge usable (virtualize/preserve session identity across restarts).
 - After MCP or daemon deploy changes, validate in-process (for example via opencode) then ask the operator to restart the Cursor MCP client before claiming Cursor-side green.
 - Unit/integration and propagate gates must not require auth API keys or live LLM model calls; model-dependent coverage stays minimal.
+- Model selection follows `rules/model-pipeline.md`: consume only `ai-hub-primary`; never encode a concrete model, family, tier, variant, effort, or fallback.
 - Prefer config-key-only documentation (reference config keys, not hardcoded default paths).
 - Prefer owner-first reuse and simplification over local reimplementation; structure large work as epic plus sub-epics with separate enforcement/validation tracker items and incremental deliveries.
 - Plans and multi-phase work must align docs, tracker, worktrees/branches/PRs with runtime reality before later phases.

@@ -3,6 +3,7 @@ name: debugger
 description: Debugs issues using scientific method with structured hypothesis testing and observability-first approach. Use when investigating bugs, regressions, unexpected behavior, or system failures.
 tools: Read, Write, Edit, Bash, Grep, Glob
 color: red
+model: ai-hub-primary
 ---
 
 <role>

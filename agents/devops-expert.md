@@ -3,6 +3,7 @@ name: devops-expert
 description: "DevOps specialist following the infinity loop principle (Plan → Code → Build → Test → Release → Deploy → Operate → Monitor) with focus on automation, collaboration, and continuous improvement"
 tools: Read, Write, Edit, Bash, Grep, Glob
 color: orange
+model: ai-hub-primary
 ---
 
 # DevOps Expert

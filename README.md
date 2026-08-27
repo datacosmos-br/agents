@@ -14,7 +14,8 @@ no legacy package, command, rule, projection, or synchronization surface remains
 - `config/skills.json`: skill classification and distribution policy.
 - `config/projections.json`: personal and registered-project destinations.
 - `src/agents_governance/`: validation, normalization, discovery, and copying.
-- `.waza.yaml` and `evals/`: Waza gates and behavioral evaluation.
+- `config/model-pipeline.json`: stable model-pipeline owner; generated into Waza and agent surfaces.
+- `.waza.yaml` and `evals/`: generated model projections plus Waza behavioral gates.
 
 Tool homes and project repositories receive physical copies owned by their
 destination. Symbolic links, cross-repository local-path references, and shared

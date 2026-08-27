@@ -9,6 +9,10 @@ from pathlib import Path
 
 from .catalog import Catalog
 from .cleanup import clean_generated
+from .model_pipeline import apply as apply_model_pipeline
+from .model_pipeline import findings as model_pipeline_findings
+from .model_pipeline import probe as probe_model_pipeline
+from .model_pipeline import resolve as resolve_model_pipeline
 from .normalize import normalize, normalize_descriptions
 from .projection import Projector
 from .security import audit as security_audit
@@ -19,10 +23,7 @@ from .temp import global_findings as temp_global_findings
 from .temp import repository_findings, run_command
 from .temp import status as temp_status
 from .validation import validate
-from .waza import apply as apply_waza_config
 from .waza import classify_preflight
-from .waza import default_model as waza_default_model
-from .waza import findings as waza_config_findings
 
 
 def _root() -> Path:
@@ -153,23 +154,28 @@ def _waza_coverage(path: Path) -> int:
     return 0
 
 
-def _waza_config(root: Path, apply: bool, print_model: bool) -> int:
-    model = waza_default_model(root)
-    if print_model:
+def _model_pipeline(root: Path, mode: str) -> int:
+    model = resolve_model_pipeline(root)
+    if mode == "resolve":
         print(model)
         return 0
-    changes = apply_waza_config(root) if apply else waza_config_findings(root)
+    if mode == "probe":
+        probe_model_pipeline(root)
+        print(f"PASS: provider publishes model pipeline {model}")
+        return 0
+    changes = (
+        apply_model_pipeline(root) if mode == "apply" else model_pipeline_findings(root)
+    )
     for item in changes:
-        relative = item.path.relative_to(root)
-        print(f"{relative}: model {item.actual!r} -> {item.expected!r}")
-    if changes and not apply:
+        print(f"{item.path.relative_to(root)}: {item.message}")
+    if changes and mode == "check":
         print(
-            f"FAIL: {len(changes)} Waza eval model projection(s) drifted",
+            f"FAIL: {len(changes)} model-pipeline projection(s) drifted",
             file=sys.stderr,
         )
         return 1
     print(
-        f"{'APPLIED' if apply else 'PASS'}: Waza model={model}; "
+        f"{'APPLIED' if mode == 'apply' else 'PASS'}: model pipeline={model}; "
         f"{len(changes)} change(s)"
     )
     return 0
@@ -345,13 +351,9 @@ def parser() -> argparse.ArgumentParser:
     waza_artifact.add_argument("path", type=Path)
     waza_coverage = commands.add_parser("waza-coverage")
     waza_coverage.add_argument("path", type=Path)
-    waza_config = commands.add_parser("waza-config")
-    waza_config_mode = waza_config.add_mutually_exclusive_group(required=True)
-    waza_config_mode.add_argument("--check", action="store_true")
-    waza_config_mode.add_argument("--apply", action="store_true")
-    waza_config_mode.add_argument("--model", action="store_true")
+    model_pipeline = commands.add_parser("model-pipeline")
+    model_pipeline.add_argument("mode", choices=("check", "apply", "resolve", "probe"))
     waza_preflight = commands.add_parser("waza-preflight")
-    waza_preflight.add_argument("--model", required=True)
     waza_preflight.add_argument("--output", required=True, type=Path)
     commands.add_parser("clean")
     temporary = commands.add_parser("temp")
@@ -399,10 +401,20 @@ def main(argv: list[str] | None = None) -> int:
         return _waza_artifact(args.path)
     if args.command == "waza-coverage":
         return _waza_coverage(args.path)
-    if args.command == "waza-config":
-        return _waza_config(root, args.apply, args.model)
+    if args.command == "model-pipeline":
+        try:
+            return _model_pipeline(root, args.mode)
+        except (
+            OSError,
+            RuntimeError,
+            TypeError,
+            ValueError,
+            json.JSONDecodeError,
+        ) as error:
+            print(f"FAIL: {error}", file=sys.stderr)
+            return 2
     if args.command == "waza-preflight":
-        return _waza_preflight(args.output, args.model)
+        return _waza_preflight(args.output, resolve_model_pipeline(root))
     if args.command == "clean":
         return _clean(root)
     if args.command == "temp":

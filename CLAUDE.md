@@ -25,6 +25,7 @@ Project-specific context for AI agents. The configured repository artifacts belo
 - **Project execution law:** [`AGENTS.md`](https://github.com/datacosmos-br/ai-hub/blob/dev/AGENTS.md)
 - **Agent reading order:** `docs/guides/agent-guide.md`
 - **Governance controls:** `docs/GOVERNANCE.md`
+- **Model pipeline:** `rules/model-pipeline.md`
 
 ## Developer Profile
 

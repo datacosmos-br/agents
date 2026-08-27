@@ -10,8 +10,8 @@ from pathlib import Path
 import yaml
 
 from .catalog import Catalog
+from .model_pipeline import findings as model_pipeline_findings
 from .tokens import bpe_tokens
-from .waza import findings as waza_config_findings
 
 _LINK = re.compile(r"\[[^\]]+\]\(([^)]+)\)")
 _FENCED_CODE = re.compile(r"^```.*?^```\s*$", re.MULTILINE | re.DOTALL)
@@ -130,13 +130,13 @@ def validate(catalog: Catalog) -> list[Finding]:
             Finding("config/skills.json", "distribution", message)
             for message in catalog.distribution_errors()
         )
-    if (catalog.root / ".waza.yaml").is_file():
-        for waza_item in waza_config_findings(catalog.root):
+    if (catalog.root / "config" / "model-pipeline.json").is_file():
+        for pipeline_item in model_pipeline_findings(catalog.root):
             findings.append(
                 Finding(
-                    waza_item.path.relative_to(catalog.root).as_posix(),
-                    "eval-model-drift",
-                    f"model {waza_item.actual!r} != project default {waza_item.expected!r}",
+                    pipeline_item.path.relative_to(catalog.root).as_posix(),
+                    "model-pipeline-drift",
+                    pipeline_item.message,
                 )
             )
     names: set[str] = set()

@@ -1,10 +1,1 @@
-name: ai-prompt-engineering-safety-review
-description: ai, prompt, engineering, safety, review, reviewing, improving, prompts, bias, security
-tools:
-- Read
-- Edit
-- Write
-- Bash
-- Grep
-- Glob
-model: gpt-5.5
+{}

@@ -8,9 +8,8 @@ COPILOT_PROVIDER_WIRE_API ?= responses
 export COPILOT_PROVIDER_BASE_URL COPILOT_PROVIDER_TYPE
 export COPILOT_PROVIDER_WIRE_API
 
-MODEL ?=
-WAZA_MODEL = $(if $(strip $(MODEL)),$(MODEL),$$(uv run agentsctl waza-config --model))
-MODEL_ARG = --model $(WAZA_MODEL)
+MODEL_PIPELINE = $$(uv run agentsctl model-pipeline resolve)
+MODEL_ARG = --model $(MODEL_PIPELINE)
 
 WAZA_KEYRING_EXEC = env-keyring auto-exec --directory "$(CURDIR)" --consumer agent:agents-waza --
-WAZA_ONLINE = $(WAZA_KEYRING_EXEC) sh -c 'export COPILOT_PROVIDER_API_KEY="$$CLIPROXY_API_KEY"; export COPILOT_MODEL="$$1"; shift; exec uv run agentsctl temp run -- waza "$$@"' -- "$(WAZA_MODEL)"
+WAZA_ONLINE = $(WAZA_KEYRING_EXEC) sh -c 'export COPILOT_PROVIDER_API_KEY="$$CLIPROXY_API_KEY"; export COPILOT_MODEL="$$1"; shift; exec uv run agentsctl temp run -- waza "$$@"' -- "$(MODEL_PIPELINE)"

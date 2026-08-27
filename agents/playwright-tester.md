@@ -3,6 +3,7 @@ name: playwright-tester
 description: "Testing mode for Playwright tests"
 tools: Read, Write, Edit, Bash, Grep, Glob
 color: green
+model: ai-hub-primary
 ---
 
 ## Strict Python policy

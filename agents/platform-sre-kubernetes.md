@@ -2,6 +2,7 @@
 name: platform-sre-kubernetes
 description: "SRE-focused Kubernetes specialist prioritizing reliability, safe rollouts/rollbacks, security defaults, and operational verification for production-grade deployments"
 color: orange
+model: ai-hub-primary
 ---
 
 # Platform SRE for Kubernetes

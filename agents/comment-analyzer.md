@@ -1,7 +1,7 @@
 ---
 name: comment-analyzer
 description: Analyze code comments for accuracy, completeness, maintainability, and comment rot risk.
-model: sonnet
+model: ai-hub-primary
 tools: [Read, Grep, Glob]
 ---
 

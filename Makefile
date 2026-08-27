@@ -1,6 +1,6 @@
 # ~/.agents skill authority — canonical execution surface.
 # Every command runs here; no ad-hoc invocations (make-check law).
-# UX: `make help` is the menu. Parameters: SKILL= MODEL= APPLY= BASELINE= FOCUS= COUNT=.
+# UX: `make help` is the menu. Parameters: SKILL= APPLY= BASELINE= FOCUS= COUNT=.
 
 PATH := $(HOME)/.local/bin:$(PATH)
 export PATH
@@ -23,7 +23,7 @@ LATEST_DIR := $(RESULTS_DIR)/latest
 SKILLS := $(patsubst skills/%/SKILL.md,%,$(wildcard skills/*/SKILL.md))
 
 .DEFAULT_GOAL := help
-.PHONY: help status setup models audit check static shell build ci security temp sync mcp adjust normalize descriptions test preflight validate-live rate baseline suggest spec coverage run gate compare validate clean
+.PHONY: help guard-model-override status setup models audit check static shell build ci security temp sync mcp adjust normalize descriptions test preflight validate-live rate baseline suggest spec coverage run gate compare validate clean
 .DELETE_ON_ERROR:
 
 define BANNER
@@ -33,6 +33,9 @@ endef
 help: ## show this menu (default)
 	@awk 'BEGIN{FS=":.*## "} /^## /{sub(/^## */,""); gsub(/~/," "); print ""; $$1=$$1; print $$0} /^[a-z][a-z_-]*:.*## /{printf "  %-14s %s\n",$$1,$$2}' $(MAKEFILE_LIST)
 
+guard-model-override:
+	@test -z "$(MODEL)" || { echo "MODEL override is forbidden; use config/model-pipeline.json"; exit 2; }
+
 ## inspection
 status: ## panel: tools, proxy, skills, baseline presence
 	$(call BANNER,status · environment)
@@ -41,9 +44,9 @@ status: ## panel: tools, proxy, skills, baseline presence
 	@echo "  skills discovered: $(words $(SKILLS))"
 	@if [ -f "$(BASELINE_DIR)/results.json" ]; then echo "  baseline: present ($(BASELINE_DIR)/results.json)"; else echo "  baseline: absent — run 'make baseline'"; fi
 
-models: ## list judge models available through cliproxy
+models: guard-model-override ## verify the canonical pipeline is published by cliproxy
 	$(call BANNER,models · via cliproxy $(if $(COPILOT_BASE_URL),$(COPILOT_BASE_URL),UNSET))
-	@$(WAZA_KEYRING_EXEC) waza models
+	@$(WAZA_KEYRING_EXEC) sh -c 'export COPILOT_PROVIDER_API_KEY="$$CLIPROXY_API_KEY"; uv run agentsctl model-pipeline probe'
 
 setup: ## idempotent project bootstrap (waza init + env sanity)
 	$(call BANNER,setup · scaffold + env)
@@ -51,16 +54,16 @@ setup: ## idempotent project bootstrap (waza init + env sanity)
 	@install -m 0755 bin/env-keyring bin/environment-d-loader "$(HOME)/.local/bin/"
 	@waza init --no-skill >/dev/null && echo "  waza init: ok"
 	@$(WAZA_KEYRING_EXEC) sh -c 'test -n "$$CLIPROXY_API_KEY"' && echo "  judge credentials: available"
-	@echo "  judge model: $(if $(MODEL),$(MODEL),waza default)"
+	@echo "  model pipeline: $$(uv run agentsctl model-pipeline resolve)"
 
 audit: ## deterministic inventory; APPLY=Y refreshes skills.lock.json
 	$(call BANNER,audit · canonical skill inventory)
 	@uv run agentsctl audit $(if $(APPLY),--write,)
 
-check: ## blocking local validation + strict Waza tokens
+check: guard-model-override ## blocking local validation + strict Waza tokens
 	$(call BANNER,check · agents authority $(if $(SKILL),[$(SKILL)],[all]))
 	@uv run agentsctl validate $(if $(SKILL),--skill $(SKILL),)
-	@uv run agentsctl waza-config --check
+	@uv run agentsctl model-pipeline check
 	@uv run agentsctl temp run -- waza tokens check $(if $(SKILL),skills/$(SKILL),./skills) --strict
 	@uv run agentsctl temp audit
 	@uv run agentsctl normalize
@@ -133,24 +136,24 @@ test: ## unit tests for agentsctl
 	$(call BANNER,test · agentsctl)
 	@uv run agentsctl temp run -- uv run pytest
 
-preflight: ## prove selected model, auth, Responses transport, tools, and artifact
+preflight: guard-model-override ## prove selected pipeline, auth, Responses transport, tools, and artifact
 	$(call BANNER,preflight · live Waza transport)
 	@mkdir -p $(RESULTS_DIR)/preflight; \
-	  model="$(WAZA_MODEL)"; candidate=$(RESULTS_DIR)/preflight/results.json.candidate; \
+	  model="$(MODEL_PIPELINE)"; candidate=$(RESULTS_DIR)/preflight/results.json.candidate; \
 	  $(WAZA_ONLINE) run config/waza/preflight/eval.yaml --model "$$model" --output "$$candidate"; \
-	  uv run agentsctl waza-preflight --model "$$model" --output "$$candidate"; classified=$$?; \
+	  uv run agentsctl waza-preflight --output "$$candidate"; classified=$$?; \
 	  if [ $$classified -eq 0 ]; then mv "$$candidate" $(RESULTS_DIR)/preflight/results.json; fi; \
 	  exit $$classified
 
 validate-live: preflight run gate compare ## preflight plus full live regression validation
 
-rate: preflight ## AI judge 1-5 per dimension (or SKILL=name); MODEL= to override
-	$(call BANNER,rate · judge=$(if $(MODEL),$(MODEL),waza-default) $(if $(SKILL),[$(SKILL)],[all]))
+rate: preflight ## AI judge 1-5 per dimension (or SKILL=name)
+	$(call BANNER,rate · pipeline=$(MODEL_PIPELINE) $(if $(SKILL),[$(SKILL)],[all]))
 ifeq ($(SKILL),)
 	@mkdir -p $(LATEST_DIR)/quality; failed=0; for s in $(SKILLS); do \
 	  final=$(LATEST_DIR)/quality/$$s.json; candidate=$$final.candidate; echo "--- $$s"; mkdir -p $$(dirname $$final) && \
 	  $(WAZA_ONLINE) quality skills/$$s $(MODEL_ARG) --format json > $$candidate && uv run agentsctl waza-artifact $$candidate && mv $$candidate $$final \
-	    || { failed=1; echo "RATE FAILED: $$s → retry: make rate SKILL=$$s MODEL=$(MODEL)"; }; done; exit $$failed
+	    || { failed=1; echo "RATE FAILED: $$s → retry: make rate SKILL=$$s"; }; done; exit $$failed
 else
 	@mkdir -p $(LATEST_DIR)/quality
 	@final=$(LATEST_DIR)/quality/$(SKILL).json; candidate=$$final.candidate; mkdir -p $$(dirname $$final) && \
@@ -193,7 +196,7 @@ coverage: ## require every canonical skill to have full Waza grader coverage
 	  uv run agentsctl waza-coverage "$$artifact"'
 
 run: preflight ## execute eval benchmark (BASELINE=1 adds A/B with-vs-without skills)
-	$(call BANNER,run · model=$(if $(MODEL),$(MODEL),waza-default) $(if $(SKILL),[$(SKILL)],[discover all]))
+	$(call BANNER,run · pipeline=$(MODEL_PIPELINE) $(if $(SKILL),[$(SKILL)],[discover all]))
 	@mkdir -p $(LATEST_DIR)
 	@candidate=$(LATEST_DIR)/results.json.candidate; \
 	  $(WAZA_ONLINE) run $(if $(SKILL),evals/$(SKILL)/eval.yaml,skills --discover --strict) $(MODEL_ARG) $(if $(BASELINE),--baseline) --output $$candidate && \

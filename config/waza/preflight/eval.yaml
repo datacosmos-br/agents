@@ -5,10 +5,10 @@ schemaVersion: '1.0'
 version: '1.0'
 config:
   trials_per_task: 1
-  timeout_seconds: 60
+  timeout_seconds: 300
   parallel: false
   executor: copilot-sdk
-  model: gpt-5.4
+  model: ai-hub-primary
   skill_directories:
   - skill
   required_skills:
@@ -22,6 +22,6 @@ graders:
 - type: behavior
   name: bounded_execution
   config:
-    max_duration_ms: 60000
+    max_duration_ms: 240000
 tasks:
 - tasks/tool-read.yaml

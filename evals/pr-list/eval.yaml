@@ -8,7 +8,7 @@ config:
   timeout_seconds: 300
   parallel: false
   executor: copilot-sdk
-  model: gpt-5.4
+  model: ai-hub-primary
   skill_directories:
   - ../../skills/pr-list
   required_skills:
@@ -22,12 +22,18 @@ graders:
 - type: prompt
   name: material_task_result
   config:
-    prompt: |
-      Evaluate whether the response materially satisfies the concrete user request,
+    prompt: 'Evaluate whether the response materially satisfies the concrete user
+      request,
+
       uses the named skill requirements, and provides the requested artifact or
+
       explicit fail-closed constraint. Reject generic, unrelated, self-declared,
+
       or merely non-empty answers. Call set_waza_grade_pass only when every
+
       criterion is evidenced; otherwise call set_waza_grade_fail.
+
+      '
 - type: behavior
   name: bounded_execution
   config:

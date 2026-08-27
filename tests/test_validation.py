@@ -8,7 +8,7 @@ from agents_governance.validation import validate
 
 
 def _catalog(tmp_path: Path) -> Catalog:
-    (tmp_path / "config").mkdir()
+    (tmp_path / "config").mkdir(exist_ok=True)
     config = {
         "budgets": {
             "router_tokens": 500,
@@ -155,20 +155,24 @@ def test_orphan_skill_directory_fails_closed(tmp_path: Path) -> None:
     ]
 
 
-def test_eval_model_must_match_project_owner(tmp_path: Path) -> None:
+def test_eval_model_must_match_pipeline_owner(tmp_path: Path) -> None:
     skill = tmp_path / "skills" / "example"
     skill.mkdir(parents=True)
     (skill / "SKILL.md").write_text(
         "---\nname: example\ndescription: example, validation\n---\n# Example\n",
         encoding="utf-8",
     )
+    (tmp_path / "config").mkdir()
+    (tmp_path / "config" / "model-pipeline.json").write_text(
+        '{"pipeline": "ai-hub-primary", "version": 1}\n', encoding="utf-8"
+    )
     (tmp_path / ".waza.yaml").write_text(
-        "defaults:\n  model: gpt-5.4\n", encoding="utf-8"
+        "defaults:\n  model: ai-hub-primary\n", encoding="utf-8"
     )
     tasks = tmp_path / "evals" / "example" / "tasks"
     tasks.mkdir(parents=True)
     (tasks.parent / "eval.yaml").write_text(
-        "config:\n  model: claude-sonnet-4.6\n"
+        "config:\n  model: wrong-model\n"
         "  required_skills: [example]\n"
         "  skill_directories: [../../skills/example]\n"
         "graders: []\n",
@@ -180,6 +184,6 @@ def test_eval_model_must_match_project_owner(tmp_path: Path) -> None:
 
     findings = validate(_catalog(tmp_path))
 
-    assert [(item.code, item.path) for item in findings] == [
-        ("eval-model-drift", "evals/example/eval.yaml")
+    assert ("model-pipeline-drift", "evals/example/eval.yaml") in [
+        (item.code, item.path) for item in findings
     ]

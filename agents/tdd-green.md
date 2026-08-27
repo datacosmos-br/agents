@@ -3,6 +3,7 @@ name: tdd-green
 description: "Implement minimal code to satisfy GitHub issue requirements and make failing tests pass without over-engineering."
 tools: Read, Write, Edit, Bash, Grep, Glob
 color: green
+model: ai-hub-primary
 ---
 
 # TDD Green Phase - Make Tests Pass Quickly

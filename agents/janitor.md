@@ -3,6 +3,7 @@ name: janitor
 description: "Perform janitorial tasks on any codebase including cleanup, simplification, and tech debt remediation."
 tools: Read, Write, Edit, Bash, Grep, Glob
 color: yellow
+model: ai-hub-primary
 ---
 
 # Universal Janitor

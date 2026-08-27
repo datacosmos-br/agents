@@ -2,7 +2,6 @@
 name: diegosouzapw-modern-python-finimo-solutions
 description: diegosouzapw, modern, python, finimo, solutions, tooling, best, practices, uv, ruff
 version: 1.0.0
-model: sonnet
 invoked_by: both
 user_invocable: true
 tools:

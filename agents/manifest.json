@@ -9,7 +9,7 @@
         "fix bug",
         "refactor"
       ],
-      "model": "claude-sonnet-4-5",
+      "model": "ai-hub-primary",
       "summary": "Executes coding tasks with tests and validation."
     },
     "debugger": {
@@ -20,7 +20,7 @@
         "unexpected behavior",
         "error log"
       ],
-      "model": "claude-sonnet-4-5",
+      "model": "ai-hub-primary",
       "summary": "Diagnoses root causes and proposes minimal fixes."
     },
     "principal-software-engineer": {
@@ -31,7 +31,7 @@
         "plan",
         "review design"
       ],
-      "model": "claude-opus-4-5",
+      "model": "ai-hub-primary",
       "summary": "Designs systems and reviews architecture."
     },
     "blueprint-mode": {
@@ -42,7 +42,7 @@
         "requirements",
         "plan feature"
       ],
-      "model": "claude-opus-4-5",
+      "model": "ai-hub-primary",
       "summary": "Produces detailed implementation plans."
     },
     "software-engineer": {
@@ -52,7 +52,7 @@
         "explore codebase",
         "minor change"
       ],
-      "model": "claude-sonnet-4-5",
+      "model": "ai-hub-primary",
       "summary": "General-purpose engineering tasks."
     },
     "devops-expert": {
@@ -64,7 +64,7 @@
         "infrastructure",
         "deploy"
       ],
-      "model": "claude-sonnet-4-5",
+      "model": "ai-hub-primary",
       "summary": "Infrastructure, GitOps and platform tasks."
     },
     "platform-sre-kubernetes": {
@@ -75,7 +75,7 @@
         "helm",
         "operator"
       ],
-      "model": "claude-sonnet-4-5",
+      "model": "ai-hub-primary",
       "summary": "Kubernetes-specific SRE work."
     },
     "prompt-engineer": {
@@ -86,7 +86,7 @@
         "skill",
         "agent prompt"
       ],
-      "model": "claude-opus-4-5",
+      "model": "ai-hub-primary",
       "summary": "Improves prompts and agent instructions."
     },
     "janitor": {
@@ -98,7 +98,7 @@
         "dead code",
         "canonicalize"
       ],
-      "model": "claude-sonnet-4-5",
+      "model": "ai-hub-primary",
       "summary": "Keeps codebase clean and canonical."
     },
     "playwright-tester": {
@@ -108,7 +108,7 @@
         "playwright",
         "e2e"
       ],
-      "model": "claude-sonnet-4-5",
+      "model": "ai-hub-primary",
       "summary": "Writes and runs browser-based tests."
     },
     "tdd-red": {
@@ -117,7 +117,7 @@
         "tdd",
         "write failing test"
       ],
-      "model": "claude-sonnet-4-5",
+      "model": "ai-hub-primary",
       "summary": "Produces a failing test before implementation."
     },
     "tdd-green": {
@@ -126,7 +126,7 @@
         "make test pass",
         "tdd implementation"
       ],
-      "model": "claude-sonnet-4-5",
+      "model": "ai-hub-primary",
       "summary": "Implements minimal code to pass the test."
     },
     "tdd-refactor": {
@@ -135,7 +135,7 @@
         "refactor after green",
         "tdd refactor"
       ],
-      "model": "claude-sonnet-4-5",
+      "model": "ai-hub-primary",
       "summary": "Refactors while keeping tests green."
     },
     "dispatcher": {
@@ -146,7 +146,7 @@
         "choose agent",
         "which agent"
       ],
-      "model": "claude-sonnet-4-5",
+      "model": "ai-hub-primary",
       "summary": "Routes tasks to the most appropriate specialized agent."
     },
     "code-reviewer": {
@@ -157,7 +157,7 @@
         "pr review",
         "quality"
       ],
-      "model": "claude-sonnet-4-5",
+      "model": "ai-hub-primary",
       "summary": "Proactive code quality/security/maintainability review."
     },
     "security-reviewer": {
@@ -169,7 +169,7 @@
         "auth",
         "secret"
       ],
-      "model": "claude-sonnet-4-5",
+      "model": "ai-hub-primary",
       "summary": "Security-focused review and remediation."
     },
     "performance-optimizer": {
@@ -180,7 +180,7 @@
         "memory leak",
         "slow"
       ],
-      "model": "claude-sonnet-4-5",
+      "model": "ai-hub-primary",
       "summary": "Optimizes runtime, memory and bundle size."
     },
     "build-error-resolver": {
@@ -191,7 +191,7 @@
         "type error",
         "failed build"
       ],
-      "model": "claude-sonnet-4-5",
+      "model": "ai-hub-primary",
       "summary": "Resolves build and compiler errors."
     },
     "code-simplifier": {
@@ -202,7 +202,7 @@
         "clean up",
         "clarity"
       ],
-      "model": "claude-sonnet-4-5",
+      "model": "ai-hub-primary",
       "summary": "Simplifies recently modified code preserving behavior."
     },
     "code-explorer": {
@@ -213,7 +213,7 @@
         "find",
         "trace"
       ],
-      "model": "claude-sonnet-4-5",
+      "model": "ai-hub-primary",
       "summary": "Deep-dive existing features and execution paths."
     },
     "planner": {
@@ -224,7 +224,7 @@
         "complex feature",
         "refactor plan"
       ],
-      "model": "claude-opus-4-5",
+      "model": "ai-hub-primary",
       "summary": "Complex feature and refactoring planning."
     },
     "tdd-guide": {
@@ -235,7 +235,7 @@
         "coverage",
         "write tests"
       ],
-      "model": "claude-sonnet-4-5",
+      "model": "ai-hub-primary",
       "summary": "Enforces test-driven development."
     },
     "silent-failure-hunter": {
@@ -245,7 +245,7 @@
         "swallowed error",
         "fallback bug"
       ],
-      "model": "claude-sonnet-4-5",
+      "model": "ai-hub-primary",
       "summary": "Finds swallowed errors and bad fallbacks."
     },
     "python-reviewer": {
@@ -256,7 +256,7 @@
         "mypy",
         "ruff"
       ],
-      "model": "claude-sonnet-4-5",
+      "model": "ai-hub-primary",
       "summary": "Python-specific review."
     },
     "typescript-reviewer": {
@@ -266,7 +266,7 @@
         "ts review",
         "node review"
       ],
-      "model": "claude-sonnet-4-5",
+      "model": "ai-hub-primary",
       "summary": "TypeScript/Node review."
     },
     "react-reviewer": {
@@ -277,7 +277,7 @@
         "tsx",
         "hooks"
       ],
-      "model": "claude-sonnet-4-5",
+      "model": "ai-hub-primary",
       "summary": "React/Next.js review."
     },
     "rust-reviewer": {
@@ -287,7 +287,7 @@
         "ownership",
         "lifetime"
       ],
-      "model": "claude-sonnet-4-5",
+      "model": "ai-hub-primary",
       "summary": "Rust-specific review."
     },
     "go-reviewer": {
@@ -296,7 +296,7 @@
         "go review",
         "golang"
       ],
-      "model": "claude-sonnet-4-5",
+      "model": "ai-hub-primary",
       "summary": "Go-specific review."
     },
     "java-reviewer": {
@@ -305,7 +305,7 @@
         "java review",
         "spring"
       ],
-      "model": "claude-sonnet-4-5",
+      "model": "ai-hub-primary",
       "summary": "Java/JVM review."
     },
     "kotlin-reviewer": {
@@ -314,7 +314,7 @@
         "kotlin review",
         "android"
       ],
-      "model": "claude-sonnet-4-5",
+      "model": "ai-hub-primary",
       "summary": "Kotlin/Android review."
     },
     "cpp-reviewer": {
@@ -323,7 +323,7 @@
         "cpp review",
         "c++ review"
       ],
-      "model": "claude-sonnet-4-5",
+      "model": "ai-hub-primary",
       "summary": "C++ review."
     },
     "swift-reviewer": {
@@ -332,7 +332,7 @@
         "swift review",
         "ios"
       ],
-      "model": "claude-sonnet-4-5",
+      "model": "ai-hub-primary",
       "summary": "Swift/iOS review."
     },
     "flutter-reviewer": {
@@ -341,7 +341,7 @@
         "flutter review",
         "dart"
       ],
-      "model": "claude-sonnet-4-5",
+      "model": "ai-hub-primary",
       "summary": "Flutter/Dart review."
     },
     "database-reviewer": {
@@ -352,7 +352,7 @@
         "schema",
         "query"
       ],
-      "model": "claude-sonnet-4-5",
+      "model": "ai-hub-primary",
       "summary": "Database/schema review."
     },
     "e2e-runner": {
@@ -362,7 +362,7 @@
         "playwright",
         "browser test"
       ],
-      "model": "claude-sonnet-4-5",
+      "model": "ai-hub-primary",
       "summary": "End-to-end test automation."
     }
   }

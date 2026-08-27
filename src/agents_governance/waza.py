@@ -1,4 +1,4 @@
-"""Canonical Waza model configuration and eval-spec projection."""
+"""Validation of Waza runtime artifacts."""
 
 from __future__ import annotations
 
@@ -7,17 +7,6 @@ from dataclasses import dataclass
 from enum import IntEnum
 from pathlib import Path
 from typing import Any
-
-import yaml
-
-
-@dataclass(frozen=True)
-class WazaConfigFinding:
-    """One eval specification that diverges from the project model owner."""
-
-    path: Path
-    actual: str | None
-    expected: str
 
 
 class PreflightExit(IntEnum):
@@ -127,54 +116,3 @@ def classify_preflight(path: Path, expected_model: str) -> PreflightResult:
             "run did not prove a tool call and non-empty final output",
         )
     return PreflightResult(PreflightExit.AVAILABLE, "live Waza transport is available")
-
-
-def default_model(root: Path) -> str:
-    """Return the configured project model, refusing implicit Waza defaults."""
-
-    path = root / ".waza.yaml"
-    payload = yaml.safe_load(path.read_text(encoding="utf-8"))
-    defaults = payload.get("defaults") if isinstance(payload, dict) else None
-    model = defaults.get("model") if isinstance(defaults, dict) else None
-    if not isinstance(model, str) or not model.strip():
-        raise ValueError(f"{path}: defaults.model is required")
-    return model.strip()
-
-
-def findings(root: Path) -> list[WazaConfigFinding]:
-    """Return every eval whose materialized model differs from the SSOT."""
-
-    expected = default_model(root)
-    result: list[WazaConfigFinding] = []
-    for path in sorted((root / "evals").glob("*/eval.yaml")):
-        payload = yaml.safe_load(path.read_text(encoding="utf-8"))
-        config = payload.get("config") if isinstance(payload, dict) else None
-        actual = config.get("model") if isinstance(config, dict) else None
-        if actual != expected:
-            result.append(
-                WazaConfigFinding(
-                    path=path,
-                    actual=actual if isinstance(actual, str) else None,
-                    expected=expected,
-                )
-            )
-    return result
-
-
-def apply(root: Path) -> list[WazaConfigFinding]:
-    """Materialize the SSOT model into Waza specs, preserving their structure."""
-
-    changes = findings(root)
-    for change in changes:
-        payload = yaml.safe_load(change.path.read_text(encoding="utf-8"))
-        if not isinstance(payload, dict):
-            raise TypeError(f"{change.path}: eval must be a mapping")
-        config = payload.get("config")
-        if not isinstance(config, dict):
-            raise TypeError(f"{change.path}: config must be a mapping")
-        config["model"] = change.expected
-        change.path.write_text(
-            yaml.safe_dump(payload, sort_keys=False, allow_unicode=True),
-            encoding="utf-8",
-        )
-    return changes
