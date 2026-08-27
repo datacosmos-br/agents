@@ -269,6 +269,4 @@ def test_global_audit_uses_only_machine_local_registered_roots(
 
     items = global_findings()
 
-    assert [(item.path, item.kind) for item in items] == [
-        (ephemeral, "prohibited")
-    ]
+    assert [(item.path, item.kind) for item in items] == [(ephemeral, "prohibited")]

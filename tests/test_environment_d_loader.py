@@ -100,9 +100,7 @@ def test_interactive_bootstrap_emits_canonical_path(
         "PATH=/canonical/bin:/usr/bin\n", encoding="utf-8"
     )
     (shell / "aliases.toml").write_text("[aliases]\n", encoding="utf-8")
-    (shell / "completions.toml").write_text(
-        "[bash]\nsource=[]\n", encoding="utf-8"
-    )
+    (shell / "completions.toml").write_text("[bash]\nsource=[]\n", encoding="utf-8")
     emit_bootstrap.__globals__["ENV_ROOT"] = environment
 
     emit_bootstrap("bash", True)

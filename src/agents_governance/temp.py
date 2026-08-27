@@ -396,11 +396,11 @@ def _expand_local_path(raw: str) -> Path:
 def registered_repositories() -> tuple[Path, ...]:
     entries = storage_manifest().get("repositories", [])
     if not isinstance(entries, list):
-        raise RuntimeError("storage repositories must be an array")
+        raise TypeError("storage repositories must be an array")
     result: list[Path] = []
     for entry in entries:
         if not isinstance(entry, dict) or not isinstance(entry.get("path"), str):
-            raise RuntimeError("invalid storage repository entry")
+            raise TypeError("invalid storage repository entry")
         path = _expand_local_path(entry["path"])
         if not path.is_dir() or resolve_repo(path) != path.resolve():
             raise RuntimeError(f"registered repository is not a Git root: {path}")
@@ -415,8 +415,10 @@ def global_findings() -> list[TempFinding]:
         result.extend(repository_findings(repo))
     policy = storage_manifest().get("policy", {})
     if not isinstance(policy, dict):
-        raise RuntimeError("storage policy must be a table")
-    global_temp = _expand_local_path(str(policy.get("global_temp", "${HOME}/.local/tmp")))
+        raise TypeError("storage policy must be a table")
+    global_temp = _expand_local_path(
+        str(policy.get("global_temp", "${HOME}/.local/tmp"))
+    )
     maximum = int(policy.get("global_temp_max_bytes", 256 << 20))
     size = _tree_size(global_temp)
     if size > maximum:

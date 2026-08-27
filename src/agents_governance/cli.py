@@ -15,9 +15,9 @@ from .normalize import normalize, normalize_descriptions
 from .projection import Projector
 from .security import audit as security_audit
 from .temp import findings as temp_findings
+from .temp import gc as temp_gc
 from .temp import gc_all as temp_gc_all
 from .temp import global_findings as temp_global_findings
-from .temp import gc as temp_gc
 from .temp import repository_findings, run_command
 from .temp import status as temp_status
 from .validation import validate
@@ -243,9 +243,7 @@ def _temp_status(root: Path, as_json: bool) -> int:
 
 def _temp_gc(root: Path, apply: bool, all_repositories: bool) -> int:
     eligible, blocked = (
-        temp_gc_all(apply=apply)
-        if all_repositories
-        else temp_gc(root, apply=apply)
+        temp_gc_all(apply=apply) if all_repositories else temp_gc(root, apply=apply)
     )
     action = "REMOVED" if apply else "ELIGIBLE"
     for path in eligible:
