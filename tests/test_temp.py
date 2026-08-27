@@ -14,6 +14,7 @@ from agents_governance.temp import (
     create_run,
     findings,
     gc,
+    global_findings,
     managed_env,
     managed_temp,
     repository_findings,
@@ -243,3 +244,31 @@ def test_gc_removes_only_old_marked_owned_run(tmp_path: Path) -> None:
     assert eligible == [run]
     assert blocked == []
     assert not run.exists()
+
+
+def test_global_audit_uses_only_machine_local_registered_roots(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    repo = git_repo(tmp_path / "repo")
+    config = tmp_path / "config" / "environment.d"
+    config.mkdir(parents=True)
+    (config / "storage.toml").write_text(
+        "version = 1\n"
+        "[policy]\n"
+        f'global_temp = "{tmp_path / "ephemeral"}"\n'
+        "global_temp_max_bytes = 16\n"
+        "[[repositories]]\n"
+        f'path = "{repo}"\n',
+        encoding="utf-8",
+    )
+    ephemeral = tmp_path / "ephemeral"
+    ephemeral.mkdir()
+    (ephemeral / "growth").write_bytes(b"x" * 17)
+    monkeypatch.setenv("XDG_CONFIG_HOME", str(tmp_path / "config"))
+    monkeypatch.setattr("agents_governance.temp.SYSTEM_TEMP", tmp_path / "system-tmp")
+
+    items = global_findings()
+
+    assert [(item.path, item.kind) for item in items] == [
+        (ephemeral, "prohibited")
+    ]

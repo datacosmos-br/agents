@@ -1,0 +1,15 @@
+id: basic-usage-001
+name: Basic Usage
+description: 'Test that the skill handles a typical request correctly.
+
+  '
+tags:
+- basic
+- happy-path
+inputs:
+  prompt: 'Add project-owned rules for the language represented by the fixture. Cover coding style, testing, security, and hooks without assuming a particular framework. Return the concrete rule set.'
+  files:
+  - path: sample.py
+expected:
+  outcomes:
+  - type: task_completed

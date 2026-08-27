@@ -1,7 +1,21 @@
 import json
+import subprocess
 from pathlib import Path
 
 from agents_governance.cli import main
+
+
+def test_temp_run_uses_invocation_repository_not_agents_authority(
+    monkeypatch, tmp_path: Path
+) -> None:
+    repository = tmp_path / "repository"
+    repository.mkdir()
+    subprocess.run(["git", "init", "-q", str(repository)], check=True)
+    monkeypatch.chdir(repository)
+    monkeypatch.setenv("XDG_STATE_HOME", str(tmp_path / "state"))
+    monkeypatch.setenv("XDG_CACHE_HOME", str(tmp_path / "cache"))
+
+    assert main(["temp", "run", "--", "sh", "-c", "test -d .git"]) == 0
 
 
 def test_waza_artifact_fails_closed_for_empty_or_invalid_output(tmp_path: Path) -> None:

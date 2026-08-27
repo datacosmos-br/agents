@@ -1,0 +1,15 @@
+id: basic-usage-001
+name: Basic Usage
+description: 'Test that the skill handles a typical request correctly.
+
+  '
+tags:
+- basic
+- happy-path
+inputs:
+  prompt: 'Implement the feature represented by the fixture through the project interfaces, affected consumers, tests, documentation, and canonical validation. Return a concrete result.'
+  files:
+  - path: sample.py
+expected:
+  outcomes:
+  - type: task_completed

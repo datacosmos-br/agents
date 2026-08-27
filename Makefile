@@ -20,7 +20,7 @@ LATEST_DIR := $(RESULTS_DIR)/latest
 SKILLS := $(patsubst skills/%/SKILL.md,%,$(wildcard skills/*/SKILL.md))
 
 .DEFAULT_GOAL := help
-.PHONY: help status setup models audit check static shell build ci security temp dolt sync mcp adjust normalize descriptions test rate baseline suggest spec coverage run gate compare validate clean
+.PHONY: help status setup models audit check static shell build ci security temp dolt sync mcp adjust normalize descriptions test preflight validate-live rate baseline suggest spec coverage run gate compare validate clean
 .DELETE_ON_ERROR:
 
 define BANNER
@@ -57,6 +57,7 @@ audit: ## deterministic inventory; APPLY=Y refreshes skills.lock.json
 check: ## blocking local validation + strict Waza tokens
 	$(call BANNER,check · agents authority $(if $(SKILL),[$(SKILL)],[all]))
 	@uv run agentsctl validate $(if $(SKILL),--skill $(SKILL),)
+	@uv run agentsctl waza-config --check
 	@uv run agentsctl temp run -- waza tokens check $(if $(SKILL),skills/$(SKILL),./skills) --strict
 	@uv run agentsctl temp audit
 	@uv run agentsctl dolt audit
@@ -134,7 +135,18 @@ test: ## unit tests for agentsctl
 	$(call BANNER,test · agentsctl)
 	@uv run agentsctl temp run -- uv run pytest
 
-rate: ## AI judge 1-5 per dimension (or SKILL=name); MODEL= to override
+preflight: ## prove selected model, auth, Responses transport, tools, and artifact
+	$(call BANNER,preflight · live Waza transport)
+	@mkdir -p $(RESULTS_DIR)/preflight; \
+	  model="$(WAZA_MODEL)"; candidate=$(RESULTS_DIR)/preflight/results.json.candidate; \
+	  $(WAZA_ONLINE) run config/waza/preflight/eval.yaml --model "$$model" --output "$$candidate"; \
+	  uv run agentsctl waza-preflight --model "$$model" --output "$$candidate"; classified=$$?; \
+	  if [ $$classified -eq 0 ]; then mv "$$candidate" $(RESULTS_DIR)/preflight/results.json; fi; \
+	  exit $$classified
+
+validate-live: preflight run gate compare ## preflight plus full live regression validation
+
+rate: preflight ## AI judge 1-5 per dimension (or SKILL=name); MODEL= to override
 	$(call BANNER,rate · judge=$(if $(MODEL),$(MODEL),waza-default) $(if $(SKILL),[$(SKILL)],[all]))
 ifeq ($(SKILL),)
 	@mkdir -p $(LATEST_DIR)/quality; failed=0; for s in $(SKILLS); do \
@@ -148,14 +160,14 @@ else
 	  uv run agentsctl waza-artifact $$candidate && mv $$candidate $$final && cat $$final
 endif
 
-baseline: ## execute evals and write per-skill gate baselines
+baseline: preflight ## execute evals and write per-skill gate baselines
 	$(call BANNER,baseline · snapshot → $(BASELINE_DIR))
 	@mkdir -p $(BASELINE_DIR)
 	@candidate=$(BASELINE_DIR)/results.json.candidate; \
 	  $(WAZA_ONLINE) run skills --discover --strict $(MODEL_ARG) --output $$candidate && \
 	  mv $$candidate $(BASELINE_DIR)/results.json
 
-suggest: ## propose evals (dry-run default; APPLY=1 writes, merge-safe)
+suggest: preflight ## propose evals (dry-run default; APPLY=1 writes, merge-safe)
 	$(call BANNER,suggest · $(if $(SKILL),$(SKILL),MISSING SKILL=))
 	@if [ -z "$(SKILL)" ]; then echo "  usage: make suggest SKILL=<name> [FOCUS=triggers|negative-triggers|edge-fixtures|do-not-use-for|parameters] [COUNT=n] [APPLY=1]"; exit 2; fi
 	@$(WAZA_ONLINE) suggest skills/$(SKILL) $(if $(APPLY),--apply,--dry-run) $(if $(FOCUS),--focus $(FOCUS)) $(if $(COUNT),--count $(COUNT)) $(MODEL_ARG)
@@ -181,7 +193,7 @@ coverage: ## require every canonical skill to have full Waza grader coverage
 	  waza coverage . --format json > "$$artifact" && uv run agentsctl waza-coverage "$$artifact"; \
 	  status=$$?; unlink "$$artifact"; exit $$status
 
-run: ## execute eval benchmark (BASELINE=1 adds A/B with-vs-without skills)
+run: preflight ## execute eval benchmark (BASELINE=1 adds A/B with-vs-without skills)
 	$(call BANNER,run · model=$(if $(MODEL),$(MODEL),waza-default) $(if $(SKILL),[$(SKILL)],[discover all]))
 	@mkdir -p $(LATEST_DIR)
 	@candidate=$(LATEST_DIR)/results.json.candidate; \

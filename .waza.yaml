@@ -2,6 +2,9 @@
 # Enforces the classed workspace budgets owned directly by ~/.agents.
 # No external tool distributes or regenerates this authority.
 
+defaults:
+  model: gpt-5.4
+
 tokens:
   warningThreshold: 450
   fallbackLimit: 5000

@@ -7,7 +7,6 @@ import argparse
 import os
 import re
 import shlex
-import subprocess
 import sys
 import tomllib
 from pathlib import Path
@@ -16,6 +15,9 @@ from pathlib import Path
 CONFIG_ROOT = Path(os.environ.get("XDG_CONFIG_HOME", Path.home() / ".config"))
 ENV_ROOT = CONFIG_ROOT / "environment.d"
 NAME_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
+SECRET_NAME_RE = re.compile(
+    r"(?:^|_)(?:TOKEN|PASSWORD|SECRET|API_KEY|PRIVATE_KEY)$", re.IGNORECASE
+)
 REF_RE = re.compile(
     r"\$(?P<plain>[A-Za-z_][A-Za-z0-9_]*)|"
     r"\$\{(?P<braced>[A-Za-z_][A-Za-z0-9_]*)(?:(?P<op>:-|:\+)(?P<arg>[^}]*))?\}"
@@ -73,8 +75,10 @@ def load_environment() -> dict[str, str]:
     return managed
 
 
-def emit_environment(shell: str) -> None:
+def emit_environment(shell: str, *, preserve_inherited_path: bool = False) -> None:
     for name, value in load_environment().items():
+        if preserve_inherited_path and name == "PATH":
+            continue
         quoted = shlex.quote(value)
         if shell in {"bash", "zsh"}:
             print(f"export {name}={quoted}")
@@ -109,7 +113,7 @@ def emit_aliases(shell: str) -> None:
     for name, command in aliases.items():
         if not re.fullmatch(r"[A-Za-z0-9_.-]+", name) or not isinstance(command, str):
             raise ValueError(f"{path}: invalid alias")
-        print(f"alias {name}={shlex.quote(command)}")
+        print(f"alias {name}={shlex.quote(expand(command, dict(os.environ)))}")
 
 
 def emit_completions(shell: str) -> None:
@@ -121,36 +125,73 @@ def emit_completions(shell: str) -> None:
             print(f"source {shlex.quote(str(expanded))}")
 
 
-def emit_keyring(shell: str) -> None:
-    """Load the directory-authorized automatic profile from Secret Service."""
-    executable = Path.home() / ".local" / "bin" / "env-keyring"
-    if not executable.is_file():
-        raise OSError(f"keyring loader missing: {executable}")
-    process = subprocess.run(
-        [str(executable), "auto-shell", "--directory", os.getcwd(), "--shell", shell],
-        check=False,
-        capture_output=True,
-        text=True,
-        timeout=30,
-    )
-    if process.returncode != 0:
-        raise OSError(process.stderr.strip() or "keyring profile load failed")
-    print(process.stdout, end="")
+def validate_environment() -> None:
+    """Validate the machine-local authority without knowing its variables."""
+    managed = load_environment()
+    secret_names = sorted(name for name in managed if SECRET_NAME_RE.search(name))
+    if secret_names:
+        raise ValueError(
+            "secret-like variables are forbidden in environment.d: "
+            + ", ".join(secret_names)
+        )
+    path = managed.get("PATH")
+    if path:
+        entries = path.split(":")
+        duplicates = sorted({entry for entry in entries if entries.count(entry) > 1})
+        if duplicates:
+            raise ValueError("PATH contains duplicate entries: " + ", ".join(duplicates))
+    for name in ("TMPDIR", "GOTMPDIR"):
+        value = managed.get(name)
+        if value and (not Path(value).is_absolute() or Path(value) == Path("/tmp")):
+            raise ValueError(f"{name} must be absolute and must not equal /tmp")
+    aliases_path = ENV_ROOT / "shell" / "aliases.toml"
+    aliases = tomllib.loads(aliases_path.read_text(encoding="utf-8")).get("aliases", {})
+    if not isinstance(aliases, dict) or any(
+        not re.fullmatch(r"[A-Za-z0-9_.-]+", name) or not isinstance(command, str)
+        for name, command in aliases.items()
+    ):
+        raise ValueError(f"{aliases_path}: invalid alias table")
+    completions_path = ENV_ROOT / "shell" / "completions.toml"
+    completions = tomllib.loads(completions_path.read_text(encoding="utf-8"))
+    for shell in ("bash", "zsh", "fish"):
+        sources = completions.get(shell, {}).get("source", [])
+        if not isinstance(sources, list) or any(
+            not isinstance(candidate, str) for candidate in sources
+        ):
+            raise ValueError(f"{completions_path}: invalid {shell} completions")
 
 
 def emit_bootstrap(shell: str, interactive: bool) -> None:
-    """Emit one complete shell bootstrap without repeated Python startups."""
+    """Emit the non-secret shell baseline.
+
+    Directory-scoped credentials are owned by direnv.  Loading them here makes
+    a shell permanently retain the credentials from its initial directory and
+    lets stale values override the credential stores used by tools such as
+    mise and gh.
+    """
     emit_secret_cleanup(shell)
-    emit_environment(shell)
-    emit_keyring(shell)
+    # BASH_ENV is evaluated for every non-interactive child Bash. Replacing
+    # PATH there defeats an explicit PATH supplied by the parent (including
+    # test fixtures and hermetic tool runners). Interactive shells establish
+    # the canonical baseline; their children inherit it unchanged.
+    emit_environment(shell, preserve_inherited_path=not interactive)
     if interactive:
         emit_aliases(shell)
         emit_completions(shell)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "surface",
-        choices=("bootstrap", "clear-secrets", "env", "aliases", "completions"),
+        choices=(
+            "bootstrap",
+            "clear-secrets",
+            "env",
+            "aliases",
+            "completions",
+            "validate",
+        ),
     )
     parser.add_argument("--shell", required=True, choices=("bash", "zsh", "fish"))
     parser.add_argument("--interactive", action="store_true")
@@ -164,8 +205,10 @@ def main() -> int:
             emit_environment(args.shell)
         elif args.surface == "aliases":
             emit_aliases(args.shell)
-        else:
+        elif args.surface == "completions":
             emit_completions(args.shell)
+        else:
+            validate_environment()
     except (OSError, ValueError, tomllib.TOMLDecodeError) as error:
         print(f"environment-d-loader: {error}", file=sys.stderr)
         return 78

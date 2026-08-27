@@ -27,6 +27,7 @@ def _projector(tmp_path: Path, target: Path) -> Projector:
             "universal_core_tokens": 2000,
         },
         "classification": [],
+        "personal": ["example"],
         "project_generic": [],
         "private_patterns": [],
         "technologies": {},
@@ -208,6 +209,7 @@ def test_flext_source_overrides_same_named_generic_skill(
     target = tmp_path / "target"
     projector = _projector(tmp_path, target)
     projector.catalog.config["project_generic"] = ["example"]
+    projector.catalog.config["personal"] = []
     project = tmp_path / "project"
     project.mkdir()
     flext_skill = tmp_path / "flext" / "example"

@@ -13,7 +13,8 @@ This file is the activation router. Before acting, read
 - Treat a schema migration as one atomic cutover: owner, data, generators,
   consumers, tests, documentation, and runtime wiring change together.
 - Exterminate the superseded schema and every old consumer. Never add a shim,
-  fallback, alias, dual reader/writer, deprecation window, or hardcoded bridge.
+  fallback, compatibility alias, dual reader/writer, deprecation window, or
+  hardcoded bridge for the superseded contract.
 - A public-interface change is prohibited until the operator reviews and
   explicitly approves its exact contract and impact.
 - Completion requires all native gates, migration idempotence, runtime proof,

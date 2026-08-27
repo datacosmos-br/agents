@@ -1,6 +1,6 @@
-name: source-command-add-language-rules-eval
-description: Evaluation suite for source-command-add-language-rules.
-skill: source-command-add-language-rules
+name: feature-development-eval
+description: Evaluation suite for feature-development.
+skill: feature-development
 schemaVersion: '1.0'
 version: '1.0'
 config:
@@ -8,11 +8,11 @@ config:
   timeout_seconds: 300
   parallel: false
   executor: copilot-sdk
-  model: claude-sonnet-4.6
+  model: gpt-5.4
   skill_directories:
-  - ../../skills/source-command-add-language-rules
+  - ../../skills/feature-development
   required_skills:
-  - source-command-add-language-rules
+  - feature-development
 metrics:
 - name: task_completion
   weight: 1.0

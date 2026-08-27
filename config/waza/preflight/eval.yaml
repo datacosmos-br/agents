@@ -1,0 +1,27 @@
+name: agents-waza-transport-preflight
+description: Live transport, model, tool, and artifact preflight.
+skill: waza-transport-preflight
+schemaVersion: '1.0'
+version: '1.0'
+config:
+  trials_per_task: 1
+  timeout_seconds: 60
+  parallel: false
+  executor: copilot-sdk
+  model: gpt-5.4
+  skill_directories:
+  - skill
+  required_skills:
+  - waza-transport-preflight
+graders:
+- type: code
+  name: sentinel_returned
+  config:
+    assertions:
+    - '"AGENTS_WAZA_TOOL_SENTINEL_7C4E91" in output'
+- type: behavior
+  name: bounded_execution
+  config:
+    max_duration_ms: 60000
+tasks:
+- tasks/tool-read.yaml

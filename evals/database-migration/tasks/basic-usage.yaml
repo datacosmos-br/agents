@@ -1,0 +1,15 @@
+id: basic-usage-001
+name: Basic Usage
+description: 'Test that the skill handles a typical request correctly.
+
+  '
+tags:
+- basic
+- happy-path
+inputs:
+  prompt: 'Design the database change represented by the fixture, including forward migration, rollback, affected consumers, and validation. Return a concrete migration result.'
+  files:
+  - path: sample.py
+expected:
+  outcomes:
+  - type: task_completed

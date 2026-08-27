@@ -1,21 +1,15 @@
 ---
-name: source-command-feature-development
-description: source, command, feature, development, scaffold, feature-development, everything-codex
+name: feature-development
+description: feature, development, implementation, tests, interfaces, consumers, documentation, validation
 ---
 
-# source-command-feature-development
+# Feature Development
 
-Use this skill when the user asks to run the migrated source command `feature-development`.
-
-## Command Template
-
-# /feature-development
-
-Use this workflow when working on **feature-development** in `everything-Codex`.
+Use this workflow to implement a project feature through its canonical owners and gates.
 
 ## Goal
 
-Standard feature implementation workflow
+Deliver a coherent feature with affected consumers, tests, documentation, and validation.
 
 ## Common Files
 

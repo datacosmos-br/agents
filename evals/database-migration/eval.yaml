@@ -1,6 +1,6 @@
-name: source-command-database-migration-eval
-description: Evaluation suite for source-command-database-migration.
-skill: source-command-database-migration
+name: database-migration-eval
+description: Evaluation suite for database-migration.
+skill: database-migration
 schemaVersion: '1.0'
 version: '1.0'
 config:
@@ -8,11 +8,11 @@ config:
   timeout_seconds: 300
   parallel: false
   executor: copilot-sdk
-  model: claude-sonnet-4.6
+  model: gpt-5.4
   skill_directories:
-  - ../../skills/source-command-database-migration
+  - ../../skills/database-migration
   required_skills:
-  - source-command-database-migration
+  - database-migration
 metrics:
 - name: task_completion
   weight: 1.0

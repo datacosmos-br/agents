@@ -22,6 +22,9 @@ def test_inventory_is_deterministic_and_owned(tmp_path: Path) -> None:
             "universal_core_tokens": 2000,
         },
         "classification": [],
+        "personal": ["example"],
+        "project_generic": [],
+        "technologies": {},
         "default": {"class": "on_demand", "provenance": "adopted", "updates": "manual"},
     }
     (tmp_path / "config" / "skills.json").write_text(
@@ -60,6 +63,8 @@ def test_forbidden_third_party_skill_is_not_distributed(tmp_path: Path) -> None:
             }
         ],
         "technologies": {},
+        "personal": [],
+        "project_generic": [],
         "default": {"class": "on_demand", "provenance": "adopted", "updates": "manual"},
     }
     (tmp_path / "config" / "skills.json").write_text(
@@ -70,3 +75,36 @@ def test_forbidden_third_party_skill_is_not_distributed(tmp_path: Path) -> None:
 
     assert catalog.policy("vendor-frozen-plan").distributions == ()
     assert "vendor-frozen-plan" not in catalog.names_for("personal")
+
+
+def test_distribution_classes_are_explicit_and_disjoint(tmp_path: Path) -> None:
+    (tmp_path / "config").mkdir()
+    skill = tmp_path / "skills" / "example"
+    skill.mkdir(parents=True)
+    (skill / "SKILL.md").write_text(
+        "---\nname: example\ndescription: example\n---\n", encoding="utf-8"
+    )
+    config = {
+        "budgets": {
+            "router_tokens": 500,
+            "frozen_tokens": 1200,
+            "on_demand_tokens": 5000,
+            "max_lines": 500,
+        },
+        "classification": [],
+        "personal": ["example"],
+        "project_generic": ["example"],
+        "technologies": {},
+        "default": {
+            "class": "on_demand",
+            "provenance": "adopted",
+            "updates": "manual",
+        },
+    }
+    (tmp_path / "config" / "skills.json").write_text(
+        json.dumps(config), encoding="utf-8"
+    )
+
+    assert Catalog(tmp_path).distribution_errors() == (
+        "example: expected exactly one distribution class",
+    )

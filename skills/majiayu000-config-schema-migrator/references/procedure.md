@@ -24,9 +24,10 @@ A migration is one atomic cutover. The same reviewed change must:
    terminology; and
 6. prove the new contract through native gates and real runtime consumers.
 
-Never retain the old and new contracts together. Compatibility shims, aliases,
-fallback readers, dual writes, silent defaults, deprecation windows, feature
-flags, suppressions, stubs, and hardcoded translations are prohibited.
+Never retain the old and new contracts together. Compatibility shims or aliases
+for the superseded schema, fallback readers, dual writes, silent defaults,
+deprecation windows, feature flags, suppressions, stubs, and hardcoded
+translations are prohibited.
 
 If every known user cannot be rewired in the same change, stop before editing.
 Split preparatory internal refactors only when they do not alter the contract and

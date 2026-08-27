@@ -11,6 +11,7 @@ import yaml
 
 from .catalog import Catalog
 from .tokens import bpe_tokens
+from .waza import findings as waza_config_findings
 
 _LINK = re.compile(r"\[[^\]]+\]\(([^)]+)\)")
 _FENCED_CODE = re.compile(r"^```.*?^```\s*$", re.MULTILINE | re.DOTALL)
@@ -118,6 +119,20 @@ def validate(catalog: Catalog) -> list[Finding]:
     """Validate every active skill and return all blocking findings."""
 
     findings: list[Finding] = []
+    if (catalog.root / "config" / "skills.json").is_file():
+        findings.extend(
+            Finding("config/skills.json", "distribution", message)
+            for message in catalog.distribution_errors()
+        )
+    if (catalog.root / ".waza.yaml").is_file():
+        for waza_item in waza_config_findings(catalog.root):
+            findings.append(
+                Finding(
+                    waza_item.path.relative_to(catalog.root).as_posix(),
+                    "eval-model-drift",
+                    f"model {waza_item.actual!r} != project default {waza_item.expected!r}",
+                )
+            )
     names: set[str] = set()
     for directory in sorted((catalog.root / "skills").iterdir()):
         if directory.is_dir() and not (directory / "SKILL.md").is_file():

@@ -1,17 +1,11 @@
 ---
-name: source-command-add-language-rules
-description: source, command, add, language, rules, scaffold, add-language-rules, everything-codex
+name: add-language-rules
+description: add, language, rules, scaffold, coding, testing, security, hooks
 ---
 
-# source-command-add-language-rules
+# Add Language Rules
 
-Use this skill when the user asks to run the migrated source command `add-language-rules`.
-
-## Command Template
-
-# /add-language-rules
-
-Use this workflow when working on **add-language-rules** in `everything-Codex`.
+Use this workflow to add or extend project-owned rules for a programming language.
 
 ## Goal
 

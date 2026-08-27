@@ -15,10 +15,16 @@ from .normalize import normalize, normalize_descriptions
 from .projection import Projector
 from .security import audit as security_audit
 from .temp import findings as temp_findings
+from .temp import gc_all as temp_gc_all
+from .temp import global_findings as temp_global_findings
 from .temp import gc as temp_gc
 from .temp import repository_findings, run_command
 from .temp import status as temp_status
 from .validation import validate
+from .waza import apply as apply_waza_config
+from .waza import classify_preflight
+from .waza import default_model as waza_default_model
+from .waza import findings as waza_config_findings
 
 
 def _root() -> Path:
@@ -149,6 +155,35 @@ def _waza_coverage(path: Path) -> int:
     return 0
 
 
+def _waza_config(root: Path, apply: bool, print_model: bool) -> int:
+    model = waza_default_model(root)
+    if print_model:
+        print(model)
+        return 0
+    changes = apply_waza_config(root) if apply else waza_config_findings(root)
+    for item in changes:
+        relative = item.path.relative_to(root)
+        print(f"{relative}: model {item.actual!r} -> {item.expected!r}")
+    if changes and not apply:
+        print(
+            f"FAIL: {len(changes)} Waza eval model projection(s) drifted",
+            file=sys.stderr,
+        )
+        return 1
+    print(
+        f"{'APPLIED' if apply else 'PASS'}: Waza model={model}; "
+        f"{len(changes)} change(s)"
+    )
+    return 0
+
+
+def _waza_preflight(path: Path, model: str) -> int:
+    result = classify_preflight(path, model)
+    stream = sys.stdout if result.status == 0 else sys.stderr
+    print(f"{result.status.name}: {result.message}", file=stream)
+    return int(result.status)
+
+
 def _clean(root: Path) -> int:
     try:
         removed = clean_generated(root)
@@ -206,14 +241,43 @@ def _temp_status(root: Path, as_json: bool) -> int:
     return 0
 
 
-def _temp_gc(root: Path, apply: bool) -> int:
-    eligible, blocked = temp_gc(root, apply=apply)
+def _temp_gc(root: Path, apply: bool, all_repositories: bool) -> int:
+    eligible, blocked = (
+        temp_gc_all(apply=apply)
+        if all_repositories
+        else temp_gc(root, apply=apply)
+    )
     action = "REMOVED" if apply else "ELIGIBLE"
     for path in eligible:
         print(f"{action}: {path}")
     for item in blocked:
         print(f"{item.path}: {item.message}", file=sys.stderr)
     return 0
+
+
+def _temp_global(as_json: bool) -> int:
+    items = temp_global_findings()
+    blocking = [item for item in items if item.kind in {"prohibited", "residue"}]
+    if as_json:
+        print(
+            json.dumps(
+                [
+                    {
+                        "path": str(item.path),
+                        "kind": item.kind,
+                        "message": item.message,
+                        "size_bytes": item.size_bytes,
+                    }
+                    for item in items
+                ],
+                indent=2,
+                sort_keys=True,
+            )
+        )
+    else:
+        for item in items:
+            print(f"{item.path}: {item.kind}: {item.message}")
+    return int(bool(blocking))
 
 
 def _temp_run(root: Path, command: list[str]) -> int:
@@ -301,6 +365,14 @@ def parser() -> argparse.ArgumentParser:
     waza_artifact.add_argument("path", type=Path)
     waza_coverage = commands.add_parser("waza-coverage")
     waza_coverage.add_argument("path", type=Path)
+    waza_config = commands.add_parser("waza-config")
+    waza_config_mode = waza_config.add_mutually_exclusive_group(required=True)
+    waza_config_mode.add_argument("--check", action="store_true")
+    waza_config_mode.add_argument("--apply", action="store_true")
+    waza_config_mode.add_argument("--model", action="store_true")
+    waza_preflight = commands.add_parser("waza-preflight")
+    waza_preflight.add_argument("--model", required=True)
+    waza_preflight.add_argument("--output", required=True, type=Path)
     commands.add_parser("clean")
     temporary = commands.add_parser("temp")
     temp_commands = temporary.add_subparsers(dest="temp_command", required=True)
@@ -311,9 +383,14 @@ def parser() -> argparse.ArgumentParser:
     temp_run = temp_commands.add_parser("run")
     temp_run.add_argument("argv", nargs=argparse.REMAINDER)
     temp_gc_parser = temp_commands.add_parser("gc")
+    temp_gc_parser.add_argument("--all", action="store_true")
     gc_mode = temp_gc_parser.add_mutually_exclusive_group(required=True)
     gc_mode.add_argument("--dry-run", action="store_true")
     gc_mode.add_argument("--apply", action="store_true")
+    for name in ("inventory", "verify"):
+        command = temp_commands.add_parser(name)
+        command.add_argument("--global", dest="global_scope", action="store_true")
+        command.add_argument("--json", action="store_true")
     dolt = commands.add_parser("dolt")
     dolt_commands = dolt.add_subparsers(dest="dolt_command", required=True)
     dolt_audit_parser = dolt_commands.add_parser("audit")
@@ -347,6 +424,10 @@ def main(argv: list[str] | None = None) -> int:
         return _waza_artifact(args.path)
     if args.command == "waza-coverage":
         return _waza_coverage(args.path)
+    if args.command == "waza-config":
+        return _waza_config(root, args.apply, args.model)
+    if args.command == "waza-preflight":
+        return _waza_preflight(args.output, args.model)
     if args.command == "clean":
         return _clean(root)
     if args.command == "temp":
@@ -356,9 +437,13 @@ def main(argv: list[str] | None = None) -> int:
             if args.temp_command == "status":
                 return _temp_status(root, args.json)
             if args.temp_command == "run":
-                return _temp_run(root, args.argv)
+                return _temp_run(Path.cwd().resolve(), args.argv)
             if args.temp_command == "gc":
-                return _temp_gc(root, args.apply)
+                return _temp_gc(root, args.apply, args.all)
+            if args.temp_command in {"inventory", "verify"}:
+                if not args.global_scope:
+                    raise ValueError("--global is required")
+                return _temp_global(args.json)
             raise AssertionError(args.temp_command)
         except (OSError, RuntimeError, ValueError) as error:
             print(f"FAIL: {error}", file=sys.stderr)

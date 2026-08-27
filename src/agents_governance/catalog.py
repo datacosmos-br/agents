@@ -63,13 +63,16 @@ class Catalog:
             for technology, profile in self.config.get("technologies", {}).items()
             if name in profile["skills"]
         )
+        personal = name in self.config.get("personal", [])
+        project_generic = name in self.config.get("project_generic", [])
+        category_count = sum((personal, project_generic, bool(technologies)))
         distributions: tuple[str, ...]
-        if selected["updates"] == "forbidden":
+        if selected["updates"] == "forbidden" or category_count != 1:
             distributions = ()
         elif technologies:
             distributions = tuple(f"technology:{item}" for item in technologies)
-        elif name in self.config.get("project_generic", []):
-            distributions = ("personal", "project-generic")
+        elif project_generic:
+            distributions = ("project-generic",)
         else:
             distributions = ("personal",)
         return SkillPolicy(
@@ -95,6 +98,30 @@ class Catalog:
         """Return the authored technology detection and skill profiles."""
 
         return dict(self.config.get("technologies", {}))
+
+    def distribution_errors(self) -> tuple[str, ...]:
+        """Return unclassified, multiply classified, and unknown catalog entries."""
+
+        live = {directory.name for directory in self.skill_dirs()}
+        personal = set(self.config.get("personal", []))
+        generic = set(self.config.get("project_generic", []))
+        technology = {
+            skill
+            for profile in self.config.get("technologies", {}).values()
+            for skill in profile.get("skills", [])
+        }
+        errors: list[str] = []
+        for name in sorted(live):
+            memberships = sum(
+                name in group for group in (personal, generic, technology)
+            )
+            if self.policy(name).updates != "forbidden" and memberships != 1:
+                errors.append(f"{name}: expected exactly one distribution class")
+        unknown = (personal | generic | technology) - live
+        errors.extend(
+            f"{name}: catalog entry has no live skill" for name in sorted(unknown)
+        )
+        return tuple(errors)
 
     @staticmethod
     def digest_tree(directory: Path) -> str:

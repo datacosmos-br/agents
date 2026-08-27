@@ -1,21 +1,15 @@
 ---
-name: source-command-database-migration
-description: source, command, database, migration, scaffold, database-migration, everything-codex
+name: database-migration
+description: database, migration, schema, rollback, data, compatibility, validation
 ---
 
-# source-command-database-migration
+# Database Migration
 
-Use this skill when the user asks to run the migrated source command `database-migration`.
-
-## Command Template
-
-# /database-migration
-
-Use this workflow when working on **database-migration** in `everything-Codex`.
+Use this workflow for project-owned database schema and data migrations.
 
 ## Goal
 
-Database schema changes with migration files
+Change a database safely with reversible migration files and validated consumers.
 
 ## Common Files
 

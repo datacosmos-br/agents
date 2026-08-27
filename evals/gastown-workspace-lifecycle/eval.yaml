@@ -8,7 +8,7 @@ config:
   timeout_seconds: 300
   parallel: false
   executor: copilot-sdk
-  model: claude-sonnet-4.6
+  model: gpt-5.4
   skill_directories:
   - ../../skills/gastown-workspace-lifecycle
   required_skills:
