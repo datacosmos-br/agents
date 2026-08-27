@@ -83,7 +83,8 @@ sync: ## check skills, commands, and rules projections; APPLY=Y reconciles
 
 mcp: ## synchronize MCP through the canonical ai-hub owner
 	$(call BANNER,mcp · ai-hub canonical sync $(if $(APPLY),[apply],[check]))
-	@ai-hub mcp --action sync $(if $(APPLY),,--dry-run)
+	@env-keyring auto-exec --directory "$(CURDIR)" --consumer agent:agents-mcp -- \
+	  ai-hub mcp --action sync $(if $(APPLY),,--dry-run)
 
 discover-projects: ## show automatic project/FLEXT/technology classification
 	$(call BANNER,discover · canonical Gas Town project checkouts)

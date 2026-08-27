@@ -22,7 +22,10 @@ try:
 
     gi.require_version("Secret", "1")
     from gi.repository import Secret
-except (ImportError, ValueError):  # pragma: no cover - fallback is exercised on headless hosts
+except (
+    ImportError,
+    ValueError,
+):  # pragma: no cover - fallback is exercised on headless hosts
     Secret = None
 
 
@@ -84,8 +87,13 @@ def profile_config(name: str) -> dict[str, object]:
     if not isinstance(config, dict):
         raise KeyringError(f"unknown profile: {name}")
     variables = config.get("variables", [])
-    if not isinstance(variables, list) or not variables or any(
-        not isinstance(item, str) or not NAME_RE.fullmatch(item) for item in variables
+    if (
+        not isinstance(variables, list)
+        or not variables
+        or any(
+            not isinstance(item, str) or not NAME_RE.fullmatch(item)
+            for item in variables
+        )
     ):
         raise KeyringError(f"invalid variables for profile: {name}")
     return config
@@ -109,7 +117,11 @@ def auto_profile(directory: str | None) -> tuple[str, dict[str, object]] | None:
     if not candidates:
         return None
     depth = max(item[0] for item in candidates)
-    winners = {(name, id(config)): (name, config) for item_depth, name, config in candidates if item_depth == depth}
+    winners = {
+        (name, id(config)): (name, config)
+        for item_depth, name, config in candidates
+        if item_depth == depth
+    }
     if len(winners) != 1:
         raise KeyringError("ambiguous automatic keyring profile")
     return next(iter(winners.values()))
@@ -127,7 +139,8 @@ def authorize_directory(config: dict[str, object], directory: str | None) -> Non
     current = Path(directory or os.getcwd()).resolve(strict=True)
     roots = config.get("roots", [])
     if not isinstance(roots, list) or not any(
-        isinstance(item, str) and within(current, Path(item).expanduser().resolve(strict=True))
+        isinstance(item, str)
+        and within(current, Path(item).expanduser().resolve(strict=True))
         for item in roots
         if Path(str(item)).expanduser().exists()
     ):
@@ -185,8 +198,15 @@ def store(profile: str, name: str, from_stdin: bool) -> int:
         raise KeyringError("refusing to store an empty secret")
     process = subprocess.run(
         [
-            "secret-tool", "store", f"--label={APP}: {profile}/{name}",
-            "application", APP, "profile", profile, "name", name,
+            "secret-tool",
+            "store",
+            f"--label={APP}: {profile}/{name}",
+            "application",
+            APP,
+            "profile",
+            profile,
+            "name",
+            name,
         ],
         input=value,
         text=True,
@@ -258,6 +278,25 @@ def execute(profile: str, consumer: str, command: list[str]) -> int:
     return 70
 
 
+def execute_auto(directory: str | None, consumer: str, command: list[str]) -> int:
+    selected = auto_profile(directory)
+    if selected is None:
+        raise KeyringError("no automatic keyring profile for directory")
+    profile, config = selected
+    authorize_consumer(config, consumer)
+    secrets = fetch_all(profile, config)
+    environment = os.environ.copy()
+    for item in manifest().values():
+        if isinstance(item, dict):
+            for name in item.get("variables", []):
+                environment.pop(str(name), None)
+    environment.update(secrets)
+    environment["ENV_KEYRING_PROFILE"] = profile
+    event("auto-exec", profile, result="ok")
+    os.execvpe(command[0], command, environment)
+    return 70
+
+
 def remove(profile: str, name: str, confirmed: bool) -> int:
     config = profile_config(profile)
     if not confirmed or name not in config["variables"]:
@@ -269,7 +308,12 @@ def remove(profile: str, name: str, confirmed: bool) -> int:
         stderr=subprocess.DEVNULL,
         timeout=15,
     )
-    event("remove", profile, name=name, result="ok" if process.returncode == 0 else "failed")
+    event(
+        "remove",
+        profile,
+        name=name,
+        result="ok" if process.returncode == 0 else "failed",
+    )
     return process.returncode
 
 
@@ -283,10 +327,14 @@ def build_parser() -> argparse.ArgumentParser:
     shell_parser = commands.add_parser("shell")
     shell_parser.add_argument("--profile", required=True)
     shell_parser.add_argument("--directory")
-    shell_parser.add_argument("--shell", choices=("bash", "zsh", "fish"), default="bash")
+    shell_parser.add_argument(
+        "--shell", choices=("bash", "zsh", "fish"), default="bash"
+    )
     auto_shell_parser = commands.add_parser("auto-shell")
     auto_shell_parser.add_argument("--directory")
-    auto_shell_parser.add_argument("--shell", choices=("bash", "zsh", "fish"), default="bash")
+    auto_shell_parser.add_argument(
+        "--shell", choices=("bash", "zsh", "fish"), default="bash"
+    )
     check_parser = commands.add_parser("check")
     check_parser.add_argument("--profile", required=True)
     check_parser.add_argument("--directory")
@@ -295,6 +343,10 @@ def build_parser() -> argparse.ArgumentParser:
     exec_parser.add_argument("--profile", required=True)
     exec_parser.add_argument("--consumer", required=True)
     exec_parser.add_argument("argv", nargs=argparse.REMAINDER)
+    auto_exec_parser = commands.add_parser("auto-exec")
+    auto_exec_parser.add_argument("--directory")
+    auto_exec_parser.add_argument("--consumer", required=True)
+    auto_exec_parser.add_argument("argv", nargs=argparse.REMAINDER)
     remove_parser = commands.add_parser("remove")
     remove_parser.add_argument("--profile", required=True)
     remove_parser.add_argument("--name", required=True)
@@ -320,6 +372,13 @@ def main() -> int:
             if not command:
                 raise KeyringError("exec requires a command after --")
             return execute(args.profile, args.consumer, command)
+        if args.command == "auto-exec":
+            command = list(args.argv)
+            if command and command[0] == "--":
+                command.pop(0)
+            if not command:
+                raise KeyringError("auto-exec requires a command after --")
+            return execute_auto(args.directory, args.consumer, command)
         if args.command == "remove":
             return remove(args.profile, args.name, args.yes)
     except (KeyringError, OSError, subprocess.SubprocessError) as error:

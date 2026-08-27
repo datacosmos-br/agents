@@ -12,3 +12,7 @@ environment files, units, logs, backups, command arguments, or source control.
 Clear inherited credentials before loading the authorized profile. Missing or
 unauthorized credentials fail closed. Do not add plaintext fallback, duplicate
 stores, wrapper-only access, placeholder credentials, or silent degradation.
+
+Non-interactive commands use `env-keyring auto-exec`: the working directory
+selects the authorized profile and credentials exist only in the child process.
+Callers never name a profile or read a credential file.
