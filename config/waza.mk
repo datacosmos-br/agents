@@ -13,4 +13,4 @@ WAZA_MODEL = $(if $(strip $(MODEL)),$(MODEL),$$(uv run agentsctl waza-config --m
 MODEL_ARG = --model $(WAZA_MODEL)
 
 WAZA_KEYRING_EXEC = env-keyring auto-exec --directory "$(CURDIR)" --consumer agent:agents-waza --
-WAZA_ONLINE = $(WAZA_KEYRING_EXEC) env COPILOT_MODEL="$(WAZA_MODEL)" uv run agentsctl temp run -- waza
+WAZA_ONLINE = $(WAZA_KEYRING_EXEC) sh -c 'export COPILOT_PROVIDER_API_KEY="$$CLIPROXY_API_KEY"; export COPILOT_MODEL="$$1"; shift; exec uv run agentsctl temp run -- waza "$$@"' -- "$(WAZA_MODEL)"

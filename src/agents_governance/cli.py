@@ -196,8 +196,10 @@ def _clean(root: Path) -> int:
     return 0
 
 
-def _temp_audit(root: Path, as_json: bool) -> int:
-    items = [*temp_findings(), *repository_findings(root)]
+def _temp_audit(root: Path, as_json: bool, global_scope: bool) -> int:
+    items = repository_findings(root)
+    if global_scope:
+        items = [*temp_findings(), *items]
     blocking = [item for item in items if item.kind in {"prohibited", "residue"}]
     if as_json:
         print(
@@ -227,7 +229,8 @@ def _temp_audit(root: Path, as_json: bool) -> int:
             file=sys.stderr,
         )
         return 1
-    print("PASS: no registered /tmp residue or filesystem pressure")
+    scope = "system and repository" if global_scope else "repository"
+    print(f"PASS: no blocking temporary-filesystem findings in {scope} scope")
     return 0
 
 
@@ -376,6 +379,7 @@ def parser() -> argparse.ArgumentParser:
     temp_commands = temporary.add_subparsers(dest="temp_command", required=True)
     temp_audit = temp_commands.add_parser("audit")
     temp_audit.add_argument("--json", action="store_true")
+    temp_audit.add_argument("--global", dest="global_scope", action="store_true")
     temp_status_parser = temp_commands.add_parser("status")
     temp_status_parser.add_argument("--json", action="store_true")
     temp_run = temp_commands.add_parser("run")
@@ -431,7 +435,7 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "temp":
         try:
             if args.temp_command == "audit":
-                return _temp_audit(root, args.json)
+                return _temp_audit(root, args.json, args.global_scope)
             if args.temp_command == "status":
                 return _temp_status(root, args.json)
             if args.temp_command == "run":

@@ -367,9 +367,13 @@ def findings(temp_root: Path = SYSTEM_TEMP) -> list[TempFinding]:
 
 
 def storage_manifest() -> dict[str, object]:
-    """Load machine-local storage ownership without embedding it in this package."""
-    config_home = _xdg("XDG_CONFIG_HOME", ".config")
-    path = config_home / "environment.d" / "storage.toml"
+    """Load the exact storage manifest selected by the execution owner."""
+    configured = os.environ.get("AGENTS_STORAGE_CONFIG")
+    if not configured:
+        raise RuntimeError("AGENTS_STORAGE_CONFIG is required")
+    path = Path(configured).expanduser()
+    if not path.is_absolute():
+        raise RuntimeError("AGENTS_STORAGE_CONFIG must be an absolute path")
     try:
         data = tomllib.loads(path.read_text(encoding="utf-8"))
     except (OSError, tomllib.TOMLDecodeError) as error:

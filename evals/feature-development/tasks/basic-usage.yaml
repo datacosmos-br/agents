@@ -7,9 +7,12 @@ tags:
 - basic
 - happy-path
 inputs:
-  prompt: 'Implement the feature represented by the fixture through the project interfaces, affected consumers, tests, documentation, and canonical validation. Return a concrete result.'
+  prompt: 'Complete this feature development task: provide the implementation, update interfaces and consumers, add tests and documentation, and report validation evidence.'
   files:
-  - path: sample.py
+  - path: src/account_status.py
 expected:
   outcomes:
   - type: task_completed
+  output_contains:
+  - tests
+  - validation

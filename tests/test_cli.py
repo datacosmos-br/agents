@@ -2,7 +2,23 @@ import json
 import subprocess
 from pathlib import Path
 
+import pytest
+
 from agents_governance.cli import main
+from agents_governance.temp import TempFinding
+
+
+@pytest.fixture(autouse=True)
+def explicit_storage_manifest(monkeypatch, tmp_path: Path) -> None:
+    manifest = tmp_path / "storage.toml"
+    manifest.write_text(
+        "version = 1\n"
+        "repositories = []\n"
+        "[policy]\n"
+        f'global_temp = "{tmp_path / "ephemeral"}"\n',
+        encoding="utf-8",
+    )
+    monkeypatch.setenv("AGENTS_STORAGE_CONFIG", str(manifest))
 
 
 def test_temp_run_uses_invocation_repository_not_agents_authority(
@@ -16,6 +32,28 @@ def test_temp_run_uses_invocation_repository_not_agents_authority(
     monkeypatch.setenv("XDG_CACHE_HOME", str(tmp_path / "cache"))
 
     assert main(["temp", "run", "--", "sh", "-c", "test -d .git"]) == 0
+
+
+def test_temp_audit_is_repository_scoped_unless_global_is_requested(
+    monkeypatch, tmp_path: Path
+) -> None:
+    repository = tmp_path / "repository"
+    repository.mkdir()
+    subprocess.run(["git", "init", "-q", str(repository)], check=True)
+    system_temp = tmp_path / "system-temp"
+    system_temp.mkdir()
+    (system_temp / "beads-circuit").mkdir()
+    monkeypatch.setattr("agents_governance.cli.temp_findings", list)
+
+    assert main(["--root", str(repository), "temp", "audit"]) == 0
+
+    monkeypatch.setattr(
+        "agents_governance.cli.temp_findings",
+        lambda: [
+            TempFinding(system_temp / "beads-circuit", "residue", "foreign residue")
+        ],
+    )
+    assert main(["--root", str(repository), "temp", "audit", "--global"]) == 1
 
 
 def test_waza_artifact_fails_closed_for_empty_or_invalid_output(tmp_path: Path) -> None:

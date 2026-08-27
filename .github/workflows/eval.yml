@@ -14,6 +14,7 @@ on:
       - 'hooks/**'
       - 'rules/**'
       - 'Makefile'
+      - '.mise.toml'
       - 'pyproject.toml'
       - 'uv.lock'
 

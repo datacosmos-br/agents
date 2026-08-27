@@ -5,6 +5,9 @@
 PATH := $(HOME)/.local/bin:$(PATH)
 export PATH
 
+AGENTS_STORAGE_CONFIG ?= $(CURDIR)/config/storage.toml
+export AGENTS_STORAGE_CONFIG
+
 -include .env.local
 include config/waza.mk
 export
@@ -33,7 +36,7 @@ help: ## show this menu (default)
 ## inspection
 status: ## panel: tools, proxy, skills, baseline presence
 	$(call BANNER,status · environment)
-	@for t in waza bd gt git awk; do command -v $$t >/dev/null && printf '  ok   %s\n' $$t || printf '  MISS %s\n' $$t; done
+	@for t in waza git awk; do command -v $$t >/dev/null && printf '  ok   %s\n' $$t || printf '  MISS %s\n' $$t; done
 	@if $(WAZA_KEYRING_EXEC) sh -c 'curl -fsS -o /dev/null -m 2 -H "Authorization: Bearer $$CLIPROXY_API_KEY" "$$COPILOT_PROVIDER_BASE_URL/models"'; then echo "  ok   cliproxy :8317"; else echo "  DOWN cliproxy :8317"; fi
 	@echo "  skills discovered: $(words $(SKILLS))"
 	@if [ -f "$(BASELINE_DIR)/results.json" ]; then echo "  baseline: present ($(BASELINE_DIR)/results.json)"; else echo "  baseline: absent — run 'make baseline'"; fi
@@ -60,7 +63,6 @@ check: ## blocking local validation + strict Waza tokens
 	@uv run agentsctl waza-config --check
 	@uv run agentsctl temp run -- waza tokens check $(if $(SKILL),skills/$(SKILL),./skills) --strict
 	@uv run agentsctl temp audit
-	@uv run agentsctl dolt audit
 	@uv run agentsctl normalize
 	@uv run agentsctl descriptions
 
@@ -99,7 +101,7 @@ security: ## live secret, static-analysis, Snyk, and triage gates (all severitie
 
 temp: ## audit /tmp; STATUS=Y reports; APPLY=Y collects safe old owned runs
 	$(call BANNER,temp · bounded scratch governance)
-	@if [ -n "$(STATUS)" ]; then uv run agentsctl temp status; elif [ -n "$(APPLY)" ]; then uv run agentsctl temp gc --apply; else uv run agentsctl temp audit; fi
+	@if [ -n "$(STATUS)" ]; then uv run agentsctl temp status; elif [ -n "$(APPLY)" ]; then uv run agentsctl temp gc --apply; else uv run agentsctl temp audit --global; fi
 
 dolt: ## fail unless Gas Town exclusively uses 127.0.0.1:3307
 	$(call BANNER,dolt · exclusive canonical endpoint)

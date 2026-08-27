@@ -93,7 +93,9 @@ For each error:
 
 ```bash
 # Use the project's declared cleanup surface; inspect its scope before applying it
-make clean
+if make help | awk '$1 == "clean" { found = 1 } END { exit !found }'; then
+  make clean
+fi
 
 # Fix ESLint auto-fixable
 npx eslint . --fix

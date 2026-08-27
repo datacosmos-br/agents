@@ -20,6 +20,7 @@ from agents_governance.temp import (
     repository_findings,
     resolve_repo,
     run_command,
+    storage_manifest,
 )
 
 
@@ -35,8 +36,27 @@ def local_storage_manifest(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> P
         "repositories = []\n",
         encoding="utf-8",
     )
-    monkeypatch.setenv("XDG_CONFIG_HOME", str(tmp_path / "config"))
-    return config
+    manifest = config / "storage.toml"
+    monkeypatch.setenv("AGENTS_STORAGE_CONFIG", str(manifest))
+    return manifest
+
+
+def test_storage_manifest_requires_explicit_owner(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.delenv("AGENTS_STORAGE_CONFIG")
+
+    with pytest.raises(RuntimeError, match="AGENTS_STORAGE_CONFIG is required"):
+        storage_manifest()
+
+
+def test_storage_manifest_rejects_relative_path(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("AGENTS_STORAGE_CONFIG", "config/storage.toml")
+
+    with pytest.raises(RuntimeError, match="must be an absolute path"):
+        storage_manifest()
 
 
 def git_repo(path: Path) -> Path:
@@ -282,7 +302,7 @@ def test_global_audit_uses_only_machine_local_registered_roots(
     ephemeral = tmp_path / "ephemeral"
     ephemeral.mkdir()
     (ephemeral / "growth").write_bytes(b"x" * 17)
-    monkeypatch.setenv("XDG_CONFIG_HOME", str(tmp_path / "config"))
+    monkeypatch.setenv("AGENTS_STORAGE_CONFIG", str(config / "storage.toml"))
     monkeypatch.setattr("agents_governance.temp.SYSTEM_TEMP", tmp_path / "system-tmp")
 
     items = global_findings()
