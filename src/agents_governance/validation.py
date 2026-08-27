@@ -59,7 +59,9 @@ def validate(catalog: Catalog) -> list[Finding]:
     for pattern in catalog.config.get("private_patterns", []):
         for name in sorted(generic_names):
             if fnmatch.fnmatchcase(name, pattern):
-                findings.append(Finding("config/skills.json", "private-project-skill", name))
+                findings.append(
+                    Finding("config/skills.json", "private-project-skill", name)
+                )
     for directory in catalog.skill_dirs():
         skill_file = directory / "SKILL.md"
         relative = skill_file.relative_to(catalog.root).as_posix()
@@ -67,7 +69,11 @@ def validate(catalog: Catalog) -> list[Finding]:
         for item in directory.rglob("*"):
             if item.is_symlink():
                 findings.append(
-                    Finding(item.relative_to(catalog.root).as_posix(), "symlink", "forbidden in skill bundle")
+                    Finding(
+                        item.relative_to(catalog.root).as_posix(),
+                        "symlink",
+                        "forbidden in skill bundle",
+                    )
                 )
         try:
             metadata, _body = _frontmatter(text)
@@ -89,17 +95,37 @@ def validate(catalog: Catalog) -> list[Finding]:
         if not isinstance(description, str) or not description.strip():
             findings.append(Finding(relative, "description", "missing description"))
         elif len(description) > 120:
-            findings.append(Finding(relative, "description", "keyword description exceeds 120 characters"))
+            findings.append(
+                Finding(
+                    relative,
+                    "description",
+                    "keyword description exceeds 120 characters",
+                )
+            )
         else:
             keywords = [item.strip() for item in description.split(",")]
-            if len(keywords) < 2 or any(not _DESCRIPTION_KEYWORD.fullmatch(item) for item in keywords):
-                findings.append(Finding(relative, "description", "description must be a comma-separated keyword list"))
+            if len(keywords) < 2 or any(
+                not _DESCRIPTION_KEYWORD.fullmatch(item) for item in keywords
+            ):
+                findings.append(
+                    Finding(
+                        relative,
+                        "description",
+                        "description must be a comma-separated keyword list",
+                    )
+                )
             elif len(keywords) > 10:
-                findings.append(Finding(relative, "description", "description exceeds 10 keywords"))
+                findings.append(
+                    Finding(relative, "description", "description exceeds 10 keywords")
+                )
         policy = catalog.policy(directory.name)
         if directory.name in generic_names:
-            for project_file in sorted(path for path in directory.rglob("*") if path.is_file()):
-                project_text = project_file.read_text(encoding="utf-8", errors="replace")
+            for project_file in sorted(
+                path for path in directory.rglob("*") if path.is_file()
+            ):
+                project_text = project_file.read_text(
+                    encoding="utf-8", errors="replace"
+                )
                 if _PRIVATE_PROJECT_TERM.search(project_text):
                     findings.append(
                         Finding(
@@ -111,11 +137,17 @@ def validate(catalog: Catalog) -> list[Finding]:
         token_estimate = bpe_tokens(skill_file, catalog.root)
         if token_estimate > policy.max_tokens:
             findings.append(
-                Finding(relative, "budget", f"{token_estimate} > {policy.max_tokens} tokens")
+                Finding(
+                    relative, "budget", f"{token_estimate} > {policy.max_tokens} tokens"
+                )
             )
         if len(text.splitlines()) > policy.max_lines:
             findings.append(
-                Finding(relative, "lines", f"{len(text.splitlines())} > {policy.max_lines} lines")
+                Finding(
+                    relative,
+                    "lines",
+                    f"{len(text.splitlines())} > {policy.max_lines} lines",
+                )
             )
         markdown_files = [skill_file, *sorted(directory.rglob("*.md"))]
         for markdown_file in dict.fromkeys(markdown_files):
@@ -136,6 +168,10 @@ def validate(catalog: Catalog) -> list[Finding]:
                     resolved.relative_to(directory.resolve())
                 except (FileNotFoundError, ValueError):
                     findings.append(
-                        Finding(markdown_relative, "reference", f"unsafe or missing: {target}")
+                        Finding(
+                            markdown_relative,
+                            "reference",
+                            f"unsafe or missing: {target}",
+                        )
                     )
     return findings

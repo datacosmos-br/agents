@@ -24,7 +24,9 @@ def test_inventory_is_deterministic_and_owned(tmp_path: Path) -> None:
         "classification": [],
         "default": {"class": "on_demand", "provenance": "adopted", "updates": "manual"},
     }
-    (tmp_path / "config" / "skills.json").write_text(json.dumps(config), encoding="utf-8")
+    (tmp_path / "config" / "skills.json").write_text(
+        json.dumps(config), encoding="utf-8"
+    )
 
     first = Catalog(tmp_path).inventory()
     second = Catalog(tmp_path).inventory()
@@ -39,17 +41,30 @@ def test_forbidden_third_party_skill_is_not_distributed(tmp_path: Path) -> None:
     skill = tmp_path / "skills" / "vendor-frozen-plan"
     skill.mkdir(parents=True)
     (skill / "SKILL.md").write_text(
-        "---\nname: vendor-frozen-plan\ndescription: vendor, frozen, plan\n---\n", encoding="utf-8"
+        "---\nname: vendor-frozen-plan\ndescription: vendor, frozen, plan\n---\n",
+        encoding="utf-8",
     )
     config = {
-        "budgets": {"router_tokens": 500, "frozen_tokens": 1200, "on_demand_tokens": 5000, "max_lines": 500},
+        "budgets": {
+            "router_tokens": 500,
+            "frozen_tokens": 1200,
+            "on_demand_tokens": 5000,
+            "max_lines": 500,
+        },
         "classification": [
-            {"pattern": "vendor-frozen-*", "class": "router", "provenance": "vendor", "updates": "forbidden"}
+            {
+                "pattern": "vendor-frozen-*",
+                "class": "router",
+                "provenance": "vendor",
+                "updates": "forbidden",
+            }
         ],
         "technologies": {},
         "default": {"class": "on_demand", "provenance": "adopted", "updates": "manual"},
     }
-    (tmp_path / "config" / "skills.json").write_text(json.dumps(config), encoding="utf-8")
+    (tmp_path / "config" / "skills.json").write_text(
+        json.dumps(config), encoding="utf-8"
+    )
 
     catalog = Catalog(tmp_path)
 

@@ -16,6 +16,8 @@ def test_waza_artifact_fails_closed_for_empty_or_invalid_output(tmp_path: Path) 
 
 def test_waza_artifact_accepts_scored_dimensions(tmp_path: Path) -> None:
     artifact = tmp_path / "quality.json"
-    artifact.write_text(json.dumps({"dimensions": [{"name": "clarity", "score": 4}]}), encoding="utf-8")
+    artifact.write_text(
+        json.dumps({"dimensions": [{"name": "clarity", "score": 4}]}), encoding="utf-8"
+    )
 
     assert main(["waza-artifact", str(artifact)]) == 0
