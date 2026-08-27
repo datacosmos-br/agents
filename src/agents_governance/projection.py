@@ -332,9 +332,10 @@ class Projector:
             destination = root / stale
             if destination.is_symlink():
                 destination.unlink()
-            elif destination.exists() and self.catalog.digest_tree(
-                destination
-            ) == metadata.get("digest"):
+            elif (
+                destination.exists()
+                and self.catalog.digest_tree(destination) == metadata.get("digest")
+            ):
                 if destination.is_dir():
                     shutil.rmtree(destination)
                 else:

@@ -130,7 +130,9 @@ def test_modified_stale_managed_entry_blocks_apply(tmp_path: Path) -> None:
 
     findings = projector.apply("personal")
 
-    assert [finding.message for finding in findings] == ["modified stale managed entry"]
+    assert [finding.message for finding in findings] == [
+        "modified stale managed entry"
+    ]
     assert (stale / "operator.txt").read_text(encoding="utf-8") == "preserve"
     assert not (target / ".agents-archive").exists()
 
