@@ -97,7 +97,7 @@ def test_commands_and_rules_are_independently_projected(tmp_path: Path) -> None:
     assert projector.check("personal", surface="rules") == []
 
 
-def test_foreign_collision_is_archived_before_explicit_apply(tmp_path: Path) -> None:
+def test_foreign_collision_blocks_apply_and_is_preserved(tmp_path: Path) -> None:
     target = tmp_path / "target"
     projector = _projector(tmp_path, target)
     foreign = target / "example"
@@ -107,14 +107,13 @@ def test_foreign_collision_is_archived_before_explicit_apply(tmp_path: Path) -> 
 
     findings = projector.apply("personal")
 
-    assert findings == []
-    assert (foreign / "SKILL.md").is_file()
-    archived = list((target / ".agents-archive").glob("example.*.bak/foreign.txt"))
-    assert len(archived) == 1
-    assert archived[0].read_text(encoding="utf-8") == "preserve"
+    assert [finding.message for finding in findings] == ["foreign collision"]
+    assert marker.read_text(encoding="utf-8") == "preserve"
+    assert not (foreign / "SKILL.md").exists()
+    assert not (target / ".agents-archive").exists()
 
 
-def test_modified_stale_managed_entry_is_archived(tmp_path: Path) -> None:
+def test_modified_stale_managed_entry_blocks_apply(tmp_path: Path) -> None:
     target = tmp_path / "target"
     projector = _projector(tmp_path, target)
     assert projector.apply("personal") == []
@@ -129,11 +128,34 @@ def test_modified_stale_managed_entry_is_archived(tmp_path: Path) -> None:
         }
     ]
 
+    findings = projector.apply("personal")
+
+    assert [finding.message for finding in findings] == [
+        "modified stale managed entry"
+    ]
+    assert (stale / "operator.txt").read_text(encoding="utf-8") == "preserve"
+    assert not (target / ".agents-archive").exists()
+
+
+def test_unmodified_stale_managed_entry_is_removed_without_archive(
+    tmp_path: Path,
+) -> None:
+    target = tmp_path / "target"
+    projector = _projector(tmp_path, target)
+    assert projector.apply("personal") == []
+    stale = target / "example"
+    projector.catalog.config["classification"] = [
+        {
+            "pattern": "example",
+            "class": "router",
+            "provenance": "retired",
+            "updates": "forbidden",
+        }
+    ]
+
     assert projector.apply("personal") == []
     assert not stale.exists()
-    archived = list((target / ".agents-archive").glob("example.*.bak/operator.txt"))
-    assert len(archived) == 1
-    assert archived[0].read_text(encoding="utf-8") == "preserve"
+    assert not (target / ".agents-archive").exists()
 
 
 def test_legacy_destination_symlink_is_removed_and_replaced_with_copy(

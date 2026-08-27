@@ -48,14 +48,26 @@ def _config_findings(path: Path) -> list[DoltFinding]:
     found: list[DoltFinding] = []
     dolt = payload.get("dolt")
     if isinstance(dolt, dict) and dolt.get("shared-server") is True:
-        found.append(DoltFinding(str(path), "shared-server", "standalone shared-server mode is prohibited"))
+        found.append(
+            DoltFinding(
+                str(path),
+                "shared-server",
+                "standalone shared-server mode is prohibited",
+            )
+        )
     values: list[object] = [payload[key] for key in PORT_KEYS if key in payload]
     if isinstance(dolt, dict):
         values.extend(dolt[key] for key in PORT_KEYS if key in dolt)
     for value in values:
         port = _port(value)
         if port != CANONICAL_PORT:
-            found.append(DoltFinding(str(path), "noncanonical-port", f"configured port {value!r}; required {CANONICAL_PORT}"))
+            found.append(
+                DoltFinding(
+                    str(path),
+                    "noncanonical-port",
+                    f"configured port {value!r}; required {CANONICAL_PORT}",
+                )
+            )
     return found
 
 
@@ -69,12 +81,30 @@ def _metadata_findings(path: Path) -> list[DoltFinding]:
     host = str(payload.get("dolt_server_host", CANONICAL_HOST))
     found: list[DoltFinding] = []
     if mode != "server":
-        found.append(DoltFinding(str(path), "noncanonical-mode", f"metadata mode {mode!r}; required 'server'"))
+        found.append(
+            DoltFinding(
+                str(path),
+                "noncanonical-mode",
+                f"metadata mode {mode!r}; required 'server'",
+            )
+        )
         return found
     if port != CANONICAL_PORT:
-        found.append(DoltFinding(str(path), "noncanonical-port", f"metadata port {port!r}; required {CANONICAL_PORT}"))
+        found.append(
+            DoltFinding(
+                str(path),
+                "noncanonical-port",
+                f"metadata port {port!r}; required {CANONICAL_PORT}",
+            )
+        )
     if host != CANONICAL_HOST:
-        found.append(DoltFinding(str(path), "noncanonical-host", f"metadata host {host!r}; required {CANONICAL_HOST}"))
+        found.append(
+            DoltFinding(
+                str(path),
+                "noncanonical-host",
+                f"metadata host {host!r}; required {CANONICAL_HOST}",
+            )
+        )
     return found
 
 
@@ -134,7 +164,9 @@ def repair(town: Path) -> list[Path]:
         payload["dolt_mode"] = "server"
         payload["dolt_server_host"] = CANONICAL_HOST
         payload["dolt_server_port"] = CANONICAL_PORT
-        payload["dolt_database"] = _rig_database(path, town, payload.get("dolt_database"))
+        payload["dolt_database"] = _rig_database(
+            path, town, payload.get("dolt_database")
+        )
         if payload != before:
             _atomic_write(path, json.dumps(payload, indent=2, sort_keys=True) + "\n")
             changed.append(path)
@@ -144,7 +176,9 @@ def repair(town: Path) -> list[Path]:
 def _managed_files(town: Path, name: str) -> list[Path]:
     if not town.is_dir():
         return []
-    return sorted(path for path in town.rglob(name) if not (SKIP_PARTS & set(path.parts)))
+    return sorted(
+        path for path in town.rglob(name) if not (SKIP_PARTS & set(path.parts))
+    )
 
 
 def _process_findings(proc: Path) -> list[DoltFinding]:
@@ -165,7 +199,9 @@ def _process_findings(proc: Path) -> list[DoltFinding]:
                     listening_inodes.add(fields[9])
     for command_file in proc.glob("[0-9]*/cmdline"):
         try:
-            command = command_file.read_bytes().replace(b"\0", b" ").decode(errors="replace")
+            command = (
+                command_file.read_bytes().replace(b"\0", b" ").decode(errors="replace")
+            )
         except (OSError, PermissionError):
             continue
         if "dolt sql-server" not in command:
@@ -184,7 +220,13 @@ def _process_findings(proc: Path) -> list[DoltFinding]:
         match = re.search(r"(?:^|\s)(?:-P\s+|--port(?:=|\s+))(\d+)(?:\s|$)", command)
         port = int(match.group(1)) if match else CANONICAL_PORT
         if port != CANONICAL_PORT:
-            found.append(DoltFinding(str(command_file.parent), "noncanonical-listener", f"live dolt sql-server listens on {port}"))
+            found.append(
+                DoltFinding(
+                    str(command_file.parent),
+                    "noncanonical-listener",
+                    f"live dolt sql-server listens on {port}",
+                )
+            )
     return found
 
 
@@ -198,13 +240,27 @@ def _binary_findings(home: Path) -> list[DoltFinding]:
             found.append(DoltFinding(str(binary), "unreadable-binary", str(error)))
             continue
         if b"Machine invariant: the only Dolt SQL listener" not in header:
-            found.append(DoltFinding(str(binary), "unguarded-binary", "Dolt can start an alternate listener"))
+            found.append(
+                DoltFinding(
+                    str(binary),
+                    "unguarded-binary",
+                    "Dolt can start an alternate listener",
+                )
+            )
         if not binary.with_name("dolt.real").is_file():
-            found.append(DoltFinding(str(binary), "missing-owned-binary", "guard has no physical dolt.real delegate"))
+            found.append(
+                DoltFinding(
+                    str(binary),
+                    "missing-owned-binary",
+                    "guard has no physical dolt.real delegate",
+                )
+            )
     return found
 
 
-def audit(town: Path, *, environ: dict[str, str] | None = None, proc: Path = Path("/proc")) -> list[DoltFinding]:
+def audit(
+    town: Path, *, environ: dict[str, str] | None = None, proc: Path = Path("/proc")
+) -> list[DoltFinding]:
     """Return every route that can select a noncanonical production endpoint."""
     found: list[DoltFinding] = []
     for path in _managed_files(town, "config.yaml"):
@@ -214,7 +270,10 @@ def audit(town: Path, *, environ: dict[str, str] | None = None, proc: Path = Pat
         if path.parent.name == ".beads":
             found.extend(_metadata_findings(path))
     home = town.parent
-    for path in (home / ".beads" / "config.yaml", home / ".agents" / ".beads" / "config.yaml"):
+    for path in (
+        home / ".beads" / "config.yaml",
+        home / ".agents" / ".beads" / "config.yaml",
+    ):
         if path.is_file():
             found.extend(_config_findings(path))
     agents_metadata = home / ".agents" / ".beads" / "metadata.json"
@@ -223,9 +282,21 @@ def audit(town: Path, *, environ: dict[str, str] | None = None, proc: Path = Pat
     found.extend(_binary_findings(home))
     env = dict(os.environ if environ is None else environ)
     if env.get("BEADS_DOLT_SHARED_SERVER", "").lower() in {"1", "true", "yes", "on"}:
-        found.append(DoltFinding("environment", "shared-server", "BEADS_DOLT_SHARED_SERVER enables a prohibited server"))
+        found.append(
+            DoltFinding(
+                "environment",
+                "shared-server",
+                "BEADS_DOLT_SHARED_SERVER enables a prohibited server",
+            )
+        )
     for key in sorted(ENV_PORT_KEYS):
         if key in env and _port(env[key]) != CANONICAL_PORT:
-            found.append(DoltFinding("environment", "noncanonical-port", f"{key}={env[key]!r}; required {CANONICAL_PORT}"))
+            found.append(
+                DoltFinding(
+                    "environment",
+                    "noncanonical-port",
+                    f"{key}={env[key]!r}; required {CANONICAL_PORT}",
+                )
+            )
     found.extend(_process_findings(proc))
     return sorted(found, key=lambda item: (item.path, item.code, item.message))

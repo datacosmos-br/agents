@@ -39,7 +39,9 @@ def test_audit_detects_residue_and_preserves_unknown(tmp_path: Path) -> None:
     ]
 
 
-def test_audit_detects_database_and_classifies_small_lock_as_ephemeral(tmp_path: Path) -> None:
+def test_audit_detects_database_and_classifies_small_lock_as_ephemeral(
+    tmp_path: Path,
+) -> None:
     (tmp_path / "state.db").write_text("database", encoding="utf-8")
     (tmp_path / "tool.lock").touch()
 
@@ -62,7 +64,9 @@ def test_managed_temp_is_repo_local_physical_directory(tmp_path: Path) -> None:
     assert destination.stat().st_mode & 0o777 == 0o700
 
 
-def test_repo_under_system_temp_is_refused(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+def test_repo_under_system_temp_is_refused(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
     repo = git_repo(tmp_path / "repo")
     monkeypatch.setattr("agents_governance.temp.SYSTEM_TEMP", tmp_path)
 
@@ -70,7 +74,9 @@ def test_repo_under_system_temp_is_refused(monkeypatch: pytest.MonkeyPatch, tmp_
         resolve_repo(repo)
 
 
-def test_managed_env_isolates_build_dirs_and_shares_dependency_cache(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+def test_managed_env_isolates_build_dirs_and_shares_dependency_cache(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
     repo = git_repo(tmp_path / "repo")
     scratch, lock = create_run(repo)
     monkeypatch.setenv("XDG_CACHE_HOME", str(tmp_path / "cache"))
@@ -84,7 +90,9 @@ def test_managed_env_isolates_build_dirs_and_shares_dependency_cache(monkeypatch
     assert environment["GOMODCACHE"] == str(tmp_path / "cache" / "go-mod")
 
 
-def test_run_records_real_child_exit_and_evidence(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+def test_run_records_real_child_exit_and_evidence(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
     repo = git_repo(tmp_path / "repo")
     monkeypatch.setenv("XDG_STATE_HOME", str(tmp_path / "state"))
     monkeypatch.setenv("XDG_CACHE_HOME", str(tmp_path / "cache"))
@@ -102,7 +110,9 @@ def test_run_records_real_child_exit_and_evidence(monkeypatch: pytest.MonkeyPatc
     assert json.loads(evidence[0].read_text(encoding="utf-8"))["exit_code"] == 0
 
 
-def test_run_stops_only_owned_process_group_at_limit(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+def test_run_stops_only_owned_process_group_at_limit(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
     repo = git_repo(tmp_path / "repo")
     monkeypatch.setenv("XDG_STATE_HOME", str(tmp_path / "state"))
     monkeypatch.setenv("XDG_CACHE_HOME", str(tmp_path / "cache"))
@@ -119,7 +129,9 @@ def test_run_stops_only_owned_process_group_at_limit(monkeypatch: pytest.MonkeyP
     assert report.peak_bytes >= 4096
 
 
-def test_run_terminates_owned_process_group_when_wrapper_is_terminated(tmp_path: Path) -> None:
+def test_run_terminates_owned_process_group_when_wrapper_is_terminated(
+    tmp_path: Path,
+) -> None:
     repo = git_repo(tmp_path / "repo")
     child_pid = tmp_path / "child.pid"
     script = (
@@ -140,7 +152,9 @@ def test_run_terminates_owned_process_group_when_wrapper_is_terminated(tmp_path:
         os.kill(pid, 0)
 
 
-def test_gc_preserves_young_unknown_symlink_database_and_locked_runs(tmp_path: Path) -> None:
+def test_gc_preserves_young_unknown_symlink_database_and_locked_runs(
+    tmp_path: Path,
+) -> None:
     repo = git_repo(tmp_path / "repo")
     policy = TempPolicy(orphan_age_seconds=10)
     old = time.time() - 20
@@ -162,7 +176,12 @@ def test_gc_preserves_young_unknown_symlink_database_and_locked_runs(tmp_path: P
     eligible, blocked = gc(repo, apply=True, policy=policy)
 
     assert eligible == []
-    assert {item.kind for item in blocked} == {"young", "unknown", "protected", "active"}
+    assert {item.kind for item in blocked} == {
+        "young",
+        "unknown",
+        "protected",
+        "active",
+    }
     assert all(path.exists() for path in (young, unknown, symlink, database, active))
     young_lock.close()
     active_lock.close()

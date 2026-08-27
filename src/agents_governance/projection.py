@@ -11,7 +11,6 @@ import sys
 import tempfile
 import tomllib
 from dataclasses import dataclass
-from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
@@ -34,7 +33,7 @@ class SourceSkill:
 
 
 class Projector:
-    """Materialize validated local copies while preserving foreign entries."""
+    """Materialize validated copies while rejecting foreign modifications."""
 
     MANIFEST = ".agents-governance.json"
     _LOCAL_PATH = re.compile(r"(?:~/(?:\.agents|gt)(?:/|\b)|/home/[^/\s]+/)")
@@ -314,26 +313,17 @@ class Projector:
     @staticmethod
     def _blocking(findings: list[ProjectionFinding]) -> list[ProjectionFinding]:
         reconcilable = {
-            "foreign collision",
             "missing",
             "missing manifest",
             "legacy symlink",
             "managed update",
             "legacy owner copy",
-            "modified stale managed entry",
             "stale managed entry",
         }
         return [finding for finding in findings if finding.message not in reconcilable]
 
     def _apply_target(self, root: Path, sources: tuple[SourceSkill, ...]) -> None:
         root.mkdir(parents=True, exist_ok=True)
-        archive = root / ".agents-archive"
-
-        def preserve(path: Path) -> None:
-            archive.mkdir(mode=0o700, exist_ok=True)
-            stamp = datetime.now(UTC).strftime("%Y%m%dT%H%M%S.%fZ")
-            path.replace(archive / f"{path.name}.{stamp}.bak")
-
         previous = self._manifest(root)
         expected = {source.name for source in sources}
         for stale, metadata in sorted(previous.items()):
@@ -342,8 +332,14 @@ class Projector:
             destination = root / stale
             if destination.is_symlink():
                 destination.unlink()
-            elif destination.exists():
-                preserve(destination)
+            elif (
+                destination.exists()
+                and self.catalog.digest_tree(destination) == metadata.get("digest")
+            ):
+                if destination.is_dir():
+                    shutil.rmtree(destination)
+                else:
+                    destination.unlink()
         for source in sources:
             destination = root / source.name
             if (
@@ -355,7 +351,10 @@ class Projector:
             if destination.is_symlink():
                 destination.unlink()
             elif destination.exists():
-                preserve(destination)
+                if destination.is_dir():
+                    shutil.rmtree(destination)
+                else:
+                    destination.unlink()
             staging = Path(tempfile.mkdtemp(prefix=".agents-stage.", dir=root))
             temporary = staging / source.name
             self._copy_tree(source.directory, temporary)

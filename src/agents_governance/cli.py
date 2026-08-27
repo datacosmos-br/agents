@@ -45,7 +45,9 @@ def _validate(root: Path, skill: str | None) -> int:
     catalog = _catalog(root)
     findings = validate(catalog)
     if skill is not None:
-        findings = [item for item in findings if item.path.startswith(f"skills/{skill}/")]
+        findings = [
+            item for item in findings if item.path.startswith(f"skills/{skill}/")
+        ]
     for item in findings:
         print(f"{item.path}: {item.code}: {item.message}", file=sys.stderr)
     if findings:
@@ -55,9 +57,15 @@ def _validate(root: Path, skill: str | None) -> int:
     return 0
 
 
-def _project(root: Path, apply: bool, scope: str, target: str | None, surface: str) -> int:
+def _project(
+    root: Path, apply: bool, scope: str, target: str | None, surface: str
+) -> int:
     projector = Projector(_catalog(root))
-    findings = projector.apply(scope, target, surface) if apply else projector.check(scope, target, surface)
+    findings = (
+        projector.apply(scope, target, surface)
+        if apply
+        else projector.check(scope, target, surface)
+    )
     for item in findings:
         print(f"{item.target}: {item.path}: {item.message}", file=sys.stderr)
     if findings:
@@ -84,7 +92,9 @@ def _adjust(root: Path, skill: str, apply: bool) -> int:
 def _normalize(root: Path, apply: bool) -> int:
     changes = normalize(_catalog(root), apply=apply)
     for item in changes:
-        print(f"{item.name}: {item.tokens} tokens/{item.lines} lines -> {item.destination}")
+        print(
+            f"{item.name}: {item.tokens} tokens/{item.lines} lines -> {item.destination}"
+        )
     print(f"{'APPLIED' if apply else 'DRY-RUN'}: {len(changes)} skill(s)")
     return 0
 
@@ -105,7 +115,10 @@ def _waza_artifact(path: Path) -> int:
         dimensions = payload.get("dimensions") if isinstance(payload, dict) else None
         if not isinstance(dimensions, list) or not dimensions:
             raise ValueError("artifact has no scored dimensions")
-        if not all(isinstance(item, dict) and isinstance(item.get("score"), (int, float)) for item in dimensions):
+        if not all(
+            isinstance(item, dict) and isinstance(item.get("score"), (int, float))
+            for item in dimensions
+        ):
             raise ValueError("artifact contains an invalid dimension score")
     except (OSError, ValueError, json.JSONDecodeError) as error:
         print(f"FAIL: invalid Waza quality artifact {path}: {error}", file=sys.stderr)
@@ -118,15 +131,32 @@ def _temp_audit(as_json: bool) -> int:
     items = temp_findings()
     blocking = [item for item in items if item.kind in {"prohibited", "residue"}]
     if as_json:
-        print(json.dumps([
-            {"path": str(item.path), "kind": item.kind, "message": item.message, "size_bytes": item.size_bytes}
-            for item in items
-        ], indent=2, sort_keys=True))
+        print(
+            json.dumps(
+                [
+                    {
+                        "path": str(item.path),
+                        "kind": item.kind,
+                        "message": item.message,
+                        "size_bytes": item.size_bytes,
+                    }
+                    for item in items
+                ],
+                indent=2,
+                sort_keys=True,
+            )
+        )
         return int(bool(blocking))
     for item in items:
-        print(f"{item.path}: {item.kind}: {item.message} ({item.size_bytes} bytes)", file=sys.stderr)
+        print(
+            f"{item.path}: {item.kind}: {item.message} ({item.size_bytes} bytes)",
+            file=sys.stderr,
+        )
     if blocking:
-        print(f"FAIL: {len(blocking)} blocking temporary-filesystem finding(s)", file=sys.stderr)
+        print(
+            f"FAIL: {len(blocking)} blocking temporary-filesystem finding(s)",
+            file=sys.stderr,
+        )
         return 1
     print("PASS: no registered /tmp residue or filesystem pressure")
     return 0
@@ -157,12 +187,14 @@ def _temp_run(root: Path, command: list[str]) -> int:
         command = command[1:]
     report = run_command(command, root)
     print(
-        json.dumps({
-            "scratch": report.scratch,
-            "scratch_retained": report.scratch_retained,
-            "peak_bytes": report.peak_bytes,
-            "exit_code": report.exit_code,
-        }),
+        json.dumps(
+            {
+                "scratch": report.scratch,
+                "scratch_retained": report.scratch_retained,
+                "peak_bytes": report.peak_bytes,
+                "exit_code": report.exit_code,
+            }
+        ),
         file=sys.stderr,
     )
     return report.exit_code
@@ -174,7 +206,9 @@ def _dolt_audit(town: Path, as_json: bool, apply: bool) -> int:
             print(f"CONVERGED: {path}")
     findings = dolt_audit(town)
     if as_json:
-        print(json.dumps([item.as_dict() for item in findings], indent=2, sort_keys=True))
+        print(
+            json.dumps([item.as_dict() for item in findings], indent=2, sort_keys=True)
+        )
     else:
         for item in findings:
             print(f"{item.path}: {item.code}: {item.message}", file=sys.stderr)
@@ -188,12 +222,17 @@ def _dolt_audit(town: Path, as_json: bool, apply: bool) -> int:
 def _security_triage(roots: tuple[Path, ...], as_json: bool) -> int:
     findings = security_audit(roots)
     if as_json:
-        print(json.dumps([item.as_dict() for item in findings], indent=2, sort_keys=True))
+        print(
+            json.dumps([item.as_dict() for item in findings], indent=2, sort_keys=True)
+        )
     else:
         for item in findings:
             print(f"{item.path}: {item.code}: {item.message}", file=sys.stderr)
     if findings:
-        print(f"FAIL: {len(findings)} blocking security triage finding(s)", file=sys.stderr)
+        print(
+            f"FAIL: {len(findings)} blocking security triage finding(s)",
+            file=sys.stderr,
+        )
         return 1
     print("PASS: security triage is complete and evidenced")
     return 0
@@ -213,7 +252,9 @@ def parser() -> argparse.ArgumentParser:
     mode.add_argument("--apply", action="store_true")
     projection.add_argument("--target")
     projection.add_argument("--scope", choices=("personal", "projects"), required=True)
-    projection.add_argument("--surface", choices=("skills", "commands", "rules", "all"), default="all")
+    projection.add_argument(
+        "--surface", choices=("skills", "commands", "rules", "all"), default="all"
+    )
     commands.add_parser("discover-projects")
     adjust = commands.add_parser("adjust")
     adjust.add_argument("--skill", required=True)

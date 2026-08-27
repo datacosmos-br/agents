@@ -20,7 +20,9 @@ from typing import IO, Any
 SYSTEM_TEMP = Path("/tmp")
 MARKER = ".agents-temp-run.json"
 LOCK = ".agents-temp-run.lock"
-KNOWN_DIRS = frozenset({"tmp", "go-tmp", "go-build", "python", "node", "cargo", "gradle", "ccache"})
+KNOWN_DIRS = frozenset(
+    {"tmp", "go-tmp", "go-build", "python", "node", "cargo", "gradle", "ccache"}
+)
 PROHIBITED_NAMES = frozenset({".git", ".dolt", ".venv", "venv", "node_modules"})
 MAIN_THREAD_ID = threading.get_ident()
 DATABASE_SUFFIXES = frozenset({".db", ".sqlite", ".sqlite3"})
@@ -102,7 +104,9 @@ def resolve_repo(cwd: Path) -> Path:
 
     probe = subprocess.run(
         ["git", "-C", str(cwd), "rev-parse", "--show-toplevel"],
-        check=False, capture_output=True, text=True,
+        check=False,
+        capture_output=True,
+        text=True,
     )
     if probe.returncode:
         raise RuntimeError(f"not inside a Git repository: {cwd}")
@@ -134,10 +138,15 @@ def create_run(repo: Path) -> tuple[Path, IO[str]]:
     for name in KNOWN_DIRS:
         _mkdir(scratch / name)
     marker = {
-        "version": 1, "owner_pid": os.getpid(), "repo": str(repo.resolve()),
-        "created_at": datetime.now(UTC).isoformat(), "owned_dirs": sorted(KNOWN_DIRS),
+        "version": 1,
+        "owner_pid": os.getpid(),
+        "repo": str(repo.resolve()),
+        "created_at": datetime.now(UTC).isoformat(),
+        "owned_dirs": sorted(KNOWN_DIRS),
     }
-    (scratch / MARKER).write_text(json.dumps(marker, sort_keys=True) + "\n", encoding="utf-8")
+    (scratch / MARKER).write_text(
+        json.dumps(marker, sort_keys=True) + "\n", encoding="utf-8"
+    )
     lock_file = (scratch / LOCK).open("w", encoding="utf-8")
     fcntl.flock(lock_file, fcntl.LOCK_EX | fcntl.LOCK_NB)
     lock_file.write(f"{os.getpid()}\n")
@@ -151,10 +160,17 @@ def managed_env(repo: Path, scratch: Path) -> dict[str, str]:
     environment = os.environ.copy()
     shared = cache_root()
     mappings = {
-        "TMPDIR": scratch / "tmp", "GOTMPDIR": scratch / "go-tmp", "GOCACHE": scratch / "go-build",
-        "GOMODCACHE": shared / "go-mod", "UV_CACHE_DIR": shared / "uv", "PIP_CACHE_DIR": shared / "pip",
-        "npm_config_cache": shared / "npm", "BUN_INSTALL_CACHE_DIR": shared / "bun",
-        "CARGO_HOME": shared / "cargo", "GRADLE_USER_HOME": shared / "gradle", "CCACHE_DIR": shared / "ccache",
+        "TMPDIR": scratch / "tmp",
+        "GOTMPDIR": scratch / "go-tmp",
+        "GOCACHE": scratch / "go-build",
+        "GOMODCACHE": shared / "go-mod",
+        "UV_CACHE_DIR": shared / "uv",
+        "PIP_CACHE_DIR": shared / "pip",
+        "npm_config_cache": shared / "npm",
+        "BUN_INSTALL_CACHE_DIR": shared / "bun",
+        "CARGO_HOME": shared / "cargo",
+        "GRADLE_USER_HOME": shared / "gradle",
+        "CCACHE_DIR": shared / "ccache",
     }
     for key, value in mappings.items():
         environment[key] = str(_mkdir(value))
@@ -176,7 +192,11 @@ def _tree_size(path: Path) -> int:
         try:
             if entry.is_symlink():
                 continue
-            total += _tree_size(Path(entry.path)) if entry.is_dir(follow_symlinks=False) else entry.stat(follow_symlinks=False).st_size
+            total += (
+                _tree_size(Path(entry.path))
+                if entry.is_dir(follow_symlinks=False)
+                else entry.stat(follow_symlinks=False).st_size
+            )
         except (FileNotFoundError, PermissionError):
             continue
     return total
@@ -186,13 +206,19 @@ def _write_report(report: RunReport) -> None:
     reports = _mkdir(state_root() / "reports")
     stamp = datetime.now(UTC).strftime("%Y%m%dT%H%M%S.%fZ")
     payload = asdict(report)
-    (reports / f"{stamp}.json").write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    (reports / f"{stamp}.json").write_text(
+        json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
     columns = tuple(payload)
     values = tuple(json.dumps(payload[key], separators=(",", ":")) for key in columns)
-    (reports / f"{stamp}.tsv").write_text("\t".join(columns) + "\n" + "\t".join(values) + "\n", encoding="utf-8")
+    (reports / f"{stamp}.tsv").write_text(
+        "\t".join(columns) + "\n" + "\t".join(values) + "\n", encoding="utf-8"
+    )
 
 
-def run_command(command: Sequence[str], cwd: Path, policy: TempPolicy = DEFAULT_POLICY) -> RunReport:
+def run_command(
+    command: Sequence[str], cwd: Path, policy: TempPolicy = DEFAULT_POLICY
+) -> RunReport:
     """Run one owned process group with isolated scratch and bounded growth."""
 
     if not command:
@@ -200,7 +226,9 @@ def run_command(command: Sequence[str], cwd: Path, policy: TempPolicy = DEFAULT_
     repo = resolve_repo(cwd)
     scratch, lock_file = create_run(repo)
     started = datetime.now(UTC)
-    process = subprocess.Popen(tuple(command), cwd=cwd, env=managed_env(repo, scratch), start_new_session=True)
+    process = subprocess.Popen(
+        tuple(command), cwd=cwd, env=managed_env(repo, scratch), start_new_session=True
+    )
     peak = 0
     warned = False
     stopped = False
@@ -218,7 +246,10 @@ def run_command(command: Sequence[str], cwd: Path, policy: TempPolicy = DEFAULT_
             size = _tree_size(scratch)
             peak = max(peak, size)
             if size >= policy.warning_bytes and not warned:
-                print(f"WARNING: owned scratch reached {size} bytes: {scratch}", file=sys.stderr)
+                print(
+                    f"WARNING: owned scratch reached {size} bytes: {scratch}",
+                    file=sys.stderr,
+                )
                 warned = True
             if size >= policy.failure_bytes:
                 _terminate_group(process)
@@ -249,9 +280,16 @@ def run_command(command: Sequence[str], cwd: Path, policy: TempPolicy = DEFAULT_
             scratch.rmdir()
             retained = False
     report = RunReport(
-        command=tuple(command), repo=str(repo), scratch=str(scratch), started_at=started.isoformat(),
-        finished_at=datetime.now(UTC).isoformat(), exit_code=exit_code, peak_bytes=peak,
-        warning_bytes=policy.warning_bytes, failure_bytes=policy.failure_bytes, stopped_for_limit=stopped,
+        command=tuple(command),
+        repo=str(repo),
+        scratch=str(scratch),
+        started_at=started.isoformat(),
+        finished_at=datetime.now(UTC).isoformat(),
+        exit_code=exit_code,
+        peak_bytes=peak,
+        warning_bytes=policy.warning_bytes,
+        failure_bytes=policy.failure_bytes,
+        stopped_for_limit=stopped,
         scratch_retained=retained,
     )
     _write_report(report)
@@ -268,7 +306,17 @@ def _classify(path: Path) -> tuple[str, str]:
         return "prohibited", "prohibited persistent database in /tmp"
     if name.endswith((".sock", ".lock")):
         return "ephemeral", "preserve: small socket or lock"
-    prefixes = ("go-build", "pytest-", "node-compile-cache", "beads-", "aihub-", "flext-", "gt-junk", "pool-shell-", "agents-waza-check.")
+    prefixes = (
+        "go-build",
+        "pytest-",
+        "node-compile-cache",
+        "beads-",
+        "aihub-",
+        "flext-",
+        "gt-junk",
+        "pool-shell-",
+        "agents-waza-check.",
+    )
     if name.startswith(prefixes):
         return "residue", "unmanaged build/test residue in /tmp"
     return "unknown", "preserve: unclassified /tmp content"
@@ -284,7 +332,11 @@ def findings(temp_root: Path = SYSTEM_TEMP) -> list[TempFinding]:
         return result
     for entry in entries:
         kind, message = _classify(entry)
-        nested = entry.is_dir() and not entry.is_symlink() and any((entry / marker).exists() for marker in PROHIBITED_NAMES)
+        nested = (
+            entry.is_dir()
+            and not entry.is_symlink()
+            and any((entry / marker).exists() for marker in PROHIBITED_NAMES)
+        )
         if kind != "unknown" or nested:
             result.append(TempFinding(entry, kind, message, _tree_size(entry)))
     return sorted(result, key=lambda item: str(item.path))
@@ -306,7 +358,9 @@ def _locked(path: Path) -> bool:
 def _protected_descendant(path: Path) -> str | None:
     for root, dirs, files in os.walk(path, followlinks=False):
         current = Path(root)
-        if current.is_symlink() or any((current / name).is_symlink() for name in dirs + files):
+        if current.is_symlink() or any(
+            (current / name).is_symlink() for name in dirs + files
+        ):
             return "symlink"
         names = set(dirs) | set(files)
         if names & PROHIBITED_NAMES:
@@ -331,7 +385,13 @@ def _remove_owned_tree(path: Path, *, allow_owned_symlinks: bool = False) -> Non
             child.unlink()
 
 
-def gc(repo: Path, *, apply: bool, policy: TempPolicy = DEFAULT_POLICY, now: float | None = None) -> tuple[list[Path], list[TempFinding]]:
+def gc(
+    repo: Path,
+    *,
+    apply: bool,
+    policy: TempPolicy = DEFAULT_POLICY,
+    now: float | None = None,
+) -> tuple[list[Path], list[TempFinding]]:
     """Collect only old, marked, unlocked runs; preserve anything ambiguous."""
 
     root = managed_temp(repo)
@@ -351,23 +411,39 @@ def gc(repo: Path, *, apply: bool, policy: TempPolicy = DEFAULT_POLICY, now: flo
     for candidate in sorted(root.glob("run.*")):
         marker = candidate / MARKER
         if candidate.is_symlink() or not marker.is_file():
-            blocked.append(TempFinding(candidate, "unknown", "preserve: missing trusted run marker"))
+            blocked.append(
+                TempFinding(
+                    candidate, "unknown", "preserve: missing trusted run marker"
+                )
+            )
             continue
         completed = candidate in successful
         if not completed and clock - marker.stat().st_mtime < policy.orphan_age_seconds:
-            blocked.append(TempFinding(candidate, "young", "preserve: younger than orphan retention"))
+            blocked.append(
+                TempFinding(
+                    candidate, "young", "preserve: younger than orphan retention"
+                )
+            )
             continue
         if _locked(candidate):
-            blocked.append(TempFinding(candidate, "active", "preserve: active owner lock"))
+            blocked.append(
+                TempFinding(candidate, "active", "preserve: active owner lock")
+            )
             continue
         protected = None if completed else _protected_descendant(candidate)
         if protected is not None:
-            blocked.append(TempFinding(candidate, "protected", f"preserve: contains {protected}"))
+            blocked.append(
+                TempFinding(candidate, "protected", f"preserve: contains {protected}")
+            )
             continue
         allowed = KNOWN_DIRS | {MARKER, LOCK}
         unknown = {entry.name for entry in candidate.iterdir()} - allowed
         if unknown:
-            blocked.append(TempFinding(candidate, "unknown", f"preserve: unknown entries {sorted(unknown)}"))
+            blocked.append(
+                TempFinding(
+                    candidate, "unknown", f"preserve: unknown entries {sorted(unknown)}"
+                )
+            )
             continue
         eligible.append(candidate)
     if apply:
@@ -381,8 +457,13 @@ def status(repo: Path) -> dict[str, object]:
     root = managed_temp(repo)
     runs = tuple(root.glob("run.*"))
     return {
-        "repo": str(repo.resolve()), "scratch_root": str(root), "run_count": len(runs),
-        "scratch_bytes": _tree_size(root), "state_root": str(state_root()),
+        "repo": str(repo.resolve()),
+        "scratch_root": str(root),
+        "run_count": len(runs),
+        "scratch_bytes": _tree_size(root),
+        "state_root": str(state_root()),
         "cache_root": str(cache_root()),
-        "tmp_findings": sum(item.kind in {"prohibited", "residue"} for item in findings()),
+        "tmp_findings": sum(
+            item.kind in {"prohibited", "residue"} for item in findings()
+        ),
     }

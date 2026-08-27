@@ -20,7 +20,9 @@ def _catalog(tmp_path: Path) -> Catalog:
         "classification": [],
         "default": {"class": "on_demand", "provenance": "adopted", "updates": "manual"},
     }
-    (tmp_path / "config" / "skills.json").write_text(json.dumps(config), encoding="utf-8")
+    (tmp_path / "config" / "skills.json").write_text(
+        json.dumps(config), encoding="utf-8"
+    )
     return Catalog(tmp_path)
 
 

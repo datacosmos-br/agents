@@ -13,17 +13,26 @@ def _report(tmp_path: Path, body: str) -> Path:
 
 
 def test_complete_finding_is_accepted(tmp_path: Path) -> None:
-    path = _report(tmp_path, "# Triagem\n\nBead: `project-123`\n\n## Findings\n\n### 1 · MEDIUM · `rule`\n\n**Decisão**: corrigido\n\n**Evidência**: `semgrep scan` retornou código 0 sem o achado.\n")
+    path = _report(
+        tmp_path,
+        "# Triagem\n\nBead: `project-123`\n\n## Findings\n\n### 1 · MEDIUM · `rule`\n\n**Decisão**: corrigido\n\n**Evidência**: `semgrep scan` retornou código 0 sem o achado.\n",
+    )
     assert validate_document(path) == ()
 
 
 def test_empty_decision_fails_closed(tmp_path: Path) -> None:
-    path = _report(tmp_path, "# Triagem\n\nBead: `project-123`\n\n## Findings\n\n### 1 · LOW · `rule`\n\n**Decisão**:\n")
+    path = _report(
+        tmp_path,
+        "# Triagem\n\nBead: `project-123`\n\n## Findings\n\n### 1 · LOW · `rule`\n\n**Decisão**:\n",
+    )
     assert [item.code for item in validate_document(path)] == ["missing-decision"]
 
 
 def test_risk_acceptance_is_not_a_closing_decision(tmp_path: Path) -> None:
-    path = _report(tmp_path, "# Triagem\n\nBead: `project-123`\n\n## Findings\n\n### 1 · LOW · `rule`\n\n**Decisão**: risco-aceito\n\n**Evidência**: nenhuma\n")
+    path = _report(
+        tmp_path,
+        "# Triagem\n\nBead: `project-123`\n\n## Findings\n\n### 1 · LOW · `rule`\n\n**Decisão**: risco-aceito\n\n**Evidência**: nenhuma\n",
+    )
     assert [item.code for item in validate_document(path)] == ["invalid-decision"]
 
 
@@ -32,5 +41,8 @@ def test_missing_report_is_blocking(tmp_path: Path) -> None:
 
 
 def test_manual_ledger_is_an_explicit_tracker(tmp_path: Path) -> None:
-    path = _report(tmp_path, "# Triagem\n\nLedger: manual\n\n## Findings\n\n### 1 · LOW · `rule`\n\n**Decisão**: corrigido\n\n**Evidência**: scanner retornou código 0.\n")
+    path = _report(
+        tmp_path,
+        "# Triagem\n\nLedger: manual\n\n## Findings\n\n### 1 · LOW · `rule`\n\n**Decisão**: corrigido\n\n**Evidência**: scanner retornou código 0.\n",
+    )
     assert validate_document(path) == ()

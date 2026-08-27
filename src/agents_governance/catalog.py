@@ -99,9 +99,17 @@ class Catalog:
     @staticmethod
     def digest_tree(directory: Path) -> str:
         digest = hashlib.sha256()
-        paths = (directory,) if directory.is_file() else tuple(sorted(item for item in directory.rglob("*") if item.is_file()))
+        paths = (
+            (directory,)
+            if directory.is_file()
+            else tuple(sorted(item for item in directory.rglob("*") if item.is_file()))
+        )
         for path in paths:
-            relative = path.name if directory.is_file() else path.relative_to(directory).as_posix()
+            relative = (
+                path.name
+                if directory.is_file()
+                else path.relative_to(directory).as_posix()
+            )
             digest.update(relative.encode())
             digest.update(b"\0")
             digest.update(path.read_bytes())
