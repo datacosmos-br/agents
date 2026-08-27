@@ -1,0 +1,393 @@
+#!/usr/bin/env python3
+"""Scoped GNOME Keyring bridge for direnv, agents, and user services."""
+
+from __future__ import annotations
+
+import argparse
+import fnmatch
+import getpass
+import hmac
+import json
+import os
+import re
+import shlex
+import subprocess
+import sys
+import time
+import tomllib
+from pathlib import Path
+
+try:
+    import gi
+
+    gi.require_version("Secret", "1")
+    from gi.repository import Secret
+except (
+    ImportError,
+    ValueError,
+):  # pragma: no cover - fallback is exercised on headless hosts
+    Secret = None
+
+
+APP = "dev-environment"
+CONFIG_ROOT = Path(os.environ.get("XDG_CONFIG_HOME", Path.home() / ".config"))
+STATE_ROOT = Path(os.environ.get("XDG_STATE_HOME", Path.home() / ".local/state"))
+MANIFEST = CONFIG_ROOT / "environment.d" / "secrets" / "profiles.toml"
+EVENTS = STATE_ROOT / "env-keyring" / "events.jsonl"
+NAME_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
+PROFILE_RE = re.compile(r"^[a-z][a-z0-9-]{1,63}$")
+
+if Secret is not None:
+    SECRET_SCHEMA = Secret.Schema.new(
+        "org.freedesktop.Secret.Generic",
+        Secret.SchemaFlags.NONE,
+        {
+            "application": Secret.SchemaAttributeType.STRING,
+            "profile": Secret.SchemaAttributeType.STRING,
+            "name": Secret.SchemaAttributeType.STRING,
+        },
+    )
+else:
+    SECRET_SCHEMA = None
+
+
+class KeyringError(RuntimeError):
+    pass
+
+
+def event(action: str, profile: str, *, name: str = "", result: str) -> None:
+    EVENTS.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
+    payload = {
+        "timestamp": int(time.time()),
+        "action": action,
+        "profile": profile,
+        "name": name,
+        "result": result,
+    }
+    descriptor = os.open(EVENTS, os.O_WRONLY | os.O_APPEND | os.O_CREAT, 0o600)
+    with os.fdopen(descriptor, "a", encoding="utf-8") as handle:
+        handle.write(json.dumps(payload, sort_keys=True) + "\n")
+
+
+def manifest() -> dict[str, dict[str, object]]:
+    try:
+        data = tomllib.loads(MANIFEST.read_text(encoding="utf-8"))
+    except (OSError, tomllib.TOMLDecodeError) as error:
+        raise KeyringError(f"manifest unavailable: {error}") from error
+    profiles = data.get("profiles")
+    if data.get("version") != 1 or not isinstance(profiles, dict):
+        raise KeyringError("invalid manifest version or profiles")
+    return profiles
+
+
+def profile_config(name: str) -> dict[str, object]:
+    if not PROFILE_RE.fullmatch(name):
+        raise KeyringError("invalid profile name")
+    config = manifest().get(name)
+    if not isinstance(config, dict):
+        raise KeyringError(f"unknown profile: {name}")
+    variables = config.get("variables", [])
+    if (
+        not isinstance(variables, list)
+        or not variables
+        or any(
+            not isinstance(item, str) or not NAME_RE.fullmatch(item)
+            for item in variables
+        )
+    ):
+        raise KeyringError(f"invalid variables for profile: {name}")
+    return config
+
+
+def auto_profile(directory: str | None) -> tuple[str, dict[str, object]] | None:
+    current = Path(directory or os.getcwd()).resolve(strict=True)
+    candidates: list[tuple[int, str, dict[str, object]]] = []
+    for name, config in manifest().items():
+        if not isinstance(config, dict) or config.get("auto_load") is not True:
+            continue
+        for raw_root in config.get("roots", []):
+            if not isinstance(raw_root, str):
+                continue
+            root = Path(raw_root).expanduser()
+            if not root.exists():
+                continue
+            resolved = root.resolve(strict=True)
+            if within(current, resolved):
+                candidates.append((len(resolved.parts), name, config))
+    if not candidates:
+        return None
+    depth = max(item[0] for item in candidates)
+    winners = {
+        (name, id(config)): (name, config)
+        for item_depth, name, config in candidates
+        if item_depth == depth
+    }
+    if len(winners) != 1:
+        raise KeyringError("ambiguous automatic keyring profile")
+    return next(iter(winners.values()))
+
+
+def within(path: Path, root: Path) -> bool:
+    try:
+        path.relative_to(root)
+        return True
+    except ValueError:
+        return False
+
+
+def authorize_directory(config: dict[str, object], directory: str | None) -> None:
+    current = Path(directory or os.getcwd()).resolve(strict=True)
+    roots = config.get("roots", [])
+    if not isinstance(roots, list) or not any(
+        isinstance(item, str)
+        and within(current, Path(item).expanduser().resolve(strict=True))
+        for item in roots
+        if Path(str(item)).expanduser().exists()
+    ):
+        raise KeyringError("directory is not authorized for this profile")
+
+
+def authorize_consumer(config: dict[str, object], consumer: str) -> None:
+    consumers = config.get("consumers", [])
+    if not isinstance(consumers, list) or not any(
+        isinstance(pattern, str) and fnmatch.fnmatchcase(consumer, pattern)
+        for pattern in consumers
+    ):
+        raise KeyringError("consumer is not authorized for this profile")
+
+
+def lookup(profile: str, name: str) -> str:
+    if not os.environ.get("DBUS_SESSION_BUS_ADDRESS"):
+        raise KeyringError("GNOME Keyring unavailable: session D-Bus is not configured")
+    if Secret is not None and SECRET_SCHEMA is not None:
+        value = Secret.password_lookup_sync(
+            SECRET_SCHEMA,
+            {"application": APP, "profile": profile, "name": name},
+            None,
+        )
+        if value:
+            return str(value)
+        raise KeyringError(f"missing secret: {name}")
+    process = subprocess.run(
+        ["secret-tool", "lookup", "application", APP, "profile", profile, "name", name],
+        check=False,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.DEVNULL,
+        text=True,
+        timeout=15,
+    )
+    if process.returncode != 0 or not process.stdout:
+        raise KeyringError(f"missing secret: {name}")
+    return process.stdout.rstrip("\n")
+
+
+def fetch_all(profile: str, config: dict[str, object]) -> dict[str, str]:
+    result: dict[str, str] = {}
+    for name in config["variables"]:
+        result[str(name)] = lookup(profile, str(name))
+    return result
+
+
+def store(profile: str, name: str, from_stdin: bool) -> int:
+    config = profile_config(profile)
+    if name not in config["variables"]:
+        raise KeyringError("variable is not declared by the profile")
+    value = sys.stdin.read() if from_stdin else getpass.getpass(f"{profile}/{name}: ")
+    value = value.rstrip("\n") if from_stdin else value
+    if not value:
+        raise KeyringError("refusing to store an empty secret")
+    process = subprocess.run(
+        [
+            "secret-tool",
+            "store",
+            f"--label={APP}: {profile}/{name}",
+            "application",
+            APP,
+            "profile",
+            profile,
+            "name",
+            name,
+        ],
+        input=value,
+        text=True,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+        check=False,
+        timeout=30,
+    )
+    if process.returncode != 0 or not hmac.compare_digest(lookup(profile, name), value):
+        event("store", profile, name=name, result="failed")
+        raise KeyringError("keyring verification failed")
+    event("store", profile, name=name, result="ok")
+    return 0
+
+
+def shell_exports(profile: str, directory: str | None, shell: str) -> int:
+    config = profile_config(profile)
+    authorize_directory(config, directory)
+    secrets = fetch_all(profile, config)
+    for name, value in secrets.items():
+        if shell == "fish":
+            print(f"set -gx {name} {shlex.quote(value)}")
+        else:
+            print(f"export {name}={shlex.quote(value)}")
+    event("shell", profile, result="ok")
+    return 0
+
+
+def auto_shell_exports(directory: str | None, shell: str) -> int:
+    selected = auto_profile(directory)
+    if selected is None:
+        return 0
+    profile, config = selected
+    secrets = fetch_all(profile, config)
+    secrets["ENV_KEYRING_PROFILE"] = profile
+    for name, value in secrets.items():
+        if shell == "fish":
+            print(f"set -gx {name} {shlex.quote(value)}")
+        else:
+            print(f"export {name}={shlex.quote(value)}")
+    event("auto-shell", profile, result="ok")
+    return 0
+
+
+def check(profile: str, directory: str | None, consumer: str | None) -> int:
+    config = profile_config(profile)
+    if consumer:
+        authorize_consumer(config, consumer)
+    else:
+        authorize_directory(config, directory)
+    fetch_all(profile, config)
+    event("check", profile, result="ok")
+    print(f"profile={profile} status=ready variables={len(config['variables'])}")
+    return 0
+
+
+def execute(profile: str, consumer: str, command: list[str]) -> int:
+    config = profile_config(profile)
+    authorize_consumer(config, consumer)
+    secrets = fetch_all(profile, config)
+    environment = os.environ.copy()
+    for item in manifest().values():
+        if isinstance(item, dict):
+            for name in item.get("variables", []):
+                environment.pop(str(name), None)
+    environment.update(secrets)
+    event("exec", profile, result="ok")
+    os.execvpe(command[0], command, environment)
+    return 70
+
+
+def execute_auto(directory: str | None, consumer: str, command: list[str]) -> int:
+    selected = auto_profile(directory)
+    if selected is None:
+        raise KeyringError("no automatic keyring profile for directory")
+    profile, config = selected
+    authorize_consumer(config, consumer)
+    secrets = fetch_all(profile, config)
+    environment = os.environ.copy()
+    for item in manifest().values():
+        if isinstance(item, dict):
+            for name in item.get("variables", []):
+                environment.pop(str(name), None)
+    environment.update(secrets)
+    environment["ENV_KEYRING_PROFILE"] = profile
+    event("auto-exec", profile, result="ok")
+    os.execvpe(command[0], command, environment)
+    return 70
+
+
+def remove(profile: str, name: str, confirmed: bool) -> int:
+    config = profile_config(profile)
+    if not confirmed or name not in config["variables"]:
+        raise KeyringError("explicit --yes and a declared variable are required")
+    process = subprocess.run(
+        ["secret-tool", "clear", "application", APP, "profile", profile, "name", name],
+        check=False,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+        timeout=15,
+    )
+    event(
+        "remove",
+        profile,
+        name=name,
+        result="ok" if process.returncode == 0 else "failed",
+    )
+    return process.returncode
+
+
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(prog="env-keyring")
+    commands = parser.add_subparsers(dest="command", required=True)
+    store_parser = commands.add_parser("store")
+    store_parser.add_argument("--profile", required=True)
+    store_parser.add_argument("--name", required=True)
+    store_parser.add_argument("--stdin", action="store_true")
+    shell_parser = commands.add_parser("shell")
+    shell_parser.add_argument("--profile", required=True)
+    shell_parser.add_argument("--directory")
+    shell_parser.add_argument(
+        "--shell", choices=("bash", "zsh", "fish"), default="bash"
+    )
+    auto_shell_parser = commands.add_parser("auto-shell")
+    auto_shell_parser.add_argument("--directory")
+    auto_shell_parser.add_argument(
+        "--shell", choices=("bash", "zsh", "fish"), default="bash"
+    )
+    check_parser = commands.add_parser("check")
+    check_parser.add_argument("--profile", required=True)
+    check_parser.add_argument("--directory")
+    check_parser.add_argument("--consumer")
+    exec_parser = commands.add_parser("exec")
+    exec_parser.add_argument("--profile", required=True)
+    exec_parser.add_argument("--consumer", required=True)
+    exec_parser.add_argument("argv", nargs=argparse.REMAINDER)
+    auto_exec_parser = commands.add_parser("auto-exec")
+    auto_exec_parser.add_argument("--directory")
+    auto_exec_parser.add_argument("--consumer", required=True)
+    auto_exec_parser.add_argument("argv", nargs=argparse.REMAINDER)
+    remove_parser = commands.add_parser("remove")
+    remove_parser.add_argument("--profile", required=True)
+    remove_parser.add_argument("--name", required=True)
+    remove_parser.add_argument("--yes", action="store_true")
+    return parser
+
+
+def main() -> int:
+    args = build_parser().parse_args()
+    try:
+        if args.command == "store":
+            return store(args.profile, args.name, args.stdin)
+        if args.command == "shell":
+            return shell_exports(args.profile, args.directory, args.shell)
+        if args.command == "auto-shell":
+            return auto_shell_exports(args.directory, args.shell)
+        if args.command == "check":
+            return check(args.profile, args.directory, args.consumer)
+        if args.command == "exec":
+            command = list(args.argv)
+            if command and command[0] == "--":
+                command.pop(0)
+            if not command:
+                raise KeyringError("exec requires a command after --")
+            return execute(args.profile, args.consumer, command)
+        if args.command == "auto-exec":
+            command = list(args.argv)
+            if command and command[0] == "--":
+                command.pop(0)
+            if not command:
+                raise KeyringError("auto-exec requires a command after --")
+            return execute_auto(args.directory, args.consumer, command)
+        if args.command == "remove":
+            return remove(args.profile, args.name, args.yes)
+    except (KeyringError, OSError, subprocess.SubprocessError) as error:
+        profile = getattr(args, "profile", "unknown")
+        event(args.command, profile, result="failed")
+        print(f"env-keyring: {error}", file=sys.stderr)
+        return 78
+    return 70
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

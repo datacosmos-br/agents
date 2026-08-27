@@ -1,0 +1,10 @@
+name: sequential-thinking
+description: sequential, thinking
+tools:
+- Read
+- Edit
+- Write
+- Bash
+- Grep
+- Glob
+model: gpt-5.5

@@ -1,0 +1,24 @@
+{
+  "version": 2,
+  "surfaces": {
+    "commands": {"entries": ["security-triage.md"]},
+    "rules": {"entries": ["security"]}
+  },
+  "personal_targets": {
+    "claude": {"skills": "${HOME}/.claude/skills", "commands": "${HOME}/.claude/commands", "rules": "${HOME}/.claude/rules"},
+    "codex": {"skills": "${HOME}/.codex/skills", "rules": "${HOME}/.codex/rules"},
+    "cursor": {"skills": "${HOME}/.cursor/skills", "commands": "${HOME}/.cursor/commands"},
+    "gemini": {"skills": "${HOME}/.gemini/skills"},
+    "opencode": {"skills": "${HOME}/.config/opencode/skills"},
+    "copilot": {"skills": "${HOME}/.copilot/skills"},
+    "antigravity": {"skills": "${HOME}/.gemini/antigravity/skills"}
+  },
+  "projects": {
+    "town_root": "${HOME}/gt",
+    "checkout_glob": "*/mayor/rig",
+    "skills_path": ".agents/skills",
+    "commands_path": ".agents/commands",
+    "rules_path": ".agents/rules",
+    "flext_remote": "flext-sh/flext"
+  }
+}

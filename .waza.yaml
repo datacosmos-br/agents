@@ -1,26 +1,29 @@
 # Waza configuration for the ~/.agents universal skill authority.
-# Enforces the workspace standard: SKILL.md must stay ≤500 tokens.
-# Distributed to governed projects via `ai-hub ssot-relink`.
+# Enforces the classed workspace budgets owned directly by ~/.agents.
+# No external tool distributes or regenerates this authority.
 
 tokens:
   warningThreshold: 450
-  fallbackLimit: 500
+  fallbackLimit: 5000
   limits:
     defaults:
-      "SKILL.md": 500
-      "references/**/*.md": 1000
+      "SKILL.md": 5000
+      "skills/*/references/*.md": 15000
       "*.md": 2000
     overrides:
       "README.md": 3000
       "CLAUDE.md": 3000
       "GEMINI.md": 3000
-      "docs/**/*.md": 5000
-      "docs/references/**/*.md": 15000
-      "docs/prompts/**/*.md": 10000
-      "docs/architecture/**/*.md": 10000
-      ".agents/skills/frontend-slides/STYLE_PRESETS.md": 3000
+      "docs/*.md": 5000
+      "docs/references/*.md": 15000
+      "docs/prompts/*.md": 10000
+      "docs/architecture/*.md": 10000
+      "skills/frontend-slides/STYLE_PRESETS.md": 3000
+      # Per-class SKILL.md budgets are enforced by agentsctl from
+      # config/skills.json. Waza 0.38.x does not reliably match a wildcard in
+      # an intermediate path segment, so it remains the independent 5k/15k
+      # file-ceiling gate instead of silently pretending to enforce classes.
       # AGENTS.md intentionally uses the default *.md limit (2000 tokens).
 
 paths:
-  skills:
-    - skills
+  skills: skills
