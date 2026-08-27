@@ -15,7 +15,7 @@ def explicit_storage_manifest(monkeypatch, tmp_path: Path) -> None:
         "version = 1\n"
         "repositories = []\n"
         "[policy]\n"
-        f'global_temp = "{tmp_path / "ephemeral"}"\n',
+        f'shell_temp = "{tmp_path / "shell-tmp"}"\n',
         encoding="utf-8",
     )
     monkeypatch.setenv("AGENTS_STORAGE_CONFIG", str(manifest))

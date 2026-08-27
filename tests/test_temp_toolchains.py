@@ -41,7 +41,7 @@ def test_two_go_tests_use_distinct_owned_runs(monkeypatch, tmp_path: Path) -> No
     assert (tmp_path / "cache" / "go-mod").is_dir()
 
 
-def test_python_node_and_rust_commands_use_bounded_runner(
+def test_python_node_bun_rust_and_java_commands_use_bounded_runner(
     monkeypatch, tmp_path: Path
 ) -> None:
     repo = _git_repo(tmp_path / "multi-project")
@@ -52,16 +52,22 @@ def test_python_node_and_rust_commands_use_bounded_runner(
     source = repo / "src"
     source.mkdir()
     (source / "lib.rs").write_text("pub fn answer() -> u8 { 42 }\n", encoding="utf-8")
+    (repo / "Main.java").write_text(
+        "final class Main { public static void main(String[] args) {} }\n",
+        encoding="utf-8",
+    )
     monkeypatch.setenv("XDG_CACHE_HOME", str(tmp_path / "cache"))
     monkeypatch.setenv("XDG_STATE_HOME", str(tmp_path / "state"))
 
     commands = (
         ["python", "-c", "print('python-ok')"],
         ["node", "-e", "console.log('node-ok')"],
+        ["bun", "-e", "console.log('bun-ok')"],
         ["cargo", "check", "--quiet"],
+        ["sh", "-c", 'javac -d "$TMPDIR/java" Main.java'],
     )
     reports = [run_command(command, repo, FAST_POLICY) for command in commands]
 
-    assert [report.exit_code for report in reports] == [0, 0, 0]
-    assert len({report.scratch for report in reports}) == 3
+    assert [report.exit_code for report in reports] == [0, 0, 0, 0, 0]
+    assert len({report.scratch for report in reports}) == 5
     assert (tmp_path / "cache" / "node-compile-cache").is_dir()

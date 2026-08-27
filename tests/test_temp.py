@@ -31,8 +31,8 @@ def local_storage_manifest(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> P
     (config / "storage.toml").write_text(
         "version = 1\n"
         "[policy]\n"
-        f'global_temp = "{tmp_path / "ephemeral"}"\n'
-        "global_temp_max_bytes = 1073741824\n"
+        f'shell_temp = "{tmp_path / "shell-tmp"}"\n'
+        "shell_temp_max_bytes = 1073741824\n"
         "repositories = []\n",
         encoding="utf-8",
     )
@@ -110,14 +110,14 @@ def test_repository_audit_rejects_legacy_archives(tmp_path: Path) -> None:
     assert [(item.path, item.kind) for item in items] == [(archive, "residue")]
 
 
-def test_managed_temp_uses_machine_authorized_physical_directory(
+def test_managed_temp_uses_repository_owned_physical_directory(
     tmp_path: Path,
 ) -> None:
     repo = git_repo(tmp_path / "repo")
 
     destination = managed_temp(repo)
 
-    assert destination == tmp_path / "ephemeral"
+    assert destination == repo / ".test-tmp"
     assert destination.is_dir()
     assert not destination.is_symlink()
     assert destination.stat().st_mode & 0o777 == 0o700
@@ -146,6 +146,7 @@ def test_managed_env_isolates_build_dirs_and_shares_dependency_cache(
     assert Path(environment["TMPDIR"]).is_relative_to(scratch)
     assert Path(environment["GOTMPDIR"]).is_relative_to(scratch)
     assert Path(environment["GOCACHE"]).is_relative_to(scratch)
+    assert Path(environment["CARGO_TARGET_DIR"]).is_relative_to(scratch)
     assert environment["GOMODCACHE"] == str(tmp_path / "cache" / "go-mod")
 
 
@@ -169,7 +170,7 @@ def test_run_records_real_child_exit_and_evidence(
     assert json.loads(evidence[0].read_text(encoding="utf-8"))["exit_code"] == 0
 
 
-def test_run_stops_only_owned_process_group_at_limit(
+def test_successful_run_retains_scratch_containing_symlink(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
     repo = git_repo(tmp_path / "repo")
@@ -177,10 +178,36 @@ def test_run_stops_only_owned_process_group_at_limit(
     monkeypatch.setenv("XDG_CACHE_HOME", str(tmp_path / "cache"))
 
     report = run_command(
-        ["sh", "-c", 'head -c 4096 /dev/zero > "$TMPDIR/growth"; sleep 10'],
+        ["sh", "-c", 'ln -s "$HOME" "$TMPDIR/link"'],
         repo,
-        TempPolicy(warning_bytes=1024, failure_bytes=2048, poll_seconds=0.01),
+        TempPolicy(poll_seconds=0.01),
     )
+
+    assert report.exit_code == 70
+    assert report.scratch_retained is True
+    assert Path(report.scratch, "link").is_symlink()
+    Path(report.scratch, "link").unlink()
+
+
+def test_run_stops_only_owned_process_group_at_limit(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    repo = git_repo(tmp_path / "repo")
+    monkeypatch.setenv("XDG_STATE_HOME", str(tmp_path / "state"))
+    monkeypatch.setenv("XDG_CACHE_HOME", str(tmp_path / "cache"))
+
+    external = subprocess.Popen(["sleep", "30"])
+    try:
+        report = run_command(
+            ["sh", "-c", 'head -c 4096 /dev/zero > "$TMPDIR/growth"; sleep 10'],
+            repo,
+            TempPolicy(warning_bytes=1024, failure_bytes=2048, poll_seconds=0.01),
+        )
+
+        assert external.poll() is None
+    finally:
+        external.terminate()
+        external.wait(timeout=5)
 
     assert report.stopped_for_limit is True
     assert report.scratch_retained is True
@@ -266,6 +293,7 @@ def test_gc_preserves_young_unknown_symlink_database_and_locked_runs(
         "active",
     }
     assert all(path.exists() for path in (young, unknown, symlink, database, active))
+    (symlink / "tmp" / "link").unlink()
     young_lock.close()
     active_lock.close()
 
@@ -293,18 +321,18 @@ def test_global_audit_uses_only_machine_local_registered_roots(
     (config / "storage.toml").write_text(
         "version = 1\n"
         "[policy]\n"
-        f'global_temp = "{tmp_path / "ephemeral"}"\n'
-        "global_temp_max_bytes = 16\n"
+        f'shell_temp = "{tmp_path / "shell-tmp"}"\n'
+        "shell_temp_max_bytes = 16\n"
         "[[repositories]]\n"
         f'path = "{repo}"\n',
         encoding="utf-8",
     )
-    ephemeral = tmp_path / "ephemeral"
-    ephemeral.mkdir()
-    (ephemeral / "growth").write_bytes(b"x" * 17)
+    shell_temp = tmp_path / "shell-tmp"
+    shell_temp.mkdir()
+    (shell_temp / "growth").write_bytes(b"x" * 17)
     monkeypatch.setenv("AGENTS_STORAGE_CONFIG", str(config / "storage.toml"))
     monkeypatch.setattr("agents_governance.temp.SYSTEM_TEMP", tmp_path / "system-tmp")
 
     items = global_findings()
 
-    assert [(item.path, item.kind) for item in items] == [(ephemeral, "prohibited")]
+    assert [(item.path, item.kind) for item in items] == [(shell_temp, "prohibited")]

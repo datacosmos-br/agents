@@ -275,3 +275,4 @@ def test_managed_tree_removal_refuses_nested_symlink(tmp_path: Path) -> None:
         Projector._remove_managed_tree(managed)
 
     assert external.read_text(encoding="utf-8") == "preserve\n"
+    (managed / "escape").unlink()

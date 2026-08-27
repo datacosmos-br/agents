@@ -22,7 +22,17 @@ SYSTEM_TEMP = Path("/tmp")
 MARKER = ".agents-temp-run.json"
 LOCK = ".agents-temp-run.lock"
 KNOWN_DIRS = frozenset(
-    {"tmp", "go-tmp", "go-build", "python", "node", "cargo", "gradle", "ccache"}
+    {
+        "tmp",
+        "go-tmp",
+        "go-build",
+        "python",
+        "node",
+        "cargo",
+        "cargo-target",
+        "gradle",
+        "ccache",
+    }
 )
 PROHIBITED_NAMES = frozenset({".git", ".dolt", ".venv", "venv", "node_modules"})
 MAIN_THREAD_ID = threading.get_ident()
@@ -118,32 +128,13 @@ def resolve_repo(cwd: Path) -> Path:
 
 
 def managed_temp(repo: Path) -> Path:
-    """Return the machine-authorized ephemeral root without following symlinks."""
+    """Return the repository-owned scratch root without following symlinks."""
 
-    _ = repo
-    policy = storage_manifest().get("policy", {})
-    if not isinstance(policy, dict):
-        raise TypeError("storage policy must be a table")
-    destination = _expand_local_path(
-        str(policy.get("global_temp", "${HOME}/.local/tmp"))
-    )
+    resolved = resolve_repo(repo)
+    destination = resolved / ".test-tmp"
     if destination.is_symlink():
         raise RuntimeError(f"scratch root must not be a symlink: {destination}")
     destination.mkdir(mode=0o700, parents=True, exist_ok=True)
-    filesystem = subprocess.run(
-        ["stat", "-f", "-c", "%T", str(destination)],
-        check=True,
-        capture_output=True,
-        text=True,
-    ).stdout.strip()
-    if filesystem == "btrfs":
-        subprocess.run(
-            ["chattr", "+C", str(destination)],
-            check=True,
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.PIPE,
-            text=True,
-        )
     return destination
 
 
@@ -155,7 +146,7 @@ def _mkdir(path: Path) -> Path:
 
 
 def create_run(repo: Path) -> tuple[Path, IO[str]]:
-    scratch = Path(tempfile.mkdtemp(prefix="r.", dir=managed_temp(repo)))
+    scratch = Path(tempfile.mkdtemp(prefix="run.", dir=managed_temp(repo)))
     for name in KNOWN_DIRS:
         _mkdir(scratch / name)
     marker = {
@@ -191,6 +182,7 @@ def managed_env(repo: Path, scratch: Path) -> dict[str, str]:
         "NODE_COMPILE_CACHE": shared / "node-compile-cache",
         "BUN_INSTALL_CACHE_DIR": shared / "bun",
         "CARGO_HOME": shared / "cargo",
+        "CARGO_TARGET_DIR": scratch / "cargo-target",
         "GRADLE_USER_HOME": shared / "gradle",
         "CCACHE_DIR": shared / "ccache",
     }
@@ -300,9 +292,17 @@ def run_command(
         exit_code = 70
     retained = True
     if exit_code == 0:
-        _remove_owned_tree(scratch, allow_owned_symlinks=True)
-        scratch.rmdir()
-        retained = False
+        protected = _protected_descendant(scratch)
+        if protected is None:
+            _remove_owned_tree(scratch)
+            scratch.rmdir()
+            retained = False
+        else:
+            print(
+                f"FAIL: retained owned scratch containing {protected}: {scratch}",
+                file=sys.stderr,
+            )
+            exit_code = 70
     report = RunReport(
         command=tuple(command),
         repo=str(repo),
@@ -424,17 +424,15 @@ def global_findings() -> list[TempFinding]:
     policy = storage_manifest().get("policy", {})
     if not isinstance(policy, dict):
         raise TypeError("storage policy must be a table")
-    global_temp = _expand_local_path(
-        str(policy.get("global_temp", "${HOME}/.local/tmp"))
-    )
-    maximum = int(policy.get("global_temp_max_bytes", 256 << 20))
-    size = _tree_size(global_temp)
+    shell_temp = _expand_local_path(str(policy.get("shell_temp", "${HOME}/tmp")))
+    maximum = int(policy.get("shell_temp_max_bytes", 1 << 30))
+    size = _tree_size(shell_temp)
     if size > maximum:
         result.append(
             TempFinding(
-                global_temp,
+                shell_temp,
                 "prohibited",
-                f"global ephemeral storage exceeds {maximum} bytes",
+                f"shell fallback storage exceeds {maximum} bytes",
                 size,
             )
         )
@@ -503,16 +501,13 @@ def _protected_descendant(path: Path) -> str | None:
     return None
 
 
-def _remove_owned_tree(path: Path, *, allow_owned_symlinks: bool = False) -> None:
+def _remove_owned_tree(path: Path) -> None:
     for entry in os.scandir(path):
         child = Path(entry.path)
         if entry.is_symlink():
-            if not allow_owned_symlinks:
-                raise RuntimeError(f"refused symlink during removal: {child}")
-            child.unlink()
-            continue
+            raise RuntimeError(f"refused symlink during removal: {child}")
         if entry.is_dir(follow_symlinks=False):
-            _remove_owned_tree(child, allow_owned_symlinks=allow_owned_symlinks)
+            _remove_owned_tree(child)
             child.rmdir()
         else:
             child.unlink()
@@ -541,7 +536,7 @@ def gc(
                 continue
     eligible: list[Path] = []
     blocked: list[TempFinding] = []
-    for candidate in sorted(root.glob("r.*")):
+    for candidate in sorted(root.glob("run.*")):
         marker = candidate / MARKER
         if candidate.is_symlink() or not marker.is_file():
             blocked.append(
@@ -572,7 +567,7 @@ def gc(
                 TempFinding(candidate, "active", "preserve: active owner lock")
             )
             continue
-        protected = None if completed else _protected_descendant(candidate)
+        protected = _protected_descendant(candidate)
         if protected is not None:
             blocked.append(
                 TempFinding(candidate, "protected", f"preserve: contains {protected}")
@@ -590,14 +585,14 @@ def gc(
         eligible.append(candidate)
     if apply:
         for candidate in eligible:
-            _remove_owned_tree(candidate, allow_owned_symlinks=candidate in successful)
+            _remove_owned_tree(candidate)
             candidate.rmdir()
     return eligible, blocked
 
 
 def status(repo: Path) -> dict[str, object]:
     root = managed_temp(repo)
-    runs = tuple(root.glob("r.*"))
+    runs = tuple(root.glob("run.*"))
     return {
         "repo": str(repo.resolve()),
         "scratch_root": str(root),

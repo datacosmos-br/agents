@@ -34,3 +34,4 @@ def test_clean_generated_refuses_symlink(tmp_path: Path) -> None:
         clean_generated(tmp_path)
 
     assert marker.read_text(encoding="utf-8") == "keep"
+    (tmp_path / ".waza-cache").unlink()

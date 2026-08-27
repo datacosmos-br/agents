@@ -2,7 +2,7 @@ version = 1
 repositories = []
 
 [policy]
-global_temp = "${HOME}/.local/tmp"
-global_temp_max_bytes = 5368709120
+shell_temp = "${HOME}/tmp"
+shell_temp_max_bytes = 1073741824
 report_max_bytes = 104857600
 orphan_age_days = 7

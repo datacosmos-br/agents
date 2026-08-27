@@ -80,7 +80,7 @@ shell: ## shell scripts and GitHub workflow syntax
 
 build: ## build source and wheel artifacts
 	$(call BANNER,build · sdist + wheel)
-	@uv build
+	@uv run agentsctl temp run -- uv build
 
 ci: ## complete offline CI pipeline
 	$(call BANNER,ci · check + static + shell + build + test + spec + coverage)
@@ -131,7 +131,7 @@ descriptions: ## compact skill descriptions to trigger keywords; APPLY=Y writes
 
 test: ## unit tests for agentsctl
 	$(call BANNER,test · agentsctl)
-	@uv run agentsctl temp run -- uv run pytest
+	@uv run agentsctl temp run -- sh -eu -c 'uv run pytest --basetemp "$$TMPDIR/pytest"'
 
 preflight: ## prove selected model, auth, Responses transport, tools, and artifact
 	$(call BANNER,preflight · live Waza transport)
