@@ -1,0 +1,1005 @@
+{
+  "skills": [
+    {
+      "class": "on_demand",
+      "digest": "898c8b510b4a25d6ff31c0e81976eb0b782d3c4e49710a13d2e1eac599c363ea",
+      "distributions": [
+        "personal"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "agent-browser",
+      "owner": "agents",
+      "provenance": "adopted",
+      "updates": "manual"
+    },
+    {
+      "class": "on_demand",
+      "digest": "511a96b9b5268e1d8f10d357e0612ba6510f109b672c33b7c466e62b9d6075a2",
+      "distributions": [
+        "personal"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "agent-introspection-debugging",
+      "owner": "agents",
+      "provenance": "adopted",
+      "updates": "manual"
+    },
+    {
+      "class": "on_demand",
+      "digest": "57d02df33de96136874cf74b5fb19e8e995d462b7b5510d28062c492f3a1a49e",
+      "distributions": [
+        "personal"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "ai-prompt-engineering-safety-review",
+      "owner": "agents",
+      "provenance": "adopted",
+      "updates": "manual"
+    },
+    {
+      "class": "on_demand",
+      "digest": "a3d2e5105e6e96774926a47aec43e6db3e12b5b55692b8b975f84c9fdf38b9e4",
+      "distributions": [
+        "personal"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "aiskillstore-data-substrate-analysis",
+      "owner": "agents",
+      "provenance": "adopted",
+      "updates": "manual"
+    },
+    {
+      "class": "on_demand",
+      "digest": "deed86e125a0079a2cb882791e0ff6177089e8635a6d88a3abc1a8bf8a3ca6c8",
+      "distributions": [
+        "personal",
+        "project-generic"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "api-design",
+      "owner": "agents",
+      "provenance": "adopted",
+      "updates": "manual"
+    },
+    {
+      "class": "on_demand",
+      "digest": "8ef5f35335c8c061461b12183186c98a074cd1cd528c563dd9377ee42660c836",
+      "distributions": [
+        "personal"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "article-writing",
+      "owner": "agents",
+      "provenance": "adopted",
+      "updates": "manual"
+    },
+    {
+      "class": "on_demand",
+      "digest": "5dc29864231524fcf9adbf3317dc053ed694e89b0fdf12034a562808cec48003",
+      "distributions": [
+        "personal",
+        "project-generic"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "backend-patterns",
+      "owner": "agents",
+      "provenance": "adopted",
+      "updates": "manual"
+    },
+    {
+      "class": "router",
+      "digest": "5afdd121b67a00190ead92ee5bf681da711a9aabe46e1c2ef330bbf77dc2737f",
+      "distributions": [
+        "personal"
+      ],
+      "max_lines": 500,
+      "max_tokens": 500,
+      "name": "beads",
+      "owner": "agents",
+      "provenance": "agents-owned",
+      "updates": "manual"
+    },
+    {
+      "class": "router",
+      "digest": "4ebdbd2cae69d7e65d59f15313de5732cebc5b53331e809d1f8f0a6850a7a302",
+      "distributions": [
+        "personal"
+      ],
+      "max_lines": 500,
+      "max_tokens": 500,
+      "name": "beads-orchestrator",
+      "owner": "agents",
+      "provenance": "agents-owned",
+      "updates": "manual"
+    },
+    {
+      "class": "router",
+      "digest": "28b1249b2645b039051228a825a0fa59622a702bbe17f27992ca4d4c33ceeb5b",
+      "distributions": [
+        "personal"
+      ],
+      "max_lines": 500,
+      "max_tokens": 500,
+      "name": "beads-worker",
+      "owner": "agents",
+      "provenance": "agents-owned",
+      "updates": "manual"
+    },
+    {
+      "class": "on_demand",
+      "digest": "bf7d74a4ca4ded7cb046b7ca3d9037747a62ed9499ddf7b6acc38d7f0c0039ca",
+      "distributions": [
+        "personal"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "benchflow-ai-python-parallelization",
+      "owner": "agents",
+      "provenance": "adopted",
+      "updates": "manual"
+    },
+    {
+      "class": "on_demand",
+      "digest": "44e8853f0cb41e2346202e50edc235c71e3b7f9024a53c2e6a52297dbad326b9",
+      "distributions": [
+        "personal"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "brand-voice",
+      "owner": "agents",
+      "provenance": "adopted",
+      "updates": "manual"
+    },
+    {
+      "class": "on_demand",
+      "digest": "f913aa9acc1a1c897191212b738d4a445249eb88d5f2f0f9c3d2bb7e810d5d51",
+      "distributions": [
+        "technology:bun"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "bun-runtime",
+      "owner": "agents",
+      "provenance": "adopted",
+      "updates": "manual"
+    },
+    {
+      "class": "on_demand",
+      "digest": "9fb7830ad09be21aa4ffe24b5f5c6a7c19cd52ce755420665b14b40cb2417c7b",
+      "distributions": [
+        "personal"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "caveman",
+      "owner": "agents",
+      "provenance": "adopted",
+      "updates": "manual"
+    },
+    {
+      "class": "on_demand",
+      "digest": "0de76b2be702c1f5fd08c14a0d56465d1642466997f7a9072274e4d751a21cfa",
+      "distributions": [
+        "personal"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "code-navigation",
+      "owner": "agents",
+      "provenance": "adopted",
+      "updates": "manual"
+    },
+    {
+      "class": "on_demand",
+      "digest": "fe812609342935856831ff6151ea0880be7dd0315fd66c47e73b230bf77b0667",
+      "distributions": [
+        "personal",
+        "project-generic"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "code-review-expert",
+      "owner": "agents",
+      "provenance": "adopted",
+      "updates": "manual"
+    },
+    {
+      "class": "on_demand",
+      "digest": "ceae53d9e2aa50ac127c0c87b0008e21dc3eb1ff54625969998a595048db0d33",
+      "distributions": [
+        "personal",
+        "project-generic"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "coding-standards",
+      "owner": "agents",
+      "provenance": "adopted",
+      "updates": "manual"
+    },
+    {
+      "class": "on_demand",
+      "digest": "d70436ed8c0906966fa0ac71669cc10cc369850c3f6710a1956a1f5d8897076d",
+      "distributions": [
+        "personal"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "content-engine",
+      "owner": "agents",
+      "provenance": "adopted",
+      "updates": "manual"
+    },
+    {
+      "class": "on_demand",
+      "digest": "6c1627670c329e32723f5987308e9864f9b0107662515a59f9feccb83ef4e1d3",
+      "distributions": [
+        "personal"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "context-canary",
+      "owner": "agents",
+      "provenance": "adopted",
+      "updates": "manual"
+    },
+    {
+      "class": "on_demand",
+      "digest": "772e6f065f7cf3a4e314e2e7a71c8cc599534e64b09ee79db6171b770bc91882",
+      "distributions": [
+        "personal"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "copyleftdev-hettinger",
+      "owner": "agents",
+      "provenance": "adopted",
+      "updates": "manual"
+    },
+    {
+      "class": "on_demand",
+      "digest": "d1f6350de2a63193c03254e327d282c99f13b61c735f7ed4c22860b2e2aeb196",
+      "distributions": [
+        "personal"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "crew-commit",
+      "owner": "agents",
+      "provenance": "adopted",
+      "updates": "manual"
+    },
+    {
+      "class": "on_demand",
+      "digest": "85235fbc6cbeec3c551cfcea5a50682187af46e1011095aa716146c02409ce22",
+      "distributions": [
+        "personal"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "crosspost",
+      "owner": "agents",
+      "provenance": "adopted",
+      "updates": "manual"
+    },
+    {
+      "class": "on_demand",
+      "digest": "2afcc07d307a0a6f9c9aa88608a0655d22237f8aa6ea0275fa37f1f82af31efc",
+      "distributions": [
+        "personal"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "deep-research",
+      "owner": "agents",
+      "provenance": "adopted",
+      "updates": "manual"
+    },
+    {
+      "class": "on_demand",
+      "digest": "fc1ec102cf4436993dd4c2e63ae7ed9e5a75a5b00ea07ba1e3483f1311b233fd",
+      "distributions": [
+        "personal"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "diegosouzapw-architecture-documentation-creator",
+      "owner": "agents",
+      "provenance": "adopted",
+      "updates": "manual"
+    },
+    {
+      "class": "on_demand",
+      "digest": "4dbdfcdf105a17abe864ae16ea2814bdfa48382b214ad52542cd8d005e22142f",
+      "distributions": [
+        "technology:python"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "diegosouzapw-modern-python-finimo-solutions",
+      "owner": "agents",
+      "provenance": "adopted",
+      "updates": "manual"
+    },
+    {
+      "class": "on_demand",
+      "digest": "7665fb835198d9917eb132252341f7007467c8b821aea1a2d8e0f91c79a18509",
+      "distributions": [
+        "personal"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "dispatch-agent",
+      "owner": "agents",
+      "provenance": "adopted",
+      "updates": "manual"
+    },
+    {
+      "class": "on_demand",
+      "digest": "c28fd9f53958fffd2162d5e9a016b58712f8218c93ebf823d5087113f800c40f",
+      "distributions": [
+        "personal"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "dmux-workflows",
+      "owner": "agents",
+      "provenance": "adopted",
+      "updates": "manual"
+    },
+    {
+      "class": "on_demand",
+      "digest": "888f63b40eec18d8ae416bed841fcfdde767dfdeb454d4ed317cadf3ffb751fe",
+      "distributions": [
+        "personal"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "doc-drift",
+      "owner": "agents",
+      "provenance": "adopted",
+      "updates": "manual"
+    },
+    {
+      "class": "on_demand",
+      "digest": "c57bded7609b54bad780c43e10c2913471552a2bfb8bd67c1caedd5a0b36e23d",
+      "distributions": [
+        "personal",
+        "project-generic"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "documentation-criteria",
+      "owner": "agents",
+      "provenance": "adopted",
+      "updates": "manual"
+    },
+    {
+      "class": "on_demand",
+      "digest": "d26a35e41a797ed724559323f355609af2642568b01a524108d0d5ada411c5e2",
+      "distributions": [
+        "personal",
+        "project-generic"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "documentation-lookup",
+      "owner": "agents",
+      "provenance": "adopted",
+      "updates": "manual"
+    },
+    {
+      "class": "on_demand",
+      "digest": "45048283da50024d16e6383b093f1e4870dca6b0805f5a0fec25e7fb3f9407d4",
+      "distributions": [
+        "technology:javascript"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "e2e-testing",
+      "owner": "agents",
+      "provenance": "adopted",
+      "updates": "manual"
+    },
+    {
+      "class": "on_demand",
+      "digest": "75dae7c023ec1d940f239954c13df47e004c1e85e8c4569080b9c515c799db0a",
+      "distributions": [
+        "personal"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "eval-harness",
+      "owner": "agents",
+      "provenance": "adopted",
+      "updates": "manual"
+    },
+    {
+      "class": "on_demand",
+      "digest": "63390562f0e0be80cb6efd0427a27afb3355816072eedd4fa9657d3c60ec840b",
+      "distributions": [
+        "personal"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "exa-search",
+      "owner": "agents",
+      "provenance": "adopted",
+      "updates": "manual"
+    },
+    {
+      "class": "on_demand",
+      "digest": "ea1f9c562470712ecdd86661bdbbadec688b264bb175bba86089be4ec73668f8",
+      "distributions": [
+        "personal"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "fal-ai-media",
+      "owner": "agents",
+      "provenance": "adopted",
+      "updates": "manual"
+    },
+    {
+      "class": "on_demand",
+      "digest": "d85582e28f0ae8b744b19eb1f5d21f152948864a46a81174d9434bb82726c10a",
+      "distributions": [
+        "technology:typescript",
+        "technology:react",
+        "technology:nextjs"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "frontend-patterns",
+      "owner": "agents",
+      "provenance": "adopted",
+      "updates": "manual"
+    },
+    {
+      "class": "on_demand",
+      "digest": "b74f70f39195b2a6f9b357b37bab02efcbdeb93d52ce14d0d89725643896af9c",
+      "distributions": [
+        "technology:javascript"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "frontend-slides",
+      "owner": "agents",
+      "provenance": "adopted",
+      "updates": "manual"
+    },
+    {
+      "class": "on_demand",
+      "digest": "6cebf11c2cd02aa3d8de4b7117f59396ac162ebff305522d81e374c2d1f6a56e",
+      "distributions": [
+        "personal"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "gastown-workspace-lifecycle",
+      "owner": "agents",
+      "provenance": "adopted",
+      "updates": "manual"
+    },
+    {
+      "class": "on_demand",
+      "digest": "cf6b43c18caa5a6165f87be6e509f42e509de8374d86cb4872871838ed42c348",
+      "distributions": [
+        "personal"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "ghi-list",
+      "owner": "agents",
+      "provenance": "adopted",
+      "updates": "manual"
+    },
+    {
+      "class": "on_demand",
+      "digest": "0c5dbff8cf23f38da71c60076334b35c9e96cfc2d522d08ee56c6950cb71d593",
+      "distributions": [
+        "technology:go"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "go-development",
+      "owner": "agents",
+      "provenance": "adopted",
+      "updates": "manual"
+    },
+    {
+      "class": "on_demand",
+      "digest": "06010ab317bfcf8684b91ffc47e4143fa23ec9ea5f4c1fd82f8c0d23846d9d0c",
+      "distributions": [
+        "personal"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "governance-audit",
+      "owner": "agents",
+      "provenance": "adopted",
+      "updates": "manual"
+    },
+    {
+      "class": "on_demand",
+      "digest": "7c9eb93f2b2a30fa7d26e09b637fe5f6f37d4af0213d29aff381ceffd8cdf71e",
+      "distributions": [
+        "personal"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "human-writing-style",
+      "owner": "agents",
+      "provenance": "adopted",
+      "updates": "manual"
+    },
+    {
+      "class": "on_demand",
+      "digest": "db1058b55c04df4bac401f8a9a5a68d5f4730a5507647dc914d8d4e66c79133f",
+      "distributions": [
+        "personal"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "investor-materials",
+      "owner": "agents",
+      "provenance": "adopted",
+      "updates": "manual"
+    },
+    {
+      "class": "on_demand",
+      "digest": "a00f89f93550fc926de93d95b3f068d4dd11faae0780a2661537561b71b78fd6",
+      "distributions": [
+        "personal"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "investor-outreach",
+      "owner": "agents",
+      "provenance": "adopted",
+      "updates": "manual"
+    },
+    {
+      "class": "router",
+      "digest": "7d1ad9f5be03d1bea5eba1eb63bdcab45339c3fd1b6c00f5a6a41d14c8ececb8",
+      "distributions": [
+        "personal"
+      ],
+      "max_lines": 500,
+      "max_tokens": 500,
+      "name": "inviolable-rules",
+      "owner": "agents",
+      "provenance": "agents-owned",
+      "updates": "manual"
+    },
+    {
+      "class": "on_demand",
+      "digest": "839e860bdc084747065940d8b7e74c8ddc2c1e30f72a68cb69d87d0c5629998c",
+      "distributions": [
+        "technology:python"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "jamie-bitflight-python3-bug",
+      "owner": "agents",
+      "provenance": "adopted",
+      "updates": "manual"
+    },
+    {
+      "class": "on_demand",
+      "digest": "49abbf094d5be959b3f93220ae7a178dd34f95e71e28183ed1790968970d769c",
+      "distributions": [
+        "technology:python"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "majiayu000-config-schema-migrator",
+      "owner": "agents",
+      "provenance": "adopted",
+      "updates": "manual"
+    },
+    {
+      "class": "router",
+      "digest": "f122a5b1e4db8ceccfaf7aaae381ce55cba0349ef4219768bf696ce17f2632a5",
+      "distributions": [
+        "personal"
+      ],
+      "max_lines": 500,
+      "max_tokens": 500,
+      "name": "make-check",
+      "owner": "agents",
+      "provenance": "agents-owned",
+      "updates": "manual"
+    },
+    {
+      "class": "on_demand",
+      "digest": "b1123c5bb478b2d34a0fb9dead205c6124e3abea3e6e851732436f6a8eb5cbab",
+      "distributions": [
+        "personal"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "market-research",
+      "owner": "agents",
+      "provenance": "adopted",
+      "updates": "manual"
+    },
+    {
+      "class": "on_demand",
+      "digest": "66035e569f2dff893c6643307878cc5b63ab2cbb6d05c5f966b3d0fa136dbb41",
+      "distributions": [
+        "technology:javascript"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "mcp-server-patterns",
+      "owner": "agents",
+      "provenance": "adopted",
+      "updates": "manual"
+    },
+    {
+      "class": "on_demand",
+      "digest": "d7fe5202e8d85a09f4851c3383c51f44726ae67b82e2b7e8e45090be87334f90",
+      "distributions": [
+        "personal"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "mle-workflow",
+      "owner": "agents",
+      "provenance": "adopted",
+      "updates": "manual"
+    },
+    {
+      "class": "on_demand",
+      "digest": "3e9881b23f134ec5d63893919a3b738f71fa826c4a6f934e4c621900dfdde4eb",
+      "distributions": [
+        "technology:nextjs"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "nextjs-turbopack",
+      "owner": "agents",
+      "provenance": "adopted",
+      "updates": "manual"
+    },
+    {
+      "class": "on_demand",
+      "digest": "27e0d39895b2ee023bb3585a2ece08d771ae2cd1f51e848d2fb1c53038eb1023",
+      "distributions": [
+        "personal"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "openspec-verify-change",
+      "owner": "agents",
+      "provenance": "adopted",
+      "updates": "manual"
+    },
+    {
+      "class": "router",
+      "digest": "a528c132c984cbedcaa7cc3b1714b39207b042aca33f9d10737714b917210f8a",
+      "distributions": [
+        "personal"
+      ],
+      "max_lines": 500,
+      "max_tokens": 500,
+      "name": "operator-correction-learning",
+      "owner": "agents",
+      "provenance": "agents-owned",
+      "updates": "manual"
+    },
+    {
+      "class": "on_demand",
+      "digest": "ccf73da1a87d6b26bdfefbba5566d19855ef92a25b27fe3763148e2446dbf74e",
+      "distributions": [
+        "personal"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "pr-list",
+      "owner": "agents",
+      "provenance": "adopted",
+      "updates": "manual"
+    },
+    {
+      "class": "on_demand",
+      "digest": "f0b2433881a9e5674a4f87df599f5221fea969bd533ef83d0437fad904567c60",
+      "distributions": [
+        "personal"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "pr-sheriff",
+      "owner": "agents",
+      "provenance": "adopted",
+      "updates": "manual"
+    },
+    {
+      "class": "on_demand",
+      "digest": "c0ebecf7e842fef08efaa4568a86d97f04e1df8d55773841f1a75f298321e025",
+      "distributions": [
+        "personal"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "product-capability",
+      "owner": "agents",
+      "provenance": "adopted",
+      "updates": "manual"
+    },
+    {
+      "class": "on_demand",
+      "digest": "cf3daa844b6d15ebcdc4ae794ee0fc2dcdc2e308e8ab0424edaf6c19e35ddf23",
+      "distributions": [
+        "technology:python"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "python-production",
+      "owner": "agents",
+      "provenance": "adopted",
+      "updates": "manual"
+    },
+    {
+      "class": "on_demand",
+      "digest": "275654ec856494040e620352307c573d4555f6dcf6195b12435a8b6ca9b21691",
+      "distributions": [
+        "technology:python"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "python-refactoring",
+      "owner": "agents",
+      "provenance": "adopted",
+      "updates": "manual"
+    },
+    {
+      "class": "on_demand",
+      "digest": "c7b661c8221ef52d766147b74cf7fe9db3c0db9a381e78e6d8ff8e8fa2c3f2f4",
+      "distributions": [
+        "personal"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "ralph-loop",
+      "owner": "agents",
+      "provenance": "adopted",
+      "updates": "manual"
+    },
+    {
+      "class": "on_demand",
+      "digest": "e1c836212950376f1b3ac63e32061c531ff9592b50b4a63acff4ca2c7e2a33fa",
+      "distributions": [
+        "technology:rust"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "rust-development",
+      "owner": "agents",
+      "provenance": "adopted",
+      "updates": "manual"
+    },
+    {
+      "class": "on_demand",
+      "digest": "d06164fc27f0a99a0819ad3ab4c374cf1f6dcacc72382acd23e4eb60b3d86582",
+      "distributions": [
+        "personal"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "safe-delete",
+      "owner": "agents",
+      "provenance": "adopted",
+      "updates": "manual"
+    },
+    {
+      "class": "on_demand",
+      "digest": "d2bc5b0eac5a1bded0ee7fd0e1ce0d6f89b8914496f83f236b4969bb334f781a",
+      "distributions": [
+        "personal",
+        "project-generic"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "security-review",
+      "owner": "agents",
+      "provenance": "adopted",
+      "updates": "manual"
+    },
+    {
+      "class": "on_demand",
+      "digest": "9b6f9e9666105b64c1f762da8a22d941edb0bde37373b09754bc24b0ffab674f",
+      "distributions": [
+        "personal"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "sequential-thinking",
+      "owner": "agents",
+      "provenance": "adopted",
+      "updates": "manual"
+    },
+    {
+      "class": "on_demand",
+      "digest": "1dbfa12b85c4b4742a464fc63166400be15a1dfa5964681bd2e5b212c59fe057",
+      "distributions": [
+        "personal",
+        "project-generic"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "simplify",
+      "owner": "agents",
+      "provenance": "adopted",
+      "updates": "manual"
+    },
+    {
+      "class": "on_demand",
+      "digest": "88ff9d916d42ed4e1106ab5617130b0c7aedf6bd2b19abd385a24ab0677c3d40",
+      "distributions": [
+        "personal"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "skill-creator",
+      "owner": "agents",
+      "provenance": "adopted",
+      "updates": "manual"
+    },
+    {
+      "class": "on_demand",
+      "digest": "cb610c56564f1e55305b7475ba186960d6b8b5ee13f5462feeec6f251e32325b",
+      "distributions": [
+        "personal"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "source-command-add-language-rules",
+      "owner": "agents",
+      "provenance": "adopted",
+      "updates": "manual"
+    },
+    {
+      "class": "on_demand",
+      "digest": "36579fbbcf32e3e35a91c6ab1b0ee76d315d01bb20caff5369828db58b7e9a99",
+      "distributions": [
+        "personal"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "source-command-database-migration",
+      "owner": "agents",
+      "provenance": "adopted",
+      "updates": "manual"
+    },
+    {
+      "class": "on_demand",
+      "digest": "7d132cedb8ecaafd798504658f49e286fe275c0089de8644551a084a24bc008e",
+      "distributions": [
+        "personal"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "source-command-feature-development",
+      "owner": "agents",
+      "provenance": "adopted",
+      "updates": "manual"
+    },
+    {
+      "class": "router",
+      "digest": "7a2503ebd1cfd1bda8417e9a093831e097ec834c0ad129849a097196ffdd61b1",
+      "distributions": [
+        "personal"
+      ],
+      "max_lines": 500,
+      "max_tokens": 500,
+      "name": "sprint-closure",
+      "owner": "agents",
+      "provenance": "agents-owned",
+      "updates": "manual"
+    },
+    {
+      "class": "on_demand",
+      "digest": "e1f3d6a94a553906390f190a53061923edde5a17cffed83b2c5a3a0789382703",
+      "distributions": [
+        "personal"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "strategic-compact",
+      "owner": "agents",
+      "provenance": "adopted",
+      "updates": "manual"
+    },
+    {
+      "class": "on_demand",
+      "digest": "63479a7d51bb01c0325490a7181eecbba332e4c627db8fcfdfeb36f3c70c62f7",
+      "distributions": [
+        "personal"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "summarization",
+      "owner": "agents",
+      "provenance": "adopted",
+      "updates": "manual"
+    },
+    {
+      "class": "on_demand",
+      "digest": "e2d72d6c7549c144120ca7b773239e2e10d5f8063d7e0a9a8396554df48da2c9",
+      "distributions": [
+        "personal",
+        "project-generic"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "tdd-workflow",
+      "owner": "agents",
+      "provenance": "adopted",
+      "updates": "manual"
+    },
+    {
+      "class": "on_demand",
+      "digest": "3b7d3de54a92e498163fbe9313b930ec544d7f9c6a506ab2b420f5c72086fb7c",
+      "distributions": [
+        "personal",
+        "project-generic"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "technical-writing-style",
+      "owner": "agents",
+      "provenance": "adopted",
+      "updates": "manual"
+    },
+    {
+      "class": "router",
+      "digest": "6d86c1987a62aa5707e54de7a9059c4ca8d45e83575e52ee8b140b46735bdc88",
+      "distributions": [
+        "personal"
+      ],
+      "max_lines": 500,
+      "max_tokens": 500,
+      "name": "verification-loop",
+      "owner": "agents",
+      "provenance": "agents-owned",
+      "updates": "manual"
+    },
+    {
+      "class": "on_demand",
+      "digest": "f3f376dd72a135e4ebdef6f5528a6e3aeea34c76d1721b314ac9801c7943804d",
+      "distributions": [
+        "personal"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "video-editing",
+      "owner": "agents",
+      "provenance": "adopted",
+      "updates": "manual"
+    },
+    {
+      "class": "on_demand",
+      "digest": "1760c35bb3ecec8eb6e8e698f4daac50b684fec50540852951323b2baf9f6b5c",
+      "distributions": [
+        "personal"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "x-api",
+      "owner": "agents",
+      "provenance": "adopted",
+      "updates": "manual"
+    }
+  ],
+  "version": 1
+}

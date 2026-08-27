@@ -2,12 +2,12 @@
 globs: hooks/**/*.sh
 ---
 
-# Hooks must default to the venv interpreter, not system python
+# Hooks use the repository-owned interpreter
 
-System python lacks `flext_cli`, so a hook that shells to bare `python` crashes
-silently and disables the guard. Default to the project venv:
+Never reference another repository's virtual environment. A Python hook runs
+through the active repository's documented runner, normally:
 
-`${AI_HUB_PYTHON:-$HOME/.ai-hub/.venv/bin/python}`
+`uv run python <hook>`
 
 After editing a hook, run it live (feed real JSON, check the decision) — static
 gates do not catch a dead hook.

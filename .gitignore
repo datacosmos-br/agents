@@ -8,3 +8,21 @@ __pycache__/
 agents.bkp/
 .agents.bkp/
 .archive/
+.test-tmp/
+.cache/
+/$HOME/
+/mcp/generated/
+/mcp/shared-mcp.json
+
+# Gas Town rig `agents` adopts this tree via ~/gt/agents symlink; ignore runtime/ephemeral only
+# (gt town-level mayor/refinery/witness live in ~/gt, NOT here, so not ignored here):
+/.beads/
+/.beads.gate.lock
+/crew/
+/polecats/
+
+# Beads / Dolt files (added by bd init)
+.dolt/
+*.db
+.beads-credential-key
+.beads/proxieddb/

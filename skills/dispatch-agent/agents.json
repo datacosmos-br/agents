@@ -1,0 +1,28 @@
+{
+  "agents": {
+    "architect": {
+      "model": "default",
+      "role": "Architect",
+      "summary": "Designs systems and reviews architecture.",
+      "triggers": ["architecture", "design", "plan"]
+    },
+    "code-reviewer": {
+      "model": "default",
+      "role": "Reviewer",
+      "summary": "Reviews code for correctness, maintainability, and risk.",
+      "triggers": ["review", "quality", "security"]
+    },
+    "debugger": {
+      "model": "default",
+      "role": "Debugger",
+      "summary": "Diagnoses failures and identifies root causes.",
+      "triggers": ["debug", "failure", "error"]
+    },
+    "executor": {
+      "model": "default",
+      "role": "Implementer",
+      "summary": "Implements scoped changes and validates behavior.",
+      "triggers": ["implement", "fix", "refactor"]
+    }
+  }
+}
