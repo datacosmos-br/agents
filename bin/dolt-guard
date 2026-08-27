@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+# Machine invariant: the only Dolt SQL listener is Gas Town on 127.0.0.1:3307.
+set -euo pipefail
+
+GUARD_PATH="$(readlink -f -- "$0")"
+REAL_DOLT="$(dirname -- "$GUARD_PATH")/dolt.real"
+[[ -x "$REAL_DOLT" ]] || { echo "dolt-guard: missing owned binary: $REAL_DOLT" >&2; exit 126; }
+
+is_server=false
+port=""
+config=""
+args=("$@")
+for ((index = 0; index < ${#args[@]}; index++)); do
+    argument="${args[index]}"
+    case "$argument" in
+        sql-server) is_server=true ;;
+        -P|--port)
+            ((index + 1 < ${#args[@]})) || { echo "dolt-guard: missing port value" >&2; exit 64; }
+            port="${args[index + 1]}"
+            ((index++))
+            ;;
+        --port=*) port="${argument#*=}" ;;
+        --config)
+            ((index + 1 < ${#args[@]})) || { echo "dolt-guard: missing config value" >&2; exit 64; }
+            config="${args[index + 1]}"
+            ((index++))
+            ;;
+        --config=*) config="${argument#*=}" ;;
+    esac
+done
+
+if $is_server; then
+    if [[ -n "$config" ]]; then
+        [[ -f "$config" ]] || { echo "dolt-guard: config not found: $config" >&2; exit 64; }
+        config_port="$(awk '$1 == "port:" {print $2; exit}' "$config")"
+        config_port="${config_port//\"/}"
+        config_port="${config_port//\'/}"
+        [[ -z "$port" ]] && port="$config_port"
+        [[ -z "$config_port" || "$config_port" == "3307" ]] || {
+            echo "dolt-guard: prohibited config listener port $config_port; only 3307 is allowed" >&2
+            exit 78
+        }
+    fi
+    [[ "$port" == "3307" ]] || {
+        echo "dolt-guard: prohibited listener port ${port:-<unspecified>}; only Gas Town 3307 is allowed" >&2
+        exit 78
+    }
+fi
+
+exec "$REAL_DOLT" "$@"
