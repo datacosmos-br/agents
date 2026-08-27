@@ -1,5 +1,6 @@
 import json
 import os
+import signal
 import subprocess
 import sys
 import time
@@ -15,6 +16,7 @@ from agents_governance.temp import (
     gc,
     managed_env,
     managed_temp,
+    repository_findings,
     resolve_repo,
     run_command,
 )
@@ -51,6 +53,24 @@ def test_audit_detects_database_and_classifies_small_lock_as_ephemeral(
         ("state.db", "prohibited"),
         ("tool.lock", "ephemeral"),
     ]
+
+
+def test_repository_audit_detects_unexpanded_home_directory(tmp_path: Path) -> None:
+    literal_home = tmp_path / "$HOME"
+    literal_home.mkdir()
+
+    items = repository_findings(tmp_path)
+
+    assert [(item.path, item.kind) for item in items] == [(literal_home, "residue")]
+
+
+def test_repository_audit_rejects_legacy_archives(tmp_path: Path) -> None:
+    archive = tmp_path / ".skills-archive"
+    archive.mkdir()
+
+    items = repository_findings(tmp_path)
+
+    assert [(item.path, item.kind) for item in items] == [(archive, "residue")]
 
 
 def test_managed_temp_is_repo_local_physical_directory(tmp_path: Path) -> None:
@@ -148,6 +168,30 @@ def test_run_terminates_owned_process_group_when_wrapper_is_terminated(
 
     wrapper.terminate()
     assert wrapper.wait(timeout=10) == 128 + 15
+    with pytest.raises(ProcessLookupError):
+        os.kill(pid, 0)
+
+
+def test_repeated_signal_cannot_interrupt_owned_group_cleanup(tmp_path: Path) -> None:
+    repo = git_repo(tmp_path / "repo")
+    child_pid = tmp_path / "child.pid"
+    script = (
+        "from pathlib import Path; from agents_governance.temp import run_command; "
+        f"raise SystemExit(run_command(['sh','-c','echo $$ > {child_pid}; trap \\\"\\\" TERM; sleep 30'], Path({str(repo)!r})).exit_code)"
+    )
+    wrapper = subprocess.Popen([sys.executable, "-c", script])
+    for _ in range(100):
+        if child_pid.is_file():
+            break
+        time.sleep(0.02)
+    assert child_pid.is_file()
+    pid = int(child_pid.read_text(encoding="utf-8"))
+
+    wrapper.send_signal(signal.SIGTERM)
+    time.sleep(0.1)
+    wrapper.send_signal(signal.SIGTERM)
+
+    assert wrapper.wait(timeout=10) == 128 + int(signal.SIGTERM)
     with pytest.raises(ProcessLookupError):
         os.kill(pid, 0)
 

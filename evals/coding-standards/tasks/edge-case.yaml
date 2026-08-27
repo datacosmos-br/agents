@@ -1,11 +1,12 @@
 id: edge-case-001
 name: Edge Case - Empty Input
-description: |
-  Test that the skill handles edge cases gracefully.
+description: 'Test that the skill handles edge cases gracefully.
+
+  '
 tags:
-  - edge-case
+- edge-case
 inputs:
-  prompt: ""
+  prompt: 'Handle an incomplete or ambiguous coding-standards request safely. Relevant capability: coding, standards, baseline, cross-project, conventions, naming, readability, immutability, code-quality, review. State any blocking constraint explicitly.'
 expected:
   outcomes:
-    - type: task_completed
+  - type: task_completed

@@ -311,6 +311,21 @@ class Projector:
         return findings
 
     @staticmethod
+    def _remove_managed_tree(path: Path) -> None:
+        """Remove a proven managed tree without following nested symlinks."""
+
+        if path.is_symlink():
+            raise RuntimeError(f"refusing recursive removal of symlink: {path}")
+        for child in path.iterdir():
+            if child.is_symlink():
+                raise RuntimeError(f"refusing recursive removal of symlink: {child}")
+            if child.is_dir():
+                Projector._remove_managed_tree(child)
+            else:
+                child.unlink()
+        path.rmdir()
+
+    @staticmethod
     def _blocking(findings: list[ProjectionFinding]) -> list[ProjectionFinding]:
         reconcilable = {
             "missing",
@@ -336,7 +351,7 @@ class Projector:
                 destination
             ) == metadata.get("digest"):
                 if destination.is_dir():
-                    shutil.rmtree(destination)
+                    self._remove_managed_tree(destination)
                 else:
                     destination.unlink()
         for source in sources:
@@ -351,7 +366,7 @@ class Projector:
                 destination.unlink()
             elif destination.exists():
                 if destination.is_dir():
-                    shutil.rmtree(destination)
+                    self._remove_managed_tree(destination)
                 else:
                     destination.unlink()
             staging = Path(tempfile.mkdtemp(prefix=".agents-stage.", dir=root))

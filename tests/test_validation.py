@@ -90,3 +90,38 @@ def test_description_rejects_prose(tmp_path: Path) -> None:
     assert [(item.code, item.message) for item in findings] == [
         ("description", "description must be a comma-separated keyword list")
     ]
+
+
+def test_generic_eval_scaffold_fails_closed(tmp_path: Path) -> None:
+    skill = tmp_path / "skills" / "example"
+    skill.mkdir(parents=True)
+    (skill / "SKILL.md").write_text(
+        "---\nname: example\ndescription: example, validation\n---\n# Example\n",
+        encoding="utf-8",
+    )
+    tasks = tmp_path / "evals" / "example" / "tasks"
+    tasks.mkdir(parents=True)
+    (tasks.parent / "eval.yaml").write_text(
+        "config: {}\ngraders:\n- name: relevant_content\n",
+        encoding="utf-8",
+    )
+    (tasks / "basic.yaml").write_text(
+        "inputs:\n  prompt: Help me with this task\nexpected:\n  output_contains: function\n",
+        encoding="utf-8",
+    )
+
+    findings = validate(_catalog(tmp_path))
+
+    assert {item.code for item in findings} == {"eval-generic", "eval-skill"}
+
+
+def test_orphan_skill_directory_fails_closed(tmp_path: Path) -> None:
+    orphan = tmp_path / "skills" / "learned" / "agents"
+    orphan.mkdir(parents=True)
+    (orphan / "openai.yaml").write_text("name: learned\n", encoding="utf-8")
+
+    findings = validate(_catalog(tmp_path))
+
+    assert [(item.code, item.path) for item in findings] == [
+        ("orphan-skill-directory", "skills/learned")
+    ]

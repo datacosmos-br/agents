@@ -8,6 +8,7 @@ import sys
 from pathlib import Path
 
 from .catalog import Catalog
+from .cleanup import clean_generated
 from .dolt import audit as dolt_audit
 from .dolt import repair as dolt_repair
 from .normalize import normalize, normalize_descriptions
@@ -15,7 +16,7 @@ from .projection import Projector
 from .security import audit as security_audit
 from .temp import findings as temp_findings
 from .temp import gc as temp_gc
-from .temp import run_command
+from .temp import repository_findings, run_command
 from .temp import status as temp_status
 from .validation import validate
 
@@ -96,7 +97,7 @@ def _normalize(root: Path, apply: bool) -> int:
             f"{item.name}: {item.tokens} tokens/{item.lines} lines -> {item.destination}"
         )
     print(f"{'APPLIED' if apply else 'DRY-RUN'}: {len(changes)} skill(s)")
-    return 0
+    return int(bool(changes) and not apply)
 
 
 def _descriptions(root: Path, apply: bool) -> int:
@@ -104,7 +105,7 @@ def _descriptions(root: Path, apply: bool) -> int:
     for item in changes:
         print(f"{item.name}: {item.destination}")
     print(f"{'APPLIED' if apply else 'DRY-RUN'}: {len(changes)} description(s)")
-    return 0
+    return int(bool(changes) and not apply)
 
 
 def _waza_artifact(path: Path) -> int:
@@ -127,8 +128,41 @@ def _waza_artifact(path: Path) -> int:
     return 0
 
 
-def _temp_audit(as_json: bool) -> int:
-    items = temp_findings()
+def _waza_coverage(path: Path) -> int:
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        total = payload.get("total_skills") if isinstance(payload, dict) else None
+        covered = payload.get("covered") if isinstance(payload, dict) else None
+        partial = payload.get("partial") if isinstance(payload, dict) else None
+        uncovered = payload.get("uncovered") if isinstance(payload, dict) else None
+        if not isinstance(total, int) or total <= 0:
+            raise ValueError("coverage has no skills")
+        if covered != total or partial != 0 or uncovered != 0:
+            raise ValueError(
+                f"coverage incomplete: {covered}/{total} covered, "
+                f"{partial} partial, {uncovered} uncovered"
+            )
+    except (OSError, ValueError, json.JSONDecodeError) as error:
+        print(f"FAIL: invalid Waza coverage artifact {path}: {error}", file=sys.stderr)
+        return 1
+    print(f"PASS: Waza eval coverage is {covered}/{total}")
+    return 0
+
+
+def _clean(root: Path) -> int:
+    try:
+        removed = clean_generated(root)
+    except (OSError, RuntimeError) as error:
+        print(f"FAIL: {error}", file=sys.stderr)
+        return 2
+    for path in removed:
+        print(f"REMOVED: {path}")
+    print(f"PASS: cleaned {len(removed)} generated path(s)")
+    return 0
+
+
+def _temp_audit(root: Path, as_json: bool) -> int:
+    items = [*temp_findings(), *repository_findings(root)]
     blocking = [item for item in items if item.kind in {"prohibited", "residue"}]
     if as_json:
         print(
@@ -265,6 +299,9 @@ def parser() -> argparse.ArgumentParser:
     descriptions.add_argument("--apply", action="store_true")
     waza_artifact = commands.add_parser("waza-artifact")
     waza_artifact.add_argument("path", type=Path)
+    waza_coverage = commands.add_parser("waza-coverage")
+    waza_coverage.add_argument("path", type=Path)
+    commands.add_parser("clean")
     temporary = commands.add_parser("temp")
     temp_commands = temporary.add_subparsers(dest="temp_command", required=True)
     temp_audit = temp_commands.add_parser("audit")
@@ -308,10 +345,14 @@ def main(argv: list[str] | None = None) -> int:
         return _descriptions(root, args.apply)
     if args.command == "waza-artifact":
         return _waza_artifact(args.path)
+    if args.command == "waza-coverage":
+        return _waza_coverage(args.path)
+    if args.command == "clean":
+        return _clean(root)
     if args.command == "temp":
         try:
             if args.temp_command == "audit":
-                return _temp_audit(args.json)
+                return _temp_audit(root, args.json)
             if args.temp_command == "status":
                 return _temp_status(root, args.json)
             if args.temp_command == "run":

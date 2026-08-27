@@ -92,15 +92,16 @@ For each error:
 ## Quick Recovery
 
 ```bash
-# Nuclear option: clear all caches
-rm -rf .next node_modules/.cache && npm run build
-
-# Reinstall dependencies
-rm -rf node_modules package-lock.json && npm install
+# Use the project's declared cleanup surface; inspect its scope before applying it
+make clean
 
 # Fix ESLint auto-fixable
 npx eslint . --fix
 ```
+
+Never delete dependency trees, lockfiles, or caches recursively. Diagnose the
+owner and use its declared clean/reinstall target so concurrent work and shared
+caches are preserved.
 
 ## Success Metrics
 

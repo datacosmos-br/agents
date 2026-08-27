@@ -1,16 +1,15 @@
 id: basic-usage-001
 name: Basic Usage
-description: |
-  Test that the skill handles a typical request correctly.
+description: 'Test that the skill handles a typical request correctly.
+
+  '
 tags:
-  - basic
-  - happy-path
+- basic
+- happy-path
 inputs:
-  prompt: "Read sample.py and explain the function it contains."
+  prompt: 'Apply the gastown-workspace-lifecycle capability to the provided fixture. Exercise these requirements: gastown, workspace, lifecycle, enforce, canonical, gas, town, placement, new, repositories. Return a concrete result.'
   files:
-    - path: sample.py
+  - path: sample.py
 expected:
-  output_contains:
-    - "function"
   outcomes:
-    - type: task_completed
+  - type: task_completed

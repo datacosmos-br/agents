@@ -4,6 +4,8 @@ import json
 import subprocess
 from pathlib import Path
 
+import pytest
+
 from agents_governance.catalog import Catalog
 from agents_governance.projection import Projector
 
@@ -258,3 +260,16 @@ def test_unknown_project_target_fails_closed(tmp_path: Path) -> None:
     assert [(item.target, item.message) for item in findings] == [
         ("typo-does-not-exist", "unknown project projection target")
     ]
+
+
+def test_managed_tree_removal_refuses_nested_symlink(tmp_path: Path) -> None:
+    managed = tmp_path / "managed"
+    external = tmp_path / "external"
+    managed.mkdir()
+    external.write_text("preserve\n", encoding="utf-8")
+    (managed / "escape").symlink_to(external)
+
+    with pytest.raises(RuntimeError, match="refusing recursive removal of symlink"):
+        Projector._remove_managed_tree(managed)
+
+    assert external.read_text(encoding="utf-8") == "preserve\n"

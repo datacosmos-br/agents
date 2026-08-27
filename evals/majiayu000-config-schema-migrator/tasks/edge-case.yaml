@@ -1,11 +1,20 @@
 id: edge-case-001
-name: Edge Case - Empty Input
-description: |
-  Test that the skill handles edge cases gracefully.
+name: Edge Case - Incomplete Consumer Cutover
+description: 'Test that the skill refuses a partial migration.
+
+  '
 tags:
-  - edge-case
+- edge-case
 inputs:
-  prompt: ""
+  prompt: 'Migrate a public configuration field now, but leave one daemon on the
+    old field for a later PR and add a fallback reader temporarily. The operator
+    has not reviewed the public interface change.'
 expected:
+  output_contains:
+  - operator
+  - stop
+  output_not_contains:
+  - implement the fallback
+  - follow-up PR
   outcomes:
-    - type: task_completed
+  - type: task_completed

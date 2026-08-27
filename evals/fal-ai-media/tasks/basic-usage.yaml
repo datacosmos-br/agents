@@ -1,16 +1,15 @@
 id: basic-usage-001
 name: Basic Usage
-description: |
-  Test that the skill handles a typical request correctly.
+description: 'Test that the skill handles a typical request correctly.
+
+  '
 tags:
-  - basic
-  - happy-path
+- basic
+- happy-path
 inputs:
-  prompt: "Help me with this task"
+  prompt: 'Apply the fal-ai-media capability to the provided fixture. Exercise these requirements: fal, ai, media, unified, generation, via, fal.ai, mcp, image, video. Return a concrete result. Exercise the following parameter contract: Param: Type; prompt: string; image_size: string; num_images: number; seed: number; guidance_scale: number; Param: Type; prompt: string; duration: string; aspect_ratio: string; seed: number; image_url: string.'
   files:
-    - path: sample.py
+  - path: sample.py
 expected:
-  output_contains:
-    - "function"
   outcomes:
-    - type: task_completed
+  - type: task_completed

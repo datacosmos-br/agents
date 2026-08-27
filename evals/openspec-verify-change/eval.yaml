@@ -1,29 +1,32 @@
 name: openspec-verify-change-eval
 description: Evaluation suite for openspec-verify-change.
 skill: openspec-verify-change
-schemaVersion: "1.0"
-version: "1.0"
+schemaVersion: '1.0'
+version: '1.0'
 config:
   trials_per_task: 1
   timeout_seconds: 300
   parallel: false
   executor: copilot-sdk
   model: claude-sonnet-4.6
+  skill_directories:
+  - ../../skills/openspec-verify-change
+  required_skills:
+  - openspec-verify-change
 metrics:
-  - name: task_completion
-    weight: 1.0
-    threshold: 0.8
-    description: Did the skill complete the assigned task?
+- name: task_completion
+  weight: 1.0
+  threshold: 0.8
+  description: Did the skill complete the assigned task?
 graders:
-  - type: code
-    name: has_output
-    config:
-      assertions:
-        - "len(output) > 0"
-  - type: text
-    name: relevant_content
-    config:
-      regex_match:
-        - "(?i)(explain|describe|analyze|implement)"
+- type: code
+  name: has_output
+  config:
+    assertions:
+    - len(output) > 0
+- type: behavior
+  name: bounded_execution
+  config:
+    max_duration_ms: 300000
 tasks:
-  - "tasks/*.yaml"
+- tasks/*.yaml

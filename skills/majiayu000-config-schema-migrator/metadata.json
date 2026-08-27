@@ -1,6 +1,6 @@
 {
   "name": "config-schema-migrator",
-  "description": "Expert at evolving Pydantic configuration schemas with backward compatibility and automated migrations",
+  "description": "Strict atomic configuration-schema cutovers with complete consumer rewiring and removal of superseded contracts",
   "repo": "blueman82/ai-counsel",
   "category": "data",
   "tags": [

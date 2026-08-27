@@ -260,10 +260,14 @@ def run_command(
         exit_code = process.wait()
     except _RunInterrupted as error:
         interrupted_signal = error.signum
+        for watched in previous_handlers:
+            signal.signal(watched, signal.SIG_IGN)
         _terminate_group(process)
         exit_code = 128 + error.signum
     except KeyboardInterrupt:
         interrupted_signal = int(signal.SIGINT)
+        for watched in previous_handlers:
+            signal.signal(watched, signal.SIG_IGN)
         _terminate_group(process)
         exit_code = 128 + int(signal.SIGINT)
     finally:
@@ -341,6 +345,30 @@ def findings(temp_root: Path = SYSTEM_TEMP) -> list[TempFinding]:
         if kind != "unknown" or nested:
             result.append(TempFinding(entry, kind, message, _tree_size(entry)))
     return sorted(result, key=lambda item: str(item.path))
+
+
+def repository_findings(root: Path) -> list[TempFinding]:
+    """Detect shell-expansion residue that must never exist below a repository."""
+
+    result: list[TempFinding] = []
+    prohibited = {
+        "$HOME": "unexpanded home-directory variable created repository-local state",
+        "~": "unexpanded home-directory variable created repository-local state",
+        ".archive": "repository-local legacy archive coexists with canonical authority",
+        ".skills-archive": "repository-local legacy skill archive coexists with canonical authority",
+    }
+    for name, message in prohibited.items():
+        candidate = root / name
+        if candidate.exists() or candidate.is_symlink():
+            result.append(
+                TempFinding(
+                    candidate,
+                    "residue",
+                    message,
+                    _tree_size(candidate),
+                )
+            )
+    return result
 
 
 def _locked(path: Path) -> bool:
