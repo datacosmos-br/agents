@@ -81,13 +81,9 @@ sync: ## check skills, commands, and rules projections; APPLY=Y reconciles
 	$(call BANNER,sync · $(or $(SCOPE),personal) $(or $(SURFACE),all) copies $(if $(TARGET),[$(TARGET)],[all]))
 	@uv run agentsctl project --scope $(or $(SCOPE),personal) --surface $(or $(SURFACE),all) $(if $(APPLY),--apply,--check) $(if $(TARGET),--target $(TARGET),)
 
-mcp: ## generate and verify physical agents-owned MCP copies
-	$(call BANNER,mcp · agents-owned physical configs $(if $(APPLY),[apply],[check]))
-	@if [ -n "$(APPLY)" ]; then \
-	  bin/mcp-sync && bin/mcp-sync-apply && bin/mcp-sync --dry-run && bin/mcp-sync-apply --dry-run; \
-	else \
-	  bin/mcp-sync --dry-run && bin/mcp-sync-apply --dry-run; \
-	fi
+mcp: ## synchronize MCP through the canonical ai-hub owner
+	$(call BANNER,mcp · ai-hub canonical sync $(if $(APPLY),[apply],[check]))
+	@ai-hub mcp --action sync $(if $(APPLY),,--dry-run)
 
 discover-projects: ## show automatic project/FLEXT/technology classification
 	$(call BANNER,discover · canonical Gas Town project checkouts)
