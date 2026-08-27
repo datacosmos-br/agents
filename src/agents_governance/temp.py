@@ -167,6 +167,7 @@ def managed_env(repo: Path, scratch: Path) -> dict[str, str]:
         "UV_CACHE_DIR": shared / "uv",
         "PIP_CACHE_DIR": shared / "pip",
         "npm_config_cache": shared / "npm",
+        "NODE_COMPILE_CACHE": shared / "node-compile-cache",
         "BUN_INSTALL_CACHE_DIR": shared / "bun",
         "CARGO_HOME": shared / "cargo",
         "GRADLE_USER_HOME": shared / "gradle",
