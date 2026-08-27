@@ -46,7 +46,7 @@ jobs:
           uv sync --all-groups
           uv run agentsctl validate
           waza tokens check ./skills --strict
-          waza spec verify
+          make spec
       - name: Upload results
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4

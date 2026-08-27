@@ -136,7 +136,18 @@ suggest: ## propose evals (dry-run default; APPLY=1 writes, merge-safe)
 
 spec: ## verify eval coverage vs SKILL.md requirements
 	$(call BANNER,spec · coverage)
-	@if [ -n "$(SKILL)" ]; then uv run agentsctl temp run -- waza spec verify skills/$(SKILL); else uv run agentsctl temp run -- waza spec verify; fi
+	@if [ -n "$(SKILL)" ]; then \
+	  test -f "evals/$(SKILL)/eval.yaml" || { echo "missing eval: evals/$(SKILL)/eval.yaml"; exit 2; }; \
+	  uv run agentsctl temp run -- waza spec verify --skill "skills/$(SKILL)" --eval "evals/$(SKILL)/eval.yaml"; \
+	else \
+	  failed=0; for eval in evals/*/eval.yaml; do \
+	    skill=$$(awk '$$1 == "skill:" { print $$2; exit }' "$$eval"); \
+	    test -n "$$skill" && test -f "skills/$$skill/SKILL.md" \
+	      || { echo "invalid eval skill mapping: $$eval -> $${skill:-MISSING}"; failed=1; continue; }; \
+	    uv run agentsctl temp run -- waza spec verify --skill "skills/$$skill" --eval "$$eval" \
+	      || failed=1; \
+	  done; exit $$failed; \
+	fi
 
 run: ## execute eval benchmark (BASELINE=1 adds A/B with-vs-without skills)
 	$(call BANNER,run · model=$(if $(MODEL),$(MODEL),waza-default) $(if $(SKILL),[$(SKILL)],[discover all]))
