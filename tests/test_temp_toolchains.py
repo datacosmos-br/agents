@@ -64,3 +64,4 @@ def test_python_node_and_rust_commands_use_bounded_runner(
 
     assert [report.exit_code for report in reports] == [0, 0, 0]
     assert len({report.scratch for report in reports}) == 3
+    assert (tmp_path / "cache" / "node-compile-cache").is_dir()

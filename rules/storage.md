@@ -10,6 +10,7 @@ here and add only narrower local constraints.
   run owns a physical `<repo>/.test-tmp/run.*` directory created by `mktemp` and
   receives distinct `TMPDIR`, `GOTMPDIR`, and `GOCACHE` paths.
 - Reusable caches belong to `${XDG_CACHE_HOME:-$HOME/.cache}/<tool>`.
+  Node compile caches use `NODE_COMPILE_CACHE` under this hierarchy.
   `GOMODCACHE` is shared; execution/build scratch is not.
 - Persistent evidence belongs to
   `${XDG_STATE_HOME:-$HOME/.local/state}/<tool>`. Shells use only the bounded
