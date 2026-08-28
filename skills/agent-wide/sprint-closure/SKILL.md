@@ -16,4 +16,8 @@ authorized Git/PR/CI, and keep the increment open.
 
 External-token validations excluded before invocation are recorded as `NOT
 EXECUTED` and do not block closure; they are never represented as green. Once
-invoked, their raw credential or runtime failure blocks closure normally.
+invoked, their raw credential or runtime failure blocks closure normally. This
+exclusion applies only to the unavailable workflow: every independently
+observed alert, finding, open PR, or other actionable residue remains blocking
+until corrected and freshly revalidated. Never label work complete while also
+listing such pending work.

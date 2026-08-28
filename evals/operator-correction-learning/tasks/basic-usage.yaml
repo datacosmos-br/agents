@@ -5,12 +5,15 @@ tags: [operator-corrections, durable-governance, authority-reconciliation, prece
 inputs:
   prompt: Reconcile the operator correction in correction-state.yaml against its
     active authority, then make the replacement durable in governance owners and
-    consumers. Preserve evidence only through separately authorized canonical
-    Git and PR surfaces, update the owning
+    consumers. Treat the observed rename reversal as divergent state rather than
+    a competing intention, preserve the existing exact authorization, and define
+    the fresh preflight that continues without asking the operator again or
+    inventing an actor. Preserve evidence only through separately authorized
+    canonical Git and PR surfaces, update the owning
     skill's semantic regression role, remove opposing instructions, define
     validation and repeated search, and keep suspended runtime owners untouched.
   files:
   - path: correction-state.yaml
 expected:
-  output_contains: [Git, PR, rules/architecture/engineering-core.md, semantic regression, producer contract, receiver, causal owner, not DONE, atomic, zero residue]
-  output_not_contains: [patch the generator, adjacent workaround, alternate tracker, replacement ledger, partial reconciliation, retry]
+  output_contains: [Git, PR, rules/architecture/engineering-core.md, semantic regression, producer contract, receiver, causal owner, existing authorization, fresh preflight, continue, not DONE, atomic, zero residue]
+  output_not_contains: [patch the generator, adjacent workaround, alternate tracker, replacement ledger, partial reconciliation, retry, severe conflict, ask again, another process]

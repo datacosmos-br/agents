@@ -3,12 +3,6 @@
 AGENTSCTL := uv run agentsctl
 PYTEST_SCRATCH := $(CURDIR)/.test-tmp
 
-ifneq ($(APPLY),)
-ifneq ($(APPLY),Y)
-$(error APPLY must be omitted or equal Y)
-endif
-endif
-
 .DEFAULT_GOAL := help
 .PHONY: help docs audit check static fmt shell build test spec coverage providers projection ci security temp validate-live clean
 .DELETE_ON_ERROR:
@@ -32,10 +26,6 @@ docs: ## validate documentation delivery contracts
 	$(call RUN_PYTEST,tests/test_delivery_contracts.py)
 
 audit: ## inspect the complete canonical runtime inventory
-ifeq ($(APPLY),Y)
-	$(call BANNER,audit · refresh canonical skill lock)
-	@uv run python -c 'from pathlib import Path; from agents_governance.atomic_io import atomic_write_text; from agents_governance.catalog import Catalog; root = Path.cwd().resolve(strict=True); catalog = Catalog(root); atomic_write_text(root / "skills.lock.json", catalog.render_inventory())'
-endif
 	$(call BANNER,audit · agentsctl doctor)
 	@$(AGENTSCTL) doctor
 
