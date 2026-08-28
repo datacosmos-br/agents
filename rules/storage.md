@@ -32,6 +32,13 @@ first effect.
   attempted. Copies remain independent physical trees; symbolic links and
   cross-repository references are prohibited.
 
+A repository-local `.venv` is a regenerable local runtime artifact, never a
+source, projection, backup, quarantine payload, or dependency shared between
+repositories. Links created internally by its environment manager are permitted
+only inside that exact `.venv` tree. The tree is never copied, archived,
+projected, or reused from another checkout; each physical repository reconstructs
+its own environment through the declared bootstrap owner.
+
 Canonical runtime surface:
 
 ```text

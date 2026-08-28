@@ -44,12 +44,33 @@ rollback sequence.
 6. Verify the intended target is absent from the active surface, preserved items
    remain intact, the repository diff is scoped, and native gates are green.
 
+## Massive-object and quarantine adjudication
+
+Before any effect on a large or recursively populated target, write a physical
+manifest on the approved destination filesystem. Record the exact root identity,
+relative path, file type, mode, ownership, size, timestamps, literal symlink
+target, canonical owner classification, repository state, and live process/lock
+evidence for every included entry. Record `.venv` subtrees as excluded
+regenerable artifacts without walking, copying, archiving, or quarantining their
+contents. A missing entry, unknown owner, active process, open lock, database, or
+special file stops before the first move.
+
+The approved quarantine must be a physical same-filesystem directory with mode
+`0700`; no path component, manifest, or destination may be a symlink. Create and
+validate the complete manifest before unlinking a source symlink. Then unlink
+only that link without dereferencing its recorded literal target. Move each
+approved top-level object by exact atomic rename and verify the active source is
+absent, the physical quarantine and manifest are complete, and every preserved
+or excluded object remains untouched.
+
 ## Rules
 
 - Never use recursive broad deletion, unresolved variables or globs, `git clean`,
   destructive reset, global stash, or force deletion.
 - Never stage backups, workspaces, repositories, databases, or reports in `/tmp`.
 - Never create `.bak`/`.bkp` siblings that leave old and new implementations active.
+- Never use a symlink, projected tree, virtual environment, or cross-filesystem
+  copy as quarantine.
 - Never use artifact-retirement caution to retain superseded tracked code after an
   approved cutover; atomic rewiring and deletion are the safe operation.
 - Never retry a failed deletion, substitute another command, or continue with a

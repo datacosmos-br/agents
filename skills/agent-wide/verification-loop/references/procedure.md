@@ -16,6 +16,13 @@ Before executing a gate or generated-owner effect, resolve and validate:
 - CI workflows and every changed-path trigger required to select them;
 - the ordered gate set required for the affected scope.
 
+For CI changes, inventory every physical workflow and its source generator before
+execution. Prove one workflow/job owns the repository's native CI composition;
+reject overlapping duplicate owners, scanners that inspect their own workflow
+source, `uses:` references not pinned to a full commit SHA, `|| true` or other
+error masking, and jobs that never execute the declared native owner. A green
+check name is not evidence that `make ci` or the repository-equivalent owner ran.
+
 Do not invent selectors, options, aliases, private entry points, or direct-tool
 substitutes. Resolve external-token workflows before invocation: when the token
 is absent, exclude the dormant workflow from the applicable set and record it
@@ -35,7 +42,9 @@ Run each applicable owner in repository order:
 5. material use through the shipped public surface;
 6. generated-owner convergence and fixed point when generated surfaces changed;
 7. native CI on the current published commit, including workflow-source trigger
-   coverage when CI configuration changed; and
+   coverage when CI configuration changed, single-owner workflow inventory,
+   full-SHA action pins, unmasked failures, and decisive output from the native
+   CI owner; and
 8. zero-residue and integration evidence at an increment boundary.
 
 The first nonzero exit, timeout, signal, incomplete publication, or missing

@@ -158,6 +158,7 @@ def test_repository_projection_matrix_classifies_every_cell(tmp_path: Path) -> N
     )
     assert config.cell("codex", "project", "rules").status is ProjectionStatus.SUPPORTED
     assert config.cell("codex", "project", "rules").path == "AGENTS.md"
+    assert config.cell("codex", "personal", "skills").path == "${HOME}/.codex/skills"
     codex = config.cell("codex", "project", "hooks").events
     assert codex is not None
     assert codex["context_refresh"].native == ("SessionStart",)
