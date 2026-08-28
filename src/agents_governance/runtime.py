@@ -21,8 +21,7 @@ from .security import audit as audit_security_evidence
 from .security import inventory as security_inventory
 from .temp import repository_findings, storage_manifest
 from .validation import validate
-from .waza import PreflightExit, default_model, load_eval_suite, run_preflight
-from .waza import findings as waza_findings
+from .waza import load_eval_suite, require_model_projection, run_preflight
 
 _MODEL = "aihub-primary"
 
@@ -49,10 +48,9 @@ def _doctor(root: Path) -> tuple[Catalog, int, int, int]:
     load_projection_config(root)
     storage_manifest()
 
-    model = default_model(root)
+    model = require_model_projection(root)
     if model != _MODEL:
         raise ValueError(f"Waza model must equal {_MODEL}; got {model}")
-    _require_empty(waza_findings(root), "Waza configuration")
 
     commands = audit_command_specs(
         root, (directory.name for directory in catalog.skill_dirs())
@@ -210,10 +208,9 @@ def clean(root: Path) -> None:
 
 def _live_runner(
     environment: dict[str, str],
-) -> Callable[[Sequence[str], Path], int]:
-    def run(command: Sequence[str], root: Path) -> int:
+) -> Callable[[Sequence[str], Path], None]:
+    def run(command: Sequence[str], root: Path) -> None:
         subprocess.run(command, cwd=root, env=environment, check=True)
-        return 0
 
     return run
 
@@ -226,9 +223,7 @@ def live(root: Path) -> None:
     environment = dict(os.environ)
     environment["COPILOT_PROVIDER_API_KEY"] = api_key
     environment["COPILOT_MODEL"] = _MODEL
-    result = run_preflight(root, runner=_live_runner(environment))
-    if result.status is not PreflightExit.AVAILABLE:
-        raise RuntimeError(result.message)
+    run_preflight(root, runner=_live_runner(environment))
     print("live: aihub-primary preflight passed")
 
 

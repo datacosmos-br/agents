@@ -11,8 +11,7 @@ from .commands import audit_command_specs
 from .rules import audit_rule_specs
 from .skill_metadata import validate as validate_skill_metadata
 from .tokens import bpe_tokens
-from .waza import EvalRole, EvalTaskSpec, load_eval_suite
-from .waza import findings as waza_config_findings
+from .waza import EvalRole, EvalTaskSpec, load_eval_suite, require_model_projection
 
 _LINK = re.compile(r"\[[^\]]+\]\(([^)]+)\)")
 _FENCED_CODE = re.compile(r"^```.*?^```\s*$", re.MULTILINE | re.DOTALL)
@@ -287,12 +286,7 @@ def validate(catalog: Catalog) -> None:
     audit_rule_specs(root)
     audit_command_specs(root, (directory.name for directory in catalog.skill_dirs()))
     validate_skill_metadata(root)
-    configuration_defects = waza_config_findings(root)
-    if configuration_defects:
-        first = configuration_defects[0]
-        raise ValueError(
-            f"{first.path}: model {first.actual!r} != project owner {first.expected!r}"
-        )
+    require_model_projection(root)
     _require_no_orphan_directories(root)
     records = catalog.records()
     for record in records:
