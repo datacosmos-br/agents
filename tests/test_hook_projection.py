@@ -115,6 +115,71 @@ def test_hook_projection_preserves_foreign_content_and_reaches_fixed_point(
     assert "event: async" not in plugin
 
 
+def test_foreign_hook_command_containing_managed_path_is_preserved(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    root = Path(__file__).resolve().parents[1]
+    home = tmp_path / "home"
+    project = tmp_path / "project"
+    home.mkdir()
+    project.mkdir()
+    _authorize(project)
+    monkeypatch.setenv("HOME", str(home))
+    projector = _projector(root)
+    projector.apply(project)
+    settings_path = project / ".claude" / "settings.json"
+    settings = _json(settings_path)
+    foreign = {
+        "hooks": [
+            {
+                "type": "command",
+                "command": (
+                    f"echo {project / '.claude' / 'aihub-hooks' / 'foreign.py'}"
+                ),
+            }
+        ]
+    }
+    settings["hooks"]["SessionStart"].append(foreign)  # type: ignore[index]
+    settings_path.write_text(json.dumps(settings), encoding="utf-8")
+
+    projector.apply(project)
+
+    rendered = _json(settings_path)
+    assert foreign in rendered["hooks"]["SessionStart"]  # type: ignore[index]
+
+
+def test_broken_hook_symlink_created_after_preflight_is_preserved(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    root = Path(__file__).resolve().parents[1]
+    home = tmp_path / "home"
+    project = tmp_path / "project"
+    home.mkdir()
+    project.mkdir()
+    _authorize(project)
+    monkeypatch.setenv("HOME", str(home))
+    destination = project / "AGENTS.md"
+    outside = project / "missing-external-target"
+    original_current = HookProjector._current
+    injected = False
+
+    def race(state: object) -> tuple[bytes | None, int | None]:
+        nonlocal injected
+        if not injected and state.destination == destination:  # type: ignore[attr-defined]
+            destination.symlink_to(outside)
+            injected = True
+        return original_current(state)  # type: ignore[arg-type]
+
+    monkeypatch.setattr(HookProjector, "_current", staticmethod(race))
+
+    with pytest.raises(RuntimeError, match="symlink"):
+        _projector(root).apply(project)
+
+    assert destination.is_symlink()
+    assert destination.readlink() == outside
+    assert not outside.exists()
+
+
 def test_absent_project_authorization_projects_personal_hooks_only(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:

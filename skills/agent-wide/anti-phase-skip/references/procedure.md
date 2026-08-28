@@ -79,8 +79,7 @@ exact evidence, and request the required owner/operator action. Do not switch
 tasks unless the operator explicitly pauses or reorders the phase.
 
 When the canonical tracker is explicitly suspended, do not invoke it or create
-an alternate database, tracker, or ledger. Update the repository-declared manual
-ledger after each material state change and preserve evidence in separately
+an alternate database, tracker, or ledger. Preserve evidence only in separately
 authorized Git, PR, review, check, and CI surfaces. Even if Git, PR, CI, and
 post-merge runtime are green, tracker closure is unresolved and the phase is not
 DONE.

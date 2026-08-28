@@ -31,5 +31,6 @@ regression test that proves public behavior.
 - A missing tool, warning, timeout, auth failure, quota failure, or unexplained
   environment difference remains red.
 - Preserve unknown and concurrent WIP; never reset, stash, or overwrite it.
-- While tracker runtime is suspended, update the repository-declared manual
-  ledger and do not call the phase `DONE`.
+- While tracker runtime is suspended, create no substitute tracker or ledger,
+  preserve evidence only in separately authorized Git/PR/CI, and leave phase
+  closure open.

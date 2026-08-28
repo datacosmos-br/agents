@@ -174,6 +174,7 @@ class _StagedTarget:
     stage: Path
     candidate: Path
     backup: Path
+    candidate_snapshot: str
     created_parents: tuple[Path, ...] = ()
     installed: bool = False
     had_root: bool = False
@@ -221,7 +222,7 @@ def _symlink_component(path: Path) -> Path | None:
 
 
 def _tree_snapshot(root: Path) -> str:
-    """Digest one destination tree without following foreign symlinks."""
+    """Digest one physical destination tree and reject every symlink."""
 
     digest = hashlib.sha256()
 
@@ -233,10 +234,7 @@ def _tree_snapshot(root: Path) -> str:
         digest.update(f"{stat.S_IMODE(metadata.st_mode):04o}".encode())
         digest.update(b"\0")
         if stat.S_ISLNK(metadata.st_mode):
-            digest.update(b"symlink\0")
-            digest.update(os.readlink(path).encode())
-            digest.update(b"\0")
-            return
+            raise ValueError(f"projection destination symlink forbidden: {path}")
         if stat.S_ISDIR(metadata.st_mode):
             digest.update(b"directory\0")
             with os.scandir(path) as entries:
@@ -1088,6 +1086,17 @@ class Projector:
                 encoding="utf-8"
             ) != self._render_manifest(desired)
         expected = {source.name: source for source in plan.sources}
+        known = {*expected, *previous, self.MANIFEST}
+        with os.scandir(root) as entries:
+            unknown = sorted(entry.name for entry in entries if entry.name not in known)
+        if unknown:
+            destination = root / unknown[0]
+            raise ValueError(
+                "unadjudicated projection divergence: "
+                f"destination={destination}; current_owner=unproven; "
+                "disposition=preserve current object; operator decision required "
+                "before publication"
+            )
         for name, source in expected.items():
             destination = root / name
             metadata = previous.get(name)
@@ -1106,7 +1115,7 @@ class Projector:
                     drift = True
                     continue
                 if destination.is_symlink():
-                    observed = f"symlink_target={os.readlink(destination)}"
+                    observed = "current_type=symlink"
                 elif destination.is_file() or destination.is_dir():
                     observed = (
                         "current_logical_digest="
@@ -1193,9 +1202,11 @@ class Projector:
                     _discard_owned_tree(destination)
                 if source.content is None:
                     if source.source.is_file():
-                        shutil.copy2(source.source, destination)
+                        shutil.copy2(
+                            source.source, destination, follow_symlinks=False
+                        )
                     else:
-                        shutil.copytree(source.source, destination, symlinks=False)
+                        shutil.copytree(source.source, destination, symlinks=True)
                 else:
                     destination.write_text(source.content, encoding="utf-8")
                     destination.chmod(0o644)
@@ -1217,7 +1228,13 @@ class Projector:
                 self._render_manifest(self._manifest_payload(plan)), encoding="utf-8"
             )
             manifest.chmod(0o644)
-            return _StagedTarget(state, stage, candidate, backup)
+            return _StagedTarget(
+                state,
+                stage,
+                candidate,
+                backup,
+                _tree_snapshot(candidate),
+            )
 
         return run_with_cleanup(build, lambda: _discard_owned_tree(stage))
 
@@ -1241,7 +1258,9 @@ class Projector:
 
     def _publish(self, staged: _StagedTarget) -> None:
         root = staged.state.plan.root
-        current = _tree_snapshot(root) if root.exists() else None
+        current = (
+            _tree_snapshot(root) if root.exists() or root.is_symlink() else None
+        )
         if current != staged.state.snapshot:
             raise RuntimeError(f"projection changed after preflight: {root}")
         self._create_parent(staged)
@@ -1259,7 +1278,15 @@ class Projector:
     def _rollback(self, staged: _StagedTarget) -> None:
         root = staged.state.plan.root
         if staged.installed:
-            _discard_owned_tree(root)
+            if not root.exists() and not root.is_symlink():
+                raise RuntimeError(
+                    f"installed projection disappeared before rollback: {root}"
+                )
+            if _tree_snapshot(root) != staged.candidate_snapshot:
+                raise RuntimeError(
+                    f"installed projection changed before rollback: {root}"
+                )
+            remove_physical(root)
             staged.installed = False
         if staged.backup.exists():
             staged.backup.replace(root)

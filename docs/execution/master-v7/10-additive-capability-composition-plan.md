@@ -16,8 +16,8 @@ workflow before effects, with the original exception and no fallback.
 
 ## Accepted predecessor boundary
 
-This plan starts from the distributed-governance cutover that removes
-`UNIVERSAL_CORE.md` and replaces it with:
+This plan starts from the completed distributed-governance cutover, composed
+from:
 
 - a short `AGENTS.md` bootstrap;
 - always-on rules and routed skills;
@@ -65,7 +65,7 @@ flowchart LR
 
 ### Phase 0 — Accept and preserve the concurrent cutover
 
-- Verify the Core is absent, every retired clause resolves to an owner, the
+- Verify every semantic guarantee resolves to an owner, the
   capsule derives from the typed map, and focused governance/projection/hook
   tests pass.
 - Re-read every shared owner immediately before editing and preserve all

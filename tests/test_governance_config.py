@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 from dataclasses import replace
 from pathlib import Path
+from types import MappingProxyType
 
 import pytest
 
@@ -24,29 +25,56 @@ def _inventory(
     return catalog, commands, rules
 
 
-def test_repository_governance_resolves_every_retired_clause_owner() -> None:
+def test_repository_governance_resolves_every_guarantee_owner() -> None:
     root = Path(__file__).resolve().parents[1]
     config = load_governance_config(root)
     catalog, commands, rules = _inventory(root)
 
     audit_governance_config(root, config, catalog, commands, rules)
 
-    assert len(config.legacy_core_clauses) == 47
+    assert config.version == 2
+    assert len(config.guarantees) == 47
+    assert "fix-forward-collaboration" in config.guarantees
+    assert "operator-precedence" in config.guarantees
+    assert "tracker-evidence" in config.guarantees
     assert "architecture/engineering-core" in config.bootstrap_rules
     assert "coordination/fix-forward-collaboration" in config.bootstrap_rules
     assert "workflow/beads-traceability" not in config.bootstrap_rules
     assert "fix-forward-collaboration" in config.bootstrap_skills
 
 
-def test_governance_config_rejects_incomplete_clause_map(tmp_path: Path) -> None:
+def test_governance_config_rejects_incomplete_guarantee_map(tmp_path: Path) -> None:
     root = Path(__file__).resolve().parents[1]
     payload = json.loads((root / "config" / "governance.json").read_text())
-    payload["legacy_core_clauses"].pop("law-05-fix-forward")
+    payload["guarantees"].pop("fix-forward-collaboration")
     target = tmp_path / "config"
     target.mkdir()
     (target / "governance.json").write_text(json.dumps(payload), encoding="utf-8")
 
-    with pytest.raises(ValueError, match="cover every retired clause exactly"):
+    with pytest.raises(ValueError, match="cover every guarantee exactly"):
+        load_governance_config(tmp_path)
+
+
+def test_governance_config_rejects_retired_v1_schema(tmp_path: Path) -> None:
+    target = tmp_path / "config"
+    target.mkdir()
+    (target / "governance.json").write_text(
+        json.dumps(
+            {
+                "version": 1,
+                "bootstrap": {
+                    "rules": ["runtime/strict-execution"],
+                    "skills": ["caveman"],
+                },
+                "legacy_core_clauses": {
+                    "law-01-truth": ["rule:ethics/professional-integrity"]
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ValueError, match="fields must equal"):
         load_governance_config(tmp_path)
 
 
@@ -62,3 +90,47 @@ def test_governance_audit_rejects_missing_and_non_always_bootstrap_rules() -> No
     path_scoped = replace(config, bootstrap_rules=("python/no-hidden-errors",))
     with pytest.raises(ValueError, match="bootstrap rule is not always-on"):
         audit_governance_config(root, path_scoped, catalog, commands, rules)
+
+
+@pytest.mark.parametrize(
+    ("owner", "message"),
+    (
+        ("rule:missing/rule", "owner rule is missing"),
+        ("skill:missing-skill", "owner skill is missing"),
+        ("command:missing-command", "owner command is missing"),
+        ("document:missing.md", "owner document is missing"),
+    ),
+)
+def test_governance_audit_rejects_missing_guarantee_owner(
+    owner: str, message: str
+) -> None:
+    root = Path(__file__).resolve().parents[1]
+    config = load_governance_config(root)
+    catalog, commands, rules = _inventory(root)
+    invalid = replace(
+        config,
+        guarantees=MappingProxyType({"invalid-guarantee": (owner,)}),
+    )
+
+    with pytest.raises(ValueError, match=message):
+        audit_governance_config(root, invalid, catalog, commands, rules)
+
+
+def test_active_governance_contract_has_no_monolith_residue() -> None:
+    root = Path(__file__).resolve().parents[1]
+    active = (
+        root / "README.md",
+        root / "config" / "governance.json",
+        root / "src" / "agents_governance" / "governance_config.py",
+        root / "docs" / "adr" / "ADR-0005-composed-governance-delivery.md",
+        root
+        / "docs"
+        / "execution"
+        / "master-v7"
+        / "10-additive-capability-composition-plan.md",
+    )
+    forbidden = ("UNIVERSAL_CORE", "legacy_core", "law-01-", "operator-00-")
+
+    for path in active:
+        body = path.read_text(encoding="utf-8")
+        assert not any(term in body for term in forbidden), path.relative_to(root)

@@ -306,7 +306,7 @@ def test_divergent_unmanifested_agent_requires_adjudication_before_publication(
     assert not tuple(project.rglob(".agents-stage.*"))
 
 
-def test_foreign_symlink_is_preserved_and_does_not_block_projection(
+def test_foreign_symlink_is_preserved_and_blocks_projection(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     _, projector = _source(tmp_path)
@@ -320,12 +320,60 @@ def test_foreign_symlink_is_preserved_and_does_not_block_projection(
     original = link.readlink()
     monkeypatch.chdir(project)
 
-    projector.apply()
-    projector.check()
+    with pytest.raises(ValueError, match="symlink"):
+        projector.apply()
 
     assert link.is_symlink()
     assert link.readlink() == original
-    assert (target / "project-guidance" / "SKILL.md").is_file()
+    assert not (target / "project-guidance").exists()
+    assert not (target / Projector.MANIFEST).exists()
+    assert not tuple(project.rglob(".agents-stage.*"))
+
+
+def test_foreign_unknown_physical_entry_blocks_before_publication(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _, projector = _source(tmp_path)
+    project = _project(tmp_path)
+    target = project / ".agents" / "skills"
+    target.mkdir(parents=True)
+    foreign = target / "operator-owned.txt"
+    foreign.write_text("preserve\n", encoding="utf-8")
+    monkeypatch.chdir(project)
+
+    with pytest.raises(ValueError, match="unadjudicated projection divergence"):
+        projector.apply()
+
+    assert foreign.read_text(encoding="utf-8") == "preserve\n"
+    assert not (target / "project-guidance").exists()
+    assert not (target / Projector.MANIFEST).exists()
+    assert not tuple(project.rglob(".agents-stage.*"))
+
+
+def test_broken_destination_symlink_created_after_preflight_is_preserved(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _, projector = _source(tmp_path)
+    project = _project(tmp_path)
+    target = project / ".agents" / "skills"
+    outside = project / "missing-external-target"
+    original_publish = projector._publish
+    monkeypatch.chdir(project)
+
+    def race(staged: Any) -> None:
+        if staged.state.plan.root == target:
+            target.symlink_to(outside, target_is_directory=True)
+        original_publish(staged)
+
+    monkeypatch.setattr(projector, "_publish", race)
+
+    with pytest.raises(ValueError, match="symlink"):
+        projector.apply()
+
+    assert target.is_symlink()
+    assert target.readlink() == outside
+    assert not outside.exists()
+    assert not tuple(project.rglob(".agents-stage.*"))
 
 
 def test_unmanifested_source_symlink_requires_adjudication(
@@ -342,7 +390,7 @@ def test_unmanifested_source_symlink_requires_adjudication(
     assert not managed.exists()
     monkeypatch.chdir(project)
 
-    with pytest.raises(ValueError, match="unadjudicated projection divergence"):
+    with pytest.raises(ValueError, match="symlink forbidden"):
         projector.apply()
 
     assert managed.is_symlink()

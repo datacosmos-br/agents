@@ -116,6 +116,10 @@ def test_sync_selects_projection_without_live_or_security(
     project = tmp_path / "project"
     home.mkdir()
     project.mkdir()
+    retired_loader = home / ".local" / "bin" / "environment-d-loader"
+    retired_loader.parent.mkdir(parents=True)
+    retired_loader.write_bytes(b"")
+    retired_loader.chmod(0o755)
     (project / ".git").mkdir()
     selection = project / ".agents" / "projection.json"
     selection.parent.mkdir()
@@ -131,6 +135,7 @@ def test_sync_selects_projection_without_live_or_security(
 
     assert (home / ".codex" / "hooks.json").is_file()
     assert (project / ".codex" / "hooks.json").is_file()
+    assert not retired_loader.exists()
     assert events == ["authorization", "publication"]
     assert capsys.readouterr().out == (
         f"sync: personal and project projections converged at {project}\n"

@@ -223,18 +223,12 @@ def _command(path: Path) -> str:
     return f"python3 {shlex.quote(str(path))}"
 
 
-def _managed_command(value: object, script_root: Path) -> bool:
-    if not isinstance(value, dict):
-        return False
-    command = value.get("command")
-    return isinstance(command, str) and str(script_root) in command
-
-
 def _nested_config(
     provider: AgentProvider,
     current: dict[str, object],
     events: tuple[str, ...],
     scripts: dict[str, Path],
+    previous_entries: Mapping[str, object],
 ) -> tuple[dict[str, object], dict[str, object]]:
     result = dict(current)
     hooks = _mapping(result.get("hooks", {}), f"{provider.value} hooks")
@@ -245,6 +239,7 @@ def _nested_config(
         if not isinstance(existing, list):
             raise TypeError(f"{provider.value} hooks.{event} must be an array")
         kept: list[object] = []
+        previous = previous_entries.get(event)
         for raw_group in existing:
             group = _mapping(raw_group, f"{provider.value} hooks.{event} group")
             handlers = group.get("hooks")
@@ -252,15 +247,8 @@ def _nested_config(
                 raise TypeError(
                     f"{provider.value} hooks.{event}.hooks must be an array"
                 )
-            remaining = [
-                handler
-                for handler in handlers
-                if not _managed_command(handler, scripts[event].parent)
-            ]
-            if remaining:
-                retained = dict(group)
-                retained["hooks"] = remaining
-                kept.append(retained)
+            if raw_group != previous:
+                kept.append(raw_group)
         handler: dict[str, object] = {
             "type": "command",
             "command": _command(scripts[event]),
@@ -288,7 +276,10 @@ def _nested_config(
 
 
 def _cursor_config(
-    current: dict[str, object], events: tuple[str, ...], scripts: dict[str, Path]
+    current: dict[str, object],
+    events: tuple[str, ...],
+    scripts: dict[str, Path],
+    previous_entries: Mapping[str, object],
 ) -> tuple[dict[str, object], dict[str, object]]:
     result = dict(current)
     version = result.get("version", 1)
@@ -302,11 +293,8 @@ def _cursor_config(
         existing = merged.get(event, [])
         if not isinstance(existing, list):
             raise TypeError(f"Cursor hooks.{event} must be an array")
-        kept = [
-            entry
-            for entry in existing
-            if not _managed_command(entry, scripts[event].parent)
-        ]
+        previous = previous_entries.get(event)
+        kept = [entry for entry in existing if entry != previous]
         entry = {
             "command": _command(scripts[event]),
             "failClosed": True,
@@ -549,6 +537,11 @@ class HookProjector:
         config = _destination(boundary, cell.path, context)
         manifest_path = _manifest_path(config)
         previous_manifest = _read_manifest(manifest_path)
+        previous_entries = (
+            _mapping(previous_manifest["entries"], "hook managed entries")
+            if previous_manifest is not None
+            else {}
+        )
         events = _event_names(cell.events)
         if provider is AgentProvider.OPENCODE:
             _validate_previous(
@@ -599,10 +592,14 @@ class HookProjector:
                 AgentProvider.GEMINI,
             }:
                 assert current is not None
-                rendered, entries = _nested_config(provider, current, events, scripts)
+                rendered, entries = _nested_config(
+                    provider, current, events, scripts, previous_entries
+                )
             elif provider is AgentProvider.CURSOR:
                 assert current is not None
-                rendered, entries = _cursor_config(current, events, scripts)
+                rendered, entries = _cursor_config(
+                    current, events, scripts, previous_entries
+                )
             else:
                 rendered = _owned_json(provider, events, scripts)
             desired[config] = (_render_json(rendered), 0o644)
@@ -748,9 +745,13 @@ class HookProjector:
     @staticmethod
     def _current(state: _FileState) -> tuple[bytes | None, int | None]:
         destination = state.destination
+        if destination.is_symlink():
+            raise RuntimeError(
+                f"hook projection changed to symlink after preflight: {destination}"
+            )
         if not destination.exists():
             return None, None
-        if destination.is_symlink() or not destination.is_file():
+        if not destination.is_file():
             raise RuntimeError(
                 f"hook projection changed type after preflight: {destination}"
             )
@@ -781,7 +782,17 @@ class HookProjector:
     @staticmethod
     def _rollback(staged: _StagedFile) -> None:
         destination = staged.state.destination
-        if staged.installed and destination.exists():
+        if staged.installed:
+            current = HookProjector._current(staged.state)
+            installed = (
+                staged.state.desired.encode(),
+                staged.state.desired_mode,
+            )
+            if current != installed:
+                raise RuntimeError(
+                    "installed hook projection changed before rollback: "
+                    f"{destination}"
+                )
             destination.unlink()
             staged.installed = False
         if staged.backup.exists():

@@ -35,5 +35,6 @@ runtime proof, native gates, review, and integration.
   red.
 - Do not mutate another repository or project projection unless it is explicitly
   in scope and independently authorized.
-- While tracker runtime is suspended, update the repository-declared manual
-  ledger and do not call the phase `DONE`.
+- While tracker runtime is suspended, create no substitute tracker or ledger,
+  preserve evidence only in separately authorized Git/PR/CI, and leave phase
+  closure open.

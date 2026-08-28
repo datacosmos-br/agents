@@ -9,8 +9,8 @@ no legacy package, command, rule, projection, or synchronization surface remains
 ## Surfaces
 
 - `AGENTS.md`: strict project prelude, local scope, and operator-owned facts.
-- `config/governance.json`: typed bootstrap and auditable coverage of the retired
-  monolithic-law clauses by their final rule, skill, command, or document owner.
+- `config/governance.json`: typed bootstrap and auditable semantic guarantees,
+  each mapped to its final rule, skill, command, or document owner.
 - `skills/`: canonical, independently materialized skill bundles.
 - `agents/`, `commands/`, `rules/`, `workflows/`: personal agent capabilities.
 - `config/skills.json`: skill BPE and line-budget policy; recursive paths and

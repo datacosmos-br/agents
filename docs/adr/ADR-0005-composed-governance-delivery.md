@@ -27,9 +27,9 @@ projection, live providers, and scanners restrict unrelated native work.
 ## Decision
 
 `config/governance.json` is the typed composition owner. It selects the compact
-bootstrap rules and skills and maps every clause retired from the monolithic
-document to its final rule, skill, command, or `AGENTS.md` owner. Validation
-requires complete clause coverage and resolves every owner before effects.
+bootstrap rules and skills and maps every semantic guarantee to its final rule,
+skill, command, or `AGENTS.md` owner. Validation requires complete guarantee
+coverage and resolves every owner before effects.
 
 `agentsctl sync` remains one of exactly eight optionless public verbs. It
 compiles static provider instructions, skills, rules, commands, agents, and

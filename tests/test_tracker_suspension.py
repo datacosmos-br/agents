@@ -12,6 +12,7 @@ def _active_contracts() -> tuple[Path, ...]:
         ROOT / "README.md",
     )
     trees = (
+        ROOT / "commands",
         ROOT / "docs" / "adr",
         ROOT / "docs" / "execution" / "master-v7",
         ROOT / "rules",
@@ -32,6 +33,7 @@ def _active_contracts() -> tuple[Path, ...]:
         ROOT / "skills" / "tool" / "beads-worker",
         ROOT / "skills" / "tool" / "gascity-change-lifecycle",
         ROOT / "skills" / "tool" / "gascity-workspace-lifecycle",
+        ROOT / "workflows",
     )
     discovered = tuple(
         path
@@ -55,7 +57,7 @@ def test_suspended_tracker_has_no_substitute_ledger() -> None:
 
     forbidden = ("manual ledger", "manual-ledger", "execution ledger")
     for path in _active_contracts():
-        body = path.read_text(encoding="utf-8").lower()
+        body = " ".join(path.read_text(encoding="utf-8").lower().split())
         assert not any(term in body for term in forbidden), path.relative_to(ROOT)
 
     required = (
