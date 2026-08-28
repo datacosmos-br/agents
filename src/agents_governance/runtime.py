@@ -32,7 +32,12 @@ from .security import audit as audit_security_evidence
 from .security import inventory as security_inventory
 from .temp import require_repository_storage
 from .validation import validate
-from .waza import load_eval_suite, require_model_projection, run_preflight
+from .waza import (
+    EvalSuiteSpec,
+    load_eval_suite,
+    require_model_projection,
+    run_live_corpus,
+)
 
 _MODEL = "aihub-primary"
 
@@ -172,6 +177,13 @@ def _waza_executable() -> str:
     return executable
 
 
+def _skill_suites(root: Path) -> tuple[EvalSuiteSpec, ...]:
+    eval_directories = tuple(
+        path.parent for path in sorted((root / "evals").glob("*/eval.yaml"))
+    )
+    return tuple(load_eval_suite(directory) for directory in eval_directories)
+
+
 def evaluate(root: Path) -> None:
     inventory = _inventory(root)
     projection = load_projection_config(root)
@@ -184,16 +196,11 @@ def evaluate(root: Path) -> None:
         inventory.agents,
         inventory.rules,
     )
-    eval_directories = tuple(
-        path.parent for path in sorted((root / "evals").glob("*/eval.yaml"))
-    )
-    suites = tuple(load_eval_suite(directory) for directory in eval_directories)
+    suites = _skill_suites(root)
     commands: list[tuple[str, ...]] = [
         (executable, "tokens", "check", str(root / "skills"), "--strict")
     ]
     for suite in suites:
-        if suite.skill is None:
-            raise ValueError(f"skill evaluation has no skill: {suite.path}")
         skill = inventory.catalog.record(suite.skill).directory
         commands.append(
             (
@@ -293,12 +300,21 @@ def live(root: Path) -> None:
         "CLIPROXY_API_KEY", conflicts=("COPILOT_PROVIDER_API_KEY",)
     )
     model = _model(root)
+    executable = _waza_executable()
     environment = dict(os.environ)
     del environment["CLIPROXY_API_KEY"]
     environment["COPILOT_PROVIDER_API_KEY"] = api_key
     environment["COPILOT_MODEL"] = model
-    run_preflight(root, model, runner=_live_runner(environment))
-    print("live: aihub-primary preflight passed")
+    suites = _skill_suites(root)
+    run_live_corpus(
+        root,
+        model,
+        suites,
+        executable,
+        runner=_live_runner(environment),
+    )
+    task_count = 1 + sum(len(suite.tasks) for suite in suites)
+    print(f"live: aihub-primary passed {len(suites) + 1} suites and {task_count} tasks")
 
 
 WORKFLOWS = {

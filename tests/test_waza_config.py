@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 import json
+import stat
 from collections.abc import Sequence
 from pathlib import Path
+from typing import cast
 
 import pytest
 import yaml
@@ -10,10 +12,11 @@ import yaml
 import agents_governance.waza as waza_module
 from agents_governance.waza import (
     EvalRole,
+    EvalSuiteSpec,
     default_model,
     load_eval_suite,
     require_model_projection,
-    run_preflight,
+    run_live_corpus,
 )
 
 _MODEL = "owner-model"
@@ -43,8 +46,13 @@ def _suite(root: Path) -> Path:
                 "name": "example-eval",
                 "skill": "example",
                 "config": {
+                    "trials_per_task": 1,
                     "model": _MODEL,
                     "timeout_seconds": 60,
+                    "parallel": False,
+                    "max_attempts": 0,
+                    "fail_fast": True,
+                    "executor": "copilot-sdk",
                     "required_skills": ["example"],
                     "skill_directories": ["../../skills/agent-wide/example"],
                 },
@@ -89,36 +97,111 @@ def _suite(root: Path) -> Path:
     return directory
 
 
-def _artifact(model: str = _MODEL) -> dict[str, object]:
+def _preflight_suite(root: Path) -> EvalSuiteSpec:
+    directory = root / "config" / "waza" / "preflight"
+    tasks = directory / "tasks"
+    tasks.mkdir(parents=True)
+    (directory / "eval.yaml").write_text(
+        yaml.safe_dump(
+            {
+                "name": "preflight-eval",
+                "skill": "waza-transport-preflight",
+                "config": {
+                    "trials_per_task": 1,
+                    "model": _MODEL,
+                    "timeout_seconds": 60,
+                    "parallel": False,
+                    "max_attempts": 0,
+                    "fail_fast": True,
+                    "executor": "copilot-sdk",
+                    "required_skills": ["waza-transport-preflight"],
+                    "skill_directories": ["skill"],
+                },
+                "graders": [
+                    {
+                        "type": "code",
+                        "name": "sentinel-returned",
+                        "config": {"prompt": "Require the exact sentinel."},
+                    },
+                    {
+                        "type": "behavior",
+                        "name": "bounded",
+                        "config": {"max_duration_ms": 50_000},
+                    },
+                ],
+                "tasks": ["tasks/*.yaml"],
+            },
+            sort_keys=False,
+        ),
+        encoding="utf-8",
+    )
+    (tasks / "tool-read.yaml").write_text(
+        yaml.safe_dump(
+            {
+                "id": "tool-read-001",
+                "inputs": {
+                    "prompt": "Read the exact sentinel.",
+                    "files": [{"path": "sentinel.txt"}],
+                },
+                "expected": {"output_contains": ["exact-sentinel"]},
+            },
+            sort_keys=False,
+        ),
+        encoding="utf-8",
+    )
+    return waza_module._preflight_suite(root)
+
+
+def _artifact(
+    suite: EvalSuiteSpec,
+    model: str = _MODEL,
+    *,
+    tool_call_count: int = 0,
+) -> dict[str, object]:
+    tasks: list[dict[str, object]] = []
+    for task in suite.tasks:
+        validations = {grader.name: {"passed": True} for grader in suite.graders}
+        if task.output_contains:
+            validations["_output_contains"] = {"passed": True}
+        if task.output_not_contains:
+            validations["_output_not_contains"] = {"passed": True}
+        tasks.append(
+            {
+                "test_id": task.identifier,
+                "status": "passed",
+                "runs": [
+                    {
+                        "run_number": 1,
+                        "attempts": 1,
+                        "status": "passed",
+                        "error_msg": "",
+                        "validations": validations,
+                        "final_output": "material output exact-sentinel",
+                        "session_digest": {"tool_call_count": tool_call_count},
+                    }
+                ],
+            }
+        )
     return {
         "schemaVersion": "1.2",
-        "config": {"model_id": model},
+        "skill": suite.skill,
+        "config": {"model_id": model, "engine_type": suite.executor},
         "summary": {
-            "total_tests": 1,
-            "succeeded": 1,
+            "total_tests": len(suite.tasks),
+            "succeeded": len(suite.tasks),
             "failed": 0,
             "errors": 0,
             "skipped": 0,
         },
-        "tasks": [
-            {
-                "status": "passed",
-                "runs": [
-                    {
-                        "status": "passed",
-                        "error_msg": "",
-                        "final_output": "AGENTS_WAZA_TOOL_SENTINEL_7C4E91",
-                        "session_digest": {"tool_call_count": 1},
-                    }
-                ],
-            }
-        ],
+        "tasks": tasks,
     }
 
 
-def _preflight_root(root: Path) -> None:
-    _model_authority(root)
-    (root / "results" / "preflight").mkdir(parents=True)
+def _live_root(root: Path) -> tuple[EvalSuiteSpec, EvalSuiteSpec]:
+    (root / "results").mkdir()
+    preflight = _preflight_suite(root)
+    suite = load_eval_suite(_suite(root))
+    return preflight, suite
 
 
 def test_model_projection_is_read_only_and_exact(tmp_path: Path) -> None:
@@ -166,58 +249,109 @@ def test_eval_suite_rejects_unknown_task_inventory(tmp_path: Path) -> None:
         load_eval_suite(directory)
 
 
-def test_live_preflight_publishes_only_fresh_valid_artifact(tmp_path: Path) -> None:
-    _preflight_root(tmp_path)
+def test_live_corpus_runs_every_suite_and_publishes_one_complete_artifact(
+    tmp_path: Path,
+) -> None:
+    preflight, suite = _live_root(tmp_path)
+    expected = {preflight.path: preflight, suite.path: suite}
+    observed: list[Path] = []
 
     def runner(command: Sequence[str], root: Path) -> None:
-        assert command[:2] == ("waza", "run")
+        assert command[:2] == ("/owner/bin/waza", "run")
         assert root == tmp_path
+        selected = expected[Path(command[2])]
+        observed.append(selected.path)
         output = Path(command[command.index("--output") + 1])
-        output.write_text(json.dumps(_artifact()), encoding="utf-8")
+        output.write_text(
+            json.dumps(
+                _artifact(
+                    selected,
+                    tool_call_count=int(selected is preflight),
+                )
+            ),
+            encoding="utf-8",
+        )
 
-    destination = run_preflight(tmp_path, _MODEL, runner=runner)
+    destination = run_live_corpus(
+        tmp_path,
+        _MODEL,
+        (suite,),
+        "/owner/bin/waza",
+        runner=runner,
+    )
 
-    assert destination == tmp_path / "results" / "preflight" / "results.json"
-    assert json.loads(destination.read_text(encoding="utf-8")) == _artifact()
+    payload = json.loads(destination.read_text(encoding="utf-8"))
+    assert destination == tmp_path / "results" / "latest" / "results.json"
+    assert observed == [preflight.path, suite.path]
+    assert payload["model"] == _MODEL
+    assert payload["suite_count"] == 2
+    assert payload["task_count"] == 4
+    assert len(payload["artifacts"]) == 2
+    assert stat.S_IMODE(destination.stat().st_mode) == 0o600
     assert not tuple(destination.parent.glob("*.candidate"))
+    assert not tuple((tmp_path / "results").glob(".waza-live-stage.*"))
 
 
 def test_runner_failure_propagates_and_candidate_is_cleaned(tmp_path: Path) -> None:
-    _preflight_root(tmp_path)
+    _preflight, suite = _live_root(tmp_path)
 
     def runner(_command: Sequence[str], _root: Path) -> None:
         raise OSError("transport exploded")
 
     with pytest.raises(OSError, match="transport exploded"):
-        run_preflight(tmp_path, _MODEL, runner=runner)
+        run_live_corpus(
+            tmp_path,
+            _MODEL,
+            (suite,),
+            "/owner/bin/waza",
+            runner=runner,
+        )
 
-    assert not (tmp_path / "results" / "preflight" / "results.json").exists()
-    assert not tuple((tmp_path / "results" / "preflight").glob("*.candidate"))
+    assert not (tmp_path / "results" / "latest").exists()
+    assert not tuple((tmp_path / "results").glob(".waza-live-stage.*"))
 
 
 def test_invalid_artifact_propagates_and_is_not_published(tmp_path: Path) -> None:
-    _preflight_root(tmp_path)
+    preflight, suite = _live_root(tmp_path)
 
     def runner(command: Sequence[str], _root: Path) -> None:
         output = Path(command[command.index("--output") + 1])
-        output.write_text(json.dumps(_artifact("other-model")), encoding="utf-8")
+        artifact = _artifact(preflight, tool_call_count=1)
+        task = cast(list[dict[str, object]], artifact["tasks"])[0]
+        run = cast(list[dict[str, object]], task["runs"])[0]
+        validations = cast(dict[str, object], run["validations"])
+        del validations["sentinel-returned"]
+        output.write_text(json.dumps(artifact), encoding="utf-8")
 
-    with pytest.raises(ValueError, match="artifact model"):
-        run_preflight(tmp_path, _MODEL, runner=runner)
+    with pytest.raises(ValueError, match="graders are incomplete"):
+        run_live_corpus(
+            tmp_path,
+            _MODEL,
+            (suite,),
+            "/owner/bin/waza",
+            runner=runner,
+        )
 
-    assert not (tmp_path / "results" / "preflight" / "results.json").exists()
+    assert not (tmp_path / "results" / "latest").exists()
 
 
 def test_publication_failure_propagates_and_preserves_destination(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    _preflight_root(tmp_path)
-    destination = tmp_path / "results" / "preflight" / "results.json"
+    preflight, suite = _live_root(tmp_path)
+    latest = tmp_path / "results" / "latest"
+    latest.mkdir()
+    destination = latest / "results.json"
     destination.write_text('{"original": true}\n', encoding="utf-8")
+    by_path = {preflight.path: preflight, suite.path: suite}
 
     def runner(command: Sequence[str], _root: Path) -> None:
+        selected = by_path[Path(command[2])]
         output = Path(command[command.index("--output") + 1])
-        output.write_text(json.dumps(_artifact()), encoding="utf-8")
+        output.write_text(
+            json.dumps(_artifact(selected, tool_call_count=int(selected is preflight))),
+            encoding="utf-8",
+        )
 
     def fail_replace(_source: str | Path, _destination: str | Path) -> None:
         raise OSError("publication exploded")
@@ -225,10 +359,45 @@ def test_publication_failure_propagates_and_preserves_destination(
     monkeypatch.setattr(waza_module.os, "replace", fail_replace)
 
     with pytest.raises(OSError, match="publication exploded"):
-        run_preflight(tmp_path, _MODEL, runner=runner)
+        run_live_corpus(
+            tmp_path,
+            _MODEL,
+            (suite,),
+            "/owner/bin/waza",
+            runner=runner,
+        )
 
     assert destination.read_text(encoding="utf-8") == '{"original": true}\n'
     assert not tuple(destination.parent.glob("*.candidate"))
+
+
+@pytest.mark.parametrize(
+    ("field", "value", "message"),
+    (("max_attempts", 1, "must equal 0"), ("fail_fast", False, "must be true")),
+)
+def test_eval_suite_rejects_retry_or_non_fail_fast_execution(
+    tmp_path: Path, field: str, value: object, message: str
+) -> None:
+    directory = _suite(tmp_path)
+    path = directory / "eval.yaml"
+    payload = yaml.safe_load(path.read_text(encoding="utf-8"))
+    payload["config"][field] = value
+    path.write_text(yaml.safe_dump(payload, sort_keys=False), encoding="utf-8")
+
+    with pytest.raises(ValueError, match=message):
+        load_eval_suite(directory)
+
+
+def test_repository_eval_specs_disable_waza_retry_and_enable_fail_fast() -> None:
+    root = Path(__file__).resolve().parents[1]
+    paths = [root / "config" / "waza" / "preflight" / "eval.yaml"]
+    paths.extend(sorted((root / "evals").glob("*/eval.yaml")))
+
+    assert len(paths) == 79
+    for path in paths:
+        config = yaml.safe_load(path.read_text(encoding="utf-8"))["config"]
+        assert config["max_attempts"] == 0, path
+        assert config["fail_fast"] is True, path
 
 
 def test_live_preflight_behavior_budget_precedes_executor_timeout() -> None:
