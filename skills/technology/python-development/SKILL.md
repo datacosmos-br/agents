@@ -14,6 +14,8 @@ and canonical commands.
   [engineering.md](references/engineering.md).
 - For a defect or unexplained failure, read
   [debugging.md](references/debugging.md).
+- For pytest selection, Testmon acceleration, cache preservation, or coverage,
+  read [testing.md](references/testing.md).
 
 Use the distinct `python-parallelization` skill for async, thread, process,
 vectorization, or throughput changes. Do not impose a tool, framework, or style
