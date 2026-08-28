@@ -49,6 +49,12 @@ preflights and atomically publishes every selected provider-native instruction
 and lifecycle-hook artifact. This is one workflow: there is no hook verb,
 personal mode, hidden runtime path, or second CLI.
 
+The same v1 authorization permits `sync` to discover validated
+`skills/**/SKILL.md` sources and their evals only inside the invocation project.
+This is behavior behind the existing verb, not a new option, mode, positional
+argument, environment selector, or schema version. A source collision or local
+validation failure escapes before any personal or project publication.
+
 Each verb loads only its selected capability set. `doctor` does not probe
 projection, models, providers, or scanners; `sync` does not load live or scanner
 configuration; `secure` and `live` fail on their own complete selected

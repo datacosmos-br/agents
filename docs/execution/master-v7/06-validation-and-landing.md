@@ -16,13 +16,15 @@ evidence. This documentation package is a specification, not a state store.
 Exercise the smallest real public behavior before tests that could otherwise
 produce a false green:
 
-- discovery: load every source type and reject a malformed/unknown fixture;
+- discovery: load every central source type plus authorized same-project local
+  skills/evals, and reject a malformed, colliding, or external fixture;
 - skills: route a matching request and reject a should-not-trigger request;
 - commands: render/invoke representative arguments and reject ambiguous input;
 - agents/rules: prove delegation and mandatory-rule behavior;
-- projection: invoke `agentsctl sync` from an isolated physical project, inspect
-  supported personal and project loaders where available, execute representative
-  hook adapters, then prove the second invocation changes nothing;
+- projection: invoke `agentsctl sync` from isolated physical root and contained
+  submodule projects, inspect supported personal and project loaders where
+  available, execute representative hook adapters, then prove the second
+  invocation changes nothing;
 - temp/storage: use `agentsctl doctor`, `agentsctl check`, and `agentsctl clean`
   against the configured physical checkout and an isolated generated tree;
 - credentials: execute from Bash, Zsh, Fish, and a direct subprocess using only
@@ -100,6 +102,9 @@ selects tracked project surfaces; absence writes nothing to the project. All
 selected static instructions and native lifecycle hooks publish as one
 transaction. The verb accepts no CLI or environment target selection and has no
 personal mode.
+Authorization also enables local skill/eval discovery inside that same physical
+project. Central and local sources are validated before planning and publish in
+the same transaction with truthful manifest origins.
 
 Make remains development support and gate composition. Its declared surface is
 discovered with `make help` and covers:
@@ -133,11 +138,11 @@ first; a required rewrite is reviewed as an explicit source change.
 | Area | Required proof |
 |---|---|
 | Documentation | One active master v7 package; links resolve; old plan/type instructions absent. |
-| Discovery | Recursive source count/mapping; unknown path/tag/type fails; no name registry consulted. |
+| Discovery | Recursive central and authorized local source mapping; unknown path/tag/type, missing eval, or central/local collision fails; no name registry consulted. |
 | Skills | Every discovered canonical source matches the generated inventory; BPE budgets, short descriptions, semantic scenarios, and no command syntax. |
 | Commands | Every discovered flat source has complete provider render and an independent size gate; no skill conversion. |
 | Agents/rules | Distribution paths and tags agree; universal rules compose once; no model declaration. |
-| Projection | Atomic personal plus authorized-project physical copies; unselected project writes nothing; ownership-safe cleanup; provider-native instructions/hooks; second apply changes nothing. |
+| Projection | Atomic personal plus authorized-project physical copies from a root clone or contained submodule; unselected project loads no local source and writes nothing; ownership-safe cleanup; provider-native instructions/hooks; second apply changes nothing. |
 | Temp/storage | Exact manifest; physical registered checkout; `/tmp`, overlap, residue, symlink, special-file, and unknown deletion rejection. |
 | Credentials | Process environment only; required values fail immediately; no keyring code, 401, or secret output. |
 | Security | Deterministic tracked manifest inventory; selected scanners exit zero; absent-token workflows are `NOT EXECUTED`. |
