@@ -13,7 +13,7 @@ verified on `dev`.
 - Branch: `feat/agents-skill-distribution`
 - Integration branch: `dev`
 - Tracker/orchestration runtime: suspended; do not invoke it
-- Current owner unit: connect `agentsctl audit` to the canonical inventory lock
+- Current owner unit: finish routers/docs, remove `.skill-lock.json`, then perform the final lock write
 
 ## Operator corrections
 
@@ -53,6 +53,8 @@ verified on `dev`.
 | `make test` | 1 | 429 passed; only `skills.lock.json: inventory-lock-drift` failed. |
 | `environment-d-loader validate` plus Bash/Zsh/Fish `env` | 0 | Storage owner materialized `/home/marlonsc/tmp` and `/home/marlonsc/.cache/cargo` consistently. |
 | Focused keyring/environment/temp/CLI tests | 0 | 100 passed in managed `.test-tmp` scratch. |
+| `make test PYTEST_ARGS=tests/test_cli.py` | 0 | 17 passed, including canonical audit check/write/drift behavior. |
+| `make audit` | 1 | Canonical `inventory-lock-drift`; write intentionally deferred until the last skill edit. |
 
 ## Machine-local reconciliation
 

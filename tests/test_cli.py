@@ -77,10 +77,69 @@ def _projection_authority(root: Path) -> Path:
     return root
 
 
+def _catalog_authority(root: Path) -> Path:
+    (root / "config").mkdir(parents=True)
+    (root / "config" / "skills.json").write_text(
+        json.dumps(
+            {
+                "version": 2,
+                "budgets": {
+                    "router_tokens": 500,
+                    "frozen_tokens": 1200,
+                    "on_demand_tokens": 5000,
+                    "max_lines": 500,
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+    skill = root / "skills" / "agent-wide" / "example" / "SKILL.md"
+    skill.parent.mkdir(parents=True)
+    skill.write_text(
+        "---\n"
+        "name: example\n"
+        "description: example, validation\n"
+        "metadata:\n"
+        "  aihub.tags: "
+        '\'["provenance:agents-owned","updates:manual","usage:on-demand"]\'\n'
+        "---\n"
+        "# Example\n",
+        encoding="utf-8",
+    )
+    return root
+
+
 def _git_project(root: Path) -> Path:
     root.mkdir()
     subprocess.run(["git", "init", "-q", str(root)], check=True)
     return root
+
+
+def test_audit_checks_and_writes_the_catalog_owned_inventory_lock(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    authority = _catalog_authority(tmp_path / "authority")
+
+    assert main(["--root", str(authority), "audit"]) == 1
+    missing = capsys.readouterr()
+    assert "skills.lock.json: inventory-lock-missing" in missing.err
+
+    assert main(["--root", str(authority), "audit", "--write"]) == 0
+    written = capsys.readouterr()
+    assert written.err == ""
+    assert written.out == "PASS: wrote skills.lock.json for 1 skill(s)\n"
+
+    assert main(["--root", str(authority), "audit"]) == 0
+    checked = capsys.readouterr()
+    assert checked.err == ""
+    assert checked.out == "PASS: skills.lock.json matches 1 discovered skill(s)\n"
+
+    skill = authority / "skills" / "agent-wide" / "example" / "SKILL.md"
+    skill.write_text(skill.read_text(encoding="utf-8") + "changed\n", encoding="utf-8")
+
+    assert main(["--root", str(authority), "audit"]) == 1
+    drift = capsys.readouterr()
+    assert "skills.lock.json: inventory-lock-drift" in drift.err
 
 
 def test_project_cli_requires_explicit_project_root(tmp_path: Path) -> None:

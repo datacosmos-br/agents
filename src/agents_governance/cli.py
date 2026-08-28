@@ -49,15 +49,33 @@ def _catalog(root: Path) -> Catalog:
 
 
 def _audit(root: Path, write: bool) -> int:
-    catalog = _catalog(root)
-    payload = {"version": 1, "skills": catalog.inventory()}
-    rendered = json.dumps(payload, indent=2, sort_keys=True) + "\n"
+    try:
+        catalog = _catalog(root)
+        if write:
+            atomic_write_text(root / "skills.lock.json", catalog.render_inventory())
+        findings = catalog.inventory_lock_findings()
+    except (
+        OSError,
+        RuntimeError,
+        TypeError,
+        ValueError,
+        json.JSONDecodeError,
+    ) as error:
+        print(f"FAIL: inventory audit: {error}", file=sys.stderr)
+        return 2
+    for finding in findings:
+        print(f"{finding.path}: {finding.code}: {finding.message}", file=sys.stderr)
+    if findings:
+        print(
+            f"FAIL: {len(findings)} blocking inventory lock finding(s)",
+            file=sys.stderr,
+        )
+        return 1
+    count = len(catalog.skill_dirs())
     if write:
-        destination = root / "skills.lock.json"
-        atomic_write_text(destination, rendered)
-        print(destination)
+        print(f"PASS: wrote skills.lock.json for {count} skill(s)")
     else:
-        print(rendered, end="")
+        print(f"PASS: skills.lock.json matches {count} discovered skill(s)")
     return 0
 
 
