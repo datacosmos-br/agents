@@ -425,6 +425,7 @@ verified on `dev`.
 | Composed-governance documentation, shell, and build evidence | 0 | `make docs` passed 4/4 delivery-contract tests; `make shell` passed `actionlint`; `make build` produced `agents_governance-0.1.0.tar.gz` and `agents_governance-0.1.0-py3-none-any.whl`. The post-cutover source scan found no active `UNIVERSAL_CORE.md`, Universal Core reference, compatibility alias, or archived copy outside this historical ledger. |
 | Composed-governance prohibited-gate boundary | — | Read-only inspection proves `agentsctl doctor` calls security inventory, which invokes `git rev-parse` and `git ls-files`; therefore `audit`, `check`, `evaluate`/`spec`/`coverage`, `providers`, `temp`, `security`, and composed `ci` cannot be invoked under the active instruction forbidding every Git operation. The security test module independently creates and stages Git repositories. None is run, bypassed, replaced, or reported green. Actual `sync` publication is likewise not invoked because its mandatory doctor preflight crosses the same prohibition; isolated-home/project tests prove its publication behavior without mutating provider homes. |
 | Composed-governance final generated-residue cleanup | 0 | After the final documentation gate, optionless `make clean`/`agentsctl clean` removed 33 validated generated paths, including build artifacts, test storage, and Python caches. No test, build, Python runtime, or projection workflow ran after cleanup. A final physical scan is the remaining read-only handoff check. |
+| Literal-home residue recurrence reconciliation | 0 | The final physical scan found a recreated checkout directory literally named `$HOME`: 2,468 Fish cache/history files, three Mise tracked-config symlinks, 11 MiB total, all written between 12:36:29 and 12:37:18. Read-only preflight found only regular files/directories/symlinks, no repository/database/socket/special file, and no open process. The persistent `environment.d` owner already contains expanded `${HOME}`/`${XDG_*}` paths; the active parent process retains one stale `CARGO_HOME=$XDG_DATA_HOME/cargo` value until session renewal. The exact literal directory was moved recoverably with `gio trash -- '$HOME'`; no code, Git state, external target, or symlink target was deleted. |
 
 ## Machine-local reconciliation
 
@@ -435,10 +436,13 @@ three stale assignments were removed from
 part of the Git commit and must remain free of storage-owned duplicates.
 
 The ignored repository-local directory literally named `$HOME` contained only
-Fish/Mise cache/state from an earlier unexpanded environment. After confirming
-no open process, database, special file, or tracked content, it was moved to the
-same-filesystem user trash with `gio trash`. It remains recoverable there and
-the repository-scoped temp audit now passes.
+Fish/Mise cache/state from an earlier unexpanded environment. It recurred once
+from a stale inherited session after the first cleanup. After confirming no open
+process, database, repository, socket, special file, or external content, the
+exact literal directory was moved again to the same-filesystem user trash with
+`gio trash`. It remains recoverable. The persistent environment owner is clean;
+the current parent process still needs session renewal to drop its inherited
+literal `CARGO_HOME` value.
 
 The operator-requested personal skill
 `~/.codex/skills/anti-invention/SKILL.md` now requires evidence-backed terms and
@@ -479,3 +483,15 @@ while unavailable. No phase is `DONE`.
   after its absent source and zero current consumer are proven. No Beads, Dolt,
   Gas Town, Gas City, rollback, reset, rebase, stash, revert, force-push, or
   alternate tracker is authorized.
+- Result: the rule, router, grader and happy-path fixture now adopt the complete
+  current authorized-worktree state regardless of provenance or age. The exact
+  orphaned `~/.codex/skills/crew-commit` directory contained no second artifact
+  and was removed; no compatibility identity replaced it.
+- Validation: quick skill validation passed; focused Waza spec coverage passed
+  `1/1`; focused token validation passed at `265/5000`; canonical inventory
+  publication reached a 66,130-byte fixed point at SHA-256
+  `846af3c9aa8fa5af3d240da48c471c156ac3251228a47bed11f9c06de814e18d`;
+  `make check` reported `78 skills, 7 commands, 62 agents, 38 rules`; `make docs`
+  passed `4/4`; and the active-surface contradiction search found no obsolete
+  commit workflow. A yielded whole-catalog `make spec` emitted the focused PASS
+  but did not retain its final exit status, so no full-catalog result is claimed.
