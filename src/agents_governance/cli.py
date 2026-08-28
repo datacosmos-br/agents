@@ -414,7 +414,17 @@ def main(argv: list[str] | None = None) -> int:
             print(f"FAIL: {error}", file=sys.stderr)
             return 2
     if args.command == "waza-preflight":
-        return _waza_preflight(args.output, resolve_model_pipeline(root))
+        try:
+            return _waza_preflight(args.output, resolve_model_pipeline(root))
+        except (
+            OSError,
+            RuntimeError,
+            TypeError,
+            ValueError,
+            json.JSONDecodeError,
+        ) as error:
+            print(f"FAIL: {error}", file=sys.stderr)
+            return 2
     if args.command == "clean":
         return _clean(root)
     if args.command == "temp":
