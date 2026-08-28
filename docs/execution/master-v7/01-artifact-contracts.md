@@ -53,9 +53,11 @@ grammar is exactly one required verb from `help`, `doctor`, `check`, `sync`,
 `evaluate`, `secure`, `clean`, or `live`. No verb accepts an option, positional
 argument, mode, format selector, compatibility alias, or private function path.
 
-Each verb loads its typed SSOT and validates every required environment value,
-source, destination, provider capability, child-process prerequisite, and
-publication condition before its first effect. The first exception escapes with
+Each verb loads its typed SSOT, derives its canonical defaults, and validates
+every genuinely required external environment value, source, destination,
+provider capability, child-process prerequisite, and publication condition
+before its first effect. Derived defaults are not repeated as environment
+variables, settings, parameters, or arguments. The first exception escapes with
 raw traceback and causal chain. The CLI and its orchestrators do not catch or
 normalize workflow failures. Make may compose development gates by calling this
 public facade; it cannot duplicate runtime behavior.

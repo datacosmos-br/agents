@@ -19,7 +19,7 @@ from .projection_config import load_projection_config
 from .rules import audit_rule_specs
 from .security import audit as audit_security_evidence
 from .security import inventory as security_inventory
-from .temp import repository_findings, storage_manifest
+from .temp import require_repository_storage
 from .validation import validate
 from .waza import load_eval_suite, require_model_projection, run_preflight
 
@@ -46,7 +46,7 @@ def _catalog(root: Path) -> Catalog:
 def _doctor(root: Path) -> tuple[Catalog, int, int, int]:
     catalog = _catalog(root)
     load_projection_config(root)
-    storage_manifest()
+    require_repository_storage(root)
 
     model = require_model_projection(root)
     if model != _MODEL:
@@ -91,7 +91,6 @@ def doctor(root: Path) -> None:
 def check(root: Path) -> None:
     catalog, commands, agents, rules = _doctor(root)
     validate(catalog)
-    _require_empty(repository_findings(root), "repository storage")
     print(
         "check: "
         f"{len(catalog.skill_dirs())} skills, {commands} commands, "

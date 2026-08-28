@@ -9,9 +9,11 @@ catalog-skill Waza suite under `evals/<skill-slug>/**`.
 The implementation is fail-loud by construction: the first exception terminates
 execution with its raw traceback and chained cause. Errors never become findings,
 warnings, skips, neutral results, empty collections, hand-selected exit codes,
-retries, fallbacks, alternate providers, operational defaults, compatibility,
-or partial execution. Only cleanup and rollback may catch; secondary failures
-are attached to and re-raise the original cause.
+retries, fallbacks, alternate providers, undeclared, competing, or
+error-triggered defaults, compatibility, or partial execution. Canonical
+calculated defaults resolve once at their typed owner and are omitted from
+consumers. Only cleanup and rollback may catch; secondary failures are attached
+to and re-raise the original cause.
 
 ## Fixed execution order
 
@@ -61,9 +63,9 @@ composition; all agent-domain behavior belongs to these verbs.
 ## Enforcement and landing
 
 An AST gate rejects catches outside cleanup/rollback, `check=False`, findings,
-warnings, skips, retries, fallbacks, operational environment defaults, alternate
-providers/models/credentials, neutral error returns, manual exit translation,
-and compatibility readers. Semantic searches prove zero keyring, old CLI,
+warnings, skips, retries, fallbacks, undeclared or error-triggered environment
+defaults, alternate providers/models/credentials, neutral error returns, manual
+exit translation, and compatibility readers. Semantic searches prove zero keyring, old CLI,
 option, argparse, JSON-output, and old-contract residue.
 
 Every mutating workflow validates all sources, inputs, variables, destinations,

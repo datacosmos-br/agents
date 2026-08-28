@@ -57,13 +57,16 @@ The [manual execution ledger](docs/execution/manual-ledger.md) owns increment
 state while Gas City, Gas Town, Beads, and Dolt are suspended. It records work
 but cannot satisfy tracker closure.
 
-Storage placement and bounded scratch are owned by [`rules/storage.md`](rules/storage.md).
+Storage registration and shell scratch placement are owned by
+[`rules/storage.md`](rules/storage.md).
 Every workflow validates its entire input, environment, child-process, and
 publication contract before its first effect. A missing, empty, conflicting,
-unexpanded, or invalid required variable raises immediately. There is no
-fallback scratch, credential store, compatibility path, retry, partial
-execution, or alternate provider. Every projection remains an independent
-physical copy.
+unexpanded, or invalid genuinely required external value raises immediately.
+Canonical calculated defaults resolve once at their typed SSOT and are omitted
+from environment variables, settings, parameters, and calls. There is no
+error-triggered alternate scratch, credential store, compatibility path, retry,
+partial execution, or alternate provider. Every projection remains an
+independent physical copy.
 
 ## Runtime CLI
 

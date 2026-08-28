@@ -22,8 +22,8 @@ produce a false green:
 - agents/rules: prove delegation and mandatory-rule behavior;
 - projection: apply to isolated personal/project destinations and inspect the
   provider's live loader where available;
-- temp/storage: use `agentsctl check` and `agentsctl clean` against a real child
-  tree and interrupt it;
+- temp/storage: use `agentsctl doctor`, `agentsctl check`, and `agentsctl clean`
+  against the configured physical checkout and an isolated generated tree;
 - credentials: execute from Bash, Zsh, Fish, and a direct subprocess using only
   the current process environment, without revealing values;
 - live model: exact `aihub-primary`, material grader, and explicit error paths.
@@ -109,7 +109,7 @@ first; a required rewrite is reviewed as an explicit source change.
 | Commands | Seven flat sources; complete provider render; independent size gate; no skill conversion. |
 | Agents/rules | Distribution paths and tags agree; universal rules compose once; no model declaration. |
 | Projection | Physical copies; ownership-safe cleanup; provider-native syntax; second apply changes nothing. |
-| Temp/storage | Concurrent isolation; owned group stops; live/dirty/database/symlink/unknown fixtures survive. |
+| Temp/storage | Exact manifest; physical registered checkout; `/tmp`, overlap, residue, symlink, special-file, and unknown deletion rejection. |
 | Credentials | Process environment only; required values fail immediately; no keyring code, 401, or secret output. |
 | Security | Deterministic tracked manifest inventory; every applicable scanner exits zero. |
 | CI | PRs to `dev` and all governance source paths execute required native stages. |
@@ -131,8 +131,9 @@ generated outputs, and supported destinations for:
 - fallback, shim, dual-read/write, alternate model, skip, suppression, and old
   `~/.agents` source lookups after cutover.
 - exception catches outside cleanup/rollback, aggregate validators, manual exit
-  translation, retry loops, operational defaults, partial publication, and any
-  keyring source or consumer.
+  translation, retry loops, undeclared or error-triggered defaults, partial
+  publication, and any keyring source or consumer. Canonical calculated defaults
+  declared once at their typed owner are valid.
 
 Any active opposite blocks integration.
 

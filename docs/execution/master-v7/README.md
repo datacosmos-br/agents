@@ -32,8 +32,10 @@ formats; reading a source does not authorize importing its artifacts.
   development support and gate composition, never a second runtime API.
 - All workflows use strict fail-loud execution. The first exception and causal
   chain escape unchanged; complete preflight precedes effects; validators stop
-  at the first defect; keyring, retries, fallbacks, operational defaults,
-  compatibility, partial execution, and error normalization are prohibited.
+  at the first defect; keyring, retries, fallbacks, undeclared, competing, or
+  error-triggered defaults, compatibility, partial execution, and error
+  normalization are prohibited. Canonical calculated defaults remain at one
+  typed owner and are omitted from consumers.
 - No import starts before the existing inventory has completed the migration,
   projection, evaluation, review, and landing cycle.
 

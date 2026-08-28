@@ -118,17 +118,19 @@ Resolve the accepted review defects at their owners:
 
 Complete the related root contracts:
 
-- per-run scratch plus exclusive `TMPDIR`, `GOTMPDIR`, and `GOCACHE`;
-- shared `GOMODCACHE` and XDG reusable caches/state;
-- `agentsctl clean` validates the complete removal set before its first effect
-  and either publishes the complete result or raises;
+- one strict storage manifest for registered Git roots and shell scratch;
+- no runtime runner, GC, report, warning, retention, cache, or fallback protocol;
+- `agentsctl doctor` and `agentsctl check` validate the complete storage contract;
+- `agentsctl clean` validates the complete removal set before its first effect;
 - Bash, Zsh, Fish, and subprocess equivalence;
 - direct process-environment credentials with immediate missing, empty,
   conflicting, unexpanded, or invalid-value failure;
-- deterministic manifest inventory and all applicable security scanners;
+- deterministic dependency-manifest inventory and all applicable security scanners;
 - total keyring code and integration removal;
 - no catch-based normalization, retry, fallback, hardcode, omitted project,
-  operational default, compatibility, partial execution, or accepted risk.
+  undeclared, competing, or error-triggered default, compatibility, partial
+  execution, or accepted risk. Canonical calculated defaults resolve once at
+  their typed owner and are omitted from consumers.
 
 Exit: representative runtime precedes and passes the complete native gates;
 every accepted defect has a regression test and global same-class search.

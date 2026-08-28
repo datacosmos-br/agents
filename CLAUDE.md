@@ -91,13 +91,16 @@ When working inside a repository, load that repository's `AGENTS.md` and `CLAUDE
   or compatibility syntax. Make remains development support and gate
   composition; it does not call private runtime functions.
 - Before the first effect, load and validate every input and prerequisite.
-  Missing, empty, conflicting, unexpanded, or invalid required environment
-  variables raise immediately.
+  Derive canonical defaults once at their typed owner and require environment
+  variables, settings, parameters, or arguments only for non-derivable external
+  values. A genuinely required value raises immediately when missing, empty,
+  conflicting, unexpanded, or invalid.
 - The first exception ends execution with its raw traceback and causal chain.
   CLI and orchestrators do not catch workflow failures. Validators stop at the
   first defect and never aggregate independent errors.
 - Errors never become findings, warnings, skips, neutral values, empty results,
-  retries, fallbacks, alternate providers, operational defaults,
+  retries, fallbacks, alternate providers, undeclared, competing, or
+  error-triggered defaults,
   compatibility, partial execution, or manually chosen exit codes.
 - Only cleanup and rollback may catch. They attach any secondary failure and
   re-raise the original cause. Child nonzero exit, timeout, signal, or

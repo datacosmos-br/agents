@@ -41,16 +41,19 @@ typed contract. Make remains development support and gate composition and may
 invoke only these public verbs when it needs runtime behavior.
 
 Every verb performs complete preflight before its first effect. A missing,
-empty, conflicting, unexpanded, or invalid required environment value raises
-immediately. Keyring code and integration do not exist. Live evaluation reads
-only `CLIPROXY_API_KEY` from the current process environment and uses exact
+empty, conflicting, unexpanded, or invalid genuinely required external value
+raises immediately. Canonical calculated defaults resolve at their typed owner
+and are not repeated as environment variables, settings, parameters, or calls.
+Keyring code and integration do not exist. Live evaluation reads only
+`CLIPROXY_API_KEY` from the current process environment and uses exact
 `aihub-primary`.
 
 The first exception escapes with raw traceback and chained cause. CLI and
 orchestrators do not catch workflow failures. Validators stop at the first
 defect. Errors are never converted into findings, warnings, skips, neutral
 values, empty collections, manual exit codes, retries, fallbacks, alternate
-providers, operational defaults, compatibility behavior, or partial execution.
+providers, undeclared, competing, or error-triggered defaults, compatibility
+behavior, or partial execution.
 Only cleanup and rollback may catch; they attach secondary failure and re-raise
 the original cause. Child nonzero exit, timeout, signal, and incomplete
 publication propagate without normalization.
@@ -59,15 +62,15 @@ publication propagate without normalization.
 
 - Runtime behavior is discoverable from eight verbs and cannot drift between
   modes or wrappers.
-- Automation moves inputs into typed configuration and required environment
-  rather than command-line switches.
+- Automation derives owner-defined defaults and represents only non-derivable
+  external inputs in typed configuration or required environment values.
 - Existing scripts, tests, docs, entry points, Make targets, and CI consumers
   must be rewired atomically; compatibility aliases are prohibited.
 - An invalid prerequisite prevents every effect, and an effect failure cannot
   be reported as a successful partial result.
 - Source and AST gates must reject every superseded entry point, forbidden
-  catch, aggregate validator, manual error translation, operational default,
-  fallback, retry, and keyring consumer.
+  catch, aggregate validator, manual error translation, undeclared, competing,
+  or error-triggered default, fallback, retry, and keyring consumer.
 
 ## State of implementation
 

@@ -15,7 +15,8 @@ operation.
 - Do not return `None`, an empty collection, or a default value to conceal an
   error.
 - Do not add compatibility accessors, aliases, dual behavior, retry, alternate
-  providers, operational defaults, manual exit translation, partial results, or
-  silent degradation.
+  providers, error-triggered or competing defaults, manual exit translation,
+  partial results, or silent degradation. A typed canonical default resolved
+  before failure is normal owner behavior.
 - Tests prove the material error, cancellation, timeout, and should-not-trigger
   behavior through the public surface.

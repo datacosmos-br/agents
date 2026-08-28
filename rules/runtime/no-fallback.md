@@ -1,5 +1,5 @@
 ---
-description: Prohibition of retries, fallbacks, alternates, defaults, and partial execution.
+description: Prohibition of error-triggered alternates, retries, and partial execution.
 ---
 
 # One authorized path or failure
@@ -9,7 +9,11 @@ algorithm, destination, and execution path during preflight. Failure of that
 path terminates the invocation.
 
 Retries, fallback implementations, alternate providers/models/accounts,
-cached-success substitution, operational defaults, compatibility aliases,
+cached-success substitution, undeclared or competing defaults, compatibility aliases,
 dual reads/writes, deprecated inputs, best-effort branches, partial execution,
 and reduced modes are prohibited. Optional behavior exists only as an explicit
 typed absence in the canonical schema; it cannot be inferred from a failure.
+
+A deterministic default resolved and validated by the typed owner before any
+failure is normal SSOT behavior, not fallback. Consumers omit equal environment
+variables, settings, parameters, and arguments; only overrides remain explicit.

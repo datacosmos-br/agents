@@ -20,10 +20,11 @@ For every implementation, use this order:
    and complete the approved landing cycle before changing phase.
 
 Hardcoded environment facts, caught or normalized failure, hidden failover,
-retry, operational defaults, compatibility, partial execution, keyring, and
-success without decisive evidence are runtime-critical defects. Exterminate
-them at their owner. The first exception escapes the owning CLI with its raw
-traceback and causal chain.
+retry, undeclared or error-triggered defaults, compatibility, partial execution,
+keyring, and success without decisive evidence are runtime-critical defects.
+Canonical calculated defaults remain at their typed owner and are omitted from
+consumers. The first exception escapes the owning CLI with its raw traceback and
+causal chain.
 
 Compose this sequence with [generalized ownership](generalized-abstraction.md),
 [strict execution](../runtime/strict-execution.md),
