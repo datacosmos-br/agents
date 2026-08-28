@@ -1,0 +1,12 @@
+objective: Integrate the Flext prerequisite before starting downstream repositories.
+current_step: Make pytest-testmon selective in every standard test mode.
+next_step: Validate bounded focused invalidation through make test.
+owned_paths:
+  - src/flext_infra/validate/pytest_runner.py
+latest_evidence:
+  command: make test WHAT=full
+  exit: 2
+  result: The run used an invalid noselect contract.
+incoming_request:
+  scope: skills/technology/python-development
+  requirement: Correct the Testmon guidance, checkpoint it, then resume Flext.

@@ -1,0 +1,32 @@
+name: plan-focus-recovery-eval
+description: Preserve an active execution cursor across bounded interruptions.
+skill: plan-focus-recovery
+schemaVersion: '1.0'
+version: '1.0'
+config:
+  trials_per_task: 1
+  timeout_seconds: 300
+  parallel: false
+  executor: copilot-sdk
+  model: aihub-primary
+  skill_directories:
+  - ../../skills/agent-wide/plan-focus-recovery
+  required_skills:
+  - plan-focus-recovery
+graders:
+- type: prompt
+  name: plan-focus-recovery-contract
+  config:
+    prompt: |
+      Pass only when the response preserves the supplied execution cursor,
+      classifies the interruption once, performs or proposes only the bounded
+      authorized detour, updates invalidated evidence, and returns explicitly to
+      the first unfinished plan step. Reject side quests, repository-wide repair,
+      repeated discovery, silent plan replacement, fabricated completion, or a
+      resume action without a concrete next command.
+- type: behavior
+  name: bounded_execution
+  config:
+    max_duration_ms: 240000
+tasks:
+- tasks/*.yaml

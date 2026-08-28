@@ -1,0 +1,14 @@
+id: plan-focus-recovery-bounded-detour-001
+name: Correct one skill and resume Flext
+description: Preserve the execution cursor across a required external adjustment.
+tags: [plan, continuity, interruption, recovery, happy-path]
+inputs:
+  prompt: Use active-plan.yaml. Incorporate the incoming skill correction as a
+    bounded detour, identify the exact evidence it invalidates, and show the
+    concrete return to the saved Flext step without repairing unrelated agents
+    runtime or projection defects.
+  files:
+  - path: active-plan.yaml
+expected:
+  output_contains: [bounded detour, make test, pytest_runner.py, resume]
+  output_not_contains: [repair agentsctl, repository-wide, DONE]
