@@ -25,7 +25,6 @@ from .native_evals import evaluate_native
 from .projection import Projector
 from .projection_authorization import load_project_authorization
 from .projection_config import load_projection_config
-from .retired_environment import RetiredEnvironmentProjection
 from .rules import RuleSpec, audit_rule_specs
 from .security import ScannerRoute
 from .security import audit as audit_security_evidence
@@ -119,7 +118,6 @@ def doctor(root: Path) -> None:
 def check(root: Path) -> None:
     inventory = _inventory(root)
     load_projection_config(root)
-    RetiredEnvironmentProjection(Path.home()).check()
     model = _model(root)
     validate(
         inventory.catalog,
@@ -154,10 +152,8 @@ def sync(root: Path) -> None:
         inventory.commands,
         inventory.rules,
     )
-    retired_environment = RetiredEnvironmentProjection(Path.home())
     run_atomic_publications(
         (
-            *retired_environment.publications(),
             *projector.publications(authorization),
             *hooks.publications(authorization),
         )
