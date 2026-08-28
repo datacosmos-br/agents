@@ -1,15 +1,14 @@
-id: basic-usage-001
-name: Basic Usage
-description: 'Test that the skill handles a typical request correctly.
-
-  '
-tags:
-- basic
-- happy-path
+id: safe-delete-inventory-001
+name: Complete an atomic source cutover and classify artifacts
+description: Combine safe deletion, artifact retirement, and recovery evidence in one cutover.
+tags: [safe-deletion, atomic-obsolete-code-extermination, artifact-retirement, recovery-evidence, happy-path]
 inputs:
-  prompt: 'Apply the safe-delete capability to the provided fixture. Exercise these requirements: safe, delete, whenever, asked, remove, files, directories, archive, bak/.bkp, sibling. Return a concrete result.'
+  prompt: Review deletion-inventory.md and define one atomic obsolete-code
+    extermination cutover. Separate safe deletion of the superseded tracked owner
+    from artifact retirement through its declared command, preserve unknown work,
+    and state the recovery evidence required afterward.
   files:
-  - path: sample.py
+  - path: deletion-inventory.md
 expected:
-  outcomes:
-  - type: task_completed
+  output_contains: [make clean, operator-draft.md, src/api.py, src/replacement.py, Git, atomic, zero residue]
+  output_not_contains: [compatibility alias, rollback copy, retry, partial deletion]

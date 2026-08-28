@@ -1,5 +1,5 @@
 name: verification-loop-eval
-description: Evaluation suite for verification-loop.
+description: Ordered fresh gates, real surface, fixed point, and evidence scope.
 skill: verification-loop
 schemaVersion: '1.0'
 version: '1.0'
@@ -7,30 +7,32 @@ config:
   trials_per_task: 1
   timeout_seconds: 300
   parallel: false
+  max_attempts: 0
+  fail_fast: true
   executor: copilot-sdk
-  model: gpt-5.4
+  model: aihub-primary
   skill_directories:
-  - ../../skills/verification-loop
+  - ../../skills/agent-wide/verification-loop
   required_skills:
   - verification-loop
-metrics:
-- name: task_completion
-  weight: 1.0
-  threshold: 0.8
-  description: Did the skill complete the assigned task?
 graders:
 - type: prompt
-  name: material_task_result
+  name: verification-loop-contract
   config:
-    prompt: |
-      Evaluate whether the response materially satisfies the concrete user request,
-      uses the named skill requirements, and provides the requested artifact or
-      explicit fail-closed constraint. Reject generic, unrelated, self-declared,
-      or merely non-empty answers. Call set_waza_grade_pass only when every
-      criterion is evidenced; otherwise call set_waza_grade_fail.
+    prompt: |-
+      Grade the verification-loop response. Pass only when it records each fresh
+      command, exit code, decisive output and scope in order, distinguishes tests
+      from real-surface proof, includes generated fixed point, and limits the claim
+      to the covered projection slice. Reject skipped stages, warnings, stale output,
+      broad or split completion claims, workflow edits without workflow-source
+      trigger coverage, or reporting a red result as a handoff. A failed stage
+      must stop that invocation, drive owner correction, and rerun invalidated
+      stages in the same phase without an unchanged retry or alternate gate.
+      External-token workflows excluded before invocation must be recorded as
+      NOT EXECUTED and never treated as green or as a landing blocker; once
+      invoked, their missing credential or runtime failure remains red.
 - type: behavior
   name: bounded_execution
-  config:
-    max_duration_ms: 240000
+  config: {max_duration_ms: 240000}
 tasks:
 - tasks/*.yaml

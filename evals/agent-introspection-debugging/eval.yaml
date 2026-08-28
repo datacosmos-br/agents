@@ -1,5 +1,5 @@
 name: agent-introspection-debugging-eval
-description: Evaluation suite for agent-introspection-debugging.
+description: Agent-loop failure capture, diagnosis, and contained recovery.
 skill: agent-introspection-debugging
 schemaVersion: '1.0'
 version: '1.0'
@@ -7,30 +7,29 @@ config:
   trials_per_task: 1
   timeout_seconds: 300
   parallel: false
+  max_attempts: 0
+  fail_fast: true
   executor: copilot-sdk
-  model: gpt-5.4
+  model: aihub-primary
   skill_directories:
-  - ../../skills/agent-introspection-debugging
+  - ../../skills/agent-wide/agent-introspection-debugging
   required_skills:
   - agent-introspection-debugging
-metrics:
-- name: task_completion
-  weight: 1.0
-  threshold: 0.8
-  description: Did the skill complete the assigned task?
 graders:
 - type: prompt
-  name: material_task_result
+  name: agent-introspection-debugging-contract
   config:
-    prompt: |
-      Evaluate whether the response materially satisfies the concrete user request,
-      uses the named skill requirements, and provides the requested artifact or
-      explicit fail-closed constraint. Reject generic, unrelated, self-declared,
-      or merely non-empty answers. Call set_waza_grade_pass only when every
-      criterion is evidenced; otherwise call set_waza_grade_fail.
+    prompt: |-
+      Grade the agent-introspection-debugging response. Pass only when it captures the concrete repeated failure,
+      forms a falsifiable root-cause hypothesis from the supplied session log,
+      chooses one contained discriminating check, and reports the result without
+      pretending to reset hidden state. For missing evidence, require the first
+      causal failure and an explicit statement that no recovery effect occurred.
+      Reject repeated attempts, alternate checks, and generic debugging.
+      Any preventive follow-up must come only after the current failure and its
+      attributable effects are resolved.
 - type: behavior
   name: bounded_execution
-  config:
-    max_duration_ms: 240000
+  config: {max_duration_ms: 240000}
 tasks:
 - tasks/*.yaml

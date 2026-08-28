@@ -1,12 +1,9 @@
-id: edge-case-001
-name: Edge Case - Ambiguous Input
-description: 'Test that the skill handles incomplete or ambiguous input fail-closed.
-
-  '
-tags:
-- edge-case
+id: go-development-owner-missing-001
+name: Refuse to invent a Go module contract
+description: Require module, API, and native-gate evidence before implementation.
+tags: [go, module, fail-closed]
 inputs:
-  prompt: 'Handle an incomplete or ambiguous go-development request safely. Relevant capability: go, development, building, reviewing, testing, simplifying, detected, go.mod, go.work. State any blocking constraint explicitly.'
+  prompt: Modernize an unavailable Go service now. No go.mod, go.work, Go version, source, public API, generated-file owner, runtime, or project validation commands are supplied. Stop at the first missing prerequisite and create no module, source, goroutine, fallback toolchain, or other effect.
 expected:
-  outcomes:
-  - type: task_completed
+  output_contains: [go.mod, public API, no effect]
+  output_not_contains: [module example.com, change completed]

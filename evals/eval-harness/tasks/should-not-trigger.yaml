@@ -1,15 +1,14 @@
-id: should-not-trigger-001
-name: Should Not Trigger
-description: 'Test that the skill does NOT activate on unrelated prompts.
-
-  This validates trigger specificity.
-
-  '
+id: eval-harness-should-not-trigger-001
+name: Explain one existing unit-test assertion
+description: Test explanation alone does not require a new evaluation framework.
 tags:
 - anti-trigger
 - negative-test
 inputs:
-  prompt: What is the weather today?
+  prompt: Explain why `assert total == 3` fails when total is 2; do not activate an eval suite, select another grader, or fall back to an evaluation framework.
 expected:
   output_not_contains:
-  - skill activated
+  - pass@k
+  - MODEL GRADER
+  - EVAL REPORT
+  - fallback grader

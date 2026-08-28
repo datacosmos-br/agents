@@ -1,15 +1,11 @@
-id: should-not-trigger-001
-name: Should Not Trigger
-description: 'Test that the skill does NOT activate on unrelated prompts.
-
-  This validates trigger specificity.
-
-  '
-tags:
-- anti-trigger
-- negative-test
+id: agent-introspection-debugging-negative-001
+name: Debug an ordinary application exception
+description: Route a deterministic source-code failure to normal technical debugging.
+tags: [agent-introspection-debugging, anti-trigger]
 inputs:
-  prompt: What is the weather today?
+  prompt: >-
+    A Python function raises KeyError for one supplied input, and its source plus
+    traceback are available. Diagnose the application defect; the agent is not
+    looping or drifting.
 expected:
-  output_not_contains:
-  - skill activated
+  output_not_contains: [Agent Self-Debug Report, context pressure, token burn, fallback]

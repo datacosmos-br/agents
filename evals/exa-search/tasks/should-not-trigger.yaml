@@ -1,15 +1,13 @@
-id: should-not-trigger-001
-name: Should Not Trigger
-description: 'Test that the skill does NOT activate on unrelated prompts.
-
-  This validates trigger specificity.
-
-  '
+id: exa-search-should-not-trigger-001
+name: Search local Git history
+description: Repository-local history search is not a web lookup.
 tags:
 - anti-trigger
 - negative-test
 inputs:
-  prompt: What is the weather today?
+  prompt: Find the local commit that introduced `parse_invoice`; do not search the web.
 expected:
   output_not_contains:
-  - skill activated
+  - web_search_exa
+  - crawling_exa
+  - Exa MCP

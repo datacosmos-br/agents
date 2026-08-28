@@ -1,15 +1,8 @@
-id: should-not-trigger-001
-name: Should Not Trigger
-description: 'Test that the skill does NOT activate on unrelated prompts.
-
-  This validates trigger specificity.
-
-  '
-tags:
-- anti-trigger
-- negative-test
+id: investor-materials-customer-sheet-negative-001
+name: Write a customer implementation sheet
+description: Keep fundraising structure out of a customer-facing deployment brief.
+tags: [customer, implementation, anti-trigger]
 inputs:
-  prompt: What is the weather today?
+  prompt: Draft a one-page implementation checklist for a new enterprise customer, covering SSO setup, data import, and support contacts. No fundraising asset is requested.
 expected:
-  output_not_contains:
-  - skill activated
+  output_not_contains: [SAFE, use of funds, investor ask]

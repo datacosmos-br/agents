@@ -1,15 +1,8 @@
-id: should-not-trigger-001
-name: Should Not Trigger
-description: 'Test that the skill does NOT activate on unrelated prompts.
-
-  This validates trigger specificity.
-
-  '
-tags:
-- anti-trigger
-- negative-test
+id: x-api-negative-001
+name: Explain the X chromosome
+description: Do not invoke a social API for a biology question.
+tags: [anti-trigger]
 inputs:
-  prompt: What is the weather today?
+  prompt: Explain the role of the X chromosome in human sex determination in three sentences.
 expected:
-  output_not_contains:
-  - skill activated
+  output_not_contains: [/2/tweets, OAuth, rate limit, fallback]

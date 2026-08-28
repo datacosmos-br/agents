@@ -9,10 +9,9 @@ agents.bkp/
 .agents.bkp/
 .archive/
 .test-tmp/
+/.pytest_cache/
 .cache/
 /$HOME/
-/mcp/generated/
-/mcp/shared-mcp.json
 
 # Existing checkout runtime/ephemeral state only; symlink adoption is prohibited.
 # (gt town-level mayor/refinery/witness live in ~/gt, NOT here, so not ignored here):

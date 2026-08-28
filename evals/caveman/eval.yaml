@@ -1,5 +1,5 @@
 name: caveman-eval
-description: Evaluation suite for caveman.
+description: Concise evidence-preserving operator communication.
 skill: caveman
 schemaVersion: '1.0'
 version: '1.0'
@@ -7,30 +7,26 @@ config:
   trials_per_task: 1
   timeout_seconds: 300
   parallel: false
+  max_attempts: 0
+  fail_fast: true
   executor: copilot-sdk
-  model: gpt-5.4
+  model: aihub-primary
   skill_directories:
-  - ../../skills/caveman
+  - ../../skills/agent-wide/caveman
   required_skills:
   - caveman
-metrics:
-- name: task_completion
-  weight: 1.0
-  threshold: 0.8
-  description: Did the skill complete the assigned task?
 graders:
 - type: prompt
-  name: material_task_result
+  name: caveman-contract
   config:
-    prompt: |
-      Evaluate whether the response materially satisfies the concrete user request,
-      uses the named skill requirements, and provides the requested artifact or
-      explicit fail-closed constraint. Reject generic, unrelated, self-declared,
-      or merely non-empty answers. Call set_waza_grade_pass only when every
-      criterion is evidenced; otherwise call set_waza_grade_fail.
+    prompt: |-
+      Grade the caveman response. Pass only when it puts the supplied failure first, preserves command, cwd,
+      exit code, decisive output, and unrun gates exactly, and does so in no more
+      than three plain sentences without filler. Reject softened status,
+      adjectives, implementation detail, omitted evidence, or a success claim
+      after the first required evidence item is absent.
 - type: behavior
   name: bounded_execution
-  config:
-    max_duration_ms: 240000
+  config: {max_duration_ms: 240000}
 tasks:
 - tasks/*.yaml

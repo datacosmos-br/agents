@@ -1,15 +1,8 @@
-id: should-not-trigger-001
-name: Should Not Trigger
-description: 'Test that the skill does NOT activate on unrelated prompts.
-
-  This validates trigger specificity.
-
-  '
-tags:
-- anti-trigger
-- negative-test
+id: nextjs-turbopack-vite-app-negative-001
+name: Diagnose a Vite-only React app
+description: Keep Next.js and Turbopack advice out of another bundler stack.
+tags: [vite, react, anti-trigger]
 inputs:
-  prompt: What is the weather today?
+  prompt: Diagnose a Vite 6 React app whose HMR socket is blocked by a reverse proxy. The project has no Next.js dependency or next configuration; do not activate or fall back to Next.js/Turbopack guidance.
 expected:
-  output_not_contains:
-  - skill activated
+  output_not_contains: [Turbopack, next dev, .next, fallback bundler]

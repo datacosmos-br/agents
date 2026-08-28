@@ -1,12 +1,16 @@
-id: edge-case-001
-name: Edge Case - Ambiguous Input
-description: 'Test that the skill handles incomplete or ambiguous input fail-closed.
-
-  '
+id: documentation-criteria-fail-closed-001
+name: Unknown change scale and contract impact
+description: Request classification inputs before choosing document types.
 tags:
 - edge-case
 inputs:
-  prompt: 'Handle an incomplete or ambiguous documentation-criteria request safely. Relevant capability: documentation, criteria, creation, including, prd, adr, design, doc, work, plan. State any blocking constraint explicitly.'
+  prompt: Document this change, but no feature type, touched-file estimate, contract impact, data flow, dependency, or UI scope is known.
 expected:
-  outcomes:
-  - type: task_completed
+  output_contains:
+  - change scope is required
+  - file impact is required
+  - zero effects
+  output_not_contains:
+  - docs/adr/
+  - ADR is mandatory
+  - document created

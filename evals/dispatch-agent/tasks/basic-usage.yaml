@@ -1,15 +1,23 @@
-id: basic-usage-001
-name: Basic Usage
-description: 'Test that the skill handles a typical request correctly.
-
-  '
-tags:
-- basic
-- happy-path
+id: dispatch-agent-happy-path-001
+name: Route an authentication failure investigation
+description: Exercise specialist selection for one bounded delegated investigation.
+tags: [agent, agent-delegation, specialist-selection, bounded-work, roster, context, happy-path]
 inputs:
-  prompt: 'Apply the dispatch-agent capability to the provided fixture. Exercise these requirements: dispatch, agent, selecting, delegating, work, specialized, local, roster. Return a concrete result.'
+  prompt: |
+    Perform agent delegation by selecting the best specialist from the active
+    roster for this bounded, read-only work. Explain trigger overlap and
+    confidence, then produce one handoff that
+    preserves branch, failing command, observed error, read-only scope, and the
+    evidence expected back. Do not create a lane, change project files, or invent
+    a model tier, family, provider, or variant.
   files:
-  - path: sample.py
+  - path: active-roster.json
 expected:
   outcomes:
   - type: task_completed
+  output_contains:
+  - debugger
+  - confidence
+  - fix/auth-session
+  - pytest tests/auth/test_session.py
+  - read-only

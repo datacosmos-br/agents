@@ -1,15 +1,23 @@
-id: basic-usage-001
-name: Basic Usage
-description: 'Test that the skill handles a typical request correctly.
-
-  '
-tags:
-- basic
-- happy-path
+id: context-canary-happy-path-001
+name: Recover a tripped session canary
+description: Detect two concrete canary violations and prescribe recovery.
+tags: [context, drift, compaction, recovery, continuity, canary, happy-path]
 inputs:
-  prompt: 'Apply the context-canary capability to the provided fixture. Exercise these requirements: context, canary, long, high-risk, sessions, detect, drift, compaction, loss, instruction. Return a concrete result.'
+  prompt: |
+    In this long, high-risk session after compaction, use the context canary to
+    detect instruction loss and drift in the supplied transcript. Return the next safe canary line,
+    classify the trip, and state the durable recovery actions required before
+    work continues. Do not infer facts absent from the transcript.
   files:
-  - path: sample.py
+  - path: session-transcript.md
 expected:
   outcomes:
   - type: task_completed
+  output_contains:
+  - ctx thin
+  - durable checkpoint
+  - re-read project instructions
+  - approved plan
+  output_not_contains:
+  - substitute tracker
+  - replacement ledger

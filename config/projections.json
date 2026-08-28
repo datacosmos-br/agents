@@ -1,24 +1,118 @@
 {
-  "version": 2,
-  "surfaces": {
-    "commands": {"entries": ["security-triage.md"]},
-    "rules": {"entries": ["security"]}
-  },
-  "personal_targets": {
-    "claude": {"skills": "${HOME}/.claude/skills", "commands": "${HOME}/.claude/commands", "rules": "${HOME}/.claude/rules"},
-    "codex": {"skills": "${HOME}/.codex/skills", "rules": "${HOME}/.codex/rules"},
-    "cursor": {"skills": "${HOME}/.cursor/skills", "commands": "${HOME}/.cursor/commands"},
-    "gemini": {"skills": "${HOME}/.gemini/skills"},
-    "opencode": {"skills": "${HOME}/.config/opencode/skills"},
-    "copilot": {"skills": "${HOME}/.copilot/skills"},
-    "antigravity": {"skills": "${HOME}/.gemini/antigravity/skills"}
-  },
-  "projects": {
-    "town_root": "${HOME}/gt",
-    "checkout_glob": "*/mayor/rig",
-    "skills_path": ".agents/skills",
-    "commands_path": ".agents/commands",
-    "rules_path": ".agents/rules",
-    "flext_remote": "flext-sh/flext"
+  "version": 6,
+  "manifest_versions": {"hooks": 3, "projection": 5},
+  "providers": {
+    "claude": {
+      "personal": {
+        "skills": {"status": "SUPPORTED", "path": "${HOME}/.claude/skills"},
+        "commands": {"status": "SUPPORTED", "path": "${HOME}/.claude/commands"},
+        "agents": {"status": "SUPPORTED", "path": "${HOME}/.claude/agents"},
+        "rules": {"status": "SUPPORTED", "path": "${HOME}/.claude/rules", "layout": "directory"},
+        "hooks": {"status": "SUPPORTED", "path": "${HOME}/.claude/settings.json", "events": {"session_start": {"status": "SUPPORTED", "native": ["SessionStart"], "coverage": "exact", "clients": ["local"]}, "prompt_submit": {"status": "SUPPORTED", "native": ["UserPromptSubmit"], "coverage": "exact", "clients": ["local"]}, "context_refresh": {"status": "SUPPORTED", "native": ["SessionStart"], "coverage": "exact", "clients": ["local"]}, "subagent_start": {"status": "SUPPORTED", "native": ["SubagentStart"], "coverage": "exact", "clients": ["local"]}}}
+      },
+      "project": {
+        "skills": {"status": "SUPPORTED", "path": ".claude/skills"},
+        "commands": {"status": "SUPPORTED", "path": ".claude/commands"},
+        "agents": {"status": "SUPPORTED", "path": ".claude/agents"},
+        "rules": {"status": "SUPPORTED", "path": ".claude/rules", "layout": "directory"},
+        "hooks": {"status": "SUPPORTED", "path": ".claude/settings.json", "events": {"session_start": {"status": "SUPPORTED", "native": ["SessionStart"], "coverage": "exact", "clients": ["local"]}, "prompt_submit": {"status": "SUPPORTED", "native": ["UserPromptSubmit"], "coverage": "exact", "clients": ["local"]}, "context_refresh": {"status": "SUPPORTED", "native": ["SessionStart"], "coverage": "exact", "clients": ["local"]}, "subagent_start": {"status": "SUPPORTED", "native": ["SubagentStart"], "coverage": "exact", "clients": ["local"]}}}
+      }
+    },
+    "codex": {
+      "personal": {
+        "skills": {"status": "SUPPORTED", "path": "${HOME}/.agents/skills"},
+        "commands": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: Codex custom prompts are retired in favor of skills"},
+        "agents": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: Codex custom-agent TOML has no capability allowlist"},
+        "rules": {"status": "SUPPORTED", "path": "${HOME}/.codex/AGENTS.md", "layout": "document"},
+        "hooks": {"status": "SUPPORTED", "path": "${HOME}/.codex/hooks.json", "events": {"session_start": {"status": "SUPPORTED", "native": ["SessionStart"], "coverage": "exact", "clients": ["local"]}, "prompt_submit": {"status": "SUPPORTED", "native": ["UserPromptSubmit"], "coverage": "exact", "clients": ["local"]}, "context_refresh": {"status": "SUPPORTED", "native": ["SessionStart"], "coverage": "exact", "clients": ["local"]}, "subagent_start": {"status": "SUPPORTED", "native": ["SubagentStart"], "coverage": "exact", "clients": ["local"]}}}
+      },
+      "project": {
+        "skills": {"status": "SUPPORTED", "path": ".agents/skills"},
+        "commands": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: Codex custom prompts are retired in favor of skills"},
+        "agents": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: Codex custom-agent TOML has no capability allowlist"},
+        "rules": {"status": "SUPPORTED", "path": "AGENTS.md", "layout": "document"},
+        "hooks": {"status": "SUPPORTED", "path": ".codex/hooks.json", "events": {"session_start": {"status": "SUPPORTED", "native": ["SessionStart"], "coverage": "exact", "clients": ["local"]}, "prompt_submit": {"status": "SUPPORTED", "native": ["UserPromptSubmit"], "coverage": "exact", "clients": ["local"]}, "context_refresh": {"status": "SUPPORTED", "native": ["SessionStart"], "coverage": "exact", "clients": ["local"]}, "subagent_start": {"status": "SUPPORTED", "native": ["SubagentStart"], "coverage": "exact", "clients": ["local"]}}}
+      }
+    },
+    "cursor": {
+      "personal": {
+        "skills": {"status": "SUPPORTED", "path": "${HOME}/.cursor/skills"},
+        "commands": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: Cursor commands are project-scoped only"},
+        "agents": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: Cursor subagents expose readonly only, not a capability allowlist"},
+        "rules": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: Cursor personal rule files have no documented typed metadata contract"},
+        "hooks": {"status": "SUPPORTED", "path": "${HOME}/.cursor/hooks.json", "events": {"session_start": {"status": "SUPPORTED", "native": ["sessionStart"], "coverage": "exact", "clients": ["local"]}, "prompt_submit": {"status": "SUPPORTED", "native": ["beforeSubmitPrompt"], "coverage": "advisory", "clients": ["cloud", "local"]}, "context_refresh": {"status": "SUPPORTED", "native": ["preCompact"], "coverage": "advisory", "clients": ["cloud", "local"]}, "subagent_start": {"status": "SUPPORTED", "native": ["subagentStart"], "coverage": "advisory", "clients": ["cloud", "local"]}}}
+      },
+      "project": {
+        "skills": {"status": "SUPPORTED", "path": ".cursor/skills"},
+        "commands": {"status": "SUPPORTED", "path": ".cursor/commands"},
+        "agents": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: Cursor subagents expose readonly only, not a capability allowlist"},
+        "rules": {"status": "SUPPORTED", "path": ".cursor/rules", "layout": "directory"},
+        "hooks": {"status": "SUPPORTED", "path": ".cursor/hooks.json", "events": {"session_start": {"status": "SUPPORTED", "native": ["sessionStart"], "coverage": "exact", "clients": ["local"]}, "prompt_submit": {"status": "SUPPORTED", "native": ["beforeSubmitPrompt"], "coverage": "advisory", "clients": ["cloud", "local"]}, "context_refresh": {"status": "SUPPORTED", "native": ["preCompact"], "coverage": "advisory", "clients": ["cloud", "local"]}, "subagent_start": {"status": "SUPPORTED", "native": ["subagentStart"], "coverage": "advisory", "clients": ["cloud", "local"]}}}
+      }
+    },
+    "copilot": {
+      "personal": {
+        "skills": {"status": "SUPPORTED", "path": "${HOME}/.copilot/skills"},
+        "commands": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: Copilot commands reuse Claude paths and lose provider ownership"},
+        "agents": {"status": "SUPPORTED", "path": "${HOME}/.copilot/agents"},
+        "rules": {"status": "SUPPORTED", "path": "${HOME}/.copilot/instructions", "layout": "directory"},
+        "hooks": {"status": "SUPPORTED", "path": "${HOME}/.copilot/hooks/aihub-governance.json", "events": {"session_start": {"status": "SUPPORTED", "native": ["sessionStart"], "coverage": "exact", "clients": ["local"]}, "prompt_submit": {"status": "SUPPORTED", "native": ["userPromptSubmitted"], "coverage": "advisory", "clients": ["local"]}, "context_refresh": {"status": "SUPPORTED", "native": ["preCompact"], "coverage": "advisory", "clients": ["local"]}, "subagent_start": {"status": "SUPPORTED", "native": ["subagentStart"], "coverage": "exact", "clients": ["local"]}}}
+      },
+      "project": {
+        "skills": {"status": "SUPPORTED", "path": ".github/skills"},
+        "commands": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: Copilot commands reuse Claude paths and lose provider ownership"},
+        "agents": {"status": "SUPPORTED", "path": ".github/agents"},
+        "rules": {"status": "SUPPORTED", "path": ".github/instructions", "layout": "directory"},
+        "hooks": {"status": "SUPPORTED", "path": ".github/hooks/aihub-governance.json", "events": {"session_start": {"status": "SUPPORTED", "native": ["sessionStart"], "coverage": "exact", "clients": ["local"]}, "prompt_submit": {"status": "SUPPORTED", "native": ["userPromptSubmitted"], "coverage": "advisory", "clients": ["local"]}, "context_refresh": {"status": "SUPPORTED", "native": ["preCompact"], "coverage": "advisory", "clients": ["local"]}, "subagent_start": {"status": "SUPPORTED", "native": ["subagentStart"], "coverage": "exact", "clients": ["local"]}}}
+      }
+    },
+    "gemini": {
+      "personal": {
+        "skills": {"status": "SUPPORTED", "path": "${HOME}/.gemini/skills"},
+        "commands": {"status": "SUPPORTED", "path": "${HOME}/.gemini/commands"},
+        "agents": {"status": "SUPPORTED", "path": "${HOME}/.gemini/agents"},
+        "rules": {"status": "SUPPORTED", "path": "${HOME}/.gemini/GEMINI.md", "layout": "document"},
+        "hooks": {"status": "SUPPORTED", "path": "${HOME}/.gemini/settings.json", "events": {"session_start": {"status": "SUPPORTED", "native": ["SessionStart"], "coverage": "exact", "clients": ["local"]}, "prompt_submit": {"status": "SUPPORTED", "native": ["BeforeAgent"], "coverage": "exact", "clients": ["local"]}, "context_refresh": {"status": "SUPPORTED", "native": ["PreCompress", "BeforeAgent"], "coverage": "equivalent", "clients": ["local"]}, "subagent_start": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: Gemini exposes no documented subagent lifecycle boundary"}}}
+      },
+      "project": {
+        "skills": {"status": "SUPPORTED", "path": ".gemini/skills"},
+        "commands": {"status": "SUPPORTED", "path": ".gemini/commands"},
+        "agents": {"status": "SUPPORTED", "path": ".gemini/agents"},
+        "rules": {"status": "SUPPORTED", "path": "GEMINI.md", "layout": "document"},
+        "hooks": {"status": "SUPPORTED", "path": ".gemini/settings.json", "events": {"session_start": {"status": "SUPPORTED", "native": ["SessionStart"], "coverage": "exact", "clients": ["local"]}, "prompt_submit": {"status": "SUPPORTED", "native": ["BeforeAgent"], "coverage": "exact", "clients": ["local"]}, "context_refresh": {"status": "SUPPORTED", "native": ["PreCompress", "BeforeAgent"], "coverage": "equivalent", "clients": ["local"]}, "subagent_start": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: Gemini exposes no documented subagent lifecycle boundary"}}}
+      }
+    },
+    "opencode": {
+      "personal": {
+        "skills": {"status": "SUPPORTED", "path": "${HOME}/.config/opencode/skills"},
+        "commands": {"status": "SUPPORTED", "path": "${HOME}/.config/opencode/commands"},
+        "agents": {"status": "SUPPORTED", "path": "${HOME}/.config/opencode/agents"},
+        "rules": {"status": "SUPPORTED", "path": "${HOME}/.config/opencode/AGENTS.md", "layout": "document"},
+        "hooks": {"status": "SUPPORTED", "path": "${HOME}/.config/opencode/plugins/aihub-governance.ts", "events": {"session_start": {"status": "SUPPORTED", "native": ["experimental.chat.system.transform"], "coverage": "equivalent", "clients": ["local"]}, "prompt_submit": {"status": "SUPPORTED", "native": ["experimental.chat.system.transform"], "coverage": "equivalent", "clients": ["local"]}, "context_refresh": {"status": "SUPPORTED", "native": ["experimental.session.compacting", "experimental.chat.system.transform"], "coverage": "exact", "clients": ["local"]}, "subagent_start": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: OpenCode exposes no documented subagent lifecycle boundary"}}}
+      },
+      "project": {
+        "skills": {"status": "SUPPORTED", "path": ".opencode/skills"},
+        "commands": {"status": "SUPPORTED", "path": ".opencode/commands"},
+        "agents": {"status": "SUPPORTED", "path": ".opencode/agents"},
+        "rules": {"status": "SUPPORTED", "path": "AGENTS.md", "layout": "document"},
+        "hooks": {"status": "SUPPORTED", "path": ".opencode/plugins/aihub-governance.ts", "events": {"session_start": {"status": "SUPPORTED", "native": ["experimental.chat.system.transform"], "coverage": "equivalent", "clients": ["local"]}, "prompt_submit": {"status": "SUPPORTED", "native": ["experimental.chat.system.transform"], "coverage": "equivalent", "clients": ["local"]}, "context_refresh": {"status": "SUPPORTED", "native": ["experimental.session.compacting", "experimental.chat.system.transform"], "coverage": "exact", "clients": ["local"]}, "subagent_start": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: OpenCode exposes no documented subagent lifecycle boundary"}}}
+      }
+    },
+    "antigravity": {
+      "personal": {
+        "skills": {"status": "SUPPORTED", "path": "${HOME}/.gemini/antigravity-cli/skills"},
+        "commands": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: Antigravity has no documented custom-command file contract"},
+        "agents": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: Antigravity agent MCP tool identity is not documented for the complete catalog"},
+        "rules": {"status": "SUPPORTED", "path": "${HOME}/.gemini/GEMINI.md", "layout": "document"},
+        "hooks": {"status": "SUPPORTED", "path": "${HOME}/.gemini/antigravity-cli/plugins/aihub-governance/hooks.json", "events": {"session_start": {"status": "SUPPORTED", "native": ["PreInvocation"], "coverage": "equivalent", "clients": ["local"]}, "prompt_submit": {"status": "SUPPORTED", "native": ["PreInvocation"], "coverage": "equivalent", "clients": ["local"]}, "context_refresh": {"status": "SUPPORTED", "native": ["PreInvocation"], "coverage": "equivalent", "clients": ["local"]}, "subagent_start": {"status": "SUPPORTED", "native": ["PreInvocation"], "coverage": "equivalent", "clients": ["local"]}}}
+      },
+      "project": {
+        "skills": {"status": "SUPPORTED", "path": ".agents/skills"},
+        "commands": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: Antigravity has no documented custom-command file contract"},
+        "agents": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: Antigravity agent MCP tool identity is not documented for the complete catalog"},
+        "rules": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: Antigravity documents activation choices but no file metadata schema for preserving path-scoped semantics"},
+        "hooks": {"status": "SUPPORTED", "path": ".agents/hooks.json", "events": {"session_start": {"status": "SUPPORTED", "native": ["PreInvocation"], "coverage": "equivalent", "clients": ["local"]}, "prompt_submit": {"status": "SUPPORTED", "native": ["PreInvocation"], "coverage": "equivalent", "clients": ["local"]}, "context_refresh": {"status": "SUPPORTED", "native": ["PreInvocation"], "coverage": "equivalent", "clients": ["local"]}, "subagent_start": {"status": "SUPPORTED", "native": ["PreInvocation"], "coverage": "equivalent", "clients": ["local"]}}}
+      }
+    }
   }
 }

@@ -1,15 +1,15 @@
-id: basic-usage-001
-name: Basic Usage
-description: 'Test that the skill handles a typical request correctly.
-
-  '
-tags:
-- basic
-- happy-path
+id: content-engine-happy-001
+name: Repurpose a deployment demo by platform
+description: Produce a source-backed campaign through one content system with channel adaptation.
+tags: [content, content-systems, campaign-production, channel-adaptation, social, distribution, repurposing, linkedin, newsletters, happy-path]
 inputs:
-  prompt: 'Apply the content-engine capability to the provided fixture. Exercise these requirements: content, engine, create, platform-native, systems, linkedin, tiktok, youtube, newsletters, repurposed. Return a concrete result.'
+  prompt: >-
+    Use deploy-demo-transcript.md as the only source for campaign production.
+    Build one reusable content system, then perform channel adaptation into one X
+    post, one LinkedIn post, and a 30-second video script for platform engineers.
+    Give each output one concrete claim, surface visible proof early, and do not
+    invent adoption, reliability, speed, or cost results.
   files:
-  - path: sample.py
+  - path: deploy-demo-transcript.md
 expected:
-  outcomes:
-  - type: task_completed
+  output_contains: [eight commands, two commands, 'sha256:b44', 8f2c11a]

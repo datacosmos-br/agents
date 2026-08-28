@@ -1,12 +1,15 @@
-id: edge-case-001
-name: Edge Case - Ambiguous Input
-description: 'Test that the skill handles incomplete or ambiguous input fail-closed.
-
-  '
+id: crosspost-fail-closed-001
+name: Missing source and destinations
+description: Request the minimum publishing contract instead of fabricating copy.
 tags:
 - edge-case
 inputs:
-  prompt: 'Handle an incomplete or ambiguous crosspost request safely. Relevant capability: crosspost, multi-platform, content, distribution, across, linkedin, threads, bluesky, adapts, per. State any blocking constraint explicitly.'
+  prompt: Crosspost this everywhere, but no source text or destination platforms were provided.
 expected:
-  outcomes:
-  - type: task_completed
+  output_contains:
+  - source content is required
+  - destination platforms are required
+  - no drafts created
+  output_not_contains:
+  - Excited to share
+  - link in bio

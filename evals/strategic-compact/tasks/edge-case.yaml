@@ -1,12 +1,9 @@
-id: edge-case-001
-name: Edge Case - Ambiguous Input
-description: 'Test that the skill handles incomplete or ambiguous input fail-closed.
-
-  '
-tags:
-- edge-case
+id: strategic-compact-inflight-001
+name: Refuse compaction during an in-flight edit
+description: Protect unresolved implementation context from premature compaction.
+tags: [context, fail-closed]
 inputs:
-  prompt: 'Handle an incomplete or ambiguous strategic-compact request safely. Relevant capability: strategic, compact, suggests, manual, context, compaction, logical, intervals, preserve, through. State any blocking constraint explicitly.'
+  prompt: Compact now while a conflict resolution is half-written, the affected callers have not been inventoried, and the current command is still running.
 expected:
-  outcomes:
-  - type: task_completed
+  output_contains: [do not compact, in flight, zero effects]
+  output_not_contains: [safe boundary reached, discard current context, fallback, partial packet]

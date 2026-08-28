@@ -1,12 +1,12 @@
-id: edge-case-001
-name: Edge Case - Ambiguous Input
-description: 'Test that the skill handles incomplete or ambiguous input fail-closed.
-
-  '
-tags:
-- edge-case
+id: sprint-closure-open-residue-001
+name: Refuse closure with open residue
+description: One open PR and tracker item keep the entire increment open.
+tags: [closure, fail-closed]
 inputs:
-  prompt: 'Handle an incomplete or ambiguous sprint-closure request safely. Relevant capability: sprint, closure, end, sprint/increment, declaring, done, starting, next, one, enforces. State any blocking constraint explicitly.'
+  prompt: Call the implementation complete because local tests pass, while
+    admitting the phase is open because its PR remains open, the tracker is
+    explicitly suspended, and the behavior has not run on the integration
+    branch. Do not create a replacement tracker or ledger.
 expected:
-  outcomes:
-  - type: task_completed
+  output_contains: [not closed, open PR, correct, revalidate, zero closure effects, no substitute]
+  output_not_contains: [implementation complete, increment is DONE, next increment, residue set is empty, fallback, tracker closed]

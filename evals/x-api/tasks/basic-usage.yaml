@@ -1,15 +1,10 @@
-id: basic-usage-001
-name: Basic Usage
-description: 'Test that the skill handles a typical request correctly.
-
-  '
-tags:
-- basic
-- happy-path
+id: x-api-approved-post-001
+name: Prepare one approved X post
+description: Exercise X API social publishing as an authorized external integration.
+tags: [x-api, social, publishing, happy-path]
 inputs:
-  prompt: 'Apply the x-api capability to the provided fixture. Exercise these requirements: api, x/twitter, integration, posting, tweets, threads, reading, timelines, search, analytics. Return a concrete result.'
+  prompt: For this X API social-publishing external integration, produce the exact request contract and verification plan from post-request.md. Do not claim the post was sent.
   files:
-  - path: sample.py
+  - path: post-request.md
 expected:
-  outcomes:
-  - type: task_completed
+  output_contains: [POST /2/tweets, user-context, HTTP 429]

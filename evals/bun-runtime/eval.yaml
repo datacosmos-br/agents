@@ -1,5 +1,5 @@
 name: bun-runtime-eval
-description: Evaluation suite for bun-runtime.
+description: Bun-owned install, run, test, and build decisions.
 skill: bun-runtime
 schemaVersion: '1.0'
 version: '1.0'
@@ -7,30 +7,27 @@ config:
   trials_per_task: 1
   timeout_seconds: 300
   parallel: false
+  max_attempts: 0
+  fail_fast: true
   executor: copilot-sdk
-  model: gpt-5.4
+  model: aihub-primary
   skill_directories:
-  - ../../skills/bun-runtime
+  - ../../skills/technology/bun-runtime
   required_skills:
   - bun-runtime
-metrics:
-- name: task_completion
-  weight: 1.0
-  threshold: 0.8
-  description: Did the skill complete the assigned task?
 graders:
 - type: prompt
-  name: material_task_result
+  name: bun-runtime-contract
   config:
-    prompt: |
-      Evaluate whether the response materially satisfies the concrete user request,
-      uses the named skill requirements, and provides the requested artifact or
-      explicit fail-closed constraint. Reject generic, unrelated, self-declared,
-      or merely non-empty answers. Call set_waza_grade_pass only when every
-      criterion is evidenced; otherwise call set_waza_grade_fail.
+    prompt: |-
+      Grade the bun-runtime response. Pass only when it derives the runtime, package manager, lockfile, scripts,
+      and reproducible commands from the supplied Bun project fixtures and does
+      not introduce Node/npm as a parallel path. Reject generic migration advice
+      or commands that ignore the declared package owner. Require complete
+      preflight, the material build output, raw first-command failure, zero
+      effects on invalid evidence, and no retry/fallback or residue.
 - type: behavior
   name: bounded_execution
-  config:
-    max_duration_ms: 240000
+  config: {max_duration_ms: 240000}
 tasks:
 - tasks/*.yaml

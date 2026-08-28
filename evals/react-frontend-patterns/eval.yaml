@@ -1,0 +1,41 @@
+name: react-frontend-patterns-eval
+description: Semantic evaluation suite for react-frontend-patterns.
+skill: react-frontend-patterns
+schemaVersion: '1.0'
+version: '1.0'
+config:
+  trials_per_task: 1
+  timeout_seconds: 300
+  parallel: false
+  max_attempts: 0
+  fail_fast: true
+  executor: copilot-sdk
+  model: aihub-primary
+  skill_directories:
+  - ../../skills/framework/react-frontend-patterns
+  required_skills:
+  - react-frontend-patterns
+metrics:
+- name: task_completion
+  weight: 1.0
+  threshold: 0.8
+  description: Did the React refactor produce stable state, effect ownership, privacy, and accessibility?
+graders:
+- type: prompt
+  name: react-frontend-patterns-contract
+  config:
+    prompt: |-
+      Grade the react-frontend-patterns response. Pass only if it fixes the supplied
+      React component's unstable request dependency with one query-keyed effect
+      and AbortController cleanup; renders loading, empty, results, and the
+      supplied typed rejected outcome; lets thrown search failures remain raw;
+      adds accessible live/alert semantics; removes query logging; and defines
+      material tests without new dependencies. Reject local catch normalization,
+      retry/fallback, speculative memoization, partial rewiring, or missing
+      zero-effect/unmount/residue proof.
+- type: behavior
+  name: bounded_execution
+  config:
+    max_duration_ms: 240000
+tasks:
+- tasks/*.yaml

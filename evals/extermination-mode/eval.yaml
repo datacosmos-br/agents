@@ -1,0 +1,38 @@
+name: extermination-mode-eval
+description: Approved contract removal, useful-test rewiring, and residue proof.
+skill: extermination-mode
+schemaVersion: '1.0'
+version: '1.0'
+config:
+  trials_per_task: 1
+  timeout_seconds: 300
+  parallel: false
+  max_attempts: 0
+  fail_fast: true
+  executor: copilot-sdk
+  model: aihub-primary
+  skill_directories:
+  - ../../skills/project-wide/extermination-mode
+  required_skills:
+  - extermination-mode
+graders:
+- type: prompt
+  name: extermination-mode-contract
+  config:
+    prompt: |-
+      Grade the extermination-mode response. Pass only when an explicitly
+      approved superseded contract is removed atomically: every producer and
+      consumer is rewired to the named final owner first, old-only tests and
+      artifacts are deleted, still-useful behavioral tests are rewritten,
+      managed output is regenerated through its owner, unrelated concurrent work
+      is preserved, and semantic residue plus focused and full gates are proved.
+      Missing approval, contract identity, consumer inventory, or ownership must
+      block deletion with zero effects. Reject compatibility aliases, dual
+      readers, retries, fallbacks, partial cutovers, broad deletion, hand-edited
+      generated files, changed concurrent work, or weakened gates. The first
+      subprocess or gate failure remains causal.
+- type: behavior
+  name: bounded_execution
+  config: {max_duration_ms: 240000}
+tasks:
+- tasks/*.yaml

@@ -1,15 +1,13 @@
-id: should-not-trigger-001
-name: Should Not Trigger
-description: 'Test that the skill does NOT activate on unrelated prompts.
-
-  This validates trigger specificity.
-
-  '
+id: gascity-change-lifecycle-should-not-trigger-001
+name: Draft a PR description for an existing branch
+description: Copywriting for an already-open PR does not require orchestration dispatch.
 tags:
 - anti-trigger
 - negative-test
 inputs:
-  prompt: What is the weather today?
+  prompt: Draft a concise pull-request description from the supplied diff summary; no dispatch or workspace change is requested.
 expected:
   output_not_contains:
-  - skill activated
+  - gc sling
+  - formula
+  - Gas City run

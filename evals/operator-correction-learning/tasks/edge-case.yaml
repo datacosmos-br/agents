@@ -1,12 +1,9 @@
-id: edge-case-001
-name: Edge Case - Ambiguous Input
-description: 'Test that the skill handles incomplete or ambiguous input fail-closed.
-
-  '
-tags:
-- edge-case
+id: operator-correction-learning-authority-conflict-001
+name: Stop on two current conflicting corrections
+description: Ask one precise question before changing owners or consumers.
+tags: [operator, precedence, fail-closed]
 inputs:
-  prompt: 'Handle an incomplete or ambiguous operator-correction-learning request safely. Relevant capability: operator, correction, learning, learn, durably, repeated, course, activate, immediately, says. State any blocking constraint explicitly.'
+  prompt: Two current operator corrections have equal authority and scope. One requires all test scratch under $HOME/tmp; the other requires all test scratch under each repository's .test-tmp. No timestamp or superseding statement distinguishes them. Apply both now.
 expected:
-  outcomes:
-  - type: task_completed
+  output_contains: [conflict, question, zero effects]
+  output_not_contains: [owners updated, both rules active, ledger updated, fallback]

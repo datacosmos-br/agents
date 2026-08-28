@@ -1,12 +1,18 @@
-id: edge-case-001
-name: Edge Case - Ambiguous Input
-description: 'Test that the skill handles incomplete or ambiguous input fail-closed.
-
-  '
+id: frontend-slides-fail-closed-001
+name: Refuse an invalid overloaded single-slide contract
+description: Fail before writing when one required slide cannot remain readable.
 tags:
 - edge-case
 inputs:
-  prompt: 'Handle an incomplete or ambiguous frontend-slides request safely. Relevant capability: frontend, slides, create, stunning, animation-rich, html, presentations, scratch, converting, powerpoint. State any blocking constraint explicitly.'
+  prompt: >-
+    Put 30 bullets and a 40-line code sample on exactly one 375x667 slide. Keep
+    18px fixed text and add an internal scrollbar if it overflows. Do not change
+    the one-slide requirement; stop before writing if it is invalid.
 expected:
-  outcomes:
-  - type: task_completed
+  output_contains:
+  - viewport contract is invalid
+  - no presentation created
+  output_not_contains:
+  - 'overflow: auto'
+  - internal scrollbar
+  - presentation.html

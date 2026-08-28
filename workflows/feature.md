@@ -1,103 +1,40 @@
-# Workflow: New Feature
+# Workflow: feature
 
 ## Goal
-Implement a new feature with planning, incremental delivery, and full validation.
 
-## Prerequisites
-- [ ] Feature is scoped (not a vague idea)
-- [ ] You are on a feature branch
-- [ ] Project detected (see WORKFLOWS.md)
+Deliver one complete capability through its canonical owner, all consumers,
+runtime proof, native gates, review, and integration.
 
-## Steps
+## Procedure
 
-### 1. Planning (Mandatory)
-```bash
-# Check existing architecture / patterns
-cat AGENTS.md  # Project-specific rules
-cat CLAUDE.md  # If exists
+1. Read repository law, architecture, relevant decisions/docs, owners,
+   consumers, Git state, and concurrent WIP.
+2. Confirm the requested public contract and exclusions. A new unapproved
+   interface or materially different scope stops for one precise operator
+   decision.
+3. Discover the repository's canonical commands through `make help` or its
+   declared equivalent.
+4. Observe the nearest existing runtime behavior and reuse the owning facade or
+   primitive.
+5. Define observable acceptance scenarios, including failure and
+   should-not-trigger behavior where applicable.
+6. Implement the smallest complete vertical slice. Parse external input once
+   into typed boundaries; update all consumers and delete superseded paths.
+7. Run the actual feature through its public runtime before adapting tests.
+8. Run affected native lint, format, type, test, build, security,
+   documentation, and generation/fixed-point gates.
+9. Repeat short slices until the approved capability is complete; never start a
+   later slice over a red earlier slice.
+10. Follow the landing contract in [WORKFLOWS.md](WORKFLOWS.md).
 
-# Check beads for related work
-bd list --all | rg -i "feature_name"
+## Fail-closed rules
 
-# Create plan bead (if using beads)
-bd create "Feature: <name>" --type task --json
-```
-
-### 2. Spike / Explore (Optional)
-```bash
-# Read relevant code paths
-# Use active structural tools: ast-grep, scope, or repository-native search
-# Write a quick prototype to validate approach
-# Discard prototype after learning
-```
-
-### 3. Implement Incrementally
-- Start with interface / API definition
-- Implement core logic
-- Add tests alongside code (TDD preferred)
-- Run validation after every significant edit:
-
-```bash
-# ── FLEXT ──
-make check WHAT=fmt,types,lint && make test
-
-# ── MCB ──
-make check WHAT=fmt,lint,validate && make test
-
-# ── cosmos-main ──
-make check WHAT=quick,validate,scripts
-```
-
-### 4. Cross-Project Validation (FLEXT only)
-```bash
-# If the change affects multiple subprojects
-make check WHAT=workspace
-make test
-```
-
-### 5. Documentation
-```bash
-# Update docs if user-facing behavior changed
-# FLEXT: update docstrings + README
-# MCB: update rustdoc + mdBook
-# cosmos-main: update ADR if architectural
-
-make docs WHAT=validate
-```
-
-### 6. Final Validation
-```bash
-# ── FLEXT ──
-make check WHAT=all && make test && make val
-
-# ── MCB ──
-make check WHAT=all && make test
-
-# ── cosmos-main ──
-make check WHAT=deep
-```
-
-### 7. Session End
-```bash
-git diff --stat
-# If user authorizes:
-git add -u
-git commit -m "feat(scope): description
-
-Implementation: <brief summary>
-Validation: make check && make test && make val (all pass)"
-```
-
-## Decision Tree
-
-```
-Is the feature well-scoped?
-├── NO  → Ask user to clarify: what exactly should change? What is out of scope?
-│
-└── YES → Does it touch multiple projects?
-          ├── YES → Create beads for each, implement in dependency order
-          │
-          └── NO  → Does it need ADR / design doc?
-                    ├── YES → Write ADR first, get user approval
-                    └── NO  → Implement incrementally with validation gates
-```
+- No prototype, stub, TODO, compatibility layer, fallback, alternate model,
+  suppression, or deferred cleanup may land.
+- A missing tool, warning, skipped gate, auth/quota failure, or review thread is
+  red.
+- Do not mutate another repository or project projection unless it is explicitly
+  in scope and independently authorized.
+- While tracker runtime is suspended, create no substitute tracker or ledger,
+  preserve evidence only in separately authorized Git/PR/CI, and leave phase
+  closure open.

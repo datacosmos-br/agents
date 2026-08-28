@@ -1,0 +1,16 @@
+---
+name: verification-loop
+description: 'completion evidence, runtime verification, native gates'
+license: MIT
+metadata:
+  aihub.tags: '["policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","policy:zero-residue","provenance:agents-owned","role:verification","updates:manual","usage:router"]'
+  version: 1.0.0
+---
+
+# Verification Loop
+
+Activate after behavior changes and before any pass, resolution, readiness, or
+completion claim. Read the [complete procedure](references/procedure.md), prove
+the smallest real runtime first, and then run the repository-owned gates for the
+affected scope. Later edits invalidate earlier evidence where their scopes
+overlap.

@@ -1,5 +1,5 @@
 name: gascity-change-lifecycle-eval
-description: Evaluation suite for gascity-change-lifecycle.
+description: Semantic evaluation suite for gascity-change-lifecycle.
 skill: gascity-change-lifecycle
 schemaVersion: '1.0'
 version: '1.0'
@@ -7,27 +7,30 @@ config:
   trials_per_task: 1
   timeout_seconds: 300
   parallel: false
+  max_attempts: 0
+  fail_fast: true
   executor: copilot-sdk
-  model: gpt-5.4
+  model: aihub-primary
   skill_directories:
-  - ../../skills/gascity-change-lifecycle
+  - ../../skills/tool/gascity-change-lifecycle
   required_skills:
   - gascity-change-lifecycle
 metrics:
 - name: task_completion
   weight: 1.0
   threshold: 0.8
-  description: Did the skill complete the assigned task?
+  description: Did the lifecycle separate orchestration dispatch from repository landing?
 graders:
 - type: prompt
-  name: material_task_result
+  name: gascity-change-lifecycle-contract
   config:
-    prompt: |
-      Evaluate whether the response materially satisfies the concrete user request,
-      uses the named skill requirements, and provides the requested artifact or
-      explicit fail-closed constraint. Reject generic, unrelated, self-declared,
-      or merely non-empty answers. Call set_waza_grade_pass only when every
-      criterion is evidenced; otherwise call set_waza_grade_fail.
+    prompt: |-
+      Grade the gascity-change-lifecycle response. Pass only if it resolves the
+      supplied city, rig, agent, formula, work, and integration identities;
+      assigns orchestration and repository landing to their declared owners;
+      applies Beads semantics only when explicitly selected;
+      rejects copied or invented commands; and produces a material static
+      lifecycle assessment with zero runtime effects while suspended.
 - type: behavior
   name: bounded_execution
   config:

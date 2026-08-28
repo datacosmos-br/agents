@@ -1,15 +1,13 @@
-id: basic-usage-001
-name: Basic Usage
-description: 'Test that the skill handles a typical request correctly.
-
-  '
-tags:
-- basic
-- happy-path
+id: video-editing-demo-001
+name: Build one deterministic finished demo cut
+description: Exercise video editing through footage assembly into one finished cut.
+tags: [video-editing, footage-assembly, finished-cuts, happy-path]
 inputs:
-  prompt: 'Apply the video-editing capability to the provided fixture. Exercise these requirements: video, editing, ai-assisted, workflows, cutting, structuring, augmenting, real, footage, covers. Return a concrete result.'
+  prompt: >-
+    Apply video editing to edit-decision-list.md: define deterministic
+    footage assembly for the two selected segments and one finished cut, including
+    exact output verification and atomic publication. Do not add creative assets.
   files:
-  - path: sample.py
+  - path: edit-decision-list.md
 expected:
-  outcomes:
-  - type: task_completed
+  output_contains: [00:00:12, 00:03:10, -16 LUFS, 81 seconds, atomic, deliver/demo.mp4]

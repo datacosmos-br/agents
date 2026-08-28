@@ -1,15 +1,23 @@
-id: basic-usage-001
-name: Basic Usage
-description: 'Test that the skill handles a typical request correctly.
-
-  '
-tags:
-- basic
-- happy-path
+id: frontend-slides-happy-path-001
+name: Build a viewport-safe engineering deck
+description: Turn a bounded outline into animated slides with visual storytelling.
+tags: [slides, html-presentations, animated-slides, visual-storytelling, design, happy-path]
 inputs:
-  prompt: 'Apply the frontend-slides capability to the provided fixture. Exercise these requirements: frontend, slides, create, stunning, animation-rich, html, presentations, scratch, converting, powerpoint. Return a concrete result.'
+  prompt: |
+    Use visual storytelling to create animated slides in one self-contained HTML
+    presentation, not by converting PowerPoint. Build the deck described by the
+    supplied outline using the selected Terminal Green preset. Include semantic slides,
+    the mandatory viewport-safe CSS, keyboard/wheel/touch navigation, progress,
+    Intersection Observer reveals, reduced-motion behavior, and the specified
+    desktop/tablet/mobile validation report.
   files:
-  - path: sample.py
+  - path: deck-outline.md
 expected:
   outcomes:
   - type: task_completed
+  output_contains:
+  - 'height: 100dvh'
+  - 'overflow: hidden'
+  - IntersectionObserver
+  - prefers-reduced-motion
+  - Terminal Green

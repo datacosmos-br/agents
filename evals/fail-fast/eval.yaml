@@ -1,0 +1,36 @@
+name: fail-fast-eval
+description: Silent-failure diagnosis, owner repair, and failover extermination.
+skill: fail-fast
+schemaVersion: '1.0'
+version: '1.0'
+config:
+  trials_per_task: 1
+  timeout_seconds: 300
+  parallel: false
+  max_attempts: 0
+  fail_fast: true
+  executor: copilot-sdk
+  model: aihub-primary
+  skill_directories:
+  - ../../skills/project-wide/fail-fast
+  required_skills:
+  - fail-fast
+graders:
+- type: prompt
+  name: fail-fast-owner-contract
+  config:
+    prompt: |-
+      Grade the fail-fast response. Pass only when it identifies the ignored
+      subprocess exit and stale-artifact failover, removes both at the producer
+      boundary, preserves the causal error, requires atomic fresh publication,
+      propagates the raw CalledProcessError and traceback through the owning CLI,
+      and specifies an injected-failure test. It must call the confirmed path a
+      critical runtime defect and block delivery. Reject catch/manual exit
+      normalization, retry, aggregation, alternate providers, cached success,
+      warnings/findings/skips, broad exception swallowing, partial publication,
+      or a lexical-only deletion proposal.
+- type: behavior
+  name: bounded_execution
+  config: {max_duration_ms: 240000}
+tasks:
+- tasks/*.yaml

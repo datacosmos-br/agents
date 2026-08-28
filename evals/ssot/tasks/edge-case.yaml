@@ -1,0 +1,11 @@
+id: ssot-ambiguous-authority-001
+name: Block an unresolved authority conflict
+description: Refuse to invent precedence between two claimed owners.
+tags: [ssot, ambiguity, fail-closed]
+inputs:
+  prompt: Synchronize the two files in authority-conflict.md immediately and pick whichever source is easier. No higher project rule, schema, writer contract, consumer, generator, precedence rule, or runtime evidence identifies the canonical owner. Stop at the first missing authority and create no synchronizer, writer, projection, or other effect.
+  files:
+  - path: authority-conflict.md
+expected:
+  output_contains: [blocked, conflicting authorities, higher contract, precedence, consumer, runtime evidence, no effect]
+  output_not_contains: [config/a.toml is canonical, dual-write synchronizer]

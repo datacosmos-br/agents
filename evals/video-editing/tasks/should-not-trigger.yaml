@@ -1,15 +1,8 @@
-id: should-not-trigger-001
-name: Should Not Trigger
-description: 'Test that the skill does NOT activate on unrelated prompts.
-
-  This validates trigger specificity.
-
-  '
-tags:
-- anti-trigger
-- negative-test
+id: video-editing-negative-001
+name: Generate an imaginary scene
+description: Editing real footage should not activate for prompt-only generation.
+tags: [anti-trigger]
 inputs:
-  prompt: What is the weather today?
+  prompt: Generate a new animated video of a dragon flying through a crystal city; no source footage exists.
 expected:
-  output_not_contains:
-  - skill activated
+  output_not_contains: [cut the source footage, FFmpeg concat, edit decision list, fallback edit]

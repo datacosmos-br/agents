@@ -1,15 +1,10 @@
-id: basic-usage-001
-name: Basic Usage
-description: 'Test that the skill handles a typical request correctly.
-
-  '
-tags:
-- basic
-- happy-path
+id: technical-writing-release-001
+name: Rewrite an evidence-backed release note
+description: Exercise technical writing with evidence-based documentation clarity.
+tags: [technical-writing, clarity, evidence, happy-path]
 inputs:
-  prompt: 'Apply the technical-writing-style capability to the provided fixture. Exercise these requirements: technical, writing, style, enforce, clear, direct, software, development, documents, including. Return a concrete result.'
+  prompt: Rewrite release-note.md as a material two-sentence technical release artifact for engineers. Preserve every measured fact and limitation, and remove duplicated or unsupported prose.
   files:
-  - path: sample.py
+  - path: release-note.md
 expected:
-  outcomes:
-  - type: task_completed
+  output_contains: [8 minutes 20 seconds, 5 minutes 10 seconds, '240']

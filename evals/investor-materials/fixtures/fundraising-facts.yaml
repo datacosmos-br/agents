@@ -1,0 +1,16 @@
+company: LedgerFox
+wedge: Reconciles carrier invoices before payment
+traction:
+  annual_recurring_revenue_usd: 1200000
+  customers: 84
+  quarterly_growth_percent: 18
+raise:
+  amount_usd: 3000000
+  instrument: SAFE
+use_of_funds:
+  product_usd: 1500000
+  sales_usd: 900000
+  compliance_usd: 600000
+milestones:
+  - Launch automated dispute evidence
+  - Reach 150 customers

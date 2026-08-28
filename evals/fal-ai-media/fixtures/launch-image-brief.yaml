@@ -1,0 +1,44 @@
+purpose: product launch hero
+model_quality: production
+prompt: >-
+  Editorial product photograph of a matte-black portable synthesizer on a
+  brushed aluminum desk, warm side light, restrained shadows, no text or logos.
+image_size: landscape_16_9
+num_images: 1
+seed: 1842
+guidance_scale: 7.5
+cost_estimate_required: true
+owner_snapshot:
+  mcp_available: true
+  credential_source: current_process_environment
+  credential_valid: true
+  spending_approval_usd: 2.00
+  operations:
+    estimate: estimate_cost
+    submit: generate
+    observe: result
+  models:
+    image:
+      id: fal-ai/nano-banana-pro
+      supported_parameters: [prompt, image_size, num_images, seed, guidance_scale]
+    image_to_video:
+      id: fal-ai/seedance-1-0-pro
+      supported_parameters: [prompt, duration, aspect_ratio, seed, image_url]
+video_continuation:
+  prompt: Slow camera push toward the synthesizer while the warm light shifts.
+  duration: 5s
+  aspect_ratio: '16:9'
+  seed: 1842
+  image_url: use-the-generated-image-artifact
+observed_execution:
+  cost_estimate_usd: 1.25
+  image:
+    job_id: image-job-1842
+    status: completed
+    artifact_url: https://media.example.invalid/launch-1842.png
+    sha256: a2770317614085987db44eeaa57513f8afb7bb2ea3097241bb105f668d68e6bc
+  video:
+    job_id: video-job-1842
+    status: completed
+    artifact_url: https://media.example.invalid/launch-1842.mp4
+    sha256: c81e728d9d4c2f636f067f89cc14862c246dc95d914201b2c2b35d4b0b14fddc

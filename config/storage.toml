@@ -1,8 +1,4 @@
-version = 1
-repositories = []
+version = 3
 
-[policy]
-global_temp = "${HOME}/.local/tmp"
-global_temp_max_bytes = 5368709120
-report_max_bytes = 104857600
-orphan_age_days = 7
+[[repositories]]
+path = "${CONFIG_DIR}/.."

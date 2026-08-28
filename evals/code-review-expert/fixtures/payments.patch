@@ -1,0 +1,18 @@
+diff --git a/src/payments.ts b/src/payments.ts
+index 4dd2f00..93ad120 100644
+--- a/src/payments.ts
++++ b/src/payments.ts
+@@ -18,6 +18,16 @@ export async function findPayment(req: Request, res: Response) {
++  const account = await db.accounts.findUnique({
++    where: { id: req.params.accountId },
++  });
++  try {
++    const rows = await db.query(
++      `SELECT * FROM payments WHERE reference = '${req.query.reference}'`,
++    );
++    return res.status(200).json({ account, rows });
++  } catch (error) {
++    console.log(error);
++    return res.status(200).json({ rows: [] });
++  }
+ }

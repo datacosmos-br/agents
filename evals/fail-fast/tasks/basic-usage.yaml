@@ -1,0 +1,11 @@
+id: fail-fast-stale-publish-001
+name: Remove silent publisher success
+description: Exercise silent-failure and failover removal with raw error propagation.
+tags: [fail-fast, subprocess, artifact, happy-path]
+inputs:
+  prompt: Audit publisher.py for silent failure, swallowed exceptions, and cached-artifact failover. Explain the grave runtime consequences, remove PublishError/catch/manual-exit normalization, preserve the raw CalledProcessError and traceback through the CLI, and define atomic owner remediation plus injected first-failure, zero-effect, child-cleanup, and residue proof.
+  files:
+  - path: publisher.py
+expected:
+  output_contains: [critical, runtime, CalledProcessError, traceback, atomic, blocked, zero effects]
+  output_not_contains: [cached success, alternate provider]

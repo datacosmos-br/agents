@@ -1,15 +1,13 @@
-id: basic-usage-001
-name: Basic Usage
-description: 'Test that the skill handles a typical request correctly.
-
-  '
-tags:
-- basic
-- happy-path
+id: investor-materials-one-pager-001
+name: Draft one consistent fundraising narrative packet
+description: Reuse one capital narrative across an investor memo and fundraising deck.
+tags: [investor, fundraising-decks, investor-memos, capital-narratives, fundraising, metrics, happy-path]
 inputs:
-  prompt: 'Apply the investor-materials capability to the provided fixture. Exercise these requirements: investor, materials, create, update, pitch, decks, one-pagers, memos, accelerator, applications. Return a concrete result.'
+  prompt: Use fundraising-facts.yaml to create one capital narrative, a concise
+    investor memo, a fundraising deck outline, and their consistency checklist.
+    Cover wedge, traction, raise instrument, use of funds, and milestones; show
+    the spending sum and add no unsupported claims.
   files:
-  - path: sample.py
+  - path: fundraising-facts.yaml
 expected:
-  outcomes:
-  - type: task_completed
+  output_contains: [Capital narrative, Investor memo, Fundraising deck, $3M, SAFE, '84 customers', '$1.5M']

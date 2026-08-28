@@ -1,15 +1,8 @@
-id: should-not-trigger-001
-name: Should Not Trigger
-description: 'Test that the skill does NOT activate on unrelated prompts.
-
-  This validates trigger specificity.
-
-  '
-tags:
-- anti-trigger
-- negative-test
+id: openspec-verify-change-ordinary-review-negative-001
+name: Review a repository without OpenSpec
+description: Do not impose OpenSpec verification on an ordinary patch review.
+tags: [code-review, no-marker, anti-trigger]
 inputs:
-  prompt: What is the weather today?
+  prompt: Review a two-line typo fix in README.md. The repository has no OpenSpec marker, CLI, change artifacts, requirements, or scenarios.
 expected:
-  output_not_contains:
-  - skill activated
+  output_not_contains: [openspec, change status, requirement scenario]

@@ -1,12 +1,9 @@
-id: edge-case-001
-name: Edge Case - Ambiguous Input
-description: 'Test that the skill handles incomplete or ambiguous input fail-closed.
-
-  '
-tags:
-- edge-case
+id: mle-workflow-deployment-evidence-missing-001
+name: Block training on a future feature
+description: Stop at the first point-in-time violation before any training or deployment effect.
+tags: [mle, deployment, fail-closed]
 inputs:
-  prompt: 'Handle an incomplete or ambiguous mle-workflow request safely. Relevant capability: mle, production, machine-learning, engineering, data, contracts, reproducible, training, model, evaluation. State any blocking constraint explicitly.'
+  prompt: Start training and deploy a churn model whose input includes `outcome_30d`, even though that field becomes available only 30 days after the prediction time.
 expected:
-  outcomes:
-  - type: task_completed
+  output_contains: [outcome_30d, unavailable at prediction time, no training or deployment effects]
+  output_not_contains: [deployment approved, production rollout complete]

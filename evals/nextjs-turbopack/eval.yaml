@@ -1,5 +1,5 @@
 name: nextjs-turbopack-eval
-description: Evaluation suite for nextjs-turbopack.
+description: Version-specific Next.js bundler and cache diagnosis.
 skill: nextjs-turbopack
 schemaVersion: '1.0'
 version: '1.0'
@@ -7,27 +7,27 @@ config:
   trials_per_task: 1
   timeout_seconds: 300
   parallel: false
+  max_attempts: 0
+  fail_fast: true
   executor: copilot-sdk
-  model: gpt-5.4
+  model: aihub-primary
   skill_directories:
-  - ../../skills/nextjs-turbopack
+  - ../../skills/framework/nextjs-turbopack
   required_skills:
   - nextjs-turbopack
-metrics:
-- name: task_completion
-  weight: 1.0
-  threshold: 0.8
-  description: Did the skill complete the assigned task?
 graders:
 - type: prompt
-  name: material_task_result
+  name: nextjs-turbopack-contract
   config:
-    prompt: |
-      Evaluate whether the response materially satisfies the concrete user request,
-      uses the named skill requirements, and provides the requested artifact or
-      explicit fail-closed constraint. Reject generic, unrelated, self-declared,
-      or merely non-empty answers. Call set_waza_grade_pass only when every
-      criterion is evidenced; otherwise call set_waza_grade_fail.
+    prompt: |-
+      Grade the nextjs-turbopack response. Pass only when it uses the supplied
+      Next.js version and scripts, identifies the explicit webpack opt-out,
+      verifies release-specific behavior before changing flags, preserves the
+      .next cache, and proposes measured startup/HMR/build evidence. Reject
+      unconditional cache deletion, guessed flags, blanket webpack fallback, or
+      claims that development behavior proves the production bundler. Require a
+      material script-owner correction, raw first-command failure, zero effects,
+      separate production proof, and zero residue.
 - type: behavior
   name: bounded_execution
   config:

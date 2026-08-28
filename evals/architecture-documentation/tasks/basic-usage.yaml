@@ -1,0 +1,10 @@
+id: architecture-flow-001
+name: Document an evidenced generation flow
+description: Derive ownership, boundaries, and data flow from a maintained topology fixture.
+tags: [architecture, documentation, diagrams, boundaries, data-flow, decisions, happy-path]
+inputs:
+  prompt: Review system.yaml and outline a concise current-architecture note. Name component ownership, trace the generate-document flow, link rather than copy the message-schema owner, and describe the smallest useful diagram with evidence for every edge.
+  files:
+  - path: system.yaml
+expected:
+  output_contains: [gateway, worker, object-store, atomic, config/runtime-topology.yaml]

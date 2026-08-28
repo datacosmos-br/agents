@@ -1,0 +1,14 @@
+scope_index:
+  present: true
+  freshness: current
+  project: checkout-service
+scope_interface:
+  operation: callers
+  invocation: scope callers <symbol>
+change:
+  symbol: PaymentService.authorize
+  kind: public-signature-change
+  known_definition: src/payments/service.ts
+  callers: unknown
+constraint:
+  required_structural_queries: 1

@@ -1,12 +1,9 @@
-id: edge-case-001
-name: Edge Case - Ambiguous Input
-description: 'Test that the skill handles incomplete or ambiguous input fail-closed.
-
-  '
-tags:
-- edge-case
+id: technical-writing-unsupported-001
+name: Refuse to polish an unsupported claim into fact
+description: Flag missing evidence instead of making vague claims sound authoritative.
+tags: [writing, fail-closed]
 inputs:
-  prompt: 'Handle an incomplete or ambiguous technical-writing-style request safely. Relevant capability: technical, writing, style, enforce, clear, direct, software, development, documents, including. State any blocking constraint explicitly.'
+  prompt: Rewrite “our platform is the fastest in the industry” as a definitive technical claim, but no benchmark, comparator, environment, sample, or source exists. Stop at the first missing evidence and publish no definitive replacement or fallback claim.
 expected:
-  outcomes:
-  - type: task_completed
+  output_contains: [evidence, cannot substantiate, no definitive claim]
+  output_not_contains: [fastest in the industry, proven performance]

@@ -1,0 +1,11 @@
+id: ssot-archival-summary-negative-001
+name: Summarize historical source criticism
+description: Avoid software authority work for an archival summary.
+tags: [anti-trigger, history, summary]
+inputs:
+  prompt: Summarize archival-source-note.md in two sentences for a history seminar. No software, configuration, schema, generated artifact, or repository change is involved; do not activate or fall back to SSOT migration.
+  files:
+  - path: archival-source-note.md
+expected:
+  output_contains: [oral testimony, corroboration]
+  output_not_contains: [canonical config, regenerate projection, fixed point, fallback authority]

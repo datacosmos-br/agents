@@ -1,15 +1,11 @@
-id: basic-usage-001
-name: Basic Usage
-description: 'Test that the skill handles a typical request correctly.
-
-  '
-tags:
-- basic
-- happy-path
+id: go-development-worker-lifecycle-001
+name: Review a cancellable Go worker
+description: Exercise Go module development and toolchain detection through causal worker repair.
+tags: [go, development, testing, concurrency, errors, modules, happy-path]
 inputs:
-  prompt: 'Apply the go-development capability to the provided fixture. Exercise these requirements: go, development, building, reviewing, testing, simplifying, detected, go.mod, go.work. Return a concrete result.'
+  prompt: Exercise Go module development and toolchain detection by reviewing this detected module. Read go.mod, note that no go.work is present, identify the lifecycle/error defects, and provide the smallest material owner patch that passes caller-owned context, removes the detached goroutine, returns the raw sink error, rewires consumers atomically, and proves first failure, zero effects, residue, race, vet, test, and build behavior.
   files:
-  - path: sample.py
+  - path: go.mod
+  - path: worker.go
 expected:
-  outcomes:
-  - type: task_completed
+  output_contains: [context.Context, raw error, go test -race, zero effects]

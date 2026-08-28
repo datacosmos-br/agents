@@ -1,12 +1,12 @@
-id: edge-case-001
-name: Edge Case - Ambiguous Input
-description: 'Test that the skill handles incomplete or ambiguous input fail-closed.
-
-  '
-tags:
-- edge-case
+id: brand-voice-edge-001
+name: Refuse a confident profile without samples
+description: Require real source material before claiming a named person's voice.
+tags: [brand-voice, edge-case]
 inputs:
-  prompt: 'Handle an incomplete or ambiguous brand-voice request safely. Relevant capability: brand, voice, build, source-derived, writing, style, profile, real, posts, essays. State any blocking constraint explicitly.'
+  prompt: >-
+    Create a durable voice profile for a named founder, but no posts, essays,
+    emails, transcripts, or site copy are available. State the minimum source set
+    and how confidence must be represented. Do not create or persist any profile.
 expected:
-  outcomes:
-  - type: task_completed
+  output_contains: [source samples, no profile]
+  output_not_contains: ['Confidence: High', confirmed voice profile, VOICE PROFILE]

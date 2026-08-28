@@ -1,15 +1,8 @@
-id: should-not-trigger-001
-name: Should Not Trigger
-description: 'Test that the skill does NOT activate on unrelated prompts.
-
-  This validates trigger specificity.
-
-  '
-tags:
-- anti-trigger
-- negative-test
+id: investor-outreach-customer-renewal-negative-001
+name: Draft a customer renewal note
+description: Keep investor language out of a customer-account message.
+tags: [customer, renewal, anti-trigger]
 inputs:
-  prompt: What is the weather today?
+  prompt: Draft a short renewal reminder to an existing customer whose annual subscription expires next month; ask them to confirm the billing contact.
 expected:
-  output_not_contains:
-  - skill activated
+  output_not_contains: [portfolio company, fund thesis, investor meeting]

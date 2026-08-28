@@ -1,157 +1,107 @@
-import json
+from __future__ import annotations
+
+import ast
+import os
 import subprocess
+import sys
 from pathlib import Path
 
 import pytest
 
 from agents_governance.cli import main
-from agents_governance.temp import TempFinding
+
+ROOT = Path(__file__).resolve().parents[1]
+VERBS = ("help", "doctor", "check", "sync", "evaluate", "secure", "clean", "live")
 
 
-@pytest.fixture(autouse=True)
-def explicit_storage_manifest(monkeypatch, tmp_path: Path) -> None:
-    manifest = tmp_path / "storage.toml"
-    manifest.write_text(
-        "version = 1\n"
-        "repositories = []\n"
-        "[policy]\n"
-        f'global_temp = "{tmp_path / "ephemeral"}"\n',
-        encoding="utf-8",
-    )
-    monkeypatch.setenv("AGENTS_STORAGE_CONFIG", str(manifest))
+def _invoke(monkeypatch: pytest.MonkeyPatch, *arguments: str) -> None:
+    monkeypatch.setattr(sys, "argv", ["agentsctl", *arguments])
+    main()
 
 
-def test_temp_run_uses_invocation_repository_not_agents_authority(
-    monkeypatch, tmp_path: Path
+def test_help_is_the_complete_optionless_surface(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
 ) -> None:
-    repository = tmp_path / "repository"
-    repository.mkdir()
-    subprocess.run(["git", "init", "-q", str(repository)], check=True)
-    monkeypatch.chdir(repository)
-    monkeypatch.setenv("XDG_STATE_HOME", str(tmp_path / "state"))
-    monkeypatch.setenv("XDG_CACHE_HOME", str(tmp_path / "cache"))
+    _invoke(monkeypatch, "help")
 
-    assert main(["temp", "run", "--", "sh", "-c", "test -d .git"]) == 0
+    captured = capsys.readouterr()
+    assert captured.err == ""
+    assert captured.out == (
+        "agentsctl\n"
+        "  help\n"
+        "  doctor\n"
+        "  check\n"
+        "  sync\n"
+        "  evaluate\n"
+        "  secure\n"
+        "  clean\n"
+        "  live\n"
+    )
 
 
-def test_temp_audit_is_repository_scoped_unless_global_is_requested(
-    monkeypatch, tmp_path: Path
+@pytest.mark.parametrize(
+    "arguments",
+    [(), ("--help",), ("check", "--json"), ("unknown",), ("help", "extra")],
+)
+def test_cli_rejects_every_non_single_verb_grammar(
+    monkeypatch: pytest.MonkeyPatch, arguments: tuple[str, ...]
 ) -> None:
-    repository = tmp_path / "repository"
-    repository.mkdir()
-    subprocess.run(["git", "init", "-q", str(repository)], check=True)
-    system_temp = tmp_path / "system-temp"
-    system_temp.mkdir()
-    (system_temp / "beads-circuit").mkdir()
-    monkeypatch.setattr("agents_governance.cli.temp_findings", list)
-
-    assert main(["--root", str(repository), "temp", "audit"]) == 0
-
-    monkeypatch.setattr(
-        "agents_governance.cli.temp_findings",
-        lambda: [
-            TempFinding(system_temp / "beads-circuit", "residue", "foreign residue")
-        ],
-    )
-    assert main(["--root", str(repository), "temp", "audit", "--global"]) == 1
+    with pytest.raises(ValueError, match="exactly one optionless verb"):
+        _invoke(monkeypatch, *arguments)
 
 
-def test_waza_artifact_fails_closed_for_empty_or_invalid_output(tmp_path: Path) -> None:
-    empty = tmp_path / "empty.json"
-    empty.touch()
-    invalid = tmp_path / "invalid.json"
-    invalid.write_text("{}\n", encoding="utf-8")
+def test_cli_and_runtime_orchestrator_contain_no_exception_catches() -> None:
+    for relative in (
+        Path("src/agents_governance/cli.py"),
+        Path("src/agents_governance/runtime.py"),
+    ):
+        tree = ast.parse((ROOT / relative).read_text(encoding="utf-8"))
+        assert not any(
+            isinstance(node, (ast.Try, ast.TryStar)) for node in ast.walk(tree)
+        )
 
-    assert main(["waza-artifact", str(empty)]) == 1
-    assert main(["waza-artifact", str(invalid)]) == 1
 
+def test_live_missing_environment_escapes_with_raw_traceback() -> None:
+    environment = dict(os.environ)
+    environment.pop("CLIPROXY_API_KEY", None)
+    environment.pop("COPILOT_PROVIDER_API_KEY", None)
 
-def test_waza_artifact_accepts_scored_dimensions(tmp_path: Path) -> None:
-    artifact = tmp_path / "quality.json"
-    artifact.write_text(
-        json.dumps({"dimensions": [{"name": "clarity", "score": 4}]}), encoding="utf-8"
+    result = subprocess.run(
+        [sys.executable, "-m", "agents_governance.cli", "live"],
+        cwd=ROOT,
+        env=environment,
+        text=True,
+        capture_output=True,
+        check=False,
     )
 
-    assert main(["waza-artifact", str(artifact)]) == 0
+    assert result.returncode != 0
+    assert result.stdout == ""
+    assert "Traceback (most recent call last)" in result.stderr
+    assert "ValueError" in result.stderr
+    assert "CLIPROXY_API_KEY" in result.stderr
 
 
-def test_waza_coverage_requires_every_skill_fully_covered(tmp_path: Path) -> None:
-    partial = tmp_path / "partial.json"
-    partial.write_text(
-        json.dumps({"total_skills": 2, "covered": 1, "partial": 1, "uncovered": 0}),
-        encoding="utf-8",
-    )
-    complete = tmp_path / "complete.json"
-    complete.write_text(
-        json.dumps({"total_skills": 2, "covered": 2, "partial": 0, "uncovered": 0}),
-        encoding="utf-8",
-    )
-
-    assert main(["waza-coverage", str(partial)]) == 1
-    assert main(["waza-coverage", str(complete)]) == 0
-
-
-def test_description_check_fails_on_drift_and_apply_repairs_it(
-    tmp_path: Path,
-) -> None:
-    (tmp_path / "config").mkdir()
-    (tmp_path / "skills" / "review").mkdir(parents=True)
-    (tmp_path / "config" / "skills.json").write_text(
-        json.dumps(
-            {
-                "budgets": {
-                    "router_tokens": 500,
-                    "frozen_tokens": 1200,
-                    "on_demand_tokens": 5000,
-                    "max_lines": 500,
-                },
-                "classification": [],
-                "default": {
-                    "class": "on_demand",
-                    "provenance": "adopted",
-                    "updates": "manual",
-                },
-            }
-        ),
-        encoding="utf-8",
-    )
-    (tmp_path / "skills" / "review" / "SKILL.md").write_text(
-        "---\nname: review\ndescription: Use this skill for detailed reviews.\n---\n# Review\n",
-        encoding="utf-8",
+def test_agentsctl_is_the_only_packaged_console_script() -> None:
+    scripts = (
+        (ROOT / "pyproject.toml")
+        .read_text(encoding="utf-8")
+        .split("[project.scripts]", maxsplit=1)[1]
+        .split("[", maxsplit=1)[0]
+        .strip()
     )
 
-    assert main(["--root", str(tmp_path), "descriptions"]) == 1
-    assert main(["--root", str(tmp_path), "descriptions", "--apply"]) == 0
-    assert main(["--root", str(tmp_path), "descriptions"]) == 0
+    assert scripts == 'agentsctl = "agents_governance.cli:main"'
 
 
-def test_normalize_check_fails_on_router_budget_drift(tmp_path: Path) -> None:
-    (tmp_path / "config").mkdir()
-    skill = tmp_path / "skills" / "large"
-    skill.mkdir(parents=True)
-    (tmp_path / "config" / "skills.json").write_text(
-        json.dumps(
-            {
-                "budgets": {
-                    "router_tokens": 20,
-                    "frozen_tokens": 1200,
-                    "on_demand_tokens": 5000,
-                    "max_lines": 500,
-                },
-                "classification": [{"pattern": "large", "class": "router"}],
-                "default": {
-                    "class": "on_demand",
-                    "provenance": "adopted",
-                    "updates": "manual",
-                },
-            }
-        ),
-        encoding="utf-8",
-    )
-    (skill / "SKILL.md").write_text(
-        "---\nname: large\ndescription: large, router\n---\n# Large\n\n"
-        + ("Detailed routing procedure. " * 100),
-        encoding="utf-8",
+def test_keyring_maintenance_runtime_is_extinct() -> None:
+    assert not (ROOT / "src/agents_governance/retired_environment.py").exists()
+    runtime = (ROOT / "src/agents_governance/runtime.py").read_text(encoding="utf-8")
+    assert all(
+        term not in runtime
+        for term in ("env-keyring", "environment-d-loader", "RetiredEnvironment")
     )
 
-    assert main(["--root", str(tmp_path), "normalize"]) == 1
+
+def test_declared_verbs_are_unique() -> None:
+    assert len(VERBS) == len(set(VERBS))

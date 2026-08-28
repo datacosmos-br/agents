@@ -1,5 +1,5 @@
 name: dispatch-agent-eval
-description: Evaluation suite for dispatch-agent.
+description: Semantic evaluation suite for dispatch-agent.
 skill: dispatch-agent
 schemaVersion: '1.0'
 version: '1.0'
@@ -7,27 +7,30 @@ config:
   trials_per_task: 1
   timeout_seconds: 300
   parallel: false
+  max_attempts: 0
+  fail_fast: true
   executor: copilot-sdk
-  model: gpt-5.4
+  model: aihub-primary
   skill_directories:
-  - ../../skills/dispatch-agent
+  - ../../skills/agent-wide/dispatch-agent
   required_skills:
   - dispatch-agent
 metrics:
 - name: task_completion
   weight: 1.0
   threshold: 0.8
-  description: Did the skill complete the assigned task?
+  description: Did delegation select the best available specialist with context?
 graders:
 - type: prompt
-  name: material_task_result
+  name: dispatch-agent-contract
   config:
-    prompt: |
-      Evaluate whether the response materially satisfies the concrete user request,
-      uses the named skill requirements, and provides the requested artifact or
-      explicit fail-closed constraint. Reject generic, unrelated, self-declared,
-      or merely non-empty answers. Call set_waza_grade_pass only when every
-      criterion is evidenced; otherwise call set_waza_grade_fail.
+    prompt: |-
+      Grade the dispatch-agent response. Pass only if it uses the supplied
+      roster, compares trigger overlap and confidence, selects the strongest
+      available specialist instead of a general fallback, preserves the stated
+      project context, leaves model selection to the canonical runtime owner,
+      and records one concrete native handoff decision. Reject a second agent,
+      partial handoff, or success after native dispatch failure.
 - type: behavior
   name: bounded_execution
   config:

@@ -1,15 +1,10 @@
-id: should-not-trigger-001
-name: Should Not Trigger
-description: 'Test that the skill does NOT activate on unrelated prompts.
-
-  This validates trigger specificity.
-
-  '
-tags:
-- anti-trigger
-- negative-test
+id: beads-worker-negative-001
+name: Consolidate duplicate epics
+description: Keep tracker-semantic reparenting and deduplication in the orchestrator role.
+tags: [beads-worker, anti-trigger]
 inputs:
-  prompt: What is the weather today?
+  prompt: >-
+    Decide which of two duplicate epics survives, re-parent their children, and
+    close the loser. No implementation slice is assigned.
 expected:
-  output_not_contains:
-  - skill activated
+  output_not_contains: [READY_FOR_REVIEW, worker handoff, implementation slice]

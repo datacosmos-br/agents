@@ -1,5 +1,5 @@
 name: mle-workflow-eval
-description: Evaluation suite for mle-workflow.
+description: Point-in-time ML contracts, baselines, artifacts, rollout, and monitoring.
 skill: mle-workflow
 schemaVersion: '1.0'
 version: '1.0'
@@ -7,27 +7,29 @@ config:
   trials_per_task: 1
   timeout_seconds: 300
   parallel: false
+  max_attempts: 0
+  fail_fast: true
   executor: copilot-sdk
-  model: gpt-5.4
+  model: aihub-primary
   skill_directories:
-  - ../../skills/mle-workflow
+  - ../../skills/domain/mle-workflow
   required_skills:
   - mle-workflow
-metrics:
-- name: task_completion
-  weight: 1.0
-  threshold: 0.8
-  description: Did the skill complete the assigned task?
 graders:
 - type: prompt
-  name: material_task_result
+  name: mle-workflow-contract
   config:
-    prompt: |
-      Evaluate whether the response materially satisfies the concrete user request,
-      uses the named skill requirements, and provides the requested artifact or
-      explicit fail-closed constraint. Reject generic, unrelated, self-declared,
-      or merely non-empty answers. Call set_waza_grade_pass only when every
-      criterion is evidenced; otherwise call set_waza_grade_fail.
+    prompt: |-
+      Grade the mle-workflow response. Pass only when it derives the prediction
+      decision, label timing, entity grain, temporal split, guardrails, and
+      existing project owners from the fixture; confirms the future outcome was
+      rejected before training; compares the observed candidate with the simple
+      baseline using slice/calibration/latency evidence; and reports only the
+      supplied safe artifact, train-serve runtime, monitoring, and rollback
+      proof. Reject aggregate accuracy alone, unsafe loading, keyring/profiles,
+      retries, alternate model/provider/stack fallback, invented evidence, or
+      partial deployment. Fail-closed must stop at the first future feature with
+      zero training and deployment effects.
 - type: behavior
   name: bounded_execution
   config:

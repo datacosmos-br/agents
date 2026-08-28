@@ -1,0 +1,31 @@
+---
+name: beads-worker
+description: 'beads execution, scoped work, tracker workflow'
+metadata:
+  aihub.tags: '["activation:opt-in","detect:opt-in:beads-worker","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:no-keyring","policy:preflight-before-effects","policy:required-environment","policy:strict-execution","policy:zero-residue","provenance:agents-owned","route:agent","tool:beads","updates:manual","usage:router"]'
+---
+
+# Beads Worker
+
+Activate only for a currently assigned implementation slice. Semantic graph
+changes, reassignment, merge, and issue closure remain owner operations.
+
+Before editing, verify from current evidence the issue identity and revision,
+assignment, unblocked dependencies, exact file scope, existing checkout and
+branch, acceptance contract, integration target, and required gates. A foreign,
+stale, ambiguous, or blocked assignment stops before effects.
+
+Execute only the assigned slice through repository owners. Preserve concurrent
+work, eliminate superseded code and rewired-consumer residue, and propagate the
+first command or gate failure unchanged. Correct an in-scope owner and rerun the
+invalidated native path; do not repeat unchanged, switch execution paths,
+normalize red evidence, or perform a tracker mutation. Owner-only work remains
+active in the same issue and is handed to that owner, never treated as closure.
+
+During tracker suspension, do not invoke or replace Beads and create no
+substitute tracker or ledger. Preserve evidence only in separately authorized
+Git, PR, review, check, and CI surfaces. Handoff must state issue, branch, SHA,
+scoped files, exact command/exit/decisive output, PR
+and integration evidence, residue, and unverified owner-only work. Report ready
+for review only when the slice itself is validated and residue-free; never infer
+merge or closure.

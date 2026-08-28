@@ -1,15 +1,8 @@
-id: should-not-trigger-001
-name: Should Not Trigger
-description: 'Test that the skill does NOT activate on unrelated prompts.
-
-  This validates trigger specificity.
-
-  '
-tags:
-- anti-trigger
-- negative-test
+id: tdd-workflow-negative-001
+name: Translate a sentence
+description: Keep development workflow out of a translation request.
+tags: [anti-trigger]
 inputs:
-  prompt: What is the weather today?
+  prompt: Translate “The train arrives at noon” into Portuguese. Do not activate TDD or fall back to a test workflow.
 expected:
-  output_not_contains:
-  - skill activated
+  output_not_contains: [RED-GREEN, test case, coverage, fallback test]

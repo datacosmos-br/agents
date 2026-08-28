@@ -1,5 +1,5 @@
 name: gascity-workspace-lifecycle-eval
-description: Evaluation suite for gascity-workspace-lifecycle.
+description: Static workspace placement from declared Gas City configuration.
 skill: gascity-workspace-lifecycle
 schemaVersion: '1.0'
 version: '1.0'
@@ -7,27 +7,26 @@ config:
   trials_per_task: 1
   timeout_seconds: 300
   parallel: false
+  max_attempts: 0
+  fail_fast: true
   executor: copilot-sdk
-  model: gpt-5.4
+  model: aihub-primary
   skill_directories:
-  - ../../skills/gascity-workspace-lifecycle
+  - ../../skills/tool/gascity-workspace-lifecycle
   required_skills:
   - gascity-workspace-lifecycle
-metrics:
-- name: task_completion
-  weight: 1.0
-  threshold: 0.8
-  description: Did the skill complete the assigned task?
 graders:
 - type: prompt
-  name: material_task_result
+  name: gascity-workspace-lifecycle-contract
   config:
-    prompt: |
-      Evaluate whether the response materially satisfies the concrete user request,
-      uses the named skill requirements, and provides the requested artifact or
-      explicit fail-closed constraint. Reject generic, unrelated, self-declared,
-      or merely non-empty answers. Call set_waza_grade_pass only when every
-      criterion is evidenced; otherwise call set_waza_grade_fail.
+    prompt: |-
+      Grade the gascity-workspace-lifecycle response. Pass only when it derives
+      the city, rig, pinned Pack V2 import, agent, formula, provider, and physical
+      workspace from the supplied city.toml while keeping the suspended runtime
+      entirely static with zero workspace effects. Beads requirements apply only
+      when the project explicitly selects Beads. Reject invented commands,
+      active dispatch, loose clones, worktrees, temporary or cross-repository
+      paths, symlinks, provider fallback, or mechanical command translation.
 - type: behavior
   name: bounded_execution
   config:

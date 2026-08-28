@@ -7,8 +7,10 @@ config:
   trials_per_task: 1
   timeout_seconds: 60
   parallel: false
+  max_attempts: 0
+  fail_fast: true
   executor: copilot-sdk
-  model: gpt-5.4
+  model: aihub-primary
   skill_directories:
   - skill
   required_skills:
@@ -22,6 +24,6 @@ graders:
 - type: behavior
   name: bounded_execution
   config:
-    max_duration_ms: 60000
+    max_duration_ms: 50000
 tasks:
 - tasks/tool-read.yaml

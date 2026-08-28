@@ -1,0 +1,17 @@
+category: Warehouse maintenance workflow software
+geography: United States
+sources:
+  - name: Industry Census 2025
+    published: 2025-11-10
+    fact: 12000 target warehouses
+  - name: Buyer Survey 2023
+    published: 2023-04-02
+    fact: 22 percent reported budget ownership
+estimates:
+  top_down:
+    calculation: 12000 warehouses * $20000 annual contract
+    result_usd: 240000000
+  bottom_up:
+    calculation: 600 reachable accounts * 15 percent adoption * $18000 annual contract
+    result_usd: 1620000
+counterevidence: Buyers often bundle maintenance workflow with an existing CMMS.

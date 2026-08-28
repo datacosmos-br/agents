@@ -1,34 +1,43 @@
 {
   "skills": [
     {
+      "category": "tool",
       "class": "on_demand",
-      "digest": "26e6faed48d5d0c21fe7721bb917e941e302fd34d08f599b7ba124549052b2d6",
+      "digest": "126d28a42bcdbc60cf4acca84dc0ad66b8e4ada3ef445bc6d4e06680b3f7370d",
       "distributions": [
-        "project-generic"
-      ],
-      "max_lines": 500,
-      "max_tokens": 5000,
-      "name": "add-language-rules",
-      "owner": "agents",
-      "provenance": "adopted",
-      "updates": "manual"
-    },
-    {
-      "class": "on_demand",
-      "digest": "898c8b510b4a25d6ff31c0e81976eb0b782d3c4e49710a13d2e1eac599c363ea",
-      "distributions": [
-        "personal"
+        "personal",
+        "agent-capability:tool:agent-browser"
       ],
       "max_lines": 500,
       "max_tokens": 5000,
       "name": "agent-browser",
       "owner": "agents",
-      "provenance": "adopted",
+      "path": "skills/tool/agent-browser",
+      "provenance": "agents-owned",
+      "tags": [
+        "activation:opt-in",
+        "detect:opt-in:agent-browser",
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:no-keyring",
+        "policy:preflight-before-effects",
+        "policy:required-environment",
+        "policy:strict-execution",
+        "policy:zero-residue",
+        "provenance:agents-owned",
+        "route:agent",
+        "tool:agent-browser",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
+      "category": "agent-wide",
       "class": "on_demand",
-      "digest": "511a96b9b5268e1d8f10d357e0612ba6510f109b672c33b7c466e62b9d6075a2",
+      "digest": "913763f5de78885d62078d210804be7c044838eda2b8dbb33087931476fc41fa",
       "distributions": [
         "personal"
       ],
@@ -36,51 +45,112 @@
       "max_tokens": 5000,
       "name": "agent-introspection-debugging",
       "owner": "agents",
-      "provenance": "adopted",
+      "path": "skills/agent-wide/agent-introspection-debugging",
+      "provenance": "agents-owned",
+      "tags": [
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "provenance:agents-owned",
+        "role:debug",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
-      "class": "on_demand",
-      "digest": "57d02df33de96136874cf74b5fb19e8e995d462b7b5510d28062c492f3a1a49e",
+      "category": "project-wide",
+      "class": "router",
+      "digest": "7f2996b5a04c0180096948e39caa81da1299d9e7e4ce1166b806a2bb7c04111d",
+      "distributions": [
+        "project-generic"
+      ],
+      "max_lines": 500,
+      "max_tokens": 500,
+      "name": "anti-hardcode",
+      "owner": "agents",
+      "path": "skills/project-wide/anti-hardcode",
+      "provenance": "agents-owned",
+      "tags": [
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:no-keyring",
+        "policy:preflight-before-effects",
+        "policy:required-environment",
+        "policy:strict-execution",
+        "policy:zero-residue",
+        "provenance:agents-owned",
+        "role:configuration",
+        "updates:manual",
+        "usage:router"
+      ],
+      "updates": "manual"
+    },
+    {
+      "category": "agent-wide",
+      "class": "router",
+      "digest": "9a2fa8c10c2d3db92f1860f7b05766dd15e12c03d7b4506f3d1310849eaad79d",
       "distributions": [
         "personal"
       ],
       "max_lines": 500,
-      "max_tokens": 5000,
-      "name": "ai-prompt-engineering-safety-review",
+      "max_tokens": 500,
+      "name": "anti-phase-skip",
       "owner": "agents",
-      "provenance": "adopted",
-      "updates": "manual"
-    },
-    {
-      "class": "on_demand",
-      "digest": "a3d2e5105e6e96774926a47aec43e6db3e12b5b55692b8b975f84c9fdf38b9e4",
-      "distributions": [
-        "personal"
+      "path": "skills/agent-wide/anti-phase-skip",
+      "provenance": "agents-owned",
+      "tags": [
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
+        "provenance:agents-owned",
+        "role:governance",
+        "updates:manual",
+        "usage:router"
       ],
-      "max_lines": 500,
-      "max_tokens": 5000,
-      "name": "aiskillstore-data-substrate-analysis",
-      "owner": "agents",
-      "provenance": "adopted",
       "updates": "manual"
     },
     {
+      "category": "project-wide",
       "class": "on_demand",
-      "digest": "deed86e125a0079a2cb882791e0ff6177089e8635a6d88a3abc1a8bf8a3ca6c8",
+      "digest": "43be898ce89d2c934780d94e89988328d30eace32ac2e08ef7d75242ab6912ac",
       "distributions": [
         "project-generic"
       ],
       "max_lines": 500,
       "max_tokens": 5000,
-      "name": "api-design",
+      "name": "architecture-documentation",
       "owner": "agents",
-      "provenance": "adopted",
+      "path": "skills/project-wide/architecture-documentation",
+      "provenance": "agents-owned",
+      "tags": [
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
+        "provenance:agents-owned",
+        "role:documentation",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
+      "category": "agent-wide",
       "class": "on_demand",
-      "digest": "8ef5f35335c8c061461b12183186c98a074cd1cd528c563dd9377ee42660c836",
+      "digest": "25ff35946a2380635c73b926b2f2c63629baa5cc9690055e9e69e9965839ee18",
       "distributions": [
         "personal"
       ],
@@ -88,12 +158,24 @@
       "max_tokens": 5000,
       "name": "article-writing",
       "owner": "agents",
-      "provenance": "adopted",
+      "path": "skills/agent-wide/article-writing",
+      "provenance": "agents-owned",
+      "tags": [
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "provenance:agents-owned",
+        "role:writing",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
+      "category": "project-wide",
       "class": "on_demand",
-      "digest": "5dc29864231524fcf9adbf3317dc053ed694e89b0fdf12034a562808cec48003",
+      "digest": "50ddddd61768051f291eae737eae26a29581479378e7aff2b4b4cb08382fd119",
       "distributions": [
         "project-generic"
       ],
@@ -101,64 +183,128 @@
       "max_tokens": 5000,
       "name": "backend-patterns",
       "owner": "agents",
-      "provenance": "adopted",
+      "path": "skills/project-wide/backend-patterns",
+      "provenance": "agents-owned",
+      "tags": [
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
+        "provenance:agents-owned",
+        "role:architecture",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
+      "category": "tool",
       "class": "router",
-      "digest": "82d5e8483a330e500103f131d47ab215f46f2e3ba72c96bda67dbb631d0e89d3",
+      "digest": "374ba5333f46373488811060a060984fe2b7b3b58da10c871acf535808c09ff5",
       "distributions": [
-        "personal"
+        "personal",
+        "agent-capability:tool:beads"
       ],
       "max_lines": 500,
       "max_tokens": 500,
       "name": "beads",
       "owner": "agents",
+      "path": "skills/tool/beads",
       "provenance": "agents-owned",
+      "tags": [
+        "activation:opt-in",
+        "detect:opt-in:beads",
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:no-keyring",
+        "policy:preflight-before-effects",
+        "policy:required-environment",
+        "policy:strict-execution",
+        "policy:zero-residue",
+        "provenance:agents-owned",
+        "route:agent",
+        "tool:beads",
+        "updates:manual",
+        "usage:router"
+      ],
       "updates": "manual"
     },
     {
+      "category": "tool",
       "class": "router",
-      "digest": "4ebdbd2cae69d7e65d59f15313de5732cebc5b53331e809d1f8f0a6850a7a302",
+      "digest": "a65346bdab74172ea7cf8bc4f42a804186de85129144979a1d76dcaf6a597a81",
       "distributions": [
-        "personal"
+        "personal",
+        "agent-capability:tool:beads"
       ],
       "max_lines": 500,
       "max_tokens": 500,
       "name": "beads-orchestrator",
       "owner": "agents",
+      "path": "skills/tool/beads-orchestrator",
       "provenance": "agents-owned",
+      "tags": [
+        "activation:opt-in",
+        "detect:opt-in:beads-orchestration",
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:no-keyring",
+        "policy:preflight-before-effects",
+        "policy:required-environment",
+        "policy:strict-execution",
+        "policy:zero-residue",
+        "provenance:agents-owned",
+        "route:agent",
+        "tool:beads",
+        "updates:manual",
+        "usage:router"
+      ],
       "updates": "manual"
     },
     {
+      "category": "tool",
       "class": "router",
-      "digest": "28b1249b2645b039051228a825a0fa59622a702bbe17f27992ca4d4c33ceeb5b",
+      "digest": "737dfe5d99c6beb93089f5abde7e7d788694473cfc06e248c9bb1e4cfc18d08a",
       "distributions": [
-        "personal"
+        "personal",
+        "agent-capability:tool:beads"
       ],
       "max_lines": 500,
       "max_tokens": 500,
       "name": "beads-worker",
       "owner": "agents",
+      "path": "skills/tool/beads-worker",
       "provenance": "agents-owned",
-      "updates": "manual"
-    },
-    {
-      "class": "on_demand",
-      "digest": "bf7d74a4ca4ded7cb046b7ca3d9037747a62ed9499ddf7b6acc38d7f0c0039ca",
-      "distributions": [
-        "personal"
+      "tags": [
+        "activation:opt-in",
+        "detect:opt-in:beads-worker",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:no-keyring",
+        "policy:preflight-before-effects",
+        "policy:required-environment",
+        "policy:strict-execution",
+        "policy:zero-residue",
+        "provenance:agents-owned",
+        "route:agent",
+        "tool:beads",
+        "updates:manual",
+        "usage:router"
       ],
-      "max_lines": 500,
-      "max_tokens": 5000,
-      "name": "benchflow-ai-python-parallelization",
-      "owner": "agents",
-      "provenance": "adopted",
       "updates": "manual"
     },
     {
+      "category": "agent-wide",
       "class": "on_demand",
-      "digest": "44e8853f0cb41e2346202e50edc235c71e3b7f9024a53c2e6a52297dbad326b9",
+      "digest": "c9490d8d70e215a25fbfe34bc3ee1847ad593a1efd8b2a8b574c67fdf44018b4",
       "distributions": [
         "personal"
       ],
@@ -166,25 +312,57 @@
       "max_tokens": 5000,
       "name": "brand-voice",
       "owner": "agents",
-      "provenance": "adopted",
+      "path": "skills/agent-wide/brand-voice",
+      "provenance": "agents-owned",
+      "tags": [
+        "policy:atomic-effects",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "provenance:agents-owned",
+        "role:writing",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
+      "category": "technology",
       "class": "on_demand",
-      "digest": "f913aa9acc1a1c897191212b738d4a445249eb88d5f2f0f9c3d2bb7e810d5d51",
+      "digest": "ed78482cae15181371e64e0b1cf5ffb67e0d3fae1fe0990d37d67128ac78b24e",
       "distributions": [
-        "technology:bun"
+        "project-capability:technology:bun"
       ],
       "max_lines": 500,
       "max_tokens": 5000,
       "name": "bun-runtime",
       "owner": "agents",
-      "provenance": "adopted",
+      "path": "skills/technology/bun-runtime",
+      "provenance": "agents-owned",
+      "tags": [
+        "activation:detected",
+        "detect:marker:bun.lock",
+        "detect:marker:bun.lockb",
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
+        "provenance:agents-owned",
+        "route:project",
+        "technology:bun",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
+      "category": "agent-wide",
       "class": "on_demand",
-      "digest": "9fb7830ad09be21aa4ffe24b5f5c6a7c19cd52ce755420665b14b40cb2417c7b",
+      "digest": "5a541fb26b24f6275abf8a7d1fc339fffe645db1728122cf1966f3b78d013206",
       "distributions": [
         "personal"
       ],
@@ -192,25 +370,24 @@
       "max_tokens": 5000,
       "name": "caveman",
       "owner": "agents",
-      "provenance": "adopted",
-      "updates": "manual"
-    },
-    {
-      "class": "on_demand",
-      "digest": "0de76b2be702c1f5fd08c14a0d56465d1642466997f7a9072274e4d751a21cfa",
-      "distributions": [
-        "project-generic"
+      "path": "skills/agent-wide/caveman",
+      "provenance": "agents-owned",
+      "tags": [
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "provenance:agents-owned",
+        "role:communication",
+        "updates:manual",
+        "usage:on-demand"
       ],
-      "max_lines": 500,
-      "max_tokens": 5000,
-      "name": "code-navigation",
-      "owner": "agents",
-      "provenance": "adopted",
       "updates": "manual"
     },
     {
+      "category": "project-wide",
       "class": "on_demand",
-      "digest": "fe812609342935856831ff6151ea0880be7dd0315fd66c47e73b230bf77b0667",
+      "digest": "0f326df6767423197f6e1e03603db28fd169668259fcf0df9ccb03aa2bf2e774",
       "distributions": [
         "project-generic"
       ],
@@ -218,25 +395,52 @@
       "max_tokens": 5000,
       "name": "code-review-expert",
       "owner": "agents",
-      "provenance": "adopted",
+      "path": "skills/project-wide/code-review-expert",
+      "provenance": "agents-owned",
+      "tags": [
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "provenance:agents-owned",
+        "role:review",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
-      "class": "on_demand",
-      "digest": "ceae53d9e2aa50ac127c0c87b0008e21dc3eb1ff54625969998a595048db0d33",
+      "category": "project-wide",
+      "class": "router",
+      "digest": "fdc6ab025184274e8a6df27dec7c308ece4d4be4a2e16d360d186ebbcb80a770",
       "distributions": [
         "project-generic"
       ],
       "max_lines": 500,
-      "max_tokens": 5000,
-      "name": "coding-standards",
+      "max_tokens": 500,
+      "name": "config-schema-migration",
       "owner": "agents",
-      "provenance": "adopted",
+      "path": "skills/project-wide/config-schema-migration",
+      "provenance": "agents-owned",
+      "tags": [
+        "policy:atomic-effects",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
+        "provenance:agents-owned",
+        "role:migration",
+        "updates:manual",
+        "usage:router"
+      ],
       "updates": "manual"
     },
     {
+      "category": "agent-wide",
       "class": "on_demand",
-      "digest": "d70436ed8c0906966fa0ac71669cc10cc369850c3f6710a1956a1f5d8897076d",
+      "digest": "61ba72a7f8ad47c3297ae38abe8b45d7a6e3858e0c53b092ef708d1a3e3420fe",
       "distributions": [
         "personal"
       ],
@@ -244,12 +448,24 @@
       "max_tokens": 5000,
       "name": "content-engine",
       "owner": "agents",
-      "provenance": "adopted",
+      "path": "skills/agent-wide/content-engine",
+      "provenance": "agents-owned",
+      "tags": [
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "provenance:agents-owned",
+        "role:content",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
+      "category": "agent-wide",
       "class": "on_demand",
-      "digest": "6c1627670c329e32723f5987308e9864f9b0107662515a59f9feccb83ef4e1d3",
+      "digest": "62a68f07c0e552757854bfeb6b982fae2a2d83cb3cde23d62af0f60deb5486fd",
       "distributions": [
         "personal"
       ],
@@ -257,25 +473,94 @@
       "max_tokens": 5000,
       "name": "context-canary",
       "owner": "agents",
-      "provenance": "adopted",
+      "path": "skills/agent-wide/context-canary",
+      "provenance": "agents-owned",
+      "tags": [
+        "policy:atomic-effects",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "provenance:agents-owned",
+        "role:continuity",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
+      "category": "tool",
       "class": "on_demand",
-      "digest": "772e6f065f7cf3a4e314e2e7a71c8cc599534e64b09ee79db6171b770bc91882",
+      "digest": "1bca9ee35788f08435b4f9158f65cd1ff1ceb7d2aa54bdaac98268850618d90d",
       "distributions": [
-        "personal"
+        "personal",
+        "agent-capability:tool:context7"
       ],
       "max_lines": 500,
       "max_tokens": 5000,
-      "name": "copyleftdev-hettinger",
+      "name": "context7-documentation",
       "owner": "agents",
-      "provenance": "adopted",
+      "path": "skills/tool/context7-documentation",
+      "provenance": "agents-owned",
+      "tags": [
+        "activation:opt-in",
+        "detect:opt-in:context7",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:no-keyring",
+        "policy:preflight-before-effects",
+        "policy:required-environment",
+        "policy:strict-execution",
+        "policy:zero-residue",
+        "provenance:agents-owned",
+        "route:agent",
+        "tool:context7",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
+      "category": "technology",
+      "class": "router",
+      "digest": "fe1abb626446f7fb5c8c326ce96120d3786f8d3658807101d811b5926f168cd1",
+      "distributions": [
+        "project-capability:technology:cpp"
+      ],
+      "max_lines": 500,
+      "max_tokens": 500,
+      "name": "cpp-development",
+      "owner": "agents",
+      "path": "skills/technology/cpp-development",
+      "provenance": "agents-owned",
+      "tags": [
+        "activation:detected",
+        "detect:marker:CMakeLists.txt",
+        "detect:marker:compile_commands.json",
+        "detect:marker:conanfile.py",
+        "detect:marker:conanfile.txt",
+        "detect:marker:meson.build",
+        "detect:marker:vcpkg.json",
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
+        "provenance:agents-owned",
+        "route:project",
+        "technology:cpp",
+        "updates:manual",
+        "usage:router"
+      ],
+      "updates": "manual"
+    },
+    {
+      "category": "agent-wide",
       "class": "on_demand",
-      "digest": "85235fbc6cbeec3c551cfcea5a50682187af46e1011095aa716146c02409ce22",
+      "digest": "aca0d0366bc0a6fc669229b9c24436e46e561a2f77dda22a2996acff74744055",
       "distributions": [
         "personal"
       ],
@@ -283,25 +568,50 @@
       "max_tokens": 5000,
       "name": "crosspost",
       "owner": "agents",
-      "provenance": "adopted",
+      "path": "skills/agent-wide/crosspost",
+      "provenance": "agents-owned",
+      "tags": [
+        "policy:atomic-effects",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "provenance:agents-owned",
+        "role:content",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
+      "category": "project-wide",
       "class": "on_demand",
-      "digest": "662cfdcbe5ace07c30e86829903c387ebb507bc39b79bd21a24b65808259770d",
+      "digest": "2ae48816a5ddb8b83e4186eebaa12e1fca0f044759a33fe234f08f6448b8368a",
       "distributions": [
         "project-generic"
       ],
       "max_lines": 500,
       "max_tokens": 5000,
-      "name": "database-migration",
+      "name": "data-modeling-analysis",
       "owner": "agents",
-      "provenance": "adopted",
+      "path": "skills/project-wide/data-modeling-analysis",
+      "provenance": "agents-owned",
+      "tags": [
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "provenance:agents-owned",
+        "role:architecture",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
+      "category": "agent-wide",
       "class": "on_demand",
-      "digest": "2afcc07d307a0a6f9c9aa88608a0655d22237f8aa6ea0275fa37f1f82af31efc",
+      "digest": "6d86e53cf467845a66afd4b9a5a5a0ee877d36120f2b318009cea00a64e8bb35",
       "distributions": [
         "personal"
       ],
@@ -309,38 +619,25 @@
       "max_tokens": 5000,
       "name": "deep-research",
       "owner": "agents",
-      "provenance": "adopted",
-      "updates": "manual"
-    },
-    {
-      "class": "on_demand",
-      "digest": "fc1ec102cf4436993dd4c2e63ae7ed9e5a75a5b00ea07ba1e3483f1311b233fd",
-      "distributions": [
-        "personal"
+      "path": "skills/agent-wide/deep-research",
+      "provenance": "agents-owned",
+      "tags": [
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "provenance:agents-owned",
+        "role:research",
+        "updates:manual",
+        "usage:on-demand"
       ],
-      "max_lines": 500,
-      "max_tokens": 5000,
-      "name": "diegosouzapw-architecture-documentation-creator",
-      "owner": "agents",
-      "provenance": "adopted",
       "updates": "manual"
     },
     {
+      "category": "agent-wide",
       "class": "on_demand",
-      "digest": "4dbdfcdf105a17abe864ae16ea2814bdfa48382b214ad52542cd8d005e22142f",
-      "distributions": [
-        "technology:python"
-      ],
-      "max_lines": 500,
-      "max_tokens": 5000,
-      "name": "diegosouzapw-modern-python-finimo-solutions",
-      "owner": "agents",
-      "provenance": "adopted",
-      "updates": "manual"
-    },
-    {
-      "class": "on_demand",
-      "digest": "ab4d0fc7a5fe9f36b7477689ee046c2098685f1a46dd62fbdd2cae07b4e7757b",
+      "digest": "b432a027f1431fdd5f5e0baa9f29639c90757239a1a73072a7dbab0d3cd899da",
       "distributions": [
         "personal"
       ],
@@ -348,38 +645,89 @@
       "max_tokens": 5000,
       "name": "dispatch-agent",
       "owner": "agents",
-      "provenance": "adopted",
+      "path": "skills/agent-wide/dispatch-agent",
+      "provenance": "agents-owned",
+      "tags": [
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
+        "provenance:agents-owned",
+        "role:delegation",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
+      "category": "tool",
       "class": "on_demand",
-      "digest": "59b9fb2df86a4c7a997a8d0a900bfae9e80f9a7fc5160815888b3b83fc9dc246",
+      "digest": "9e3190cc3ae182a6a4c4a370fa7b14ed33df0782f776baea2e4516de405995b0",
       "distributions": [
-        "personal"
+        "personal",
+        "agent-capability:tool:dmux"
       ],
       "max_lines": 500,
       "max_tokens": 5000,
       "name": "dmux-workflows",
       "owner": "agents",
-      "provenance": "adopted",
+      "path": "skills/tool/dmux-workflows",
+      "provenance": "agents-owned",
+      "tags": [
+        "activation:opt-in",
+        "detect:opt-in:dmux",
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:no-keyring",
+        "policy:preflight-before-effects",
+        "policy:required-environment",
+        "policy:strict-execution",
+        "policy:zero-residue",
+        "provenance:agents-owned",
+        "route:agent",
+        "tool:dmux",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
+      "category": "project-wide",
       "class": "on_demand",
-      "digest": "98ac6faccac6cae44de982927a21c72dbea50cf96002bc110c7eae81b1a36d9a",
+      "digest": "1e005fd3df44c58b37d5f0c4fb370d1841abc22c8549ca92582bb10c6ec029cf",
       "distributions": [
-        "personal"
+        "project-generic"
       ],
       "max_lines": 500,
       "max_tokens": 5000,
       "name": "doc-drift",
       "owner": "agents",
-      "provenance": "adopted",
+      "path": "skills/project-wide/doc-drift",
+      "provenance": "agents-owned",
+      "tags": [
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
+        "provenance:agents-owned",
+        "role:documentation",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
+      "category": "project-wide",
       "class": "on_demand",
-      "digest": "c57bded7609b54bad780c43e10c2913471552a2bfb8bd67c1caedd5a0b36e23d",
+      "digest": "15047c8d653754b19fa267a5775f1c8198022816aa2fb7666f145283191f10d6",
       "distributions": [
         "project-generic"
       ],
@@ -387,38 +735,54 @@
       "max_tokens": 5000,
       "name": "documentation-criteria",
       "owner": "agents",
-      "provenance": "adopted",
+      "path": "skills/project-wide/documentation-criteria",
+      "provenance": "agents-owned",
+      "tags": [
+        "policy:atomic-effects",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
+        "provenance:agents-owned",
+        "role:documentation",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
-      "class": "on_demand",
-      "digest": "d26a35e41a797ed724559323f355609af2642568b01a524108d0d5ada411c5e2",
+      "category": "project-wide",
+      "class": "router",
+      "digest": "1103500e7bffcc6b267381b1783524b57688f9102dc30212bdebf67b22a28268",
       "distributions": [
         "project-generic"
       ],
       "max_lines": 500,
-      "max_tokens": 5000,
-      "name": "documentation-lookup",
+      "max_tokens": 500,
+      "name": "dry",
       "owner": "agents",
-      "provenance": "adopted",
-      "updates": "manual"
-    },
-    {
-      "class": "on_demand",
-      "digest": "45048283da50024d16e6383b093f1e4870dca6b0805f5a0fec25e7fb3f9407d4",
-      "distributions": [
-        "technology:javascript"
+      "path": "skills/project-wide/dry",
+      "provenance": "agents-owned",
+      "tags": [
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
+        "provenance:agents-owned",
+        "role:refactoring",
+        "updates:manual",
+        "usage:router"
       ],
-      "max_lines": 500,
-      "max_tokens": 5000,
-      "name": "e2e-testing",
-      "owner": "agents",
-      "provenance": "adopted",
       "updates": "manual"
     },
     {
+      "category": "project-wide",
       "class": "on_demand",
-      "digest": "75dae7c023ec1d940f239954c13df47e004c1e85e8c4569080b9c515c799db0a",
+      "digest": "4dacfffe15e36c247a8b4b79a5963dc3f1ea9711b313b7b2f10cf682b2031964",
       "distributions": [
         "project-generic"
       ],
@@ -426,131 +790,337 @@
       "max_tokens": 5000,
       "name": "eval-harness",
       "owner": "agents",
-      "provenance": "adopted",
+      "path": "skills/project-wide/eval-harness",
+      "provenance": "agents-owned",
+      "tags": [
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
+        "provenance:agents-owned",
+        "role:verification",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
+      "category": "tool",
       "class": "on_demand",
-      "digest": "63390562f0e0be80cb6efd0427a27afb3355816072eedd4fa9657d3c60ec840b",
+      "digest": "5163de08752857ce7e7aa7871caad23b41548dd7f2cff4ce901313cddadaa120",
       "distributions": [
-        "personal"
+        "personal",
+        "agent-capability:tool:exa"
       ],
       "max_lines": 500,
       "max_tokens": 5000,
       "name": "exa-search",
       "owner": "agents",
-      "provenance": "adopted",
+      "path": "skills/tool/exa-search",
+      "provenance": "agents-owned",
+      "tags": [
+        "activation:opt-in",
+        "detect:opt-in:exa",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:no-keyring",
+        "policy:preflight-before-effects",
+        "policy:required-environment",
+        "policy:strict-execution",
+        "policy:zero-residue",
+        "provenance:agents-owned",
+        "route:agent",
+        "tool:exa",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
-      "class": "on_demand",
-      "digest": "ea1f9c562470712ecdd86661bdbbadec688b264bb175bba86089be4ec73668f8",
+      "category": "project-wide",
+      "class": "router",
+      "digest": "6e26fa69f3f402ec6d4a7698ff328295e208556ad49d0eb242109bde91488411",
       "distributions": [
-        "personal"
+        "project-generic"
+      ],
+      "max_lines": 500,
+      "max_tokens": 500,
+      "name": "extermination-mode",
+      "owner": "agents",
+      "path": "skills/project-wide/extermination-mode",
+      "provenance": "agents-owned",
+      "tags": [
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
+        "provenance:agents-owned",
+        "role:migration",
+        "updates:manual",
+        "usage:router"
+      ],
+      "updates": "manual"
+    },
+    {
+      "category": "project-wide",
+      "class": "router",
+      "digest": "94224f44dd482da65c111d3e1c1984acad8e3f694ed560148ebdf5607349751a",
+      "distributions": [
+        "project-generic"
+      ],
+      "max_lines": 500,
+      "max_tokens": 500,
+      "name": "fail-fast",
+      "owner": "agents",
+      "path": "skills/project-wide/fail-fast",
+      "provenance": "agents-owned",
+      "tags": [
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
+        "provenance:agents-owned",
+        "role:reliability",
+        "updates:manual",
+        "usage:router"
+      ],
+      "updates": "manual"
+    },
+    {
+      "category": "tool",
+      "class": "on_demand",
+      "digest": "54aa4262d998160964e0f4206f667759a5aa782f01f2b9a5bfe161f7658c5ffd",
+      "distributions": [
+        "personal",
+        "agent-capability:tool:fal-ai"
       ],
       "max_lines": 500,
       "max_tokens": 5000,
       "name": "fal-ai-media",
       "owner": "agents",
-      "provenance": "adopted",
+      "path": "skills/tool/fal-ai-media",
+      "provenance": "agents-owned",
+      "tags": [
+        "activation:opt-in",
+        "detect:opt-in:fal-ai",
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:no-keyring",
+        "policy:preflight-before-effects",
+        "policy:required-environment",
+        "policy:strict-execution",
+        "policy:zero-residue",
+        "provenance:agents-owned",
+        "route:agent",
+        "tool:fal-ai",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
-      "class": "on_demand",
-      "digest": "8fae3fa3f28a26d714b1be52307d202cc0a18e8773280bea59c7d93d2833f802",
+      "category": "agent-wide",
+      "class": "router",
+      "digest": "d08ba67b4b234d7ec2a3cd3b7ecb6f5f322e3645f74cf413af474ea3013850d7",
       "distributions": [
-        "project-generic"
+        "personal"
       ],
       "max_lines": 500,
-      "max_tokens": 5000,
-      "name": "feature-development",
+      "max_tokens": 500,
+      "name": "fix-forward-collaboration",
       "owner": "agents",
-      "provenance": "adopted",
+      "path": "skills/agent-wide/fix-forward-collaboration",
+      "provenance": "agents-owned",
+      "tags": [
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
+        "provenance:agents-owned",
+        "role:governance",
+        "updates:manual",
+        "usage:router"
+      ],
       "updates": "manual"
     },
     {
-      "class": "on_demand",
-      "digest": "d85582e28f0ae8b744b19eb1f5d21f152948864a46a81174d9434bb82726c10a",
+      "category": "framework",
+      "class": "router",
+      "digest": "a00c457db8c7f1641d07d48f44d92cfc9ae6e9ec3c5f3c4a6343ac172495cea5",
       "distributions": [
-        "technology:typescript",
-        "technology:react",
-        "technology:nextjs"
+        "project-capability:framework:flutter"
       ],
       "max_lines": 500,
-      "max_tokens": 5000,
-      "name": "frontend-patterns",
+      "max_tokens": 500,
+      "name": "flutter-development",
       "owner": "agents",
-      "provenance": "adopted",
+      "path": "skills/framework/flutter-development",
+      "provenance": "agents-owned",
+      "tags": [
+        "activation:detected",
+        "detect:dependency:dart:sdk:flutter",
+        "framework:flutter",
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
+        "provenance:agents-owned",
+        "route:project",
+        "technology:dart",
+        "updates:manual",
+        "usage:router"
+      ],
       "updates": "manual"
     },
     {
+      "category": "agent-wide",
       "class": "on_demand",
-      "digest": "b74f70f39195b2a6f9b357b37bab02efcbdeb93d52ce14d0d89725643896af9c",
+      "digest": "20c973cf7c24fa01036bcb58b97f87de37b9432640e5b3a56378ab5e74c9a46c",
       "distributions": [
-        "technology:javascript"
+        "personal"
       ],
       "max_lines": 500,
       "max_tokens": 5000,
       "name": "frontend-slides",
       "owner": "agents",
-      "provenance": "adopted",
+      "path": "skills/agent-wide/frontend-slides",
+      "provenance": "agents-owned",
+      "tags": [
+        "policy:atomic-effects",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
+        "provenance:agents-owned",
+        "role:presentation",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
+      "category": "tool",
       "class": "on_demand",
-      "digest": "b0e4a2dfdb2a18714aec8ae90d95d140eef591188456cb827928c5c49aceb82d",
+      "digest": "5a9dc8a53910aacd6b469e0c72dadfebe2931c01fba5f19c58f0d58b58dcf239",
       "distributions": [
-        "personal"
+        "personal",
+        "agent-capability:tool:gascity"
       ],
       "max_lines": 500,
       "max_tokens": 5000,
       "name": "gascity-change-lifecycle",
       "owner": "agents",
-      "provenance": "adopted",
+      "path": "skills/tool/gascity-change-lifecycle",
+      "provenance": "agents-owned",
+      "tags": [
+        "activation:opt-in",
+        "detect:opt-in:gascity",
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:no-keyring",
+        "policy:preflight-before-effects",
+        "policy:required-environment",
+        "policy:strict-execution",
+        "policy:zero-residue",
+        "provenance:agents-owned",
+        "route:agent",
+        "tool:gascity",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
+      "category": "tool",
       "class": "on_demand",
-      "digest": "93e8b3cc2a891d925d7deadade47691db38d966e10b6e7d193e1c81d461b0a30",
+      "digest": "8c5d9b8a9ec9a3ce12af6afc3be97b44a0166163b76fef460eec448119262c80",
       "distributions": [
-        "personal"
+        "personal",
+        "agent-capability:tool:gascity"
       ],
       "max_lines": 500,
       "max_tokens": 5000,
       "name": "gascity-workspace-lifecycle",
       "owner": "agents",
-      "provenance": "adopted",
+      "path": "skills/tool/gascity-workspace-lifecycle",
+      "provenance": "agents-owned",
+      "tags": [
+        "activation:opt-in",
+        "detect:opt-in:gascity",
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:no-keyring",
+        "policy:preflight-before-effects",
+        "policy:required-environment",
+        "policy:strict-execution",
+        "policy:zero-residue",
+        "provenance:agents-owned",
+        "route:agent",
+        "tool:gascity",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
-      "class": "on_demand",
-      "digest": "ddb04cb7dd2b5fc7ed84085cae7ed1640ae40a093fcc010b225a6774d2e4c749",
+      "category": "technology",
+      "class": "router",
+      "digest": "98b1e994eaad49110b57b7e73a956b3b7d2d96105198bb8606924c259b3b533d",
       "distributions": [
-        "personal"
+        "project-capability:technology:go"
       ],
       "max_lines": 500,
-      "max_tokens": 5000,
-      "name": "ghi-list",
-      "owner": "agents",
-      "provenance": "adopted",
-      "updates": "manual"
-    },
-    {
-      "class": "on_demand",
-      "digest": "0c5dbff8cf23f38da71c60076334b35c9e96cfc2d522d08ee56c6950cb71d593",
-      "distributions": [
-        "technology:go"
-      ],
-      "max_lines": 500,
-      "max_tokens": 5000,
+      "max_tokens": 500,
       "name": "go-development",
       "owner": "agents",
-      "provenance": "adopted",
+      "path": "skills/technology/go-development",
+      "provenance": "agents-owned",
+      "tags": [
+        "activation:detected",
+        "detect:marker:go.mod",
+        "detect:marker:go.work",
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
+        "provenance:agents-owned",
+        "route:project",
+        "technology:go",
+        "updates:manual",
+        "usage:router"
+      ],
       "updates": "manual"
     },
     {
+      "category": "agent-wide",
       "class": "on_demand",
-      "digest": "06010ab317bfcf8684b91ffc47e4143fa23ec9ea5f4c1fd82f8c0d23846d9d0c",
+      "digest": "cb37def2f0535a671045e8f11abc52e8e22eedf6ed4edf555d3f9e4695f7e2ab",
       "distributions": [
         "personal"
       ],
@@ -558,12 +1128,25 @@
       "max_tokens": 5000,
       "name": "governance-audit",
       "owner": "agents",
-      "provenance": "adopted",
+      "path": "skills/agent-wide/governance-audit",
+      "provenance": "agents-owned",
+      "tags": [
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "provenance:agents-owned",
+        "role:governance",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
+      "category": "agent-wide",
       "class": "on_demand",
-      "digest": "7c9eb93f2b2a30fa7d26e09b637fe5f6f37d4af0213d29aff381ceffd8cdf71e",
+      "digest": "f36e8bb382c56d48831ba2f78a953b00c5c099fe8b693c6ce3b10e1602f16294",
       "distributions": [
         "personal"
       ],
@@ -571,12 +1154,24 @@
       "max_tokens": 5000,
       "name": "human-writing-style",
       "owner": "agents",
-      "provenance": "adopted",
+      "path": "skills/agent-wide/human-writing-style",
+      "provenance": "agents-owned",
+      "tags": [
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "provenance:agents-owned",
+        "role:writing",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
+      "category": "agent-wide",
       "class": "on_demand",
-      "digest": "db1058b55c04df4bac401f8a9a5a68d5f4730a5507647dc914d8d4e66c79133f",
+      "digest": "eedc03c40c6b2a2bbbfa2674878e53423c4a4d89e22812249f25a8c918aa4ddd",
       "distributions": [
         "personal"
       ],
@@ -584,12 +1179,26 @@
       "max_tokens": 5000,
       "name": "investor-materials",
       "owner": "agents",
-      "provenance": "adopted",
+      "path": "skills/agent-wide/investor-materials",
+      "provenance": "agents-owned",
+      "tags": [
+        "domain:fundraising",
+        "policy:atomic-effects",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "provenance:agents-owned",
+        "role:writing",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
+      "category": "agent-wide",
       "class": "on_demand",
-      "digest": "a00f89f93550fc926de93d95b3f068d4dd11faae0780a2661537561b71b78fd6",
+      "digest": "f922100aab777b36ac26379c2158fa7a8528ec45a6d8b72f86c25aebc72e231c",
       "distributions": [
         "personal"
       ],
@@ -597,51 +1206,61 @@
       "max_tokens": 5000,
       "name": "investor-outreach",
       "owner": "agents",
-      "provenance": "adopted",
+      "path": "skills/agent-wide/investor-outreach",
+      "provenance": "agents-owned",
+      "tags": [
+        "domain:fundraising",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "provenance:agents-owned",
+        "role:communication",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
+      "category": "technology",
       "class": "router",
-      "digest": "e1386875f9bd5bdcd6a8e9dcbbf3032264b1d8c11583401ab2fc151a97f74b65",
+      "digest": "4aba277a2e8cb6de97efb3a093a085880b3796785d263b495e42416bd3779a05",
       "distributions": [
-        "personal"
+        "project-capability:technology:jvm"
       ],
       "max_lines": 500,
       "max_tokens": 500,
-      "name": "inviolable-rules",
+      "name": "jvm-development",
       "owner": "agents",
+      "path": "skills/technology/jvm-development",
       "provenance": "agents-owned",
-      "updates": "manual"
-    },
-    {
-      "class": "on_demand",
-      "digest": "839e860bdc084747065940d8b7e74c8ddc2c1e30f72a68cb69d87d0c5629998c",
-      "distributions": [
-        "technology:python"
+      "tags": [
+        "activation:detected",
+        "detect:marker:build.gradle",
+        "detect:marker:build.gradle.kts",
+        "detect:marker:gradlew",
+        "detect:marker:pom.xml",
+        "detect:marker:settings.gradle",
+        "detect:marker:settings.gradle.kts",
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
+        "provenance:agents-owned",
+        "route:project",
+        "technology:jvm",
+        "updates:manual",
+        "usage:router"
       ],
-      "max_lines": 500,
-      "max_tokens": 5000,
-      "name": "jamie-bitflight-python3-bug",
-      "owner": "agents",
-      "provenance": "adopted",
       "updates": "manual"
     },
     {
-      "class": "on_demand",
-      "digest": "dd36f2a9ceb51723346f38744347b86d431038b313870b897a669d7290cec3b7",
-      "distributions": [
-        "technology:python"
-      ],
-      "max_lines": 500,
-      "max_tokens": 5000,
-      "name": "majiayu000-config-schema-migrator",
-      "owner": "agents",
-      "provenance": "adopted",
-      "updates": "manual"
-    },
-    {
+      "category": "agent-wide",
       "class": "router",
-      "digest": "f122a5b1e4db8ceccfaf7aaae381ce55cba0349ef4219768bf696ce17f2632a5",
+      "digest": "11d586a3b2c70a17d12e45d53abb06c28fc554015206d5fdc7d52d6a9b126260",
       "distributions": [
         "personal"
       ],
@@ -649,12 +1268,25 @@
       "max_tokens": 500,
       "name": "make-check",
       "owner": "agents",
+      "path": "skills/agent-wide/make-check",
       "provenance": "agents-owned",
+      "tags": [
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "provenance:agents-owned",
+        "role:verification",
+        "updates:manual",
+        "usage:router"
+      ],
       "updates": "manual"
     },
     {
+      "category": "agent-wide",
       "class": "on_demand",
-      "digest": "b1123c5bb478b2d34a0fb9dead205c6124e3abea3e6e851732436f6a8eb5cbab",
+      "digest": "c4e93740ef73f579164b5bae36b2f9d1a19e6a7f5661c9a74f6c723a88b42e7a",
       "distributions": [
         "personal"
       ],
@@ -662,64 +1294,158 @@
       "max_tokens": 5000,
       "name": "market-research",
       "owner": "agents",
-      "provenance": "adopted",
+      "path": "skills/agent-wide/market-research",
+      "provenance": "agents-owned",
+      "tags": [
+        "domain:market-research",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "provenance:agents-owned",
+        "role:research",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
+      "category": "tool",
       "class": "on_demand",
-      "digest": "66035e569f2dff893c6643307878cc5b63ab2cbb6d05c5f966b3d0fa136dbb41",
+      "digest": "fe765aa169ced0d65249b0f03ec73d3580602f38de72c4d144410a10bedd6281",
       "distributions": [
-        "technology:javascript"
+        "project-capability:tool:mcp"
       ],
       "max_lines": 500,
       "max_tokens": 5000,
       "name": "mcp-server-patterns",
       "owner": "agents",
-      "provenance": "adopted",
+      "path": "skills/tool/mcp-server-patterns",
+      "provenance": "agents-owned",
+      "tags": [
+        "activation:detected",
+        "detect:dependency:npm:@modelcontextprotocol/sdk",
+        "detect:dependency:python:mcp",
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:no-keyring",
+        "policy:preflight-before-effects",
+        "policy:required-environment",
+        "policy:strict-execution",
+        "policy:zero-residue",
+        "provenance:agents-owned",
+        "route:project",
+        "tool:mcp",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
+      "category": "domain",
       "class": "on_demand",
-      "digest": "d7fe5202e8d85a09f4851c3383c51f44726ae67b82e2b7e8e45090be87334f90",
+      "digest": "d43f88ed7dfaf63148a57b5c21b7bcafd470be73166aad4e46354110e48f1b5e",
       "distributions": [
-        "personal"
+        "project-capability:domain:mle"
       ],
       "max_lines": 500,
       "max_tokens": 5000,
       "name": "mle-workflow",
       "owner": "agents",
-      "provenance": "adopted",
+      "path": "skills/domain/mle-workflow",
+      "provenance": "agents-owned",
+      "tags": [
+        "activation:detected-or-opt-in",
+        "detect:marker:MLproject",
+        "detect:marker:dvc.lock",
+        "detect:marker:dvc.yaml",
+        "detect:opt-in:machine-learning",
+        "domain:mle",
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:no-keyring",
+        "policy:preflight-before-effects",
+        "policy:required-environment",
+        "policy:strict-execution",
+        "policy:zero-residue",
+        "provenance:agents-owned",
+        "route:project",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
+      "category": "framework",
       "class": "on_demand",
-      "digest": "3e9881b23f134ec5d63893919a3b738f71fa826c4a6f934e4c621900dfdde4eb",
+      "digest": "dec90f66be5abcffcc227087342fc2208485ea031e1da03c2ddb9469dd251831",
       "distributions": [
-        "technology:nextjs"
+        "project-capability:framework:nextjs"
       ],
       "max_lines": 500,
       "max_tokens": 5000,
       "name": "nextjs-turbopack",
       "owner": "agents",
-      "provenance": "adopted",
+      "path": "skills/framework/nextjs-turbopack",
+      "provenance": "agents-owned",
+      "tags": [
+        "activation:detected",
+        "detect:dependency:npm:next",
+        "framework:nextjs",
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
+        "provenance:agents-owned",
+        "route:project",
+        "tool:turbopack",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
+      "category": "tool",
       "class": "on_demand",
-      "digest": "27e0d39895b2ee023bb3585a2ece08d771ae2cd1f51e848d2fb1c53038eb1023",
+      "digest": "098dcf0dd60a64ad190f4bce5602b404faf5297e82c4a7f38b3276736e2f5a99",
       "distributions": [
-        "personal"
+        "project-capability:tool:openspec"
       ],
       "max_lines": 500,
       "max_tokens": 5000,
       "name": "openspec-verify-change",
       "owner": "agents",
-      "provenance": "adopted",
+      "path": "skills/tool/openspec-verify-change",
+      "provenance": "agents-owned",
+      "tags": [
+        "activation:detected",
+        "detect:marker:openspec",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
+        "provenance:agents-owned",
+        "route:project",
+        "tool:openspec",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
+      "category": "agent-wide",
       "class": "router",
-      "digest": "a528c132c984cbedcaa7cc3b1714b39207b042aca33f9d10737714b917210f8a",
+      "digest": "1a16f32499f8f32f6454b768e947cc5e375e9928628c3af4947c30462c9dca88",
       "distributions": [
         "personal"
       ],
@@ -727,103 +1453,331 @@
       "max_tokens": 500,
       "name": "operator-correction-learning",
       "owner": "agents",
+      "path": "skills/agent-wide/operator-correction-learning",
       "provenance": "agents-owned",
+      "tags": [
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
+        "provenance:agents-owned",
+        "role:governance",
+        "updates:manual",
+        "usage:router"
+      ],
       "updates": "manual"
     },
     {
-      "class": "on_demand",
-      "digest": "1585eadd2976bbc73662d482af5402bde0c077dc576a4cf5f1fa9f20709049f4",
+      "category": "agent-wide",
+      "class": "router",
+      "digest": "9d00dfddfc6735f0e436e1ea654f93b954d5c6df3cf7b94c2a33559e68ffae44",
       "distributions": [
         "personal"
       ],
       "max_lines": 500,
-      "max_tokens": 5000,
-      "name": "pr-list",
+      "max_tokens": 500,
+      "name": "plan-focus-recovery",
       "owner": "agents",
-      "provenance": "adopted",
+      "path": "skills/agent-wide/plan-focus-recovery",
+      "provenance": "agents-owned",
+      "tags": [
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
+        "provenance:agents-owned",
+        "role:continuity",
+        "updates:manual",
+        "usage:router"
+      ],
       "updates": "manual"
     },
     {
+      "category": "tool",
       "class": "on_demand",
-      "digest": "475d57d43894e52d7590734d203269e0a2ae22c9a8ca97dffb0428fd433a92cb",
+      "digest": "141efa3bb0ac1fff0cbabf4196c638ab936ca67ee12eb972e015a37dfb1a458e",
       "distributions": [
-        "personal"
+        "project-capability:tool:playwright"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "playwright-e2e",
+      "owner": "agents",
+      "path": "skills/tool/playwright-e2e",
+      "provenance": "agents-owned",
+      "tags": [
+        "activation:detected",
+        "detect:dependency:npm:@playwright/test",
+        "detect:dependency:npm:playwright",
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:no-keyring",
+        "policy:preflight-before-effects",
+        "policy:required-environment",
+        "policy:strict-execution",
+        "policy:zero-residue",
+        "provenance:agents-owned",
+        "route:project",
+        "tool:playwright",
+        "updates:manual",
+        "usage:on-demand"
+      ],
+      "updates": "manual"
+    },
+    {
+      "category": "tool",
+      "class": "on_demand",
+      "digest": "a1d0ba49de0924b3c3e0101279821ccce8a585abda741a24f0f0cdf4b6591068",
+      "distributions": [
+        "personal",
+        "agent-capability:tool:github"
       ],
       "max_lines": 500,
       "max_tokens": 5000,
       "name": "pr-sheriff",
       "owner": "agents",
-      "provenance": "adopted",
+      "path": "skills/tool/pr-sheriff",
+      "provenance": "agents-owned",
+      "tags": [
+        "activation:opt-in",
+        "detect:opt-in:pr-sheriff",
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:no-keyring",
+        "policy:preflight-before-effects",
+        "policy:required-environment",
+        "policy:strict-execution",
+        "policy:zero-residue",
+        "provenance:agents-owned",
+        "route:agent",
+        "tool:github",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
+      "category": "project-wide",
       "class": "on_demand",
-      "digest": "c0ebecf7e842fef08efaa4568a86d97f04e1df8d55773841f1a75f298321e025",
+      "digest": "c2d1cdcfb17200509ce91b2584b0051d19de0ac8af57c1a67d554d7a45567b56",
       "distributions": [
-        "personal"
+        "project-generic"
       ],
       "max_lines": 500,
       "max_tokens": 5000,
       "name": "product-capability",
       "owner": "agents",
-      "provenance": "adopted",
-      "updates": "manual"
-    },
-    {
-      "class": "on_demand",
-      "digest": "cf3daa844b6d15ebcdc4ae794ee0fc2dcdc2e308e8ab0424edaf6c19e35ddf23",
-      "distributions": [
-        "technology:python"
+      "path": "skills/project-wide/product-capability",
+      "provenance": "agents-owned",
+      "tags": [
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "provenance:agents-owned",
+        "role:planning",
+        "updates:manual",
+        "usage:on-demand"
       ],
-      "max_lines": 500,
-      "max_tokens": 5000,
-      "name": "python-production",
-      "owner": "agents",
-      "provenance": "adopted",
       "updates": "manual"
     },
     {
+      "category": "agent-wide",
       "class": "on_demand",
-      "digest": "275654ec856494040e620352307c573d4555f6dcf6195b12435a8b6ca9b21691",
-      "distributions": [
-        "technology:python"
-      ],
-      "max_lines": 500,
-      "max_tokens": 5000,
-      "name": "python-refactoring",
-      "owner": "agents",
-      "provenance": "adopted",
-      "updates": "manual"
-    },
-    {
-      "class": "on_demand",
-      "digest": "c7b661c8221ef52d766147b74cf7fe9db3c0db9a381e78e6d8ff8e8fa2c3f2f4",
+      "digest": "33d0ac78b69042bdc98658be10009c7240ef2075b65e5218ea0cc70064c7560b",
       "distributions": [
         "personal"
       ],
       "max_lines": 500,
       "max_tokens": 5000,
-      "name": "ralph-loop",
+      "name": "prompt-safety-review",
       "owner": "agents",
-      "provenance": "adopted",
+      "path": "skills/agent-wide/prompt-safety-review",
+      "provenance": "agents-owned",
+      "tags": [
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:no-keyring",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "provenance:agents-owned",
+        "role:security",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
-      "class": "on_demand",
-      "digest": "e1c836212950376f1b3ac63e32061c531ff9592b50b4a63acff4ca2c7e2a33fa",
+      "category": "technology",
+      "class": "router",
+      "digest": "a5682d138d5ca359e7e271fca72776145c66a8b0a05c5670f86ffdb070220e87",
       "distributions": [
-        "technology:rust"
+        "project-capability:technology:python"
+      ],
+      "max_lines": 500,
+      "max_tokens": 500,
+      "name": "python-development",
+      "owner": "agents",
+      "path": "skills/technology/python-development",
+      "provenance": "agents-owned",
+      "tags": [
+        "activation:detected",
+        "detect:marker:poetry.lock",
+        "detect:marker:pyproject.toml",
+        "detect:marker:requirements-dev.txt",
+        "detect:marker:requirements.txt",
+        "detect:marker:uv.lock",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
+        "provenance:agents-owned",
+        "route:project",
+        "technology:python",
+        "updates:manual",
+        "usage:router"
+      ],
+      "updates": "manual"
+    },
+    {
+      "category": "technology",
+      "class": "router",
+      "digest": "5f30cdd39358e9e42cdf16fb9d6b5918374fbf220e2ab51db981640da9d54026",
+      "distributions": [
+        "project-capability:technology:python"
+      ],
+      "max_lines": 500,
+      "max_tokens": 500,
+      "name": "python-parallelization",
+      "owner": "agents",
+      "path": "skills/technology/python-parallelization",
+      "provenance": "agents-owned",
+      "tags": [
+        "activation:detected",
+        "detect:marker:poetry.lock",
+        "detect:marker:pyproject.toml",
+        "detect:marker:requirements-dev.txt",
+        "detect:marker:requirements.txt",
+        "detect:marker:uv.lock",
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
+        "provenance:agents-owned",
+        "route:project",
+        "technology:python",
+        "updates:manual",
+        "usage:router"
+      ],
+      "updates": "manual"
+    },
+    {
+      "category": "framework",
+      "class": "on_demand",
+      "digest": "f2ae2cc193af15a625e29cfee5a3194f317b498e2ec0ffdf4e04d520026496cd",
+      "distributions": [
+        "project-capability:framework:react"
       ],
       "max_lines": 500,
       "max_tokens": 5000,
-      "name": "rust-development",
+      "name": "react-frontend-patterns",
       "owner": "agents",
-      "provenance": "adopted",
+      "path": "skills/framework/react-frontend-patterns",
+      "provenance": "agents-owned",
+      "tags": [
+        "activation:detected",
+        "detect:dependency:npm:react",
+        "framework:react",
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
+        "provenance:agents-owned",
+        "route:project",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
+      "category": "project-wide",
       "class": "on_demand",
-      "digest": "d06164fc27f0a99a0819ad3ab4c374cf1f6dcacc72382acd23e4eb60b3d86582",
+      "digest": "542e6a3ba5ab88bfed86ab9aef8a281df2ac4eb4ebd7208adea4fce3f01d3c7f",
+      "distributions": [
+        "project-generic"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "rest-api-design",
+      "owner": "agents",
+      "path": "skills/project-wide/rest-api-design",
+      "provenance": "agents-owned",
+      "tags": [
+        "policy:atomic-effects",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
+        "provenance:agents-owned",
+        "role:architecture",
+        "updates:manual",
+        "usage:on-demand"
+      ],
+      "updates": "manual"
+    },
+    {
+      "category": "technology",
+      "class": "router",
+      "digest": "d1ae3dc4ecc0e0f6371add6f55d26f16f328380c5eda96d3b3ceeefa74972d92",
+      "distributions": [
+        "project-capability:technology:rust"
+      ],
+      "max_lines": 500,
+      "max_tokens": 500,
+      "name": "rust-development",
+      "owner": "agents",
+      "path": "skills/technology/rust-development",
+      "provenance": "agents-owned",
+      "tags": [
+        "activation:detected",
+        "detect:marker:Cargo.toml",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
+        "provenance:agents-owned",
+        "route:project",
+        "technology:rust",
+        "updates:manual",
+        "usage:router"
+      ],
+      "updates": "manual"
+    },
+    {
+      "category": "agent-wide",
+      "class": "on_demand",
+      "digest": "dcdf21315ef795f57493fdcbf65ea752713e410c9eac9efa8a61ccc415cbcf32",
       "distributions": [
         "personal"
       ],
@@ -831,12 +1785,84 @@
       "max_tokens": 5000,
       "name": "safe-delete",
       "owner": "agents",
-      "provenance": "adopted",
+      "path": "skills/agent-wide/safe-delete",
+      "provenance": "agents-owned",
+      "tags": [
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
+        "provenance:agents-owned",
+        "role:governance",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
+      "category": "tool",
       "class": "on_demand",
-      "digest": "70b484f45c5a4bcea1bc5694adfe51b1ab8f12d74006e73faf1250abb580741f",
+      "digest": "9ccae514833b4514c6bb477a908e1827c23ec9f652d0a00eddd77d1d2f84b6a0",
+      "distributions": [
+        "project-capability:tool:scope-code-navigation"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "scope-code-navigation",
+      "owner": "agents",
+      "path": "skills/tool/scope-code-navigation",
+      "provenance": "agents-owned",
+      "tags": [
+        "activation:opt-in",
+        "detect:opt-in:scope-code-navigation",
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
+        "provenance:agents-owned",
+        "route:project",
+        "tool:scope-code-navigation",
+        "updates:manual",
+        "usage:on-demand"
+      ],
+      "updates": "manual"
+    },
+    {
+      "category": "project-wide",
+      "class": "router",
+      "digest": "af465e25caaf486f008bc014d9a241ca0cf02bd3e5e3ccde1f0d3ab630eb562f",
+      "distributions": [
+        "project-generic"
+      ],
+      "max_lines": 500,
+      "max_tokens": 500,
+      "name": "search-first",
+      "owner": "agents",
+      "path": "skills/project-wide/search-first",
+      "provenance": "agents-owned",
+      "tags": [
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "provenance:agents-owned",
+        "role:discovery",
+        "updates:manual",
+        "usage:router"
+      ],
+      "updates": "manual"
+    },
+    {
+      "category": "project-wide",
+      "class": "on_demand",
+      "digest": "cf1983815e4b81fbd530ffb44e1d47ced6c048921b1b43d7b40b6e94efae09ea",
       "distributions": [
         "project-generic"
       ],
@@ -844,51 +1870,111 @@
       "max_tokens": 5000,
       "name": "security-review",
       "owner": "agents",
-      "provenance": "adopted",
-      "updates": "manual"
-    },
-    {
-      "class": "on_demand",
-      "digest": "9b6f9e9666105b64c1f762da8a22d941edb0bde37373b09754bc24b0ffab674f",
-      "distributions": [
-        "personal"
+      "path": "skills/project-wide/security-review",
+      "provenance": "agents-owned",
+      "tags": [
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:no-keyring",
+        "policy:preflight-before-effects",
+        "policy:required-environment",
+        "policy:strict-execution",
+        "policy:zero-residue",
+        "provenance:agents-owned",
+        "role:security",
+        "updates:manual",
+        "usage:on-demand"
       ],
-      "max_lines": 500,
-      "max_tokens": 5000,
-      "name": "sequential-thinking",
-      "owner": "agents",
-      "provenance": "adopted",
       "updates": "manual"
     },
     {
-      "class": "on_demand",
-      "digest": "1dbfa12b85c4b4742a464fc63166400be15a1dfa5964681bd2e5b212c59fe057",
+      "category": "project-wide",
+      "class": "router",
+      "digest": "0e6d5d4c6b8c552dda3c5f1140adcff8574f40a8380efe2ba655399f68e22cbc",
       "distributions": [
         "project-generic"
       ],
       "max_lines": 500,
-      "max_tokens": 5000,
+      "max_tokens": 500,
       "name": "simplify",
       "owner": "agents",
-      "provenance": "adopted",
+      "path": "skills/project-wide/simplify",
+      "provenance": "agents-owned",
+      "tags": [
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
+        "provenance:agents-owned",
+        "role:refactoring",
+        "updates:manual",
+        "usage:router"
+      ],
       "updates": "manual"
     },
     {
+      "category": "agent-wide",
       "class": "on_demand",
-      "digest": "88ff9d916d42ed4e1106ab5617130b0c7aedf6bd2b19abd385a24ab0677c3d40",
+      "digest": "ed7819bc13f3469b4e6f16edb7b18a0110c8ae397f1b7699d7150e371005c7a8",
       "distributions": [
         "personal"
       ],
       "max_lines": 500,
       "max_tokens": 5000,
-      "name": "skill-creator",
+      "name": "skill-governance",
       "owner": "agents",
-      "provenance": "adopted",
+      "path": "skills/agent-wide/skill-governance",
+      "provenance": "agents-owned",
+      "tags": [
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
+        "provenance:agents-owned",
+        "role:governance",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
+      "category": "project-wide",
       "class": "router",
-      "digest": "7a2503ebd1cfd1bda8417e9a093831e097ec834c0ad129849a097196ffdd61b1",
+      "digest": "0b9d429c3f1982faba36217ac908bac5ee538878592a8e14dba0be4a7451fb5d",
+      "distributions": [
+        "project-generic"
+      ],
+      "max_lines": 500,
+      "max_tokens": 500,
+      "name": "solid",
+      "owner": "agents",
+      "path": "skills/project-wide/solid",
+      "provenance": "agents-owned",
+      "tags": [
+        "policy:atomic-effects",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
+        "provenance:agents-owned",
+        "role:architecture",
+        "updates:manual",
+        "usage:router"
+      ],
+      "updates": "manual"
+    },
+    {
+      "category": "agent-wide",
+      "class": "router",
+      "digest": "c2e9c9e16a393d465ed2f64db6068857a170df912778de1e10225feeffa64562",
       "distributions": [
         "personal"
       ],
@@ -896,12 +1982,54 @@
       "max_tokens": 500,
       "name": "sprint-closure",
       "owner": "agents",
+      "path": "skills/agent-wide/sprint-closure",
       "provenance": "agents-owned",
+      "tags": [
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
+        "provenance:agents-owned",
+        "role:governance",
+        "updates:manual",
+        "usage:router"
+      ],
       "updates": "manual"
     },
     {
+      "category": "project-wide",
+      "class": "router",
+      "digest": "e4b4d9f5647922177901867c8e2041118384aa150725e3eb3dfa96425f7af21f",
+      "distributions": [
+        "project-generic"
+      ],
+      "max_lines": 500,
+      "max_tokens": 500,
+      "name": "ssot",
+      "owner": "agents",
+      "path": "skills/project-wide/ssot",
+      "provenance": "agents-owned",
+      "tags": [
+        "policy:atomic-effects",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
+        "provenance:agents-owned",
+        "role:governance",
+        "updates:manual",
+        "usage:router"
+      ],
+      "updates": "manual"
+    },
+    {
+      "category": "agent-wide",
       "class": "on_demand",
-      "digest": "e1f3d6a94a553906390f190a53061923edde5a17cffed83b2c5a3a0789382703",
+      "digest": "8d8aadc5c511cf2a150c5d1fa746a44f0b7e21ae72d227e633866972bf27bbbd",
       "distributions": [
         "personal"
       ],
@@ -909,12 +2037,25 @@
       "max_tokens": 5000,
       "name": "strategic-compact",
       "owner": "agents",
-      "provenance": "adopted",
+      "path": "skills/agent-wide/strategic-compact",
+      "provenance": "agents-owned",
+      "tags": [
+        "policy:atomic-effects",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "provenance:agents-owned",
+        "role:continuity",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
+      "category": "agent-wide",
       "class": "on_demand",
-      "digest": "63479a7d51bb01c0325490a7181eecbba332e4c627db8fcfdfeb36f3c70c62f7",
+      "digest": "1c35f688c94c6a18c3131742cf99a8879f757153bc90bcc129329d68d520e1ec",
       "distributions": [
         "personal"
       ],
@@ -922,12 +2063,24 @@
       "max_tokens": 5000,
       "name": "summarization",
       "owner": "agents",
-      "provenance": "adopted",
+      "path": "skills/agent-wide/summarization",
+      "provenance": "agents-owned",
+      "tags": [
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "provenance:agents-owned",
+        "role:writing",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
+      "category": "project-wide",
       "class": "on_demand",
-      "digest": "e2d72d6c7549c144120ca7b773239e2e10d5f8063d7e0a9a8396554df48da2c9",
+      "digest": "95fda30485393ff84d764355f5ee717642bc1bf53501391a3f18250f53900e25",
       "distributions": [
         "project-generic"
       ],
@@ -935,12 +2088,27 @@
       "max_tokens": 5000,
       "name": "tdd-workflow",
       "owner": "agents",
-      "provenance": "adopted",
+      "path": "skills/project-wide/tdd-workflow",
+      "provenance": "agents-owned",
+      "tags": [
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
+        "provenance:agents-owned",
+        "role:testing",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
+      "category": "project-wide",
       "class": "on_demand",
-      "digest": "3b7d3de54a92e498163fbe9313b930ec544d7f9c6a506ab2b420f5c72086fb7c",
+      "digest": "229d8379c7eab108eb988182d64fc6360852a78ed4ea86f176efe66278986283",
       "distributions": [
         "project-generic"
       ],
@@ -948,12 +2116,54 @@
       "max_tokens": 5000,
       "name": "technical-writing-style",
       "owner": "agents",
-      "provenance": "adopted",
+      "path": "skills/project-wide/technical-writing-style",
+      "provenance": "agents-owned",
+      "tags": [
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "provenance:agents-owned",
+        "role:documentation",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
+      "category": "technology",
       "class": "router",
-      "digest": "6d86c1987a62aa5707e54de7a9059c4ca8d45e83575e52ee8b140b46735bdc88",
+      "digest": "d006c66e50818aa5cbeb1d0e9684c359f331874a89371666eac4cbffb100263f",
+      "distributions": [
+        "project-capability:technology:typescript"
+      ],
+      "max_lines": 500,
+      "max_tokens": 500,
+      "name": "typescript-development",
+      "owner": "agents",
+      "path": "skills/technology/typescript-development",
+      "provenance": "agents-owned",
+      "tags": [
+        "activation:detected",
+        "detect:marker:tsconfig.json",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
+        "provenance:agents-owned",
+        "route:project",
+        "technology:typescript",
+        "updates:manual",
+        "usage:router"
+      ],
+      "updates": "manual"
+    },
+    {
+      "category": "agent-wide",
+      "class": "router",
+      "digest": "aea962534d7d7eff5730488be31a584d1fb7da8db2421609b922cf3874c6090f",
       "distributions": [
         "personal"
       ],
@@ -961,12 +2171,27 @@
       "max_tokens": 500,
       "name": "verification-loop",
       "owner": "agents",
+      "path": "skills/agent-wide/verification-loop",
       "provenance": "agents-owned",
+      "tags": [
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
+        "provenance:agents-owned",
+        "role:verification",
+        "updates:manual",
+        "usage:router"
+      ],
       "updates": "manual"
     },
     {
+      "category": "agent-wide",
       "class": "on_demand",
-      "digest": "f3f376dd72a135e4ebdef6f5528a6e3aeea34c76d1721b314ac9801c7943804d",
+      "digest": "515bcf3050777be0ccd6964f0ab797802131db372bbc41e64023741adc94046b",
       "distributions": [
         "personal"
       ],
@@ -974,20 +2199,85 @@
       "max_tokens": 5000,
       "name": "video-editing",
       "owner": "agents",
-      "provenance": "adopted",
+      "path": "skills/agent-wide/video-editing",
+      "provenance": "agents-owned",
+      "tags": [
+        "domain:video",
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:no-keyring",
+        "policy:preflight-before-effects",
+        "policy:required-environment",
+        "policy:strict-execution",
+        "policy:zero-residue",
+        "provenance:agents-owned",
+        "role:media",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
+      "category": "tool",
       "class": "on_demand",
-      "digest": "1760c35bb3ecec8eb6e8e698f4daac50b684fec50540852951323b2baf9f6b5c",
+      "digest": "3ce2433eb108d13e7827db85263d8640c26f90fb4f10d32912fce61e7a10ae4c",
       "distributions": [
-        "personal"
+        "personal",
+        "agent-capability:tool:x-api"
       ],
       "max_lines": 500,
       "max_tokens": 5000,
       "name": "x-api",
       "owner": "agents",
-      "provenance": "adopted",
+      "path": "skills/tool/x-api",
+      "provenance": "agents-owned",
+      "tags": [
+        "activation:opt-in",
+        "detect:opt-in:x-api",
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:no-keyring",
+        "policy:preflight-before-effects",
+        "policy:required-environment",
+        "policy:strict-execution",
+        "policy:zero-residue",
+        "provenance:agents-owned",
+        "route:agent",
+        "tool:x-api",
+        "updates:manual",
+        "usage:on-demand"
+      ],
+      "updates": "manual"
+    },
+    {
+      "category": "project-wide",
+      "class": "router",
+      "digest": "96466eda9f0906d5481ec3bcbae7ecc9ef0f63556cb1e5a1a7cac499c6081f77",
+      "distributions": [
+        "project-generic"
+      ],
+      "max_lines": 500,
+      "max_tokens": 500,
+      "name": "yagni",
+      "owner": "agents",
+      "path": "skills/project-wide/yagni",
+      "provenance": "agents-owned",
+      "tags": [
+        "policy:atomic-effects",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
+        "provenance:agents-owned",
+        "role:scope",
+        "updates:manual",
+        "usage:router"
+      ],
       "updates": "manual"
     }
   ],

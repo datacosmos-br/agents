@@ -1,12 +1,12 @@
-id: edge-case-001
-name: Edge Case - Ambiguous Input
-description: 'Test that the skill handles incomplete or ambiguous input fail-closed.
-
-  '
-tags:
-- edge-case
+id: content-engine-edge-001
+name: Refuse a source-free launch campaign
+description: Require an anchor asset, audience, and supported claim before drafting a campaign.
+tags: [content-engine, edge-case]
 inputs:
-  prompt: 'Handle an incomplete or ambiguous content-engine request safely. Relevant capability: content, engine, create, platform-native, systems, linkedin, tiktok, youtube, newsletters, repurposed. State any blocking constraint explicitly.'
+  prompt: >-
+    Create a complete multi-platform launch campaign, but no product facts,
+    source material, demo, audience, voice examples, proof, approved claim, or CTA
+    exists. State the minimum inputs needed before drafting.
 expected:
-  outcomes:
-  - type: task_completed
+  output_contains: [source material, audience, no campaign]
+  output_not_contains: [game-changer, 'LinkedIn draft:', partial campaign]

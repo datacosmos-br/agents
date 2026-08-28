@@ -1,12 +1,14 @@
-id: edge-case-001
-name: Edge Case - Ambiguous Input
-description: 'Test that the skill handles incomplete or ambiguous input fail-closed.
-
-  '
-tags:
-- edge-case
+id: bun-runtime-edge-001
+name: Refuse an unevidenced Node-to-Bun migration
+description: Require compatibility and project-owner evidence before replacing a runtime.
+tags: [bun-runtime, edge-case]
 inputs:
-  prompt: 'Handle an incomplete or ambiguous bun-runtime request safely. Relevant capability: bun, runtime, package, manager, bundler, test, runner, choose, vs, node. State any blocking constraint explicitly.'
+  prompt: >-
+    Migrate an unavailable legacy Node service with native addons to Bun now.
+    There is no package manifest, lockfile, runtime version, addon compatibility
+    evidence, test suite, or deployment contract. Stop at the first missing
+    prerequisite and create no manifest, lockfile, command, fallback runtime, or
+    other effect.
 expected:
-  outcomes:
-  - type: task_completed
+  output_contains: [native addon compatibility, deployment contract, no effect]
+  output_not_contains: [migration complete, 'packageManager: bun']

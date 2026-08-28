@@ -1,15 +1,12 @@
-id: should-not-trigger-001
-name: Should Not Trigger
-description: 'Test that the skill does NOT activate on unrelated prompts.
-
-  This validates trigger specificity.
-
-  '
-tags:
-- anti-trigger
-- negative-test
+id: agent-browser-negative-001
+name: Review static form accessibility
+description: Keep interactive automation out of a source-only HTML review.
+tags: [agent-browser, anti-trigger]
 inputs:
-  prompt: What is the weather today?
+  prompt: >-
+    Review the supplied HTML source for missing labels and accessible names. Do
+    not open a browser or interact with the page.
+  files:
+  - path: profile-form.html
 expected:
-  output_not_contains:
-  - skill activated
+  output_not_contains: [agent-browser open, agent-browser click, screenshot, fallback]

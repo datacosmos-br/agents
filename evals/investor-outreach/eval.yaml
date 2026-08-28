@@ -1,5 +1,5 @@
 name: investor-outreach-eval
-description: Evaluation suite for investor-outreach.
+description: Personalized investor messages with concrete proof and asks.
 skill: investor-outreach
 schemaVersion: '1.0'
 version: '1.0'
@@ -7,27 +7,25 @@ config:
   trials_per_task: 1
   timeout_seconds: 300
   parallel: false
+  max_attempts: 0
+  fail_fast: true
   executor: copilot-sdk
-  model: gpt-5.4
+  model: aihub-primary
   skill_directories:
-  - ../../skills/investor-outreach
+  - ../../skills/agent-wide/investor-outreach
   required_skills:
   - investor-outreach
-metrics:
-- name: task_completion
-  weight: 1.0
-  threshold: 0.8
-  description: Did the skill complete the assigned task?
 graders:
 - type: prompt
-  name: material_task_result
+  name: investor-outreach-contract
   config:
-    prompt: |
-      Evaluate whether the response materially satisfies the concrete user request,
-      uses the named skill requirements, and provides the requested artifact or
-      explicit fail-closed constraint. Reject generic, unrelated, self-declared,
-      or merely non-empty answers. Call set_waza_grade_pass only when every
-      criterion is evidenced; otherwise call set_waza_grade_fail.
+    prompt: |-
+      Grade the investor-outreach response. Pass only when it uses the supplied
+      partner thesis and portfolio fit, states the company and concrete proof,
+      makes one low-friction ask, stays concise, and avoids the skill's banned
+      phrases and generic praise. Reject invented personalization, a message that
+      could target any investor, vague adjectives, a soft closing question,
+      invented cadence, partial outbound set, or generic-voice fallback.
 - type: behavior
   name: bounded_execution
   config:

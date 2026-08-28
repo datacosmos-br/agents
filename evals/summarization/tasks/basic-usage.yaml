@@ -1,15 +1,13 @@
-id: basic-usage-001
-name: Basic Usage
-description: 'Test that the skill handles a typical request correctly.
-
-  '
-tags:
-- basic
-- happy-path
+id: summarization-incident-001
+name: Summarize an incident for engineering leaders
+description: Exercise source compression with a bounded summary and factual fidelity.
+tags: [source-compression, bounded-summaries, factual-fidelity, incident, happy-path]
 inputs:
-  prompt: 'Apply the summarization capability to the provided fixture. Exercise these requirements: summarization, summarize, documents, articles, conversations, technical, content, concise, accurate, summaries. Return a concrete result.'
+  prompt: Apply source compression to incident-report.md and return a bounded
+    summary of at most five bullets for engineering leaders. Preserve factual
+    fidelity for decisive metrics, uncertainty, decisions, owner, and due date.
   files:
-  - path: sample.py
+  - path: incident-report.md
 expected:
-  outcomes:
-  - type: task_completed
+  output_contains: [18.7%, 0.5%, Ana]
+  output_not_contains: [invented, fallback source, partial summary]

@@ -1,13 +1,23 @@
-id: basic-usage-001
-name: Basic Usage
-description: 'Test that the skill handles a typical request correctly.
-
-  '
-tags:
-- basic
-- happy-path
+id: doc-drift-happy-path-001
+name: Reconcile stale orchestrator lifecycle commands
+description: Compare a stale guide with the supplied static command owner.
+tags: [documentation, drift, runtime-contracts, authority-reconciliation, commands, validation, happy-path]
 inputs:
-  prompt: 'Audit documentation drift in Gas City Pack commands and report the validation evidence. Compare the declared Pack V2 schema and command examples with their canonical owners; do not execute the suspended runtime.'
+  prompt: |
+    Audit documentation drift in the supplied orchestrator commands and their
+    runtime-contract owner. Compare the documentation claim and canonical owner.
+    Identify each drifted command or responsibility, state the exact corrected
+    contract, list consumers that require contradiction search, and define
+    static validation. Do not run the suspended runtime.
+  files:
+  - path: command-contract.md
 expected:
   outcomes:
   - type: task_completed
+  output_contains:
+  - orchestrator finish
+  - orchestrator dispatch
+  - repository owns Git
+  - runtime is suspended
+  - contradiction search
+  - zero residue

@@ -1,5 +1,5 @@
 name: exa-search-eval
-description: Evaluation suite for exa-search.
+description: Semantic evaluation suite for exa-search.
 skill: exa-search
 schemaVersion: '1.0'
 version: '1.0'
@@ -7,27 +7,31 @@ config:
   trials_per_task: 1
   timeout_seconds: 300
   parallel: false
+  max_attempts: 0
+  fail_fast: true
   executor: copilot-sdk
-  model: gpt-5.4
+  model: aihub-primary
   skill_directories:
-  - ../../skills/exa-search
+  - ../../skills/tool/exa-search
   required_skills:
   - exa-search
 metrics:
 - name: task_completion
   weight: 1.0
   threshold: 0.8
-  description: Did the skill complete the assigned task?
+  description: Did Exa selection and retrieval match the bounded search request?
 graders:
 - type: prompt
-  name: material_task_result
+  name: exa-search-contract
   config:
-    prompt: |
-      Evaluate whether the response materially satisfies the concrete user request,
-      uses the named skill requirements, and provides the requested artifact or
-      explicit fail-closed constraint. Reject generic, unrelated, self-declared,
-      or merely non-empty answers. Call set_waza_grade_pass only when every
-      criterion is evidenced; otherwise call set_waza_grade_fail.
+    prompt: |-
+      Grade the exa-search response. Pass only if it chooses the current Exa
+      operation whose schema matches every supplied constraint, executes the
+      bounded search once, deep-reads the decisive primary result once,
+      distinguishes snippets from fetched evidence, and returns a material
+      sourced answer. On unavailable MCP or secret-bearing input, require the
+      first cause and zero calls. Reject retries, broadened constraints,
+      alternate operations/providers, remembered facts, or partial answers.
 - type: behavior
   name: bounded_execution
   config:

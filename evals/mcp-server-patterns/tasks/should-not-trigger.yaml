@@ -1,15 +1,8 @@
-id: should-not-trigger-001
-name: Should Not Trigger
-description: 'Test that the skill does NOT activate on unrelated prompts.
-
-  This validates trigger specificity.
-
-  '
-tags:
-- anti-trigger
-- negative-test
+id: mcp-server-patterns-json-rpc-negative-001
+name: Review a non-MCP JSON-RPC endpoint
+description: Keep MCP registration guidance out of a generic protocol handler.
+tags: [json-rpc, http, anti-trigger]
 inputs:
-  prompt: What is the weather today?
+  prompt: Review a plain JSON-RPC 2.0 HTTP endpoint used only by an internal service. It has no MCP client, SDK, tools, resources, prompts, or MCP transport.
 expected:
-  output_not_contains:
-  - skill activated
+  output_not_contains: [McpServer, registerTool, Streamable HTTP]
