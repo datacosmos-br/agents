@@ -686,9 +686,7 @@ def _positive_float(table: dict[str, Any], key: str) -> float:
     return value
 
 
-def _manifest_path(
-    raw: str, context: str, *, config_dir: Path | None = None
-) -> Path:
+def _manifest_path(raw: str, context: str, *, config_dir: Path | None = None) -> Path:
     try:
         return _expand_local_path(raw, config_dir=config_dir)
     except RuntimeError as error:

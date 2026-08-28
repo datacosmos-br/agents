@@ -172,7 +172,7 @@ def test_normalize_descriptions_accepts_discriminating_keywords(
                     "frozen_tokens": 1200,
                     "on_demand_tokens": 5000,
                     "max_lines": 500,
-                }
+                },
             }
         ),
         encoding="utf-8",
@@ -258,7 +258,7 @@ def test_normalize_rejects_invalid_catalog_before_any_write(tmp_path: Path) -> N
                     "frozen_tokens": 1200,
                     "on_demand_tokens": 5000,
                     "max_lines": 500,
-                }
+                },
             }
         ),
         encoding="utf-8",

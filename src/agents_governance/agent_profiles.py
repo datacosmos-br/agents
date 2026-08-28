@@ -83,9 +83,7 @@ class AgentArtifact:
     name: str
     destination: PurePosixPath
     content: str
-    status: AgentAdapterStatus = field(
-        default=AgentAdapterStatus.SUPPORTED, init=False
-    )
+    status: AgentAdapterStatus = field(default=AgentAdapterStatus.SUPPORTED, init=False)
 
     def __post_init__(self) -> None:
         if (
@@ -277,7 +275,11 @@ def _tag_findings(
         value = parts[2]
         if parts[1] == "marker":
             marker = PurePosixPath(value)
-            if marker.is_absolute() or marker == PurePosixPath(".") or ".." in marker.parts:
+            if (
+                marker.is_absolute()
+                or marker == PurePosixPath(".")
+                or ".." in marker.parts
+            ):
                 findings.append(
                     _finding(
                         relative,

@@ -214,8 +214,6 @@ def test_headless_lookup_preserves_secret_tool_failure(
     lookup = namespace["lookup"]
     keyring_error = cast(type[Exception], namespace["KeyringError"])
     assert callable(lookup)
-    lookup.__globals__["Secret"] = None
-    lookup.__globals__["SECRET_SCHEMA"] = None
     monkeypatch.setenv("DBUS_SESSION_BUS_ADDRESS", "unix:path=/test")
 
     def fail_lookup(
@@ -244,8 +242,6 @@ def test_headless_lookup_preserves_explicit_missing_secret(
     lookup = namespace["lookup"]
     keyring_error = cast(type[Exception], namespace["KeyringError"])
     assert callable(lookup)
-    lookup.__globals__["Secret"] = None
-    lookup.__globals__["SECRET_SCHEMA"] = None
     monkeypatch.setenv("DBUS_SESSION_BUS_ADDRESS", "unix:path=/test")
 
     def missing(*_args: object, **_kwargs: object) -> subprocess.CompletedProcess[str]:

@@ -9,7 +9,7 @@ import pytest
 
 def _loader_namespace() -> dict[str, Any]:
     namespace = runpy.run_module("agents_governance.environment_loader")
-    namespace["shell_environment"] = lambda: {}
+    namespace["shell_environment"] = dict
     return namespace
 
 

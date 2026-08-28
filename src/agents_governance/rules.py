@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-import os
 import json
+import os
 import re
 import stat
 from dataclasses import dataclass
@@ -271,9 +271,7 @@ def _metadata(
         tags: tuple[str, ...] = ()
     else:
         if not isinstance(raw_metadata, dict) or set(raw_metadata) != _METADATA_FIELDS:
-            raise _RuleSourceError(
-                "rule-tags", "metadata must contain only aihub.tags"
-            )
+            raise _RuleSourceError("rule-tags", "metadata must contain only aihub.tags")
         encoded = raw_metadata.get("aihub.tags")
         if not isinstance(encoded, str):
             raise _RuleSourceError(
@@ -533,8 +531,8 @@ def audit_rule_specs(root: Path) -> RuleAudit:
 __all__ = [
     "RuleActivation",
     "RuleAudit",
-    "RuleFinding",
     "RuleDistribution",
+    "RuleFinding",
     "RuleSpec",
     "audit_rule_specs",
 ]

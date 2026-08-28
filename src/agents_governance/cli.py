@@ -95,8 +95,12 @@ def _commands_audit(root: Path) -> int:
     except (OSError, TypeError, ValueError) as error:
         print(f"FAIL: command audit: {error}", file=sys.stderr)
         return 2
-    for item in audit.findings:
-        print(f"{item.path}: {item.code}: {item.message}", file=sys.stderr)
+    for command_finding in audit.findings:
+        print(
+            f"{command_finding.path}: {command_finding.code}: "
+            f"{command_finding.message}",
+            file=sys.stderr,
+        )
     if audit.findings:
         print(
             f"FAIL: {len(audit.findings)} blocking command finding(s)",
@@ -104,8 +108,11 @@ def _commands_audit(root: Path) -> int:
         )
         return 1
     eval_audit = audit_command_evals(root, audit.commands)
-    for item in eval_audit.findings:
-        print(f"{item.path}: {item.code}: {item.message}", file=sys.stderr)
+    for eval_finding in eval_audit.findings:
+        print(
+            f"{eval_finding.path}: {eval_finding.code}: {eval_finding.message}",
+            file=sys.stderr,
+        )
     if eval_audit.findings:
         print(
             f"FAIL: {len(eval_audit.findings)} blocking command eval finding(s)",

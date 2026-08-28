@@ -82,7 +82,9 @@ def materialize_storage(managed: dict[str, str]) -> dict[str, str]:
 
     owned = shell_environment()
     conflicts = sorted(
-        name for name, value in owned.items() if name in managed and managed[name] != value
+        name
+        for name, value in owned.items()
+        if name in managed and managed[name] != value
     )
     if conflicts:
         raise ValueError(
@@ -232,7 +234,12 @@ def main() -> int:
             emit_completions(args.shell)
         else:
             validate_environment()
-    except (OSError, StorageManifestError, ValueError, tomllib.TOMLDecodeError) as error:
+    except (
+        OSError,
+        StorageManifestError,
+        ValueError,
+        tomllib.TOMLDecodeError,
+    ) as error:
         print(f"environment-d-loader: {error}", file=sys.stderr)
         return 78
     return 0

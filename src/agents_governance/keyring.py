@@ -15,18 +15,7 @@ import sys
 import time
 import tomllib
 from pathlib import Path
-
-try:
-    import gi
-
-    gi.require_version("Secret", "1")
-    from gi.repository import Secret
-except (
-    ImportError,
-    ValueError,
-):  # pragma: no cover - fallback is exercised on headless hosts
-    Secret = None
-
+from typing import TypedDict
 
 APP = "dev-environment"
 CONFIG_ROOT = Path(os.environ.get("XDG_CONFIG_HOME", Path.home() / ".config"))
@@ -38,19 +27,20 @@ PROFILE_RE = re.compile(r"^[a-z][a-z0-9-]{1,63}$")
 EXPANDABLE_ROOTS = frozenset(
     {"HOME", "XDG_CONFIG_HOME", "XDG_CACHE_HOME", "XDG_STATE_HOME"}
 )
+_PROFILE_FIELDS = frozenset(
+    {"aliases", "auto_load", "consumers", "roots", "shell_variables", "variables"}
+)
 
-if Secret is not None:
-    SECRET_SCHEMA = Secret.Schema.new(
-        "org.freedesktop.Secret.Generic",
-        Secret.SchemaFlags.NONE,
-        {
-            "application": Secret.SchemaAttributeType.STRING,
-            "profile": Secret.SchemaAttributeType.STRING,
-            "name": Secret.SchemaAttributeType.STRING,
-        },
-    )
-else:
-    SECRET_SCHEMA = None
+
+class ProfileConfig(TypedDict):
+    """Validated keyring profile consumed by every runtime surface."""
+
+    variables: list[str]
+    aliases: dict[str, str]
+    shell_variables: list[str]
+    roots: list[str]
+    consumers: list[str]
+    auto_load: bool
 
 
 class KeyringError(RuntimeError):
@@ -80,7 +70,61 @@ def event(action: str, profile: str, *, name: str = "", result: str) -> None:
         handle.write(json.dumps(payload, sort_keys=True) + "\n")
 
 
-def manifest() -> dict[str, dict[str, object]]:
+def _string_list(
+    raw: dict[str, object], field: str, profile: str, *, required: bool = False
+) -> list[str]:
+    value = raw.get(field, [])
+    if (
+        not isinstance(value, list)
+        or (required and not value)
+        or any(not isinstance(item, str) or not item for item in value)
+        or len(set(value)) != len(value)
+    ):
+        raise KeyringError(f"invalid {field} for profile: {profile}")
+    return value
+
+
+def _parse_profile(name: str, raw: object) -> ProfileConfig:
+    if not PROFILE_RE.fullmatch(name) or not isinstance(raw, dict):
+        raise KeyringError(f"invalid profile: {name}")
+    unknown = set(raw) - _PROFILE_FIELDS
+    if unknown:
+        raise KeyringError(f"unknown fields for profile {name}: {sorted(unknown)}")
+    variables = _string_list(raw, "variables", name, required=True)
+    if any(NAME_RE.fullmatch(item) is None for item in variables):
+        raise KeyringError(f"invalid variables for profile: {name}")
+    raw_aliases = raw.get("aliases", {})
+    if not isinstance(raw_aliases, dict):
+        raise KeyringError(f"invalid aliases for profile: {name}")
+    aliases: dict[str, str] = {}
+    for alias, source in raw_aliases.items():
+        if (
+            not isinstance(alias, str)
+            or NAME_RE.fullmatch(alias) is None
+            or not isinstance(source, str)
+            or source not in variables
+            or alias in variables
+        ):
+            raise KeyringError(f"invalid aliases for profile: {name}")
+        aliases[alias] = source
+    shell_variables = _string_list(raw, "shell_variables", name)
+    declared = {*variables, *aliases}
+    if any(item not in declared for item in shell_variables):
+        raise KeyringError(f"invalid shell_variables for profile: {name}")
+    auto_load = raw.get("auto_load", False)
+    if not isinstance(auto_load, bool):
+        raise KeyringError(f"invalid auto_load for profile: {name}")
+    return ProfileConfig(
+        variables=variables,
+        aliases=aliases,
+        shell_variables=shell_variables,
+        roots=_string_list(raw, "roots", name),
+        consumers=_string_list(raw, "consumers", name),
+        auto_load=auto_load,
+    )
+
+
+def manifest() -> dict[str, ProfileConfig]:
     try:
         data = tomllib.loads(MANIFEST.read_text(encoding="utf-8"))
     except (OSError, tomllib.TOMLDecodeError) as error:
@@ -88,43 +132,20 @@ def manifest() -> dict[str, dict[str, object]]:
     profiles = data.get("profiles")
     if data.get("version") != 1 or not isinstance(profiles, dict):
         raise KeyringError("invalid manifest version or profiles")
-    return profiles
+    result: dict[str, ProfileConfig] = {}
+    for name, raw in profiles.items():
+        if not isinstance(name, str):
+            raise KeyringError("profile names must be strings")
+        result[name] = _parse_profile(name, raw)
+    return result
 
 
-def profile_config(name: str) -> dict[str, object]:
+def profile_config(name: str) -> ProfileConfig:
     if not PROFILE_RE.fullmatch(name):
         raise KeyringError("invalid profile name")
     config = manifest().get(name)
-    if not isinstance(config, dict):
+    if config is None:
         raise KeyringError(f"unknown profile: {name}")
-    variables = config.get("variables", [])
-    if (
-        not isinstance(variables, list)
-        or not variables
-        or any(
-            not isinstance(item, str) or not NAME_RE.fullmatch(item)
-            for item in variables
-        )
-    ):
-        raise KeyringError(f"invalid variables for profile: {name}")
-    raw_aliases = config.get("aliases", {})
-    if not isinstance(raw_aliases, dict):
-        raise KeyringError(f"invalid aliases for profile: {name}")
-    for alias, source in raw_aliases.items():
-        if (
-            not isinstance(alias, str)
-            or not NAME_RE.fullmatch(alias)
-            or not isinstance(source, str)
-            or source not in variables
-            or alias in variables
-        ):
-            raise KeyringError(f"invalid aliases for profile: {name}")
-    exports = config.get("shell_variables", [])
-    declared = {*variables, *raw_aliases}
-    if not isinstance(exports, list) or any(
-        not isinstance(item, str) or item not in declared for item in exports
-    ):
-        raise KeyringError(f"invalid shell_variables for profile: {name}")
     return config
 
 
@@ -147,15 +168,13 @@ def expand_root(raw_root: str) -> Path:
     return result
 
 
-def auto_profile(directory: str | None) -> tuple[str, dict[str, object]] | None:
+def auto_profile(directory: str | None) -> tuple[str, ProfileConfig] | None:
     current = Path(directory or os.getcwd()).resolve(strict=True)
-    candidates: list[tuple[int, str, dict[str, object]]] = []
+    candidates: list[tuple[int, str, ProfileConfig]] = []
     for name, config in manifest().items():
-        if not isinstance(config, dict) or config.get("auto_load") is not True:
+        if not config["auto_load"]:
             continue
-        for raw_root in config.get("roots", []):
-            if not isinstance(raw_root, str):
-                continue
+        for raw_root in config["roots"]:
             root = expand_root(raw_root)
             if not root.exists():
                 continue
@@ -183,23 +202,18 @@ def within(path: Path, root: Path) -> bool:
         return False
 
 
-def authorize_directory(config: dict[str, object], directory: str | None) -> None:
+def authorize_directory(config: ProfileConfig, directory: str | None) -> None:
     current = Path(directory or os.getcwd()).resolve(strict=True)
-    roots = config.get("roots", [])
-    if not isinstance(roots, list) or not any(
-        isinstance(item, str)
-        and within(current, expand_root(item).resolve(strict=True))
-        for item in roots
-        if expand_root(str(item)).exists()
+    if not any(
+        root.exists() and within(current, root.resolve(strict=True))
+        for root in (expand_root(item) for item in config["roots"])
     ):
         raise KeyringError("directory is not authorized for this profile")
 
 
-def authorize_consumer(config: dict[str, object], consumer: str) -> None:
-    consumers = config.get("consumers", [])
-    if not isinstance(consumers, list) or not any(
-        isinstance(pattern, str) and fnmatch.fnmatchcase(consumer, pattern)
-        for pattern in consumers
+def authorize_consumer(config: ProfileConfig, consumer: str) -> None:
+    if not any(
+        fnmatch.fnmatchcase(consumer, pattern) for pattern in config["consumers"]
     ):
         raise KeyringError("consumer is not authorized for this profile")
 
@@ -207,15 +221,6 @@ def authorize_consumer(config: dict[str, object], consumer: str) -> None:
 def lookup(profile: str, name: str) -> str:
     if not os.environ.get("DBUS_SESSION_BUS_ADDRESS"):
         raise KeyringError("GNOME Keyring unavailable: session D-Bus is not configured")
-    if Secret is not None and SECRET_SCHEMA is not None:
-        value = Secret.password_lookup_sync(
-            SECRET_SCHEMA,
-            {"application": APP, "profile": profile, "name": name},
-            None,
-        )
-        if value:
-            return str(value)
-        raise KeyringError(f"missing secret: {name}")
     process = subprocess.run(
         ["secret-tool", "lookup", "application", APP, "profile", profile, "name", name],
         check=False,
@@ -232,18 +237,18 @@ def lookup(profile: str, name: str) -> str:
     return process.stdout.rstrip("\n")
 
 
-def fetch_all(profile: str, config: dict[str, object]) -> dict[str, str]:
+def fetch_all(profile: str, config: ProfileConfig) -> dict[str, str]:
     result: dict[str, str] = {}
     for name in config["variables"]:
         result[str(name)] = lookup(profile, str(name))
-    for alias, source in config.get("aliases", {}).items():
+    for alias, source in config["aliases"].items():
         result[str(alias)] = result[str(source)]
     return result
 
 
-def fetch_shell(profile: str, config: dict[str, object]) -> dict[str, str]:
+def fetch_shell(profile: str, config: ProfileConfig) -> dict[str, str]:
     """Fetch only values explicitly authorized for ambient project shells."""
-    aliases = config.get("aliases", {})
+    aliases = config["aliases"]
     result: dict[str, str] = {}
     canonical: dict[str, str] = {}
     for raw_name in config["shell_variables"]:
@@ -255,11 +260,11 @@ def fetch_shell(profile: str, config: dict[str, object]) -> dict[str, str]:
     return result
 
 
-def declared_export_names(config: dict[str, object]) -> set[str]:
+def declared_export_names(config: ProfileConfig) -> set[str]:
     """Return every canonical and aliased environment export name."""
     return {
-        *(str(name) for name in config["variables"]),
-        *(str(name) for name in config.get("aliases", {})),
+        *config["variables"],
+        *config["aliases"],
     }
 
 
@@ -343,10 +348,8 @@ def check(profile: str, directory: str | None, consumer: str | None) -> int:
 
 def credential(consumer: str, name: str) -> int:
     """Emit one credential for an explicitly authorized non-shell consumer."""
-    matches: list[tuple[str, dict[str, object]]] = []
-    for profile, config in manifest().items():
-        if not isinstance(config, dict):
-            continue
+    matches: list[tuple[str, ProfileConfig]] = []
+    for profile in manifest():
         configured = profile_config(profile)
         variables = configured["variables"]
         if name in variables:
@@ -368,12 +371,10 @@ def validate_manifest() -> int:
     profiles = manifest()
     for profile in sorted(profiles):
         config = profile_config(profile)
-        roots = config.get("roots", [])
-        if not isinstance(roots, list) or not roots:
+        roots = config["roots"]
+        if not roots:
             raise KeyringError(f"profile has no roots: {profile}")
         for root in roots:
-            if not isinstance(root, str):
-                raise KeyringError(f"invalid root for profile: {profile}")
             expand_root(root)
     print(f"profiles={len(profiles)} status=valid")
     return 0
@@ -385,9 +386,8 @@ def execute(profile: str, consumer: str, command: list[str]) -> int:
     secrets = fetch_all(profile, config)
     environment = os.environ.copy()
     for item in manifest().values():
-        if isinstance(item, dict):
-            for name in declared_export_names(item):
-                environment.pop(str(name), None)
+        for name in declared_export_names(item):
+            environment.pop(name, None)
     environment.update(secrets)
     event("exec", profile, result="dispatch")
     os.execvpe(command[0], command, environment)
@@ -403,9 +403,8 @@ def execute_auto(directory: str | None, consumer: str, command: list[str]) -> in
     secrets = fetch_all(profile, config)
     environment = os.environ.copy()
     for item in manifest().values():
-        if isinstance(item, dict):
-            for name in declared_export_names(item):
-                environment.pop(str(name), None)
+        for name in declared_export_names(item):
+            environment.pop(name, None)
     environment.update(secrets)
     environment["ENV_KEYRING_PROFILE"] = profile
     event("auto-exec", profile, result="dispatch")
@@ -432,7 +431,10 @@ def remove(profile: str, name: str, confirmed: bool) -> int:
         result="ok" if process.returncode == 0 else "failed",
     )
     if process.returncode != 0:
-        print(f"env-keyring: {subprocess_error('secret-tool clear', process)}", file=sys.stderr)
+        print(
+            f"env-keyring: {subprocess_error('secret-tool clear', process)}",
+            file=sys.stderr,
+        )
     return process.returncode
 
 

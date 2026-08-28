@@ -65,9 +65,7 @@ _SKILL_FRONTMATTER_FIELDS = frozenset(
         "name",
     }
 )
-_OPTIONAL_STRING_FIELDS = frozenset(
-    {"allowed-tools", "compatibility", "license"}
-)
+_OPTIONAL_STRING_FIELDS = frozenset({"allowed-tools", "compatibility", "license"})
 _INVENTORY_VERSION = 1
 
 
@@ -194,7 +192,9 @@ class Catalog:
         for field in sorted(_OPTIONAL_STRING_FIELDS):
             value = frontmatter.get(field)
             if value is not None and (
-                not isinstance(value, str) or not value.strip() or value != value.strip()
+                not isinstance(value, str)
+                or not value.strip()
+                or value != value.strip()
             ):
                 raise TypeError(f"{field} must be a non-empty trimmed string")
         return frontmatter

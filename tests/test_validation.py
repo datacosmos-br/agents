@@ -18,7 +18,9 @@ def _catalog(tmp_path: Path) -> Catalog:
     rules.mkdir(exist_ok=True)
     baseline = rules / "baseline.md"
     if not baseline.exists():
-        baseline.write_text("# Baseline\n\nUse the canonical owner.\n", encoding="utf-8")
+        baseline.write_text(
+            "# Baseline\n\nUse the canonical owner.\n", encoding="utf-8"
+        )
     config = {
         "version": 2,
         "budgets": {
@@ -221,7 +223,10 @@ def test_description_rejects_prose_instead_of_keyword_phrases(tmp_path: Path) ->
     findings = validate(_catalog(tmp_path))
 
     assert [(item.code, item.message) for item in findings] == [
-        ("description", "description must contain keywords or nominal phrases, not prose")
+        (
+            "description",
+            "description must contain keywords or nominal phrases, not prose",
+        )
     ]
 
 
@@ -230,8 +235,7 @@ def test_description_enforces_discovery_budget(tmp_path: Path) -> None:
     skill.mkdir(parents=True)
     skill_file = skill / "SKILL.md"
     skill_file.write_text(
-        "---\nname: example\ndescription: review, code\n"
-        "---\n# Example\n",
+        "---\nname: example\ndescription: review, code\n---\n# Example\n",
         encoding="utf-8",
     )
     catalog = _catalog(tmp_path)
@@ -286,18 +290,14 @@ def test_description_enforces_keyword_list_grammar(tmp_path: Path) -> None:
         '" code review, security, validation "': (
             "description must be one trimmed line"
         ),
-        "Code review, security, validation": (
-            "description must use lowercase terms"
-        ),
+        "Code review, security, validation": ("description must use lowercase terms"),
         "code review, security, validation.": (
             "description terms may contain only lowercase words and technical identifiers"
         ),
         "code review,security, validation": (
             "description terms must be separated by ', '"
         ),
-        "code review, code review, validation": (
-            "description terms must be unique"
-        ),
+        "code review, code review, validation": ("description terms must be unique"),
     }
     for description, expected_message in invalid_descriptions.items():
         skill_file.write_text(

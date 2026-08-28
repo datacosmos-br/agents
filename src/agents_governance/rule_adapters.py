@@ -163,9 +163,7 @@ def _unsupported(
 def _claude(
     spec: RuleSpec, provider: RuleProvider, context: RuleContext
 ) -> RuleArtifact:
-    destination = PurePosixPath(
-        ".claude", "rules", _physical_name(spec, ".md")
-    )
+    destination = PurePosixPath(".claude", "rules", _physical_name(spec, ".md"))
     body = _render_body(spec, ".md")
     content = (
         _frontmatter({"paths": list(spec.globs)}, body)
@@ -216,9 +214,7 @@ def _copilot(
         provider,
         context,
         base / _physical_name(spec, ".instructions.md"),
-        _frontmatter(
-            {"applyTo": apply_to}, _render_body(spec, ".instructions.md")
-        ),
+        _frontmatter({"applyTo": apply_to}, _render_body(spec, ".instructions.md")),
     )
 
 

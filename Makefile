@@ -28,7 +28,7 @@ skill_file = $(firstword $(filter %/$(1)/SKILL.md,$(SKILL_FILES)))
 skill_dir = $(patsubst %/SKILL.md,%,$(call skill_file,$(1)))
 
 .DEFAULT_GOAL := help
-.PHONY: help status setup models audit check static shell build ci security security-inventory temp sync adjust normalize descriptions test preflight validate-live rate baseline suggest spec coverage run gate compare validate clean
+.PHONY: help status setup models audit check static fmt shell build ci security security-inventory temp sync adjust normalize descriptions test preflight validate-live rate baseline suggest spec coverage run gate compare validate clean
 .DELETE_ON_ERROR:
 
 define BANNER
@@ -78,6 +78,11 @@ static: ## lint, format, and Python type analysis
 	@uv run ruff format --check src tests
 	@uv run pyright src tests
 	@uv run mypy src tests
+
+fmt: ## apply canonical Python lint and format rewrites
+	$(call BANNER,fmt · ruff)
+	@uv run ruff check --fix src tests
+	@uv run ruff format src tests
 
 shell: ## shell scripts and GitHub workflow syntax
 	$(call BANNER,shell · shellcheck + actionlint)
