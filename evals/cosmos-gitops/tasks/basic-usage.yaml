@@ -1,0 +1,16 @@
+id: cosmos-gitops-happy-path-001
+name: Land a chart member without cluster authority
+description: Validate a declarative member and root pointer while withholding live effects.
+tags: [cosmos-gitops, helm, happy-path, submodule]
+inputs:
+  prompt: |
+    The cosmos-gitops tag is selected for Cosmos GitOps work covering Helm
+    delivery and ArgoCD reconciliation. Repository edits and PR landing are
+    authorized for a chart submodule and its umbrella, but environment promotion
+    and cluster mutation are not authorized. Describe the source change,
+    serialized Helm validation, deterministic staged render, secret handling,
+    member merge, gitlink update, and post-merge proof. State exactly what is not
+    executed.
+expected:
+  output_contains: [declarative, serialized, Helm, render, secret, member, gitlink, post-merge, NOT EXECUTED, cluster]
+  output_not_contains: [sync cluster, live patch, keyring, rollback, parallel Helm]

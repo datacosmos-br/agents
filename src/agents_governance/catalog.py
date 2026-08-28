@@ -21,7 +21,7 @@ NON_PORTABLE_PROJECT_REFERENCE = re.compile(
     r"|(?i:[A-Z]:\\Users\\[^\\\s`'\"()]+(?:\\|\b))"
     r"|(?i:file://)"
     r"|(?<![A-Za-z0-9_.-])\.(?:agents|beads|claude)(?:[/\\]|\b)"
-    r"|(?i:\b(?:Gas[ -]?(?:Town|City)|AI[ -]Hub|Beads|Dolt|FLEXT)\b)"
+    r"|(?i:\b(?:Gas[ -]?(?:Town|City)|AI[ -]Hub|Beads|Dolt)\b)"
     r")"
 )
 
@@ -143,8 +143,39 @@ class Catalog:
     def __init__(self, root: Path) -> None:
         self.root = root.resolve(strict=True)
         self.config = self._load_policy(self.root / "config" / "skills.json")
-        self._records = self._discover()
+        self.owner = "agents"
+        self.project_local = False
+        self._records = self._discover(require_inventory=True)
         self._directories = tuple(record.directory for record in self._records)
+
+    @classmethod
+    def project(cls, root: Path, authority: Catalog) -> Catalog:
+        """Discover an authorized project's private skills under central policy."""
+
+        catalog = cls.__new__(cls)
+        catalog.root = root.resolve(strict=True)
+        catalog.config = authority.config
+        catalog.owner = "project"
+        catalog.project_local = True
+        catalog._records = catalog._discover(require_inventory=False)
+        catalog._directories = tuple(record.directory for record in catalog._records)
+        for record in catalog._records:
+            if record.provenance != "project-owned":
+                raise ValueError(
+                    f"{record.directory / 'SKILL.md'}: project-local skill requires "
+                    "provenance:project-owned"
+                )
+            if record.category is SkillCategory.AGENT_WIDE:
+                raise ValueError(
+                    f"{record.directory / 'SKILL.md'}: project-local agent-wide "
+                    "skill is forbidden"
+                )
+            if record.category.conditional and record.route != "project":
+                raise ValueError(
+                    f"{record.directory / 'SKILL.md'}: project-local conditional "
+                    "skill requires route:project"
+                )
+        return catalog
 
     @staticmethod
     def _load_policy(path: Path) -> dict[str, object]:
@@ -327,12 +358,18 @@ class Catalog:
             detectors,
         )
 
-    def _discover(self) -> tuple[SkillRecord, ...]:
+    def _discover(self, *, require_inventory: bool) -> tuple[SkillRecord, ...]:
         skills_root = self.root / "skills"
+        if not skills_root.exists() and not skills_root.is_symlink():
+            if require_inventory:
+                raise ValueError(
+                    f"skills root must be a physical directory: {skills_root}"
+                )
+            return ()
         if skills_root.is_symlink() or not skills_root.is_dir():
             raise ValueError(f"skills root must be a physical directory: {skills_root}")
         skill_files = tuple(sorted(skills_root.rglob("SKILL.md")))
-        if not skill_files:
+        if require_inventory and not skill_files:
             raise ValueError(f"skill inventory is empty: {skills_root}")
         records: list[SkillRecord] = []
         names: set[str] = set()
@@ -492,7 +529,7 @@ class Catalog:
             entries.append(
                 {
                     "name": record.name,
-                    "owner": "agents",
+                    "owner": self.owner,
                     "category": record.category.value,
                     "class": policy.class_name,
                     "provenance": policy.provenance,

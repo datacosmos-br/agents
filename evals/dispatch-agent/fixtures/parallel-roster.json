@@ -1,0 +1,13 @@
+{
+  "authorization": "Three distinct read-only audits may run concurrently",
+  "project": {
+    "branch": "feat/governed-catalog",
+    "integration": "Coordinator integrates evidence before any writer starts",
+    "scope": "read-only audit"
+  },
+  "agents": [
+    {"name": "runtime-debugger", "triggers": ["runtime trace", "failure cause"]},
+    {"name": "security-reviewer", "triggers": ["threat boundary", "secret exposure"]},
+    {"name": "documentation-reviewer", "triggers": ["authority drift", "stale reference"]}
+  ]
+}

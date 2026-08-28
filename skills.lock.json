@@ -550,6 +550,41 @@
       "updates": "manual"
     },
     {
+      "category": "domain",
+      "class": "router",
+      "digest": "1b3b30a66235992133094dfb0c2dffca768a50e88d4e71a2bfceba6c4d6e2cea",
+      "distributions": [
+        "project-capability:domain:cosmos-gitops"
+      ],
+      "max_lines": 500,
+      "max_tokens": 500,
+      "name": "cosmos-gitops",
+      "owner": "agents",
+      "path": "skills/domain/cosmos-gitops",
+      "provenance": "agents-owned",
+      "tags": [
+        "activation:detected",
+        "detect:selected-tag:cosmos-gitops",
+        "domain:cosmos-gitops",
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:no-keyring",
+        "policy:preflight-before-effects",
+        "policy:required-environment",
+        "policy:strict-execution",
+        "policy:zero-residue",
+        "provenance:agents-owned",
+        "route:project",
+        "tool:argocd",
+        "tool:helm",
+        "updates:manual",
+        "usage:router"
+      ],
+      "updates": "manual"
+    },
+    {
       "category": "technology",
       "class": "router",
       "digest": "fe1abb626446f7fb5c8c326ce96120d3786f8d3658807101d811b5926f168cd1",
@@ -665,7 +700,7 @@
     {
       "category": "agent-wide",
       "class": "on_demand",
-      "digest": "b432a027f1431fdd5f5e0baa9f29639c90757239a1a73072a7dbab0d3cd899da",
+      "digest": "958c2b26e596c7568b41a76e668878a41767bf2072624fad93ae8cddb606efb5",
       "distributions": [
         "personal"
       ],
@@ -961,7 +996,7 @@
     {
       "category": "agent-wide",
       "class": "router",
-      "digest": "d08ba67b4b234d7ec2a3cd3b7ecb6f5f322e3645f74cf413af474ea3013850d7",
+      "digest": "e60379716bc04a314ff603b45c2c9ab457e7359b0fe9e1f87bf13c15cad9e809",
       "distributions": [
         "personal"
       ],
@@ -981,6 +1016,41 @@
         "policy:zero-residue",
         "provenance:agents-owned",
         "role:governance",
+        "updates:manual",
+        "usage:router"
+      ],
+      "updates": "manual"
+    },
+    {
+      "category": "framework",
+      "class": "router",
+      "digest": "4b8fd834ee1f6792091f9e78e3488117c6c919d449f5532bab60c1166be54122",
+      "distributions": [
+        "project-capability:framework:flext"
+      ],
+      "max_lines": 500,
+      "max_tokens": 500,
+      "name": "flext-development",
+      "owner": "agents",
+      "path": "skills/framework/flext-development",
+      "provenance": "agents-owned",
+      "tags": [
+        "activation:detected",
+        "detect:dependency:python:flext-core",
+        "detect:selected-tag:flext",
+        "framework:flext",
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:no-keyring",
+        "policy:preflight-before-effects",
+        "policy:required-environment",
+        "policy:strict-execution",
+        "policy:zero-residue",
+        "provenance:agents-owned",
+        "route:project",
+        "technology:python",
         "updates:manual",
         "usage:router"
       ],

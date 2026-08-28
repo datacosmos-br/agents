@@ -21,6 +21,13 @@ owns it until a material checkpoint; the next actor rereads and adopts that
 checkpoint before editing. Ownership coordinates writes but never makes current
 content disposable.
 
+Parallel writers require an explicit material benefit, separate canonical owners,
+disjoint writable paths, complete acceptance evidence, and a declared integration
+dependency. Keep the Git index, generated families, atomic migrations, releases,
+environments, clusters, and every other shared mutable owner serialized. Distinct
+read-only questions may proceed concurrently. The dispatch contract owns worker
+selection and handoff; this procedure owns adoption and combined integration.
+
 ## Sync cycle
 
 At start, before each shared-file edit, after each material publication or gate,
