@@ -2,7 +2,7 @@
 name: architecture-documentation
 description: 'architecture decisions, system boundaries, technical documentation'
 metadata:
-  aihub.tags: '["provenance:agents-owned","role:documentation","updates:manual","usage:on-demand"]'
+  aihub.tags: '["policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","policy:zero-residue","provenance:agents-owned","role:documentation","updates:manual","usage:on-demand"]'
 ---
 
 # Architecture Documentation

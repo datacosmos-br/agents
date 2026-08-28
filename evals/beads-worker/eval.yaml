@@ -17,7 +17,7 @@ graders:
 - type: prompt
   name: beads-worker-contract
   config:
-    prompt: |
+    prompt: |-
       Grade the beads-worker response. Pass only when it uses the current
       assigned-slice evidence to produce a material READY_FOR_REVIEW report with
       branch, SHA, scoped files, exact gate evidence, PR, residue, and tracker

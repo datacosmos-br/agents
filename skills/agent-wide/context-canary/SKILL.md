@@ -3,7 +3,7 @@ name: context-canary
 description: 'context drift, session continuity, compaction recovery'
 license: MIT
 metadata:
-  aihub.tags: '["provenance:agents-owned","role:continuity","updates:manual","usage:on-demand"]'
+  aihub.tags: '["policy:atomic-effects","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","provenance:agents-owned","role:continuity","updates:manual","usage:on-demand"]'
   version: 1.0.0
 ---
 
@@ -30,15 +30,18 @@ State the task contract once, then make this the first line of every response:
 A trip = a missing/malformed line, a counter reset/skip/repeat, or self-declared
 loss of the contract.
 
-- **One miss:** resume, note the warning.
-- **Two misses, counter discontinuity, or declared loss:**
+- **Any miss, counter discontinuity, or declared loss:**
   1. Stop trusting drift-prone chat state.
-  2. Write/update a durable checkpoint (goal, decisions, files, verified evidence,
-     next step) — a bead note or handoff.
+  2. Validate the checkpoint owner and complete content, then publish one durable
+     checkpoint atomically (goal, decisions, files, verified evidence, next step).
+     Use the canonical tracker when available or the repository manual ledger
+     while tracking is explicitly suspended.
   3. Re-read project instructions + the checkpoint before continuing.
-  4. Re-verify recent "facts" against disk/bd before acting on them.
+  4. Re-verify recent facts against canonical files and the declared tracker
+     surface before acting on them.
 
 ## Critical rules
 
 - The canary never replaces evidence — it prompts re-grounding, not guessing.
-- On any doubt after a trip, ASK the operator rather than proceed.
+- Missing identity, counter, checkpoint owner, or evidence blocks further work;
+  ask the operator rather than fabricate state or continue with partial memory.

@@ -1,3 +1,8 @@
+---
+metadata:
+  aihub.tags: '["route:personal"]'
+---
+
 # Gas City static boundary
 
 Gas City 1.4.1 is the orchestration contract. Active guidance uses its native

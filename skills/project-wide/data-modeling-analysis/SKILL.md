@@ -2,7 +2,7 @@
 name: data-modeling-analysis
 description: 'data models, serialization boundaries, validation design'
 metadata:
-  aihub.tags: '["provenance:agents-owned","role:architecture","updates:manual","usage:on-demand"]'
+  aihub.tags: '["policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","provenance:agents-owned","role:architecture","updates:manual","usage:on-demand"]'
 ---
 
 # Data Modeling Analysis
@@ -10,6 +10,10 @@ metadata:
 Analyze how a codebase represents, validates, mutates, serializes, and evolves
 data. Apply the project's language and framework contracts rather than assuming
 one type library.
+
+Load the complete schemas, types, serializers, consumers, versions, and runtime
+evidence before issuing a correction. A missing or conflicting boundary stops at
+the first defect with no rewrite, inferred library, generic model, or partial map.
 
 1. Locate schemas, domain types, transport types, persistence mappings, and state
    containers.

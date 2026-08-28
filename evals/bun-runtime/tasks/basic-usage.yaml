@@ -1,14 +1,16 @@
 id: bun-runtime-happy-001
 name: Derive a reproducible Bun workflow
-description: Use the declared Bun version, lockfile, and scripts as the only toolchain owner.
+description: Exercise Bun runtime, JavaScript tooling, and project detection through one declared owner.
 tags: [bun, runtime, packages, testing, bundling, node, happy-path]
 inputs:
   prompt: >-
     Read package.json and bun.lock. Give the exact reproducible install, test,
     build, and start commands for CI and local use, preserving the declared Bun
-    version and scripts without adding npm or Node alternatives.
+    version and scripts without adding npm or Node alternatives. Include complete
+    preflight, the material dist artifact, raw first-command failure, zero-effect
+    failed publication, and residue proof; do not claim commands were executed.
   files:
   - path: package.json
   - path: bun.lock
 expected:
-  output_contains: [bun install --frozen-lockfile, bun test, bun run build, bun run start]
+  output_contains: [bun install --frozen-lockfile, bun test, bun run build, bun run start, dist, zero effects]

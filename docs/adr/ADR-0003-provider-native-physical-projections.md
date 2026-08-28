@@ -25,6 +25,13 @@ generated ownership manifest and source digest. Unsupported combinations fail
 explicitly. Apply preserves foreign or ambiguous content and must reach a fixed
 point on the second unchanged run.
 
+The public apply is `agentsctl sync`. It accepts no option and derives its only
+target from the invocation directory's nearest physical `.git/` ancestor. It
+plans every supported project surface before the first publication, stages on
+the destination filesystem, publishes every changed root as one transaction,
+and rolls earlier roots back if a later publication fails. Personal homes are
+not part of this verb.
+
 ### Principles
 
 1. Projection is a deterministic function of one canonical typed source and an
@@ -57,7 +64,7 @@ flowchart LR
 | Area | Change | Owner | Unchanged boundary |
 |---|---|---|---|
 | Rendering | Provider-specific typed adapters | Projection subsystem | Source semantics remain canonical |
-| Storage | Physical copy, reflink where available | Storage/projection owners | Provider loads its normal path |
+| Storage | One physical copy primitive and destination-local staging | Storage/projection owners | Provider loads its normal path |
 | Cleanup | Manifest-proven managed outputs only | Projection subsystem | Foreign/unknown files remain preserved |
 | Validation | Syntax, capability, runtime canary, fixed point | Adapter and Waza gates | Provider outages remain red external evidence |
 
@@ -75,6 +82,6 @@ flowchart LR
 | Decision part | Status | Durable evidence |
 |---|---|---|
 | Projection architecture | Accepted | This ADR and master v7 contracts |
-| Typed adapters and ownership manifest | Partial on work lane | Command/rule adapters and projection tests exist; schema v4 and complete manifest remain open |
+| Typed adapters and ownership manifest | Implemented on work lane | Schema v4, project/context/surface/provider/selection ownership, source/physical digests, and activation evidence |
 | Full projection fixed point | Not evidenced | Master v7 Phase 5 |
 | Physical root cutover | Future increment | Explicitly excluded from the current repository cutover |

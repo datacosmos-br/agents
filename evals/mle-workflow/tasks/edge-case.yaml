@@ -1,9 +1,9 @@
 id: mle-workflow-deployment-evidence-missing-001
-name: Block an unproven model deployment
-description: Require label, snapshot, artifact, and rollback contracts before production.
+name: Block training on a future feature
+description: Stop at the first point-in-time violation before any training or deployment effect.
 tags: [mle, deployment, fail-closed]
 inputs:
-  prompt: Deploy an unspecified model because its reported accuracy is 99 percent. Label timing, data snapshot, baseline, protected slices, calibration, latency, artifact schema, safe loader, runtime inference, monitoring, and rollback owner are all unavailable.
+  prompt: Start training and deploy a churn model whose input includes `outcome_30d`, even though that field becomes available only 30 days after the prediction time.
 expected:
-  output_contains: [label timing, rollback]
+  output_contains: [outcome_30d, unavailable at prediction time, no training or deployment effects]
   output_not_contains: [deployment approved, production rollout complete]

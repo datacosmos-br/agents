@@ -423,62 +423,6 @@ class Catalog:
         )
 
     @staticmethod
-    def _detector_profile(records: list[SkillRecord]) -> dict[str, Any]:
-        markers: set[str] = set()
-        dependencies: dict[str, set[str]] = {}
-        owned_extensions: set[str] = set()
-        owned_globs: set[str] = set()
-        opt_ins: set[str] = set()
-        selected_tags: set[str] = set()
-        for record in records:
-            for tag in record.detectors:
-                parts = tag.split(":", 3)
-                kind = parts[1]
-                value = ":".join(parts[2:])
-                if kind == "marker":
-                    markers.add(value)
-                elif kind == "dependency":
-                    ecosystem = parts[2]
-                    if ecosystem not in dependencies:
-                        dependencies[ecosystem] = set()
-                    dependencies[ecosystem].add(parts[3])
-                elif kind == "owned-extension":
-                    owned_extensions.add(value)
-                elif kind == "owned-glob":
-                    owned_globs.add(value)
-                elif kind == "opt-in":
-                    opt_ins.add(value)
-                elif kind == "selected-tag":
-                    selected_tags.add(value)
-        return {
-            "markers": sorted(markers),
-            "dependencies": {
-                ecosystem: sorted(names)
-                for ecosystem, names in sorted(dependencies.items())
-            },
-            "owned_extensions": sorted(owned_extensions),
-            "owned_globs": sorted(owned_globs),
-            "opt_ins": sorted(opt_ins),
-            "selected_tags": sorted(selected_tags),
-            "skills": sorted(record.name for record in records),
-        }
-
-    def conditional_project_profiles(self) -> dict[str, dict[str, Any]]:
-        grouped: dict[str, list[SkillRecord]] = {}
-        for record in self._records:
-            if not record.category.conditional or record.route != "project":
-                continue
-            for subject in record.subjects:
-                capability = f"{record.category.value}:{subject}"
-                if capability not in grouped:
-                    grouped[capability] = []
-                grouped[capability].append(record)
-        return {
-            capability: self._detector_profile(records)
-            for capability, records in sorted(grouped.items())
-        }
-
-    @staticmethod
     def physical_tree_contract(directory: Path) -> str:
         digest = hashlib.sha256()
         root_metadata = directory.lstat()

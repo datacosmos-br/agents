@@ -2,7 +2,7 @@
 name: article-writing
 description: 'technical articles, source synthesis, long-form writing'
 metadata:
-  aihub.tags: '["provenance:agents-owned","role:writing","updates:manual","usage:on-demand"]'
+  aihub.tags: '["policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","provenance:agents-owned","role:writing","updates:manual","usage:on-demand"]'
 ---
 
 # Article Writing
@@ -29,7 +29,8 @@ Write long-form content that sounds like an actual person with a point of view, 
 If the user wants a specific voice, run `brand-voice` first and reuse its `VOICE PROFILE`.
 Do not duplicate a second style-analysis pass here unless the user explicitly asks for one.
 
-If no voice references are given, default to a sharp operator voice: concrete, unsentimental, useful.
+If no specific voice is requested, do not invent one or invoke another source;
+write directly from the supplied evidence in clear, concrete language.
 
 ## Banned Patterns
 
@@ -45,10 +46,12 @@ Delete and rewrite any of these:
 ## Writing Process
 
 1. Clarify the audience and purpose.
-2. Build a hard outline with one job per section.
-3. Start sections with proof, artifact, conflict, or example.
-4. Expand only where the next sentence earns space.
-5. Cut anything that sounds templated, overexplained, or self-congratulatory.
+2. Validate the required sources and claims before drafting; a missing source
+   blocks the affected article rather than producing a partial substitute.
+3. Build a hard outline with one job per section.
+4. Start sections with proof, artifact, conflict, or example.
+5. Expand only where the next sentence earns space.
+6. Cut anything that sounds templated, overexplained, or self-congratulatory.
 
 ## Structure Guidance
 

@@ -1,10 +1,10 @@
 id: documentation-criteria-happy-path-001
 name: Classify a cross-layer frontend feature
-description: Derive the complete document set from file and architecture impact.
-tags: [documentation, prd, adr, design, planning, criteria, happy-path]
+description: Derive the minimal document set from semantic and authority impact.
+tags: [documentation-criteria, artifact-selection, evidence-requirements, prd, adr, design, planning, happy-path]
 inputs:
   prompt: |
-    Apply the documentation decision matrix to the supplied change request.
+    Apply semantic documentation criteria to the supplied change request.
     Return the required documents in creation order, explain the trigger for
     each, assign the listed concerns to the correct document, and state the
     measurable structural and approval gates before implementation.
@@ -20,3 +20,4 @@ expected:
   - Design Document
   - Work Plan
   - acceptance criteria
+  - no unnecessary documents

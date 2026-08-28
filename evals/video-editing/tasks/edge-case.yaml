@@ -5,5 +5,5 @@ tags: [video, fail-closed]
 inputs:
   prompt: Deliver the final edited interview now, but no footage, timecodes, transcript, output specification, usage rights, or destination is available.
 expected:
-  output_contains: [source footage, output specification]
-  output_not_contains: [final.mp4 created, generated replacement footage]
+  output_contains: [source footage, first missing prerequisite, zero effects]
+  output_not_contains: [final.mp4 created, generated replacement footage, partial render created]

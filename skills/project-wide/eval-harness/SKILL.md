@@ -3,226 +3,47 @@ name: eval-harness
 description: 'behavioral evaluation, material graders, eval scenarios'
 allowed-tools: Read, Write, Edit, Bash, Grep, Glob
 metadata:
-  aihub.tags: '["provenance:agents-owned","role:verification","updates:manual","usage:on-demand"]'
+  aihub.tags: '["policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","policy:zero-residue","provenance:agents-owned","role:verification","updates:manual","usage:on-demand"]'
 ---
 
-# Eval Harness Skill
+# Eval Harness
 
-A formal evaluation framework for Claude Code sessions, implementing eval-driven development (EDD) principles.
+Activate when a behavior, agent, prompt, or workflow needs a repeatable semantic
+evaluation. Explaining an existing assertion or running an already-owned test
+does not require a new eval suite.
 
-## When to Activate
+## Preflight
 
-- Setting up eval-driven development (EDD) for AI-assisted workflows
-- Defining pass/fail criteria for Claude Code task completion
-- Measuring agent reliability with pass@k metrics
-- Creating regression test suites for prompt or agent changes
-- Benchmarking agent performance across model versions
+Before creating or running an eval, resolve the observable contract, current
+baseline, inputs, expected material artifact, failure boundary, evaluation owner,
+and publication destination. Missing behavior or success criteria stops before
+an eval artifact is created; never invent a baseline.
 
-## Philosophy
+## Minimal suite
 
-Eval-Driven Development treats evals as the "unit tests of AI development":
-- Define expected behavior BEFORE implementation
-- Run evals continuously during development
-- Track regressions with each change
-- Use pass@k metrics for reliability measurement
+- A capability scenario proves the newly required material result.
+- A regression scenario proves behavior that must remain unchanged.
+- A fail-closed scenario proves the first causal failure and zero effects.
+- A should-not-trigger scenario proves absence of activation and fallback.
 
-## Eval Types
+Use a deterministic grader whenever the result can be checked by code. Use a
+model or human grader only for a stated semantic judgment, with an explicit
+rubric. Keep definitions, fixtures, graders, and baselines under the project's
+declared evaluation owner; do not create a parallel hierarchy.
 
-### Capability Evals
-Test if Claude can do something it couldn't before:
-```markdown
-[CAPABILITY EVAL: feature-name]
-Task: Description of what Claude should accomplish
-Success Criteria:
-  - [ ] Criterion 1
-  - [ ] Criterion 2
-  - [ ] Criterion 3
-Expected Output: Description of expected result
-```
+## Execution and evidence
 
-### Regression Evals
-Ensure changes don't break existing functionality:
-```markdown
-[REGRESSION EVAL: feature-name]
-Baseline: SHA or checkpoint name
-Tests:
-  - existing-test-1: PASS/FAIL
-  - existing-test-2: PASS/FAIL
-  - existing-test-3: PASS/FAIL
-Result: X/Y passed (previously Y/Y)
-```
+Run each required scenario through the repository's evaluation facade. Preserve
+child nonzero status, timeout, signal, exception, and causal chain. Do not retry a
+failed required trial, substitute another model or grader, or convert failure to
+a warning, skip, neutral result, or later success.
 
-## Grader Types
+`pass@k` may describe measured reliability; it never makes a failed required
+trial green. `pass^k` requires every named trial to pass. Publish one complete
+report only after all required evidence is available. The report names the exact
+command, exit status, decisive output, artifacts, and each scenario result; a
+partial report or stale baseline cannot support completion.
 
-### 1. Code-Based Grader
-Deterministic checks using code:
-```bash
-set -euo pipefail
-
-# Check if file contains expected pattern
-grep -q "export function handleAuth" src/auth.ts
-echo "PASS: expected pattern exists"
-
-# Check if tests pass
-npm test -- --testPathPattern="auth"
-echo "PASS: focused tests passed"
-
-# Check if build succeeds
-npm run build
-echo "PASS: build succeeded"
-```
-
-The native command's nonzero status is the grader result. Never replace it with
-a successful `echo`, stale report, or output-only assertion.
-
-### 2. Model-Based Grader
-Use Claude to evaluate open-ended outputs:
-```markdown
-[MODEL GRADER PROMPT]
-Evaluate the following code change:
-1. Does it solve the stated problem?
-2. Is it well-structured?
-3. Are edge cases handled?
-4. Is error handling appropriate?
-
-Score: 1-5 (1=poor, 5=excellent)
-Reasoning: [explanation]
-```
-
-### 3. Human Grader
-Flag for manual review:
-```markdown
-[HUMAN REVIEW REQUIRED]
-Change: Description of what changed
-Reason: Why human review is needed
-Risk Level: LOW/MEDIUM/HIGH
-```
-
-## Metrics
-
-### pass@k
-"At least one success in k attempts"
-- pass@1: First attempt success rate
-- pass@3: Success within 3 attempts
-- Diagnostic reliability metric only; it never converts a failed required
-  attempt into a passing delivery gate
-
-### pass^k
-"All k trials succeed"
-- Higher bar for reliability
-- pass^3: 3 consecutive successes
-- Use for critical paths
-
-Every required scenario in the current invocation must pass. A later successful
-attempt does not erase an earlier failure; report both and keep delivery red.
-
-## Eval Workflow
-
-### 1. Define (Before Coding)
-```markdown
-## EVAL DEFINITION: feature-xyz
-
-### Capability Evals
-1. Can create new user account
-2. Can validate email format
-3. Can hash password securely
-
-### Regression Evals
-1. Existing login still works
-2. Session management unchanged
-3. Logout flow intact
-
-### Success Metrics
-- pass@1 = 100% for required capability evals
-- pass^3 = 100% for regression evals
-```
-
-### 2. Implement
-Write code to pass the defined evals.
-
-### 3. Evaluate
-```bash
-# Run capability evals
-[Run each capability eval, record PASS/FAIL]
-
-# Run regression evals
-npm test -- --testPathPattern="existing"
-
-# Generate report
-```
-
-### 4. Report
-```markdown
-EVAL REPORT: feature-xyz
-========================
-
-Capability Evals:
-  create-user:     PASS (pass@1)
-  validate-email:  PASS (pass@2)
-  hash-password:   PASS (pass@1)
-  Overall:         3/3 passed
-
-Regression Evals:
-  login-flow:      PASS
-  session-mgmt:    PASS
-  logout-flow:     PASS
-  Overall:         3/3 passed
-
-Metrics:
-  pass@1: 67% (2/3)
-  pass@3: 100% (3/3)
-
-Status: BLOCKED — required first-attempt failures remain
-```
-
-## Integration
-
-Use the repository's declared evaluation command and storage paths. Keep the
-definition, fixtures, deterministic graders, and baselines under the project's
-own evaluation owner; never create a tool-home-specific parallel hierarchy.
-
-Define the behavior before implementation, run the focused evaluation while the
-change is developed, and publish the final result through the repository's
-normal evidence surface.
-
-## Best Practices
-
-1. **Define evals BEFORE coding** - Forces clear thinking about success criteria
-2. **Run evals frequently** - Catch regressions early
-3. **Track pass@k over time** - Monitor reliability trends
-4. **Use code graders when possible** - Deterministic > probabilistic
-5. **Human review for security** - Never fully automate security checks
-6. **Keep evals fast** - Slow evals don't get run
-7. **Version evals with code** - Evals are first-class artifacts
-
-## Example: Adding Authentication
-
-```markdown
-## EVAL: add-authentication
-
-### Phase 1: Define (10 min)
-Capability Evals:
-- [ ] User can register with email/password
-- [ ] User can login with valid credentials
-- [ ] Invalid credentials rejected with proper error
-- [ ] Sessions persist across page reloads
-- [ ] Logout clears session
-
-Regression Evals:
-- [ ] Public routes still accessible
-- [ ] API responses unchanged
-- [ ] Database schema compatible
-
-### Phase 2: Implement (varies)
-[Write code]
-
-### Phase 3: Evaluate
-Run: /eval check add-authentication
-
-### Phase 4: Report
-EVAL REPORT: add-authentication
-==============================
-Capability: 5/5 passed (pass@1: 100%)
-Regression: 3/3 passed (pass^3: 100%)
-Status: READY FOR REVIEW
-```
+Remove temporary inputs and superseded reports through the evaluation owner.
+Completion requires the material artifact, regression proof, causal failure
+proof, zero effects, and no unowned residue.

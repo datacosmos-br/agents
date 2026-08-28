@@ -7,4 +7,4 @@ inputs:
   files:
   - path: system.yaml
 expected:
-  output_contains: [gateway, worker, object-store]
+  output_contains: [gateway, worker, object-store, atomic, config/runtime-topology.yaml]

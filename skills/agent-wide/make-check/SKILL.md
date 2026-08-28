@@ -30,6 +30,6 @@ test, lint, format, generation, security, or release commands.
 - Do not invent target names or copy another repository's Make contract.
 - Do not call destructive, deployment, release, or promotion targets without the
   authority required by project law.
-- A warning, skip, empty report, or missing tool is red unless the target's public
-  contract explicitly classifies the outcome and the operator approved it.
+- A warning, skip, empty report, or missing tool is red. Preserve its exact
+  output, correct the owner, and rerun only the invalidated native target.
 - Later edits invalidate earlier gate evidence for their affected scope.

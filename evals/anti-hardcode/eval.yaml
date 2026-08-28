@@ -17,15 +17,16 @@ graders:
 - type: prompt
   name: anti-hardcode-owner-contract
   config:
-    prompt: |
+    prompt: |-
       Grade the anti-hardcode response. Pass only when it classifies the embedded
       endpoint, database, model, and output path as critical runtime defects;
       migrates them into one required typed RuntimeConfig owner; injects that
       owner into the consumer; removes all literal/default lookup paths; and
-      requires ConfigError propagation to CLI stderr/nonzero exit plus fixed-point
+      requires raw ConfigError propagation to CLI stderr/nonzero exit plus fixed-point
       proof. Reject environment scraping, a constants module, duplicate defaults,
-      compatibility aliases, fallback values, or lexical deletion of a protocol
-      invariant.
+      keyring, profiles, compatibility aliases, fallback values, catch/manual
+      exit normalization, or lexical deletion of a protocol invariant. Missing
+      configuration must cause the first failure and zero effects.
 - type: behavior
   name: bounded_execution
   config: {max_duration_ms: 240000}

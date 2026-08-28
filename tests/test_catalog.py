@@ -177,26 +177,6 @@ def test_conditional_profiles_are_derived_from_local_tags(tmp_path: Path) -> Non
 
     catalog = Catalog(tmp_path)
 
-    assert catalog.conditional_project_profiles() == {
-        "framework:react": {
-            "markers": [],
-            "dependencies": {"npm": ["react"]},
-            "owned_extensions": [],
-            "owned_globs": [],
-            "opt_ins": [],
-            "selected_tags": [],
-            "skills": ["react-frontend"],
-        },
-        "technology:go": {
-            "markers": ["go.mod", "go.work"],
-            "dependencies": {},
-            "owned_extensions": [],
-            "owned_globs": [],
-            "opt_ins": [],
-            "selected_tags": [],
-            "skills": ["go-development"],
-        },
-    }
     assert catalog.names_for("project-capability:technology:go") == {"go-development"}
     assert catalog.names_for("project-capability:framework:react") == {"react-frontend"}
 

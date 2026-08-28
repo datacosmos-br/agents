@@ -17,11 +17,12 @@ graders:
 - type: prompt
   name: content-engine-contract
   config:
-    prompt: |
+    prompt: |-
       Grade the content-engine response. Pass only when every platform draft is grounded in the supplied demo,
       carries one concrete claim, adapts structure rather than persona, and uses
       the eight-to-two workflow plus visible proof accurately without duplicating
-      copy. Reject hype, engagement bait, invented metrics, or generic formulas.
+      copy. Reject hype, engagement bait, invented metrics, generic formulas,
+      reduced campaigns after missing preflight input, or generic-voice fallback.
 - type: behavior
   name: bounded_execution
   config: {max_duration_ms: 240000}

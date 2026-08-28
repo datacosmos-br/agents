@@ -18,8 +18,9 @@ dependency safety, ordering requirements, and external concurrency limits.
   memory, and shutdown costs remain bounded.
 
 Define ownership, maximum in-flight work, backpressure, timeout, cancellation,
-result ordering, partial-failure behavior, and cleanup before implementation.
-Never create an unbounded task set, detach owned workers, or hide worker errors.
+result ordering, first-failure behavior, atomic publication, and cleanup before
+implementation. Never create an unbounded task set, detach owned workers, retry,
+fall back to another primitive, hide worker errors, or publish partial results.
 
 ## Prove the change
 
@@ -27,4 +28,6 @@ Use deterministic inputs to prove result and failure equivalence. Exercise
 timeout, cancellation, partial failure, shutdown, and resource cleanup. Compare
 throughput, tail latency, CPU, memory, and open-resource counts with the same
 sequential baseline. Keep the sequential implementation when the measured gain
-does not justify the coordination cost.
+does not justify the coordination cost; this is the preflight decision, not an
+error-triggered fallback. The first worker failure remains causal, pending work is
+cancelled, cleanup attaches secondary failure, and zero results are published.

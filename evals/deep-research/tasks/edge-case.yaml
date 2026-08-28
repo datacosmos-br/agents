@@ -9,6 +9,7 @@ expected:
   output_contains:
   - research question is required
   - intended decision is required
+  - no search executed
   output_not_contains:
   - According to the sources
   - Executive Summary

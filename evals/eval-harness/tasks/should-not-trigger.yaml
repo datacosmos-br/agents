@@ -5,9 +5,10 @@ tags:
 - anti-trigger
 - negative-test
 inputs:
-  prompt: Explain why `assert total == 3` fails when total is 2; do not design a new eval suite.
+  prompt: Explain why `assert total == 3` fails when total is 2; do not activate an eval suite, select another grader, or fall back to an evaluation framework.
 expected:
   output_not_contains:
   - pass@k
   - MODEL GRADER
   - EVAL REPORT
+  - fallback grader

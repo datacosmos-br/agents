@@ -2,7 +2,7 @@
 name: cpp-development
 description: 'c++, build systems, modern development'
 metadata:
-  aihub.tags: '["activation:detected","detect:marker:CMakeLists.txt","detect:marker:compile_commands.json","detect:marker:conanfile.py","detect:marker:conanfile.txt","detect:marker:meson.build","detect:marker:vcpkg.json","provenance:agents-owned","route:project","technology:cpp","updates:manual","usage:router"]'
+  aihub.tags: '["activation:detected","detect:marker:CMakeLists.txt","detect:marker:compile_commands.json","detect:marker:conanfile.py","detect:marker:conanfile.txt","detect:marker:meson.build","detect:marker:vcpkg.json","policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","policy:zero-residue","provenance:agents-owned","route:project","technology:cpp","updates:manual","usage:router"]'
 ---
 
 # C++ Development

@@ -5,4 +5,4 @@ tags: [etl, deterministic, anti-trigger]
 inputs:
   prompt: Reduce memory use in a deterministic CSV-to-Parquet conversion job. The repository has no model, training data, feature pipeline, inference, or ML marker.
 expected:
-  output_not_contains: [model training, calibration, concept drift]
+  output_not_contains: [model training, calibration, concept drift, fallback]

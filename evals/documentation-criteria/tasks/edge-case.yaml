@@ -9,6 +9,8 @@ expected:
   output_contains:
   - change scope is required
   - file impact is required
+  - zero effects
   output_not_contains:
   - docs/adr/
   - ADR is mandatory
+  - document created

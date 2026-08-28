@@ -4,7 +4,7 @@ description: 'openspec, change verification, specification evidence'
 license: MIT
 compatibility: Requires openspec CLI.
 metadata:
-  aihub.tags: '["activation:detected","detect:marker:openspec","provenance:agents-owned","route:project","tool:openspec","updates:manual","usage:on-demand"]'
+  aihub.tags: '["activation:detected","detect:marker:openspec","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","policy:zero-residue","provenance:agents-owned","route:project","tool:openspec","updates:manual","usage:on-demand"]'
   author: openspec
   version: '1.0'
   generatedBy: 1.1.1
@@ -12,20 +12,20 @@ metadata:
 
 # OpenSpec Change Verification
 
-Use only when the project contains the OpenSpec marker and the installed CLI
-confirms the requested interface.
+Activate only when the project marker and installed owner interface are present.
+Require one explicit change identity; ambiguity stops without choosing a target.
 
-1. If no change is named and more than one candidate exists, stop for an explicit
-   selection; never infer a target from proximity or status.
-2. Read the selected change status and the CLI-returned context files.
-3. Verify completeness: every task and requirement has implementation evidence.
-4. Verify correctness: each requirement and scenario maps to observable behavior
-   and a project-native test where appropriate.
-5. Verify coherence: implementation follows accepted design decisions and the
-   repository's established patterns.
-6. Classify missing implementation as blocking, material divergence as a warning,
-   and optional improvement as a suggestion. Cite exact evidence paths.
+Read the selected status, owner-returned context, requirements and scenarios,
+accepted design, implementation, and project-native tests. In declared order,
+map each requirement and scenario to exact observable implementation and test
+evidence, and verify coherence with the accepted design. Keyword matches and
+task checkmarks are not evidence.
 
-Do not mark tasks complete, mutate artifacts, or claim conformance from keyword
-matches. CLI errors, ambiguous targets, unreadable context, and missing evidence
-remain explicit failures.
+The first missing, unreadable, conflicting, or behaviorally divergent item is a
+blocking verification failure. Preserve its raw CLI or filesystem cause and stop
+independent classification; never turn it into a warning, suggestion, skip,
+finding, retry, fallback, or partial verified claim.
+
+Verification is read-only. Do not mutate status, tasks, change artifacts, code,
+tests, or tracker state. Report the exact proven prefix and first blocker, or a
+fully evidenced result when no blocker exists.

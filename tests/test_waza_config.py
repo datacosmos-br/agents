@@ -175,7 +175,7 @@ def test_live_preflight_publishes_only_fresh_valid_artifact(tmp_path: Path) -> N
         output = Path(command[command.index("--output") + 1])
         output.write_text(json.dumps(_artifact()), encoding="utf-8")
 
-    destination = run_preflight(tmp_path, runner=runner)
+    destination = run_preflight(tmp_path, _MODEL, runner=runner)
 
     assert destination == tmp_path / "results" / "preflight" / "results.json"
     assert json.loads(destination.read_text(encoding="utf-8")) == _artifact()
@@ -189,7 +189,7 @@ def test_runner_failure_propagates_and_candidate_is_cleaned(tmp_path: Path) -> N
         raise OSError("transport exploded")
 
     with pytest.raises(OSError, match="transport exploded"):
-        run_preflight(tmp_path, runner=runner)
+        run_preflight(tmp_path, _MODEL, runner=runner)
 
     assert not (tmp_path / "results" / "preflight" / "results.json").exists()
     assert not tuple((tmp_path / "results" / "preflight").glob("*.candidate"))
@@ -203,7 +203,7 @@ def test_invalid_artifact_propagates_and_is_not_published(tmp_path: Path) -> Non
         output.write_text(json.dumps(_artifact("other-model")), encoding="utf-8")
 
     with pytest.raises(ValueError, match="artifact model"):
-        run_preflight(tmp_path, runner=runner)
+        run_preflight(tmp_path, _MODEL, runner=runner)
 
     assert not (tmp_path / "results" / "preflight" / "results.json").exists()
 
@@ -225,7 +225,7 @@ def test_publication_failure_propagates_and_preserves_destination(
     monkeypatch.setattr(waza_module.os, "replace", fail_replace)
 
     with pytest.raises(OSError, match="publication exploded"):
-        run_preflight(tmp_path, runner=runner)
+        run_preflight(tmp_path, _MODEL, runner=runner)
 
     assert destination.read_text(encoding="utf-8") == '{"original": true}\n'
     assert not tuple(destination.parent.glob("*.candidate"))

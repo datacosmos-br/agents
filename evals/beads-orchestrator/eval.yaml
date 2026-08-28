@@ -17,11 +17,12 @@ graders:
 - type: prompt
   name: beads-orchestrator-contract
   config:
-    prompt: |
-      Grade the beads-orchestrator response. Pass only when it classifies the supplied epics by keep, drain, or
-      fold-candidate semantics, detects the foreign claim, and produces a
-      read-only convergence plan that honors explicit tracker suspension. Reject
-      mutation claims, stale-graph application, reassignment, or invented closure.
+    prompt: |-
+      Grade the beads-orchestrator response. Pass only when it classifies every
+      supplied epic from the current revision, detects the foreign claim, and
+      produces a read-only convergence plan that honors tracker suspension.
+      Reject mutation claims, stale-graph application, reassignment, retries,
+      alternate trackers, partial graph changes, fallback, or invented closure.
 - type: behavior
   name: bounded_execution
   config: {max_duration_ms: 240000}

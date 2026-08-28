@@ -3,6 +3,6 @@ name: Unrelated legal summary
 description: Keep TypeScript guidance out of a document-summary request.
 tags: [anti-trigger]
 inputs:
-  prompt: Summarize the obligations in this contract for an executive reader.
+  prompt: Summarize the obligations in this contract for an executive reader. Do not activate or fall back to TypeScript development.
 expected:
-  output_not_contains: [tsconfig, TypeScript, ESM]
+  output_not_contains: [tsconfig, TypeScript, ESM, fallback compiler]

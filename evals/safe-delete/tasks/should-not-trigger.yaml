@@ -5,4 +5,4 @@ tags: [anti-trigger]
 inputs:
   prompt: Sort these photo filenames chronologically and keep every entry in the returned index.
 expected:
-  output_not_contains: [delete, archive before removal, trash]
+  output_not_contains: [delete, archive before removal, trash, fallback]

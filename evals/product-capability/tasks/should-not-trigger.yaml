@@ -3,6 +3,6 @@ name: Copy-edit a release sentence
 description: Do not create a capability contract for a wording-only request.
 tags: [anti-trigger]
 inputs:
-  prompt: Rewrite “Operators now export finished audits” in active voice and keep it under eight words.
+  prompt: Rewrite “Operators now export finished audits” in active voice and keep it under eight words. Do not activate capability planning or fall back to a planning artifact.
 expected:
-  output_not_contains: [IMPLEMENTATION CONTRACT, OPEN QUESTIONS, lifecycle transitions]
+  output_not_contains: [IMPLEMENTATION CONTRACT, OPEN QUESTIONS, lifecycle transitions, capability fallback]

@@ -2,7 +2,7 @@
 name: rest-api-design
 description: 'rest api, resource contracts, error semantics'
 metadata:
-  aihub.tags: '["provenance:agents-owned","role:architecture","updates:manual","usage:on-demand"]'
+  aihub.tags: '["policy:atomic-effects","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","policy:zero-residue","provenance:agents-owned","role:architecture","updates:manual","usage:on-demand"]'
 ---
 
 # REST API Design

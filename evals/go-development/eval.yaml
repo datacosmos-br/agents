@@ -17,12 +17,14 @@ graders:
 - type: prompt
   name: go-development-contract
   config:
-    prompt: |
+    prompt: |-
       Grade the go-development response. Pass only when it cites the supplied Go
       module and worker code, identifies the detached goroutine and discarded
-      error, proposes explicit context ownership and wrapped errors that preserve
-      errors.Is/errors.As, and names project-native format, vet, race, test, and
-      build evidence. Reject generic Go advice or an invented module/toolchain.
+      error, proposes explicit context ownership with raw error propagation and
+      atomic consumer rewiring, and names project-native format, vet, race, test,
+      build, first-failure, zero-effect, and residue evidence. Reject generic Go
+      advice, an invented module/toolchain, error wrapping/normalization, retry,
+      fallback, or detached/partial execution.
 - type: behavior
   name: bounded_execution
   config:

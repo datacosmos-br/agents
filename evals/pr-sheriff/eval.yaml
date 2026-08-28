@@ -17,7 +17,7 @@ graders:
 - type: prompt
   name: pr-sheriff-contract
   config:
-    prompt: |
+    prompt: |-
       Grade the pr-sheriff response. Pass only when it uses the explicitly
       configured repository and integration branch, accounts for every supplied
       PR, checks diff/checks/reviews/threads/merge state, classifies each as ready,

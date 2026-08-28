@@ -5,4 +5,4 @@ tags: [anti-trigger]
 inputs:
   prompt: Shorten this meeting invitation to one friendly sentence.
 expected:
-  output_not_contains: [architecture diagram, ADR, data flow]
+  output_not_contains: [architecture diagram, ADR, data flow, architecture workflow activated]

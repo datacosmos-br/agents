@@ -7,4 +7,5 @@ inputs:
   files:
   - path: session-boundary.md
 expected:
-  output_contains: [compact, durable plan, repository state]
+  output_contains: [compact, durable plan, repository state, atomic]
+  output_not_contains: [alternate persistence, partial recovery packet]

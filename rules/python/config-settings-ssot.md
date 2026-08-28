@@ -10,8 +10,10 @@ receive validated typed values, never raw dictionaries or repeated environment
 lookups.
 
 - Fixed business rules and user-overridable settings have one owner each.
-- No product-specific import, tool-home helper, duplicated constant, implicit
-  home discovery, or inherited-secret precedence in generic Python guidance.
+- No product-specific import, tool-home helper, duplicated constant,
+  consumer-level home discovery, or inherited-secret precedence in generic
+  Python guidance. A typed owner may derive the platform home when that value is
+  the canonical calculated default.
 - Tests vary valid inputs and verify schema, types, invariants, derivations,
   precedence, round-trip, consumer behavior, and generated structure.
 - Never assert today's configurable paths, endpoints, model names, rankings,

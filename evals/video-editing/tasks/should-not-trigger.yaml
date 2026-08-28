@@ -5,4 +5,4 @@ tags: [anti-trigger]
 inputs:
   prompt: Generate a new animated video of a dragon flying through a crystal city; no source footage exists.
 expected:
-  output_not_contains: [cut the source footage, FFmpeg concat, edit decision list]
+  output_not_contains: [cut the source footage, FFmpeg concat, edit decision list, fallback edit]

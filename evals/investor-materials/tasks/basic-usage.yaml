@@ -1,10 +1,13 @@
 id: investor-materials-one-pager-001
-name: Draft a consistent investor one-pager
-description: Build a concise asset whose numbers reconcile to the fact source.
-tags: [investor, pitch-deck, one-pager, memo, fundraising, metrics, happy-path]
+name: Draft one consistent fundraising narrative packet
+description: Reuse one capital narrative across an investor memo and fundraising deck.
+tags: [investor, fundraising-decks, investor-memos, capital-narratives, fundraising, metrics, happy-path]
 inputs:
-  prompt: Use fundraising-facts.yaml to create an investor one-pager and a consistency checklist for later pitch-deck, memo, and accelerator-application updates. Cover wedge, traction, raise instrument, use of funds, and milestones; show the spending sum and add no unsupported claims.
+  prompt: Use fundraising-facts.yaml to create one capital narrative, a concise
+    investor memo, a fundraising deck outline, and their consistency checklist.
+    Cover wedge, traction, raise instrument, use of funds, and milestones; show
+    the spending sum and add no unsupported claims.
   files:
   - path: fundraising-facts.yaml
 expected:
-  output_contains: [$3M, SAFE, '84 customers', '$1.5M']
+  output_contains: [Capital narrative, Investor memo, Fundraising deck, $3M, SAFE, '84 customers', '$1.5M']

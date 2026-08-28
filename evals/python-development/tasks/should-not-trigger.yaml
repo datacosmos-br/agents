@@ -3,6 +3,6 @@ name: Non-Python writing request
 description: Keep Python implementation guidance out of an unrelated writing task.
 tags: [anti-trigger]
 inputs:
-  prompt: Rewrite this product announcement in a warmer tone.
+  prompt: Rewrite this product announcement in a warmer tone. Do not activate or fall back to Python development.
 expected:
-  output_not_contains: [pytest, pyproject.toml, asyncio]
+  output_not_contains: [pytest, pyproject.toml, asyncio, fallback Python]

@@ -3,25 +3,26 @@ name: ssot
 description: 'single authority, projection convergence, ownership mapping'
 license: MIT
 metadata:
-  aihub.tags: '["provenance:agents-owned","role:governance","updates:manual","usage:router"]'
+  aihub.tags: '["policy:atomic-effects","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","policy:zero-residue","provenance:agents-owned","role:governance","updates:manual","usage:router"]'
   version: 1.0.0
 ---
 
 # SSOT
 
-Enforce exactly one writable authority for each surviving fact, policy, schema,
-contract, configuration value, or generation contract. Every other representation
-must be a typed consumer, deterministic projection, disposable cache, or evidence;
-it must never become a competing writer or fallback authority.
+Enforce exactly one writable authority for each necessary fact, policy, schema,
+contract, configuration value, or generation contract. Every other form is a
+typed consumer, deterministic projection, disposable cache, or evidence—never a
+competing writer or fallback owner.
 
-Consume the `search-first` evidence packet after `yagni`, elect the authority and
-projection contract, then hand that map to `solid`, implementation, and `dry`.
-Accept one convergence recheck after rewiring; the global order remains owned by
-`search-first`. Read the [authority procedure](references/procedure.md) whenever
-the affected graph contains duplicate constants, schemas, config, generated files,
-mirrors, docs with mutable values, dual reads/writes, or ambiguous ownership.
+A canonical calculated default is one owned fact. Declare and validate it once
+at the typed owner; consumers omit equal environment variables, settings,
+parameters, arguments, fixtures, and projections. Only a current non-derivable
+external value or a supported override is explicit.
 
-Do not synchronize competing authorities, choose an owner by convenience, or keep
-old and new paths together. Runtime proves behavior and tests verify it; neither
-silently replaces the declared source owner. Missing ownership, precedence,
-generator, consumer, or runtime evidence blocks mutation loudly.
+Consume the current concept set from `yagni` and read the
+[authority procedure](references/procedure.md). Return one authority map for
+implementation, `solid`, and `dry`; `search-first` owns the global route.
+
+Missing ownership, precedence, generator, consumer, or runtime evidence blocks
+mutation. File names, docs, tests, caches, and runtime observations do not become
+owners by convenience.

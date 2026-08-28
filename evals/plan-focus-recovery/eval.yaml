@@ -17,8 +17,9 @@ graders:
 - type: prompt
   name: plan-focus-recovery-contract
   config:
-    prompt: |
-      Pass only when the response preserves the supplied execution cursor,
+    prompt: |-
+      Grade the plan-focus-recovery response. Pass only when it preserves the
+      supplied execution cursor,
       classifies the interruption once, performs or proposes only the bounded
       authorized detour, updates invalidated evidence, and returns explicitly to
       the first unfinished plan step only after the detour's required checks,

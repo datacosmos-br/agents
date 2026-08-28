@@ -26,7 +26,7 @@ observed facts from future direction.}
 |---|---|---|---|
 | {option A} | {benefits} | {trade-offs} | Accepted or rejected |
 | {option B} | {benefits} | {trade-offs} | Accepted or rejected |
-| {option C} | {benefits} | {trade-offs} | Accepted or rejected |
+| {other viable option, if any} | {benefits} | {trade-offs} | Accepted or rejected |
 
 ```mermaid
 flowchart LR

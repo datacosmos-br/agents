@@ -2,7 +2,7 @@
 name: market-research
 description: 'market analysis, competitor research, commercial evidence'
 metadata:
-  aihub.tags: '["domain:market-research","provenance:agents-owned","role:research","updates:manual","usage:on-demand"]'
+  aihub.tags: '["domain:market-research","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","provenance:agents-owned","role:research","updates:manual","usage:on-demand"]'
 ---
 
 # Market Research
@@ -24,6 +24,11 @@ Produce research that supports decisions, not research theater.
 3. Include contrarian evidence and downside cases.
 4. Translate findings into a decision, not just a summary.
 5. Separate fact, inference, and recommendation clearly.
+
+Before research calls or drafting, validate the decision, audience, geography,
+customer definition, source requirements, selected research tools, and required
+report sections. A selected source/tool failure ends the report; do not replace
+it with an alternate provider, stale fact, or reduced analysis.
 
 ## Common Research Modes
 
@@ -58,7 +63,7 @@ Collect:
 
 ## Output Format
 
-Default structure:
+Required decision-report structure:
 1. executive summary
 2. key findings
 3. implications

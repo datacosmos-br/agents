@@ -3,6 +3,6 @@ name: Define the word rust
 description: Keep language-development guidance out of a vocabulary request.
 tags: [anti-trigger]
 inputs:
-  prompt: Give a one-sentence dictionary definition of rust on iron.
+  prompt: Give a one-sentence dictionary definition of rust on iron. Do not activate or fall back to Rust development.
 expected:
-  output_not_contains: [Cargo.toml, cargo clippy, Result<T>]
+  output_not_contains: [Cargo.toml, cargo clippy, Result<T>, fallback Cargo]

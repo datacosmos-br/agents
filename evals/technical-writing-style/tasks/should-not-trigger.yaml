@@ -3,6 +3,6 @@ name: Preserve a requested poetic voice
 description: Do not impose technical prose rules on creative writing.
 tags: [anti-trigger]
 inputs:
-  prompt: Write a lyrical four-line poem about moonlight on the sea, using deliberate metaphor.
+  prompt: Write a lyrical four-line poem about moonlight on the sea, using deliberate metaphor. Do not activate or fall back to technical-writing rules.
 expected:
-  output_not_contains: [measured result, technical constraint, active-voice edit]
+  output_not_contains: [measured result, technical constraint, active-voice edit, fallback prose]

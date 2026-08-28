@@ -17,7 +17,7 @@ graders:
 - type: prompt
   name: make-check-contract
   config:
-    prompt: |
+    prompt: |-
       Grade the make-check response. Pass only when it inspects the supplied
       Makefile help contract, chooses the smallest declared native verb and
       scoped arguments for the request, and states the command/cwd/exit/output

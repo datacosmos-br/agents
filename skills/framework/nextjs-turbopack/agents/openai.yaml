@@ -1,7 +1,7 @@
 interface:
   display_name: "Next.js Turbopack"
-  short_description: "Next.js and Turbopack workflow guidance"
+  short_description: "Version-owned Next.js bundler diagnosis"
   brand_color: "#000000"
-  default_prompt: "Use $nextjs-turbopack to work through Next.js and Turbopack decisions."
+  default_prompt: "Use $nextjs-turbopack to derive one bundler and cache correction from the pinned Next.js project."
 policy:
   allow_implicit_invocation: true

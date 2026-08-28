@@ -301,10 +301,11 @@ def _publication(root: Path, destination: Path) -> None:
         raise ValueError(f"Waza destination must be a regular file: {destination}")
 
 
-def run_preflight(root: Path, *, runner: WazaRunner) -> Path:
+def run_preflight(root: Path, model: str, *, runner: WazaRunner) -> Path:
     """Run and atomically publish one fresh, completely valid live artifact."""
 
-    model = require_model_projection(root)
+    if not model or model != model.strip():
+        raise ValueError("Waza preflight model must be non-empty and trimmed")
     eval_path = root / "config" / "waza" / "preflight" / "eval.yaml"
     destination = root / "results" / "preflight" / "results.json"
     _publication(root, destination)

@@ -70,6 +70,28 @@ Agent tags describe orthogonal facets rather than folders:
 No target count is permitted. Discovery must fail on an undecided duplicate or
 ambiguous responsibility rather than force it into a balanced category.
 
+Provider-native custom-agent projection is enabled only where the provider
+documents both a physical destination and a complete capability allowlist:
+
+| Provider | Personal destination | Project destination | Status |
+|---|---|---|---|
+| Claude | `~/.claude/agents` | `.claude/agents` | Supported |
+| GitHub Copilot CLI | `~/.copilot/agents` | `.github/agents` | Supported with Copilot-owned YAML frontmatter and tool aliases |
+| Gemini CLI | `~/.gemini/agents` | `.gemini/agents` | Supported |
+| OpenCode | `~/.config/opencode/agents` | `.opencode/agents` | Supported |
+| Codex, Cursor, Antigravity | none | none | `UNSUPPORTED` until a complete native capability contract is proved |
+
+An empty canonical tool list renders an explicit empty provider allowlist. It
+never omits the field and thereby expands to a provider's all-tools default.
+
+Custom-agent adapter evidence:
+
+- [GitHub Copilot custom-agent schema and tool aliases](https://docs.github.com/en/copilot/reference/custom-agents-configuration)
+  and [CLI destinations](https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/create-custom-agents-for-cli);
+- [Gemini CLI subagents](https://geminicli.com/docs/core/subagents/);
+- [OpenCode agents](https://opencode.ai/docs/agents/);
+- [Antigravity skill destinations](https://antigravity.google/docs/skills).
+
 ## Universal rule composition
 
 Universal engineering behavior is injected as rules, not repeated inside every
@@ -147,24 +169,43 @@ Canonical references:
 | `rules` | Provider-composed personal baseline | Provider-composed project baseline |
 
 An unsupported combination is a declarative non-target in the capability
-matrix. If configuration selects it, full preflight raises before any write; it
-is never omitted from an authorized request or rendered as another artifact
-type.
+matrix. `sync` applies every `SUPPORTED` project cell and never requests an
+`UNSUPPORTED` cell, renders it as another artifact type, or writes a personal
+cell.
+
+The only public target is the nearest ancestor of the invocation cwd that owns
+a physical `.git/` directory. Worktree `.git` files, symlinked metadata,
+repositories under `/tmp`, target arguments, environment overrides, and
+personal-home destinations are rejected or absent by construction.
+
+Optional activation is project-owned at `.agents/projection.json`. If present,
+the v1 object has exactly `version`, sorted unique `opt_ins`, sorted unique
+`selected_tags`, and sorted unique `agents`. Unknown values raise before any
+effect. If absent, the typed owner derives empty selections while detectors
+still activate project evidence. The generated v4 manifest records portable
+project identity (`.`), project-relative destination, context, surface,
+providers, selection, source type, slug, activation evidence, logical digest,
+physical digest, and adapter version.
 
 ## Physical projection law
 
-- The repository source is the only writable authority.
+- The source package is the only catalog authority; the invocation project is
+  the only projection destination.
 - Destinations contain independent physical files. No symlink, bind mount,
   cross-repository include, absolute source path, or runtime source lookup is
   allowed.
-- Configuration selects exactly one supported physical copy strategy before
-  effects. Failure of that strategy raises; no second strategy is attempted.
+- One physical copy implementation owns staging and publication. Failure raises;
+  no second strategy is attempted.
 - Every managed output records source type, slug, digest, adapter version, and
   destination in an ownership manifest generated from discovery.
 - Apply removes a stale output only when the prior manifest proves ownership.
   Foreign, unknown, symlinked, or locally modified content is preserved and
   makes the apply fail for operator resolution.
 - The second unchanged apply must produce zero semantic and filesystem changes.
+- Every target is preflighted before staging. All changed targets are staged on
+  their destination filesystem before publication. A later target failure
+  rolls earlier publications back and re-raises the original exception with
+  any rollback failure attached.
 
 Project content is portable and generic. It must not teach development workflows
 specific to this repository, AI Hub, Beads, Gas City, or a foreign repository.

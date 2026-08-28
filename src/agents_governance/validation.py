@@ -5,13 +5,13 @@ from __future__ import annotations
 import re
 from pathlib import Path, PurePosixPath
 
-from .agent_profiles import audit_agent_profiles
+from .agent_profiles import AgentProfile
 from .catalog import NON_PORTABLE_PROJECT_REFERENCE, Catalog, SkillCategory, SkillRecord
-from .commands import audit_command_specs
-from .rules import audit_rule_specs
+from .commands import CommandSpec
+from .rules import RuleSpec
 from .skill_metadata import validate as validate_skill_metadata
 from .tokens import bpe_tokens
-from .waza import EvalRole, EvalTaskSpec, load_eval_suite, require_model_projection
+from .waza import EvalRole, EvalTaskSpec, load_eval_suite
 
 _LINK = re.compile(r"\[[^\]]+\]\(([^)]+)\)")
 _FENCED_CODE = re.compile(r"^```.*?^```\s*$", re.MULTILINE | re.DOTALL)
@@ -278,15 +278,25 @@ def _require_no_orphan_directories(root: Path) -> None:
                 raise ValueError(f"skill directory has no SKILL.md: {directory}")
 
 
-def validate(catalog: Catalog) -> None:
+def validate(
+    catalog: Catalog,
+    model: str,
+    commands: tuple[CommandSpec, ...],
+    agents: tuple[AgentProfile, ...],
+    rules: tuple[RuleSpec, ...],
+) -> None:
     """Validate the complete authority or raise on the first defect."""
 
     root = catalog.root
-    audit_agent_profiles(root)
-    audit_rule_specs(root)
-    audit_command_specs(root, (directory.name for directory in catalog.skill_dirs()))
+    if not model or model != model.strip():
+        raise ValueError("validated Waza model must be non-empty and trimmed")
+    if not commands:
+        raise ValueError("command inventory is empty")
+    if not agents:
+        raise ValueError("agent inventory is empty")
+    if not rules:
+        raise ValueError("rule inventory is empty")
     validate_skill_metadata(root)
-    require_model_projection(root)
     _require_no_orphan_directories(root)
     records = catalog.records()
     for record in records:

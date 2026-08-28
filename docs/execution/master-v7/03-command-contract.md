@@ -72,7 +72,7 @@ a long command into a fake skill to force a pass.
 | Gemini | `.gemini/commands/<slug>.toml` | TOML with required `prompt`; map canonical arguments to `{{args}}`; reject unsafe shell/file interpolation not present in the source contract. |
 | OpenCode | configured global/project command root | Markdown template; reject source or generated `model`, `agent`, `subtask`, shell injection, and built-in override. |
 | Cursor | project `.cursor/commands/<slug>.md` | Markdown command using only fields supported by the installed client; personal projection is unsupported unless current official behavior proves it. |
-| GitHub Copilot CLI | officially supported command root for the installed version | Render only documented fields; command remains lower-level provider output, not a canonical skill. |
+| GitHub Copilot CLI | none with provider-owned identity | Return explicit `UNSUPPORTED`; the documented compatibility surface is `.claude/commands`, which cannot preserve Copilot ownership when Claude is also projected. |
 | Codex | none | Return explicit `UNSUPPORTED`; never project canonical commands as skills or legacy custom prompts. |
 | Antigravity | none until canary | Keep disabled until the installed official client proves destination, reload, invocation, and size behavior. |
 

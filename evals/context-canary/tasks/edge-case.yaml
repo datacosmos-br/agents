@@ -7,10 +7,11 @@ inputs:
   prompt: |
     Emit the next context canary, but neither the operator name nor the prior
     turn counter is available. Handle the missing state according to the
-    canary contract before continuing any work.
+    canary contract and state explicitly that no work continued.
 expected:
   output_contains:
   - t?
   - operator name is required
+  - no work continued
   output_not_contains:
   - t1 · ctx ok

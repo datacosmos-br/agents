@@ -2,170 +2,26 @@
 name: exa-search
 description: 'exa search, web research, source discovery'
 metadata:
-  aihub.tags: '["activation:opt-in","detect:opt-in:exa","provenance:agents-owned","route:agent","tool:exa","updates:manual","usage:on-demand"]'
+  aihub.tags: '["activation:opt-in","detect:opt-in:exa","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:no-keyring","policy:preflight-before-effects","policy:required-environment","policy:strict-execution","policy:zero-residue","provenance:agents-owned","route:agent","tool:exa","updates:manual","usage:on-demand"]'
 ---
 
 # Exa Search
 
-Neural search for web content, code, companies, and people via the Exa MCP server.
+Activate only for an explicit Exa-backed web, code, company, or people search.
+Local repository search and supplied closed sources do not activate it.
 
-## When to Activate
+Before sending a query, resolve the exact question, result count, date and domain
+constraints, source requirements, current Exa MCP capability, cost authority,
+and required current-process credential. Reject secrets in query text and any
+missing, conflicting, or invalid requirement before the first call.
 
-- User needs current web information or news
-- Searching for code examples, API docs, or technical references
-- Researching companies, competitors, or market players
-- Finding professional profiles or people in a domain
-- Running background research for any development task
-- User says "search for", "look up", "find", or "what's the latest on"
+Select the single current owner operation whose discovered schema satisfies all
+constraints; do not copy operation names or defaults from this skill. Execute
+the bounded search once, distinguish result snippets from fetched evidence, and
+deep-read the decisive primary source once before answering.
 
-## MCP Requirement
-
-Exa MCP server must be configured. Add to `~/.claude.json`:
-
-```json
-"exa-web-search": {
-  "command": "npx",
-  "args": ["-y", "exa-mcp-server"],
-  "env": { "EXA_API_KEY": "YOUR_EXA_API_KEY_HERE" }
-}
-```
-
-Get an API key at [exa.ai](https://exa.ai).
-
-## Core Tools
-
-### web_search_exa
-General web search for current information, news, or facts.
-
-```
-web_search_exa(query: "latest AI developments 2026", numResults: 5)
-```
-
-**Parameters:**
-
-| Param | Type | Default | Notes |
-|-------|------|---------|-------|
-| `query` | string | required | Search query |
-| `numResults` | number | 8 | Number of results |
-
-### web_search_advanced_exa
-Filtered search with domain and date constraints.
-
-```
-web_search_advanced_exa(
-  query: "React Server Components best practices",
-  numResults: 5,
-  includeDomains: ["github.com", "react.dev"],
-  startPublishedDate: "2025-01-01"
-)
-```
-
-**Parameters:**
-
-| Param | Type | Default | Notes |
-|-------|------|---------|-------|
-| `query` | string | required | Search query |
-| `numResults` | number | 8 | Number of results |
-| `includeDomains` | string[] | none | Limit to specific domains |
-| `excludeDomains` | string[] | none | Exclude specific domains |
-| `startPublishedDate` | string | none | ISO date filter (start) |
-| `endPublishedDate` | string | none | ISO date filter (end) |
-
-### get_code_context_exa
-Find code examples and documentation from GitHub, Stack Overflow, and docs sites.
-
-```
-get_code_context_exa(query: "Python asyncio patterns", tokensNum: 3000)
-```
-
-**Parameters:**
-
-| Param | Type | Default | Notes |
-|-------|------|---------|-------|
-| `query` | string | required | Code or API search query |
-| `tokensNum` | number | 5000 | Content tokens (1000-50000) |
-
-### company_research_exa
-Research companies for business intelligence and news.
-
-```
-company_research_exa(companyName: "Anthropic", numResults: 5)
-```
-
-**Parameters:**
-
-| Param | Type | Default | Notes |
-|-------|------|---------|-------|
-| `companyName` | string | required | Company name |
-| `numResults` | number | 5 | Number of results |
-
-### people_search_exa
-Find professional profiles and bios.
-
-```
-people_search_exa(query: "AI safety researchers at Anthropic", numResults: 5)
-```
-
-### crawling_exa
-Extract full page content from a URL.
-
-```
-crawling_exa(url: "https://example.com/article", tokensNum: 5000)
-```
-
-**Parameters:**
-
-| Param | Type | Default | Notes |
-|-------|------|---------|-------|
-| `url` | string | required | URL to extract |
-| `tokensNum` | number | 5000 | Content tokens |
-
-### deep_researcher_start / deep_researcher_check
-Start an AI research agent that runs asynchronously.
-
-```
-# Start research
-deep_researcher_start(query: "comprehensive analysis of AI code editors in 2026")
-
-# Check status (returns results when complete)
-deep_researcher_check(researchId: "<id from start>")
-```
-
-## Usage Patterns
-
-### Quick Lookup
-```
-web_search_exa(query: "Node.js 22 new features", numResults: 3)
-```
-
-### Code Research
-```
-get_code_context_exa(query: "Rust error handling patterns Result type", tokensNum: 3000)
-```
-
-### Company Due Diligence
-```
-company_research_exa(companyName: "Vercel", numResults: 5)
-web_search_advanced_exa(query: "Vercel funding valuation 2026", numResults: 3)
-```
-
-### Technical Deep Dive
-```
-# Start async research
-deep_researcher_start(query: "WebAssembly component model status and adoption")
-# ... do other work ...
-deep_researcher_check(researchId: "<id>")
-```
-
-## Tips
-
-- Use `web_search_exa` for broad queries, `web_search_advanced_exa` for filtered results
-- Lower `tokensNum` (1000-2000) for focused code snippets, higher (5000+) for comprehensive context
-- Combine `company_research_exa` with `web_search_advanced_exa` for thorough company analysis
-- Use `crawling_exa` to get full content from specific URLs found in search results
-- `deep_researcher_start` is best for comprehensive topics that benefit from AI synthesis
-
-## Related Skills
-
-- `deep-research` — Full research workflow using firecrawl + exa together
-- `market-research` — Business-oriented research with decision frameworks
+The first transport, search, fetch, timeout, or schema failure propagates
+unchanged. Do not retry, broaden constraints, switch operation or provider, use
+remembered facts, or return a partial answer. Report the material result with
+source attribution and the applied constraints; otherwise publish no research
+artifact.

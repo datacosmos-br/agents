@@ -17,11 +17,15 @@ graders:
 - type: prompt
   name: agent-introspection-debugging-contract
   config:
-    prompt: |
+    prompt: |-
       Grade the agent-introspection-debugging response. Pass only when it captures the concrete repeated failure,
       forms a falsifiable root-cause hypothesis from the supplied session log,
       chooses one contained discriminating check, and reports the result without
-      pretending to reset hidden state. Reject blind retries and generic debugging.
+      pretending to reset hidden state. For missing evidence, require the first
+      causal failure and an explicit statement that no recovery effect occurred.
+      Reject repeated attempts, alternate checks, and generic debugging.
+      Any preventive follow-up must come only after the current failure and its
+      attributable effects are resolved.
 - type: behavior
   name: bounded_execution
   config: {max_duration_ms: 240000}

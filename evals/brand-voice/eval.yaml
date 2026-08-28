@@ -17,11 +17,13 @@ graders:
 - type: prompt
   name: brand-voice-contract
   config:
-    prompt: |
+    prompt: |-
       Grade the brand-voice response. Pass only when its VOICE PROFILE follows the canonical schema and every
       rhythm, claim, preferred-move, banned-move, and channel observation is
       traceable to the supplied samples. Reject generic platform advice,
-      personality invention, or averaging away a visible source split.
+      personality invention, stale-profile substitution, partial profiles, or
+      averaging away a visible source split. Missing samples must stop at the
+      first source defect with no profile publication.
 - type: behavior
   name: bounded_execution
   config: {max_duration_ms: 240000}

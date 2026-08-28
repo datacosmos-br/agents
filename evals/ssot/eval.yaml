@@ -17,12 +17,12 @@ graders:
 - type: prompt
   name: ssot-authority-contract
   config:
-    prompt: |
+    prompt: |-
       Grade the SSOT skill according to the scenario. For policy-project, pass only when the
       response reads the supplied project law, architecture, config, generator,
       generated projection, consumer, CLI, documentation, and tests; identifies
-      config/retry-policy.toml as the sole writable authority; removes the
-      generator fallback, worker constant, and copied documentation value;
+      config/delivery-policy.toml as the sole writable authority; removes the
+      generator default-on-error path, worker constant, and copied documentation value;
       rewires consumers through the deterministic projection; preserves explicit
       unknown-channel failure; proves two-run fixed point; records YAGNI, SOLID,
       DRY, and simplify decisions; and names the real CLI runtime plus native
@@ -33,7 +33,8 @@ graders:
       starting software authority migration. Reject generated-file hand edits,
       competing writers, fallback defaults, dual reads/writes, stale projections,
       copied mutable values, invented ownership, or completion without runtime
-      and fixed-point evidence.
+      and fixed-point evidence. Require first-failure and zero-effect proof when
+      authority preflight or generation fails.
 - type: behavior
   name: bounded_execution
   config: {max_duration_ms: 240000}

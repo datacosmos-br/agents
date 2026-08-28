@@ -9,6 +9,7 @@ expected:
   output_contains:
   - base URL is required
   - selector contract is required
+  - no browser effects
   output_not_contains:
   - http://localhost:3000
   - page.waitForTimeout

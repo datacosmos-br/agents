@@ -9,6 +9,7 @@ expected:
   output_contains:
   - overlapping ownership
   - read-only analysis only
+  - no panes created
   output_not_contains:
   - Pane 1 (Writer)
   - panes started

@@ -1,10 +1,13 @@
 id: summarization-incident-001
 name: Summarize an incident for engineering leaders
-description: Compress metrics, decisions, and uncertainty without changing facts.
-tags: [summarization, accuracy, compression, happy-path]
+description: Exercise source compression with a bounded summary and factual fidelity.
+tags: [source-compression, bounded-summaries, factual-fidelity, incident, happy-path]
 inputs:
-  prompt: Summarize incident-report.md in at most five bullets for engineering leaders. Preserve decisive metrics, uncertainty, and owned follow-up.
+  prompt: Apply source compression to incident-report.md and return a bounded
+    summary of at most five bullets for engineering leaders. Preserve factual
+    fidelity for decisive metrics, uncertainty, decisions, owner, and due date.
   files:
   - path: incident-report.md
 expected:
   output_contains: [18.7%, 0.5%, Ana]
+  output_not_contains: [invented, fallback source, partial summary]

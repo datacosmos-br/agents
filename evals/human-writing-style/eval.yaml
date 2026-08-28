@@ -17,12 +17,13 @@ graders:
 - type: prompt
   name: human-writing-style-contract
   config:
-    prompt: |
+    prompt: |-
       Grade the human-writing-style response. Pass only when it preserves every
       concrete fact and the direct technical voice in the supplied draft while
       removing generic praise, AI vocabulary clusters, heavy transitions, and
       -ing tails. Reject invented specifics, flattened voice, lost measurements,
-      or a style critique without the requested rewritten artifact.
+      a style critique without the requested rewritten artifact, or use of an
+      absent reference as a substitute source.
 - type: behavior
   name: bounded_execution
   config:

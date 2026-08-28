@@ -17,13 +17,14 @@ graders:
 - type: prompt
   name: market-research-contract
   config:
-    prompt: |
+    prompt: |-
       Grade the market-research response. Pass only when it cites the supplied
       sources and dates, labels assumptions and inference separately, reconciles
       top-down and bottom-up estimates, includes the stated counterevidence, and
       reaches a decision that follows from those facts. Reject unsourced numbers,
       stale data presented as current, omitted downside, or research theater
-      without a recommendation.
+      without a recommendation. Missing decision inputs or source/tool failure
+      must stop with no estimate, report, or alternate-source substitution.
 - type: behavior
   name: bounded_execution
   config:

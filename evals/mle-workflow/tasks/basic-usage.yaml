@@ -1,10 +1,10 @@
 id: mle-workflow-leakage-contract-001
-name: Design a point-in-time churn experiment
-description: Detect future leakage and define reproducible evaluation and rollout evidence.
+name: Verify a material point-in-time churn artifact
+description: Prove a production ML lifecycle from observed experiment, artifact, runtime, and rollback evidence.
 tags: [machine-learning, training, evaluation, serving, monitoring, reproducibility, happy-path]
 inputs:
-  prompt: Review training-spec.yaml as a machine-learning engineering workflow spanning data, training, evaluation, serving, monitoring, and reproducibility. Define the contract, detect unavailable features, select a temporal split and baseline, and specify slice, artifact, runtime, and rollback evidence.
+  prompt: Review training-spec.yaml as a machine-learning engineering workflow spanning the model lifecycle and production operations. Verify the valid point-in-time contract, confirm the future candidate was rejected before effects, compare the observed baseline and model evidence, and report the exact artifact, serving, monitoring, and rollback proof without inventing results.
   files:
   - path: training-spec.yaml
 expected:
-  output_contains: [outcome_30d, leakage, temporal split, baseline]
+  output_contains: [outcome_30d, rejected before training, temporal split, baseline-v1, retention-model-v17, rollback]

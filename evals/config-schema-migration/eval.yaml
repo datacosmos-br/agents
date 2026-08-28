@@ -17,11 +17,14 @@ graders:
 - type: prompt
   name: config-schema-migration-contract
   config:
-    prompt: |
+    prompt: |-
       Grade the config-schema-migration response. Pass only when it defines one final schema, names producers and
       consumers to rewire, rejects the old format, removes the superseded path,
       and proves an idempotent second run. Fail any dual-read, alias, fallback,
-      deprecation window, or deferred cleanup.
+      competing or default-on-error value, repeated canonical default input,
+      deprecation window, deferred cleanup, partial write, or normalized failure.
+      Require calculated defaults to resolve once at the typed owner, complete
+      preflight, first-cause propagation, zero effects on invalid input, and zero residue.
 - type: behavior
   name: bounded_execution
   config: {max_duration_ms: 240000}

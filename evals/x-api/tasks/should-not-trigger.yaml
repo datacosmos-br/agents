@@ -5,4 +5,4 @@ tags: [anti-trigger]
 inputs:
   prompt: Explain the role of the X chromosome in human sex determination in three sentences.
 expected:
-  output_not_contains: [/2/tweets, OAuth, rate limit]
+  output_not_contains: [/2/tweets, OAuth, rate limit, fallback]

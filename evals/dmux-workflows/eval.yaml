@@ -22,12 +22,13 @@ graders:
 - type: prompt
   name: dmux-workflows-contract
   config:
-    prompt: |
-      Grade the dmux-workflows response. Pass only if it identifies which work
-      is genuinely independent, assigns non-overlapping read-only panes,
-      serializes dependent work, defines how outputs are reviewed before merge,
-      and respects the supplied suspended-runtime constraint without creating
-      branches, worktrees, runs, or write-capable panes.
+    prompt: |-
+      Grade the dmux-workflows response. Pass only if it identifies genuinely
+      independent work, assigns complete non-overlapping read-only pane
+      contracts, keeps dependent synthesis serial, and respects runtime
+      suspension with zero orchestration effects. Reject provider, model, or
+      harness fallback; retries; partial synthesis; branches, worktrees, runs,
+      or write-capable panes. The first pane failure must remain causal.
 - type: behavior
   name: bounded_execution
   config:

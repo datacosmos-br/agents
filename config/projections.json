@@ -33,7 +33,7 @@
     "cursor": {
       "personal": {
         "skills": {"status": "SUPPORTED", "path": "${HOME}/.cursor/skills"},
-        "commands": {"status": "SUPPORTED", "path": "${HOME}/.cursor/commands"},
+        "commands": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: Cursor commands are project-scoped only"},
         "agents": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: Cursor subagents expose readonly only, not a capability allowlist"},
         "rules": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: Cursor personal rule files have no documented typed metadata contract"}
       },
@@ -48,13 +48,13 @@
       "personal": {
         "skills": {"status": "SUPPORTED", "path": "${HOME}/.copilot/skills"},
         "commands": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: Copilot commands reuse Claude paths and lose provider ownership"},
-        "agents": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: GitHub Copilot CLI is not installed"},
+        "agents": {"status": "SUPPORTED", "path": "${HOME}/.copilot/agents"},
         "rules": {"status": "SUPPORTED", "path": "${HOME}/.copilot/instructions"}
       },
       "project": {
         "skills": {"status": "SUPPORTED", "path": ".github/skills"},
         "commands": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: Copilot commands reuse Claude paths and lose provider ownership"},
-        "agents": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: GitHub Copilot CLI is not installed"},
+        "agents": {"status": "SUPPORTED", "path": ".github/agents"},
         "rules": {"status": "SUPPORTED", "path": ".github/instructions"}
       }
     },
@@ -88,7 +88,7 @@
     },
     "antigravity": {
       "personal": {
-        "skills": {"status": "SUPPORTED", "path": "${HOME}/.gemini/antigravity-cli/skills"},
+        "skills": {"status": "SUPPORTED", "path": "${HOME}/.gemini/config/skills"},
         "commands": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: Antigravity has no documented custom-command file contract"},
         "agents": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: Antigravity agent MCP tool identity is not documented for the complete catalog"},
         "rules": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: Antigravity personal rules require one whole GEMINI.md owner"}

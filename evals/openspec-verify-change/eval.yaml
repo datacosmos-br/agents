@@ -17,13 +17,14 @@ graders:
 - type: prompt
   name: openspec-verify-change-contract
   config:
-    prompt: |
+    prompt: |-
       Grade the openspec-verify-change response. Pass only when it verifies the
-      explicitly selected change, maps every requirement and scenario to exact
-      implementation and project-native test evidence, checks accepted design
-      coherence, and classifies missing implementation as blocking. Reject
-      keyword-only conformance, inferred target selection, artifact mutation,
-      task completion edits, or a verified claim with missing evidence.
+      explicitly selected change, walks requirements in declared order, maps the
+      proven prefix to exact implementation and project-native test evidence,
+      checks accepted design coherence, and stops at the first missing item as a
+      blocking failure. Reject keyword-only conformance, inferred target
+      selection, warnings/findings/suggestions, aggregation after the first
+      defect, artifact mutation, task edits, or a partial verified claim.
 - type: behavior
   name: bounded_execution
   config:

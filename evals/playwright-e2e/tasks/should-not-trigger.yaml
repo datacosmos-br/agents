@@ -11,3 +11,4 @@ expected:
   - playwright
   - page.goto
   - browser context
+  - fallback

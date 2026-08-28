@@ -14,9 +14,7 @@ from typing import cast
 import yaml
 from yaml.nodes import MappingNode, Node, SequenceNode
 
-from .atomic_io import discard_physical_file, stage_text
-from .cleanup import run_with_cleanup
-from .tokens import bpe_tokens
+from .tokens import bpe_content
 
 _SLUG = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*\Z")
 _DESCRIPTION_LIMIT = 160
@@ -113,18 +111,12 @@ class CommandTokenBudget:
 
 
 def waza_bpe_counter(root: Path) -> Callable[[str], int]:
-    """Return the canonical full-text BPE counter with cleanup-owned rollback."""
+    """Return the canonical in-memory full-text BPE counter."""
 
     authority = root.resolve(strict=True)
 
     def count(content: str) -> int:
-        candidate = stage_text(authority / "commands" / ".rendered-command.md", content)
-        measured = run_with_cleanup(
-            lambda: bpe_tokens(candidate, authority),
-            lambda: discard_physical_file(candidate),
-        )
-        discard_physical_file(candidate)
-        return measured
+        return bpe_content(content, authority)
 
     return count
 

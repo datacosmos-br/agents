@@ -2,7 +2,7 @@
 name: frontend-slides
 description: 'html presentations, animated slides, visual storytelling'
 metadata:
-  aihub.tags: '["provenance:agents-owned","role:presentation","updates:manual","usage:on-demand"]'
+  aihub.tags: '["policy:atomic-effects","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","policy:zero-residue","provenance:agents-owned","role:presentation","updates:manual","usage:on-demand"]'
 ---
 
 # Frontend Slides
@@ -20,13 +20,16 @@ Inspired by the visual exploration approach showcased in work by [zarazhangrui](
 
 ## Non-Negotiables
 
-1. **Zero dependencies**: default to one self-contained HTML file with inline CSS and JS.
+1. **Zero dependencies**: produce one self-contained HTML file with inline CSS
+   and JS unless the user explicitly contracts a complete multi-file artifact.
 2. **Viewport fit is mandatory**: every slide must fit inside one viewport with no internal scrolling.
 3. **Show, don't tell**: use visual previews instead of abstract style questionnaires.
 4. **Distinctive design**: avoid generic purple-gradient, Inter-on-white, template-looking decks.
 5. **Production quality**: keep code commented, accessible, responsive, and performant.
 
-Before generating, read `STYLE_PRESETS.md` for the viewport-safe CSS base, density limits, preset catalog, and CSS gotchas.
+Before generating any file, validate content, output destination, artifact mode,
+assets, style selection, viewport matrix, and required validation tools. Then
+read `STYLE_PRESETS.md` for the canonical presentation contract.
 
 ## Workflow
 
@@ -48,9 +51,8 @@ If the user has content, ask them to paste it before styling.
 
 ### 3. Discover Style
 
-Default to visual exploration.
-
-If the user already knows the desired preset, skip previews and use it directly.
+If the user already selected the desired preset, record that selection during
+preflight and generate no preview artifact.
 
 Otherwise:
 1. Ask what feeling the deck should create: impressed, energized, focused, inspired.
@@ -102,12 +104,14 @@ If browser automation is available, use it to verify no slide overflows and that
 
 ### 7. Deliver
 
-At handoff:
-- delete temporary preview files unless the user wants to keep them
-- open the deck with the platform-appropriate opener when useful
+Before handoff:
+- remove every attributable preview unless the user explicitly selected it as a
+  deliverable; cleanup completes before success
+- open the deck only when the user explicitly requested it and the selected
+  platform opener passed preflight
 - summarize file path, preset used, slide count, and easy theme customization points
 
-Use the correct opener for the current OS:
+When opening was explicitly requested, use the preflight-selected OS owner:
 - macOS: `open file.html`
 - Linux: `xdg-open file.html`
 - Windows: `start "" file.html`
@@ -116,7 +120,8 @@ Use the correct opener for the current OS:
 
 For PowerPoint conversion:
 1. Prefer `python3` with `python-pptx` to extract text, images, and notes.
-2. If `python-pptx` is unavailable, stop and ask whether to install it or explicitly choose a manual/export-based workflow; never select another workflow automatically.
+2. If `python-pptx` is unavailable, stop with the missing dependency. A later
+   invocation may proceed only after the user establishes a new approved contract.
 3. Preserve slide order, speaker notes, and extracted assets.
 4. After extraction, run the same style-selection workflow as a new presentation.
 
@@ -127,7 +132,8 @@ Keep conversion cross-platform. Do not rely on macOS-only tools when Python can 
 ### HTML / CSS
 
 - Use inline CSS and JS unless the user explicitly wants a multi-file project.
-- Fonts may come from Google Fonts or Fontshare.
+- Fonts must be embedded or otherwise included in the validated self-contained
+  artifact; do not introduce an undeclared runtime network dependency.
 - Prefer atmospheric backgrounds, strong type hierarchy, and a clear visual direction.
 - Use abstract shapes, gradients, grids, noise, and geometry rather than illustrations.
 
@@ -172,7 +178,6 @@ Use these maxima unless the user explicitly asks for denser slides and readabili
 ## Related Skills
 
 - `react-frontend-patterns` for component and interaction patterns around the deck
-- `liquid-glass-design` when a presentation intentionally borrows Apple glass aesthetics
 - `playwright-e2e` if you need automated browser verification for the final deck
 
 ## Deliverable Checklist

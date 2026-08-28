@@ -3,9 +3,9 @@ name: Explain YAGNI without changing code
 description: Answer a conceptual question without starting remediation.
 tags: [anti-trigger, explanation, principles]
 inputs:
-  prompt: Summarize yagni-principle.md for a new developer. No repository review or code change is requested.
+  prompt: Summarize yagni-principle.md for a new developer. No repository review or code change is requested; do not activate remediation or fall back to a deletion plan.
   files:
   - path: yagni-principle.md
 expected:
   output_contains: [current requirements, speculative features]
-  output_not_contains: [delete src, run the test suite, open a pull request]
+  output_not_contains: [delete src, run the test suite, open a pull request, fallback deletion]

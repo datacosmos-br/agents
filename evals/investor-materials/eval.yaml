@@ -17,13 +17,15 @@ graders:
 - type: prompt
   name: investor-materials-contract
   config:
-    prompt: |
+    prompt: |-
       Grade the investor-materials response. Pass only when every traction, raise,
       instrument, use-of-funds, and milestone statement matches the supplied fact
       source, the spending layers sum to the raise, assumptions remain visible,
-      and the requested one-pager is defensible without hype. Reject conflicting
+      and the requested capital narrative, investor memo, and fundraising deck
+      outline remain mutually consistent and defensible without hype. Reject conflicting
       numbers, hidden assumptions, arithmetic drift, or drafting through a known
-      source-of-truth conflict.
+      source-of-truth conflict. The first fact conflict must stop with no asset
+      publication or alternate number selection.
 - type: behavior
   name: bounded_execution
   config:

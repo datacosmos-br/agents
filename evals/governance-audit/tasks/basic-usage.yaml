@@ -1,10 +1,14 @@
 id: governance-audit-static-snapshot-001
 name: Audit a suspended governance snapshot
-description: Classify tracker conflicts and document drift from supplied evidence only.
-tags: [governance, audit, drift, staleness, tracker, documentation, happy-path]
+description: Classify authority conflicts and stale instructions from supplied evidence only.
+tags: [governance, governance-drift, authority-conflicts, stale-instructions, audit, tracker, documentation, happy-path]
 inputs:
-  prompt: Conduct a governance audit of governance-snapshot.yaml while the Beads tracker is suspended. Check standing items, staleness, canonical document surfaces, and source/projection drift; return the required evidence and severity table without mutation.
+  prompt: Conduct a static audit of governance-snapshot.yaml while the canonical
+    tracker is suspended. Classify authority conflicts and source/projection
+    disagreement, then identify stale instructions and any governance drift;
+    return the required evidence and severity table without mutation or tracker
+    invocation.
   files:
   - path: governance-snapshot.yaml
 expected:
-  output_contains: [OPS-12, OPS-20, zombie, P0]
+  output_contains: [OPS-12, OPS-20, P0, config/governance/policy.md]

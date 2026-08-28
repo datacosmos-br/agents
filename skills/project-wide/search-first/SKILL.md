@@ -3,7 +3,7 @@ name: search-first
 description: 'owner discovery, reusable code, architecture research'
 license: MIT
 metadata:
-  aihub.tags: '["provenance:agents-owned","role:discovery","updates:manual","usage:router"]'
+  aihub.tags: '["policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","provenance:agents-owned","role:discovery","updates:manual","usage:router"]'
   version: 1.2.0
 ---
 
@@ -17,14 +17,9 @@ Apply automatically to features, fixes, refactors, integrations, dependency or
 configuration changes, and new abstractions. Read the
 [search and decision procedure](references/procedure.md).
 
-Produce one reusable evidence packet. Pass it through `yagni` to remove scope with
-no current requirement, consumer, and runtime path, then through `ssot` to select
-one writable authority and classify every projection. Apply `solid` only when the
-surviving change affects design boundaries. During implementation, apply
-`simplify` inline to each cohesive edit. Invoke `dry` only for proven structural
-waste inside the authorized graph; reuse the packet instead of recursively
-restarting search. Recheck YAGNI, SSOT, and SOLID after structural remediation,
-apply one final `simplify`, then prove the public runtime and native gates.
+Produce one reusable evidence packet and follow the bounded owner route in the
+procedure. That procedure is the SSOT for sequencing `yagni`, `ssot`, `solid`,
+`simplify`, and conditional `dry`; do not duplicate the route here.
 
 Do not activate for pure summarization, translation, formatting, or non-technical
 questions. Do not rerun discovery while its owner, scope, dependency set, and

@@ -9,4 +9,4 @@ inputs:
     unavailable. State the only safe next step.
 expected:
   output_contains: [graph changed, re-audit]
-  output_not_contains: [bd dep remove, re-parented successfully]
+  output_not_contains: [bd dep remove, re-parented successfully, partial graph]

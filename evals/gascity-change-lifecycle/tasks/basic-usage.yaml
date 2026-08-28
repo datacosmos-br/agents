@@ -6,8 +6,8 @@ inputs:
   prompt: |
     Using the supplied static contract, explain the Gas City change lifecycle
     across formula dispatch, run/session observation, repository Git and PR landing,
-    without executing it. Resolve every declared identity, show the dispatch
-    command that would be used only after runtime restoration, then describe
+    without executing it. Resolve every declared identity without copying a
+    dispatch command, then describe
     repository-native branch, gates, PR review, merge, merged-SHA validation,
     and the evidence required before closure.
   files:
@@ -16,7 +16,7 @@ expected:
   outcomes:
   - type: task_completed
   output_contains:
-  - gc sling reviewer work-217 --on docs-audit
+  - no orchestration command
   - integration branch
   - repository owns Git
   - merged SHA

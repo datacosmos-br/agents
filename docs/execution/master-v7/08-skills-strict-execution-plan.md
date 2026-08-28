@@ -8,10 +8,6 @@ central extermination policies. This plan owns only `skills/**` and the
 not own runtime code, central rules, configuration, documentation, Make, CI,
 the manual ledger, or `skills.lock.json`.
 
-Work starts only after the runtime lane publishes a `POLICY_BASE_SHA` containing
-the final policy vocabulary and central rules. Absence of that SHA is a hard
-blocker.
-
 ## Per-skill contract
 
 Read each complete bundle: `SKILL.md`, procedures, references, scripts, assets,
@@ -21,7 +17,8 @@ and evals. Then:
 2. Add every directly applicable policy tag from the central vocabulary.
 3. Reference policies by their central tags; never copy the complete rule text.
 4. Remove instructions that allow catches, warnings, skips, findings, retries,
-   fallbacks, operational defaults, alternate providers/models/credentials,
+   fallbacks, undeclared, competing, or error-triggered defaults, alternate
+   providers/models/credentials,
    effects before preflight, partial publication, normalized subprocess failure,
    keyring use, or deferred cleanup.
 5. Preserve the capability, activation boundary, should-not-run behavior,
@@ -31,6 +28,10 @@ and evals. Then:
 
 An apparent need outside the owned paths is reported as a blocker. It does not
 authorize a cross-boundary edit.
+
+A deterministic default declared and validated once by the typed SSOT is normal
+owner behavior, not fallback. Skills must not demand an equal environment
+variable, setting, parameter, or argument from a consumer.
 
 ## Batches and evidence
 

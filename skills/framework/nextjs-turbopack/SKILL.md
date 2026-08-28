@@ -2,44 +2,25 @@
 name: nextjs-turbopack
 description: 'next.js, turbopack, frontend performance'
 metadata:
-  aihub.tags: '["activation:detected","detect:dependency:npm:next","framework:nextjs","provenance:agents-owned","route:project","tool:turbopack","updates:manual","usage:on-demand"]'
+  aihub.tags: '["activation:detected","detect:dependency:npm:next","framework:nextjs","policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","policy:zero-residue","provenance:agents-owned","route:project","tool:turbopack","updates:manual","usage:on-demand"]'
 ---
 
 # Next.js and Turbopack
 
-Next.js 16+ uses Turbopack by default for local development: an incremental bundler written in Rust that significantly speeds up dev startup and hot updates.
+Activate only when the detected Next.js project and requested path involve its
+bundler, cache, development startup/HMR, or production build behavior.
 
-## When to Use
+Before effects, resolve the pinned Next.js version, package/lock owner, scripts,
+config/plugins, selected bundler for each command, deployment contract, cache and
+artifact owners, current error, official documentation for that exact release,
+baseline measurements, and native gates. Missing evidence stops with zero effects.
 
-- **Turbopack (default dev)**: Use for day-to-day development. Faster cold start and HMR, especially in large apps.
-- **Webpack (legacy dev)**: Use only if you hit a Turbopack bug or rely on a webpack-only plugin in dev. Disable with `--webpack` (or `--no-turbopack` depending on your Next.js version; check the docs for your release).
-- **Production**: Production build behavior (`next build`) may use Turbopack or webpack depending on Next.js version; check the official Next.js docs for your version.
+Change only the script/config owner that explicitly selects the wrong path. Do
+not guess flags, delete `.next`, add a Webpack/Turbopack alternate after failure,
+upgrade versions, change routers/components, or enable analyzers without a current
+requirement and compatibility proof.
 
-Use when: developing or debugging Next.js 16+ apps, diagnosing slow dev startup or HMR, or optimizing production bundles.
-
-## How It Works
-
-- **Turbopack**: Incremental bundler for Next.js dev. Uses file-system caching so restarts are much faster (e.g. 5–14x on large projects).
-- **Default in dev**: From Next.js 16, `next dev` runs with Turbopack unless disabled.
-- **File-system caching**: Restarts reuse previous work; cache is typically under `.next`; no extra config needed for basic use.
-- **Bundle Analyzer (Next.js 16.1+)**: Experimental Bundle Analyzer to inspect output and find heavy dependencies; enable via config or experimental flag (see Next.js docs for your version).
-
-## Examples
-
-### Commands
-
-```bash
-next dev
-next build
-next start
-```
-
-### Usage
-
-Run `next dev` for local development with Turbopack. Use the Bundle Analyzer (see Next.js docs) to optimize code-splitting and trim large dependencies. Prefer App Router and server components where possible.
-
-## Best Practices
-
-- Stay on a recent Next.js 16.x for stable Turbopack and caching behavior.
-- If dev is slow, ensure you're on Turbopack (default) and that the cache isn't being cleared unnecessarily.
-- For production bundle size issues, use the official Next.js bundle analysis tooling for your version.
+Measure cold start, HMR, unchanged restart/cache reuse, and production build as
+separate contracts. Preserve the first command failure unchanged and publish no
+partial artifact. Report the material script/config change, measurements, exact
+commands/exits/output, cache identity, and zero residue.

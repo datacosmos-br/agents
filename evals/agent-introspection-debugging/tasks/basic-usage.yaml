@@ -1,7 +1,7 @@
 id: agent-introspection-debugging-happy-001
 name: Diagnose a repeated wrong-directory search
 description: Turn a concrete retry loop into one falsifiable check and contained recovery.
-tags: [agent, introspection, debugging, failures, diagnosis, recovery, happy-path]
+tags: [agent, behavior, session, recovery, tool, debugging, introspection, failures, diagnosis, happy-path]
 inputs:
   prompt: >-
     Analyze retry-loop.log. Produce a Failure Capture, identify the most likely
@@ -11,4 +11,5 @@ inputs:
   files:
   - path: retry-loop.log
 expected:
-  output_contains: [wrong working directory, pwd, Agent Self-Debug Report]
+  output_contains: [/workspace/web-ui, /workspace/control-plane, pwd, Agent Self-Debug Report]
+  output_not_contains: [retry the search, try another command]

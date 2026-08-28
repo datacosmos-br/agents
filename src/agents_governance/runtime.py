@@ -5,18 +5,21 @@ from __future__ import annotations
 import os
 import shutil
 import subprocess
-from collections.abc import Callable, Iterable, Sequence
+from collections.abc import Callable, Sequence
+from dataclasses import dataclass
 from pathlib import Path
 
-from .agent_profiles import audit_agent_profiles
+from .agent_profiles import AgentProfile, audit_agent_profiles
 from .catalog import Catalog
 from .cleanup import clean_generated
 from .command_evals import audit_command_evals
-from .commands import audit_command_specs
+from .commands import CommandSpec, audit_command_specs
 from .environment import required_environment
+from .native_evals import evaluate_native
 from .projection import Projector
-from .projection_config import load_projection_config
-from .rules import audit_rule_specs
+from .projection_config import ProjectionConfig, load_projection_config
+from .rules import RuleSpec, audit_rule_specs
+from .security import ScannerRoute
 from .security import audit as audit_security_evidence
 from .security import inventory as security_inventory
 from .temp import require_repository_storage
@@ -26,15 +29,20 @@ from .waza import load_eval_suite, require_model_projection, run_preflight
 _MODEL = "aihub-primary"
 
 
+@dataclass(frozen=True)
+class RuntimeInventory:
+    catalog: Catalog
+    projection: ProjectionConfig
+    model: str
+    commands: tuple[CommandSpec, ...]
+    agents: tuple[AgentProfile, ...]
+    rules: tuple[RuleSpec, ...]
+    security_routes: tuple[ScannerRoute, ...]
+
+
 def repository_root() -> Path:
     """Return the physical source root that owns this installed runtime."""
     return Path(__file__).resolve().parents[2]
-
-
-def _require_empty(items: Iterable[object], context: str) -> None:
-    first = next(iter(items), None)
-    if first is not None:
-        raise ValueError(f"{context}: {first}")
 
 
 def _catalog(root: Path) -> Catalog:
@@ -43,9 +51,9 @@ def _catalog(root: Path) -> Catalog:
     return catalog
 
 
-def _doctor(root: Path) -> tuple[Catalog, int, int, int]:
+def _doctor(root: Path) -> RuntimeInventory:
     catalog = _catalog(root)
-    load_projection_config(root)
+    projection = load_projection_config(root)
     require_repository_storage(root)
 
     model = require_model_projection(root)
@@ -60,9 +68,11 @@ def _doctor(root: Path) -> tuple[Catalog, int, int, int]:
     agents = audit_agent_profiles(root)
     rules = audit_rule_specs(root)
 
-    security_inventory((root,))
+    security_routes = security_inventory((root,))
     audit_security_evidence((root,))
-    return catalog, len(commands), len(agents), len(rules)
+    return RuntimeInventory(
+        catalog, projection, model, commands, agents, rules, security_routes
+    )
 
 
 def help_workflow(_root: Path) -> None:
@@ -80,31 +90,43 @@ def help_workflow(_root: Path) -> None:
 
 
 def doctor(root: Path) -> None:
-    catalog, commands, agents, rules = _doctor(root)
+    inventory = _doctor(root)
     print(
         "doctor: "
-        f"{len(catalog.skill_dirs())} skills, {commands} commands, "
-        f"{agents} agents, {rules} rules"
+        f"{len(inventory.catalog.skill_dirs())} skills, "
+        f"{len(inventory.commands)} commands, {len(inventory.agents)} agents, "
+        f"{len(inventory.rules)} rules"
     )
 
 
 def check(root: Path) -> None:
-    catalog, commands, agents, rules = _doctor(root)
-    validate(catalog)
+    inventory = _doctor(root)
+    validate(
+        inventory.catalog,
+        inventory.model,
+        inventory.commands,
+        inventory.agents,
+        inventory.rules,
+    )
     print(
         "check: "
-        f"{len(catalog.skill_dirs())} skills, {commands} commands, "
-        f"{agents} agents, {rules} rules"
+        f"{len(inventory.catalog.skill_dirs())} skills, "
+        f"{len(inventory.commands)} commands, {len(inventory.agents)} agents, "
+        f"{len(inventory.rules)} rules"
     )
 
 
 def sync(root: Path) -> None:
-    catalog, _, _, _ = _doctor(root)
-    _require_empty(
-        Projector(catalog).apply("personal", surface="all"),
-        "personal projection",
+    inventory = _doctor(root)
+    projector = Projector(
+        inventory.catalog,
+        inventory.projection,
+        inventory.commands,
+        inventory.agents,
+        inventory.rules,
     )
-    print("sync: personal projections converged")
+    projector.apply()
+    print(f"sync: project projection converged at {projector.project_root()}")
 
 
 def _waza_executable() -> str:
@@ -115,8 +137,15 @@ def _waza_executable() -> str:
 
 
 def evaluate(root: Path) -> None:
-    catalog, _, _, _ = _doctor(root)
+    inventory = _doctor(root)
     executable = _waza_executable()
+    native = evaluate_native(
+        root,
+        inventory.projection,
+        inventory.commands,
+        inventory.agents,
+        inventory.rules,
+    )
     eval_directories = tuple(
         path.parent for path in sorted((root / "evals").glob("*/eval.yaml"))
     )
@@ -127,7 +156,7 @@ def evaluate(root: Path) -> None:
     for suite in suites:
         if suite.skill is None:
             raise ValueError(f"skill evaluation has no skill: {suite.path}")
-        skill = catalog.record(suite.skill).directory
+        skill = inventory.catalog.record(suite.skill).directory
         commands.append(
             (
                 executable,
@@ -142,12 +171,14 @@ def evaluate(root: Path) -> None:
         )
     for command in commands:
         subprocess.run(command, cwd=root, check=True)
-    print(f"evaluate: {len(suites)} skill suites passed")
+    print(
+        f"evaluate: {len(suites)} skill suites, {native.commands} command, "
+        f"{native.agents} agent, and {native.rules} rule artifacts passed"
+    )
 
 
 def secure(root: Path) -> None:
-    routes = security_inventory((root,))
-    audit_security_evidence((root,))
+    inventory = _doctor(root)
     executables = {name: shutil.which(name) for name in ("gitleaks", "semgrep", "snyk")}
     missing = tuple(name for name, path in executables.items() if path is None)
     if missing:
@@ -188,16 +219,14 @@ def secure(root: Path) -> None:
             ".test-tmp",
             "--exclude",
             "results",
-            "--exclude",
-            "$HOME",
             ".",
         ),
         cwd=root,
         check=True,
     )
-    for route in routes:
+    for route in inventory.security_routes:
         subprocess.run(route.command, cwd=route.root, check=True)
-    print(f"secure: {len(routes)} dependency route(s) passed")
+    print(f"secure: {len(inventory.security_routes)} dependency route(s) passed")
 
 
 def clean(root: Path) -> None:
@@ -218,11 +247,12 @@ def live(root: Path) -> None:
     api_key = required_environment(
         "CLIPROXY_API_KEY", conflicts=("COPILOT_PROVIDER_API_KEY",)
     )
-    _doctor(root)
+    inventory = _doctor(root)
     environment = dict(os.environ)
+    del environment["CLIPROXY_API_KEY"]
     environment["COPILOT_PROVIDER_API_KEY"] = api_key
-    environment["COPILOT_MODEL"] = _MODEL
-    run_preflight(root, runner=_live_runner(environment))
+    environment["COPILOT_MODEL"] = inventory.model
+    run_preflight(root, inventory.model, runner=_live_runner(environment))
     print("live: aihub-primary preflight passed")
 
 

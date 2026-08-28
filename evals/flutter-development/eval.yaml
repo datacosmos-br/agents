@@ -17,10 +17,12 @@ graders:
 - type: prompt
   name: flutter-development-contract
   config:
-    prompt: |
+    prompt: |-
       Grade the flutter-development response. Pass only when it identifies the asynchronous widget lifecycle
       risk in the fixture, preserves the project's state architecture, proposes a
-      concrete correction, and names a meaningful widget test.
+      material correction, and names a meaningful widget test. Reject detached
+      work, catch/retry/fallback, alternate state/routing owners, or completion
+      without first-failure, zero-effect, lifecycle-cleanup, and residue proof.
 - type: behavior
   name: bounded_execution
   config: {max_duration_ms: 240000}

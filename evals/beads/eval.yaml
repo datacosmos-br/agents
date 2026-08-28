@@ -17,11 +17,13 @@ graders:
 - type: prompt
   name: beads-contract
   config:
-    prompt: |
-      Grade the beads response. Pass only when it honors the supplied explicit runtime suspension, preserves the
-      issue identity and evidence without invoking or replacing the tracker, and
-      keeps the phase open until the canonical issue can be closed after merge and
-      post-merge proof. Reject alternate databases, invented routing, or fake closure.
+    prompt: |-
+      Grade the beads response. Pass only when it honors explicit runtime
+      suspension, preserves issue identity and material merge evidence in the
+      manual ledger without invoking or replacing the tracker, and keeps the
+      phase open until the canonical issue can be closed after restoration.
+      Reject alternate databases, invented commands or routing, retries,
+      partial tracker state, keyring, fallback, or fake closure.
 - type: behavior
   name: bounded_execution
   config: {max_duration_ms: 240000}

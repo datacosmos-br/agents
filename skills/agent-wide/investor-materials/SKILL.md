@@ -2,7 +2,7 @@
 name: investor-materials
 description: 'fundraising decks, investor memos, capital narratives'
 metadata:
-  aihub.tags: '["domain:fundraising","provenance:agents-owned","role:writing","updates:manual","usage:on-demand"]'
+  aihub.tags: '["domain:fundraising","policy:atomic-effects","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","provenance:agents-owned","role:writing","updates:manual","usage:on-demand"]'
 ---
 
 # Investor Materials
@@ -35,9 +35,10 @@ If conflicting numbers appear, stop and resolve them before drafting.
 
 1. inventory the canonical facts
 2. identify missing assumptions
-3. choose the asset type
-4. draft the asset with explicit logic
-5. cross-check every number against the source of truth
+3. validate the complete fact set, destination, asset type, arithmetic, and
+   publication contract before drafting
+4. draft the complete asset with explicit logic
+5. cross-check every number against the source of truth and publish atomically
 
 ## Asset Guidance
 
@@ -68,7 +69,7 @@ If the user wants a web-native deck, pair this skill with `frontend-slides`.
 ### Financial Model
 Include:
 - explicit assumptions
-- bear / base / bull cases when useful
+- bear / base / bull cases only when the approved fact model defines them
 - clean layer-by-layer revenue logic
 - milestone-linked spending
 - sensitivity analysis where the decision hinges on assumptions

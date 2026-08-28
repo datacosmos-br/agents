@@ -3,6 +3,6 @@ name: General Python naming cleanup
 description: Keep parallelization guidance out of an ordinary readability edit.
 tags: [anti-trigger]
 inputs:
-  prompt: Rename one local Python variable for clarity without changing runtime behavior.
+  prompt: Rename one local Python variable for clarity without changing runtime behavior. Do not activate or fall back to parallelization.
 expected:
-  output_not_contains: [asyncio, thread pool, process pool]
+  output_not_contains: [asyncio, thread pool, process pool, fallback concurrency]

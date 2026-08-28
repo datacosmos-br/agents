@@ -3,6 +3,6 @@ name: Diagnose a Vite-only React app
 description: Keep Next.js and Turbopack advice out of another bundler stack.
 tags: [vite, react, anti-trigger]
 inputs:
-  prompt: Diagnose a Vite 6 React app whose HMR socket is blocked by a reverse proxy. The project has no Next.js dependency or next configuration.
+  prompt: Diagnose a Vite 6 React app whose HMR socket is blocked by a reverse proxy. The project has no Next.js dependency or next configuration; do not activate or fall back to Next.js/Turbopack guidance.
 expected:
-  output_not_contains: [Turbopack, next dev, .next]
+  output_not_contains: [Turbopack, next dev, .next, fallback bundler]

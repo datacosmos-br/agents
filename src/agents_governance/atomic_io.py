@@ -7,6 +7,8 @@ import stat
 import tempfile
 from pathlib import Path
 
+from .cleanup import run_cleanup, run_with_cleanup
+
 
 def _symlink_component(path: Path) -> Path | None:
     absolute = path.absolute()
@@ -53,7 +55,9 @@ def stage_text(destination: Path, text: str, *, mode: int = 0o644) -> Path:
         prefix=f".{destination.name}.", suffix=".candidate", dir=parent
     )
     candidate = Path(raw_candidate)
-    try:
+
+    def write() -> Path:
+        nonlocal descriptor
         stream = os.fdopen(descriptor, "w", encoding="utf-8")
         descriptor = -1
         with stream:
@@ -62,27 +66,23 @@ def stage_text(destination: Path, text: str, *, mode: int = 0o644) -> Path:
             os.fsync(stream.fileno())
         candidate.chmod(mode)
         return candidate
-    except BaseException as error:
-        if descriptor >= 0:
-            os.close(descriptor)
-        try:
-            discard_physical_file(candidate)
-        except (OSError, RuntimeError) as cleanup_error:
-            error.add_note(f"candidate cleanup failed: {cleanup_error}")
-            raise error from cleanup_error
-        raise
+
+    def cleanup() -> None:
+        run_cleanup(
+            (
+                lambda: os.close(descriptor) if descriptor >= 0 else None,
+                lambda: discard_physical_file(candidate),
+            )
+        )
+
+    return run_with_cleanup(write, cleanup)
 
 
 def atomic_write_text(destination: Path, text: str, *, mode: int = 0o644) -> None:
     """Publish text by atomic replacement while preserving an existing owner."""
 
     candidate = stage_text(destination, text, mode=mode)
-    try:
-        candidate.replace(destination)
-    except BaseException as error:
-        try:
-            discard_physical_file(candidate)
-        except (OSError, RuntimeError) as cleanup_error:
-            error.add_note(f"candidate rollback failed: {cleanup_error}")
-            raise error from cleanup_error
-        raise
+    run_with_cleanup(
+        lambda: candidate.replace(destination),
+        lambda: discard_physical_file(candidate),
+    )

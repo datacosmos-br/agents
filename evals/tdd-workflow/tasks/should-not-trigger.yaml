@@ -3,6 +3,6 @@ name: Translate a sentence
 description: Keep development workflow out of a translation request.
 tags: [anti-trigger]
 inputs:
-  prompt: Translate “The train arrives at noon” into Portuguese.
+  prompt: Translate “The train arrives at noon” into Portuguese. Do not activate TDD or fall back to a test workflow.
 expected:
-  output_not_contains: [RED-GREEN, test case, coverage]
+  output_not_contains: [RED-GREEN, test case, coverage, fallback test]

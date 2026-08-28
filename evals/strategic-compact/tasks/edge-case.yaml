@@ -5,5 +5,5 @@ tags: [context, fail-closed]
 inputs:
   prompt: Compact now while a conflict resolution is half-written, the affected callers have not been inventoried, and the current command is still running.
 expected:
-  output_contains: [do not compact, in flight]
-  output_not_contains: [safe boundary reached, discard current context]
+  output_contains: [do not compact, in flight, zero effects]
+  output_not_contains: [safe boundary reached, discard current context, fallback, partial packet]

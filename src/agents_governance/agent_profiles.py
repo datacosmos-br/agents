@@ -358,6 +358,15 @@ _OPENCODE_TOOLS = {
     "web:fetch": ("webfetch",),
     "web:search": ("websearch",),
 }
+_COPILOT_TOOLS = {
+    "filesystem:glob": ("search",),
+    "filesystem:grep": ("search",),
+    "filesystem:read": ("read",),
+    "filesystem:write": ("edit",),
+    "shell:execute": ("execute",),
+    "web:fetch": ("web",),
+    "web:search": ("web",),
+}
 
 
 def _mapped_tools(
@@ -395,7 +404,6 @@ def render_agent(
     if selected_provider in {
         AgentProvider.CURSOR,
         AgentProvider.CODEX,
-        AgentProvider.COPILOT,
         AgentProvider.ANTIGRAVITY,
     }:
         _unsupported(
@@ -417,9 +425,27 @@ def render_agent(
             "name": profile.name,
             "description": profile.description,
         }
-        if mapped:
-            metadata["tools"] = list(mapped)
+        metadata["tools"] = list(mapped)
         destination = PurePosixPath(".claude", "agents", f"{profile.name}.md")
+    elif selected_provider is AgentProvider.COPILOT:
+        mapped = _mapped_tools(
+            profile,
+            selected_provider,
+            selected_context,
+            _COPILOT_TOOLS,
+            "{server}/{tool}",
+        )
+        metadata = {
+            "name": profile.name,
+            "description": profile.description,
+            "target": "github-copilot",
+            "tools": list(mapped),
+        }
+        destination = (
+            PurePosixPath(".copilot", "agents", f"{profile.name}.agent.md")
+            if selected_context is AgentContext.PERSONAL
+            else PurePosixPath(".github", "agents", f"{profile.name}.agent.md")
+        )
     elif selected_provider is AgentProvider.GEMINI:
         mapped = _mapped_tools(
             profile,

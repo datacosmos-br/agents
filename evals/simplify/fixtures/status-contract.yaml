@@ -1,7 +1,7 @@
 module: status_formatter.py
 public_contract:
   format_status:
-    signature: "format_status(enabled: bool, code: str | None) -> str"
+    signature: "format_status(code: str | None, *, enabled: bool = True) -> str"
     behavior:
       - "disabled returns disabled"
       - "enabled with a nonblank code returns enabled:<trimmed-code>"
@@ -15,9 +15,14 @@ constraints:
   - "keep both public functions and their type annotations"
   - "use direct readable control flow; no helper or class is justified"
   - "do not swallow exceptions or hardcode test-only results"
+canonical_defaults:
+  status_enabled:
+    owner: "format_status(..., enabled: bool = True)"
+    redundant_call: "format_status(' X ', enabled=True)"
+    final_call: "format_status(' X ')"
 runtime_checks:
-  - "format_status(False, ' X ') == 'disabled'"
-  - "format_status(True, ' X ') == 'enabled:X'"
-  - "format_status(True, '   ') == 'enabled:unknown'"
-  - "format_status(True, None) == 'enabled:unknown'"
+  - "format_status(' X ', enabled=False) == 'disabled'"
+  - "format_status(' X ') == 'enabled:X'"
+  - "format_status('   ') == 'enabled:unknown'"
+  - "format_status(None) == 'enabled:unknown'"
   - "unrelated_invoice_total([2, 3]) == 5"

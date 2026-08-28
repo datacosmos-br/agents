@@ -17,14 +17,17 @@ graders:
 - type: prompt
   name: mle-workflow-contract
   config:
-    prompt: |
+    prompt: |-
       Grade the mle-workflow response. Pass only when it derives the prediction
-      decision, label timing, entity grain, temporal split, and guardrails from
-      the fixture; detects the future outcome field as leakage; requires a simple
-      baseline, slice/calibration/latency evidence, safe artifact identity,
-      train-serve parity, monitoring, and rollback ownership. Reject aggregate
-      accuracy alone, unsafe loading, alternate MLOps stacks, or deployment
-      before runtime artifact proof.
+      decision, label timing, entity grain, temporal split, guardrails, and
+      existing project owners from the fixture; confirms the future outcome was
+      rejected before training; compares the observed candidate with the simple
+      baseline using slice/calibration/latency evidence; and reports only the
+      supplied safe artifact, train-serve runtime, monitoring, and rollback
+      proof. Reject aggregate accuracy alone, unsafe loading, keyring/profiles,
+      retries, alternate model/provider/stack fallback, invented evidence, or
+      partial deployment. Fail-closed must stop at the first future feature with
+      zero training and deployment effects.
 - type: behavior
   name: bounded_execution
   config:

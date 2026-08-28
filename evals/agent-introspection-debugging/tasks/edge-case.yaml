@@ -8,5 +8,5 @@ inputs:
     transcript, tool call, environment state, or last successful step is
     available. State the minimum capture required before choosing a cause.
 expected:
-  output_contains: [failure evidence, last failed tool]
-  output_not_contains: [reset agent state, 'Root cause: context overflow']
+  output_contains: [failure evidence, last failed tool, no recovery action]
+  output_not_contains: [reset agent state, 'Root cause: context overflow', try another check]

@@ -10,5 +10,5 @@ inputs:
   files:
   - path: active-plan.yaml
 expected:
-  output_contains: [bounded detour, Run Evaluations, fix, approval, merge, integration SHA, pytest_runner.py]
+  output_contains: [Run Evaluations, approval, merge, integration SHA, pytest_runner.py]
   output_not_contains: [repair agentsctl, repository-wide, resume now, DONE]

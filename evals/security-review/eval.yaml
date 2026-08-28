@@ -17,7 +17,7 @@ graders:
 - type: prompt
   name: security-review-contract
   config:
-    prompt: |
+    prompt: |-
       Grade the security-review response. Pass only when it reproduces the named
       finding, traces it to Exporter.render, replaces shell interpretation with
       the existing argument-vector primitive, and requires fresh make security

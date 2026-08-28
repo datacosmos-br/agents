@@ -1,13 +1,13 @@
 id: article-writing-happy-001
 name: Explain a measured build-cache improvement
-description: Turn release evidence into a concise technical article for platform engineers.
-tags: [article, technical-writing, guides, blog, newsletter, tutorials, happy-path]
+description: Exercise source synthesis as long-form technical writing for platform engineers.
+tags: [article, technical-writing, source-synthesis, long-form-writing, guides, blog, newsletter, tutorials, happy-path]
 inputs:
   prompt: >-
-    Write a 600-word technical article from cache-release-notes.md. Lead with the
-    measured before-and-after result, explain why the cache key is safe, discuss
-    the no-lockfile limitation, and close with concrete adoption checks rather
-    than a generic recap. Do not invent customer or cost evidence.
+    Synthesize cache-release-notes.md into a 600-word long-form technical article.
+    Lead with the measured before-and-after result, explain why the cache key is
+    safe, discuss the no-lockfile limitation, and close with concrete adoption
+    checks rather than a generic recap. Do not invent customer or cost evidence.
   files:
   - path: cache-release-notes.md
 expected:

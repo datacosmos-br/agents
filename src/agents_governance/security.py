@@ -198,11 +198,13 @@ def discover(roots: tuple[Path, ...]) -> tuple[Path, ...]:
             for path in (root.resolve(strict=True) / "docs" / "security").glob(
                 "*-triage.md"
             )
-            if path.is_file() and not path.is_symlink()
         )
     )
     if not documents:
         raise FileNotFoundError("no docs/security/*-triage.md document exists")
+    for path in documents:
+        if path.is_symlink() or not path.is_file():
+            raise ValueError(f"security triage must be a physical file: {path}")
     return documents
 
 

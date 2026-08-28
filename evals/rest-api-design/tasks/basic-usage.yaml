@@ -1,6 +1,6 @@
 id: rest-api-design-happy-001
 name: Design a stable orders collection contract
-description: Define a source-backed REST collection with authorization and cursor pagination.
+description: Exercise REST API resource contracts and error semantics with authorization and cursor pagination.
 tags: [api, rest, resources, pagination, status-codes, authorization, happy-path]
 inputs:
   prompt: >-
@@ -8,7 +8,9 @@ inputs:
     resource URL, query parameters, stable pagination cursor, success envelope,
     authentication and ownership behavior, rate-limit response, and concrete
     400, 403, 422, and 429 error semantics without changing the owned naming convention.
+    Include the complete preflight and prove that authorization or dependency
+    failure publishes no partial response or effect.
   files:
   - path: orders-api.yaml
 expected:
-  output_contains: [GET /api/v1/orders, next_cursor, 403 Forbidden, 429 Too Many Requests]
+  output_contains: [GET /api/v1/orders, next_cursor, 403 Forbidden, 429 Too Many Requests, zero effects]

@@ -5,5 +5,5 @@ tags: [architecture, documentation, edge-case]
 inputs:
   prompt: Produce the definitive architecture and ADR for an unavailable service. No code, configuration, runtime observation, interface, or approved decision is supplied. State what blocks definitive documentation.
 expected:
-  output_contains: [evidence, source]
-  output_not_contains: [definitive diagram, approved decision]
+  output_contains: [evidence, source, zero effects]
+  output_not_contains: [definitive diagram, approved decision, architecture note created]

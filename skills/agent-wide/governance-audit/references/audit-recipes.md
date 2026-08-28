@@ -1,91 +1,44 @@
-# Audit Recipes (beads/audit)
+# Governance audit recipes
 
-Copy-paste checks for the tracker hygiene checklist in `../SKILL.md`.
-Read-only: every command here is inspection, never mutation.
+These recipes classify supplied governance evidence without mutating its owner.
 
-## Tracker State
+## Runtime preflight
 
-```bash
-set -euo pipefail
+Determine the declared tracker, documentation authority, projection owner, and
+runtime state before inspection. When the tracker is suspended or unavailable,
+use only supplied static snapshots and repository files. Do not invoke a tracker,
+select an endpoint, or substitute another database.
 
-# Totals and distribution
-bd stats
-bd list --status open --json | jq -r 'group_by(.issue_type) | .[] | "\(.[0].issue_type): \(length)"'
-bd list --status open --json | jq -r 'group_by(.priority) | .[] | "P\(.[0].priority): \(length)"'
+After explicit runtime restoration, read the then-current canonical help before
+selecting any read-only command. Historical flags, endpoints, and command examples
+are not reusable authority. A missing inspection surface is the first blocker.
 
-# Claim concentration (who owns the board)
-bd list --status open --json | jq -r 'group_by(.assignee // "none") | .[] | "\(.[0].assignee // "none"): \(length)"'
+## Tracker-state checks
 
-# in_progress AND dep-blocked (state conflict)
-in_progress_ids="$(
-  bd list --status in_progress --json | jq -r '.[].id' | sort
-)"
-blocked_ids="$(
-  bd blocked --json | jq -r '.[].id' | sort
-)"
-comm -12 \
-  <(printf '%s' "$in_progress_ids") \
-  <(printf '%s' "$blocked_ids")
+- status conflicts: work marked in progress while an open dependency blocks it;
+- stale blocks: blocked work whose declared blocker is no longer open;
+- ownerless or workerless in-progress work;
+- open epics without a material description;
+- claim concentration and priority inflation;
+- overlapping epics and drain candidates.
 
-# Stale blocked: status=blocked but no open blocker
-bd list --json | jq -r '.[] | select(.status=="blocked") | .id' | while read -r id; do
-  bd show "$id" --json | jq -r '.[0] | "\(.id): \(.dependencies // [] | map(.id) | join(","))"'
-done   # then bd show each listed blocker: closed target = stale dep
+Timestamps alone do not prove staleness. Inspect content, declared dependencies,
+live ownership, and current runtime evidence.
 
-# NULL epic descriptions
-bd list --json | jq -r '.[] | select(.issue_type=="epic" and .status=="open" and (.description == null or .description == "")) | .id'
+## Content and projection checks
 
-# Bulk-touch detection (timestamps useless)
-bd list --status open --json | jq -r '[.[].updated_at[0:10]] | unique | length'
-# 1 = bulk-touched: audit CONTENT, not dates
+- resolve every cited file and tracker identifier through its canonical owner;
+- identify closed ancestors still presented as live context;
+- compare canonical source bytes with declared physical projections;
+- treat dual writable paths or source/projection divergence as blocking;
+- preserve projections during audit and recommend correction at the source owner.
 
-# Epic health
-bd epic status
-# >=70% children closed with <=2 open = drain candidate; two epics sharing
-# directive keywords = fold candidate (orchestrator decision)
-```
+## Severity and report
 
-## Content Staleness
+- **P0**: dual mutating orchestrators, ownerless in-flight work, or two writable truths;
+- **P1**: stale blocks, missing epic contract, claim concentration, zombie work, or canonical-link rot;
+- **P2**: priority inflation, note archaeology, dead references, or non-authoritative prose drift.
 
-```bash
-set -euo pipefail
-
-# Dead file references in descriptions (run per suspicious path)
-ls <referenced-path>
-
-# Closed ancestors cited as live context
-bd show <cited-id> --json | jq -r '.[0].status'
-
-# Notes archaeology (synthesis missing from description)
-bd show <id> --json | jq -r '.[0].notes | length'   # hundreds = archaeology
-```
-
-## Dual Paths And Projections
-
-```bash
-set -euo pipefail
-
-ls -d <path-a> <path-b>        # both exist = dual-path finding
-diff -rq <canonical> <projection>   # source vs projection drift
-```
-
-## Finding Severity Guide
-
-- **P0**: dual orchestrators mutating, bead with no owner mid-flight, SSOT
-  divergence (two truths).
-- **P1**: stale blocks hiding ready work, NULL epic descriptions, claim
-  concentration, zombie lanes.
-- **P2**: priority inflation, note archaeology, dead doc references.
-
-Report as: check | finding | evidence (command + decisive output) | proposed
-action | severity — to the orchestrator. You never enact semantic changes.
-
-## Docs Freshness vs Reality (UNIVERSAL_CORE 14)
-
-- README/AGENTS.md links: follow each canonical link; stale target = finding.
-- Command references: run 2-3 documented commands with `--help`; mismatch
-  between doc and live CLI = finding.
-- Structure claims (dirs, module counts, LOC): spot-check against the tree.
-- Version/date headers older than the last structural change = suspect;
-  sample one claim for reality drift.
-- Report severity P1 for canonical-link rot, P2 for prose drift.
+Report: check | finding | evidence | owner-correct action | severity. Evidence
+must identify its source or read-only command and decisive result. Stop at the
+first causal inspection defect; do not aggregate later checks after it fails.

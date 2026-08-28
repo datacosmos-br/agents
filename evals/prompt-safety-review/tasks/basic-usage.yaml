@@ -11,4 +11,5 @@ inputs:
   files:
   - path: deployment-agent.prompt.md
 expected:
-  output_contains: [prompt injection, secret exposure, AGENTS.md, Improved Prompt]
+  output_contains: [prompt injection, secret exposure, AGENTS.md, Improved Prompt, first causal failure]
+  output_not_contains: [alternate provider, fallback prompt, retry after failure]

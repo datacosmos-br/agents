@@ -5,4 +5,4 @@ tags: [anti-trigger]
 inputs:
   prompt: Plan a three-day museum itinerary for Madrid.
 expected:
-  output_not_contains: [serialization, schema, mutation]
+  output_not_contains: [serialization, schema, mutation, data-model workflow]

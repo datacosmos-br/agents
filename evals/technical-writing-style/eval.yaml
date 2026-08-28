@@ -17,12 +17,14 @@ graders:
 - type: prompt
   name: technical-writing-style-contract
   config:
-    prompt: |
+    prompt: |-
       Grade the technical-writing-style response. Pass only when it leads with the
       measured Linux result, preserves both timings and 240-run sample, explicitly
       limits the claim to Linux, removes hype and LLM filler, and stays concise in
       active voice. Reject invented percentages, Windows claims, corporate jargon,
-      meta introductions, or a meaning-changing rewrite.
+      meta introductions, fallback claims, or a meaning-changing rewrite. When
+      evidence is missing, require the first missing source to stop definitive
+      publication with zero fabricated facts.
 - type: behavior
   name: bounded_execution
   config: {max_duration_ms: 240000}

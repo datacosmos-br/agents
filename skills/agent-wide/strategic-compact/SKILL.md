@@ -2,7 +2,7 @@
 name: strategic-compact
 description: 'context compaction, execution continuity, session recovery'
 metadata:
-  aihub.tags: '["provenance:agents-owned","role:continuity","updates:manual","usage:on-demand"]'
+  aihub.tags: '["policy:atomic-effects","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","provenance:agents-owned","role:continuity","updates:manual","usage:on-demand"]'
 ---
 
 # Strategic Compact

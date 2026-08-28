@@ -24,7 +24,6 @@ generic Rust project.
   dependency to another checkout, cross-repository reference, inherited secret,
   or project state under `/tmp`.
 - Install Rust technology skills only when project-local markers prove Rust.
-  FLEXT content remains absent unless independent FLEXT detection succeeds.
 - Catching is limited to cleanup/rollback that re-emits the original error and
   attaches any secondary cleanup failure. Child exit, timeout, signal, and
   incomplete publication remain native failures.

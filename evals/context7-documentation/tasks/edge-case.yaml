@@ -9,6 +9,8 @@ expected:
   output_contains:
   - library name is required
   - package or import path is required
+  - no Context7 call
   output_not_contains:
   - query-docs completed
   - /vercel/next.js
+  - fallback documentation

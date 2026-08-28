@@ -2,84 +2,25 @@
 name: bun-runtime
 description: 'bun runtime, javascript tooling, project detection'
 metadata:
-  aihub.tags: '["activation:detected","detect:marker:bun.lock","detect:marker:bun.lockb","provenance:agents-owned","route:project","technology:bun","updates:manual","usage:on-demand"]'
+  aihub.tags: '["activation:detected","detect:marker:bun.lock","detect:marker:bun.lockb","policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","policy:zero-residue","provenance:agents-owned","route:project","technology:bun","updates:manual","usage:on-demand"]'
 ---
 
 # Bun Runtime
 
-Bun is a fast all-in-one JavaScript runtime and toolkit: runtime, package manager, bundler, and test runner.
+Activate only when project markers or an approved migration select Bun. A
+JavaScript or TypeScript source edit alone does not choose a runtime.
 
-## When to Use
+Before package, test, build, or run effects, resolve the declared Bun version,
+lockfile, package/workspace owner, scripts, deployment runtime, native dependency
+compatibility, required environment, output owner, and project gates. Missing or
+conflicting evidence stops with zero effects.
 
-- **Prefer Bun** for: new JS/TS projects, scripts where install/run speed matters, Vercel deployments with Bun runtime, and when you want a single toolchain (run + install + test + build).
-- **Prefer Node** for: maximum ecosystem compatibility, legacy tooling that assumes Node, or when a dependency has known Bun issues.
+Use only the declared Bun and script surfaces. Install from the lock without
+updating it unless dependency change is authorized. Do not add Node, npm, yarn,
+pnpm, another Bun version, alternate scripts, or compatibility commands as a
+fallback path.
 
-Use when: adopting Bun, migrating from Node, writing or debugging Bun scripts/tests, or configuring Bun on Vercel or other platforms.
-
-## How It Works
-
-- **Runtime**: Drop-in Node-compatible runtime (built on JavaScriptCore, implemented in Zig).
-- **Package manager**: `bun install` is significantly faster than npm/yarn. Lockfile is `bun.lock` (text) by default in current Bun; older versions used `bun.lockb` (binary).
-- **Bundler**: Built-in bundler and transpiler for apps and libraries.
-- **Test runner**: Built-in `bun test` with Jest-like API.
-
-**Migration from Node**: Replace `node script.js` with `bun run script.js` or `bun script.js`. Run `bun install` in place of `npm install`; most packages work. Use `bun run` for npm scripts; `bun x` for npx-style one-off runs. Node built-ins are supported; prefer Bun APIs where they exist for better performance.
-
-**Vercel**: Set runtime to Bun in project settings. Build: `bun run build` or `bun build ./src/index.ts --outdir=dist`. Install: `bun install --frozen-lockfile` for reproducible deploys.
-
-## Examples
-
-### Run and install
-
-```bash
-# Install dependencies (creates/updates bun.lock or bun.lockb)
-bun install
-
-# Run a script or file
-bun run dev
-bun run src/index.ts
-bun src/index.ts
-```
-
-### Scripts and env
-
-```bash
-bun run --env-file=.env dev
-FOO=bar bun run script.ts
-```
-
-### Testing
-
-```bash
-bun test
-bun test --watch
-```
-
-```typescript
-// test/example.test.ts
-import { expect, test } from "bun:test";
-
-test("add", () => {
-  expect(1 + 2).toBe(3);
-});
-```
-
-### Runtime API
-
-```typescript
-const file = Bun.file("package.json");
-const json = await file.json();
-
-Bun.serve({
-  port: 3000,
-  fetch(req) {
-    return new Response("Hello");
-  },
-});
-```
-
-## Best Practices
-
-- Commit the lockfile (`bun.lock` or `bun.lockb`) for reproducible installs.
-- Prefer `bun run` for scripts. For TypeScript, Bun runs `.ts` natively.
-- Keep dependencies up to date; Bun and the ecosystem evolve quickly.
+Preserve the first install, script, test, build, timeout, signal, or runtime
+failure unchanged. Publish only the complete verified artifact through its owner;
+remove candidates and obsolete lock/runtime paths. Report exact commands, exits,
+decisive output, material artifact, and residue proof.

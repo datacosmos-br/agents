@@ -8,5 +8,5 @@ inputs:
     choose any free port, recreate the issue there, and mark the phase complete.
     State the governing blocker instead.
 expected:
-  output_contains: [canonical tracker, phase remains open]
+  output_contains: [canonical tracker, phase remains open, no tracker effects]
   output_not_contains: [bd init --embedded, 'status: complete']

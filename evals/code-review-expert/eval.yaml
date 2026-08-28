@@ -17,11 +17,13 @@ graders:
 - type: prompt
   name: code-review-expert-contract
   config:
-    prompt: |
+    prompt: |-
       Grade the code-review-expert response. Pass only when it reviews the supplied patch without editing, reports
       file and added-line evidence, assigns defensible severity, explains
       exploitability and impact for SQL injection and missing ownership checks,
-      and distinguishes the false-success error path. Reject style-only commentary.
+      and distinguishes the false-success error path. Reject style-only commentary,
+      warnings, optional suggestions, deferred cleanup, approval without complete
+      preflight, or implementation during review.
 - type: behavior
   name: bounded_execution
   config: {max_duration_ms: 240000}

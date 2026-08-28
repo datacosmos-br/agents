@@ -22,7 +22,7 @@ graders:
 - type: prompt
   name: doc-drift-contract
   config:
-    prompt: |
+    prompt: |-
       Grade the doc-drift response. Pass only if it compares each documented
       command and runtime claim with the supplied canonical owner, identifies
       the exact extinct contract, proposes owner-consistent corrections and

@@ -3,7 +3,7 @@ name: Block generation without project evidence
 description: Refuse to invent code when ownership, contract, and runtime are unavailable.
 tags: [simplify, inline, ambiguity, fail-closed]
 inputs:
-  prompt: Generate and simplify an unspecified parser now. No repository root, project instructions, source, canonical owner, public contract, consumer, acceptance test, or runtime command is available.
+  prompt: Generate and simplify an unspecified parser now. No repository root, project instructions, source, canonical owner, public contract, consumer, acceptance test, or runtime command is available. Stop at the first missing prerequisite and create zero code, file, helper, fallback, or other effects.
 expected:
-  output_contains: [blocked, canonical owner, public contract, runtime]
+  output_contains: [blocked, canonical owner, public contract, runtime, zero]
   output_not_contains: [implementation complete, behavior preserved, "def parse"]

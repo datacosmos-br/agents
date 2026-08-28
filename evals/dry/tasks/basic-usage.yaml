@@ -1,9 +1,9 @@
 id: dry-order-coordinator-001
 name: Split an order god module and remove duplicated policy
-description: Consolidate real owners while preserving the endpoint contract.
+description: Exercise semantic duplication, god patterns, and structural remediation.
 tags: [dry, duplication, god-patterns, efficiency, tokei, readability, happy-path]
 inputs:
-  prompt: Apply the optimized search-first -> YAGNI -> SOLID -> simplify-inline -> DRY flow to order-project. Remove the confirmed duplication, god-pattern responsibilities, and repeated lookup while preserving complete behavior, readability, documentation, and error semantics. Recheck YAGNI and SOLID, compare Tokei on the same scope, and define runtime plus native-gate proof.
+  prompt: Apply structural remediation to the order-project's semantic duplication and god patterns through the optimized search-first -> YAGNI -> SOLID -> simplify-inline -> DRY flow. Remove confirmed duplication, split responsibilities at existing owners, and remove repeated lookup while preserving complete behavior, readability, documentation, and raw causal error semantics. Rewire atomically, recheck YAGNI and SOLID, compare Tokei on the same scope, and define material runtime, zero-effect failure, residue-search, and native-gate proof.
   files:
   - path: order-project/AGENTS.md
   - path: order-project/docs/architecture.md
@@ -15,4 +15,4 @@ inputs:
   - path: order-project/src/orders/service.py
   - path: order-project/tests/test_service.py
 expected:
-  output_contains: [OrderId, OrderRepository, CsvOrderExporter, AuditSink, thin orchestrator, YAGNI recheck, SOLID recheck, simplify, tokei, runtime]
+  output_contains: [OrderId, OrderRepository, CsvOrderExporter, AuditSink, thin orchestrator, YAGNI recheck, SOLID recheck, simplify, tokei, runtime, zero effects]

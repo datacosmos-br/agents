@@ -9,6 +9,7 @@ expected:
   output_contains:
   - source content is required
   - destination platforms are required
+  - no drafts created
   output_not_contains:
   - Excited to share
   - link in bio

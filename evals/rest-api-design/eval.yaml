@@ -17,11 +17,14 @@ graders:
 - type: prompt
   name: rest-api-design-contract
   config:
-    prompt: |
+    prompt: |-
       Grade the rest-api-design response. Pass only when it derives a plural resource contract from the supplied API
       requirements, selects stable cursor pagination for the stated workload,
       specifies semantic status and error responses, and preserves authentication,
-      ownership authorization, rate limits, and schema ownership. Reject generic REST advice.
+      ownership authorization, rate limits, and singular schema ownership. It must
+      require complete preflight before effects and causal, zero-effect failure.
+      Reject generic REST advice, arbitrary defaults, retry/fallback, partial
+      mutation, or old/new compatibility paths.
 - type: behavior
   name: bounded_execution
   config: {max_duration_ms: 240000}

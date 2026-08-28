@@ -17,7 +17,7 @@ graders:
 - type: prompt
   name: skill-governance-contract
   config:
-    prompt: |
+    prompt: |-
       Grade the skill-governance response. Pass only when it proves the capability is
       absent from the supplied inventory, proposes one kebab-case router with a
       short keyword description, places detailed procedure in a local reference,

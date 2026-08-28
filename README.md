@@ -87,6 +87,11 @@ agentsctl clean
 agentsctl live
 ```
 
+`agentsctl evaluate` is the sole evaluation workflow. Waza evaluates canonical
+skills; the same verb runs deterministic provider-native command, agent, and
+rule rendering evaluations because installed Waza targets `SKILL.md`, not the
+distinct command, agent, or rule schemas.
+
 These are optionless single verbs. They accept no flags, positional arguments,
 mode selectors, JSON switches, or compatibility aliases. Each verb loads and
 validates every prerequisite it needs before its first effect. The first

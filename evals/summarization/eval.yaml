@@ -17,7 +17,7 @@ graders:
 - type: prompt
   name: summarization-contract
   config:
-    prompt: |
+    prompt: |-
       Grade the summarization response. Pass only when it leads with the incident
       outcome, preserves the exact error rates and times, distinguishes correlation
       from proof, records the two decisions plus owner and date, and omits unsupported

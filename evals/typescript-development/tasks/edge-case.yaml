@@ -3,7 +3,7 @@ name: Unknown module and runtime contract
 description: Refuse an ESM conversion without compiler, package, and runtime evidence.
 tags: [typescript, edge-case]
 inputs:
-  prompt: Convert an unavailable TypeScript package to ESM. No tsconfig, package exports, runtime target, or consumer inventory is supplied. State the blocking evidence.
+  prompt: Convert an unavailable TypeScript package to ESM. No tsconfig, package exports, runtime target, consumer inventory, owner, lockfile, or gates are supplied. Stop at the first missing prerequisite and create no config, package edit, module path, fallback runtime, or other effect.
 expected:
-  output_contains: [tsconfig, runtime]
+  output_contains: [tsconfig, runtime, no effect]
   output_not_contains: ['"type": "module"']

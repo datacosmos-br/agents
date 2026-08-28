@@ -2,7 +2,7 @@
 name: brand-voice
 description: 'brand voice, corpus analysis, writing consistency'
 metadata:
-  aihub.tags: '["provenance:agents-owned","role:writing","updates:manual","usage:on-demand"]'
+  aihub.tags: '["policy:atomic-effects","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","provenance:agents-owned","role:writing","updates:manual","usage:on-demand"]'
 ---
 
 # Brand Voice
@@ -29,11 +29,14 @@ Do not use generic platform exemplars as source material.
 
 ## Collection Workflow
 
-1. Gather 5 to 20 representative samples when available.
-2. Prefer recent material over old material unless the user says the older writing is more canonical.
-3. Separate "public launch voice" from "private working voice" if the source set clearly splits.
-4. If live X access is available, use `x-api` to pull recent original posts before drafting.
-5. If site copy matters, include the current product site and repository framing.
+1. Require a representative source set before producing a profile; missing
+   evidence blocks profile creation instead of selecting generic examples.
+2. Gather 5 to 20 representative samples when available.
+3. Prefer recent material over old material unless the user says the older writing is more canonical.
+4. Separate "public launch voice" from "private working voice" if the source set clearly splits.
+5. Use `x-api` only when selected before collection and its availability and
+   authorization pass preflight; its failure ends collection.
+6. If site copy matters, include the current product site and repository framing.
 
 ## What to Extract
 
@@ -69,8 +72,10 @@ Delete and rewrite any of these:
 
 ## Persistence Rules
 
-- Reuse the latest confirmed `VOICE PROFILE` across related tasks in the same session.
-- If the user asks for a durable artifact, save the profile in the requested workspace location or memory surface.
+- Reuse a confirmed `VOICE PROFILE` only while its declared source set remains
+  current for the task.
+- If the user asks for a durable artifact, validate the destination and complete
+  profile before publishing it atomically in the requested workspace location.
 - Do not create repo-tracked files that store personal voice fingerprints unless the user explicitly asks for that.
 
 ## Downstream Use
@@ -79,8 +84,8 @@ Use this skill before or inside:
 
 - `content-engine`
 - `crosspost`
-- `lead-intelligence`
 - article or launch writing
 - cold or warm outbound across X, LinkedIn, and email
 
-If another skill already has a partial voice capture section, this skill is the canonical source of truth.
+If another skill has an incomplete voice capture section, this skill remains the
+single canonical profile owner.

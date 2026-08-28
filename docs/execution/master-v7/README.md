@@ -42,14 +42,15 @@ formats; reading a source does not authorize importing its artifacts.
 
 ## Current baseline and target
 
-The repository snapshot inspected on 2026-08-28 is an open cutover: 76
-recursively discovered skills, seven flat commands, 62 categorized agents, 32
-rules, and 76 Waza skill suites. Skill descriptions now satisfy the strict
+The repository snapshot inspected on 2026-08-28 is an open cutover with
+recursively discovered skills and Waza suites, flat commands, categorized
+agents, and typed rules. Skill descriptions now satisfy the strict
 keyword/nominal-phrase schema, the command surface owns seven independent eval
 suites, and the Waza configuration selects exact `aihub-primary`. These are
-work-lane facts, not phase completion: agent/rule semantic evals, the projection
-v4 runtime, full provider evidence, offline/live Waza results, integrated gates,
-review, merge, and post-merge validation remain open.
+work-lane facts, not phase completion: deterministic command/agent/rule native
+rendering evals and the projection v4 implementation exist, while complete
+runtime evidence, full provider evidence, offline/live Waza results, integrated
+gates, review, merge, and post-merge validation remain open.
 
 The target is therefore not another inventory migration. It is one complete
 cutover from the current work-lane state to strict typed owners, provider-native physical

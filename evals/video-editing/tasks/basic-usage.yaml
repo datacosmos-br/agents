@@ -1,10 +1,13 @@
 id: video-editing-demo-001
-name: Build a deterministic demo edit plan
-description: Convert an approved decision list into exact non-destructive operations.
-tags: [video, editing, footage, happy-path]
+name: Build one deterministic finished demo cut
+description: Exercise video editing through footage assembly into one finished cut.
+tags: [video-editing, footage-assembly, finished-cuts, happy-path]
 inputs:
-  prompt: Turn edit-decision-list.md into a minimal editing plan with output verification. Do not add creative assets.
+  prompt: >-
+    Apply video editing to edit-decision-list.md: define deterministic
+    footage assembly for the two selected segments and one finished cut, including
+    exact output verification and atomic publication. Do not add creative assets.
   files:
   - path: edit-decision-list.md
 expected:
-  output_contains: [00:00:12, 00:03:10, -16 LUFS]
+  output_contains: [00:00:12, 00:03:10, -16 LUFS, 81 seconds, atomic, deliver/demo.mp4]

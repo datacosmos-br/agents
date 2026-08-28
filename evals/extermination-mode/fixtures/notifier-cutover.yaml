@@ -16,9 +16,9 @@ obsolete_only:
   - src/notifications/legacy_smtp.py
   - tests/notifications/test_smtp_legacy_alias.py
 useful_behavior:
-  contract: notifications.delivery.retry_policy
-  old_test: tests/notifications/test_smtp_legacy_retry.py
-  final_test: tests/notifications/test_delivery_retry.py
+  contract: notifications.delivery.receipt_contract
+  old_test: tests/notifications/test_smtp_legacy_receipt.py
+  final_test: tests/notifications/test_delivery_receipt.py
 managed_projection:
   path: docs/generated/notifications-reference.md
   owner: make generate-notifications

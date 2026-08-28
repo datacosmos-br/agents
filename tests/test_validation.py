@@ -4,8 +4,12 @@ from pathlib import Path
 
 import pytest
 
+from agents_governance.agent_profiles import audit_agent_profiles
 from agents_governance.catalog import Catalog
+from agents_governance.commands import audit_command_specs
+from agents_governance.rules import audit_rule_specs
 from agents_governance.validation import require_description, validate
+from agents_governance.waza import require_model_projection
 
 
 @pytest.mark.parametrize(
@@ -45,4 +49,11 @@ def test_description_contract_raises_first_defect(
 def test_canonical_validation_executes_complete_offline_authority() -> None:
     root = Path(__file__).resolve().parents[1]
 
-    validate(Catalog(root))
+    catalog = Catalog(root)
+    validate(
+        catalog,
+        require_model_projection(root),
+        audit_command_specs(root, (record.name for record in catalog.records())),
+        audit_agent_profiles(root),
+        audit_rule_specs(root),
+    )

@@ -41,6 +41,11 @@ Each command has the seven scenario families in the command contract. Agent
 evals prove capability/delegation boundaries; rule evals prove enforcement and
 contradiction rejection.
 
+Waza owns only the `SKILL.md` suites supported by its installed target model.
+The optionless `agentsctl evaluate` workflow also renders every supported
+command, agent, and rule artifact twice through the matrix and rejects the
+first lossy, misplaced, expanded-capability, or non-deterministic result.
+
 The following never prove success:
 
 - non-empty output;

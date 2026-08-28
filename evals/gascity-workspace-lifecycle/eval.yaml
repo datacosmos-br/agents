@@ -17,13 +17,13 @@ graders:
 - type: prompt
   name: gascity-workspace-lifecycle-contract
   config:
-    prompt: |
+    prompt: |-
       Grade the gascity-workspace-lifecycle response. Pass only when it derives
       the city, rig, pinned Pack V2 import, agent, formula, provider, and physical
       workspace from the supplied city.toml while keeping the suspended runtime
-      entirely static. Reject invented commands, active dispatch, loose clones,
-      worktrees, /tmp, symlinks, cross-repository paths, or mechanical gt-to-gc
-      translation.
+      entirely static with zero workspace effects. Reject invented commands,
+      active dispatch, loose clones, worktrees, temporary or cross-repository
+      paths, symlinks, provider fallback, or mechanical command translation.
 - type: behavior
   name: bounded_execution
   config:

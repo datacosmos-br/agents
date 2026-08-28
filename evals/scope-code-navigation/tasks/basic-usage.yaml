@@ -1,10 +1,11 @@
 id: scope-code-navigation-happy-001
 name: Map callers before a signature change
-description: Select one structural query and bounded reads from a fresh index.
+description: Exercise Scope CLI code navigation and reference tracing with one structural query.
 tags: [code, navigation, search, references, structure, exploration, happy-path]
 inputs:
   prompt: >-
-    Use navigation-context.yaml to give the exact minimal navigation sequence
+    Use the Scope CLI for code navigation and reference tracing from
+    navigation-context.yaml; give the exact minimal navigation sequence
     before changing PaymentService.authorize. Name the Scope query, which source
     locations to read next, and where navigation must stop before editing.
   files:

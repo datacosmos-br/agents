@@ -17,11 +17,13 @@ graders:
 - type: prompt
   name: cpp-development-contract
   config:
-    prompt: |
+    prompt: |-
       Grade the cpp-development response. Pass only when it traces ownership in the supplied C++ fixture,
       preserves the project build contract, proposes a concrete RAII correction,
-      and names focused runtime or sanitizer evidence. Reject framework mandates
-      and generic style summaries.
+      removes the race through bounded ownership, and names focused runtime plus
+      sanitizer evidence. Reject framework mandates, generic style summaries,
+      catch/retry/fallback, partial rewiring, or a claim without material patch,
+      first-failure, zero-effect, and residue proof.
 - type: behavior
   name: bounded_execution
   config: {max_duration_ms: 240000}

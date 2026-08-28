@@ -18,13 +18,18 @@ a second live contract.
 2. Make the transformation fail loudly on ambiguous or invalid input and make a
    second run on final-format input produce no change.
 3. Change the typed owner and official migration surface.
-4. Transform persisted data with the repository's atomic storage primitive.
-5. Rewire every producer and consumer and regenerate managed outputs.
-6. Delete old fields, loaders, writers, fixtures, examples, documentation, and
+4. Declare each deterministic calculated default once at its typed owner and
+   remove equal environment variables, settings, parameters, arguments, and
+   persisted fields. Require only current external values the owner cannot derive.
+5. Transform persisted data with the repository's atomic storage primitive.
+6. Rewire every producer and consumer and regenerate managed outputs.
+7. Delete old fields, loaders, writers, fixtures, examples, documentation, and
    terminology. Final runtime readers explicitly reject old-format input.
 
 Do not add aliases for removed fields, fallback readers, dual writes, feature
 flags, deprecation windows, hardcoded translations, or ad hoc backup files.
+Validate the complete source and destination before the first persisted effect;
+the first invalid or ambiguous value raises unchanged and publishes nothing.
 
 ## Proof
 

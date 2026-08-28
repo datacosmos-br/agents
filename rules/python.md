@@ -6,14 +6,8 @@ globs: ["*.py", "**/*.py", "pyproject.toml"]
 
 These rules apply to Python only. Use the project's declared Python versions,
 frameworks, package manager, typing policy, and canonical command facade. Never
-inject AI Hub, `.agents`, FLEXT, tracker, or orchestration development contracts
-into a generic Python project.
-
-FLEXT-specific rules apply only after project-local markers/dependencies prove
-that the repository consumes FLEXT. Then load
-[the FLEXT typing delta](python/flext-typing.md) and
-[the FLEXT workflow delta](workflow/flext-strict.md). They never apply by name,
-path proximity, operator home, or an external checkout.
+inject another repository's development or orchestration contract into a
+generic Python project.
 
 ## Validation
 

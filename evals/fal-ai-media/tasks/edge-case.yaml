@@ -9,6 +9,7 @@ expected:
   output_contains:
   - fal.ai MCP is unavailable
   - cost approval is required
+  - no upload or generation effects
   output_not_contains:
   - generation completed
   - artifact URL

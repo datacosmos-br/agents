@@ -20,4 +20,4 @@ rig = "ledger"
 formula = "maintain"
 
 [providers.persistent]
-workspace = "/srv/gascity/ledger"
+workspace = "managed-workspaces/ledger"

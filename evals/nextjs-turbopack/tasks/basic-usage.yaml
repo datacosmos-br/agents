@@ -1,10 +1,10 @@
 id: nextjs-turbopack-dev-script-001
 name: Diagnose an explicit webpack dev script
-description: Use pinned Next.js evidence to restore and measure the default dev path.
+description: Exercise Next.js, Turbopack, and frontend performance through pinned project evidence.
 tags: [next.js, turbopack, bundling, caching, development, performance, happy-path]
 inputs:
-  prompt: Review this Next.js 16+ development setup for Turbopack incremental bundling, filesystem caching, and dev speed. Explain the script-level cause in package.json, verify the release behavior, propose the smallest change, and measure cold start, HMR, cache reuse, and production build separately.
+  prompt: Review this pinned Next.js setup for Turbopack and frontend performance. Complete version/script/config/cache preflight, verify release-specific behavior from official documentation, provide the smallest material script-owner correction, preserve `.next`, and define cold start, HMR, unchanged cache reuse, production build, raw first-command failure, zero-effect publication, and residue measurements without guessed flags or fallback bundlers.
   files:
   - path: package.json
 expected:
-  output_contains: ['16.1.2', 'next dev', .next, HMR]
+  output_contains: ['16.1.2', 'next dev', .next, HMR, zero effects]

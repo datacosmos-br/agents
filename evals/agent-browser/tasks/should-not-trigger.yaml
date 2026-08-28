@@ -9,4 +9,4 @@ inputs:
   files:
   - path: profile-form.html
 expected:
-  output_not_contains: [agent-browser open, agent-browser click, screenshot]
+  output_not_contains: [agent-browser open, agent-browser click, screenshot, fallback]

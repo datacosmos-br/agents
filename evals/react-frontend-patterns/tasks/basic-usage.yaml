@@ -1,24 +1,26 @@
 id: react-frontend-patterns-happy-path-001
 name: Repair an unstable accessible search component
-description: Refactor effect identity, UI states, privacy, and keyboard semantics.
-tags: [frontend, react, next.js, state, performance, accessibility, happy-path]
+description: Exercise React UI architecture and component patterns through one material owner refactor.
+tags: [frontend, react, ui-architecture, component-patterns, state, performance, accessibility, happy-path]
 inputs:
   prompt: |
-    Apply frontend development patterns for React and Next.js UI state
-    management, performance optimization, and accessibility. Refactor the supplied search component. Prevent the repeated fetch
-    loop while keeping the latest fetcher, represent loading/error/empty/result
-    states, remove raw query logging, and make the search controls accessible.
-    Include focused behavior tests and explain any memoization choice.
+    Apply React UI architecture and component patterns to produce the complete
+    SearchPanel refactor. Replace the unstable function dependency with one effect
+    keyed by query and search, use AbortController cleanup, render loading, empty,
+    results, and the typed rejected outcome with accessible live/alert semantics,
+    remove query logging, and let thrown search failures remain raw without catch,
+    retry, or fallback. Include material behavior, unmount/zero-effect, privacy,
+    residue, and performance proof; add no dependency or speculative memoization.
   files:
   - path: SearchPanel.tsx
 expected:
   outcomes:
   - type: task_completed
   output_contains:
-  - fetcherRef
-  - optionsRef
+  - AbortController
+  - SearchOutcome
   - aria-live
   - loading
-  - error
+  - rejected
   output_not_contains:
   - console.log(query)

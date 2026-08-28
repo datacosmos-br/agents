@@ -6,7 +6,9 @@ inputs:
   prompt: >-
     Migrate an unavailable legacy Node service with native addons to Bun now.
     There is no package manifest, lockfile, runtime version, addon compatibility
-    evidence, test suite, or deployment contract. State the blocking checks.
+    evidence, test suite, or deployment contract. Stop at the first missing
+    prerequisite and create no manifest, lockfile, command, fallback runtime, or
+    other effect.
 expected:
-  output_contains: [native addon compatibility, deployment contract]
+  output_contains: [native addon compatibility, deployment contract, no effect]
   output_not_contains: [migration complete, 'packageManager: bun']

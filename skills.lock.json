@@ -3,7 +3,7 @@
     {
       "category": "tool",
       "class": "on_demand",
-      "digest": "40f851d2e18e849602ae7fe424f23c404d00bc7b12d79a1a9c9b72f0b17c6dc0",
+      "digest": "126d28a42bcdbc60cf4acca84dc0ad66b8e4ada3ef445bc6d4e06680b3f7370d",
       "distributions": [
         "agent-capability:tool:agent-browser"
       ],
@@ -16,6 +16,15 @@
       "tags": [
         "activation:opt-in",
         "detect:opt-in:agent-browser",
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:no-keyring",
+        "policy:preflight-before-effects",
+        "policy:required-environment",
+        "policy:strict-execution",
+        "policy:zero-residue",
         "provenance:agents-owned",
         "route:agent",
         "tool:agent-browser",
@@ -27,7 +36,7 @@
     {
       "category": "agent-wide",
       "class": "on_demand",
-      "digest": "a0dc2a259e33f69dca37985cde277092fd8f95ae5b08467893e94f758096e4d9",
+      "digest": "913763f5de78885d62078d210804be7c044838eda2b8dbb33087931476fc41fa",
       "distributions": [
         "personal"
       ],
@@ -38,6 +47,12 @@
       "path": "skills/agent-wide/agent-introspection-debugging",
       "provenance": "agents-owned",
       "tags": [
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
         "provenance:agents-owned",
         "role:debug",
         "updates:manual",
@@ -48,7 +63,7 @@
     {
       "category": "project-wide",
       "class": "router",
-      "digest": "99c52e36dd832547d2772e747773e414202f575a91f707a6183f9475fa24f9c8",
+      "digest": "7f2996b5a04c0180096948e39caa81da1299d9e7e4ce1166b806a2bb7c04111d",
       "distributions": [
         "project-generic"
       ],
@@ -59,6 +74,15 @@
       "path": "skills/project-wide/anti-hardcode",
       "provenance": "agents-owned",
       "tags": [
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:no-keyring",
+        "policy:preflight-before-effects",
+        "policy:required-environment",
+        "policy:strict-execution",
+        "policy:zero-residue",
         "provenance:agents-owned",
         "role:configuration",
         "updates:manual",
@@ -69,7 +93,7 @@
     {
       "category": "agent-wide",
       "class": "router",
-      "digest": "20780563cbca66809d4e27bbc477bb7d220ca172dc95501a54c65636e0188c66",
+      "digest": "dffac547bfa8486e020cdd9b19e0094632706dd907d4c7967524106da1d59a2e",
       "distributions": [
         "personal"
       ],
@@ -80,6 +104,13 @@
       "path": "skills/agent-wide/anti-phase-skip",
       "provenance": "agents-owned",
       "tags": [
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
         "provenance:agents-owned",
         "role:governance",
         "updates:manual",
@@ -90,7 +121,7 @@
     {
       "category": "project-wide",
       "class": "on_demand",
-      "digest": "3e3a0d3f32ec401dfb62f01e9efa8dce3c58505f29bdb8c1c51895a7b6a9133e",
+      "digest": "43be898ce89d2c934780d94e89988328d30eace32ac2e08ef7d75242ab6912ac",
       "distributions": [
         "project-generic"
       ],
@@ -101,6 +132,13 @@
       "path": "skills/project-wide/architecture-documentation",
       "provenance": "agents-owned",
       "tags": [
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
         "provenance:agents-owned",
         "role:documentation",
         "updates:manual",
@@ -111,7 +149,7 @@
     {
       "category": "agent-wide",
       "class": "on_demand",
-      "digest": "8db01db9543fa41be0ecdb81e46ab1e7a292943ea7bb616eca15d4ff68e77c46",
+      "digest": "25ff35946a2380635c73b926b2f2c63629baa5cc9690055e9e69e9965839ee18",
       "distributions": [
         "personal"
       ],
@@ -122,6 +160,10 @@
       "path": "skills/agent-wide/article-writing",
       "provenance": "agents-owned",
       "tags": [
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
         "provenance:agents-owned",
         "role:writing",
         "updates:manual",
@@ -132,7 +174,7 @@
     {
       "category": "project-wide",
       "class": "on_demand",
-      "digest": "d0665066d81cf95b162ab70b70551d4faf0860ea282b003dcc4c11e340301c92",
+      "digest": "50ddddd61768051f291eae737eae26a29581479378e7aff2b4b4cb08382fd119",
       "distributions": [
         "project-generic"
       ],
@@ -143,6 +185,13 @@
       "path": "skills/project-wide/backend-patterns",
       "provenance": "agents-owned",
       "tags": [
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
         "provenance:agents-owned",
         "role:architecture",
         "updates:manual",
@@ -153,7 +202,7 @@
     {
       "category": "tool",
       "class": "router",
-      "digest": "d2885a03d37ad398086fbaa596e07b121bdbfd7f72c22684bf833e7d10ffd924",
+      "digest": "55a844561bde4895a2666e3acac146d428f56a0d7e54453f79d712a6d7d4c36d",
       "distributions": [
         "agent-capability:tool:beads"
       ],
@@ -166,6 +215,15 @@
       "tags": [
         "activation:opt-in",
         "detect:opt-in:beads",
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:no-keyring",
+        "policy:preflight-before-effects",
+        "policy:required-environment",
+        "policy:strict-execution",
+        "policy:zero-residue",
         "provenance:agents-owned",
         "route:agent",
         "tool:beads",
@@ -177,7 +235,7 @@
     {
       "category": "tool",
       "class": "router",
-      "digest": "a5545ce6a5a4162d678d277f79ff9f0cdc8cfb203493880355e02ad21da0439d",
+      "digest": "a65346bdab74172ea7cf8bc4f42a804186de85129144979a1d76dcaf6a597a81",
       "distributions": [
         "agent-capability:tool:beads"
       ],
@@ -190,6 +248,15 @@
       "tags": [
         "activation:opt-in",
         "detect:opt-in:beads-orchestration",
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:no-keyring",
+        "policy:preflight-before-effects",
+        "policy:required-environment",
+        "policy:strict-execution",
+        "policy:zero-residue",
         "provenance:agents-owned",
         "route:agent",
         "tool:beads",
@@ -201,7 +268,7 @@
     {
       "category": "tool",
       "class": "router",
-      "digest": "19e8ba1cfddbebf92a714f81ad83785cf980a5c393956f9db488915361a71bf1",
+      "digest": "ef58f537c70b22cd16b94ebeef1e64c8d7f00cab4a1a4c14801d2710033910b6",
       "distributions": [
         "agent-capability:tool:beads"
       ],
@@ -214,6 +281,14 @@
       "tags": [
         "activation:opt-in",
         "detect:opt-in:beads-worker",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:no-keyring",
+        "policy:preflight-before-effects",
+        "policy:required-environment",
+        "policy:strict-execution",
+        "policy:zero-residue",
         "provenance:agents-owned",
         "route:agent",
         "tool:beads",
@@ -225,7 +300,7 @@
     {
       "category": "agent-wide",
       "class": "on_demand",
-      "digest": "270be889c9473c395d2ffb7ebb2d231ce5b40fe594fbb1488e63d8745520ddc6",
+      "digest": "c9490d8d70e215a25fbfe34bc3ee1847ad593a1efd8b2a8b574c67fdf44018b4",
       "distributions": [
         "personal"
       ],
@@ -236,6 +311,11 @@
       "path": "skills/agent-wide/brand-voice",
       "provenance": "agents-owned",
       "tags": [
+        "policy:atomic-effects",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
         "provenance:agents-owned",
         "role:writing",
         "updates:manual",
@@ -246,7 +326,7 @@
     {
       "category": "technology",
       "class": "on_demand",
-      "digest": "2417eef299a63fb9bb566d3b955ec5485d01aa32e0f83959c3e522a2fe77570d",
+      "digest": "ed78482cae15181371e64e0b1cf5ffb67e0d3fae1fe0990d37d67128ac78b24e",
       "distributions": [
         "project-capability:technology:bun"
       ],
@@ -260,6 +340,13 @@
         "activation:detected",
         "detect:marker:bun.lock",
         "detect:marker:bun.lockb",
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
         "provenance:agents-owned",
         "route:project",
         "technology:bun",
@@ -271,7 +358,7 @@
     {
       "category": "agent-wide",
       "class": "on_demand",
-      "digest": "f5c6081cf75e2afc509670bb9e5edec54ad17a9d5f1266b3b581d58da0f6d9f5",
+      "digest": "5a541fb26b24f6275abf8a7d1fc339fffe645db1728122cf1966f3b78d013206",
       "distributions": [
         "personal"
       ],
@@ -282,6 +369,10 @@
       "path": "skills/agent-wide/caveman",
       "provenance": "agents-owned",
       "tags": [
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
         "provenance:agents-owned",
         "role:communication",
         "updates:manual",
@@ -292,7 +383,7 @@
     {
       "category": "project-wide",
       "class": "on_demand",
-      "digest": "3c42f86489a8e0964853a9798ad704e8ff2826e2fdb574969e5c2cd44138ae1c",
+      "digest": "0f326df6767423197f6e1e03603db28fd169668259fcf0df9ccb03aa2bf2e774",
       "distributions": [
         "project-generic"
       ],
@@ -303,6 +394,11 @@
       "path": "skills/project-wide/code-review-expert",
       "provenance": "agents-owned",
       "tags": [
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
         "provenance:agents-owned",
         "role:review",
         "updates:manual",
@@ -313,7 +409,7 @@
     {
       "category": "project-wide",
       "class": "router",
-      "digest": "b993512c71721777bff62e83bfd5acbc4262e920b8f4cc028214943746d568f2",
+      "digest": "ecbe53f8fbbc6d2b0ad0284d9758954029b82acd080a94334d38f613ad6effe0",
       "distributions": [
         "project-generic"
       ],
@@ -324,6 +420,12 @@
       "path": "skills/project-wide/config-schema-migration",
       "provenance": "agents-owned",
       "tags": [
+        "policy:atomic-effects",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
         "provenance:agents-owned",
         "role:migration",
         "updates:manual",
@@ -334,7 +436,7 @@
     {
       "category": "agent-wide",
       "class": "on_demand",
-      "digest": "99c496063e8338d46980985c5fde7220a3970faf1a15488931cceaf647918183",
+      "digest": "61ba72a7f8ad47c3297ae38abe8b45d7a6e3858e0c53b092ef708d1a3e3420fe",
       "distributions": [
         "personal"
       ],
@@ -345,6 +447,10 @@
       "path": "skills/agent-wide/content-engine",
       "provenance": "agents-owned",
       "tags": [
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
         "provenance:agents-owned",
         "role:content",
         "updates:manual",
@@ -355,7 +461,7 @@
     {
       "category": "agent-wide",
       "class": "on_demand",
-      "digest": "15fc8a76133da421cb21432f69c43d717ba06013b787953982900b2d60db48cd",
+      "digest": "e0198fca6880323bbc8563dab97db6bab63922cbff07a5b2aaa3d2e97da33539",
       "distributions": [
         "personal"
       ],
@@ -366,6 +472,11 @@
       "path": "skills/agent-wide/context-canary",
       "provenance": "agents-owned",
       "tags": [
+        "policy:atomic-effects",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
         "provenance:agents-owned",
         "role:continuity",
         "updates:manual",
@@ -376,7 +487,7 @@
     {
       "category": "tool",
       "class": "on_demand",
-      "digest": "a752641319929b02c1df79ac4f3e4d4dd8365d0544e52b9eeed8ed191bc2f4d2",
+      "digest": "1bca9ee35788f08435b4f9158f65cd1ff1ceb7d2aa54bdaac98268850618d90d",
       "distributions": [
         "agent-capability:tool:context7"
       ],
@@ -389,6 +500,14 @@
       "tags": [
         "activation:opt-in",
         "detect:opt-in:context7",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:no-keyring",
+        "policy:preflight-before-effects",
+        "policy:required-environment",
+        "policy:strict-execution",
+        "policy:zero-residue",
         "provenance:agents-owned",
         "route:agent",
         "tool:context7",
@@ -400,7 +519,7 @@
     {
       "category": "technology",
       "class": "router",
-      "digest": "0d936f8a0d34fe7c660c3898fcba58181729dd35cf76e1201825db054da62eaa",
+      "digest": "fe1abb626446f7fb5c8c326ce96120d3786f8d3658807101d811b5926f168cd1",
       "distributions": [
         "project-capability:technology:cpp"
       ],
@@ -418,6 +537,13 @@
         "detect:marker:conanfile.txt",
         "detect:marker:meson.build",
         "detect:marker:vcpkg.json",
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
         "provenance:agents-owned",
         "route:project",
         "technology:cpp",
@@ -429,7 +555,7 @@
     {
       "category": "agent-wide",
       "class": "on_demand",
-      "digest": "d593866b3f3dfd1b6bc63ade8ecfb2fe4d0433c617267bbaa0a13ab4ef8e052a",
+      "digest": "aca0d0366bc0a6fc669229b9c24436e46e561a2f77dda22a2996acff74744055",
       "distributions": [
         "personal"
       ],
@@ -440,6 +566,11 @@
       "path": "skills/agent-wide/crosspost",
       "provenance": "agents-owned",
       "tags": [
+        "policy:atomic-effects",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
         "provenance:agents-owned",
         "role:content",
         "updates:manual",
@@ -450,7 +581,7 @@
     {
       "category": "project-wide",
       "class": "on_demand",
-      "digest": "e2a488a163510c0295894409179df9f00eabd7a952022725db79b634018c46fc",
+      "digest": "2ae48816a5ddb8b83e4186eebaa12e1fca0f044759a33fe234f08f6448b8368a",
       "distributions": [
         "project-generic"
       ],
@@ -461,6 +592,10 @@
       "path": "skills/project-wide/data-modeling-analysis",
       "provenance": "agents-owned",
       "tags": [
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
         "provenance:agents-owned",
         "role:architecture",
         "updates:manual",
@@ -471,7 +606,7 @@
     {
       "category": "agent-wide",
       "class": "on_demand",
-      "digest": "09767c73cf0c27ad12a5d9dbdecf24a9dfbfbd9ca822f15501e47d2dffaf0df4",
+      "digest": "6d86e53cf467845a66afd4b9a5a5a0ee877d36120f2b318009cea00a64e8bb35",
       "distributions": [
         "personal"
       ],
@@ -482,6 +617,11 @@
       "path": "skills/agent-wide/deep-research",
       "provenance": "agents-owned",
       "tags": [
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
         "provenance:agents-owned",
         "role:research",
         "updates:manual",
@@ -492,7 +632,7 @@
     {
       "category": "agent-wide",
       "class": "on_demand",
-      "digest": "51174a80e237b8ddc7fb20a98356df13893bb44a44fc06b20c16bb7d96243844",
+      "digest": "b432a027f1431fdd5f5e0baa9f29639c90757239a1a73072a7dbab0d3cd899da",
       "distributions": [
         "personal"
       ],
@@ -503,6 +643,13 @@
       "path": "skills/agent-wide/dispatch-agent",
       "provenance": "agents-owned",
       "tags": [
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
         "provenance:agents-owned",
         "role:delegation",
         "updates:manual",
@@ -513,7 +660,7 @@
     {
       "category": "tool",
       "class": "on_demand",
-      "digest": "c03e4040f2b566b4c9ac71063773836ef9689993dccaafbfc641920ff23c99a2",
+      "digest": "9e3190cc3ae182a6a4c4a370fa7b14ed33df0782f776baea2e4516de405995b0",
       "distributions": [
         "agent-capability:tool:dmux"
       ],
@@ -526,6 +673,15 @@
       "tags": [
         "activation:opt-in",
         "detect:opt-in:dmux",
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:no-keyring",
+        "policy:preflight-before-effects",
+        "policy:required-environment",
+        "policy:strict-execution",
+        "policy:zero-residue",
         "provenance:agents-owned",
         "route:agent",
         "tool:dmux",
@@ -537,7 +693,7 @@
     {
       "category": "project-wide",
       "class": "on_demand",
-      "digest": "07f51880f40d02135f04dafea352c7b78cfd98e9284959fd238c8a0148a460be",
+      "digest": "1e005fd3df44c58b37d5f0c4fb370d1841abc22c8549ca92582bb10c6ec029cf",
       "distributions": [
         "project-generic"
       ],
@@ -548,6 +704,13 @@
       "path": "skills/project-wide/doc-drift",
       "provenance": "agents-owned",
       "tags": [
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
         "provenance:agents-owned",
         "role:documentation",
         "updates:manual",
@@ -558,7 +721,7 @@
     {
       "category": "project-wide",
       "class": "on_demand",
-      "digest": "1435180adf233d18d83d488238f5b942857bbcb24cae53798ef4ee28106d466d",
+      "digest": "15047c8d653754b19fa267a5775f1c8198022816aa2fb7666f145283191f10d6",
       "distributions": [
         "project-generic"
       ],
@@ -569,6 +732,12 @@
       "path": "skills/project-wide/documentation-criteria",
       "provenance": "agents-owned",
       "tags": [
+        "policy:atomic-effects",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
         "provenance:agents-owned",
         "role:documentation",
         "updates:manual",
@@ -579,7 +748,7 @@
     {
       "category": "project-wide",
       "class": "router",
-      "digest": "4a6e3884fea600c429d5c6a23b27c1b2656264720244c76cea99ce4601a8d975",
+      "digest": "1103500e7bffcc6b267381b1783524b57688f9102dc30212bdebf67b22a28268",
       "distributions": [
         "project-generic"
       ],
@@ -590,6 +759,13 @@
       "path": "skills/project-wide/dry",
       "provenance": "agents-owned",
       "tags": [
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
         "provenance:agents-owned",
         "role:refactoring",
         "updates:manual",
@@ -600,7 +776,7 @@
     {
       "category": "project-wide",
       "class": "on_demand",
-      "digest": "e3257d2d75bad499975d89c4bf4b1ddf70e9ddb3c054e5d82442fdfadd47a08f",
+      "digest": "4dacfffe15e36c247a8b4b79a5963dc3f1ea9711b313b7b2f10cf682b2031964",
       "distributions": [
         "project-generic"
       ],
@@ -611,6 +787,13 @@
       "path": "skills/project-wide/eval-harness",
       "provenance": "agents-owned",
       "tags": [
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
         "provenance:agents-owned",
         "role:verification",
         "updates:manual",
@@ -621,7 +804,7 @@
     {
       "category": "tool",
       "class": "on_demand",
-      "digest": "53c1b7585e8cdce75fbffaa27d422f08f8febddccc6e585fc11b9f2078bd493e",
+      "digest": "5163de08752857ce7e7aa7871caad23b41548dd7f2cff4ce901313cddadaa120",
       "distributions": [
         "agent-capability:tool:exa"
       ],
@@ -634,6 +817,14 @@
       "tags": [
         "activation:opt-in",
         "detect:opt-in:exa",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:no-keyring",
+        "policy:preflight-before-effects",
+        "policy:required-environment",
+        "policy:strict-execution",
+        "policy:zero-residue",
         "provenance:agents-owned",
         "route:agent",
         "tool:exa",
@@ -645,7 +836,7 @@
     {
       "category": "project-wide",
       "class": "router",
-      "digest": "83d22959822caf27ee67a4326772c0f3032c09d8cf6eb25ef3b82241383fd730",
+      "digest": "6e26fa69f3f402ec6d4a7698ff328295e208556ad49d0eb242109bde91488411",
       "distributions": [
         "project-generic"
       ],
@@ -656,6 +847,13 @@
       "path": "skills/project-wide/extermination-mode",
       "provenance": "agents-owned",
       "tags": [
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
         "provenance:agents-owned",
         "role:migration",
         "updates:manual",
@@ -666,7 +864,7 @@
     {
       "category": "project-wide",
       "class": "router",
-      "digest": "50adc799946d1f5dab6036ddb8e7c46f51216c2ae4150ba42b74541c9dcc2f79",
+      "digest": "94224f44dd482da65c111d3e1c1984acad8e3f694ed560148ebdf5607349751a",
       "distributions": [
         "project-generic"
       ],
@@ -677,6 +875,13 @@
       "path": "skills/project-wide/fail-fast",
       "provenance": "agents-owned",
       "tags": [
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
         "provenance:agents-owned",
         "role:reliability",
         "updates:manual",
@@ -687,7 +892,7 @@
     {
       "category": "tool",
       "class": "on_demand",
-      "digest": "c984fbd7cba5f5d1f6841da6e8921223123b0525f2ca050ce80a968f8ebe4d04",
+      "digest": "54aa4262d998160964e0f4206f667759a5aa782f01f2b9a5bfe161f7658c5ffd",
       "distributions": [
         "agent-capability:tool:fal-ai"
       ],
@@ -700,6 +905,15 @@
       "tags": [
         "activation:opt-in",
         "detect:opt-in:fal-ai",
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:no-keyring",
+        "policy:preflight-before-effects",
+        "policy:required-environment",
+        "policy:strict-execution",
+        "policy:zero-residue",
         "provenance:agents-owned",
         "route:agent",
         "tool:fal-ai",
@@ -711,7 +925,7 @@
     {
       "category": "framework",
       "class": "router",
-      "digest": "b7549f027db92c51ffebb59b8a5b4712ae153e9ce8b05cef9e91f0519fab2ebc",
+      "digest": "a00c457db8c7f1641d07d48f44d92cfc9ae6e9ec3c5f3c4a6343ac172495cea5",
       "distributions": [
         "project-capability:framework:flutter"
       ],
@@ -725,6 +939,13 @@
         "activation:detected",
         "detect:dependency:dart:sdk:flutter",
         "framework:flutter",
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
         "provenance:agents-owned",
         "route:project",
         "technology:dart",
@@ -736,7 +957,7 @@
     {
       "category": "agent-wide",
       "class": "on_demand",
-      "digest": "ab2defffd570743d82e0eaa3a3a41ce1d13cc4bfaae2d32f2ceea108e9b3ed03",
+      "digest": "20c973cf7c24fa01036bcb58b97f87de37b9432640e5b3a56378ab5e74c9a46c",
       "distributions": [
         "personal"
       ],
@@ -747,6 +968,12 @@
       "path": "skills/agent-wide/frontend-slides",
       "provenance": "agents-owned",
       "tags": [
+        "policy:atomic-effects",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
         "provenance:agents-owned",
         "role:presentation",
         "updates:manual",
@@ -757,7 +984,7 @@
     {
       "category": "tool",
       "class": "on_demand",
-      "digest": "d0bb9da2258b446e4b19f184805ce906ddb8e34c63f0acadb714708206fcdd50",
+      "digest": "9c3b4cb021de89469674d21dc1e4d7b8d0f7997b9f5266ed43071384f4b480df",
       "distributions": [
         "agent-capability:tool:gascity"
       ],
@@ -770,6 +997,15 @@
       "tags": [
         "activation:opt-in",
         "detect:opt-in:gascity",
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:no-keyring",
+        "policy:preflight-before-effects",
+        "policy:required-environment",
+        "policy:strict-execution",
+        "policy:zero-residue",
         "provenance:agents-owned",
         "route:agent",
         "tool:gascity",
@@ -781,7 +1017,7 @@
     {
       "category": "tool",
       "class": "on_demand",
-      "digest": "e9224dfe79c93288934ebcca052e70ac3231662cc8e61c676e070c7f0ad6c5c7",
+      "digest": "c17f7e3e5912fb7fa4ebf0b1084bce1c1ec89b2bcd058e8a45d1a4d5f8957c7c",
       "distributions": [
         "agent-capability:tool:gascity"
       ],
@@ -794,6 +1030,15 @@
       "tags": [
         "activation:opt-in",
         "detect:opt-in:gascity",
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:no-keyring",
+        "policy:preflight-before-effects",
+        "policy:required-environment",
+        "policy:strict-execution",
+        "policy:zero-residue",
         "provenance:agents-owned",
         "route:agent",
         "tool:gascity",
@@ -805,7 +1050,7 @@
     {
       "category": "technology",
       "class": "router",
-      "digest": "063e26e117067a331e5f025507a9952f3f3bb673687210806bd3125c35af2a58",
+      "digest": "98b1e994eaad49110b57b7e73a956b3b7d2d96105198bb8606924c259b3b533d",
       "distributions": [
         "project-capability:technology:go"
       ],
@@ -819,6 +1064,13 @@
         "activation:detected",
         "detect:marker:go.mod",
         "detect:marker:go.work",
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
         "provenance:agents-owned",
         "route:project",
         "technology:go",
@@ -830,7 +1082,7 @@
     {
       "category": "agent-wide",
       "class": "on_demand",
-      "digest": "6568caa409722ff4de828ae9d28e890787c29ab3c084b99dfb512ab374216ec9",
+      "digest": "cb37def2f0535a671045e8f11abc52e8e22eedf6ed4edf555d3f9e4695f7e2ab",
       "distributions": [
         "personal"
       ],
@@ -841,6 +1093,11 @@
       "path": "skills/agent-wide/governance-audit",
       "provenance": "agents-owned",
       "tags": [
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
         "provenance:agents-owned",
         "role:governance",
         "updates:manual",
@@ -851,7 +1108,7 @@
     {
       "category": "agent-wide",
       "class": "on_demand",
-      "digest": "8441342847ad29d175f45710436d9743d01836b377bd862fc75cc694c9002768",
+      "digest": "f36e8bb382c56d48831ba2f78a953b00c5c099fe8b693c6ce3b10e1602f16294",
       "distributions": [
         "personal"
       ],
@@ -862,6 +1119,10 @@
       "path": "skills/agent-wide/human-writing-style",
       "provenance": "agents-owned",
       "tags": [
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
         "provenance:agents-owned",
         "role:writing",
         "updates:manual",
@@ -872,7 +1133,7 @@
     {
       "category": "agent-wide",
       "class": "on_demand",
-      "digest": "cbaa1ae48eaaf00a5af622d4e69dc9dfe01aed3557d965aa5a221e1458a7a637",
+      "digest": "eedc03c40c6b2a2bbbfa2674878e53423c4a4d89e22812249f25a8c918aa4ddd",
       "distributions": [
         "personal"
       ],
@@ -884,6 +1145,11 @@
       "provenance": "agents-owned",
       "tags": [
         "domain:fundraising",
+        "policy:atomic-effects",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
         "provenance:agents-owned",
         "role:writing",
         "updates:manual",
@@ -894,7 +1160,7 @@
     {
       "category": "agent-wide",
       "class": "on_demand",
-      "digest": "36c6c0e3546ba5dd32dca90da4eb9cdb7b410bbd3b8b8e74376dbd0abd36bc25",
+      "digest": "f922100aab777b36ac26379c2158fa7a8528ec45a6d8b72f86c25aebc72e231c",
       "distributions": [
         "personal"
       ],
@@ -906,6 +1172,10 @@
       "provenance": "agents-owned",
       "tags": [
         "domain:fundraising",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
         "provenance:agents-owned",
         "role:communication",
         "updates:manual",
@@ -916,7 +1186,7 @@
     {
       "category": "technology",
       "class": "router",
-      "digest": "52cd2e4a2bbf88c14c174e63c8fd725447c55e0e340e1538b49a2bc1694ec157",
+      "digest": "4aba277a2e8cb6de97efb3a093a085880b3796785d263b495e42416bd3779a05",
       "distributions": [
         "project-capability:technology:jvm"
       ],
@@ -934,6 +1204,13 @@
         "detect:marker:pom.xml",
         "detect:marker:settings.gradle",
         "detect:marker:settings.gradle.kts",
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
         "provenance:agents-owned",
         "route:project",
         "technology:jvm",
@@ -945,7 +1222,7 @@
     {
       "category": "agent-wide",
       "class": "router",
-      "digest": "0d6b564dd2edd4f76d7ec03078efd170c419ae6db5ceb5963980312744327382",
+      "digest": "009964c64ea868b680a5077c60235d80c1265ca1d5970fc01f87d20d95d3f41d",
       "distributions": [
         "personal"
       ],
@@ -956,6 +1233,11 @@
       "path": "skills/agent-wide/make-check",
       "provenance": "agents-owned",
       "tags": [
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
         "provenance:agents-owned",
         "role:verification",
         "updates:manual",
@@ -966,7 +1248,7 @@
     {
       "category": "agent-wide",
       "class": "on_demand",
-      "digest": "f8c0f5e48751d2aaff3d04c9f727fb44b4963ae99191ffc6806845cb68757dce",
+      "digest": "c4e93740ef73f579164b5bae36b2f9d1a19e6a7f5661c9a74f6c723a88b42e7a",
       "distributions": [
         "personal"
       ],
@@ -978,6 +1260,11 @@
       "provenance": "agents-owned",
       "tags": [
         "domain:market-research",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
         "provenance:agents-owned",
         "role:research",
         "updates:manual",
@@ -988,7 +1275,7 @@
     {
       "category": "tool",
       "class": "on_demand",
-      "digest": "5c11d7a30b0823fc426501cb3bf4965dc46ec1bc7b27966f9bbf6367ab46ac5b",
+      "digest": "fe765aa169ced0d65249b0f03ec73d3580602f38de72c4d144410a10bedd6281",
       "distributions": [
         "project-capability:tool:mcp"
       ],
@@ -1002,6 +1289,15 @@
         "activation:detected",
         "detect:dependency:npm:@modelcontextprotocol/sdk",
         "detect:dependency:python:mcp",
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:no-keyring",
+        "policy:preflight-before-effects",
+        "policy:required-environment",
+        "policy:strict-execution",
+        "policy:zero-residue",
         "provenance:agents-owned",
         "route:project",
         "tool:mcp",
@@ -1013,7 +1309,7 @@
     {
       "category": "domain",
       "class": "on_demand",
-      "digest": "e3d63478311398ad25a8f1fdfd3ca96ad61207d8d0b93c8e23a8ef7bc44cd7c1",
+      "digest": "d83ed8c7c224d5bce2f1fcb734ce8881407ebb617de889bd3b6541fe47203152",
       "distributions": [
         "project-capability:domain:mle"
       ],
@@ -1030,6 +1326,15 @@
         "detect:marker:dvc.yaml",
         "detect:opt-in:machine-learning",
         "domain:mle",
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:no-keyring",
+        "policy:preflight-before-effects",
+        "policy:required-environment",
+        "policy:strict-execution",
+        "policy:zero-residue",
         "provenance:agents-owned",
         "route:project",
         "updates:manual",
@@ -1040,7 +1345,7 @@
     {
       "category": "framework",
       "class": "on_demand",
-      "digest": "387182ec48997859dbdc31bdba5abaf78a9a71009cdef5e93be6cbf97c8551d2",
+      "digest": "dec90f66be5abcffcc227087342fc2208485ea031e1da03c2ddb9469dd251831",
       "distributions": [
         "project-capability:framework:nextjs"
       ],
@@ -1054,6 +1359,13 @@
         "activation:detected",
         "detect:dependency:npm:next",
         "framework:nextjs",
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
         "provenance:agents-owned",
         "route:project",
         "tool:turbopack",
@@ -1065,7 +1377,7 @@
     {
       "category": "tool",
       "class": "on_demand",
-      "digest": "f2d8e773de56df58853f968aa405e8b8e02935c12d3074de1d9f4cb13aa1bcd0",
+      "digest": "098dcf0dd60a64ad190f4bce5602b404faf5297e82c4a7f38b3276736e2f5a99",
       "distributions": [
         "project-capability:tool:openspec"
       ],
@@ -1078,6 +1390,12 @@
       "tags": [
         "activation:detected",
         "detect:marker:openspec",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
         "provenance:agents-owned",
         "route:project",
         "tool:openspec",
@@ -1089,7 +1407,7 @@
     {
       "category": "agent-wide",
       "class": "router",
-      "digest": "d626425a9bc737cbe938a61fa6b6db4bac4dcf801568aa22e5ed5c418941d430",
+      "digest": "dd23cbd060223ef3d87427f919d3afba4c391ede32d20918f9206468ba34953d",
       "distributions": [
         "personal"
       ],
@@ -1100,6 +1418,13 @@
       "path": "skills/agent-wide/operator-correction-learning",
       "provenance": "agents-owned",
       "tags": [
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
         "provenance:agents-owned",
         "role:governance",
         "updates:manual",
@@ -1108,9 +1433,37 @@
       "updates": "manual"
     },
     {
+      "category": "agent-wide",
+      "class": "router",
+      "digest": "9d00dfddfc6735f0e436e1ea654f93b954d5c6df3cf7b94c2a33559e68ffae44",
+      "distributions": [
+        "personal"
+      ],
+      "max_lines": 500,
+      "max_tokens": 500,
+      "name": "plan-focus-recovery",
+      "owner": "agents",
+      "path": "skills/agent-wide/plan-focus-recovery",
+      "provenance": "agents-owned",
+      "tags": [
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
+        "provenance:agents-owned",
+        "role:continuity",
+        "updates:manual",
+        "usage:router"
+      ],
+      "updates": "manual"
+    },
+    {
       "category": "tool",
       "class": "on_demand",
-      "digest": "0c72e0321bc1caf908d2b3fb401ad13174299e3faddceade749c711eb998885e",
+      "digest": "141efa3bb0ac1fff0cbabf4196c638ab936ca67ee12eb972e015a37dfb1a458e",
       "distributions": [
         "project-capability:tool:playwright"
       ],
@@ -1124,6 +1477,15 @@
         "activation:detected",
         "detect:dependency:npm:@playwright/test",
         "detect:dependency:npm:playwright",
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:no-keyring",
+        "policy:preflight-before-effects",
+        "policy:required-environment",
+        "policy:strict-execution",
+        "policy:zero-residue",
         "provenance:agents-owned",
         "route:project",
         "tool:playwright",
@@ -1135,7 +1497,7 @@
     {
       "category": "tool",
       "class": "on_demand",
-      "digest": "b3417c4f2c11b077981309cf889e402b7009508ca9da94f3fc976e4f15f146f6",
+      "digest": "a1d0ba49de0924b3c3e0101279821ccce8a585abda741a24f0f0cdf4b6591068",
       "distributions": [
         "agent-capability:tool:github"
       ],
@@ -1148,6 +1510,15 @@
       "tags": [
         "activation:opt-in",
         "detect:opt-in:pr-sheriff",
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:no-keyring",
+        "policy:preflight-before-effects",
+        "policy:required-environment",
+        "policy:strict-execution",
+        "policy:zero-residue",
         "provenance:agents-owned",
         "route:agent",
         "tool:github",
@@ -1159,7 +1530,7 @@
     {
       "category": "project-wide",
       "class": "on_demand",
-      "digest": "3a062185d619a7856d9400ac51ca7d33122528859dacadd50e8c38d5642d7ba8",
+      "digest": "c2d1cdcfb17200509ce91b2584b0051d19de0ac8af57c1a67d554d7a45567b56",
       "distributions": [
         "project-generic"
       ],
@@ -1170,6 +1541,10 @@
       "path": "skills/project-wide/product-capability",
       "provenance": "agents-owned",
       "tags": [
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
         "provenance:agents-owned",
         "role:planning",
         "updates:manual",
@@ -1180,7 +1555,7 @@
     {
       "category": "agent-wide",
       "class": "on_demand",
-      "digest": "2e75dc643631c10a94d21d31e51189dd866d5c45c4e24ad5da4bc41de8efb67a",
+      "digest": "33d0ac78b69042bdc98658be10009c7240ef2075b65e5218ea0cc70064c7560b",
       "distributions": [
         "personal"
       ],
@@ -1191,6 +1566,11 @@
       "path": "skills/agent-wide/prompt-safety-review",
       "provenance": "agents-owned",
       "tags": [
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:no-keyring",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
         "provenance:agents-owned",
         "role:security",
         "updates:manual",
@@ -1201,7 +1581,7 @@
     {
       "category": "technology",
       "class": "router",
-      "digest": "817efc719dce1f479788b337f048be6ef1b929b63591f428c00b54c542942377",
+      "digest": "a5682d138d5ca359e7e271fca72776145c66a8b0a05c5670f86ffdb070220e87",
       "distributions": [
         "project-capability:technology:python"
       ],
@@ -1218,6 +1598,12 @@
         "detect:marker:requirements-dev.txt",
         "detect:marker:requirements.txt",
         "detect:marker:uv.lock",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
         "provenance:agents-owned",
         "route:project",
         "technology:python",
@@ -1229,7 +1615,7 @@
     {
       "category": "technology",
       "class": "router",
-      "digest": "1ed932c95e9d90f6bb78c84493856af3782267822a4b39c7c3c63e1d31e8f1b4",
+      "digest": "5f30cdd39358e9e42cdf16fb9d6b5918374fbf220e2ab51db981640da9d54026",
       "distributions": [
         "project-capability:technology:python"
       ],
@@ -1246,6 +1632,13 @@
         "detect:marker:requirements-dev.txt",
         "detect:marker:requirements.txt",
         "detect:marker:uv.lock",
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
         "provenance:agents-owned",
         "route:project",
         "technology:python",
@@ -1257,7 +1650,7 @@
     {
       "category": "framework",
       "class": "on_demand",
-      "digest": "2e5521f149ea05e6be2cfdb2796c57fbe5638f96dfc99bd40e0206b12e89e4f1",
+      "digest": "f2ae2cc193af15a625e29cfee5a3194f317b498e2ec0ffdf4e04d520026496cd",
       "distributions": [
         "project-capability:framework:react"
       ],
@@ -1271,6 +1664,13 @@
         "activation:detected",
         "detect:dependency:npm:react",
         "framework:react",
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
         "provenance:agents-owned",
         "route:project",
         "updates:manual",
@@ -1281,7 +1681,7 @@
     {
       "category": "project-wide",
       "class": "on_demand",
-      "digest": "93c0ca5ba8d0a4494bf04bdb75db178069bee8eb64f203765b196e31c7b8ed01",
+      "digest": "542e6a3ba5ab88bfed86ab9aef8a281df2ac4eb4ebd7208adea4fce3f01d3c7f",
       "distributions": [
         "project-generic"
       ],
@@ -1292,6 +1692,12 @@
       "path": "skills/project-wide/rest-api-design",
       "provenance": "agents-owned",
       "tags": [
+        "policy:atomic-effects",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
         "provenance:agents-owned",
         "role:architecture",
         "updates:manual",
@@ -1302,7 +1708,7 @@
     {
       "category": "technology",
       "class": "router",
-      "digest": "90cb16139a0b1e51b4dc416e037626a6b7b37bbe0492aa141b841a64f0d1cea6",
+      "digest": "d1ae3dc4ecc0e0f6371add6f55d26f16f328380c5eda96d3b3ceeefa74972d92",
       "distributions": [
         "project-capability:technology:rust"
       ],
@@ -1315,6 +1721,12 @@
       "tags": [
         "activation:detected",
         "detect:marker:Cargo.toml",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
         "provenance:agents-owned",
         "route:project",
         "technology:rust",
@@ -1326,7 +1738,7 @@
     {
       "category": "agent-wide",
       "class": "on_demand",
-      "digest": "df08de400dba35591a6eb3faf2555346c553dfa977d3832226b7f4da224f6c6d",
+      "digest": "dcdf21315ef795f57493fdcbf65ea752713e410c9eac9efa8a61ccc415cbcf32",
       "distributions": [
         "personal"
       ],
@@ -1337,6 +1749,13 @@
       "path": "skills/agent-wide/safe-delete",
       "provenance": "agents-owned",
       "tags": [
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
         "provenance:agents-owned",
         "role:governance",
         "updates:manual",
@@ -1347,7 +1766,7 @@
     {
       "category": "tool",
       "class": "on_demand",
-      "digest": "fecbdc9c9ffb71af5b5c604e9f8d9441323035f86cd6225934845252bda94528",
+      "digest": "9ccae514833b4514c6bb477a908e1827c23ec9f652d0a00eddd77d1d2f84b6a0",
       "distributions": [
         "project-capability:tool:scope-code-navigation"
       ],
@@ -1360,6 +1779,13 @@
       "tags": [
         "activation:opt-in",
         "detect:opt-in:scope-code-navigation",
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
         "provenance:agents-owned",
         "route:project",
         "tool:scope-code-navigation",
@@ -1371,7 +1797,7 @@
     {
       "category": "project-wide",
       "class": "router",
-      "digest": "2f991de724bb51a5b54c5b7621a5032c63f3a0f1e1f2369049d5d383277ed290",
+      "digest": "af465e25caaf486f008bc014d9a241ca0cf02bd3e5e3ccde1f0d3ab630eb562f",
       "distributions": [
         "project-generic"
       ],
@@ -1382,6 +1808,11 @@
       "path": "skills/project-wide/search-first",
       "provenance": "agents-owned",
       "tags": [
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
         "provenance:agents-owned",
         "role:discovery",
         "updates:manual",
@@ -1392,7 +1823,7 @@
     {
       "category": "project-wide",
       "class": "on_demand",
-      "digest": "ffa6cbc85ba03df89245a5b3dc445912378079ad18e49789f36d4fdcc16b8bef",
+      "digest": "5d03520d67c2d6d226f694cd5ed992b78732ef255b8edf6847fbbd15561feca5",
       "distributions": [
         "project-generic"
       ],
@@ -1403,6 +1834,15 @@
       "path": "skills/project-wide/security-review",
       "provenance": "agents-owned",
       "tags": [
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:no-keyring",
+        "policy:preflight-before-effects",
+        "policy:required-environment",
+        "policy:strict-execution",
+        "policy:zero-residue",
         "provenance:agents-owned",
         "role:security",
         "updates:manual",
@@ -1413,7 +1853,7 @@
     {
       "category": "project-wide",
       "class": "router",
-      "digest": "189d2378b5b8a842d662aebce9040734a51a93564f5c66c4cd5fcb7644c336aa",
+      "digest": "0e6d5d4c6b8c552dda3c5f1140adcff8574f40a8380efe2ba655399f68e22cbc",
       "distributions": [
         "project-generic"
       ],
@@ -1424,6 +1864,12 @@
       "path": "skills/project-wide/simplify",
       "provenance": "agents-owned",
       "tags": [
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
         "provenance:agents-owned",
         "role:refactoring",
         "updates:manual",
@@ -1434,7 +1880,7 @@
     {
       "category": "agent-wide",
       "class": "on_demand",
-      "digest": "ae910f4b7e27665f5c78c04124e8d2c0e48ae7ae38b9804ffd36f50618b5549c",
+      "digest": "b9730e9880f7206253c2f9d97e509164a5f5c3de0dcee8e7a870c462a56454c1",
       "distributions": [
         "personal"
       ],
@@ -1445,6 +1891,13 @@
       "path": "skills/agent-wide/skill-governance",
       "provenance": "agents-owned",
       "tags": [
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
         "provenance:agents-owned",
         "role:governance",
         "updates:manual",
@@ -1455,7 +1908,7 @@
     {
       "category": "project-wide",
       "class": "router",
-      "digest": "ef3a82e3c069ce690374e3d73d681d000bb36d2ae5ce4ff2056132884785076c",
+      "digest": "0b9d429c3f1982faba36217ac908bac5ee538878592a8e14dba0be4a7451fb5d",
       "distributions": [
         "project-generic"
       ],
@@ -1466,6 +1919,12 @@
       "path": "skills/project-wide/solid",
       "provenance": "agents-owned",
       "tags": [
+        "policy:atomic-effects",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
         "provenance:agents-owned",
         "role:architecture",
         "updates:manual",
@@ -1476,7 +1935,7 @@
     {
       "category": "agent-wide",
       "class": "router",
-      "digest": "d14ac4463326c9c99862499999e6e7bc9b4493eaa22c2a3167a789a80e23ad3c",
+      "digest": "0e8f7e9b6aac9caa25aaf220caea89cc9bdf5d65228d45ecfd615cf5f48b0554",
       "distributions": [
         "personal"
       ],
@@ -1487,6 +1946,13 @@
       "path": "skills/agent-wide/sprint-closure",
       "provenance": "agents-owned",
       "tags": [
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
         "provenance:agents-owned",
         "role:governance",
         "updates:manual",
@@ -1497,7 +1963,7 @@
     {
       "category": "project-wide",
       "class": "router",
-      "digest": "041b945236fcac7c31598199e45020f5975c1da77348455b83ccb8335279c9b9",
+      "digest": "e4b4d9f5647922177901867c8e2041118384aa150725e3eb3dfa96425f7af21f",
       "distributions": [
         "project-generic"
       ],
@@ -1508,6 +1974,12 @@
       "path": "skills/project-wide/ssot",
       "provenance": "agents-owned",
       "tags": [
+        "policy:atomic-effects",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
         "provenance:agents-owned",
         "role:governance",
         "updates:manual",
@@ -1518,7 +1990,7 @@
     {
       "category": "agent-wide",
       "class": "on_demand",
-      "digest": "ecbc3e76d7857eef0ee19b5e13acf7db34aa5b75854d6a67fc8bc2ce7d69d684",
+      "digest": "8d8aadc5c511cf2a150c5d1fa746a44f0b7e21ae72d227e633866972bf27bbbd",
       "distributions": [
         "personal"
       ],
@@ -1529,6 +2001,11 @@
       "path": "skills/agent-wide/strategic-compact",
       "provenance": "agents-owned",
       "tags": [
+        "policy:atomic-effects",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
         "provenance:agents-owned",
         "role:continuity",
         "updates:manual",
@@ -1539,7 +2016,7 @@
     {
       "category": "agent-wide",
       "class": "on_demand",
-      "digest": "68ec22f11010f2b8f8ba0f309251d40e60166eea7474e94b776a162b1b5863ec",
+      "digest": "1c35f688c94c6a18c3131742cf99a8879f757153bc90bcc129329d68d520e1ec",
       "distributions": [
         "personal"
       ],
@@ -1550,6 +2027,10 @@
       "path": "skills/agent-wide/summarization",
       "provenance": "agents-owned",
       "tags": [
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
         "provenance:agents-owned",
         "role:writing",
         "updates:manual",
@@ -1560,7 +2041,7 @@
     {
       "category": "project-wide",
       "class": "on_demand",
-      "digest": "3c8f4348d23e6d7c1080720b109b98406bb982ad2fe20179266175731d8453cc",
+      "digest": "95fda30485393ff84d764355f5ee717642bc1bf53501391a3f18250f53900e25",
       "distributions": [
         "project-generic"
       ],
@@ -1571,6 +2052,13 @@
       "path": "skills/project-wide/tdd-workflow",
       "provenance": "agents-owned",
       "tags": [
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
         "provenance:agents-owned",
         "role:testing",
         "updates:manual",
@@ -1581,7 +2069,7 @@
     {
       "category": "project-wide",
       "class": "on_demand",
-      "digest": "a91263993a94a4a88bfd96c86071a0f29eb83b400641c3fc23c4b0cc16b86969",
+      "digest": "229d8379c7eab108eb988182d64fc6360852a78ed4ea86f176efe66278986283",
       "distributions": [
         "project-generic"
       ],
@@ -1592,6 +2080,10 @@
       "path": "skills/project-wide/technical-writing-style",
       "provenance": "agents-owned",
       "tags": [
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
         "provenance:agents-owned",
         "role:documentation",
         "updates:manual",
@@ -1602,7 +2094,7 @@
     {
       "category": "technology",
       "class": "router",
-      "digest": "c4b10c074a17b4de4d24e267a0345b2893458e935015873c9c4ddb754a58607b",
+      "digest": "d006c66e50818aa5cbeb1d0e9684c359f331874a89371666eac4cbffb100263f",
       "distributions": [
         "project-capability:technology:typescript"
       ],
@@ -1615,6 +2107,12 @@
       "tags": [
         "activation:detected",
         "detect:marker:tsconfig.json",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
         "provenance:agents-owned",
         "route:project",
         "technology:typescript",
@@ -1626,7 +2124,7 @@
     {
       "category": "agent-wide",
       "class": "router",
-      "digest": "4bfa09d2c44f01cb2e5a208a00b9f78fa184945c86bf3a5fff25d3d13b3770ba",
+      "digest": "10494eba425e3e2f3e1cb1bfe1ff97bbc851d515b3ff892acaff1cdb6151b6db",
       "distributions": [
         "personal"
       ],
@@ -1637,6 +2135,13 @@
       "path": "skills/agent-wide/verification-loop",
       "provenance": "agents-owned",
       "tags": [
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
         "provenance:agents-owned",
         "role:verification",
         "updates:manual",
@@ -1647,7 +2152,7 @@
     {
       "category": "agent-wide",
       "class": "on_demand",
-      "digest": "fb5c87afaf96d13e3a9aa811a1fe9205a3229c46b1d65da6db3fc73ec1488811",
+      "digest": "515bcf3050777be0ccd6964f0ab797802131db372bbc41e64023741adc94046b",
       "distributions": [
         "personal"
       ],
@@ -1659,6 +2164,15 @@
       "provenance": "agents-owned",
       "tags": [
         "domain:video",
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:no-keyring",
+        "policy:preflight-before-effects",
+        "policy:required-environment",
+        "policy:strict-execution",
+        "policy:zero-residue",
         "provenance:agents-owned",
         "role:media",
         "updates:manual",
@@ -1669,7 +2183,7 @@
     {
       "category": "tool",
       "class": "on_demand",
-      "digest": "1c6021b42fbac134592a64560845efef4c9349425574d8386f9f010944941d0c",
+      "digest": "3ce2433eb108d13e7827db85263d8640c26f90fb4f10d32912fce61e7a10ae4c",
       "distributions": [
         "agent-capability:tool:x-api"
       ],
@@ -1682,6 +2196,15 @@
       "tags": [
         "activation:opt-in",
         "detect:opt-in:x-api",
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:no-keyring",
+        "policy:preflight-before-effects",
+        "policy:required-environment",
+        "policy:strict-execution",
+        "policy:zero-residue",
         "provenance:agents-owned",
         "route:agent",
         "tool:x-api",
@@ -1693,7 +2216,7 @@
     {
       "category": "project-wide",
       "class": "router",
-      "digest": "eb9e82dede300191a56205eaa44671040e4ddc6d99e4b9601df8f043898a7669",
+      "digest": "96466eda9f0906d5481ec3bcbae7ecc9ef0f63556cb1e5a1a7cac499c6081f77",
       "distributions": [
         "project-generic"
       ],
@@ -1704,6 +2227,12 @@
       "path": "skills/project-wide/yagni",
       "provenance": "agents-owned",
       "tags": [
+        "policy:atomic-effects",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
         "provenance:agents-owned",
         "role:scope",
         "updates:manual",

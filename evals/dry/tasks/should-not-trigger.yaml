@@ -3,9 +3,9 @@ name: Summarize a dry-season field note
 description: Avoid code remediation for a non-technical use of dry.
 tags: [anti-trigger, climate, summary]
 inputs:
-  prompt: Summarize dry-season-notes.md in two sentences for a geography class. No software or technical system is involved.
+  prompt: Summarize dry-season-notes.md in two sentences for a geography class. No software or technical system is involved; do not activate or fall back to structural remediation.
   files:
   - path: dry-season-notes.md
 expected:
   output_contains: [May, September, wildlife]
-  output_not_contains: [tokei, OrderRepository, code refactor]
+  output_not_contains: [tokei, OrderRepository, code refactor, fallback remediation]

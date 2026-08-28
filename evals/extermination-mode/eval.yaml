@@ -17,7 +17,7 @@ graders:
 - type: prompt
   name: extermination-mode-contract
   config:
-    prompt: |
+    prompt: |-
       Grade the extermination-mode response. Pass only when an explicitly
       approved superseded contract is removed atomically: every producer and
       consumer is rewired to the named final owner first, old-only tests and
@@ -25,8 +25,10 @@ graders:
       managed output is regenerated through its owner, unrelated concurrent work
       is preserved, and semantic residue plus focused and full gates are proved.
       Missing approval, contract identity, consumer inventory, or ownership must
-      block deletion. Reject compatibility aliases, dual readers, fallbacks,
-      broad deletion, hand-edited generated files, or weakened gates.
+      block deletion with zero effects. Reject compatibility aliases, dual
+      readers, retries, fallbacks, partial cutovers, broad deletion, hand-edited
+      generated files, changed concurrent work, or weakened gates. The first
+      subprocess or gate failure remains causal.
 - type: behavior
   name: bounded_execution
   config: {max_duration_ms: 240000}

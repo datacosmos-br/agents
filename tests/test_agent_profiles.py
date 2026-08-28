@@ -174,6 +174,12 @@ def test_supported_renderers_preserve_capabilities(tmp_path: Path) -> None:
         AgentContext.PROJECT,
         prompt_defense=prompt_defense,
     )
+    copilot = render_agent(
+        profile,
+        AgentProvider.COPILOT,
+        AgentContext.PROJECT,
+        prompt_defense=prompt_defense,
+    )
 
     assert claude.destination == PurePosixPath(".claude/agents/reviewer.md")
     assert "- Read\n" in claude.content
@@ -182,6 +188,33 @@ def test_supported_renderers_preserve_capabilities(tmp_path: Path) -> None:
     assert "- mcp_context7_query-docs\n" in gemini.content
     assert opencode.destination == PurePosixPath(".opencode/agents/reviewer.md")
     assert "  context7_query-docs: allow\n" in opencode.content
+    assert copilot.destination == PurePosixPath(".github/agents/reviewer.agent.md")
+    assert "- read\n" in copilot.content
+    assert "- context7/query-docs\n" in copilot.content
+
+
+def test_empty_capability_allowlists_never_expand_to_provider_defaults(
+    tmp_path: Path,
+) -> None:
+    _authority(tmp_path)
+    _profile(tmp_path)
+    profile = audit_agent_profiles(tmp_path)[0]
+
+    claude = render_agent(
+        profile,
+        AgentProvider.CLAUDE,
+        AgentContext.PROJECT,
+        prompt_defense="# Prompt defense\n",
+    )
+    copilot = render_agent(
+        profile,
+        AgentProvider.COPILOT,
+        AgentContext.PROJECT,
+        prompt_defense="# Prompt defense\n",
+    )
+
+    assert "tools: []\n" in claude.content
+    assert "tools: []\n" in copilot.content
 
 
 @pytest.mark.parametrize(
@@ -189,7 +222,6 @@ def test_supported_renderers_preserve_capabilities(tmp_path: Path) -> None:
     [
         AgentProvider.CURSOR,
         AgentProvider.CODEX,
-        AgentProvider.COPILOT,
         AgentProvider.ANTIGRAVITY,
     ],
 )

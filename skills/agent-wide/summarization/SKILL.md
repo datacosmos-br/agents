@@ -2,7 +2,7 @@
 name: summarization
 description: 'source compression, bounded summaries, factual fidelity'
 metadata:
-  aihub.tags: '["provenance:agents-owned","role:writing","updates:manual","usage:on-demand"]'
+  aihub.tags: '["policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","provenance:agents-owned","role:writing","updates:manual","usage:on-demand"]'
   version: 3.0.0
 ---
 
@@ -24,4 +24,6 @@ decision context. Select the audience-specific structure from
 6. For multiple sources, reconcile agreement and conflict with attribution instead
    of flattening them into a false consensus.
 
-Missing or inaccessible source material blocks a factual summary.
+Missing, inaccessible, empty, or conflicting required source material blocks a
+factual summary before writing begins. Name the first causal defect and produce
+no partial summary, inferred replacement, generic template, or alternate source.

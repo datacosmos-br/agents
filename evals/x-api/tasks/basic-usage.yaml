@@ -1,9 +1,9 @@
 id: x-api-approved-post-001
 name: Prepare one approved X post
-description: Use the correct endpoint and auth contract without exposing credentials.
+description: Exercise X API social publishing as an authorized external integration.
 tags: [x-api, social, publishing, happy-path]
 inputs:
-  prompt: Produce the exact request contract and verification plan for post-request.md. Do not claim the post was sent.
+  prompt: For this X API social-publishing external integration, produce the exact request contract and verification plan from post-request.md. Do not claim the post was sent.
   files:
   - path: post-request.md
 expected:

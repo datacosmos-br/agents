@@ -17,7 +17,7 @@ graders:
 - type: prompt
   name: verification-loop-contract
   config:
-    prompt: |
+    prompt: |-
       Grade the verification-loop response. Pass only when it records each fresh
       command, exit code, decisive output and scope in order, distinguishes tests
       from real-surface proof, includes generated fixed point, and limits the claim

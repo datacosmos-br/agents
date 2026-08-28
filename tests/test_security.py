@@ -77,6 +77,17 @@ def test_missing_report_is_blocking(tmp_path: Path) -> None:
         audit((tmp_path,))
 
 
+def test_symlinked_report_is_blocking(tmp_path: Path) -> None:
+    outside = tmp_path / "outside.md"
+    outside.write_text("outside", encoding="utf-8")
+    report = tmp_path / "docs" / "security" / "semgrep-triage.md"
+    report.parent.mkdir(parents=True)
+    report.symlink_to(outside)
+
+    with pytest.raises(ValueError, match="physical file"):
+        audit((tmp_path,))
+
+
 def test_manual_ledger_reference_does_not_invalidate_security_evidence(
     tmp_path: Path,
 ) -> None:

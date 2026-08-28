@@ -60,6 +60,11 @@ Each verb runs its complete workflow over the canonical inventory. The CLI and
 orchestrators contain no catches. Make owns only development support and gate
 composition; all agent-domain behavior belongs to these verbs.
 
+`sync` is the complete project-local projection workflow. It derives one
+physical Git root from cwd, loads an optional strict project-owned selection,
+preflights every supported project surface, and publishes them atomically. It
+has no personal mode and writes no tool home.
+
 ## Enforcement and landing
 
 An AST gate rejects catches outside cleanup/rollback, `check=False`, findings,

@@ -2,7 +2,7 @@
 name: human-writing-style
 description: 'natural prose, formulaic writing, style editing'
 metadata:
-  aihub.tags: '["provenance:agents-owned","role:writing","updates:manual","usage:on-demand"]'
+  aihub.tags: '["policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","provenance:agents-owned","role:writing","updates:manual","usage:on-demand"]'
 ---
 
 # Human Writing Style
@@ -39,9 +39,9 @@ This single discipline, applied rigorously, prevents most of the failure modes t
 
 ---
 
-## Top AI tells — catch these on every pass
+## Top AI tells — detect these on every pass
 
-If you remember nothing else from this skill, catch these. They are the highest-frequency, highest-visibility AI fingerprints.
+If you remember nothing else from this skill, detect these. They are the highest-frequency, highest-visibility AI fingerprints.
 
 **Words (avoid clustering; one in a long piece is usually fine):** *delve*, *crucial*, *pivotal*, *tapestry*, *testament*, *underscore*, *vibrant*, *enhance*, *meticulous*, *landscape* (abstract usage).
 
@@ -63,7 +63,7 @@ For full specifics, replacements, and per-item diagnostics, see the reference fi
 
 ## Self-check
 
-**Before returning output, run every check below. If any fails, revise the text and re-check. Do not return output until all checks pass, or until you can name a deliberate exception for genre or voice.**
+**Before writing, derive the applicable checks from the declared genre and voice. Before returning output, run every applicable check below. If any fails, revise the text and re-check; a failure cannot be waived after the fact.**
 
 1. **Master rule — generic praise vs. specifics** — Anywhere you wrote "significant", "important", "notable", "valuable", or "profound"? Name what specifically makes it so, or cut the claim.
 2. **Significance inflation** — Are you telling the reader something is important instead of showing why? Cut the editorializing.
@@ -80,7 +80,9 @@ For full specifics, replacements, and per-item diagnostics, see the reference fi
 13. **Passive pileup** — Three or more consecutive passive sentences? Rewrite at least one in active voice.
 14. **Sentence-starter monotony** — Multiple sentences opening with "The [noun]..."? Vary the openers.
 
-If a check needs deeper guidance, look up the corresponding rule in `rules.md`.
+If a check needs lexical guidance, consult
+[banned-words.md](references/banned-words.md). Do not invent or load an absent
+reference.
 
 ---
 
@@ -100,10 +102,7 @@ If a check needs deeper guidance, look up the corresponding rule in `rules.md`.
 
 ---
 
-## Further reference (sibling files)
+## Further reference
 
-These are not auto-loaded with this skill. Read them on demand using the file-reading tool available to you.
-
-- **`rules.md`** — Full expanded rules 2–16 with banned-pattern lists and ❌/✅ examples for each. **Read when** writing prose longer than a short paragraph, or when the self-check flags a pattern and you need the specifics.
-- **`vocabulary.md`** — The full AI vocabulary list with per-item replacements and diagnostics. **Read when** editing or rewriting existing text, or when you suspect a vocabulary cluster and want to confirm which words count.
-- **`examples.md`** — A full before/after paragraph rewrite with a rule-by-rule walkthrough. **Read when** writing longer prose, or when you want to see how the rules interact across a full paragraph.
+Read [banned-words.md](references/banned-words.md) when editing or when the
+self-check flags a vocabulary cluster. It is the bundle's only lexical reference.

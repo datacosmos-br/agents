@@ -3,9 +3,9 @@ name: Refuse SOLID ceremony without a project
 description: Block speculative factories and interfaces without consumers.
 tags: [solid, ambiguity, fail-closed]
 inputs:
-  prompt: Apply every SOLID pattern to pattern-request.md now. Create interfaces, abstract factories, strategies, plugins, and dependency injection even though no repository, behavior, consumer, variation, caller, or runtime exists.
+  prompt: Apply every SOLID pattern to pattern-request.md now. Create interfaces, abstract factories, strategies, plugins, and dependency injection even though no repository, behavior, consumer, variation, caller, or runtime exists. Stop at the first missing prerequisite and prove zero files, interfaces, factories, or fallback designs.
   files:
   - path: pattern-request.md
 expected:
-  output_contains: [blocked, current consumer, behavioral contract, callers, runtime evidence, YAGNI]
+  output_contains: [blocked, current consumer, behavioral contract, callers, runtime evidence, YAGNI, zero]
   output_not_contains: ['class UniversalAbstractFactory(']

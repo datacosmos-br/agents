@@ -121,11 +121,9 @@ def test_repository_projection_matrix_classifies_every_cell(tmp_path: Path) -> N
     assert len(config.cells) == 56
     assert (
         config.cell("copilot", "personal", "agents").status
-        is ProjectionStatus.UNSUPPORTED
+        is ProjectionStatus.SUPPORTED
     )
-    copilot_reason = config.cell("copilot", "personal", "agents").reason
-    assert copilot_reason is not None
-    assert "not installed" in copilot_reason
+    assert config.cell("copilot", "project", "agents").path == ".github/agents"
     assert (
         config.cell("gemini", "project", "agents").status is ProjectionStatus.SUPPORTED
     )

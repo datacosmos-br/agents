@@ -200,18 +200,19 @@ def test_command_spec_revalidates_direct_dataclass_changes(tmp_path: Path) -> No
         replace(spec, body="")
 
 
-def test_waza_counter_cleans_candidate_and_preserves_original_failure(
+def test_waza_counter_uses_in_memory_content_and_preserves_original_failure(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     _write_command(tmp_path)
 
-    def fail_count(_path: Path, _root: Path) -> int:
+    def fail_count(content: str, root: Path) -> int:
+        assert content == "complete rendered command\n"
+        assert root == tmp_path
         raise RuntimeError("injected BPE failure")
 
-    monkeypatch.setattr("agents_governance.commands.bpe_tokens", fail_count)
+    monkeypatch.setattr("agents_governance.commands.bpe_content", fail_count)
     with pytest.raises(RuntimeError, match="injected BPE failure"):
         waza_bpe_counter(tmp_path)("complete rendered command\n")
-    assert not tuple((tmp_path / "commands").glob(".*.candidate"))
 
 
 def test_all_seven_canonical_commands_validate_without_registry() -> None:

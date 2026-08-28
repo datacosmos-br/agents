@@ -5,4 +5,4 @@ tags: [anti-trigger]
 inputs:
   prompt: Expand “Rain crossed the empty station” into a 300-word atmospheric scene.
 expected:
-  output_not_contains: [executive summary, key findings, in brief]
+  output_not_contains: [executive summary, key findings, in brief, fallback summary]

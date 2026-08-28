@@ -17,10 +17,13 @@ graders:
 - type: prompt
   name: jvm-development-contract
   config:
-    prompt: |
+    prompt: |-
       Grade the jvm-development response. Pass only when it uses the supplied JVM fixture, identifies its
       lifecycle or nullability defect, keeps the repository's Maven/Gradle and
-      language-level owners authoritative, and proposes observable verification.
+      language-level owners authoritative, and proposes a material boundary
+      correction plus observable verification. Reject catch/translation,
+      alternate build paths, retry/fallback, partial effects, or completion
+      without first-failure, zero-effect, and residue evidence.
 - type: behavior
   name: bounded_execution
   config: {max_duration_ms: 240000}

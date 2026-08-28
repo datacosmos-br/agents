@@ -1,9 +1,12 @@
 id: market-research-entry-decision-001
 name: Assess a warehouse-software niche
-description: Reconcile sourced estimates and risks into an entry recommendation.
-tags: [market, research, competition, sizing, diligence, evidence, happy-path]
+description: Turn competitor research and commercial evidence into a bounded market analysis.
+tags: [market-analysis, competitor-research, commercial-evidence, sizing, diligence, happy-path]
 inputs:
-  prompt: Conduct market research and competitive analysis from market-evidence.yaml as investor due diligence and industry intelligence. Decide whether the warehouse-maintenance product merits ten interviews; separate facts, estimates, inference, and recommendation, reconcile sizing methods, flag stale evidence, and include counterevidence.
+  prompt: Use market-evidence.yaml for market analysis and competitor research.
+    Evaluate the commercial evidence and decide whether the warehouse-maintenance
+    product merits ten interviews; separate facts, estimates, inference, and
+    recommendation, reconcile sizing methods, flag stale evidence, and include counterevidence.
   files:
   - path: market-evidence.yaml
 expected:

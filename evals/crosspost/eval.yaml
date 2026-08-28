@@ -22,11 +22,13 @@ graders:
 - type: prompt
   name: crosspost-contract
   config:
-    prompt: |
+    prompt: |-
       Grade the crosspost response. Pass only if it preserves the supplied
       voice and facts while producing distinct, platform-native versions for
       every requested destination, explains meaningful adaptations, and adds
       no invented CTA, question, moral, hashtag strategy, or launch claim.
+      Reject generic-voice fallback, invented posting order, partial destination
+      output, or publication before every requested variant is validated.
 - type: behavior
   name: bounded_execution
   config:

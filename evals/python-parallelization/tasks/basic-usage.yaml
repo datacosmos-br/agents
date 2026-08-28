@@ -1,10 +1,10 @@
 id: python-parallelization-io-001
 name: Bound a measured blocking-I/O workload
-description: Select and prove a concurrency primitive from explicit workload evidence.
+description: Exercise Python concurrency, parallel execution, and performance measurement.
 tags: [python, concurrency, asyncio, threads, processes, benchmarking, happy-path]
 inputs:
-  prompt: Review sample.py. Profiling shows client.get accounts for 85 percent of wall time across independent URLs. Explain the workload class, propose a bounded change that honors MAX_IN_FLIGHT and output ordering, and specify cancellation, cleanup, equivalence, and baseline measurements.
+  prompt: Review sample.py. Profiling shows client.get accounts for 85 percent of wall time across independent URLs. Classify the Python concurrency workload and provide the smallest material bounded parallel-execution patch that honors MAX_IN_FLIGHT and output ordering. Specify first-worker failure, cancellation, cleanup attaching secondary failure, zero published partial results, sequential equivalence, residue search, and identical baseline/performance measurements without retry or fallback primitives.
   files:
   - path: sample.py
 expected:
-  output_contains: [blocking, bounded, baseline]
+  output_contains: [blocking, bounded, baseline, MAX_IN_FLIGHT, zero]

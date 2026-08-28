@@ -76,5 +76,5 @@ response}.
 
 ## Prototype assets
 
-Store supporting prototypes under `docs/ui-spec/assets/{feature}/`. Assets are
-examples; this specification and the design document remain authoritative.
+Store supporting prototypes through the project's declared attachment owner.
+Assets are examples; this specification and the design document remain authoritative.

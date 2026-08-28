@@ -9,6 +9,7 @@ expected:
   output_contains:
   - Exa MCP is unavailable
   - search cannot proceed
+  - no Exa call
   output_not_contains:
   - According to the results
   - funding was

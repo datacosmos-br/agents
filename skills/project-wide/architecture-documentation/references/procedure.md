@@ -6,6 +6,11 @@ State its audience, question, scope, observed revision, and authoritative
 sources. Separate current behavior, approved decisions, and proposed changes.
 If the repository has a documentation owner or template, use it.
 
+Load and validate the complete source, owner, revision, template, destination,
+and verification set before writing. The first missing, conflicting, or
+inaccessible prerequisite stops with no partial note, diagram, ADR, or inferred
+replacement source.
+
 ## Describe the system
 
 1. Identify each component, its owner, responsibility, trust boundary, and
@@ -27,6 +32,7 @@ Do not turn an undocumented inference into a decision record.
 ## Verify
 
 Resolve links and identifiers, compare diagrams with the owning configuration,
-and exercise a representative runtime path when safe. Record contradictions or
-missing evidence explicitly; they block definitive claims instead of inviting a
-guess. Keep plans, rollout status, and task tracking in their owning surfaces.
+and exercise the selected representative runtime path. The first causal command
+failure stops without retry or substitute evidence. Publish the complete verified
+artifact atomically and leave no draft, copied schema, or superseded diagram
+residue. Keep plans, rollout status, and task tracking in their owning surfaces.

@@ -17,7 +17,7 @@ graders:
 - type: prompt
   name: solid-contract
   config:
-    prompt: |
+    prompt: |-
       Grade according to the scenario. For payment-project, pass only when the
       response reads project rules, architecture, implementation, and tests;
       evaluates SRP/OCP/LSP/ISP/DIP; reuses PaymentAuthorizer and ReceiptSink;
@@ -29,7 +29,9 @@ graders:
       callers, or runtime evidence. For the solid-state task, pass only when it
       summarizes the supplied science facts without software design analysis.
       Reject cargo-cult patterns, service locators, speculative plugins, weakened
-      contracts, old/new coexistence, or completion without runtime and gates.
+      contracts, old/new coexistence, catch/retry/fallback normalization, partial
+      rewiring, or completion without causal runtime, zero-effect failure, residue
+      search, and native gates.
 - type: behavior
   name: bounded_execution
   config: {max_duration_ms: 240000}

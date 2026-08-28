@@ -1,12 +1,12 @@
 id: playwright-e2e-happy-path-001
 name: Design stable search-flow coverage
-description: Implement a page object and two observable search scenarios.
+description: Exercise Playwright end-to-end testing with the supplied browser fixture contract.
 tags: [e2e, playwright, page-object, testing, ci, browser, happy-path]
 inputs:
   prompt: |
-    Apply E2E testing and Playwright patterns to the supplied UI contract,
-    including a page object model, configuration, and CI/CD integration. Write tests
-    for a successful search and a no-results search. Use the declared selectors
+    Apply Playwright end-to-end testing to the supplied browser fixture and UI contract,
+    using the existing project test owner. Write only the tests required for a
+    successful search and a no-results search. Use the declared selectors
     and API response, avoid arbitrary sleeps, assert visible user outcomes, and
     capture a screenshot for the successful result.
   files:

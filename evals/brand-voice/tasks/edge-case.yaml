@@ -6,7 +6,7 @@ inputs:
   prompt: >-
     Create a durable voice profile for a named founder, but no posts, essays,
     emails, transcripts, or site copy are available. State the minimum source set
-    and how confidence must be represented.
+    and how confidence must be represented. Do not create or persist any profile.
 expected:
-  output_contains: [source samples, confidence]
-  output_not_contains: ['Confidence: High', confirmed voice profile]
+  output_contains: [source samples, no profile]
+  output_not_contains: ['Confidence: High', confirmed voice profile, VOICE PROFILE]

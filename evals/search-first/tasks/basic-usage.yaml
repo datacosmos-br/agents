@@ -1,11 +1,12 @@
 id: search-first-pagination-owner-001
 name: Reuse the canonical pagination owner
-description: Discover architecture, callers, and dependencies before changing code.
+description: Exercise owner discovery, reusable-code decisions, and architecture research before changing code.
 tags: [search, architecture, reuse, dependencies, dry, yagni, happy-path]
 inputs:
   prompt: |
     The supplied mini-project must return an opaque URL-safe next-page token from
-    list_orders. Apply search-first before proposing the exact smallest patch.
+    list_orders. Perform owner discovery, reusable-code analysis, and architecture
+    research through search-first before proposing the exact smallest patch.
     Inspect every supplied file, identify the owner and current consumer, prove
     the pinned dependency, and explain how the optimized
     search-first -> YAGNI -> optional SOLID -> simplify inline -> optional DRY ->

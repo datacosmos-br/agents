@@ -2,7 +2,7 @@
 name: deep-research
 description: 'multi-source research, authoritative evidence, source citations'
 metadata:
-  aihub.tags: '["provenance:agents-owned","role:research","updates:manual","usage:on-demand"]'
+  aihub.tags: '["policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","provenance:agents-owned","role:research","updates:manual","usage:on-demand"]'
 ---
 
 # Deep Research
@@ -17,13 +17,13 @@ Produce thorough, cited research reports from multiple web sources using firecra
 - Any question requiring synthesis from multiple sources
 - User says "research", "deep dive", "investigate", or "what's the current state of"
 
-## MCP Requirements
+## Research Tool Preflight
 
-At least one of:
-- **firecrawl** — `firecrawl_search`, `firecrawl_scrape`, `firecrawl_crawl`
-- **exa** — `web_search_exa`, `web_search_advanced_exa`, `crawling_exa`
-
-Both together give the best coverage. Configure in `~/.claude.json` or `~/.codex/config.toml`.
+Select the complete declared research toolchain before searching. Validate every
+required search, crawl, authentication, and publication capability before the
+first network call. Firecrawl and Exa are supported when the active environment
+declares them; failure of any selected tool stops research without switching to
+another provider or reduced source set.
 
 ## Workflow
 
@@ -49,7 +49,7 @@ Break the topic into 3-5 research sub-questions. Example:
 
 ### Step 3: Execute Multi-Source Search
 
-For EACH sub-question, search using available MCP tools:
+For each sub-question, use every search tool selected during preflight:
 
 **With firecrawl:**
 ```
@@ -63,9 +63,8 @@ web_search_advanced_exa(query: "<keywords>", numResults: 5, startPublishedDate: 
 ```
 
 **Search strategy:**
-- Use 2-3 different keyword variations per sub-question
-- Mix general and news-focused queries
-- Aim for 15-30 unique sources total
+- vary queries until each decision-critical facet has authoritative evidence
+- mix source types only when the decision brief requires them
 - Prioritize: academic, official, reputable news > blogs > forums
 
 ### Step 4: Deep-Read Key Sources
@@ -82,7 +81,8 @@ firecrawl_scrape(url: "<url>")
 crawling_exa(url: "<url>", tokensNum: 5000)
 ```
 
-Read 3-5 key sources in full for depth. Do not rely only on search snippets.
+Deep-read every source that supports a decision-critical claim. Do not rely only
+on search snippets or stop at an arbitrary source quota.
 
 ### Step 5: Synthesize and Write Report
 
@@ -123,20 +123,8 @@ Sub-questions investigated: [list]
 ### Step 6: Deliver
 
 - **Short topics**: Post the full report in chat
-- **Long reports**: Post the executive summary + key takeaways, save full report to a file
-
-## Parallel Research with Subagents
-
-For broad topics, use Claude Code's Task tool to parallelize:
-
-```
-Launch 3 research agents in parallel:
-1. Agent 1: Research sub-questions 1-2
-2. Agent 2: Research sub-questions 3-4
-3. Agent 3: Research sub-question 5 + cross-cutting themes
-```
-
-Each agent searches, reads sources, and returns findings. The main session synthesizes into the final report.
+- **Long reports**: publish a file only when the user requested a validated
+  destination; otherwise deliver the complete report in the authorized response
 
 ## Quality Rules
 

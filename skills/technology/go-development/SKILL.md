@@ -3,29 +3,26 @@ name: go-development
 description: 'go, module development, toolchain detection'
 license: MIT
 metadata:
-  aihub.tags: '["activation:detected","detect:marker:go.mod","detect:marker:go.work","provenance:agents-owned","route:project","technology:go","updates:manual","usage:router"]'
+  aihub.tags: '["activation:detected","detect:marker:go.mod","detect:marker:go.work","policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","policy:zero-residue","provenance:agents-owned","route:project","technology:go","updates:manual","usage:router"]'
   version: 1.0.0
 ---
 
 # Go Development
 
-Follow the active project's Go version, module boundaries, public APIs, and
-documented commands.
+Activate from a detected Go module/workspace. Before edits, resolve project law,
+Go version, modules, generated owners, public APIs and consumers, runtime, and
+native format/vet/static/race/test/build commands.
 
-## Workflow
+Keep packages cohesive and dependencies acyclic. Preserve raw errors or the
+project's typed causal chain; never discard, aggregate, retry, log-and-continue,
+or replace failure with `nil`. Pass `context.Context` explicitly across
+cancellable I/O and never store it in a long-lived struct.
 
-1. Read `go.mod`, `go.work` when present, and the project's instructions.
-2. Keep packages cohesive, dependencies directed, exported APIs documented, and
-   errors wrapped with useful context while preserving `errors.Is`/`errors.As`.
-3. Pass `context.Context` explicitly across cancellable I/O boundaries; never
-   store it in long-lived structs.
-4. Prefer simple synchronous code. Add goroutines only with explicit ownership,
-   cancellation, bounded lifetime, and race-safe shared state.
-5. Format changed Go files and run the project's canonical vet, static-analysis,
-   test, race, and build commands as applicable.
+Prefer synchronous code. Add goroutines only with a current requirement, explicit
+owner, cancellation, bounded lifetime, race-safe state, first-error propagation,
+and cleanup that re-raises the original cause. Rewire consumers atomically and
+remove detached/old paths.
 
-## Critical rules
-
-- Do not hide errors, leak goroutines, copy mutexes, or introduce package cycles.
-- Do not change exported behavior during cleanup without explicit authorization.
-- Treat generated files as outputs and edit their declared source instead.
+Run the public behavior and project-native gates. A child nonzero, timeout,
+signal, race, or incomplete effect remains causal; no alternate toolchain or
+partial result makes it green.

@@ -1,13 +1,13 @@
 id: simplify-inline-generation-001
 name: Generate and simplify a complete module inline
-description: Deliver the full contract and simplify each generated unit in the same pass.
+description: Exercise inline simplification, readable code, and behavior preservation.
 tags: [simplify, inline, code-generation, readability, happy-path]
 inputs:
-  prompt: Implement the complete status_formatter.py contract in status-contract.yaml. Apply YAGNI, find no new SOLID boundary, and simplify inline after each generated function without code golf, extra abstractions, placeholders, or omitted behavior. Return the complete module and name the runtime check that proves it.
+  prompt: Implement the complete status_formatter.py contract in status-contract.yaml with inline simplification, readable code, and behavior preservation. Apply YAGNI, find no new SOLID boundary, and simplify each generated function without code golf, extra abstractions, placeholders, catch/retry/fallback, or omitted behavior. Declare the canonical typed default once, omit the equal call value, preserve the override, return the complete module and final call, and name material runtime, first causal failure, and residue proof.
   files:
   - path: status-contract.yaml
 expected:
   outcomes:
   - type: task_completed
-  output_contains: [YAGNI, no new SOLID boundary, format_status, enabled:unknown, unrelated_invoice_total, runtime]
+  output_contains: [YAGNI, no new SOLID boundary, format_status, enabled:unknown, unrelated_invoice_total, canonical typed default, enabled=False, runtime]
   output_not_contains: [TODO, NotImplemented, StatusFormatter, utility helper]

@@ -137,8 +137,9 @@ every accepted defect has a regression test and global same-class search.
 
 ## Phase 5 — Projection, live model, and landing
 
-1. Apply all supported personal and isolated-project projections, validate the
-   distribution matrix, then apply again and prove fixed point.
+1. Invoke `agentsctl sync` from an isolated physical project, validate every
+   supported project matrix cell and absence of personal-home writes, then
+   invoke it again and prove fixed point.
 2. Run complete offline Waza, command, agent, rule, static, test, build,
    security, storage, and projection gates.
 3. Only then select exact `aihub-primary` through the single model owner and run

@@ -17,13 +17,15 @@ graders:
 - type: prompt
   name: nextjs-turbopack-contract
   config:
-    prompt: |
+    prompt: |-
       Grade the nextjs-turbopack response. Pass only when it uses the supplied
       Next.js version and scripts, identifies the explicit webpack opt-out,
       verifies release-specific behavior before changing flags, preserves the
       .next cache, and proposes measured startup/HMR/build evidence. Reject
       unconditional cache deletion, guessed flags, blanket webpack fallback, or
-      claims that development behavior proves the production bundler.
+      claims that development behavior proves the production bundler. Require a
+      material script-owner correction, raw first-command failure, zero effects,
+      separate production proof, and zero residue.
 - type: behavior
   name: bounded_execution
   config:

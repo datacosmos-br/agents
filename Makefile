@@ -40,8 +40,7 @@ fmt: ## apply canonical Python formatting during development
 	@uv run ruff format src tests
 
 shell: ## validate shell scripts and GitHub workflows
-	$(call BANNER,shell · shellcheck + actionlint)
-	@shellcheck hooks/*.sh
+	$(call BANNER,shell · actionlint)
 	@actionlint .github/workflows/*.yml
 
 build: ## build source and wheel artifacts

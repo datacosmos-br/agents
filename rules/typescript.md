@@ -24,5 +24,4 @@ specific architecture on a generic TypeScript project.
   dependency to another checkout, cross-repository reference, inherited secret,
   or project state under `/tmp`.
 - Install TypeScript technology skills only when project-local markers prove
-  TypeScript. FLEXT content remains absent unless independent FLEXT detection
-  succeeds.
+  TypeScript.

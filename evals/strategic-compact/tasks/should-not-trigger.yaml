@@ -5,4 +5,4 @@ tags: [anti-trigger]
 inputs:
   prompt: Name the capital of Uruguay and nothing else.
 expected:
-  output_not_contains: [/compact, context threshold, reload the plan]
+  output_not_contains: [/compact, context threshold, reload the plan, fallback]

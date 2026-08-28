@@ -5,5 +5,5 @@ tags: [summary, fail-closed]
 inputs:
   prompt: Summarize the unavailable quarterly report with exact revenue, margin, risks, and decisions; no source text or data is supplied.
 expected:
-  output_contains: [source material, unavailable]
-  output_not_contains: [revenue was, margin reached]
+  output_contains: [source material, unavailable, zero effects]
+  output_not_contains: [revenue was, margin reached, partial summary, alternate source]

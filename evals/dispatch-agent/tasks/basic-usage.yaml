@@ -1,12 +1,12 @@
 id: dispatch-agent-happy-path-001
 name: Route an authentication failure investigation
-description: Select a debugger from a concrete client roster and preserve context.
-tags: [agent, dispatch, delegation, specialization, roster, context, happy-path]
+description: Exercise specialist selection for one bounded delegated investigation.
+tags: [agent, agent-delegation, specialist-selection, bounded-work, roster, context, happy-path]
 inputs:
   prompt: |
-    Dispatch delegated work by selecting the best specialized local agent from
-    the active roster supplied for this failure and context. Explain
-    roster. Explain trigger overlap and confidence, then produce a handoff that
+    Perform agent delegation by selecting the best specialist from the active
+    roster for this bounded, read-only work. Explain trigger overlap and
+    confidence, then produce one handoff that
     preserves branch, failing command, observed error, read-only scope, and the
     evidence expected back. Do not create a lane, change project files, or invent
     a model tier, family, provider, or variant.

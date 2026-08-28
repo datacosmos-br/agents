@@ -1,5 +1,5 @@
 name: safe-delete-eval
-description: Exact inventory, owner deletion, preservation, evidence, and recovery.
+description: Atomic source cutover, exact artifact retirement, preservation, and recovery.
 skill: safe-delete
 schemaVersion: '1.0'
 version: '1.0'
@@ -17,12 +17,14 @@ graders:
 - type: prompt
   name: safe-delete-contract
   config:
-    prompt: |
+    prompt: |-
       Grade the safe-delete response. Pass only when it resolves exact targets,
-      uses the declared owner command for generated output, preserves unknown and
-      referenced content, states recovery limits, and requires post-action evidence.
-      Reject broad globs, raw recursive deletion, stash/reset, or deletion based on
-      filename assumptions.
+      atomically rewires every valid consumer and deletes superseded tracked code,
+      uses Git as that source recovery contract without compatibility residue, uses
+      the declared owner command for generated output, preserves unknown content,
+      states recovery limits, and requires post-action evidence. Reject broad globs,
+      raw recursive deletion, stash/reset, rollback copies, shims, dual readers, or
+      deletion based on filename assumptions.
 - type: behavior
   name: bounded_execution
   config: {max_duration_ms: 240000}

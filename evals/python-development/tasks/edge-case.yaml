@@ -3,7 +3,7 @@ name: Refuse an invented Python toolchain
 description: Require project evidence before selecting packaging and test owners.
 tags: [python, packaging, edge-case]
 inputs:
-  prompt: Modernize an unavailable Python package. No Python version, pyproject, lockfile, dependency owner, test configuration, public API, or source is supplied. State what evidence blocks a safe implementation.
+  prompt: Modernize an unavailable Python package. No Python version, pyproject, lockfile, dependency owner, test configuration, public API, source, runtime, or gates are supplied. Stop at the first missing prerequisite and create no package, dependency, toolchain, cache, fallback, or other effect.
 expected:
-  output_contains: [version, dependency]
+  output_contains: [version, dependency, no effect]
   output_not_contains: [uv add]

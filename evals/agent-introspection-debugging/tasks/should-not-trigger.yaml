@@ -8,4 +8,4 @@ inputs:
     traceback are available. Diagnose the application defect; the agent is not
     looping or drifting.
 expected:
-  output_not_contains: [Agent Self-Debug Report, context pressure, token burn]
+  output_not_contains: [Agent Self-Debug Report, context pressure, token burn, fallback]

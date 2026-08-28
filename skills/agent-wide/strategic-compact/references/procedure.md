@@ -9,6 +9,11 @@ to a materially different problem.
 Do not compact while a command, edit, conflict resolution, diagnosis, review, or
 unrecorded decision is in flight.
 
+Validate the complete continuation record and its durable owner before invoking
+the harness's single selected compaction action. Missing, conflicting, or
+transient-only context stops without compacting; never substitute an invented
+persistence surface or reduced recovery packet.
+
 ## Boundary test
 
 Before suggesting the active harness's compaction action, prove all of these:
@@ -35,3 +40,6 @@ Preserve only verified facts:
 After compaction, reload project law, the durable record, and live repository
 state. Treat summaries as navigation, never as a substitute for current files or
 runtime evidence.
+
+Persist the complete record before compaction as one atomic boundary. If that
+write fails, propagate the cause and leave the active context intact.

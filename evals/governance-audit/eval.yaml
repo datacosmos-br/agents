@@ -17,13 +17,14 @@ graders:
 - type: prompt
   name: governance-audit-contract
   config:
-    prompt: |
+    prompt: |-
       Grade the governance-audit response. Pass only when it audits every supplied
       tracker/document fact, identifies the state conflict, zombie lane, NULL
       epic, and source/projection drift, assigns the documented severities, and
       presents evidence plus owner-correct recommendations. While tracking is
       suspended it must remain read-only and static. Reject tracker commands,
-      direct closure, projection edits, omissions, or claims based on timestamps.
+      direct closure, projection edits, omissions, claims based on timestamps,
+      or continued checks after the first causal inspection failure.
 - type: behavior
   name: bounded_execution
   config:

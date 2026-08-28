@@ -5,5 +5,5 @@ tags: [market, tam, fail-closed]
 inputs:
   prompt: State a definitive 2026 TAM and market-entry recommendation for an unnamed industry. No geography, customer definition, price, adoption rate, report, dataset, or source is available. Do not label anything as an estimate.
 expected:
-  output_contains: [source, estimate]
+  output_contains: [source, no estimate produced]
   output_not_contains: [definitive TAM, market entry approved]

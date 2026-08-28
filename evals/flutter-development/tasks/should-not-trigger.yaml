@@ -3,6 +3,6 @@ name: Unrelated database request
 description: Keep Flutter guidance out of a database-only task.
 tags: [anti-trigger]
 inputs:
-  prompt: Normalize these PostgreSQL tables and define foreign keys.
+  prompt: Normalize these PostgreSQL tables and define foreign keys. Do not activate or fall back to Flutter development.
 expected:
-  output_not_contains: [widget, pubspec, Flutter]
+  output_not_contains: [widget, pubspec, Flutter, fallback Dart]

@@ -22,12 +22,12 @@ graders:
 - type: prompt
   name: gascity-change-lifecycle-contract
   config:
-    prompt: |
+    prompt: |-
       Grade the gascity-change-lifecycle response. Pass only if it resolves the
       supplied city, rig, agent, formula, work, and integration identities;
-      treats gc sling as dispatch and observation only; assigns branch, gates,
-      PR, review, merge, and merged-SHA validation to the repository; rejects
-      invented commands; and performs no runtime action while suspended.
+      assigns orchestration and repository landing to their declared owners;
+      rejects copied or invented commands; and produces a material static
+      lifecycle assessment with zero runtime effects while suspended.
 - type: behavior
   name: bounded_execution
   config:

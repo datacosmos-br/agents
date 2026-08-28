@@ -4,4 +4,4 @@ interface:
   brand_color: "#14B8A6"
   default_prompt: "Use $dmux-workflows to orchestrate parallel agent sessions with dmux."
 policy:
-  allow_implicit_invocation: true
+  allow_implicit_invocation: false

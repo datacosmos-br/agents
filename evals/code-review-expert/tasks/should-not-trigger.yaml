@@ -7,4 +7,4 @@ inputs:
     Change the confirmed off-by-one loop bound in the named file and run its
     focused test. A code review was already completed and no review is requested.
 expected:
-  output_not_contains: [Code Review Summary, P1 - High, REQUEST_CHANGES]
+  output_not_contains: [Code Review Summary, P1 - High, REQUEST_CHANGES, review workflow]

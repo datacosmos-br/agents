@@ -8,5 +8,5 @@ inputs:
     the original prompt and repository instruction sources were not supplied.
     State what must be provided for a defensible review.
 expected:
-  output_contains: [original prompt, canonical instructions]
-  output_not_contains: ['Safety Assessment: Low Risk', 'Enhanced Version:']
+  output_contains: [original prompt, canonical instructions, zero effects]
+  output_not_contains: ['Safety Assessment: Low Risk', 'Enhanced Version:', fallback, partial rewrite]

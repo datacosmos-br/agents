@@ -2,7 +2,7 @@
 name: content-engine
 description: 'content systems, campaign production, channel adaptation'
 metadata:
-  aihub.tags: '["provenance:agents-owned","role:content","updates:manual","usage:on-demand"]'
+  aihub.tags: '["policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","provenance:agents-owned","role:content","updates:manual","usage:on-demand"]'
 ---
 
 # Content Engine
@@ -27,7 +27,9 @@ Build platform-native content without flattening the author's real voice into pl
 
 ## Source-First Workflow
 
-Before drafting, identify the source set:
+Before drafting, validate the complete source set, requested destinations,
+audience, claims, and any required voice evidence. A missing required input
+blocks the campaign; do not draft a reduced substitute. Sources may include:
 - published articles
 - notes or internal memos
 - product demos
@@ -51,6 +53,8 @@ Run it first when:
 
 Reuse the resulting `VOICE PROFILE` here instead of rebuilding a second voice model.
 For any named product or author voice, treat `brand-voice` as the source of truth and feed it the best live or source-derived material available.
+If the selected voice workflow fails, preserve that failure and stop instead of
+writing in a generic replacement voice.
 
 ## Hard Bans
 
@@ -113,7 +117,7 @@ When asked for a campaign, return:
 - the core angle
 - platform-native drafts
 - posting order only if it helps execution
-- gaps that must be filled before publishing
+- confirmed non-blocking constraints; a required gap prevents drafting
 
 ## Quality Gate
 

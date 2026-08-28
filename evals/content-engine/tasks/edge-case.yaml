@@ -8,5 +8,5 @@ inputs:
     source material, demo, audience, voice examples, proof, approved claim, or CTA
     exists. State the minimum inputs needed before drafting.
 expected:
-  output_contains: [source material, audience]
-  output_not_contains: [game-changer, 'LinkedIn draft:']
+  output_contains: [source material, audience, no campaign]
+  output_not_contains: [game-changer, 'LinkedIn draft:', partial campaign]

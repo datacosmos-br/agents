@@ -7,8 +7,8 @@ inputs:
   prompt: Delegate a deployment investigation, but the active client exposes no agent roster. Do not use a cached, bundled, or hardcoded catalog.
 expected:
   output_contains:
-  - agent roster is required
-  - delegation cannot proceed
+  - agent roster
   output_not_contains:
   - software-engineer
   - delegation completed
+  - handoff created

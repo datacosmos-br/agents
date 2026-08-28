@@ -3,7 +3,7 @@ name: Refuse an unevidenced primitive
 description: Require workload evidence before choosing asyncio, threads, processes, or vectorization.
 tags: [python, parallelization, concurrency, asyncio, threads, processes, vectorization, benchmarking, edge-case]
 inputs:
-  prompt: Make an unavailable Python job parallel. No profile, benchmark baseline, input sizes, call graph, dependency safety, ordering contract, or resource limit is provided. State what evidence is required to classify the workload and choose among asyncio, bounded threads, processes, or library vectorization.
+  prompt: Make an unavailable Python job parallel. No profile, benchmark baseline, input sizes, call graph, dependency safety, ordering contract, resource limit, owner, runtime, or gates are provided. Stop at the first missing prerequisite and create no executor, task, dependency, benchmark, fallback, or other effect.
 expected:
-  output_contains: [workload, baseline]
+  output_contains: [workload, baseline, no effect]
   output_not_contains: [ProcessPoolExecutor, ThreadPoolExecutor]

@@ -22,12 +22,14 @@ graders:
 - type: prompt
   name: playwright-e2e-contract
   config:
-    prompt: |
-      Grade the playwright-e2e response. Pass only if it derives selectors and
-      network behavior from the fixture, builds a maintainable Playwright test
-      and page object, waits on observable conditions rather than sleeps,
-      asserts both result and empty states, records useful artifacts, and does
-      not conceal flakiness with skips or production-side effects.
+    prompt: |-
+      Grade the playwright-e2e response. Pass only if it preflights the declared
+      environment, derives selectors and network behavior from the fixture,
+      builds the smallest project-native Playwright tests, waits on exact
+      observable conditions, asserts both result and empty states, and validates
+      the requested screenshot before publication. Reject invented base URLs,
+      page objects/config/CI not required by the fixture, sleeps, skips, retries,
+      catches, fallback, production effects, or partial artifacts.
 - type: behavior
   name: bounded_execution
   config:

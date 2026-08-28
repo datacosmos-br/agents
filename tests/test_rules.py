@@ -101,7 +101,10 @@ def test_rule_spec_rejects_mutated_derived_contract(tmp_path: Path) -> None:
         replace(spec, identity="different")
 
 
-def test_canonical_inventory_has_exactly_forty_rules() -> None:
+def test_canonical_inventory_is_discovered_without_extinct_hook_rules() -> None:
     root = Path(__file__).resolve().parents[1]
+    identities = tuple(spec.identity for spec in audit_rule_specs(root))
 
-    assert len(audit_rule_specs(root)) == 40
+    assert "architecture/engineering-core" in identities
+    assert "security/prompt-defense" in identities
+    assert not any(identity.startswith("hooks/") for identity in identities)

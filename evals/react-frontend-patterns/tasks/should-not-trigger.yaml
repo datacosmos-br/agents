@@ -5,9 +5,10 @@ tags:
 - anti-trigger
 - negative-test
 inputs:
-  prompt: Recommend a PostgreSQL index for a slow aggregate query; no UI code is involved.
+  prompt: Recommend a PostgreSQL index for a slow aggregate query; no UI code is involved. Do not activate or fall back to React patterns.
 expected:
   output_not_contains:
   - React
   - useState
   - component props
+  - fallback UI

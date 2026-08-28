@@ -1,10 +1,10 @@
 id: jvm-nullability-001
 name: Repair Kotlin nullability
-description: Preserve an explicit boundary instead of forcing a nullable value.
+description: Exercise Java, Kotlin, and JVM development through an explicit nullability boundary.
 tags: [jvm, java, kotlin, gradle, maven, testing, happy-path]
 inputs:
-  prompt: Review sample.kt. Explain why the forced non-null assertion is unsafe, propose an explicit boundary contract, and identify the focused test cases.
+  prompt: Review sample.kt as a Kotlin/JVM boundary. Explain why the forced non-null assertion is unsafe, provide the smallest material explicit-boundary correction without catch or fallback values, and identify success, raw first-failure, zero-effect, residue, and focused project-owner test proof without inventing Maven or Gradle.
   files:
   - path: sample.kt
 expected:
-  output_contains: ['null', boundary]
+  output_contains: ['null', boundary, zero effects]

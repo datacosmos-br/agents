@@ -3,7 +3,7 @@ name: Distinguish Dart from Flutter
 description: Do not assume a UI framework from an unavailable package manifest.
 tags: [flutter, edge-case]
 inputs:
-  prompt: Add navigation to an unspecified package. No pubspec, SDK constraints, platform target, or source is supplied. Explain why Dart versus Flutter must be established first.
+  prompt: Add navigation to an unspecified package. No pubspec, SDK constraints, platform target, source, state/routing owner, runtime, or gates are supplied. Stop at the first missing prerequisite and create no import, route, dependency, fallback, or other effect.
 expected:
-  output_contains: [pubspec, Flutter]
+  output_contains: [pubspec, Flutter, no effect]
   output_not_contains: [Navigator.push]

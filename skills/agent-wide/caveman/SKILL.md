@@ -2,7 +2,7 @@
 name: caveman
 description: 'operator communication, concise reporting, evidence first'
 metadata:
-  aihub.tags: '["provenance:agents-owned","role:communication","updates:manual","usage:on-demand"]'
+  aihub.tags: '["policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","provenance:agents-owned","role:communication","updates:manual","usage:on-demand"]'
 ---
 
 # Caveman
@@ -26,6 +26,6 @@ Objective communication with the operator, and objective documentation.
 
 ## Scope
 
-Every operator reply, status report, doc, docstring and generated text.
-Subordinate to UNIVERSAL_CORE, `governance/rules`, orchestrator/Beads routing
-and — in FLEXT projects — `flext-law`.
+Every operator reply, status report, doc, docstring and generated text. Before a
+status claim, validate its required evidence and preserve the first missing or
+failed item. Current project and orchestrator instructions remain authoritative.

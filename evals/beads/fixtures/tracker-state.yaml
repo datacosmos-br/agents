@@ -1,4 +1,4 @@
-repository: /workspace/agents
+repository: datacosmos-br/agents
 issue_id: ag-417
 runtime: explicitly_suspended
 integration_branch: dev

@@ -2,7 +2,7 @@
 name: crosspost
 description: 'cross-platform posting, message adaptation, content distribution'
 metadata:
-  aihub.tags: '["provenance:agents-owned","role:content","updates:manual","usage:on-demand"]'
+  aihub.tags: '["policy:atomic-effects","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","provenance:agents-owned","role:content","updates:manual","usage:on-demand"]'
 ---
 
 # Crosspost
@@ -25,6 +25,10 @@ Distribute content across platforms without turning it into the same fake post i
 
 ## Workflow
 
+Before drafting, validate the source, every requested destination, the factual
+claims, voice owner, and whether the request authorizes drafting only or external
+publication. A missing required item blocks the complete request.
+
 ### Step 1: Start with the Primary Version
 
 Pick the strongest source version first:
@@ -42,6 +46,8 @@ Run `brand-voice` first if the source voice is not already captured in the curre
 
 Reuse the resulting `VOICE PROFILE` directly.
 Do not build a second ad hoc voice checklist here unless the user explicitly wants a fresh override for this campaign.
+Failure of the selected voice workflow stops crossposting; do not replace it with
+a generic platform voice.
 
 ### Step 3: Adapt by Platform Constraint
 
@@ -73,10 +79,9 @@ Do not build a second ad hoc voice checklist here unless the user explicitly wan
 
 ## Posting Order
 
-Default:
-1. post the strongest native version first
-2. adapt for the secondary platforms
-3. stagger timing only if the user wants sequencing help
+Return a posting order only when the user requests sequencing. Validate all
+requested variants before any authorized publication, then publish the complete
+approved set through its declared atomic owner.
 
 Do not add cross-platform references unless useful. Most of the time, the post should stand on its own.
 
@@ -95,7 +100,8 @@ Return:
 - the primary platform version
 - adapted variants for each requested platform
 - a short note on what changed and why
-- any publishing constraint the user still needs to resolve
+- confirmed non-blocking publishing constraints; a required constraint blocks
+  drafting or publication as applicable
 
 ## Quality Gate
 

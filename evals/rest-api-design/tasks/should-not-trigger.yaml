@@ -5,6 +5,7 @@ tags: [rest-api-design, anti-trigger]
 inputs:
   prompt: >-
     Add an index for one measured slow internal query. No route, request,
-    response, resource name, status code, or public API contract changes.
+    response, resource name, status code, or public API contract changes. Do not
+    activate REST design or fall back to generic HTTP advice.
 expected:
-  output_not_contains: [GET /api/v1, HTTP status, response envelope]
+  output_not_contains: [GET /api/v1, HTTP status, response envelope, fallback API]

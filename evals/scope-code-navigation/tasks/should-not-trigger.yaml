@@ -7,4 +7,4 @@ inputs:
     In src/banner.ts line 12, replace the known literal "beta" with "stable".
     No symbol, signature, dependency, or call-chain change is involved.
 expected:
-  output_not_contains: [scope map, scope sketch, scope callers]
+  output_not_contains: [scope map, scope sketch, scope callers, fallback]

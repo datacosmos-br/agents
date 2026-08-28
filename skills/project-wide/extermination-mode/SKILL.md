@@ -2,7 +2,7 @@
 name: extermination-mode
 description: 'zero residue, contract removal, consumer rewiring'
 metadata:
-  aihub.tags: '["provenance:agents-owned","role:migration","updates:manual","usage:router"]'
+  aihub.tags: '["policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","policy:zero-residue","provenance:agents-owned","role:migration","updates:manual","usage:router"]'
 ---
 
 # Extermination Mode
@@ -19,8 +19,9 @@ deleting data, repositories, branches, runtime state, or unrelated work.
    - preserve unrelated tests and concurrent WIP exactly.
 3. Rewire useful consumers to the final SSOT before removing the old owner.
    Use structural search/replace for mechanical migrations and review every
-   match. Never add a compatibility alias, dual reader, fallback, or silent
-   default to make deletion easier.
+   match. Elide every field and call argument equal to a canonical typed default.
+   Never add a compatibility alias, dual reader, fallback, or undeclared
+   default-on-error behavior to make deletion easier.
 4. Delete exact tracked obsolete files with scoped patches. Regenerate managed
    indexes and artifacts through their canonical owner; do not hand-maintain a
    generated facade.
@@ -28,6 +29,10 @@ deleting data, repositories, branches, runtime state, or unrelated work.
    tests, generation fixed point, static gates, and the repository's full gate.
    A failed gate means the extermination is incomplete, not that the gate or
    generator should be weakened.
+
+Complete owner, consumer, approval, and concurrent-work preflight before the
+first effect. Preserve the first gate or subprocess failure unchanged; a failed
+cutover publishes nothing and runs no fallback path.
 
 Stop when an apparent obsolete target still has a valid consumer, belongs to
 concurrent work, or deletion would cross the operator-approved boundary.

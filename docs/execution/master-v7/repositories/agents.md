@@ -8,8 +8,8 @@
 | Integration branch | `dev` |
 | Future canonical source | `/home/marlonsc/agents` after final physical cutover |
 | Accepted migration baseline | 85 flat skills, one canonical command, flat agents |
-| Current work-lane inventory | 76 classified skills, seven flat commands, 62 classified agents, 32 rules |
-| Remaining target | Projection v4, complete agent/rule evals, provider/runtime proof, full landing cycle |
+| Current work-lane inventory | Strictly discovered skills, commands, agents, rules, and their owned evaluations; counts are runtime output |
+| Remaining target | Complete provider/runtime proof and full landing cycle |
 | External imports | Prohibited |
 | Tracker/orchestration runtime | Suspended; no invocation or substitute |
 | Maximum attainable state during suspension | `LANDED_VERIFIED` |

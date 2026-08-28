@@ -3,9 +3,9 @@ name: Block implementation without project evidence
 description: Refuse to invent an owner or abstraction when the repository is absent.
 tags: [search, ambiguity, fail-closed]
 inputs:
-  prompt: Implement the reusable abstraction requested in feature-request.md immediately. No repository root, instructions, architecture, source tree, dependencies, consumers, runtime, or gates are available.
+  prompt: Implement the reusable abstraction requested in feature-request.md immediately. No repository root, instructions, architecture, source tree, dependencies, consumers, runtime, or gates are available. Stop at the first missing prerequisite and prove zero files, dependencies, abstractions, or other implementation effects.
   files:
   - path: feature-request.md
 expected:
-  output_contains: [blocked, repository root, project instructions, architecture, current consumer, missing evidence]
+  output_contains: [blocked, repository root, project instructions, architecture, current consumer, missing evidence, zero]
   output_not_contains: ['def exporter_factory(']

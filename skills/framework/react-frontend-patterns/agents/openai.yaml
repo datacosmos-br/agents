@@ -1,7 +1,7 @@
 interface:
   display_name: "Frontend Patterns"
-  short_description: "React and Next.js frontend patterns"
+  short_description: "Project-owned React component boundaries"
   brand_color: "#8B5CF6"
-  default_prompt: "Use $react-frontend-patterns to apply React and Next.js frontend patterns."
+  default_prompt: "Use $react-frontend-patterns to correct React state, effect, accessibility, and privacy owners without adding a parallel pattern stack."
 policy:
   allow_implicit_invocation: true

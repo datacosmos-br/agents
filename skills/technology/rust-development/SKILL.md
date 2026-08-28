@@ -3,7 +3,7 @@ name: rust-development
 description: 'rust, cargo development, toolchain detection'
 license: MIT
 metadata:
-  aihub.tags: '["activation:detected","detect:marker:Cargo.toml","provenance:agents-owned","route:project","technology:rust","updates:manual","usage:router"]'
+  aihub.tags: '["activation:detected","detect:marker:Cargo.toml","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","policy:zero-residue","provenance:agents-owned","route:project","technology:rust","updates:manual","usage:router"]'
   version: 1.0.0
 ---
 
@@ -14,7 +14,8 @@ APIs, and documented commands.
 
 ## Workflow
 
-1. Read the workspace and crate `Cargo.toml` files plus project instructions.
+1. Before effects, read project law, workspace/crate manifests, lockfile,
+   toolchain, features, generated owners, public consumers, runtime, and gates.
 2. Model invariants with types and ownership; prefer borrowing and explicit
    lifetimes only where they clarify real relationships.
 3. Use `Result` and meaningful error context at fallible boundaries. Reserve
@@ -29,3 +30,6 @@ APIs, and documented commands.
 - Do not silence lints or replace errors with `unwrap`/`expect` to obtain green.
 - Do not broaden features or public APIs unintentionally.
 - Treat generated files as outputs and edit their declared source instead.
+- Preserve the first typed error, child nonzero, timeout, signal, or panic cause;
+  never retry, fall back to another feature/toolchain, or publish partial output.
+- Missing crate or safety evidence stops with zero effects.

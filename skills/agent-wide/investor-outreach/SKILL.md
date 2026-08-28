@@ -2,7 +2,7 @@
 name: investor-outreach
 description: 'investor outreach, fundraising introductions, follow-up writing'
 metadata:
-  aihub.tags: '["domain:fundraising","provenance:agents-owned","role:communication","updates:manual","usage:on-demand"]'
+  aihub.tags: '["domain:fundraising","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","provenance:agents-owned","role:communication","updates:manual","usage:on-demand"]'
 ---
 
 # Investor Outreach
@@ -29,6 +29,7 @@ Write investor communication that is short, concrete, and easy to act on.
 
 If the user's voice matters, run `brand-voice` first and reuse its `VOICE PROFILE`.
 This skill should keep the investor-specific structure and ask discipline, not recreate its own parallel voice system.
+If that selected voice workflow fails, stop without drafting in a generic voice.
 
 ## Hard Bans
 
@@ -56,16 +57,14 @@ Reference one or more of:
 - a mutual connection
 - a clear market or product fit with the investor's focus
 
-If that context is missing, state that the draft still needs personalization instead of pretending it is finished.
+Validate the investor identity, fit evidence, company proof, ask, voice contract,
+and requested message set before drafting. Missing required context blocks the
+entire outbound set; do not return a generic or partial draft.
 
 ## Follow-Up Cadence
 
-Default:
-- day 0: initial outbound
-- day 4 or 5: short follow-up with one new data point
-- day 10 to 12: final follow-up with a clean close
-
-Do not keep nudging after that unless the user wants a longer sequence.
+Use only dates or intervals approved in the request. Do not invent a cadence or
+extend the sequence beyond the authorized messages.
 
 ## Warm Intro Requests
 

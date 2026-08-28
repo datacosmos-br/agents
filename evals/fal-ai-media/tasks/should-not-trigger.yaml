@@ -11,3 +11,4 @@ expected:
   - fal-ai/
   - estimate_cost
   - generate(
+  - fallback

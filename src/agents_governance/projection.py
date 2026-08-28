@@ -1,4 +1,4 @@
-"""Copy-based, item-scoped projections with no cross-repository links."""
+"""Strict project-local projection with atomic physical publication."""
 
 from __future__ import annotations
 
@@ -7,1546 +7,1120 @@ import json
 import os
 import re
 import shutil
-import subprocess
-import sys
+import stat
 import tempfile
 import tomllib
 from dataclasses import dataclass
-from pathlib import Path
-from typing import Any, cast
+from pathlib import Path, PurePosixPath
+from typing import cast
 
 import yaml
 
 from .agent_profiles import (
     AgentContext,
+    AgentProfile,
     AgentProvider,
-    audit_agent_profiles,
     render_agent,
 )
 from .catalog import NON_PORTABLE_PROJECT_REFERENCE, Catalog
+from .cleanup import (
+    remove_physical,
+    run_atomic_sequence,
+    run_with_cleanup,
+    validate_physical,
+)
 from .commands import (
-    CommandArtifact,
     CommandProvider,
     CommandRoute,
     CommandSpec,
     CommandTokenBudget,
-    audit_command_specs,
     render_command,
     waza_bpe_counter,
 )
 from .projection_config import (
     ProjectionCell,
+    ProjectionConfig,
     ProjectionContext,
     ProjectionStatus,
     ProjectionSurface,
-    load_projection_config,
 )
-from .rule_adapters import (
-    RuleContext,
-    RuleProvider,
-    render_rule,
+from .rule_adapters import RuleContext, RuleProvider, render_rule
+from .rules import RuleDistribution, RuleSpec
+
+_DIGEST = re.compile(r"[0-9a-f]{64}\Z")
+_MARKDOWN_LINK = re.compile(r"!?\[[^\]\n]*\]\(([^)\n]+)\)")
+_TEXT_SUFFIXES = frozenset(
+    {
+        "",
+        ".css",
+        ".html",
+        ".ini",
+        ".js",
+        ".json",
+        ".jsx",
+        ".md",
+        ".mdx",
+        ".py",
+        ".sh",
+        ".toml",
+        ".ts",
+        ".tsx",
+        ".txt",
+        ".yaml",
+        ".yml",
+    }
 )
-from .rules import RuleDistribution, audit_rule_specs
+_SELECTION_FIELDS = frozenset({"agents", "opt_ins", "selected_tags", "version"})
+_MANIFEST_FIELDS = frozenset(
+    {
+        "context",
+        "destination",
+        "managed",
+        "owner",
+        "project",
+        "providers",
+        "selection",
+        "surface",
+        "version",
+    }
+)
+_ENTRY_FIELDS = frozenset(
+    {
+        "activation",
+        "adapter_version",
+        "destination",
+        "origin",
+        "physical_digest",
+        "slug",
+        "source_digest",
+        "source_type",
+    }
+)
+
+
+class ProjectionDriftError(RuntimeError):
+    """The project projection differs from its canonical source."""
 
 
 @dataclass(frozen=True)
-class ProjectionFinding:
-    target: str
-    path: str
-    message: str
+class ProjectionSelection:
+    agents: tuple[str, ...] = ()
+    opt_ins: tuple[str, ...] = ()
+    selected_tags: tuple[str, ...] = ()
+
+    def payload(self) -> dict[str, list[str]]:
+        return {
+            "agents": list(self.agents),
+            "opt_ins": list(self.opt_ins),
+            "selected_tags": list(self.selected_tags),
+        }
 
 
 @dataclass(frozen=True)
-class SourceSkill:
+class ProjectionSource:
     name: str
-    directory: Path
+    source: Path
     origin: str
-    digest: str
+    source_digest: str
     physical_digest: str
-    portable: bool
-    problem: str | None = None
-    rendered_content: str | None = None
-    source_type: str = "skill"
-    slug: str | None = None
+    source_type: str
+    slug: str
+    activation: tuple[str, ...]
+    content: str | None = None
     adapter_version: int = 1
+
+    def metadata(self) -> dict[str, object]:
+        return {
+            "activation": list(self.activation),
+            "adapter_version": self.adapter_version,
+            "destination": self.name,
+            "origin": self.origin,
+            "physical_digest": self.physical_digest,
+            "slug": self.slug,
+            "source_digest": self.source_digest,
+            "source_type": self.source_type,
+        }
 
 
 @dataclass(frozen=True)
 class ProjectionPlan:
-    """One grouped physical target with complete manifest ownership context."""
-
-    label: str
+    project: Path
     root: Path
     providers: tuple[str, ...]
-    context: str
-    surface: str
-    sources: tuple[SourceSkill, ...]
+    surface: ProjectionSurface
+    selection: ProjectionSelection
+    sources: tuple[ProjectionSource, ...]
+
+
+@dataclass(frozen=True)
+class _TargetState:
+    plan: ProjectionPlan
+    previous: dict[str, dict[str, object]]
+    snapshot: str | None
+    drift: bool
+
+
+@dataclass
+class _StagedTarget:
+    state: _TargetState
+    stage: Path
+    candidate: Path
+    backup: Path
+    created_parents: tuple[Path, ...] = ()
+    installed: bool = False
+    had_root: bool = False
+
+
+def _mapping(value: object, context: str) -> dict[str, object]:
+    if not isinstance(value, dict) or not all(isinstance(key, str) for key in value):
+        raise TypeError(f"{context} must be an object with string keys")
+    return cast(dict[str, object], value)
+
+
+def _exact(value: dict[str, object], fields: frozenset[str], context: str) -> None:
+    if frozenset(value) != fields:
+        raise ValueError(
+            f"{context} fields must equal {', '.join(sorted(fields))}; "
+            f"got {', '.join(sorted(value)) or 'none'}"
+        )
+
+
+def _strings(value: object, context: str) -> tuple[str, ...]:
+    if not isinstance(value, list) or not all(
+        isinstance(item, str) and item and item == item.strip() for item in value
+    ):
+        raise TypeError(f"{context} must be an array of non-empty trimmed strings")
+    selected = tuple(cast(list[str], value))
+    if selected != tuple(sorted(set(selected))):
+        raise ValueError(f"{context} must be unique and sorted")
+    return selected
+
+
+def _absolute(path: Path) -> Path:
+    return Path(os.path.abspath(path))
+
+
+def _symlink_component(path: Path) -> Path | None:
+    absolute = _absolute(path)
+    current = Path(absolute.anchor)
+    for part in absolute.parts[1:]:
+        current /= part
+        if current.is_symlink():
+            return current
+        if not current.exists():
+            break
+    return None
+
+
+def _physical_project(cwd: Path) -> Path:
+    current = _absolute(cwd)
+    if _symlink_component(current) is not None or not current.is_dir():
+        raise ValueError(f"invocation directory must be physical: {current}")
+    for candidate in (current, *current.parents):
+        git = candidate / ".git"
+        if git.is_symlink():
+            raise ValueError(f"Git metadata symlink forbidden: {git}")
+        if git.exists():
+            if not git.is_dir() or not stat.S_ISDIR(git.lstat().st_mode):
+                raise ValueError(
+                    f"project must own a physical .git directory: {candidate}"
+                )
+            project = candidate.resolve(strict=True)
+            if project == Path("/tmp") or Path("/tmp") in project.parents:
+                raise ValueError(f"repositories under /tmp are prohibited: {project}")
+            return project
+    raise ValueError(
+        f"invocation directory is not inside a physical Git project: {cwd}"
+    )
+
+
+def _confined(project: Path, raw: str) -> Path:
+    relative = Path(raw)
+    if relative.is_absolute() or relative == Path(".") or ".." in relative.parts:
+        raise ValueError(f"project projection path escapes repository: {raw}")
+    target = _absolute(project / relative)
+    target.relative_to(project)
+    symlink = _symlink_component(target)
+    if symlink is not None:
+        raise ValueError(f"projection path symlink forbidden: {symlink}")
+    return target
+
+
+def _rendered_digests(name: str, content: str) -> tuple[str, str]:
+    logical = hashlib.sha256()
+    logical.update(name.encode())
+    logical.update(b"\0")
+    logical.update(content.encode())
+    logical.update(b"\0")
+    physical = hashlib.sha256()
+    physical.update(b"file\0.\0")
+    physical.update(b"0644\0")
+    physical.update(content.encode())
+    physical.update(b"\0")
+    return logical.hexdigest(), physical.hexdigest()
+
+
+def _local_link(target: str) -> str | None:
+    raw = target.strip()
+    if raw.startswith("<"):
+        closing = raw.find(">", 1)
+        raw = raw[1:closing] if closing > 0 else raw
+    else:
+        raw = raw.split(maxsplit=1)[0] if raw else raw
+    if not raw or raw.startswith("#") or ":" in raw.split("/", 1)[0]:
+        return None
+    return raw.split("#", 1)[0].split("?", 1)[0]
+
+
+def _validate_source_portability(source: Path) -> None:
+    Catalog.physical_tree_contract(source)
+    files = (
+        (source,)
+        if source.is_file()
+        else tuple(path for path in sorted(source.rglob("*")) if path.is_file())
+    )
+    for path in files:
+        if path.suffix.lower() not in _TEXT_SUFFIXES:
+            continue
+        text = path.read_text(encoding="utf-8")
+        if NON_PORTABLE_PROJECT_REFERENCE.search(text):
+            raise ValueError(
+                f"project source contains a non-portable reference: {path}"
+            )
+        if path.suffix.lower() not in {".md", ".mdx"}:
+            continue
+        for match in _MARKDOWN_LINK.finditer(text):
+            target = _local_link(match.group(1))
+            if target is None:
+                continue
+            if source.is_file():
+                raise ValueError(f"rendered source contains a relative link: {path}")
+            candidate = _absolute(path.parent / target)
+            candidate.relative_to(source)
+
+
+def _rendered_source(
+    *,
+    name: str,
+    source: Path,
+    origin: str,
+    source_type: str,
+    slug: str,
+    activation: tuple[str, ...],
+    content: str,
+) -> ProjectionSource:
+    if NON_PORTABLE_PROJECT_REFERENCE.search(content):
+        raise ValueError(
+            f"project {source_type} contains a non-portable reference: {source}"
+        )
+    logical, physical = _rendered_digests(name, content)
+    return ProjectionSource(
+        name,
+        source,
+        origin,
+        logical,
+        physical,
+        source_type,
+        slug,
+        activation,
+        content,
+    )
 
 
 class Projector:
-    """Materialize validated copies while rejecting foreign modifications."""
+    """Converge every supported project surface for the invocation project."""
 
     MANIFEST = ".agents-governance.json"
-    _MARKDOWN_LINK = re.compile(r"\[[^\]]+\]\(([^)]+)\)")
+    SELECTION = Path(".agents/projection.json")
 
-    def __init__(self, catalog: Catalog) -> None:
+    def __init__(
+        self,
+        catalog: Catalog,
+        config: ProjectionConfig,
+        commands: tuple[CommandSpec, ...],
+        agents: tuple[AgentProfile, ...],
+        rules: tuple[RuleSpec, ...],
+    ) -> None:
         self.catalog = catalog
-        self.projection_config = load_projection_config(catalog.root)
+        self.config = config
+        self.commands = commands
+        self.agents = agents
+        self.rules = rules
 
     @staticmethod
-    def _copy_tree(source: Path, destination: Path) -> None:
-        """Copy a tree independently, requesting CoW reflinks on Linux."""
+    def project_root() -> Path:
+        """Derive the only projection target from the invocation directory."""
 
-        ancestor = Projector._path_symlink(source)
-        if ancestor is not None:
-            raise RuntimeError(f"source symlink forbidden: {ancestor}")
-        symlink = Projector._tree_symlink(source)
-        if symlink is not None:
-            raise RuntimeError(f"source symlink forbidden: {symlink}")
-        Catalog.physical_tree_contract(source)
-        if sys.platform.startswith("linux"):
-            subprocess.run(
-                [
-                    "cp",
-                    "--archive",
-                    "--reflink=auto",
-                    "--no-target-directory",
-                    str(source),
-                    str(destination),
-                ],
-                check=True,
-            )
-            return
-        if source.is_file():
-            shutil.copy2(source, destination)
-        else:
-            shutil.copytree(source, destination, symlinks=False)
+        return _physical_project(Path.cwd())
 
     @staticmethod
-    def _absolute(path: Path) -> Path:
-        expanded = os.path.expandvars(str(path.expanduser()))
-        return Path(os.path.abspath(expanded))
-
-    @classmethod
-    def _expand(cls, value: str) -> Path:
-        return cls._absolute(Path(value))
-
-    @classmethod
-    def _path_symlink(cls, path: Path) -> Path | None:
-        """Return the first symlink component without resolving the path."""
-
-        absolute = cls._absolute(path)
-        current = Path(absolute.anchor)
-        for part in absolute.parts[1:]:
-            current /= part
-            if current.is_symlink():
-                return current
-            if not current.exists():
-                break
-        return None
-
-    @staticmethod
-    def _tree_symlink(path: Path) -> Path | None:
-        if path.is_symlink():
-            return path
-        if not path.is_dir():
-            return None
-        return next((item for item in path.rglob("*") if item.is_symlink()), None)
-
-    def _safe_contract(self, path: Path) -> tuple[str | None, str | None, str | None]:
+    def _selection(project: Path) -> ProjectionSelection:
+        path = project / Projector.SELECTION
         if not path.exists() and not path.is_symlink():
-            return None, None, "missing"
-        if self._path_symlink(path) is not None:
-            return None, None, "symlink"
-        symlink = self._tree_symlink(path)
-        if symlink is not None:
-            return None, None, "symlink"
-        if not path.is_file() and not path.is_dir():
-            return None, None, "unsupported file type"
-        try:
-            return (
-                self.catalog.digest_tree(path),
-                self.catalog.physical_tree_contract(path),
-                None,
-            )
-        except (OSError, ValueError) as error:
-            return None, None, str(error)
-
-    def personal_names(self, selected: str | None = None) -> tuple[str, ...]:
-        names = tuple(sorted(provider.value for provider in AgentProvider))
-        if selected is None:
-            return names
-        if selected not in names:
-            raise ValueError(f"unknown personal target: {selected}")
-        return (selected,)
-
-    def _source(self, directory: Path, origin: str, *, portable: bool) -> SourceSkill:
-        directory = self._absolute(directory)
-        digest, physical_digest, problem = self._safe_contract(directory)
-        return SourceSkill(
-            directory.name,
-            directory,
-            origin,
-            digest or "",
-            physical_digest or "",
-            portable,
-            problem,
-        )
-
-    def _catalog_sources(self, distribution: str) -> tuple[SourceSkill, ...]:
-        return tuple(
-            self._source(
-                self.catalog.record(name).directory,
-                f"agents:{distribution}",
-                portable=distribution != "personal",
-            )
-            for name in sorted(self.catalog.names_for(distribution))
-        )
-
-    def _command_specs(self) -> tuple[CommandSpec, ...]:
-        return audit_command_specs(
-            self.catalog.root,
-            (directory.name for directory in self.catalog.skill_dirs()),
-        )
-
-    @staticmethod
-    def _rendered_content_digest(name: str, content: str) -> str:
-        digest = hashlib.sha256()
-        digest.update(name.encode())
-        digest.update(b"\0")
-        digest.update(content.encode())
-        digest.update(b"\0")
-        return digest.hexdigest()
-
-    @staticmethod
-    def _rendered_physical_digest(content: str) -> str:
-        digest = hashlib.sha256()
-        digest.update(b"file\0.\0")
-        digest.update(b"0644\0")
-        digest.update(content.encode())
-        digest.update(b"\0")
-        return digest.hexdigest()
-
-    def _configured_command_budget(
-        self, raw_max_tokens: object, label: str
-    ) -> CommandTokenBudget:
-        if raw_max_tokens is not None and (
-            not isinstance(raw_max_tokens, int) or isinstance(raw_max_tokens, bool)
-        ):
-            raise TypeError(f"invalid command max_tokens for {label}")
-        try:
-            return CommandTokenBudget(
-                raw_max_tokens, waza_bpe_counter(self.catalog.root)
-            )
-        except ValueError as error:
-            raise ValueError(
-                f"invalid command max_tokens for {label}: {error}"
-            ) from error
-
-    def _rendered_command_source(
-        self,
-        spec: CommandSpec,
-        artifact: CommandArtifact,
-        *,
-        portable: bool,
-    ) -> SourceSkill:
-        name = artifact.destination.name
-        return SourceSkill(
-            name=name,
-            directory=spec.path,
-            origin=f"agents:commands:{artifact.provider.value}",
-            digest=self._rendered_content_digest(name, artifact.content),
-            physical_digest=self._rendered_physical_digest(artifact.content),
-            portable=portable,
-            rendered_content=artifact.content,
-            source_type="command",
-            slug=spec.name,
-        )
-
-    def _render_commands(
-        self,
-        specs: tuple[CommandSpec, ...],
-        provider: CommandProvider,
-        route: CommandRoute,
-        label: str,
-        token_budget: CommandTokenBudget | None,
-    ) -> tuple[
-        tuple[tuple[CommandSpec, CommandArtifact], ...], list[ProjectionFinding]
-    ]:
-        rendered: list[tuple[CommandSpec, CommandArtifact]] = []
-        findings: list[ProjectionFinding] = []
-        if provider is CommandProvider.COPILOT and shutil.which("copilot") is None:
-            return (), [
-                ProjectionFinding(
-                    label,
-                    "",
-                    "UNSUPPORTED: GitHub Copilot CLI capability is not installed",
-                )
-            ]
-        for spec in specs:
-            if spec.route is not route:
-                continue
-            result = render_command(spec, provider, token_budget=token_budget)
-            rendered.append((spec, result))
-        return tuple(rendered), findings
-
-    @staticmethod
-    def _native_artifact_target(target: Path, destination: Path) -> bool:
-        native_parts = destination.parent.parts
-        return not native_parts or target.parts[-len(native_parts) :] == native_parts
-
-    def _cell_target(self, cell: ProjectionCell, project: Path | None) -> Path:
-        assert cell.path is not None
-        if cell.context is ProjectionContext.PERSONAL:
-            return self._expand(cell.path)
-        if project is None:
-            raise ValueError("project projection cell requires a project root")
-        return self._confined_project_path(project, cell.path)
-
-    def _command_sources_v4(
-        self,
-        cell: ProjectionCell,
-        target: Path,
-        label: str,
-    ) -> tuple[tuple[SourceSkill, ...], list[ProjectionFinding]]:
-        specs = self._command_specs()
-        findings: list[ProjectionFinding] = []
-        provider = CommandProvider(cell.provider.value)
-        route = (
-            CommandRoute.AGENT
-            if cell.context is ProjectionContext.PERSONAL
-            else CommandRoute.PROJECT
-        )
-        budget = self._configured_command_budget(cell.max_tokens, label)
-        rendered, render_findings = self._render_commands(
-            specs, provider, route, label, budget
-        )
-        findings.extend(render_findings)
-        sources: list[SourceSkill] = []
-        for spec, artifact in rendered:
-            if not self._native_artifact_target(target, Path(artifact.destination)):
-                raise ValueError(
-                    "command target is not provider-native: "
-                    f"{cell.provider.value}/{cell.context.value}"
-                )
-            sources.append(
-                self._rendered_command_source(
-                    spec,
-                    artifact,
-                    portable=cell.context is ProjectionContext.PROJECT,
-                )
-            )
-        return tuple(sources), findings
-
-    def _agent_sources(
-        self,
-        cell: ProjectionCell,
-        target: Path,
-        label: str,
-    ) -> tuple[tuple[SourceSkill, ...], list[ProjectionFinding]]:
-        profiles = audit_agent_profiles(self.catalog.root)
-        distribution = (
-            "agent-wide"
-            if cell.context is ProjectionContext.PERSONAL
-            else "project-wide"
-        )
-        prompt_defense = (
-            self.catalog.root / "rules" / "security" / "prompt-defense.md"
-        ).read_text(encoding="utf-8")
-        sources: list[SourceSkill] = []
-        for profile in profiles:
-            if profile.distribution != distribution:
-                continue
-            rendered = render_agent(
-                profile,
-                AgentProvider(cell.provider.value),
-                AgentContext(cell.context.value),
-                prompt_defense=prompt_defense,
-            )
-            if not self._native_artifact_target(target, Path(rendered.destination)):
-                raise ValueError(
-                    "agent target is not provider-native: "
-                    f"{cell.provider.value}/{cell.context.value}"
-                )
-            name = rendered.destination.name
-            sources.append(
-                SourceSkill(
-                    name=name,
-                    directory=profile.path,
-                    origin=f"agents:agents:{cell.provider.value}",
-                    digest=self._rendered_content_digest(name, rendered.content),
-                    physical_digest=self._rendered_physical_digest(rendered.content),
-                    portable=cell.context is ProjectionContext.PROJECT,
-                    rendered_content=rendered.content,
-                    source_type="agent",
-                    slug=profile.name,
-                )
-            )
-        return tuple(sources), []
-
-    def _rule_sources(
-        self,
-        cell: ProjectionCell,
-        target: Path,
-        label: str,
-    ) -> tuple[tuple[SourceSkill, ...], list[ProjectionFinding]]:
-        rules = audit_rule_specs(self.catalog.root)
-        accepted = (
-            {RuleDistribution.PERSONAL, RuleDistribution.BOTH}
-            if cell.context is ProjectionContext.PERSONAL
-            else {RuleDistribution.PROJECT, RuleDistribution.BOTH}
-        )
-        sources: list[SourceSkill] = []
-        for spec in rules:
-            if spec.distribution not in accepted:
-                continue
-            rendered = render_rule(
-                spec,
-                RuleProvider(cell.provider.value),
-                RuleContext(cell.context.value),
-            )
-            if not self._native_artifact_target(target, Path(rendered.destination)):
-                raise ValueError(
-                    "rule target is not provider-native: "
-                    f"{cell.provider.value}/{cell.context.value}"
-                )
-            name = rendered.destination.name
-            sources.append(
-                SourceSkill(
-                    name=name,
-                    directory=spec.path,
-                    origin=f"agents:rules:{cell.provider.value}",
-                    digest=self._rendered_content_digest(name, rendered.content),
-                    physical_digest=self._rendered_physical_digest(rendered.content),
-                    portable=cell.context is ProjectionContext.PROJECT,
-                    rendered_content=rendered.content,
-                    source_type="rule",
-                    slug=spec.identity,
-                )
-            )
-        return tuple(sources), []
-
-    def _sources_for_cell(
-        self,
-        cell: ProjectionCell,
-        target: Path,
-        label: str,
-        project: Path | None,
-    ) -> tuple[tuple[SourceSkill, ...], list[ProjectionFinding]]:
-        if cell.surface is ProjectionSurface.SKILLS:
-            sources = (
-                self._catalog_sources("personal")
-                if cell.context is ProjectionContext.PERSONAL
-                else self.project_sources(cast(Path, project))
-            )
-            return sources, []
-        if cell.surface is ProjectionSurface.COMMANDS:
-            return self._command_sources_v4(cell, target, label)
-        if cell.surface is ProjectionSurface.AGENTS:
-            return self._agent_sources(cell, target, label)
-        return self._rule_sources(cell, target, label)
-
-    def _selected_cells(
-        self,
-        context: ProjectionContext,
-        surface: ProjectionSurface,
-        selected_provider: str | None,
-    ) -> tuple[tuple[ProjectionCell, ...], list[ProjectionFinding]]:
-        providers = (
-            (AgentProvider(selected_provider),)
-            if selected_provider is not None
-            else tuple(AgentProvider)
-        )
-        cells: list[ProjectionCell] = []
-        findings: list[ProjectionFinding] = []
-        for provider in providers:
-            cell = self.projection_config.cell(provider, context, surface)
-            if cell.status is ProjectionStatus.UNSUPPORTED:
-                if selected_provider is not None:
-                    assert cell.reason is not None
-                    findings.append(ProjectionFinding(provider.value, "", cell.reason))
-                continue
-            cells.append(cell)
-        return tuple(cells), findings
-
-    def _plans_for_context(
-        self,
-        context: ProjectionContext,
-        surface: ProjectionSurface,
-        projects: tuple[Path, ...],
-        selected_provider: str | None,
-    ) -> tuple[tuple[ProjectionPlan, ...], list[ProjectionFinding]]:
-        cells, findings = self._selected_cells(context, surface, selected_provider)
-        roots: tuple[Path | None, ...] = (
-            (None,) if context is ProjectionContext.PERSONAL else projects
-        )
-        grouped: dict[tuple[Path, str, str], dict[str, object]] = {}
-        for project in roots:
-            for cell in cells:
-                target = self._cell_target(cell, project)
-                if (
-                    context is ProjectionContext.PERSONAL
-                    and surface is ProjectionSurface.SKILLS
-                    and target == self.catalog.root / "skills"
-                ):
-                    continue
-                label = cell.provider.value if project is None else str(project)
-                try:
-                    sources, source_findings = self._sources_for_cell(
-                        cell, target, label, project
-                    )
-                except (
-                    KeyError,
-                    OSError,
-                    RuntimeError,
-                    TypeError,
-                    ValueError,
-                    tomllib.TOMLDecodeError,
-                ) as error:
-                    findings.append(ProjectionFinding(label, str(target), str(error)))
-                    continue
-                findings.extend(source_findings)
-                key = (target, context.value, surface.value)
-                bucket = grouped.setdefault(key, {"providers": set(), "sources": {}})
-                cast(set[str], bucket["providers"]).add(cell.provider.value)
-                by_name = cast(dict[str, SourceSkill], bucket["sources"])
-                for source in sources:
-                    previous = by_name.get(source.name)
-                    if previous is not None and previous != source:
-                        findings.append(
-                            ProjectionFinding(
-                                label,
-                                str(target / source.name),
-                                "conflicting provider projection render",
-                            )
-                        )
-                        continue
-                    by_name[source.name] = source
-        plans = tuple(
-            ProjectionPlan(
-                label=str(target),
-                root=target,
-                providers=tuple(sorted(cast(set[str], bucket["providers"]))),
-                context=context_name,
-                surface=surface_name,
-                sources=tuple(
-                    cast(dict[str, SourceSkill], bucket["sources"])[name]
-                    for name in sorted(cast(dict[str, SourceSkill], bucket["sources"]))
-                ),
-            )
-            for (target, context_name, surface_name), bucket in sorted(
-                grouped.items(), key=lambda item: str(item[0][0])
-            )
-        )
-        return plans, findings
-
-    @staticmethod
-    def _manifest(root: Path) -> dict[str, Any]:
-        path = root / Projector.MANIFEST
-        if not path.exists() and not path.is_symlink():
-            return {}
+            return ProjectionSelection()
         if path.is_symlink() or not path.is_file():
-            raise ValueError("projection manifest must be a physical regular file")
-        try:
-            payload = json.loads(path.read_text(encoding="utf-8"))
-        except json.JSONDecodeError as error:
-            raise ValueError("projection manifest is not valid JSON") from error
-        if not isinstance(payload, dict):
-            raise TypeError("projection manifest must be an object")
-        if payload.get("version") != 4:
-            raise ValueError("projection manifest must use version 4")
-        expected_root_fields = {
-            "context",
-            "destination",
-            "managed",
-            "owner",
-            "providers",
-            "surface",
-            "version",
-        }
-        if set(payload) != expected_root_fields:
-            raise ValueError("projection manifest contains undocumented fields")
-        if payload.get("owner") != "agents-governance":
-            raise ValueError("projection manifest has an invalid owner")
-        providers = payload.get("providers")
-        if (
-            not isinstance(providers, list)
-            or not providers
-            or not all(isinstance(provider, str) and provider for provider in providers)
-            or providers != sorted(set(providers))
-        ):
-            raise ValueError("projection manifest providers must be unique and sorted")
-        if payload.get("context") not in {
-            context.value for context in ProjectionContext
-        }:
-            raise ValueError("projection manifest has an invalid context")
-        if payload.get("surface") not in {
-            surface.value for surface in ProjectionSurface
-        }:
-            raise ValueError("projection manifest has an invalid surface")
-        destination = payload.get("destination")
-        if not isinstance(destination, str) or not Path(destination).is_absolute():
-            raise ValueError("projection manifest destination must be absolute")
-        managed = payload.get("managed")
-        if not isinstance(managed, dict):
-            raise TypeError("projection manifest managed field must be an object")
-        validated: dict[str, dict[str, object]] = {}
-        entry_fields = {
-            "adapter_version",
-            "destination",
-            "origin",
-            "physical_digest",
-            "slug",
-            "source_digest",
-            "source_type",
-        }
-        for raw_name, raw_metadata in managed.items():
-            if (
-                not isinstance(raw_name, str)
-                or not raw_name
-                or Path(raw_name).name != raw_name
-            ):
-                raise ValueError("projection manifest contains an invalid managed name")
-            if not isinstance(raw_metadata, dict) or set(raw_metadata) != entry_fields:
-                raise ValueError(
-                    f"projection manifest entry {raw_name!r} has invalid fields"
-                )
-            source_digest = raw_metadata.get("source_digest")
-            physical_digest = raw_metadata.get("physical_digest")
-            origin = raw_metadata.get("origin")
-            if (
-                raw_metadata.get("adapter_version") != 1
-                or raw_metadata.get("destination") != raw_name
-                or not isinstance(source_digest, str)
-                or not source_digest
-                or not isinstance(physical_digest, str)
-                or not physical_digest
-                or not isinstance(origin, str)
-                or not origin
-                or not isinstance(raw_metadata.get("slug"), str)
-                or not raw_metadata.get("slug")
-                or raw_metadata.get("source_type")
-                not in {"agent", "command", "rule", "skill"}
-            ):
-                raise ValueError(
-                    f"projection manifest entry {raw_name!r} has invalid values"
-                )
-            validated[raw_name] = cast(dict[str, object], raw_metadata)
-        return {
-            "version": 4,
-            "owner": "agents-governance",
-            "providers": providers,
-            "context": payload["context"],
-            "surface": payload["surface"],
-            "destination": destination,
-            "managed": validated,
-        }
-
-    @staticmethod
-    def _manifest_payload(plan: ProjectionPlan) -> dict[str, Any]:
-        return {
-            "version": 4,
-            "owner": "agents-governance",
-            "providers": list(plan.providers),
-            "context": plan.context,
-            "surface": plan.surface,
-            "destination": str(plan.root),
-            "managed": {
-                source.name: {
-                    "adapter_version": source.adapter_version,
-                    "destination": source.name,
-                    "origin": source.origin,
-                    "physical_digest": source.physical_digest,
-                    "slug": source.slug or source.name,
-                    "source_digest": source.digest,
-                    "source_type": source.source_type,
-                }
-                for source in plan.sources
-            },
-        }
+            raise ValueError(f"projection selection must be a physical file: {path}")
+        payload = _mapping(json.loads(path.read_text(encoding="utf-8")), str(path))
+        _exact(payload, _SELECTION_FIELDS, str(path))
+        if payload["version"] != 1:
+            raise ValueError(f"projection selection version must equal 1: {path}")
+        return ProjectionSelection(
+            _strings(payload["agents"], f"{path}: agents"),
+            _strings(payload["opt_ins"], f"{path}: opt_ins"),
+            _strings(payload["selected_tags"], f"{path}: selected_tags"),
+        )
 
     @staticmethod
     def _normalized_dependency(value: str) -> str | None:
-        match = re.match(r"\s*([A-Za-z0-9][A-Za-z0-9._-]*)", value)
+        match = re.match(r"\s*([A-Za-z0-9@][A-Za-z0-9@/._-]*)", value)
         return match.group(1).lower().replace("_", "-") if match else None
 
     @classmethod
-    def _pyproject(cls, root: Path) -> dict[str, Any]:
-        path = root / "pyproject.toml"
-        if path.is_symlink():
-            raise ValueError(f"pyproject.toml symlink forbidden: {path}")
-        if not path.is_file():
-            return {}
-        loaded = tomllib.loads(path.read_text(encoding="utf-8"))
-        return loaded if isinstance(loaded, dict) else {}
-
-    @classmethod
-    def _python_dependencies(cls, loaded: dict[str, Any]) -> set[str]:
+    def _dependencies(cls, project: Path) -> set[str]:
         names: set[str] = set()
 
-        def add_values(value: object) -> None:
-            if isinstance(value, str):
-                normalized = cls._normalized_dependency(value)
+        def add_requirements(raw: object, context: str) -> None:
+            if not isinstance(raw, list) or not all(
+                isinstance(item, str) for item in raw
+            ):
+                raise TypeError(f"{context} must be an array of strings")
+            for item in cast(list[str], raw):
+                normalized = cls._normalized_dependency(item)
                 if normalized is not None:
                     names.add(normalized)
-            elif isinstance(value, list):
-                for item in value:
-                    add_values(item)
 
-        project = loaded.get("project", {})
-        if isinstance(project, dict):
-            add_values(project.get("dependencies", []))
-            optional = project.get("optional-dependencies", {})
-            if isinstance(optional, dict):
-                for dependencies in optional.values():
-                    add_values(dependencies)
-        groups = loaded.get("dependency-groups", {})
-        if isinstance(groups, dict):
-            for dependencies in groups.values():
-                add_values(dependencies)
-        tool = loaded.get("tool", {})
-        if isinstance(tool, dict):
-            uv = tool.get("uv", {})
-            if isinstance(uv, dict):
-                add_values(uv.get("dev-dependencies", []))
-            poetry = tool.get("poetry", {})
-            if isinstance(poetry, dict):
-                dependencies = poetry.get("dependencies", {})
-                if isinstance(dependencies, dict):
-                    names.update(
-                        str(name).lower().replace("_", "-")
-                        for name in dependencies
-                        if str(name).lower() != "python"
+        pyproject = project / "pyproject.toml"
+        if pyproject.is_symlink():
+            raise ValueError(f"dependency manifest symlink forbidden: {pyproject}")
+        if pyproject.is_file():
+            loaded = _mapping(
+                tomllib.loads(pyproject.read_text(encoding="utf-8")), str(pyproject)
+            )
+
+            if "project" in loaded:
+                project_table = _mapping(loaded["project"], f"{pyproject}: project")
+                add_requirements(
+                    project_table.get("dependencies", []),
+                    f"{pyproject}: project.dependencies",
+                )
+                optional = _mapping(
+                    project_table.get("optional-dependencies", {}),
+                    f"{pyproject}: project.optional-dependencies",
+                )
+                for optional_name, raw in optional.items():
+                    add_requirements(
+                        raw,
+                        f"{pyproject}: project.optional-dependencies.{optional_name}",
                     )
-                poetry_groups = poetry.get("group", {})
-                if isinstance(poetry_groups, dict):
-                    for group in poetry_groups.values():
-                        if not isinstance(group, dict):
-                            continue
-                        group_dependencies = group.get("dependencies", {})
-                        if isinstance(group_dependencies, dict):
-                            names.update(
-                                str(name).lower().replace("_", "-")
-                                for name in group_dependencies
-                            )
-        return names
-
-    @classmethod
-    def _dependency_inventory(cls, root: Path) -> dict[str, set[str]]:
-        inventory: dict[str, set[str]] = {
-            "python": set(),
-            "npm": set(),
-            "dart": set(),
-        }
-        loaded = cls._pyproject(root)
-        inventory["python"] = cls._python_dependencies(loaded)
-        package_json = root / "package.json"
-        if package_json.is_symlink():
-            raise ValueError(f"package.json symlink forbidden: {package_json}")
-        if package_json.is_file():
-            package = json.loads(package_json.read_text(encoding="utf-8"))
-            if not isinstance(package, dict):
-                raise ValueError(f"package.json must contain an object: {package_json}")
+            groups = _mapping(
+                loaded.get("dependency-groups", {}),
+                f"{pyproject}: dependency-groups",
+            )
+            for dependency_group_name, raw in groups.items():
+                add_requirements(
+                    raw,
+                    f"{pyproject}: dependency-groups.{dependency_group_name}",
+                )
+            tool = _mapping(loaded.get("tool", {}), f"{pyproject}: tool")
+            if "poetry" in tool:
+                poetry = _mapping(tool["poetry"], f"{pyproject}: tool.poetry")
+                direct = _mapping(
+                    poetry.get("dependencies", {}),
+                    f"{pyproject}: tool.poetry.dependencies",
+                )
+                names.update(
+                    name.lower().replace("_", "-")
+                    for name in direct
+                    if name.lower() != "python"
+                )
+                poetry_groups = _mapping(
+                    poetry.get("group", {}), f"{pyproject}: tool.poetry.group"
+                )
+                for group_name, raw_group in poetry_groups.items():
+                    poetry_group = _mapping(
+                        raw_group,
+                        f"{pyproject}: tool.poetry.group.{group_name}",
+                    )
+                    group_dependencies = _mapping(
+                        poetry_group.get("dependencies", {}),
+                        f"{pyproject}: tool.poetry.group.{group_name}.dependencies",
+                    )
+                    names.update(
+                        name.lower().replace("_", "-") for name in group_dependencies
+                    )
+        package_path = project / "package.json"
+        if package_path.is_symlink():
+            raise ValueError(f"dependency manifest symlink forbidden: {package_path}")
+        if package_path.is_file():
+            package = _mapping(
+                json.loads(package_path.read_text(encoding="utf-8")), str(package_path)
+            )
             for field in ("dependencies", "devDependencies", "peerDependencies"):
-                dependencies = package.get(field, {})
-                if not isinstance(dependencies, dict):
-                    raise TypeError(f"package.json {field} must be an object")
-                inventory["npm"].update(str(name).lower() for name in dependencies)
-        pubspec_path = root / "pubspec.yaml"
+                dependencies = _mapping(
+                    package.get(field, {}), f"{package_path}: {field}"
+                )
+                names.update(name.lower() for name in dependencies)
+        pubspec_path = project / "pubspec.yaml"
         if pubspec_path.is_symlink():
-            raise ValueError(f"pubspec.yaml symlink forbidden: {pubspec_path}")
+            raise ValueError(f"dependency manifest symlink forbidden: {pubspec_path}")
         if pubspec_path.is_file():
-            try:
-                pubspec = yaml.safe_load(pubspec_path.read_text(encoding="utf-8"))
-            except yaml.YAMLError as error:
-                raise ValueError(f"invalid pubspec.yaml: {pubspec_path}") from error
-            if not isinstance(pubspec, dict):
-                raise ValueError(f"pubspec.yaml must contain an object: {pubspec_path}")
+            pubspec = _mapping(
+                yaml.safe_load(pubspec_path.read_text(encoding="utf-8")),
+                str(pubspec_path),
+            )
             for field in ("dependencies", "dev_dependencies"):
-                dependencies = pubspec.get(field, {})
-                if not isinstance(dependencies, dict):
-                    raise TypeError(f"pubspec.yaml {field} must be an object")
+                dependencies = _mapping(
+                    pubspec.get(field, {}), f"{pubspec_path}: {field}"
+                )
+                names.update(name.lower() for name in dependencies)
                 if any(
                     isinstance(requirement, dict)
                     and requirement.get("sdk") == "flutter"
                     for requirement in dependencies.values()
                 ):
-                    inventory["dart"].add("sdk:flutter")
-        return inventory
+                    names.add("sdk:flutter")
+        return names
 
-    @staticmethod
-    def _profile_strings(
-        profile: dict[str, Any], key: str, capability: str
-    ) -> tuple[str, ...]:
-        values = profile.get(key, [])
-        if not isinstance(values, list) or not all(
-            isinstance(value, str) for value in values
-        ):
-            raise TypeError(f"invalid {key} for project capability {capability}")
-        return tuple(values)
+    def _managed_prefixes(self) -> tuple[PurePosixPath, ...]:
+        return tuple(
+            sorted(
+                {
+                    PurePosixPath(cast(str, cell.path))
+                    for cell in self.config.cells.values()
+                    if cell.context is ProjectionContext.PROJECT
+                    and cell.status is ProjectionStatus.SUPPORTED
+                },
+                key=str,
+            )
+        )
 
-    def detected_project_capabilities(self, root: Path) -> tuple[str, ...]:
-        """Return tag-derived conditional capabilities proved by project evidence."""
+    def _is_managed_evidence(self, project: Path, path: Path) -> bool:
+        relative = PurePosixPath(path.relative_to(project).as_posix())
+        return any(
+            relative == prefix or prefix in relative.parents
+            for prefix in self._managed_prefixes()
+        )
 
-        detected: list[str] = []
-        dependency_inventory = self._dependency_inventory(root)
-        for capability, profile in self.catalog.conditional_project_profiles().items():
-            if not isinstance(profile, dict):
-                raise TypeError(f"invalid project capability profile: {capability}")
-            markers = self._profile_strings(profile, "markers", capability)
-            marker_match = False
-            for marker in markers:
-                marker_path = Path(marker)
-                if (
-                    marker_path == Path(".")
-                    or marker_path.is_absolute()
-                    or ".." in marker_path.parts
-                ):
-                    raise ValueError(
-                        f"project capability marker escapes repository: {capability}"
-                    )
-                candidate = root / marker_path
-                symlink = self._path_symlink(candidate)
+    def _detector_matches(
+        self, project: Path, detector: str, dependencies: set[str]
+    ) -> bool:
+        parts = detector.split(":", 2)
+        if len(parts) != 3:
+            raise ValueError(f"invalid project detector: {detector}")
+        kind, value = parts[1], parts[2]
+        if kind == "marker":
+            candidate = _confined(project, value)
+            return candidate.exists()
+        if kind == "dependency":
+            dependency_parts = value.split(":", 1)
+            dependency = dependency_parts[-1].lower().replace("_", "-")
+            return dependency in dependencies or value.lower() in dependencies
+        if kind in {"owned-extension", "extension"}:
+            suffix = value if value.startswith(".") else f".{value}"
+            for candidate in sorted(project.rglob(f"*{suffix}")):
+                if self._is_managed_evidence(project, candidate):
+                    continue
+                symlink = _symlink_component(candidate)
                 if symlink is not None:
                     raise ValueError(
-                        f"project capability marker symlink forbidden: {symlink}"
+                        f"project detector evidence symlink forbidden: {symlink}"
                     )
-                marker_match = marker_match or candidate.exists()
-            dependencies = profile.get("dependencies", {})
-            if not isinstance(dependencies, dict):
-                raise TypeError(
-                    f"invalid dependencies for project capability {capability}"
-                )
-            dependency_match = False
-            for ecosystem, expected_dependencies in dependencies.items():
-                if ecosystem not in dependency_inventory:
+                if candidate.is_file():
+                    return True
+            return False
+        if kind == "owned-glob":
+            for candidate in sorted(project.glob(value)):
+                if self._is_managed_evidence(project, candidate):
+                    continue
+                symlink = _symlink_component(candidate)
+                if symlink is not None:
                     raise ValueError(
-                        "unknown dependency ecosystem for project capability "
-                        f"{capability}: {ecosystem}"
+                        f"project detector evidence symlink forbidden: {symlink}"
                     )
-                if not isinstance(expected_dependencies, list) or not all(
-                    isinstance(item, str) for item in expected_dependencies
-                ):
-                    raise TypeError(
-                        f"invalid dependencies for project capability {capability}"
-                    )
-                normalized = {
-                    item.lower().replace("_", "-") for item in expected_dependencies
-                }
-                dependency_match = dependency_match or bool(
-                    normalized & dependency_inventory[ecosystem]
+                if candidate.exists():
+                    return True
+            return False
+        if kind in {"opt-in", "selected-tag"}:
+            return False
+        raise ValueError(f"unsupported project detector: {detector}")
+
+    def _activated_skills(
+        self,
+        project: Path,
+        selection: ProjectionSelection,
+        dependencies: set[str],
+    ) -> dict[str, tuple[str, ...]]:
+        records = tuple(
+            record
+            for record in self.catalog.records()
+            if record.category.conditional and record.route == "project"
+        )
+        known_opt_ins = {
+            detector.split(":", 2)[2]
+            for record in records
+            for detector in record.detectors
+            if detector.startswith("detect:opt-in:")
+        }
+        known_tags = {
+            detector.split(":", 2)[2]
+            for record in records
+            for detector in record.detectors
+            if detector.startswith("detect:selected-tag:")
+        }
+        unknown_opt_ins = set(selection.opt_ins) - known_opt_ins
+        if unknown_opt_ins:
+            raise ValueError(f"unknown project opt-in: {min(unknown_opt_ins)}")
+        unknown_tags = set(selection.selected_tags) - known_tags
+        if unknown_tags:
+            raise ValueError(f"unknown selected tag: {min(unknown_tags)}")
+        activated: dict[str, tuple[str, ...]] = {}
+        for record in records:
+            evidence: set[str] = set()
+            for detector in record.detectors:
+                kind, value = detector.split(":", 2)[1:]
+                if kind == "opt-in":
+                    matched = value in selection.opt_ins
+                elif kind == "selected-tag":
+                    matched = value in selection.selected_tags
+                else:
+                    matched = self._detector_matches(project, detector, dependencies)
+                if matched:
+                    evidence.add(detector.removeprefix("detect:"))
+            if evidence:
+                activated[record.name] = tuple(sorted(evidence))
+        return activated
+
+    def _skill_sources(
+        self, selected: dict[str, tuple[str, ...]]
+    ) -> tuple[ProjectionSource, ...]:
+        activated: dict[str, set[str]] = {
+            name: {"project-generic"}
+            for name in self.catalog.names_for("project-generic")
+        }
+        for name, evidence in selected.items():
+            activated[name] = set(evidence)
+        sources: list[ProjectionSource] = []
+        for name in sorted(activated):
+            record = self.catalog.record(name)
+            _validate_source_portability(record.directory)
+            sources.append(
+                ProjectionSource(
+                    name,
+                    record.directory,
+                    "agents:skills",
+                    self.catalog.digest_tree(record.directory),
+                    self.catalog.physical_tree_contract(record.directory),
+                    "skill",
+                    name,
+                    tuple(sorted(activated[name])),
                 )
+            )
+        return tuple(sources)
 
-            extension_match = False
-            for extension in self._profile_strings(
-                profile, "owned_extensions", capability
-            ):
-                for candidate in root.rglob("*"):
-                    relative = candidate.relative_to(root)
-                    if not candidate.name.endswith(extension) or relative.parts[0] in {
-                        ".agents",
-                        ".git",
-                    }:
-                        continue
-                    symlink = self._path_symlink(candidate)
-                    if symlink is not None:
-                        raise ValueError(
-                            f"project capability evidence symlink forbidden: {symlink}"
-                        )
-                    if candidate.is_file():
-                        extension_match = True
-                        break
-                if extension_match:
-                    break
-
-            glob_match = False
-            for pattern in self._profile_strings(profile, "owned_globs", capability):
-                pattern_path = Path(pattern)
-                if (
-                    pattern_path == Path(".")
-                    or pattern_path.is_absolute()
-                    or ".." in pattern_path.parts
-                ):
-                    raise ValueError(
-                        f"project capability glob escapes repository: {capability}"
-                    )
-                for candidate in root.glob(pattern):
-                    relative = candidate.relative_to(root)
-                    if not relative.parts or relative.parts[0] in {".agents", ".git"}:
-                        continue
-                    symlink = self._path_symlink(candidate)
-                    if symlink is not None:
-                        raise ValueError(
-                            f"project capability evidence symlink forbidden: {symlink}"
-                        )
-                    if candidate.exists():
-                        glob_match = True
-                        break
-                if glob_match:
-                    break
-
-            self._profile_strings(profile, "opt_ins", capability)
-            self._profile_strings(profile, "selected_tags", capability)
-            if marker_match or dependency_match or extension_match or glob_match:
-                detected.append(capability)
-        return tuple(sorted(detected))
-
-    def _confined_project_path(self, root: Path, configured: object) -> Path:
-        if not isinstance(configured, str):
-            raise TypeError("project projection path must be a string")
-        relative = Path(configured)
-        if relative.is_absolute() or ".." in relative.parts:
-            raise ValueError("project projection path escapes repository")
-        destination = self._absolute(root / relative)
-        try:
-            destination.relative_to(root)
-        except ValueError as error:
-            raise ValueError("project projection path escapes repository") from error
-        return destination
-
-    def project_sources(self, root: Path) -> tuple[SourceSkill, ...]:
-        selected = list(self._catalog_sources("project-generic"))
-        for capability in self.detected_project_capabilities(root):
-            selected.extend(self._catalog_sources(f"project-capability:{capability}"))
-        by_name: dict[str, SourceSkill] = {}
-        for source in selected:
-            previous = by_name.get(source.name)
-            if previous is not None:
-                if (
-                    previous.digest != source.digest
-                    or previous.physical_digest != source.physical_digest
-                ):
-                    raise RuntimeError(f"conflicting sources for skill {source.name}")
+    def _selected_agents(
+        self,
+        project: Path,
+        selection: ProjectionSelection,
+        dependencies: set[str],
+        profiles: tuple[AgentProfile, ...],
+    ) -> dict[str, tuple[str, ...]]:
+        project_profiles = {
+            profile.name: profile
+            for profile in profiles
+            if profile.distribution == "project-wide"
+        }
+        selectable = {
+            profile.name
+            for profile in project_profiles.values()
+            if profile.activation == "opt-in"
+        }
+        unknown = set(selection.agents) - selectable
+        if unknown:
+            raise ValueError(f"unknown project agent opt-in: {min(unknown)}")
+        selected: dict[str, tuple[str, ...]] = {
+            name: (f"opt-in:{name}",) for name in selection.agents
+        }
+        for profile in project_profiles.values():
+            if profile.activation != "detected":
                 continue
-            by_name[source.name] = source
-        return tuple(by_name[name] for name in sorted(by_name))
+            evidence = tuple(
+                sorted(
+                    detector.removeprefix("detect:")
+                    for detector in profile.detectors
+                    if self._detector_matches(project, detector, dependencies)
+                )
+            )
+            if evidence:
+                selected[profile.name] = evidence
+        return selected
 
-    def _source_findings(
-        self, label: str, source: SourceSkill
-    ) -> list[ProjectionFinding]:
-        findings: list[ProjectionFinding] = []
-        if source.problem is not None:
-            message = (
-                "source symlink forbidden"
-                if source.problem == "symlink"
-                else f"invalid source: {source.problem}"
+    @staticmethod
+    def _native_name(cell: ProjectionCell, destination: PurePosixPath) -> str:
+        assert cell.path is not None
+        configured = PurePosixPath(cell.path)
+        if destination.parent not in {PurePosixPath("."), configured}:
+            raise ValueError(
+                "adapter destination differs from projection matrix: "
+                f"{cell.provider.value}/{cell.surface.value}/{destination}"
             )
-            return [ProjectionFinding(label, str(source.directory), message)]
-        if source.rendered_content is not None:
-            if source.portable and NON_PORTABLE_PROJECT_REFERENCE.search(
-                source.rendered_content
-            ):
-                findings.append(
-                    ProjectionFinding(
-                        label,
-                        source.name,
-                        "cross-repository local path",
-                    )
-                )
-            return findings
-        paths = (
-            (source.directory,)
-            if source.directory.is_file()
-            else source.directory.rglob("*")
+        return destination.name
+
+    def _plans(self, project: Path) -> tuple[ProjectionPlan, ...]:
+        selection = self._selection(project)
+        dependencies = self._dependencies(project)
+        selected_skills = self._activated_skills(project, selection, dependencies)
+        supported_cells = tuple(
+            cell
+            for cell in self.config.cells.values()
+            if cell.context is ProjectionContext.PROJECT
+            and cell.status is ProjectionStatus.SUPPORTED
         )
-        for path in paths:
-            relative = (
-                path.name
-                if source.directory.is_file()
-                else path.relative_to(source.directory).as_posix()
+        supported_surfaces = {cell.surface for cell in supported_cells}
+        skills = (
+            self._skill_sources(selected_skills)
+            if ProjectionSurface.SKILLS in supported_surfaces
+            else ()
+        )
+        commands = (
+            self.commands if ProjectionSurface.COMMANDS in supported_surfaces else ()
+        )
+        agents = self.agents if ProjectionSurface.AGENTS in supported_surfaces else ()
+        selected_agents = (
+            self._selected_agents(project, selection, dependencies, agents)
+            if agents
+            else {}
+        )
+        rules = self.rules if ProjectionSurface.RULES in supported_surfaces else ()
+        prompt_defense = (
+            (self.catalog.root / "rules" / "security" / "prompt-defense.md").read_text(
+                encoding="utf-8"
             )
-            if path.is_symlink():
-                findings.append(
-                    ProjectionFinding(
-                        label, f"{source.name}/{relative}", "source symlink forbidden"
+            if agents
+            else ""
+        )
+        token_counter = waza_bpe_counter(self.catalog.root) if commands else None
+        grouped: dict[Path, dict[str, object]] = {}
+        for provider in AgentProvider:
+            for surface in ProjectionSurface:
+                cell = self.config.cell(provider, ProjectionContext.PROJECT, surface)
+                if cell.status is ProjectionStatus.UNSUPPORTED:
+                    continue
+                assert cell.path is not None
+                root = _confined(project, cell.path)
+                if root not in grouped:
+                    grouped[root] = {
+                        "providers": set(),
+                        "sources": {},
+                        "surface": surface,
+                    }
+                bucket = grouped[root]
+                if bucket["surface"] is not surface:
+                    raise ValueError(
+                        f"projection surfaces share one destination: {root}"
                     )
-                )
-            elif path.is_file():
-                text = path.read_text(encoding="utf-8", errors="replace")
-                if source.portable and NON_PORTABLE_PROJECT_REFERENCE.search(text):
-                    findings.append(
-                        ProjectionFinding(
-                            label,
-                            f"{source.name}/{relative}",
-                            "cross-repository local path",
+                cast(set[str], bucket["providers"]).add(provider.value)
+                rendered: list[ProjectionSource] = []
+                if surface is ProjectionSurface.SKILLS:
+                    rendered.extend(skills)
+                elif surface is ProjectionSurface.COMMANDS:
+                    if token_counter is None:
+                        raise RuntimeError("supported command surface has no inventory")
+                    budget = CommandTokenBudget(cell.max_tokens, token_counter)
+                    for command_spec in commands:
+                        if command_spec.route is not CommandRoute.PROJECT:
+                            continue
+                        command_artifact = render_command(
+                            command_spec,
+                            CommandProvider(provider.value),
+                            token_budget=budget,
                         )
+                        rendered.append(
+                            _rendered_source(
+                                name=self._native_name(
+                                    cell, command_artifact.destination
+                                ),
+                                source=command_spec.path,
+                                origin=f"agents:commands:{provider.value}",
+                                source_type="command",
+                                slug=command_spec.name,
+                                activation=("route:project",),
+                                content=command_artifact.content,
+                            )
+                        )
+                elif surface is ProjectionSurface.AGENTS:
+                    for agent_profile in agents:
+                        if agent_profile.name not in selected_agents:
+                            continue
+                        agent_artifact = render_agent(
+                            agent_profile,
+                            provider,
+                            AgentContext.PROJECT,
+                            prompt_defense=prompt_defense,
+                        )
+                        rendered.append(
+                            _rendered_source(
+                                name=self._native_name(
+                                    cell, agent_artifact.destination
+                                ),
+                                source=agent_profile.path,
+                                origin=f"agents:agents:{provider.value}",
+                                source_type="agent",
+                                slug=agent_profile.name,
+                                activation=selected_agents[agent_profile.name],
+                                content=agent_artifact.content,
+                            )
+                        )
+                else:
+                    for rule_spec in rules:
+                        if rule_spec.distribution not in {
+                            RuleDistribution.BOTH,
+                            RuleDistribution.PROJECT,
+                        }:
+                            continue
+                        rule_artifact = render_rule(
+                            rule_spec,
+                            RuleProvider(provider.value),
+                            RuleContext.PROJECT,
+                        )
+                        rendered.append(
+                            _rendered_source(
+                                name=self._native_name(cell, rule_artifact.destination),
+                                source=rule_spec.path,
+                                origin=f"agents:rules:{provider.value}",
+                                source_type="rule",
+                                slug=rule_spec.identity,
+                                activation=(f"route:{rule_spec.distribution.value}",),
+                                content=rule_artifact.content,
+                            )
+                        )
+                by_name = cast(dict[str, ProjectionSource], bucket["sources"])
+                for source in rendered:
+                    previous = by_name.get(source.name)
+                    if previous is not None and previous != source:
+                        raise ValueError(
+                            f"conflicting projection source: {root / source.name}"
+                        )
+                    by_name[source.name] = source
+        plans = tuple(
+            ProjectionPlan(
+                project,
+                root,
+                tuple(sorted(cast(set[str], bucket["providers"]))),
+                cast(ProjectionSurface, bucket["surface"]),
+                selection,
+                tuple(
+                    source
+                    for _, source in sorted(
+                        cast(dict[str, ProjectionSource], bucket["sources"]).items()
                     )
-                if path.suffix.lower() in {".md", ".mdx"}:
-                    for target in self._MARKDOWN_LINK.findall(text):
-                        if target.startswith(("http://", "https://", "#", "mailto:")):
-                            continue
-                        clean = target.split("#", 1)[0]
-                        if not clean:
-                            continue
-                        if source.directory.is_file():
-                            findings.append(
-                                ProjectionFinding(
-                                    label,
-                                    f"{source.name}/{relative}",
-                                    "cross-repository relative reference",
-                                )
-                            )
-                            continue
-                        candidate = self._absolute(path.parent / clean)
-                        try:
-                            candidate.relative_to(source.directory)
-                        except ValueError:
-                            findings.append(
-                                ProjectionFinding(
-                                    label,
-                                    f"{source.name}/{relative}",
-                                    "cross-repository relative reference",
-                                )
-                            )
-        return findings
-
-    def _preflight(self, plan: ProjectionPlan) -> list[ProjectionFinding]:
-        label = plan.label
-        root = plan.root
-        sources = plan.sources
-        findings: list[ProjectionFinding] = []
-        if self._path_symlink(root) is not None:
-            return [
-                ProjectionFinding(label, str(root), "projection path symlink forbidden")
-            ]
-        if root.exists() and not root.is_dir():
-            return [
-                ProjectionFinding(
-                    label, str(root), "projection root is not a directory"
-                )
-            ]
-        if (root / self.MANIFEST).is_symlink():
-            return [
-                ProjectionFinding(
-                    label,
-                    str(root / self.MANIFEST),
-                    "destination symlink forbidden",
-                )
-            ]
-        try:
-            previous_payload = self._manifest(root)
-        except (OSError, TypeError, ValueError) as error:
-            return [
-                ProjectionFinding(
-                    label, str(root / self.MANIFEST), f"invalid manifest: {error}"
-                )
-            ]
-        previous = cast(
-            dict[str, dict[str, object]], previous_payload.get("managed", {})
+                ),
+            )
+            for root, bucket in sorted(grouped.items(), key=lambda item: str(item[0]))
         )
-        expected_payload = self._manifest_payload(plan)
-        if previous_payload and any(
-            previous_payload.get(field) != expected_payload[field]
+        for index, plan in enumerate(plans):
+            for other in plans[index + 1 :]:
+                if plan.root in other.root.parents or other.root in plan.root.parents:
+                    raise ValueError(
+                        f"projection destinations overlap: {plan.root}, {other.root}"
+                    )
+            local_names = {source.name for source in plan.sources}
+            for source in plan.sources:
+                if source.content is None:
+                    continue
+                for match in _MARKDOWN_LINK.finditer(source.content):
+                    target = _local_link(match.group(1))
+                    if (
+                        target is not None
+                        and PurePosixPath(target).name not in local_names
+                    ):
+                        raise ValueError(
+                            f"rendered relative link leaves projection surface: {source.source}"
+                        )
+        return plans
+
+    @staticmethod
+    def _manifest_payload(plan: ProjectionPlan) -> dict[str, object]:
+        return {
+            "version": 4,
+            "owner": "agents-governance",
+            "providers": list(plan.providers),
+            "context": "project",
+            "surface": plan.surface.value,
+            "destination": plan.root.relative_to(plan.project).as_posix(),
+            "project": ".",
+            "selection": plan.selection.payload(),
+            "managed": {source.name: source.metadata() for source in plan.sources},
+        }
+
+    @staticmethod
+    def _manifest(root: Path) -> dict[str, object] | None:
+        path = root / Projector.MANIFEST
+        if not path.exists() and not path.is_symlink():
+            return None
+        if path.is_symlink() or not path.is_file():
+            raise ValueError(f"projection manifest must be a physical file: {path}")
+        payload = _mapping(json.loads(path.read_text(encoding="utf-8")), str(path))
+        _exact(payload, _MANIFEST_FIELDS, str(path))
+        if payload["version"] != 4 or payload["owner"] != "agents-governance":
+            raise ValueError(f"projection manifest owner/version is invalid: {path}")
+        if payload["context"] != "project":
+            raise ValueError(f"projection manifest context is invalid: {path}")
+        _strings(payload["providers"], f"{path}: providers")
+        if payload["surface"] not in {surface.value for surface in ProjectionSurface}:
+            raise ValueError(f"projection manifest surface is invalid: {path}")
+        if payload["project"] != ".":
+            raise ValueError(f"projection manifest project must equal '.': {path}")
+        destination = payload["destination"]
+        if not isinstance(destination, str):
+            raise TypeError(f"projection manifest destination must be a string: {path}")
+        relative = PurePosixPath(destination)
+        if (
+            relative.is_absolute()
+            or relative == PurePosixPath(".")
+            or ".." in relative.parts
+        ):
+            raise ValueError(
+                f"projection manifest destination must be project-relative: {path}"
+            )
+        selection = _mapping(payload["selection"], f"{path}: selection")
+        _exact(
+            selection,
+            frozenset({"agents", "opt_ins", "selected_tags"}),
+            f"{path}: selection",
+        )
+        for field in ("agents", "opt_ins", "selected_tags"):
+            _strings(selection[field], f"{path}: selection.{field}")
+        managed = _mapping(payload["managed"], f"{path}: managed")
+        for name, raw in managed.items():
+            if Path(name).name != name or not name:
+                raise ValueError(
+                    f"projection manifest managed name is invalid: {name!r}"
+                )
+            entry = _mapping(raw, f"{path}: managed.{name}")
+            _exact(entry, _ENTRY_FIELDS, f"{path}: managed.{name}")
+            if entry["adapter_version"] != 1 or entry["destination"] != name:
+                raise ValueError(
+                    f"projection manifest entry identity is invalid: {name}"
+                )
+            if entry["source_type"] not in {"agent", "command", "rule", "skill"}:
+                raise ValueError(f"projection manifest entry type is invalid: {name}")
+            for field in ("origin", "slug"):
+                if not isinstance(entry[field], str) or not entry[field]:
+                    raise ValueError(
+                        f"projection manifest entry {field} is invalid: {name}"
+                    )
+            for field in ("physical_digest", "source_digest"):
+                digest = entry[field]
+                if not isinstance(digest, str) or _DIGEST.fullmatch(digest) is None:
+                    raise ValueError(
+                        f"projection manifest entry {field} is invalid: {name}"
+                    )
+            activation = _strings(
+                entry["activation"], f"{path}: managed.{name}.activation"
+            )
+            if not activation:
+                raise ValueError(
+                    f"projection manifest entry activation is empty: {name}"
+                )
+        return payload
+
+    def _state(self, plan: ProjectionPlan) -> _TargetState:
+        root = plan.root
+        if _symlink_component(root) is not None:
+            raise ValueError(f"projection path symlink forbidden: {root}")
+        if not root.exists():
+            return _TargetState(plan, {}, None, True)
+        if not root.is_dir():
+            raise ValueError(f"projection destination is not a directory: {root}")
+        validate_physical(root)
+        snapshot = self.catalog.physical_tree_contract(root)
+        payload = self._manifest(root)
+        desired = self._manifest_payload(plan)
+        previous: dict[str, dict[str, object]] = {}
+        drift = payload is None
+        if payload is not None:
             for field in (
                 "context",
                 "destination",
                 "owner",
-                "providers",
+                "project",
                 "surface",
                 "version",
-            )
-        ):
-            findings.append(
-                ProjectionFinding(
-                    label, str(root / self.MANIFEST), "managed manifest update"
-                )
-            )
-        expected = {source.name for source in sources}
-        for source in sources:
-            findings.extend(self._source_findings(label, source))
-            destination = root / source.name
-            if not destination.exists() and not destination.is_symlink():
-                findings.append(ProjectionFinding(label, str(destination), "missing"))
-                continue
-            if destination.is_symlink():
-                findings.append(
-                    ProjectionFinding(
-                        label, str(destination), "destination symlink forbidden"
+            ):
+                if payload[field] != desired[field]:
+                    raise ValueError(
+                        f"projection manifest authority differs at {root}: {field}"
                     )
-                )
+            previous = cast(dict[str, dict[str, object]], payload["managed"])
+            drift = payload != desired or (root / self.MANIFEST).read_text(
+                encoding="utf-8"
+            ) != self._render_manifest(desired)
+        expected = {source.name: source for source in plan.sources}
+        for name, source in expected.items():
+            destination = root / name
+            metadata = previous.get(name)
+            if not destination.exists():
+                drift = True
                 continue
-            current, current_physical, problem = self._safe_contract(destination)
-            if problem == "symlink":
-                findings.append(
-                    ProjectionFinding(
-                        label, str(destination), "destination symlink forbidden"
-                    )
-                )
+            if metadata is None:
+                raise ValueError(f"foreign projection collision: {destination}")
+            logical = self.catalog.digest_tree(destination)
+            physical = self.catalog.physical_tree_contract(destination)
+            if (
+                logical != metadata["source_digest"]
+                or physical != metadata["physical_digest"]
+            ):
+                raise ValueError(f"managed projection was modified: {destination}")
+            if source.metadata() != metadata:
+                drift = True
+        for name, metadata in previous.items():
+            if name in expected:
                 continue
-            if problem is not None:
-                findings.append(
-                    ProjectionFinding(
-                        label, str(destination), f"invalid destination: {problem}"
-                    )
-                )
-                continue
-            if current == source.digest:
-                if current_physical != source.physical_digest:
-                    findings.append(
-                        ProjectionFinding(
-                            label,
-                            str(destination),
-                            "managed physical update",
-                        )
-                    )
-                expected_metadata = {
-                    "adapter_version": source.adapter_version,
-                    "destination": source.name,
-                    "origin": source.origin,
-                    "physical_digest": source.physical_digest,
-                    "slug": source.slug or source.name,
-                    "source_digest": source.digest,
-                    "source_type": source.source_type,
-                }
-                if previous.get(source.name) != expected_metadata:
-                    findings.append(
-                        ProjectionFinding(
-                            label,
-                            str(destination),
-                            "managed metadata update",
-                        )
-                    )
-                continue
-            if previous.get(source.name, {}).get("source_digest") == current:
-                findings.append(
-                    ProjectionFinding(label, str(destination), "managed update")
-                )
-            else:
-                findings.append(
-                    ProjectionFinding(label, str(destination), "foreign collision")
-                )
-        for stale, metadata in sorted(previous.items()):
-            if stale in expected:
-                continue
-            destination = root / stale
-            if destination.is_symlink() or self._tree_symlink(destination) is not None:
-                findings.append(
-                    ProjectionFinding(
-                        label, str(destination), "destination symlink forbidden"
-                    )
-                )
-                continue
-            current, _current_physical, problem = self._safe_contract(destination)
-            if problem not in {None, "missing"}:
-                findings.append(
-                    ProjectionFinding(
-                        label, str(destination), f"invalid destination: {problem}"
-                    )
-                )
-            elif current is not None and current != metadata.get("source_digest"):
-                findings.append(
-                    ProjectionFinding(
-                        label, str(destination), "modified stale managed entry"
-                    )
-                )
-            else:
-                findings.append(
-                    ProjectionFinding(label, str(destination), "stale managed entry")
-                )
-        if not (root / self.MANIFEST).is_file():
-            findings.append(
-                ProjectionFinding(label, str(root / self.MANIFEST), "missing manifest")
-            )
-        return findings
-
-    @staticmethod
-    def _remove_managed_tree(path: Path) -> None:
-        """Remove a proven managed tree without following nested symlinks."""
-
-        if path.is_symlink():
-            raise RuntimeError(f"refusing recursive removal of symlink: {path}")
-        for child in path.iterdir():
-            if child.is_symlink():
-                raise RuntimeError(f"refusing recursive removal of symlink: {child}")
-            if child.is_dir():
-                Projector._remove_managed_tree(child)
-            else:
-                child.unlink()
-        path.rmdir()
-
-    @classmethod
-    def _remove_managed_path(cls, path: Path) -> None:
-        """Remove one owned path without following symlinks."""
-
-        if path.is_symlink():
-            raise RuntimeError(f"refusing removal of symlink: {path}")
-        if path.is_dir():
-            cls._remove_managed_tree(path)
-        elif path.exists():
-            path.unlink()
-
-    @staticmethod
-    def _blocking(findings: list[ProjectionFinding]) -> list[ProjectionFinding]:
-        reconcilable = {
-            "missing",
-            "missing manifest",
-            "managed update",
-            "managed metadata update",
-            "managed manifest update",
-            "managed physical update",
-            "stale managed entry",
-        }
-        return [finding for finding in findings if finding.message not in reconcilable]
-
-    def _apply_target(self, plan: ProjectionPlan) -> None:
-        root = plan.root
-        sources = plan.sources
-        if self._path_symlink(root) is not None:
-            raise RuntimeError(f"projection path symlink forbidden: {root}")
-        root.mkdir(parents=True, exist_ok=True)
-        previous = cast(
-            dict[str, dict[str, object]], self._manifest(root).get("managed", {})
-        )
-        expected = {source.name for source in sources}
-        stale_entries: list[Path] = []
-        for stale, metadata in sorted(previous.items()):
-            if stale in expected:
-                continue
-            destination = root / stale
-            if destination.is_symlink():
-                raise RuntimeError(f"destination symlink forbidden: {destination}")
-            current, _current_physical, problem = self._safe_contract(destination)
-            if problem == "symlink":
-                raise RuntimeError(f"destination symlink forbidden: {destination}")
-            if current is not None and current == metadata.get("source_digest"):
-                stale_entries.append(destination)
-
-        updates: list[tuple[SourceSkill, Path]] = []
-        for source in sources:
-            destination = root / source.name
-            current, current_physical, problem = self._safe_contract(destination)
-            if problem == "symlink":
-                raise RuntimeError(f"destination symlink forbidden: {destination}")
-            if current == source.digest and current_physical == source.physical_digest:
-                continue
-            if destination.is_symlink():
-                raise RuntimeError(f"destination symlink forbidden: {destination}")
-            updates.append((source, destination))
-
-        payload = self._manifest_payload(plan)
-        staging = Path(tempfile.mkdtemp(prefix=".agents-stage.", dir=root))
-        candidates: list[tuple[Path, Path]] = []
-        moved_stale: list[tuple[Path, Path]] = []
-        installed: list[tuple[Path, Path | None]] = []
-        manifest_destination = root / self.MANIFEST
-        manifest_backup: Path | None = None
-        manifest_installed = False
-        preserve_staging = False
-        try:
-            for index, (source, destination) in enumerate(updates):
-                candidate = staging / f"new-{index}"
-                if source.rendered_content is None:
-                    self._copy_tree(source.directory, candidate)
-                else:
-                    candidate.write_text(source.rendered_content, encoding="utf-8")
-                    candidate.chmod(0o644)
+            destination = root / name
+            if destination.exists():
+                logical = self.catalog.digest_tree(destination)
+                physical = self.catalog.physical_tree_contract(destination)
                 if (
-                    self.catalog.physical_tree_contract(candidate)
+                    logical != metadata["source_digest"]
+                    or physical != metadata["physical_digest"]
+                ):
+                    raise ValueError(
+                        f"stale managed projection was modified: {destination}"
+                    )
+            drift = True
+        return _TargetState(plan, previous, snapshot, drift)
+
+    @staticmethod
+    def _render_manifest(payload: dict[str, object]) -> str:
+        return json.dumps(payload, indent=2, sort_keys=True) + "\n"
+
+    def _stage(self, state: _TargetState) -> _StagedTarget:
+        plan = state.plan
+        parent = plan.root.parent
+        while not parent.exists():
+            parent = parent.parent
+        parent.relative_to(plan.project)
+        if _symlink_component(parent) is not None or not parent.is_dir():
+            raise ValueError(f"projection staging parent must be physical: {parent}")
+        stage = Path(tempfile.mkdtemp(prefix=".agents-stage.", dir=parent))
+        candidate = stage / "candidate"
+        backup = stage / "previous"
+
+        def build() -> _StagedTarget:
+            if plan.root.exists():
+                shutil.copytree(plan.root, candidate, symlinks=False)
+                if self.catalog.physical_tree_contract(candidate) != state.snapshot:
+                    raise RuntimeError(f"projection staging copy differs: {plan.root}")
+            else:
+                candidate.mkdir()
+            expected = {source.name: source for source in plan.sources}
+            for stale in set(state.previous) - set(expected):
+                destination = candidate / stale
+                if destination.exists():
+                    remove_physical(destination)
+            for source in plan.sources:
+                destination = candidate / source.name
+                if destination.exists():
+                    remove_physical(destination)
+                if source.content is None:
+                    if source.source.is_file():
+                        shutil.copy2(source.source, destination)
+                    else:
+                        shutil.copytree(source.source, destination, symlinks=False)
+                else:
+                    destination.write_text(source.content, encoding="utf-8")
+                    destination.chmod(0o644)
+                if self.catalog.digest_tree(destination) != source.source_digest:
+                    raise RuntimeError(
+                        f"staged projection digest differs: {destination}"
+                    )
+                if (
+                    self.catalog.physical_tree_contract(destination)
                     != source.physical_digest
                 ):
                     raise RuntimeError(
-                        f"physical copy contract mismatch for {source.directory}"
+                        f"staged physical contract differs: {destination}"
                     )
-                candidates.append((candidate, destination))
-
-            manifest_candidate = staging / "manifest-new"
-            manifest_candidate.write_text(
-                json.dumps(payload, indent=2, sort_keys=True) + "\n",
-                encoding="utf-8",
+            manifest = candidate / self.MANIFEST
+            if manifest.exists():
+                remove_physical(manifest)
+            manifest.write_text(
+                self._render_manifest(self._manifest_payload(plan)), encoding="utf-8"
             )
+            manifest.chmod(0o644)
+            validate_physical(candidate)
+            return _StagedTarget(state, stage, candidate, backup)
 
-            try:
-                for index, destination in enumerate(stale_entries):
-                    stale_backup = staging / f"stale-{index}"
-                    destination.replace(stale_backup)
-                    moved_stale.append((destination, stale_backup))
+        return run_with_cleanup(build, lambda: remove_physical(stage))
 
-                for index, (candidate, destination) in enumerate(candidates):
-                    update_backup: Path | None = None
-                    if destination.exists():
-                        update_backup = staging / f"old-{index}"
-                        destination.replace(update_backup)
-                    try:
-                        candidate.replace(destination)
-                    except BaseException as failure:
-                        if update_backup is not None and update_backup.exists():
-                            try:
-                                update_backup.replace(destination)
-                            except OSError as rollback_error:
-                                preserve_staging = True
-                                failure.add_note(
-                                    f"projection rollback failed: {rollback_error}"
-                                )
-                        raise
-                    installed.append((destination, update_backup))
+    @staticmethod
+    def _create_parent(staged: _StagedTarget) -> None:
+        project = staged.state.plan.project
+        parent = staged.state.plan.root.parent
+        missing: list[Path] = []
+        cursor = parent
+        while cursor != project and not cursor.exists():
+            missing.append(cursor)
+            cursor = cursor.parent
+        if cursor != project and project not in cursor.parents:
+            raise ValueError(f"projection parent escapes project: {parent}")
+        symlink = _symlink_component(cursor)
+        if symlink is not None or not cursor.is_dir():
+            raise ValueError(f"projection parent is not physical: {cursor}")
+        for directory in reversed(missing):
+            directory.mkdir()
+            staged.created_parents = (*staged.created_parents, directory)
 
-                if manifest_destination.exists():
-                    manifest_backup = staging / "manifest-old"
-                    manifest_destination.replace(manifest_backup)
-                try:
-                    manifest_candidate.replace(manifest_destination)
-                    manifest_installed = True
-                except BaseException as failure:
-                    if manifest_backup is not None and manifest_backup.exists():
-                        try:
-                            manifest_backup.replace(manifest_destination)
-                        except OSError as rollback_error:
-                            preserve_staging = True
-                            failure.add_note(
-                                f"manifest rollback failed: {rollback_error}"
-                            )
-                    raise
-            except BaseException as failure:
-                if manifest_installed:
-                    try:
-                        self._remove_managed_path(manifest_destination)
-                        if manifest_backup is not None and manifest_backup.exists():
-                            manifest_backup.replace(manifest_destination)
-                    except (OSError, RuntimeError) as rollback_error:
-                        preserve_staging = True
-                        failure.add_note(f"manifest recovery failed: {rollback_error}")
-                for installed_destination, installed_backup in reversed(installed):
-                    try:
-                        self._remove_managed_path(installed_destination)
-                        if installed_backup is not None and installed_backup.exists():
-                            installed_backup.replace(installed_destination)
-                    except (OSError, RuntimeError) as rollback_error:
-                        preserve_staging = True
-                        failure.add_note(
-                            f"installed projection recovery failed: {rollback_error}"
-                        )
-                for stale_destination, stale_backup in reversed(moved_stale):
-                    if stale_backup.exists():
-                        try:
-                            stale_backup.replace(stale_destination)
-                        except OSError as rollback_error:
-                            preserve_staging = True
-                            failure.add_note(
-                                f"stale projection recovery failed: {rollback_error}"
-                            )
-                raise
-        finally:
-            if staging.exists() and not preserve_staging:
-                self._remove_managed_tree(staging)
+    def _publish(self, staged: _StagedTarget) -> None:
+        root = staged.state.plan.root
+        current = self.catalog.physical_tree_contract(root) if root.exists() else None
+        if current != staged.state.snapshot:
+            raise RuntimeError(f"projection changed after preflight: {root}")
+        self._create_parent(staged)
+        staged.had_root = root.exists()
+        if staged.had_root:
+            root.replace(staged.backup)
+        staged.candidate.replace(root)
+        staged.installed = True
 
-    def resolve_projects(
-        self, project_roots: tuple[Path, ...], selected: str | None = None
-    ) -> tuple[tuple[Path, ...], list[ProjectionFinding]]:
-        if not project_roots:
-            return (), [
-                ProjectionFinding(
-                    "projects", "--project-root", "no project roots supplied"
-                )
-            ]
-        projects: list[Path] = []
-        findings: list[ProjectionFinding] = []
-        seen: set[Path] = set()
-        for supplied in project_roots:
-            project = self._absolute(supplied)
-            if self._path_symlink(project) is not None:
-                findings.append(
-                    ProjectionFinding(
-                        str(supplied), str(project), "project root symlink forbidden"
-                    )
-                )
-                continue
-            if not project.is_dir():
-                findings.append(
-                    ProjectionFinding(
-                        str(supplied), str(project), "project root is not a directory"
-                    )
-                )
-                continue
-            if (project / ".git").is_symlink():
-                findings.append(
-                    ProjectionFinding(
-                        str(supplied),
-                        str(project / ".git"),
-                        "Git metadata symlink forbidden",
-                    )
-                )
-                continue
-            result = subprocess.run(
-                ["git", "-C", str(project), "rev-parse", "--show-toplevel"],
-                check=False,
-                capture_output=True,
-                text=True,
-            )
-            if result.returncode != 0:
-                findings.append(
-                    ProjectionFinding(
-                        str(supplied),
-                        str(project),
-                        "project root is not a Git repository",
-                    )
-                )
-                continue
-            top_level = self._absolute(Path(result.stdout.strip()))
-            if top_level != project:
-                findings.append(
-                    ProjectionFinding(
-                        str(supplied),
-                        str(project),
-                        "project root is not the exact Git top-level",
-                    )
-                )
-                continue
-            if project in seen:
-                findings.append(
-                    ProjectionFinding(
-                        str(supplied), str(project), "duplicate project root"
-                    )
-                )
-                continue
-            seen.add(project)
-            projects.append(project)
-        if findings:
-            return (), findings
-        if selected is None:
-            return tuple(projects), []
-        matches = [
-            project for project in projects if selected in {project.name, str(project)}
-        ]
-        if not matches:
-            return (), [
-                ProjectionFinding(selected, "", "unknown project projection target")
-            ]
-        if len(matches) != 1:
-            return (), [
-                ProjectionFinding(selected, "", "ambiguous project projection target")
-            ]
-        return (matches[0],), []
+    @staticmethod
+    def _remove_empty(paths: tuple[Path, ...]) -> None:
+        for path in reversed(paths):
+            path.rmdir()
 
-    def check(
-        self,
-        scope: str,
-        selected: str | None = None,
-        surface: str = "skills",
-        project_roots: tuple[Path, ...] = (),
-        *,
-        provider: str | None = None,
-    ) -> list[ProjectionFinding]:
-        if surface == "all":
-            return [
-                item
-                for name in ("skills", "commands", "agents", "rules")
-                for item in self.check(
-                    scope,
-                    selected,
-                    name,
-                    project_roots,
-                    provider=provider,
-                )
-            ]
-        try:
-            selected_surface = ProjectionSurface(surface)
-        except ValueError:
-            raise ValueError(f"unknown projection surface: {surface}")
-        findings: list[ProjectionFinding] = []
-        if scope == "personal":
-            if project_roots:
-                return [
-                    ProjectionFinding(
-                        "", "", "project roots are invalid for personal scope"
-                    )
-                ]
-            if selected is not None and provider is not None and selected != provider:
-                return [
-                    ProjectionFinding(
-                        selected,
-                        "",
-                        "personal --target and --provider must select the same provider",
-                    )
-                ]
-            selected_provider = provider or selected
-            try:
-                plans, plan_findings = self._plans_for_context(
-                    ProjectionContext.PERSONAL,
-                    selected_surface,
-                    (),
-                    selected_provider,
-                )
-            except ValueError as error:
-                return [
-                    ProjectionFinding(selected_provider or "personal", "", str(error))
-                ]
-            findings.extend(plan_findings)
-            for plan in plans:
-                findings.extend(self._preflight(plan))
-            return findings
-        if scope != "projects":
-            raise ValueError(f"unknown projection scope: {scope}")
-        projects, project_findings = self.resolve_projects(project_roots, selected)
-        if project_findings:
-            return project_findings
-        try:
-            plans, plan_findings = self._plans_for_context(
-                ProjectionContext.PROJECT,
-                selected_surface,
-                projects,
-                provider,
-            )
-        except ValueError as error:
-            return [ProjectionFinding(provider or "projects", "", str(error))]
-        findings.extend(plan_findings)
-        for plan in plans:
-            findings.extend(self._preflight(plan))
-        return findings
+    def _rollback(self, staged: _StagedTarget) -> None:
+        root = staged.state.plan.root
+        if staged.installed:
+            remove_physical(root)
+            staged.installed = False
+        if staged.backup.exists():
+            staged.backup.replace(root)
+        self._remove_empty(staged.created_parents)
 
-    def apply(
-        self,
-        scope: str,
-        selected: str | None = None,
-        surface: str = "skills",
-        project_roots: tuple[Path, ...] = (),
-        *,
-        provider: str | None = None,
-    ) -> list[ProjectionFinding]:
-        if surface == "all":
-            findings = self.check(
-                scope, selected, surface, project_roots, provider=provider
-            )
-            blocking = self._blocking(findings)
-            if blocking:
-                return blocking
-            for name in ("skills", "commands", "agents", "rules"):
-                child_findings = self.apply(
-                    scope,
-                    selected,
-                    name,
-                    project_roots,
-                    provider=provider,
-                )
-                if child_findings:
-                    return child_findings
-            return []
-        findings = self.check(
-            scope, selected, surface, project_roots, provider=provider
+    def check(self) -> None:
+        """Raise on the first project projection defect or drift."""
+
+        project = self.project_root()
+        for plan in self._plans(project):
+            state = self._state(plan)
+            if state.drift:
+                raise ProjectionDriftError(f"project projection differs: {plan.root}")
+
+    def apply(self) -> None:
+        """Atomically converge every supported surface for the current project."""
+
+        project = self.project_root()
+        states = tuple(self._state(plan) for plan in self._plans(project))
+        changed = tuple(state for state in states if state.drift)
+        if not changed:
+            return
+        run_atomic_sequence(
+            changed,
+            self._stage,
+            self._publish,
+            self._rollback,
+            lambda staged: remove_physical(staged.stage),
         )
-        blocking = self._blocking(findings)
-        if blocking:
-            return blocking
-        selected_surface = ProjectionSurface(surface)
-        if scope == "personal":
-            selected_provider = provider or selected
-            plans, plan_findings = self._plans_for_context(
-                ProjectionContext.PERSONAL,
-                selected_surface,
-                (),
-                selected_provider,
-            )
-        else:
-            projects, project_findings = self.resolve_projects(project_roots, selected)
-            if project_findings:
-                return project_findings
-            plans, plan_findings = self._plans_for_context(
-                ProjectionContext.PROJECT,
-                selected_surface,
-                projects,
-                provider,
-            )
-        if plan_findings:
-            return plan_findings
-        for plan in plans:
-            self._apply_target(plan)
-        return []
+
+
+__all__ = ("ProjectionDriftError", "Projector")

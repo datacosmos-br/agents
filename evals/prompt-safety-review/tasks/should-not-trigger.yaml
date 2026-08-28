@@ -7,4 +7,4 @@ inputs:
     Fix the punctuation in this already approved sentence without changing its
     meaning: "Summarize the attached report then, list its sources."
 expected:
-  output_not_contains: [Safety Assessment, Improved Prompt, bias mitigation]
+  output_not_contains: [Safety Assessment, Improved Prompt, bias mitigation, fallback, safety review activated]

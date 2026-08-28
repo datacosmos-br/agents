@@ -5,5 +5,5 @@ tags: [data, edge-case]
 inputs:
   prompt: Replace all mutable models with immutable models, but no schemas, language, serializers, consumers, or runtime evidence are supplied. State what must be inspected before recommending a change.
 expected:
-  output_contains: [serialization, consumers]
-  output_not_contains: [rewrite all models]
+  output_contains: [serialization, consumers, zero effects]
+  output_not_contains: [rewrite all models, replacement schema, model created]
