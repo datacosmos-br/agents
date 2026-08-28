@@ -13,7 +13,7 @@ verified on `dev`.
 - Branch: `feat/agents-skill-distribution`
 - Integration branch: `dev`
 - Tracker/orchestration runtime: suspended; do not invoke it
-- Current owner unit: complete projection schema v4, agent/rule composition, provider matrix, and ownership manifest
+- Current owner unit: runtime strict-extermination plan 2; the parallel skills plan is independently owned and outside this lane
 
 ## Operator corrections
 
@@ -41,6 +41,7 @@ verified on `dev`.
 | `d849c6f` | Connected `agentsctl audit` to the catalog-owned inventory lock check/write contract. |
 | `964b23e` | Replaced generic routers, removed the legacy lock, and regenerated the canonical inventory lock. |
 | `7663ce0` | Normalized all 62 agent profiles to semantic capabilities and added provider-specific adapters without capability fallbacks. |
+| `a4fc1fe` | Cut projection configuration and its active consumers over to the strict v4 contract. |
 
 ## Latest validation evidence
 
@@ -74,6 +75,7 @@ verified on `dev`.
 | Focused projection v4 tests | 0 | 73 passed across projection, CLI, and strict 56-cell configuration coverage. |
 | Projection v3 residue search | 0 | No v3 target keys, dual-read helpers, manifest-v2 wording, or Copilot-to-Claude adapter identity remain under `src`, `tests`, or `config`. |
 | `make static` after projection v4 consumer cutover | 0 | Ruff, format, Pyright, and Mypy passed with zero errors or warnings across 45 source files. |
+| Plan-first boundary inspection | 0 | Clean worktree at `a4fc1fe`; the first mutation created only the two standalone strict-execution plans. |
 
 ## Machine-local reconciliation
 
@@ -91,7 +93,7 @@ the repository-scoped temp audit now passes.
 
 ## Open boundary
 
-The increment remains open. Projection v4 activation semantics, agent/rule evals, offline/live Waza,
+The increment remains open. Documentation and central-policy authority, runtime strict extermination, projection v4 activation semantics, agent/rule evals, offline/live Waza,
 the complete native gate matrix, resolution of the global temp findings,
 integration merge, independent review, merge commit, post-merge validation, and
 tracker closure are not yet evidenced.
