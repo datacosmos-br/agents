@@ -20,7 +20,7 @@
     },
     "codex": {
       "personal": {
-        "skills": {"status": "SUPPORTED", "path": "${HOME}/.agents/skills"},
+        "skills": {"status": "SUPPORTED", "path": "${HOME}/.codex/skills"},
         "commands": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: Codex custom prompts are retired in favor of skills"},
         "agents": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: Codex custom-agent TOML has no capability allowlist"},
         "rules": {"status": "SUPPORTED", "path": "${HOME}/.codex/AGENTS.md", "layout": "document"},

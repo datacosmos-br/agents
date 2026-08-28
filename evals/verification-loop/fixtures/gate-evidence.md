@@ -8,6 +8,9 @@
 - Generated fixed point: `make audit`, exit 0, and its required second owner pass produced no diff.
 - CI trigger contract: delivery tests exited 0 and prove `.github/workflows/**`
   selects the native workflow on both integration pushes and pull requests.
+- CI authority: `.github/workflows/eval.yml` is the only workflow, every
+  `uses:` reference is pinned to a full commit SHA, zero `|| true` occurrences
+  exist, no workflow scans itself, and the published job executed `make ci`.
 - External-token gates: `SNYK_TOKEN` and `CLIPROXY_API_KEY` are absent, so
   `make security` and `make validate-live` are `NOT EXECUTED` under the
   operator-authorized applicability rule. Neither workflow is claimed green.
