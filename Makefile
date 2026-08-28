@@ -138,7 +138,7 @@ descriptions: ## validate short capability + activation descriptions
 
 test: ## unit tests for agentsctl
 	$(call BANNER,test · agentsctl)
-	@uv run agentsctl temp run -- sh -eu -c 'uv run pytest --basetemp "$$TMPDIR/pytest"'
+	@uv run agentsctl temp run -- sh -eu -c 'uv run pytest --basetemp "$$TMPDIR/pytest" $(PYTEST_ARGS)'
 
 preflight: ## prove selected model, auth, Responses transport, tools, and artifact
 	$(call BANNER,preflight · live Waza transport)
