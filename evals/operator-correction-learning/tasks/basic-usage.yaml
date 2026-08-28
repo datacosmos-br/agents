@@ -3,9 +3,8 @@ name: Reconcile a storage correction during suspension
 description: Preserve Git and PR evidence while reconciling owners and consumers.
 tags: [operator, correction, learning, precedence, contradiction, evidence, happy-path]
 inputs:
-  prompt: Apply operator-correction learning to correction-state.yaml. Reconcile precedence, contradiction, governance owners, and evidence through canonical Git and PR surfaces, remove opposing consumers, define validation and repeated search, keep tracker and Gas City untouched, and create no substitute tracker.
+  prompt: Apply operator-correction learning to correction-state.yaml. Reconcile precedence, contradiction, governance owners, and evidence through the repository manual ledger plus canonical Git and PR surfaces, remove opposing consumers, define validation and repeated search, and keep tracker and Gas City untouched.
   files:
   - path: correction-state.yaml
 expected:
-  output_contains: [Git, PR, rules/storage.md, /tmp, not DONE]
-  output_not_contains: [manual ledger, suspension-ledger.yaml]
+  output_contains: [Git, PR, rules/storage.md, /tmp, not DONE, manual ledger]

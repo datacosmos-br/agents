@@ -3,7 +3,7 @@
 
 1. Truth: never claim done/green/resolved without command, exit code, decisive output.
 2. Root cause: no bypass, fallback, shim, suppression, stub, hardcode, or old+new coexistence.
-3. Tracker first: claim/update the canonical tracker before file writes or multi-step work. If its runtime is explicitly suspended, create no substitute ledger; preserve evidence in Git/PR/CI and do not declare the phase DONE.
+3. Traceability first: use the canonical tracker when available. While its runtime is suspended, update `docs/execution/manual-ledger.md` before file writes or multi-step work; preserve evidence in the ledger and Git/PR/CI, and do not declare the phase DONE.
 4. Research first: inspect code, docs, canonical sources before acting; never invent APIs, flags, facts, or behavior.
 5. Owner first: use the project's declared facades/primitives; do not reimplement them locally.
 6. Gate discipline: if a gate blocks, stop and escalate with the exact command/edit; never route around it.
@@ -107,12 +107,12 @@ bd close <id> --reason "..."        # only Owner may close
 
 ### Rules
 
-- Use `bd` for ALL task tracking — do NOT use TodoWrite, TaskCreate, or markdown TODO lists
+- Use `bd` for all task tracking after runtime restoration; during suspension use only `docs/execution/manual-ledger.md`.
 - Run `bd prime` for detailed command reference and session close protocol
 - Use `bd remember` for persistent knowledge — do NOT use MEMORY.md files
 - Tracker runtime is suspended; do not execute these commands until explicitly restored.
 
-**Runtime suspension (P0):** Beads, Dolt, and Gas City are unavailable. Do not select an endpoint, embedded database, alternate server, or substitute tracker.
+**Runtime suspension (P0):** Beads, Dolt, Gas Town, and Gas City are unavailable. Do not select an endpoint, embedded database, or alternate server. Keep `docs/execution/manual-ledger.md` current.
 
 **NEVER:** invent flags, routing, ownership, endpoints, or compatibility behavior. Consult the installed CLI help only after runtime is restored.
 
@@ -128,9 +128,9 @@ The managed Beads block is task-tracking guidance, not permission to override re
 
 This protocol applies when ending a Beads implementation workflow. It is subordinate to explicit user, repository, and orchestrator instructions.
 
-1. **File issues for remaining work** - Create beads for anything that needs follow-up
+1. **Record remaining work** - Update the manual ledger during suspension; create Beads only after restoration
 2. **Run quality gates** (if code changed) - Tests, linters, builds
-3. **Update issue status** - Close finished work, update in-progress items
+3. **Update execution status** - Update the manual ledger during suspension; update issues after restoration
 4. **Handle git/sync by active profile**:
    ```bash
    # Conservative/minimal/default: report status and proposed commands; wait for approval.
@@ -166,9 +166,9 @@ bd prime                # Refresh Beads context
 
 ### Rules
 
-- Use `bd` for all task tracking; do not create markdown TODO lists.
+- Use `bd` for all task tracking after restoration; during suspension use only `docs/execution/manual-ledger.md`.
 - Run `bd prime` when Beads context is missing or stale. Codex 0.129.0+ can load Beads context automatically through native hooks; use `/hooks` to inspect or toggle them.
 - Keep persistent project memory in Beads via `bd remember`; do not create ad hoc memory files.
 
-**Runtime suspension:** do not invoke Beads, Dolt, Gas City, or any substitute tracker or ledger until the operator explicitly restores the canonical runtime. Evidence belongs only in Git commits, PRs, reviews, and CI.
+**Runtime suspension:** do not invoke Beads, Dolt, Gas Town, or Gas City until the operator explicitly restores the canonical runtime. Record execution state in `docs/execution/manual-ledger.md` and preserve evidence in Git commits, PRs, reviews, and CI.
 <!-- END BEADS CODEX SETUP -->

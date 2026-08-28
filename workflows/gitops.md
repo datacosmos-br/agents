@@ -35,5 +35,5 @@ If production recovery requires authority outside this contract, stop and give
 the operator the exact failing command, exit/status, owner, impact, and required
 decision. Do not execute the bypass.
 
-Tracker runtime is suspended; no substitute ledger is permitted and the phase
-cannot be `DONE`.
+Tracker runtime is suspended; update the repository-declared manual ledger and
+do not call the phase `DONE`.

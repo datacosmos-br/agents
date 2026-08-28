@@ -2,7 +2,8 @@
 
 This package is the active authority for reorganizing the existing `.agents`
 inventory. It replaces master v6. Git history retains older plans; no second
-active plan, compatibility copy, or manual progress ledger is permitted.
+active plan or compatibility copy is permitted. The single manual execution
+ledger is [owned here](../manual-ledger.md) while tracking is suspended.
 
 The first increment classifies and migrates only artifacts already present in
 this repository. External skill or command import, ECC synchronization,
@@ -49,12 +50,12 @@ unclassified artifact; never coerce one into a category to preserve a count.
 
 ## Runtime state
 
-Beads, Dolt, and Gas City are explicitly suspended. Do not invoke, inspect,
-start, migrate, select an endpoint for, or depend on those runtimes. Do not
-create a substitute tracker, ledger, Markdown task list, database, workspace,
-city, rig, Pack, clone, or worktree. Preserve implementation and validation
-evidence only in authorized Git commits, pull requests, reviews, required
-checks, and CI after Git execution is separately authorized.
+Beads, Dolt, Gas Town, and Gas City are explicitly suspended. Do not invoke,
+inspect, start, migrate, select an endpoint for, or depend on those runtimes.
+Use [the manual execution ledger](../manual-ledger.md) for state throughout the
+suspension. Create no alternate database, workspace, city, rig, Pack, clone, or
+worktree. Preserve validation evidence in authorized Git commits, pull requests,
+reviews, required checks, and CI after Git execution is separately authorized.
 
 While tracker closure is unavailable, a merged and post-merge-verified phase is
 `LANDED_VERIFIED`, not `DONE`. The physical source move from `~/.agents` to

@@ -1,5 +1,5 @@
 name: operator-correction-learning-eval
-description: Authority reconciliation without substitute tracking.
+description: Authority reconciliation with suspended-runtime manual tracking.
 skill: operator-correction-learning
 schemaVersion: '1.0'
 version: '1.0'
@@ -20,12 +20,13 @@ graders:
     prompt: |
       Grade the operator-correction-learning response. Pass only when it records
       the exact correction, prohibited behavior, replacement, scope, incident,
-      owners, current suspended mode, and material state changes using only
-      canonical Git, PR, review, and CI evidence; updates canonical owners rather
-      than projections; removes semantic opposites; repeats contradiction search;
-      and keeps canonical tracker closure unavailable. Reject tracker/Gas City
-      invocation, any substitute ledger, inferred preferences, dual guidance, or
-      a DONE claim.
+      owners, current suspended mode, and material state changes in the
+      repository manual ledger plus canonical Git, PR, review, and CI evidence;
+      updates canonical owners rather than projections; removes semantic
+      opposites; repeats contradiction search; and keeps canonical tracker
+      closure unavailable. Reject tracker/Gas City invocation, a stale or
+      missing manual ledger, inferred preferences, dual guidance, or a DONE
+      claim.
 - type: behavior
   name: bounded_execution
   config:

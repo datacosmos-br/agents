@@ -21,8 +21,8 @@ database operation.
 - Repository Git, native gates, PR review, and merge-commit landing remain local
   responsibilities.
 - Create no city, rig, Pack, agent, formula, run, session, clone, worktree,
-  workspace, symlink, cross-repository reference, tracker item, or substitute
-  ledger.
+  workspace, symlink, cross-repository reference, or tracker item. Keep the
+  repository-declared manual ledger current while runtime is suspended.
 - Static Gas City skills are personal governance and never project projections.
 
 ## Prohibitions

@@ -12,5 +12,5 @@ comments to product code or documentation.
   actor's valid change.
 - Never overwrite uncommitted WIP. Preserve durable evidence in the next
   canonical commit/PR/CI artifact.
-- Tracker runtime is suspended. Invoke no tracker command and create no
-  substitute ledger; phase closure remains unavailable.
+- Tracker runtime is suspended. Invoke no tracker command; update the
+  repository-declared manual ledger and keep phase closure unavailable.

@@ -44,7 +44,8 @@ Trace behavior rather than deleting literals by regex. Inspect:
 
 For each confirmed path record the value class, current owner violation,
 affected runtime, canonical destination, consumers to rewire, and injected
-missing/invalid-value test. Never persist this inventory as a substitute tracker.
+missing/invalid-value test. During tracker suspension, record its bounded state
+in the repository-declared manual ledger.
 
 ## Distinguish legitimate invariants
 

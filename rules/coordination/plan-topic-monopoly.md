@@ -9,4 +9,5 @@ owned branch by reviewed non-FF merge or attributable cherry-pick. Preserve
 attribution and revalidate the integrated result.
 
 Do not expand to another repository, create a workspace, or invoke a suspended
-orchestration/tracker runtime. No substitute tracker or ledger is permitted.
+orchestration/tracker runtime. Use only the repository-declared manual ledger
+for execution state during suspension.

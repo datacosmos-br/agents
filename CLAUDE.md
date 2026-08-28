@@ -3,7 +3,7 @@
 
 1. Truth: never claim done/green/resolved without command, exit code, decisive output.
 2. Root cause: no bypass, fallback, shim, suppression, stub, hardcode, or old+new coexistence.
-3. Tracker first: claim/update the canonical tracker before file writes or multi-step work. If its runtime is explicitly suspended, create no substitute ledger; preserve evidence in Git/PR/CI and do not declare the phase DONE.
+3. Traceability first: use the canonical tracker when available. While its runtime is suspended, update `docs/execution/manual-ledger.md` before file writes or multi-step work; preserve evidence in the ledger and Git/PR/CI, and do not declare the phase DONE.
 4. Research first: inspect code, docs, canonical sources before acting; never invent APIs, flags, facts, or behavior.
 5. Owner first: use the project's declared facades/primitives; do not reimplement them locally.
 6. Gate discipline: if a gate blocks, stop and escalate with the exact command/edit; never route around it.
@@ -85,10 +85,11 @@ When working inside a repository, load that repository's `AGENTS.md` and `CLAUDE
 
 ## Issue Tracker
 
-This project uses the canonical tracker for execution state. Its runtime is
-currently suspended: do not invoke Beads, Dolt, Gas City, or any substitute
-tracker or ledger until the operator explicitly restores it. The commands below
-are reference-only for the restored runtime.
+This project uses the canonical tracker for execution state when available. Its
+runtime is currently suspended: do not invoke Beads, Dolt, Gas Town, or Gas
+City until the operator explicitly restores it. Use
+`docs/execution/manual-ledger.md` as the execution ledger during suspension. The
+commands below are reference-only for the restored runtime.
 
 ### Quick Reference
 
@@ -102,14 +103,15 @@ bd close <id>         # Complete work
 ### Rules
 
 - After explicit restoration, use the tracker for all task state and memory.
-- During suspension, preserve execution evidence only in Git commits, PRs,
-  reviews, and CI; do not create an ad-hoc TODO list or memory file.
+- During suspension, update `docs/execution/manual-ledger.md` after each material
+  state change and preserve validation evidence in Git commits, PRs, reviews,
+  and CI.
 - Tracker closure remains open during suspension, so no phase may be called DONE.
 
 ## Session Completion
 
-1. **Tracker state** — Update canonical items only when the runtime is explicitly
-   restored; otherwise keep closure open without creating a substitute.
+1. **Execution state** — Update the manual ledger during suspension and migrate
+   the open state to canonical items only after explicit runtime restoration.
 2. **Run quality gates** (if code changed) — Tests, linters, builds.
 3. **Update issue status** — Close finished work, update in-progress items.
 4. **Land git/sync by active profile**:
@@ -149,14 +151,14 @@ bd close <id>         # Complete work
 
 ### Rules
 
-- Use `bd` for ALL task tracking — do NOT use TodoWrite, TaskCreate, or markdown TODO lists
+- Use `bd` for all task tracking after restoration; during suspension use only `docs/execution/manual-ledger.md`.
 - Run `bd prime` for detailed command reference and session close protocol
 - Use `bd remember` for persistent knowledge — do NOT use MEMORY.md files
 - Tracker runtime is suspended; do not execute these commands until explicitly restored.
 
 **Runtime suspension:** do not select or infer an endpoint, embedded database,
-alternate server, or substitute tracker. Architecture and CLI behavior must be
-re-read from the canonical owner only after restoration.
+or alternate server. Keep `docs/execution/manual-ledger.md` current; architecture
+and CLI behavior must be re-read from the canonical owner after restoration.
 
 ## Agent Context Profiles
 
@@ -189,6 +191,7 @@ This protocol applies when ending a Beads implementation workflow. It is subordi
 - Explicit user or orchestrator instructions override this Beads block.
 - Do not commit or push without clear authority from the active profile or the current user request.
 - If a required sync or push is blocked, stop and report the exact command and error.
-- During tracker suspension, do not execute Beads/Dolt/Gas City commands and do
-  not create a substitute ledger; tracker closure remains unresolved.
+- During tracker suspension, do not execute Beads/Dolt/Gas Town/Gas City
+  commands; update `docs/execution/manual-ledger.md` and keep tracker closure
+  unresolved.
 <!-- END BEADS INTEGRATION -->

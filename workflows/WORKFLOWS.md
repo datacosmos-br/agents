@@ -23,8 +23,8 @@ and conditionally detected FLEXT skill bundles selected by the projection owner.
 4. Select only commands that the current repository actually declares.
 5. Observe the real runtime behavior before changing tests.
 6. Work in the existing authorized checkout. While orchestration is suspended,
-   create no clone, worktree, workspace, orchestration session, tracker item, or
-   substitute ledger.
+   create no clone, worktree, workspace, orchestration session, or tracker item;
+   update the repository-declared manual ledger.
 7. Keep scratch and caches within the storage policy; never use `/tmp` for
    project state.
 

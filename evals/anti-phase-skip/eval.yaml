@@ -23,7 +23,7 @@ graders:
       runtime before gates, complete native gates, integration update, approved
       merged PR, runtime on the merged integration SHA, zero residue, and
       canonical tracker closure. When tracking is suspended, require a loud final
-      blocker and prohibit a substitute ledger. Reject partial completion,
+      blocker and an updated repository manual ledger. Reject partial completion,
       test-only runtime claims, deferred validation, or silent task switching.
 - type: behavior
   name: bounded_execution

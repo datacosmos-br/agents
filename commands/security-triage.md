@@ -17,7 +17,8 @@ project's canonical scanner commands to reproduce every finding.
 For each finding, fix the owner source, regenerate derived files, update every
 consumer, record the decision and reproducible evidence in the same report, and
 rerun the exact scanner. Follow an active project tracker only when its runtime
-is authorized; never create a substitute ledger. Every severity blocks closure.
+is authorized; otherwise update the repository-declared manual ledger. Every
+severity blocks closure.
 A false positive requires a precise technical explanation and a clean
 reproduction; risk acceptance, generic ignores, fallbacks, `|| true`, and
 unevidenced suppressions do not close findings. Report every command, exit code,

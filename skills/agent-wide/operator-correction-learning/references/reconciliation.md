@@ -13,10 +13,10 @@ tracker action:
   through its documented interface before recording or querying evidence. Never
   select an endpoint, database, prefix, or substitute from inference.
 - **Explicitly suspended:** do not invoke the tracker or its runtime and do not
-  create a ledger, task file, alternate database, or other substitute tracker.
-  Preserve change and validation evidence only in the repository's canonical
-  Git commit, PR, review, and CI surfaces. Canonical tracker state remains
-  unresolved, so do not claim tracker closure or phase completion.
+  create an alternate database. Update the repository-declared manual ledger
+  after each material state change and preserve validation evidence in the
+  canonical Git commit, PR, review, and CI surfaces. Canonical tracker state
+  remains unresolved, so do not claim tracker closure or phase completion.
 
 When canonical tracking is explicitly restored, reconcile the landed Git/PR
 history through its owner and verify the resulting tracker state. Restoration
@@ -35,8 +35,8 @@ must not create a dual-tracking period.
 5. Run owner-native document, skill, projection, and runtime gates, then repeat
    the contradiction search.
 6. Preserve command, working directory, exit code, decisive output, unresolved
-   boundary, and next action in the canonical Git/PR evidence when tracking is
-   suspended; never materialize a substitute ledger.
+   boundary, and next action in the repository-declared manual ledger and
+   canonical Git/PR evidence when tracking is suspended.
 
 At each checkpoint, compare new operator corrections with changes since the prior
 checkpoint. An unreconciled correction pauses the affected feature work until

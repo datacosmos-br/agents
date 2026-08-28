@@ -7,9 +7,9 @@ directory, exit code, decisive output, and affected scope. Do not print full
 environments, secret values, hashes/fingerprints, raw credential records, or
 scanner payloads containing secrets.
 
-During tracker suspension, authorized Git commits, PRs, reviews, required checks,
-and CI are the only durable implementation evidence. This documentation package
-is a specification, not a manual ledger.
+During tracker suspension, the manual execution ledger owns current state;
+authorized Git commits, PRs, reviews, required checks, and CI own validation and
+landing evidence. This documentation package is a specification, not the ledger.
 
 ## Runtime before broad gates
 
@@ -126,5 +126,5 @@ When Git execution is authorized:
 
 A phase is `DONE` only after its approved PR is merged, post-merge runtime is
 green, and its canonical Bead is closed with evidence. While tracker runtime is
-suspended, stop at `LANDED_VERIFIED` and do not create a substitute closure
-record.
+suspended, record state in the manual execution ledger and stop at
+`LANDED_VERIFIED`; the ledger cannot substitute for tracker closure.

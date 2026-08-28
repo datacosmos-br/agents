@@ -10,9 +10,6 @@ import tomllib
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
-_SUBSTITUTE_TRACKER = re.compile(
-    r"^(?:Manual\s+ledger|Ledger:\s*manual)\s*$", re.MULTILINE | re.IGNORECASE
-)
 _FINDING = re.compile(r"^###\s+(.+)$", re.MULTILINE)
 _DECISION = re.compile(
     r"^\*\*Decis(?:ão|ao)\*\*:\s*(.*)$", re.MULTILINE | re.IGNORECASE
@@ -113,7 +110,9 @@ def _tracked_files(root: Path) -> dict[Path, str]:
     )
     if process.returncode != 0:
         detail = process.stderr.strip() or f"git exited {process.returncode}"
-        raise SecurityInventoryError(f"cannot inventory tracked files in {root}: {detail}")
+        raise SecurityInventoryError(
+            f"cannot inventory tracked files in {root}: {detail}"
+        )
     tracked: dict[Path, str] = {}
     for record in process.stdout.split("\0"):
         if not record:
@@ -192,7 +191,9 @@ def inventory(roots: tuple[Path, ...]) -> SecurityInventory:
     """Map every tracked dependency manifest to exactly one scanner route."""
 
     if not roots:
-        raise SecurityInventoryError("at least one explicit repository root is required")
+        raise SecurityInventoryError(
+            "at least one explicit repository root is required"
+        )
     resolved_roots = tuple(_repository_root(root) for root in roots)
     if len(set(resolved_roots)) != len(resolved_roots):
         raise SecurityInventoryError("repository roots must be unique")
@@ -275,14 +276,6 @@ def validate_document(path: Path) -> tuple[SecurityFinding, ...]:
 
     text = path.read_text(encoding="utf-8")
     findings: list[SecurityFinding] = []
-    if _SUBSTITUTE_TRACKER.search(text) is not None:
-        findings.append(
-            SecurityFinding(
-                str(path),
-                "substitute-tracker",
-                "security reports must not act as a manual task ledger",
-            )
-        )
     sections = _sections(text)
     if not sections:
         findings.append(

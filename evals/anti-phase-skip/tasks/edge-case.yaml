@@ -7,5 +7,5 @@ inputs:
   files:
   - path: incomplete-handoff.md
 expected:
-  output_contains: [blocked, exit criteria, runtime command, integration branch, warning]
-  output_not_contains: [DONE, manual ledger]
+  output_contains: [blocked, exit criteria, runtime command, integration branch, warning, manual ledger]
+  output_not_contains: [DONE]

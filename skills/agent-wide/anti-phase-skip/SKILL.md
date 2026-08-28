@@ -23,4 +23,5 @@ step keeps the same phase open.
 
 Only an explicit operator decision may pause, reorder, or replace a phase. A
 blocked phase must be reported loudly in the final response; it may never be
-renamed as completed or replaced by a manual ledger.
+renamed as completed. A manual ledger records the open state during tracker
+suspension but cannot replace canonical tracker closure.

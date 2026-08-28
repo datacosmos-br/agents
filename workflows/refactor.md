@@ -32,5 +32,5 @@ end net-negative in superseded implementation.
   suppression, or postponed deletion.
 - Tests assert public behavior, not internal construction.
 - Preserve unknown and concurrent WIP; never reset, stash, or force-push.
-- While tracker runtime is suspended, create no substitute tracker or ledger and
-  do not call the phase `DONE`.
+- While tracker runtime is suspended, update the repository-declared manual
+  ledger and do not call the phase `DONE`.

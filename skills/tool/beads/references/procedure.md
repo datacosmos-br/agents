@@ -11,10 +11,10 @@ never infer database, prefix, ownership, or routing from a directory name.
 5. Close only after the approved PR is merged into the configured integration
    branch and post-merge validation proves the integration SHA.
 
-The operator has suspended Beads, Dolt, and Gas City runtime. Until lifted, do
-not invoke them, start a server, choose a port, use embedded state, or create a
-substitute tracker. Preserve evidence in the active session and Git history;
-the phase remains open until its canonical issue can be closed.
+The operator has suspended Beads, Dolt, Gas Town, and Gas City runtime. Until
+lifted, do not invoke them, start a server, choose a port, or use embedded state.
+Update the repository-declared manual ledger and preserve evidence in Git
+history; the phase remains open until its canonical issue can be closed.
 
 Workspace placement is governed by `rules/gascity.md`. Beads never authorizes a
 clone, worktree, symlink, cross-repository reference, or runtime fallback.

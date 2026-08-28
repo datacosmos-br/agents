@@ -68,7 +68,8 @@ Trace behavior rather than treating syntax matches as findings. Inspect:
 
 For each candidate record the exact signal lost, the false-success outcome, the
 owner boundary, the required observable error, and the test that will prove the
-repair. Do not persist this inventory as a substitute tracker.
+repair. During tracker suspension, record its bounded state in the
+repository-declared manual ledger.
 
 ## Classify without false positives
 

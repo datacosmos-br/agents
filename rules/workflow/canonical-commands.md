@@ -7,7 +7,7 @@ evidence apply.
 A broken or out-of-pattern canonical command is a defect to fix at its owner
 and rerun through the same surface—never a reason to route around it. While the
 tracker is suspended, preserve the exact blocker in Git/PR/CI evidence and keep
-the phase open; create no substitute ledger.
+the repository-declared manual ledger current and the phase open.
 
 Use available declared tools and skills alongside Make verbs. Large-scale
 refactors run through the repository's declared structural-editing surface and ast-grep

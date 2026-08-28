@@ -12,8 +12,8 @@
 5. Run `make help` before selecting native targets.
 6. Build one search-first evidence packet: canonical owner, affected consumers,
    runtime surface, current tests, provider formats, and native gates.
-7. State the first bounded owner change and its proof. Do not create a ledger or
-   Markdown task checklist.
+7. Update the manual execution ledger with the first bounded owner change and
+   its proof.
 
 ## Work cycle
 
@@ -30,7 +30,7 @@ For each cohesive owner change:
 
 After an operator correction, immediately search for both the new rule and its
 semantic opposite, update canonical owners, and remove the opposite. While the
-tracker is suspended, preserve no substitute record.
+tracker is suspended, update the manual execution ledger.
 
 ## Concurrent work
 

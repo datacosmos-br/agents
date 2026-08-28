@@ -28,8 +28,8 @@ suspended runtimes.
 - Any synchronization or updater that keeps a foreign source as a competing
   runtime authority.
 - Changes, projections, branches, PRs, or runtime calls in another repository.
-- Beads, Dolt, Gas City, Gas Town, alternate trackers, and manual ledgers while
-  their canonical runtimes are suspended.
+- Beads, Dolt, Gas City, Gas Town, and alternate tracker runtimes while they are
+  suspended. Use the repository manual ledger for execution state.
 - Promotion beyond the configured integration branch, package publication,
   release, tag, or unrelated credential changes.
 

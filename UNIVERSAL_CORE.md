@@ -42,8 +42,9 @@ Goldens = structure only. Literals only for immutable external protocols.
    test runs (testmon) ARE the evidence: green selection = green; re-running
    the full suite "to not trust the subset" is the same forbidden hand-repeat.
    Full suite runs belong to CI and explicit operator request only.
-8. **Beads = execution SSOT.** GitHub mirrors; never a parallel plan. Tracker
-   mechanics: `beads-orchestrator` / `beads-worker`. See §Tracker.
+8. **Execution ledger SSOT.** Beads owns execution state when available. During
+   an explicit runtime suspension, the repository-declared manual ledger owns
+   current execution state until it can be migrated back; GitHub mirrors it.
 9. **Separated roles.** Orchestrator: semantics, evidence review, merge/rollout/
    close. Worker: one Bead/branch/worktree, push, PR. Auditor: `governance-audit`.
    See `beads-orchestrator` and `beads-worker` when that tracker is active.
@@ -86,8 +87,10 @@ Goldens = structure only. Literals only for immutable external protocols.
 21. **Finish to Done.** No demo/stub/reduced scope. Blocked → stop and ask.
 22. **Small batches with slack.** Prefer executable slices over optimistic megabatches.
 23. **Canonical-source-first.** Minimal surgical change; validate before claim.
-24. **Beads continuously current.** Update after every state-changing stage.
-25. **Heartbeat without interruption.** Status includes Bead/lane/PR/gate/blocker/next.
+24. **Execution ledger continuously current.** Update Beads when available or
+    the repository-declared manual ledger during suspension after every
+    state-changing stage.
+25. **Heartbeat without interruption.** Status includes ledger/lane/PR/gate/blocker/next.
 26. **Ordinary uncertainty → evidence.** Do not interrupt for resolvable questions.
 27. **Complete cutover on refactors.** Migrate all consumers; delete superseded
     paths. Use `config-schema-migration` for schema cutovers and
@@ -108,7 +111,8 @@ Goldens = structure only. Literals only for immutable external protocols.
     did not happen. If you cannot delete now, you cannot land now — shrink the
     change until you can. Every cycle, not only sprint boundaries (Law 29).
 31. **Stage gate.** A plan is a sequence of steps, each with ONE distinct
-    objective, proven at RUNTIME on the real consumer, recorded in Beads with
+    objective, proven at RUNTIME on the real consumer, recorded in the active
+    execution ledger with
     command, cwd, exit and decisive output. A step ends only when the lint,
     type and test gates for the scope it touched are green — zero errors AND
     zero warnings. "Warning", "cosmetic", "third-party", "pre-existing" and
@@ -133,8 +137,8 @@ Goldens = structure only. Literals only for immutable external protocols.
    universal best practice stops and asks FIRST — no size exemption, one line
    included. Reading, searching, measuring and diagnosing never need approval:
    they are how a plan earns its evidence. A mid-plan request is mapped into the
-   plan and operator-approved; an approved plan runs to completion, with Beads
-   updated at every step.
+   plan and operator-approved; an approved plan runs to completion, with the
+   active execution ledger updated at every step.
 1. **Topic monopoly.** Starting or updating a plan immediately reorganizes
    every correlated Bead, WIP, lane, worktree and PR. "Lane occupied" never
    blocks: adopt, preserve, validate and fix-forward all of it; destroy
@@ -191,8 +195,8 @@ Goldens = structure only. Literals only for immutable external protocols.
     product-specific code — STRICT.
 11. **Traceability.** No rush and no fear of change: everything happens
     inside your lane. Record every step, decision, analysis, result, test,
-    PR, merge, resolved conflict and rule/skill/doc change in Beads and git —
-    they are the only surviving record. After integration and fresh runtime
+    PR, merge, resolved conflict and rule/skill/doc change in the active
+    execution ledger and Git. After integration and fresh runtime
     validation, open the promotion PR to `main` and wait for operator approval;
     never promote `main` autonomously.
 12. **Makefile UX is the law.** The canonical Make verb surface —

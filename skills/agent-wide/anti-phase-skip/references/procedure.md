@@ -69,10 +69,10 @@ Report the exact command, working directory, exit code, decisive output, impact,
 and required owner action as a prominent warning or blocker. Do not switch tasks
 unless the operator explicitly pauses or reorders the phase.
 
-When the canonical tracker is explicitly suspended, do not invoke it and do not
-create a Markdown task list, manual ledger, alternate database, or other
-substitute. Even if Git, PR, CI, and post-merge runtime are green, tracker closure
-is unresolved and the phase is not DONE.
+When the canonical tracker is explicitly suspended, do not invoke it or create
+an alternate database. Update the repository-declared manual ledger after each
+material state change. Even if Git, PR, CI, and post-merge runtime are green,
+tracker closure is unresolved and the phase is not DONE.
 
 Parallel agents may inspect or implement independent parts of the current phase,
 but they do not advance the phase cursor. Their changes and evidence must be

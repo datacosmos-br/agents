@@ -5,7 +5,8 @@ não é tracker nem prova de que um commit futuro está verde. O SHA que será
 publicado exige nova execução de `make security`, com comando, diretório, exit
 code e output decisivo no PR/CI. A decisão técnica de um finding não fecha a
 fase: enquanto o tracker canônico estiver suspenso, nenhuma fase pode ser
-declarada DONE e nenhum ledger substituto pode ser criado.
+declarada DONE. Durante a suspensão, o estado permanece no ledger manual
+canônico do repositório.
 
 ## Findings
 

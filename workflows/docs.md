@@ -35,5 +35,5 @@ are labeled; project projection is limited to generic, detected-technology, and
 conditional FLEXT content; closure language requires both merged integration PR
 and canonical tracker closure.
 
-Tracker runtime is suspended. Documentation evidence belongs in commits,
-reviews, checks, and CI; no manual ledger or substitute tracker may be created.
+Tracker runtime is suspended. Update the repository-declared manual ledger and
+preserve documentation evidence in commits, reviews, checks, and CI.
