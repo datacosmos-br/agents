@@ -1,0 +1,11 @@
+id: fail-fast-stale-publish-001
+name: Remove silent publisher success
+description: Repair ignored exits and stale-artifact failover at the producer.
+tags: [fail-fast, subprocess, artifact, happy-path]
+inputs:
+  prompt: Audit publisher.py for silent failure, swallowed exceptions, and cached-artifact failover. Explain the grave runtime consequences, make it fail fast and loud, propagate the causal error to the CLI, and define owner-level remediation plus injected-failure proof.
+  files:
+  - path: publisher.py
+expected:
+  output_contains: [critical, runtime, PublishError, stderr, nonzero exit, atomic, blocked]
+  output_not_contains: [cached success, alternate provider]

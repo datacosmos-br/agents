@@ -1,15 +1,8 @@
-id: should-not-trigger-001
-name: Should Not Trigger
-description: 'Test that the skill does NOT activate on unrelated prompts.
-
-  This validates trigger specificity.
-
-  '
-tags:
-- anti-trigger
-- negative-test
+id: security-review-negative-001
+name: Summarize a historical novel
+description: Avoid scanner workflow for unrelated literary content.
+tags: [anti-trigger]
 inputs:
-  prompt: What is the weather today?
+  prompt: Summarize the central conflict of A Tale of Two Cities in two sentences.
 expected:
-  output_not_contains:
-  - skill activated
+  output_not_contains: [Semgrep, secret scanner, vulnerability triage]

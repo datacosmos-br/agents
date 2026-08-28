@@ -1,0 +1,32 @@
+name: anti-phase-skip-eval
+description: Complete phase-cycle enforcement and runtime-backed closure.
+skill: anti-phase-skip
+schemaVersion: '1.0'
+version: '1.0'
+config:
+  trials_per_task: 1
+  timeout_seconds: 300
+  parallel: false
+  executor: copilot-sdk
+  model: gpt-5.4
+  skill_directories:
+  - ../../skills/agent-wide/anti-phase-skip
+  required_skills:
+  - anti-phase-skip
+graders:
+- type: prompt
+  name: anti-phase-skip-cycle-contract
+  config:
+    prompt: |
+      Grade the anti-phase-skip response. Pass only when it keeps the current
+      phase open, rejects changing tasks or declaring DONE, and requires real
+      runtime before gates, complete native gates, integration update, approved
+      merged PR, runtime on the merged integration SHA, zero residue, and
+      canonical tracker closure. When tracking is suspended, require a loud final
+      blocker and prohibit a substitute ledger. Reject partial completion,
+      test-only runtime claims, deferred validation, or silent task switching.
+- type: behavior
+  name: bounded_execution
+  config: {max_duration_ms: 240000}
+tasks:
+- tasks/*.yaml

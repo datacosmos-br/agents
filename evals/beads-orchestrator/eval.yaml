@@ -1,5 +1,5 @@
 name: beads-orchestrator-eval
-description: Evaluation suite for beads-orchestrator.
+description: Tracker semantic consolidation and conflict convergence.
 skill: beads-orchestrator
 schemaVersion: '1.0'
 version: '1.0'
@@ -10,27 +10,20 @@ config:
   executor: copilot-sdk
   model: gpt-5.4
   skill_directories:
-  - ../../skills/beads-orchestrator
+  - ../../skills/tool/beads-orchestrator
   required_skills:
   - beads-orchestrator
-metrics:
-- name: task_completion
-  weight: 1.0
-  threshold: 0.8
-  description: Did the skill complete the assigned task?
 graders:
 - type: prompt
-  name: material_task_result
+  name: beads-orchestrator-contract
   config:
     prompt: |
-      Evaluate whether the response materially satisfies the concrete user request,
-      uses the named skill requirements, and provides the requested artifact or
-      explicit fail-closed constraint. Reject generic, unrelated, self-declared,
-      or merely non-empty answers. Call set_waza_grade_pass only when every
-      criterion is evidenced; otherwise call set_waza_grade_fail.
+      Grade the beads-orchestrator response. Pass only when it classifies the supplied epics by keep, drain, or
+      fold-candidate semantics, detects the foreign claim, and produces a
+      read-only convergence plan that honors explicit tracker suspension. Reject
+      mutation claims, stale-graph application, reassignment, or invented closure.
 - type: behavior
   name: bounded_execution
-  config:
-    max_duration_ms: 240000
+  config: {max_duration_ms: 240000}
 tasks:
 - tasks/*.yaml

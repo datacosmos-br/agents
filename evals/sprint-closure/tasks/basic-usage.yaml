@@ -1,15 +1,10 @@
-id: basic-usage-001
-name: Basic Usage
-description: 'Test that the skill handles a typical request correctly.
-
-  '
-tags:
-- basic
-- happy-path
+id: sprint-closure-integrated-001
+name: Verify a fully integrated increment
+description: Close only after runtime, gates, residue, PR, and tracker are complete.
+tags: [sprint, closure, integration, happy-path]
 inputs:
-  prompt: 'Apply the sprint-closure capability to the provided fixture. Exercise these requirements: sprint, closure, end, sprint/increment, declaring, done, starting, next, one, enforces. Return a concrete result.'
+  prompt: Audit increment-evidence.md against the sprint closure contract and return a concise exit record.
   files:
-  - path: sample.py
+  - path: increment-evidence.md
 expected:
-  outcomes:
-  - type: task_completed
+  output_contains: [7ac912e, PR 42, net -46]

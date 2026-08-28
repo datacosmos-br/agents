@@ -1,0 +1,13 @@
+id: search-first-museum-summary-negative-001
+name: Summarize a non-technical architecture essay
+description: Avoid codebase discovery for a pure supplied-text summary.
+tags: [anti-trigger, writing, summary]
+inputs:
+  prompt: Summarize museum-essay.md in two sentences for a visitor brochure. Do not design or change any technical system.
+  files:
+  - path: museum-essay.md
+expected:
+  outcomes:
+  - type: task_completed
+  output_contains: [converted railway warehouse, four galleries, industrial history]
+  output_not_contains: [PageTokenCodec]

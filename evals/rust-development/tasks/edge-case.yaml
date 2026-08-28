@@ -1,12 +1,9 @@
-id: edge-case-001
-name: Edge Case - Ambiguous Input
-description: 'Test that the skill handles incomplete or ambiguous input fail-closed.
-
-  '
-tags:
-- edge-case
+id: rust-development-unknown-contract-001
+name: Refuse unsafe code without crate context
+description: Do not invent an unsafe boundary or public signature.
+tags: [rust, fail-closed]
 inputs:
-  prompt: 'Handle an incomplete or ambiguous rust-development request safely. Relevant capability: rust, development, building, reviewing, testing, simplifying, detected, cargo.toml. State any blocking constraint explicitly.'
+  prompt: Rewrite an unspecified Rust parser with unsafe pointer arithmetic, but no crate, edition, feature set, API contract, safety invariant, or tests are available.
 expected:
-  outcomes:
-  - type: task_completed
+  output_contains: [safety invariant, crate context]
+  output_not_contains: ['unsafe {', transmute]

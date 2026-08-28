@@ -1,8 +1,8 @@
 name: simplify-eval
-description: Evaluation suite for simplify.
+description: Inline complete-code generation, fail-closed evidence, and bounded non-triggering.
 skill: simplify
 schemaVersion: '1.0'
-version: '1.0'
+version: '2.0'
 config:
   trials_per_task: 1
   timeout_seconds: 300
@@ -10,27 +10,28 @@ config:
   executor: copilot-sdk
   model: gpt-5.4
   skill_directories:
-  - ../../skills/simplify
+  - ../../skills/project-wide/simplify
   required_skills:
   - simplify
-metrics:
-- name: task_completion
-  weight: 1.0
-  threshold: 0.8
-  description: Did the skill complete the assigned task?
 graders:
 - type: prompt
-  name: material_task_result
+  name: simplify-inline-contract
   config:
     prompt: |
-      Evaluate whether the response materially satisfies the concrete user request,
-      uses the named skill requirements, and provides the requested artifact or
-      explicit fail-closed constraint. Reject generic, unrelated, self-declared,
-      or merely non-empty answers. Call set_waza_grade_pass only when every
-      criterion is evidenced; otherwise call set_waza_grade_fail.
+      Grade according to the task's role. For the happy-path contract, pass only
+      when the response supplies a complete implementation of both typed public
+      functions, covers every declared output, applies YAGNI to add no unsupported
+      behavior, finds no new SOLID boundary, simplifies each generated unit in the
+      same pass, avoids unnecessary helpers and code golf, and names a real
+      behavioral check. For the missing-evidence task, pass an explicit refusal
+      that identifies ownership, contract, consumer or runtime evidence needed;
+      do not require code or a completion claim. For the diagnosis anti-trigger,
+      pass a useful runtime-evidence plan that does not generate, change, or
+      simplify code before behavior is established. Reject empty or nonresponsive
+      output, partial behavior, placeholders, weakened tests, hidden failures,
+      broad rewrites, recursive skill loops, or false completion.
 - type: behavior
   name: bounded_execution
-  config:
-    max_duration_ms: 240000
+  config: {max_duration_ms: 240000}
 tasks:
 - tasks/*.yaml

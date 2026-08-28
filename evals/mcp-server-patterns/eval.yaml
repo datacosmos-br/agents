@@ -1,5 +1,5 @@
 name: mcp-server-patterns-eval
-description: Evaluation suite for mcp-server-patterns.
+description: Version-evidenced MCP schemas, errors, transports, and ownership.
 skill: mcp-server-patterns
 schemaVersion: '1.0'
 version: '1.0'
@@ -10,24 +10,20 @@ config:
   executor: copilot-sdk
   model: gpt-5.4
   skill_directories:
-  - ../../skills/mcp-server-patterns
+  - ../../skills/tool/mcp-server-patterns
   required_skills:
   - mcp-server-patterns
-metrics:
-- name: task_completion
-  weight: 1.0
-  threshold: 0.8
-  description: Did the skill complete the assigned task?
 graders:
 - type: prompt
-  name: material_task_result
+  name: mcp-server-patterns-contract
   config:
     prompt: |
-      Evaluate whether the response materially satisfies the concrete user request,
-      uses the named skill requirements, and provides the requested artifact or
-      explicit fail-closed constraint. Reject generic, unrelated, self-declared,
-      or merely non-empty answers. Call set_waza_grade_pass only when every
-      criterion is evidenced; otherwise call set_waza_grade_fail.
+      Grade the mcp-server-patterns response. Pass only when it uses the pinned SDK
+      version and supplied server code, identifies the missing input schema and
+      raw error exposure, preserves transport-independent handlers, and proposes
+      stdio plus Streamable HTTP validation against current official signatures.
+      Reject guessed SDK APIs, unpinned upgrades, legacy SSE by default, raw stack
+      traces, or transport logic embedded in tools.
 - type: behavior
   name: bounded_execution
   config:

@@ -1,18 +1,13 @@
-id: basic-usage-001
-name: Basic Usage
-description: 'Test that the skill handles a typical request correctly.
-
-  '
-tags:
-- basic
-- happy-path
+id: agent-browser-happy-001
+name: Complete a dynamic profile form
+description: Use snapshot refs through submission and capture the rendered result.
+tags: [browser, automation, forms, screenshots, web, testing, happy-path]
 inputs:
-  prompt: 'Open the supplied web form, fill the name field with Ada, submit it, and report the rendered greeting and screenshot evidence.'
+  prompt: >-
+    Open profile-form.html with agent-browser, take an interactive snapshot, fill
+    the name with Ada, select Pro, accept the terms, and submit. Re-snapshot after
+    submission, report the exact rendered confirmation, and save screenshot evidence.
   files:
-  - path: sample.py
+  - path: profile-form.html
 expected:
-  output_contains:
-  - Hello, Ada!
-  - screenshot
-  outcomes:
-  - type: task_completed
+  output_contains: ['profile-saved:Ada:pro', snapshot, screenshot]

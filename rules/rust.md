@@ -1,15 +1,27 @@
 ---
 globs: ["*.rs", "**/*.rs", "Cargo.toml"]
 ---
-# Rust Rules
 
-> ⛔ **LEI SUPREMA — RESOLVER, NUNCA ESCONDER.** Prevalece sobre toda regra deste arquivo: defeito
-> corrige-se na RAIZ e verifica-se verde — nunca `unwrap_or_default()` para mascarar falha, `let _ =`
-> em `Result`, ou claim verde sem verificação. Canônico: `~/.claude/AGENTS.md` §0.
+# Rust rules
 
-- Use `make build`, `make test`, `make lint` (não `cargo` direto, exceto `cargo build`/`cargo check`/`cargo doc`/`cargo run` que estão no allow list)
-- Use rust-analyzer LSP para navigation e diagnostics
-- Prefer `?` operator sobre match chains para error handling
-- Lifetime annotations explícitas quando o compiler pedir
-- Use `#[derive(...)]` para traits comuns (Debug, Clone, PartialEq)
-- Documentar public API com `///` doc comments
+Use the project's declared Rust toolchain, workspace structure, features, and
+canonical command facade. Never impose a repository-specific architecture on a
+generic Rust project.
+
+- Handle recoverable failure with explicit `Result`/`Option` semantics and
+  `?`; do not discard a `Result`, panic for ordinary input, or invent a
+  default success.
+- Avoid `unwrap`/`expect` outside tests or proven invariants documented by
+  project policy.
+- Keep ownership and lifetimes explicit where they clarify public contracts;
+  do not add annotations the compiler does not require.
+- Document public APIs and safety invariants. Every `unsafe` block requires a
+  local invariant and the repository's dedicated safety review.
+- Run the real public runtime first, then every declared format, lint, type/
+  check, test, build, documentation, security, and package gate affected by the
+  change.
+- Use project-local dependencies and physical files only: no symlink, path
+  dependency to another checkout, cross-repository reference, inherited secret,
+  or project state under `/tmp`.
+- Install Rust technology skills only when project-local markers prove Rust.
+  FLEXT content remains absent unless independent FLEXT detection succeeds.

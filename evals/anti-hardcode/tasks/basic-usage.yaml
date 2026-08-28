@@ -1,0 +1,11 @@
+id: anti-hardcode-deployment-owner-001
+name: Migrate embedded deployment values
+description: Move operational values into one required typed owner.
+tags: [hardcode, configuration, runtime, happy-path]
+inputs:
+  prompt: Apply anti-hardcode to deployment.py across configuration, constants, portability, environments, and remediation. Explain the grave runtime consequences, migrate every confirmed value to one required typed owner, and define loud CLI plus fixed-point validation.
+  files:
+  - path: deployment.py
+expected:
+  output_contains: [critical, RuntimeConfig, ConfigError, required, stderr, nonzero exit, fixed point]
+  output_not_contains: [os.getenv, default value, constants.py]

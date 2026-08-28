@@ -1,5 +1,5 @@
 name: tdd-workflow-eval
-description: Evaluation suite for tdd-workflow.
+description: Observable RED, minimal owner correction, GREEN, and refactor evidence.
 skill: tdd-workflow
 schemaVersion: '1.0'
 version: '1.0'
@@ -10,27 +10,22 @@ config:
   executor: copilot-sdk
   model: gpt-5.4
   skill_directories:
-  - ../../skills/tdd-workflow
+  - ../../skills/project-wide/tdd-workflow
   required_skills:
   - tdd-workflow
-metrics:
-- name: task_completion
-  weight: 1.0
-  threshold: 0.8
-  description: Did the skill complete the assigned task?
 graders:
 - type: prompt
-  name: material_task_result
+  name: tdd-workflow-contract
   config:
     prompt: |
-      Evaluate whether the response materially satisfies the concrete user request,
-      uses the named skill requirements, and provides the requested artifact or
-      explicit fail-closed constraint. Reject generic, unrelated, self-declared,
-      or merely non-empty answers. Call set_waza_grade_pass only when every
-      criterion is evidenced; otherwise call set_waza_grade_fail.
+      Grade the tdd-workflow response. Pass only when it derives observable cases
+      from the supplied public contract, starts with a test that reproduces the 0
+      defect as RED, changes only parse_limit minimally, reruns the same command to
+      GREEN, and refactors only while behavior remains green. Reject implementation-
+      detail tests, arbitrary coverage targets, fallbacks, or editing tests to match
+      broken runtime.
 - type: behavior
   name: bounded_execution
-  config:
-    max_duration_ms: 240000
+  config: {max_duration_ms: 240000}
 tasks:
 - tasks/*.yaml

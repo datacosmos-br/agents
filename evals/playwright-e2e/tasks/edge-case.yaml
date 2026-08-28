@@ -1,0 +1,14 @@
+id: playwright-e2e-fail-closed-001
+name: Unknown environment and selector contract
+description: Require observable test boundaries instead of hardcoding assumptions.
+tags:
+- edge-case
+inputs:
+  prompt: Write a browser test now, but no base URL, route, selectors, user state, test environment, or expected behavior is defined.
+expected:
+  output_contains:
+  - base URL is required
+  - selector contract is required
+  output_not_contains:
+  - http://localhost:3000
+  - page.waitForTimeout

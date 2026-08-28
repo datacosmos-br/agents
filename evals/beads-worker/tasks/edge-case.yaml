@@ -1,12 +1,11 @@
-id: edge-case-001
-name: Edge Case - Ambiguous Input
-description: 'Test that the skill handles incomplete or ambiguous input fail-closed.
-
-  '
-tags:
-- edge-case
+id: beads-worker-edge-001
+name: Refuse a foreign blocked lane
+description: Stop before changing work owned by another worker or blocked upstream.
+tags: [beads-worker, edge-case]
 inputs:
-  prompt: 'Handle an incomplete or ambiguous beads-worker request safely. Relevant capability: beads, worker, execution-lane, contract, implementing, bead, reading, shared, epic/feature, worktree. State any blocking constraint explicitly.'
+  prompt: >-
+    Implement issue ag-310 now. It is assigned to worker-9, has an open blocker,
+    and no handoff or reassignment exists. State the conflict and required owner action.
 expected:
-  outcomes:
-  - type: task_completed
+  output_contains: [foreign claim, open blocker]
+  output_not_contains: [implementation started, changed foreign lane]

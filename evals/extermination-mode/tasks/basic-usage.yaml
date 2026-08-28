@@ -1,0 +1,10 @@
+id: extermination-notifier-contract-cutover-001
+name: Remove an approved legacy notifier contract
+description: Rewire useful behavior and prove an atomic zero-residue cutover.
+tags: [extermination, contract, cutover, rewiring, happy-path]
+inputs:
+  prompt: Use notifier-cutover.yaml to produce the exact ordered cutover actions and proof. Preserve the listed concurrent work and leave only the final notification contract.
+  files:
+  - path: notifier-cutover.yaml
+expected:
+  output_contains: [notifications.delivery, test_delivery_retry.py, make generate-notifications, src/billing/tax_rounding.py]

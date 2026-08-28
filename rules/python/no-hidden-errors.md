@@ -1,14 +1,19 @@
 ---
-globs: **/*.py
+globs: "**/*.py"
 ---
 
-# Errors propagate loud; no shims, accessors, or fallbacks
+# Python failures remain explicit
 
-Never swallow, mask, or paper over a failure. No fallback that invents or
-defaults data, no compatibility shim/alias, no silent default. Errors always
-`raise` or `r.fail(...)`.
+Never swallow, mask, demote, or invent a successful result for a failed
+operation.
 
-- No `get_`/`set_` accessor boilerplate — use direct attributes, computed
-  properties, or models.
-- No loose helpers outside the `u.*` utilities facade; shared behavior lives in
-  approved layers via MRO. No bare `except:` / `except: pass`.
+- Catch only the specific exceptions a boundary can handle meaningfully.
+- Preserve causes with `raise ... from exc` when translating.
+- Use the repository's declared result/error contract; generic Python guidance
+  does not invent a project-specific facade.
+- Do not return `None`, an empty collection, or a default value to conceal an
+  error.
+- Do not add compatibility accessors, aliases, dual behavior, retry-to-another
+  provider, or silent degradation.
+- Tests prove the material error, cancellation, timeout, and should-not-trigger
+  behavior through the public surface.

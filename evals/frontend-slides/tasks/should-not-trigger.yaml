@@ -1,15 +1,13 @@
-id: should-not-trigger-001
-name: Should Not Trigger
-description: 'Test that the skill does NOT activate on unrelated prompts.
-
-  This validates trigger specificity.
-
-  '
+id: frontend-slides-should-not-trigger-001
+name: Recalculate a spreadsheet model
+description: Spreadsheet formulas are not an HTML presentation request.
 tags:
 - anti-trigger
 - negative-test
 inputs:
-  prompt: What is the weather today?
+  prompt: Recalculate the discount rate formulas in this spreadsheet; no presentation or slides are requested.
 expected:
   output_not_contains:
-  - skill activated
+  - presentation.html
+  - '.slide {'
+  - IntersectionObserver

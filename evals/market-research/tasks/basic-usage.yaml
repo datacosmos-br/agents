@@ -1,15 +1,10 @@
-id: basic-usage-001
-name: Basic Usage
-description: 'Test that the skill handles a typical request correctly.
-
-  '
-tags:
-- basic
-- happy-path
+id: market-research-entry-decision-001
+name: Assess a warehouse-software niche
+description: Reconcile sourced estimates and risks into an entry recommendation.
+tags: [market, research, competition, sizing, diligence, evidence, happy-path]
 inputs:
-  prompt: 'Apply the market-research capability to the provided fixture. Exercise these requirements: market, research, conduct, competitive, analysis, investor, due, diligence, industry, intelligence. Return a concrete result.'
+  prompt: Conduct market research and competitive analysis from market-evidence.yaml as investor due diligence and industry intelligence. Decide whether the warehouse-maintenance product merits ten interviews; separate facts, estimates, inference, and recommendation, reconcile sizing methods, flag stale evidence, and include counterevidence.
   files:
-  - path: sample.py
+  - path: market-evidence.yaml
 expected:
-  outcomes:
-  - type: task_completed
+  output_contains: [Industry Census 2025, '$240M', stale, interviews]

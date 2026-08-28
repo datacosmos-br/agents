@@ -1,15 +1,8 @@
-id: should-not-trigger-001
-name: Should Not Trigger
-description: 'Test that the skill does NOT activate on unrelated prompts.
-
-  This validates trigger specificity.
-
-  '
-tags:
-- anti-trigger
-- negative-test
+id: product-capability-negative-001
+name: Copy-edit a release sentence
+description: Do not create a capability contract for a wording-only request.
+tags: [anti-trigger]
 inputs:
-  prompt: What is the weather today?
+  prompt: Rewrite “Operators now export finished audits” in active voice and keep it under eight words.
 expected:
-  output_not_contains:
-  - skill activated
+  output_not_contains: [IMPLEMENTATION CONTRACT, OPEN QUESTIONS, lifecycle transitions]

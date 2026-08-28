@@ -3,6 +3,10 @@
 This file owns universal storage placement. Project and skill documents point
 here and add only narrower local constraints.
 
+`config/storage.toml` is the sole writable owner of storage paths and runtime
+thresholds. Code and documentation consume its stable keys; they do not carry
+independent operational defaults.
+
 - `/tmp` is limited to small, bounded operating-system ephemera. Never place a
   repository, worktree, virtual environment, persistent database, build cache,
   checkpoint, backup, or report there.
@@ -14,13 +18,17 @@ here and add only narrower local constraints.
   `GOMODCACHE` is shared; execution/build scratch is not.
 - Persistent evidence belongs to
   `${XDG_STATE_HOME:-$HOME/.local/state}/<tool>`. Shells use only the bounded
-  agents fallback there; managed commands replace it with repository-local
-  per-run paths.
-- GC is fail-closed. Preserve runs younger than seven days and anything with a
-  live lock, process ownership evidence, Git/venv/database content, symlink, or
-  unknown entry. Never use `rm -rf`, `git clean`, reset, or stash for GC.
-- Default limits are warning at 1 GiB and owned-process failure at 5 GiB. A
+  path selected by `policy.shell_temp`; managed commands replace it with
+  repository-local per-run paths.
+- GC is fail-closed. Preserve runs younger than `policy.orphan_age_days` and
+  anything with a live lock, process ownership evidence, Git/venv/database
+  content, symlink, or unknown entry. The configured retention may never be
+  shorter than the universal seven-day safety invariant. Never use `rm -rf`,
+  `git clean`, reset, or stash for GC.
+- `policy.warning_bytes` and `policy.failure_bytes` bound each owned run. A
   limiter may signal only the child process group it created.
+- `policy.report_max_bytes` bounds report publication. Capacity failure keeps
+  prior reports and the current scratch evidence; it never prunes evidence.
 - A successful owned child is not an orphan: after its report is persisted, its
   marked run tree is removed immediately. Failed/interrupted runs remain for GC.
 - Linux copies request `cp --reflink=auto`. Copies remain independent physical

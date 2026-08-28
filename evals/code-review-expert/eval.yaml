@@ -1,5 +1,5 @@
 name: code-review-expert-eval
-description: Evaluation suite for code-review-expert.
+description: Evidence-backed severity review of current changes.
 skill: code-review-expert
 schemaVersion: '1.0'
 version: '1.0'
@@ -10,27 +10,20 @@ config:
   executor: copilot-sdk
   model: gpt-5.4
   skill_directories:
-  - ../../skills/code-review-expert
+  - ../../skills/project-wide/code-review-expert
   required_skills:
   - code-review-expert
-metrics:
-- name: task_completion
-  weight: 1.0
-  threshold: 0.8
-  description: Did the skill complete the assigned task?
 graders:
 - type: prompt
-  name: material_task_result
+  name: code-review-expert-contract
   config:
     prompt: |
-      Evaluate whether the response materially satisfies the concrete user request,
-      uses the named skill requirements, and provides the requested artifact or
-      explicit fail-closed constraint. Reject generic, unrelated, self-declared,
-      or merely non-empty answers. Call set_waza_grade_pass only when every
-      criterion is evidenced; otherwise call set_waza_grade_fail.
+      Grade the code-review-expert response. Pass only when it reviews the supplied patch without editing, reports
+      file and added-line evidence, assigns defensible severity, explains
+      exploitability and impact for SQL injection and missing ownership checks,
+      and distinguishes the false-success error path. Reject style-only commentary.
 - type: behavior
   name: bounded_execution
-  config:
-    max_duration_ms: 240000
+  config: {max_duration_ms: 240000}
 tasks:
 - tasks/*.yaml

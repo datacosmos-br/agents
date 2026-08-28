@@ -1,15 +1,14 @@
-id: basic-usage-001
-name: Basic Usage
-description: 'Test that the skill handles a typical request correctly.
-
-  '
-tags:
-- basic
-- happy-path
+id: code-review-expert-happy-001
+name: Review a vulnerable payments patch
+description: Report exploitable and correctness findings with severity and line evidence.
+tags: [code-review, correctness, security, severity, evidence, happy-path]
 inputs:
-  prompt: 'Apply the code-review-expert capability to the provided fixture. Exercise these requirements: review, expert, current, git, changes, senior, engineer, lens, detects, solid. Return a concrete result.'
+  prompt: >-
+    Review payments.patch only; do not implement fixes. Produce the required code
+    review summary and ordered findings with added-line references, exploitability,
+    impact, and a minimal correction direction. Cover security, authorization,
+    error handling, and any false-success behavior.
   files:
-  - path: sample.py
+  - path: payments.patch
 expected:
-  outcomes:
-  - type: task_completed
+  output_contains: [SQL injection, authorization, '200', REQUEST_CHANGES]

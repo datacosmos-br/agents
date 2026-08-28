@@ -1,0 +1,10 @@
+id: flutter-lifecycle-001
+name: Guard asynchronous UI lifecycle
+description: Correct Flutter widget state ownership after an asynchronous Dart operation.
+tags: [flutter, dart, widgets, state, testing, async, happy-path]
+inputs:
+  prompt: Review sample.dart as Flutter/Dart code. Explain the async widget-state lifecycle race, propose the project-compatible liveness check, and describe a widget test that covers disposal during persistence.
+  files:
+  - path: sample.dart
+expected:
+  output_contains: [mounted, widget]

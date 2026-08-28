@@ -1,15 +1,13 @@
-id: should-not-trigger-001
-name: Should Not Trigger
-description: 'Test that the skill does NOT activate on unrelated prompts.
-
-  This validates trigger specificity.
-
-  '
+id: documentation-criteria-should-not-trigger-001
+name: Fix one README typo
+description: A one-line copy edit does not require planning documents.
 tags:
 - anti-trigger
 - negative-test
 inputs:
-  prompt: What is the weather today?
+  prompt: Correct one misspelled word in README.md; no behavior or contract changes.
 expected:
   output_not_contains:
-  - skill activated
+  - PRD
+  - Work Plan
+  - Design Document

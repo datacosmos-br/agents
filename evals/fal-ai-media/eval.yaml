@@ -1,5 +1,5 @@
 name: fal-ai-media-eval
-description: Evaluation suite for fal-ai-media.
+description: Semantic evaluation suite for fal-ai-media.
 skill: fal-ai-media
 schemaVersion: '1.0'
 version: '1.0'
@@ -10,24 +10,24 @@ config:
   executor: copilot-sdk
   model: gpt-5.4
   skill_directories:
-  - ../../skills/fal-ai-media
+  - ../../skills/tool/fal-ai-media
   required_skills:
   - fal-ai-media
 metrics:
 - name: task_completion
   weight: 1.0
   threshold: 0.8
-  description: Did the skill complete the assigned task?
+  description: Did generation use the requested medium, model, cost, and parameters?
 graders:
 - type: prompt
-  name: material_task_result
+  name: fal-ai-media-contract
   config:
     prompt: |
-      Evaluate whether the response materially satisfies the concrete user request,
-      uses the named skill requirements, and provides the requested artifact or
-      explicit fail-closed constraint. Reject generic, unrelated, self-declared,
-      or merely non-empty answers. Call set_waza_grade_pass only when every
-      criterion is evidenced; otherwise call set_waza_grade_fail.
+      Grade the fal-ai-media response. Pass only if it selects a model suited
+      to the supplied image brief, preserves every declared generation
+      parameter, estimates cost before the expensive operation, uses a seed for
+      reproducibility, and reports the generated artifact or explicit job state
+      without inventing a URL, result, credential, or successful generation.
 - type: behavior
   name: bounded_execution
   config:

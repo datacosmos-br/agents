@@ -6,8 +6,8 @@ import re
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
-_TRACKER = re.compile(
-    r"^(?:Bead|Ledger):\s*(?:`([^`]+)`|(manual))\s*$", re.MULTILINE | re.IGNORECASE
+_SUBSTITUTE_TRACKER = re.compile(
+    r"^(?:Manual\s+ledger|Ledger:\s*manual)\s*$", re.MULTILINE | re.IGNORECASE
 )
 _FINDING = re.compile(r"^###\s+(.+)$", re.MULTILINE)
 _DECISION = re.compile(
@@ -64,12 +64,12 @@ def validate_document(path: Path) -> tuple[SecurityFinding, ...]:
 
     text = path.read_text(encoding="utf-8")
     findings: list[SecurityFinding] = []
-    if _TRACKER.search(text) is None:
+    if _SUBSTITUTE_TRACKER.search(text) is not None:
         findings.append(
             SecurityFinding(
                 str(path),
-                "missing-tracker",
-                "report must declare a canonical Bead or manual ledger",
+                "substitute-tracker",
+                "security reports must not act as a manual task ledger",
             )
         )
     sections = _sections(text)

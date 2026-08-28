@@ -2,7 +2,7 @@
   "skills": [
     {
       "class": "on_demand",
-      "digest": "26e6faed48d5d0c21fe7721bb917e941e302fd34d08f599b7ba124549052b2d6",
+      "digest": "d954a23ed166a5aab8542ca38c8c8c8e2c3e1daade7666cbb382423c384f06b6",
       "distributions": [
         "project-generic"
       ],
@@ -10,12 +10,12 @@
       "max_tokens": 5000,
       "name": "add-language-rules",
       "owner": "agents",
-      "provenance": "adopted",
+      "provenance": "agents-owned",
       "updates": "manual"
     },
     {
       "class": "on_demand",
-      "digest": "898c8b510b4a25d6ff31c0e81976eb0b782d3c4e49710a13d2e1eac599c363ea",
+      "digest": "e45d22281b1130a91bf248838d23bd5aef1a63cee241c0bcfe9d5a603e8571e8",
       "distributions": [
         "personal"
       ],
@@ -23,12 +23,12 @@
       "max_tokens": 5000,
       "name": "agent-browser",
       "owner": "agents",
-      "provenance": "adopted",
+      "provenance": "agents-owned",
       "updates": "manual"
     },
     {
       "class": "on_demand",
-      "digest": "511a96b9b5268e1d8f10d357e0612ba6510f109b672c33b7c466e62b9d6075a2",
+      "digest": "8ee7c29d26c4b5e6e8decb23cf6cee250d03763ff6153493e23e940091868d7b",
       "distributions": [
         "personal"
       ],
@@ -36,12 +36,12 @@
       "max_tokens": 5000,
       "name": "agent-introspection-debugging",
       "owner": "agents",
-      "provenance": "adopted",
+      "provenance": "agents-owned",
       "updates": "manual"
     },
     {
       "class": "on_demand",
-      "digest": "57d02df33de96136874cf74b5fb19e8e995d462b7b5510d28062c492f3a1a49e",
+      "digest": "4269cfcd60897bb6371db77e71f9888bcbbcef35c42d8c223ec2710bc7e27296",
       "distributions": [
         "personal"
       ],
@@ -49,25 +49,12 @@
       "max_tokens": 5000,
       "name": "ai-prompt-engineering-safety-review",
       "owner": "agents",
-      "provenance": "adopted",
+      "provenance": "agents-owned",
       "updates": "manual"
     },
     {
       "class": "on_demand",
-      "digest": "a3d2e5105e6e96774926a47aec43e6db3e12b5b55692b8b975f84c9fdf38b9e4",
-      "distributions": [
-        "personal"
-      ],
-      "max_lines": 500,
-      "max_tokens": 5000,
-      "name": "aiskillstore-data-substrate-analysis",
-      "owner": "agents",
-      "provenance": "adopted",
-      "updates": "manual"
-    },
-    {
-      "class": "on_demand",
-      "digest": "deed86e125a0079a2cb882791e0ff6177089e8635a6d88a3abc1a8bf8a3ca6c8",
+      "digest": "e32f8d250a957d648ac6c32db1c6339df839b82741b73aca07a17a7502c38f01",
       "distributions": [
         "project-generic"
       ],
@@ -75,12 +62,25 @@
       "max_tokens": 5000,
       "name": "api-design",
       "owner": "agents",
-      "provenance": "adopted",
+      "provenance": "agents-owned",
       "updates": "manual"
     },
     {
       "class": "on_demand",
-      "digest": "8ef5f35335c8c061461b12183186c98a074cd1cd528c563dd9377ee42660c836",
+      "digest": "e362bae37fb0c04935619e87f010f62c92efad03556f86f7b1ce6366bd2f7bad",
+      "distributions": [
+        "project-generic"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "architecture-documentation",
+      "owner": "agents",
+      "provenance": "agents-owned",
+      "updates": "manual"
+    },
+    {
+      "class": "on_demand",
+      "digest": "3898715a497dca25b87101bed5889dd845213974bb8240239d607df1c1c06469",
       "distributions": [
         "personal"
       ],
@@ -88,12 +88,12 @@
       "max_tokens": 5000,
       "name": "article-writing",
       "owner": "agents",
-      "provenance": "adopted",
+      "provenance": "agents-owned",
       "updates": "manual"
     },
     {
       "class": "on_demand",
-      "digest": "5dc29864231524fcf9adbf3317dc053ed694e89b0fdf12034a562808cec48003",
+      "digest": "331e213aa96bf40c42510a3fca1c978d29c0f434e331b0d4f47290294be605ed",
       "distributions": [
         "project-generic"
       ],
@@ -101,12 +101,12 @@
       "max_tokens": 5000,
       "name": "backend-patterns",
       "owner": "agents",
-      "provenance": "adopted",
+      "provenance": "agents-owned",
       "updates": "manual"
     },
     {
       "class": "router",
-      "digest": "82d5e8483a330e500103f131d47ab215f46f2e3ba72c96bda67dbb631d0e89d3",
+      "digest": "df5bc2d3258df4d2bc2f4d69b53177523d1a571af821ec8a0404bec0c794a9f5",
       "distributions": [
         "personal"
       ],
@@ -119,7 +119,7 @@
     },
     {
       "class": "router",
-      "digest": "4ebdbd2cae69d7e65d59f15313de5732cebc5b53331e809d1f8f0a6850a7a302",
+      "digest": "6ab6d151a90d220e0de499cf16824e10f2aa0cfcd485b68eda88d275cdf2060d",
       "distributions": [
         "personal"
       ],
@@ -132,7 +132,7 @@
     },
     {
       "class": "router",
-      "digest": "28b1249b2645b039051228a825a0fa59622a702bbe17f27992ca4d4c33ceeb5b",
+      "digest": "7bbb287400da980db704dc9b259edae2e1b439ba649d83958ae6a8c6968e2a74",
       "distributions": [
         "personal"
       ],
@@ -145,20 +145,7 @@
     },
     {
       "class": "on_demand",
-      "digest": "bf7d74a4ca4ded7cb046b7ca3d9037747a62ed9499ddf7b6acc38d7f0c0039ca",
-      "distributions": [
-        "personal"
-      ],
-      "max_lines": 500,
-      "max_tokens": 5000,
-      "name": "benchflow-ai-python-parallelization",
-      "owner": "agents",
-      "provenance": "adopted",
-      "updates": "manual"
-    },
-    {
-      "class": "on_demand",
-      "digest": "44e8853f0cb41e2346202e50edc235c71e3b7f9024a53c2e6a52297dbad326b9",
+      "digest": "d548146a5dc61583b0abc906de5b2cee895770cf8505511f9088318af9cd1fb3",
       "distributions": [
         "personal"
       ],
@@ -166,12 +153,12 @@
       "max_tokens": 5000,
       "name": "brand-voice",
       "owner": "agents",
-      "provenance": "adopted",
+      "provenance": "agents-owned",
       "updates": "manual"
     },
     {
       "class": "on_demand",
-      "digest": "f913aa9acc1a1c897191212b738d4a445249eb88d5f2f0f9c3d2bb7e810d5d51",
+      "digest": "95715fb4e19e60a00e2c90be3e861871d7f90ad9b0915a17cba541f1cf0105bb",
       "distributions": [
         "technology:bun"
       ],
@@ -179,12 +166,12 @@
       "max_tokens": 5000,
       "name": "bun-runtime",
       "owner": "agents",
-      "provenance": "adopted",
+      "provenance": "agents-owned",
       "updates": "manual"
     },
     {
       "class": "on_demand",
-      "digest": "9fb7830ad09be21aa4ffe24b5f5c6a7c19cd52ce755420665b14b40cb2417c7b",
+      "digest": "4f7d74181aabfff5739a32199d338e73787e9b0a41f0526888d13897abcf7f52",
       "distributions": [
         "personal"
       ],
@@ -192,12 +179,12 @@
       "max_tokens": 5000,
       "name": "caveman",
       "owner": "agents",
-      "provenance": "adopted",
+      "provenance": "agents-owned",
       "updates": "manual"
     },
     {
       "class": "on_demand",
-      "digest": "0de76b2be702c1f5fd08c14a0d56465d1642466997f7a9072274e4d751a21cfa",
+      "digest": "5287db89b02ab8969a077c6c1e3057f8b9eed1c9e06348734c28554c4e0402d5",
       "distributions": [
         "project-generic"
       ],
@@ -205,12 +192,12 @@
       "max_tokens": 5000,
       "name": "code-navigation",
       "owner": "agents",
-      "provenance": "adopted",
+      "provenance": "agents-owned",
       "updates": "manual"
     },
     {
       "class": "on_demand",
-      "digest": "fe812609342935856831ff6151ea0880be7dd0315fd66c47e73b230bf77b0667",
+      "digest": "d9d22f05747b28e2febbcc2036f3c863d89873c8da2570889e5928a6efe7933e",
       "distributions": [
         "project-generic"
       ],
@@ -218,12 +205,12 @@
       "max_tokens": 5000,
       "name": "code-review-expert",
       "owner": "agents",
-      "provenance": "adopted",
+      "provenance": "agents-owned",
       "updates": "manual"
     },
     {
       "class": "on_demand",
-      "digest": "ceae53d9e2aa50ac127c0c87b0008e21dc3eb1ff54625969998a595048db0d33",
+      "digest": "9289eae327b99f15f0091017464f08f7f06cfe8975b8682895f07d2eaa33688e",
       "distributions": [
         "project-generic"
       ],
@@ -231,12 +218,25 @@
       "max_tokens": 5000,
       "name": "coding-standards",
       "owner": "agents",
-      "provenance": "adopted",
+      "provenance": "agents-owned",
+      "updates": "manual"
+    },
+    {
+      "class": "router",
+      "digest": "a2e47b3021c01af7edeb326eb4dbb2560bc2b7671570189ec87aabcd7bf0a63b",
+      "distributions": [
+        "project-generic"
+      ],
+      "max_lines": 500,
+      "max_tokens": 500,
+      "name": "config-schema-migration",
+      "owner": "agents",
+      "provenance": "agents-owned",
       "updates": "manual"
     },
     {
       "class": "on_demand",
-      "digest": "d70436ed8c0906966fa0ac71669cc10cc369850c3f6710a1956a1f5d8897076d",
+      "digest": "e8d2a442ead85ecd8d805d36155d4a3040df36fc73392d1e624d3a24c3f2b33b",
       "distributions": [
         "personal"
       ],
@@ -244,12 +244,12 @@
       "max_tokens": 5000,
       "name": "content-engine",
       "owner": "agents",
-      "provenance": "adopted",
+      "provenance": "agents-owned",
       "updates": "manual"
     },
     {
       "class": "on_demand",
-      "digest": "6c1627670c329e32723f5987308e9864f9b0107662515a59f9feccb83ef4e1d3",
+      "digest": "6d7673d83c882669d0424532e5292b3c59261a63f306c45c73762972b4b09592",
       "distributions": [
         "personal"
       ],
@@ -257,25 +257,25 @@
       "max_tokens": 5000,
       "name": "context-canary",
       "owner": "agents",
-      "provenance": "adopted",
+      "provenance": "agents-owned",
       "updates": "manual"
     },
     {
-      "class": "on_demand",
-      "digest": "772e6f065f7cf3a4e314e2e7a71c8cc599534e64b09ee79db6171b770bc91882",
+      "class": "router",
+      "digest": "cd9bb8477b9eef1ed2f1b81fe5b4e2ee01fcb620c1f32049745848ae939fafef",
       "distributions": [
-        "personal"
+        "technology:cpp"
       ],
       "max_lines": 500,
-      "max_tokens": 5000,
-      "name": "copyleftdev-hettinger",
+      "max_tokens": 500,
+      "name": "cpp-development",
       "owner": "agents",
-      "provenance": "adopted",
+      "provenance": "agents-owned",
       "updates": "manual"
     },
     {
       "class": "on_demand",
-      "digest": "85235fbc6cbeec3c551cfcea5a50682187af46e1011095aa716146c02409ce22",
+      "digest": "431cfa92e169089b3cfca559863795bdc758e7436f1bf8d6681b58638f4745b7",
       "distributions": [
         "personal"
       ],
@@ -283,12 +283,25 @@
       "max_tokens": 5000,
       "name": "crosspost",
       "owner": "agents",
-      "provenance": "adopted",
+      "provenance": "agents-owned",
       "updates": "manual"
     },
     {
       "class": "on_demand",
-      "digest": "662cfdcbe5ace07c30e86829903c387ebb507bc39b79bd21a24b65808259770d",
+      "digest": "630f71a71f556a494a071ed449382994151979c2ffffdac3e51f9a67b86dff75",
+      "distributions": [
+        "project-generic"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "data-modeling-analysis",
+      "owner": "agents",
+      "provenance": "agents-owned",
+      "updates": "manual"
+    },
+    {
+      "class": "on_demand",
+      "digest": "86e46c7c56f266365616a4263d38ee5c3ad5f715d7b50a83eb631263185458f2",
       "distributions": [
         "project-generic"
       ],
@@ -296,12 +309,12 @@
       "max_tokens": 5000,
       "name": "database-migration",
       "owner": "agents",
-      "provenance": "adopted",
+      "provenance": "agents-owned",
       "updates": "manual"
     },
     {
       "class": "on_demand",
-      "digest": "2afcc07d307a0a6f9c9aa88608a0655d22237f8aa6ea0275fa37f1f82af31efc",
+      "digest": "a42415196779a541a10f0c00f50f5544d5982bd97bd8265917156b0e4b1450fc",
       "distributions": [
         "personal"
       ],
@@ -309,38 +322,12 @@
       "max_tokens": 5000,
       "name": "deep-research",
       "owner": "agents",
-      "provenance": "adopted",
+      "provenance": "agents-owned",
       "updates": "manual"
     },
     {
       "class": "on_demand",
-      "digest": "fc1ec102cf4436993dd4c2e63ae7ed9e5a75a5b00ea07ba1e3483f1311b233fd",
-      "distributions": [
-        "personal"
-      ],
-      "max_lines": 500,
-      "max_tokens": 5000,
-      "name": "diegosouzapw-architecture-documentation-creator",
-      "owner": "agents",
-      "provenance": "adopted",
-      "updates": "manual"
-    },
-    {
-      "class": "on_demand",
-      "digest": "4dbdfcdf105a17abe864ae16ea2814bdfa48382b214ad52542cd8d005e22142f",
-      "distributions": [
-        "technology:python"
-      ],
-      "max_lines": 500,
-      "max_tokens": 5000,
-      "name": "diegosouzapw-modern-python-finimo-solutions",
-      "owner": "agents",
-      "provenance": "adopted",
-      "updates": "manual"
-    },
-    {
-      "class": "on_demand",
-      "digest": "ab4d0fc7a5fe9f36b7477689ee046c2098685f1a46dd62fbdd2cae07b4e7757b",
+      "digest": "20dc99dff74fb6a7d570774d1f3801d4a9e09a083d49bd28946c014205e63112",
       "distributions": [
         "personal"
       ],
@@ -348,12 +335,12 @@
       "max_tokens": 5000,
       "name": "dispatch-agent",
       "owner": "agents",
-      "provenance": "adopted",
+      "provenance": "agents-owned",
       "updates": "manual"
     },
     {
       "class": "on_demand",
-      "digest": "59b9fb2df86a4c7a997a8d0a900bfae9e80f9a7fc5160815888b3b83fc9dc246",
+      "digest": "c45b7855e5d728704c99d872c066f11229638e40c775b4c365ae98232c6237f5",
       "distributions": [
         "personal"
       ],
@@ -361,12 +348,12 @@
       "max_tokens": 5000,
       "name": "dmux-workflows",
       "owner": "agents",
-      "provenance": "adopted",
+      "provenance": "agents-owned",
       "updates": "manual"
     },
     {
       "class": "on_demand",
-      "digest": "98ac6faccac6cae44de982927a21c72dbea50cf96002bc110c7eae81b1a36d9a",
+      "digest": "a7200a12d58394c7d5318f7285ed064f9e073a8fb6f59af55f17cb4aa658f356",
       "distributions": [
         "personal"
       ],
@@ -374,12 +361,12 @@
       "max_tokens": 5000,
       "name": "doc-drift",
       "owner": "agents",
-      "provenance": "adopted",
+      "provenance": "agents-owned",
       "updates": "manual"
     },
     {
       "class": "on_demand",
-      "digest": "c57bded7609b54bad780c43e10c2913471552a2bfb8bd67c1caedd5a0b36e23d",
+      "digest": "df3ffdd831097256a8028b28002cdc731bc05f2b6ca411e82a7019877cb83b76",
       "distributions": [
         "project-generic"
       ],
@@ -387,12 +374,12 @@
       "max_tokens": 5000,
       "name": "documentation-criteria",
       "owner": "agents",
-      "provenance": "adopted",
+      "provenance": "agents-owned",
       "updates": "manual"
     },
     {
       "class": "on_demand",
-      "digest": "d26a35e41a797ed724559323f355609af2642568b01a524108d0d5ada411c5e2",
+      "digest": "0135c8f02be3a6641889453ed64b173d08ae640c9dc4181c54f08bbc7bee9a5f",
       "distributions": [
         "project-generic"
       ],
@@ -400,25 +387,25 @@
       "max_tokens": 5000,
       "name": "documentation-lookup",
       "owner": "agents",
-      "provenance": "adopted",
+      "provenance": "agents-owned",
       "updates": "manual"
     },
     {
       "class": "on_demand",
-      "digest": "45048283da50024d16e6383b093f1e4870dca6b0805f5a0fec25e7fb3f9407d4",
+      "digest": "db20a5628734ee5407ed960058534841d60fe39a427ddbb13797cb7187325042",
       "distributions": [
-        "technology:javascript"
+        "technology:playwright"
       ],
       "max_lines": 500,
       "max_tokens": 5000,
       "name": "e2e-testing",
       "owner": "agents",
-      "provenance": "adopted",
+      "provenance": "agents-owned",
       "updates": "manual"
     },
     {
       "class": "on_demand",
-      "digest": "75dae7c023ec1d940f239954c13df47e004c1e85e8c4569080b9c515c799db0a",
+      "digest": "fa2de66c640931f6cbf019ab088625cea209848da5d123b54d492b8063e3ed3b",
       "distributions": [
         "project-generic"
       ],
@@ -426,12 +413,12 @@
       "max_tokens": 5000,
       "name": "eval-harness",
       "owner": "agents",
-      "provenance": "adopted",
+      "provenance": "agents-owned",
       "updates": "manual"
     },
     {
       "class": "on_demand",
-      "digest": "63390562f0e0be80cb6efd0427a27afb3355816072eedd4fa9657d3c60ec840b",
+      "digest": "9f7001bb9efa1cdb558fa11229715c9ba28a76ca177d7ca725dc61455ed69344",
       "distributions": [
         "personal"
       ],
@@ -439,12 +426,12 @@
       "max_tokens": 5000,
       "name": "exa-search",
       "owner": "agents",
-      "provenance": "adopted",
+      "provenance": "agents-owned",
       "updates": "manual"
     },
     {
       "class": "on_demand",
-      "digest": "ea1f9c562470712ecdd86661bdbbadec688b264bb175bba86089be4ec73668f8",
+      "digest": "fe7056fd93f13399008d3167c612a22ac8c2bae8cb4fd86479e966d75aa3f377",
       "distributions": [
         "personal"
       ],
@@ -452,27 +439,39 @@
       "max_tokens": 5000,
       "name": "fal-ai-media",
       "owner": "agents",
-      "provenance": "adopted",
+      "provenance": "agents-owned",
       "updates": "manual"
     },
     {
-      "class": "on_demand",
-      "digest": "8fae3fa3f28a26d714b1be52307d202cc0a18e8773280bea59c7d93d2833f802",
+      "class": "router",
+      "digest": "abbc1a9ffabae69a69d6bed2a83ecec07a0e561ebcefd3f56c4591af634526b4",
       "distributions": [
         "project-generic"
       ],
       "max_lines": 500,
-      "max_tokens": 5000,
+      "max_tokens": 500,
       "name": "feature-development",
       "owner": "agents",
-      "provenance": "adopted",
+      "provenance": "agents-owned",
+      "updates": "manual"
+    },
+    {
+      "class": "router",
+      "digest": "6817475b0b7e43a08fb98e910bd9cbdc7dea4446a12c54fb5e8c4571852122d2",
+      "distributions": [
+        "technology:flutter"
+      ],
+      "max_lines": 500,
+      "max_tokens": 500,
+      "name": "flutter-development",
+      "owner": "agents",
+      "provenance": "agents-owned",
       "updates": "manual"
     },
     {
       "class": "on_demand",
-      "digest": "d85582e28f0ae8b744b19eb1f5d21f152948864a46a81174d9434bb82726c10a",
+      "digest": "fd88a54061026271caad9b28a5bd533c6c165b4c3e733c1dcb0f80a72bb1a506",
       "distributions": [
-        "technology:typescript",
         "technology:react",
         "technology:nextjs"
       ],
@@ -480,25 +479,25 @@
       "max_tokens": 5000,
       "name": "frontend-patterns",
       "owner": "agents",
-      "provenance": "adopted",
+      "provenance": "agents-owned",
       "updates": "manual"
     },
     {
       "class": "on_demand",
-      "digest": "b74f70f39195b2a6f9b357b37bab02efcbdeb93d52ce14d0d89725643896af9c",
+      "digest": "858b7a71cfd386927206d306ba2211198a40f443b4ceb1164be1c515da105d67",
       "distributions": [
-        "technology:javascript"
+        "personal"
       ],
       "max_lines": 500,
       "max_tokens": 5000,
       "name": "frontend-slides",
       "owner": "agents",
-      "provenance": "adopted",
+      "provenance": "agents-owned",
       "updates": "manual"
     },
     {
       "class": "on_demand",
-      "digest": "b0e4a2dfdb2a18714aec8ae90d95d140eef591188456cb827928c5c49aceb82d",
+      "digest": "536ae6a5e8902022a76076b90caafd90072c1e933363774db01fba76d10461a7",
       "distributions": [
         "personal"
       ],
@@ -506,12 +505,12 @@
       "max_tokens": 5000,
       "name": "gascity-change-lifecycle",
       "owner": "agents",
-      "provenance": "adopted",
+      "provenance": "agents-owned",
       "updates": "manual"
     },
     {
       "class": "on_demand",
-      "digest": "93e8b3cc2a891d925d7deadade47691db38d966e10b6e7d193e1c81d461b0a30",
+      "digest": "3af87eb1c011b539430eb4bae1278afabaecc4b3d25ce2836ddd67147bb5ea2c",
       "distributions": [
         "personal"
       ],
@@ -519,12 +518,12 @@
       "max_tokens": 5000,
       "name": "gascity-workspace-lifecycle",
       "owner": "agents",
-      "provenance": "adopted",
+      "provenance": "agents-owned",
       "updates": "manual"
     },
     {
       "class": "on_demand",
-      "digest": "ddb04cb7dd2b5fc7ed84085cae7ed1640ae40a093fcc010b225a6774d2e4c749",
+      "digest": "69005a569390a041d5ae8f45432fec65b2aabe590d30257f817ec199823025f7",
       "distributions": [
         "personal"
       ],
@@ -532,25 +531,25 @@
       "max_tokens": 5000,
       "name": "ghi-list",
       "owner": "agents",
-      "provenance": "adopted",
+      "provenance": "agents-owned",
       "updates": "manual"
     },
     {
-      "class": "on_demand",
-      "digest": "0c5dbff8cf23f38da71c60076334b35c9e96cfc2d522d08ee56c6950cb71d593",
+      "class": "router",
+      "digest": "dde20caf5735294be6336c60b7c7675e2d50dec303a63814feef959bd3d30d5e",
       "distributions": [
         "technology:go"
       ],
       "max_lines": 500,
-      "max_tokens": 5000,
+      "max_tokens": 500,
       "name": "go-development",
       "owner": "agents",
-      "provenance": "adopted",
+      "provenance": "agents-owned",
       "updates": "manual"
     },
     {
       "class": "on_demand",
-      "digest": "06010ab317bfcf8684b91ffc47e4143fa23ec9ea5f4c1fd82f8c0d23846d9d0c",
+      "digest": "be2d1801f274205e8495a617b991bb0c8b343ac02ee82aca0d82ea424e16ad5b",
       "distributions": [
         "personal"
       ],
@@ -558,12 +557,12 @@
       "max_tokens": 5000,
       "name": "governance-audit",
       "owner": "agents",
-      "provenance": "adopted",
+      "provenance": "agents-owned",
       "updates": "manual"
     },
     {
       "class": "on_demand",
-      "digest": "7c9eb93f2b2a30fa7d26e09b637fe5f6f37d4af0213d29aff381ceffd8cdf71e",
+      "digest": "c746c9904520f87368a1261ac78fc6df0620db8919daf46e23521e1037a5c61d",
       "distributions": [
         "personal"
       ],
@@ -571,12 +570,12 @@
       "max_tokens": 5000,
       "name": "human-writing-style",
       "owner": "agents",
-      "provenance": "adopted",
+      "provenance": "agents-owned",
       "updates": "manual"
     },
     {
       "class": "on_demand",
-      "digest": "db1058b55c04df4bac401f8a9a5a68d5f4730a5507647dc914d8d4e66c79133f",
+      "digest": "467a88d91ee0c2e5985fdc3daf29b6a26c491066b0bef0b7f3463689efc5d53d",
       "distributions": [
         "personal"
       ],
@@ -584,12 +583,12 @@
       "max_tokens": 5000,
       "name": "investor-materials",
       "owner": "agents",
-      "provenance": "adopted",
+      "provenance": "agents-owned",
       "updates": "manual"
     },
     {
       "class": "on_demand",
-      "digest": "a00f89f93550fc926de93d95b3f068d4dd11faae0780a2661537561b71b78fd6",
+      "digest": "6fba3dfbfb0ccbf5f4e0f92b68d037c2ac841f990ccfbfc93363cc5b93e13cf5",
       "distributions": [
         "personal"
       ],
@@ -597,12 +596,12 @@
       "max_tokens": 5000,
       "name": "investor-outreach",
       "owner": "agents",
-      "provenance": "adopted",
+      "provenance": "agents-owned",
       "updates": "manual"
     },
     {
       "class": "router",
-      "digest": "e1386875f9bd5bdcd6a8e9dcbbf3032264b1d8c11583401ab2fc151a97f74b65",
+      "digest": "e4dfa413c4d788ddd4d7ff677910f9532a8f88adfc655385dd04b6a512c5f885",
       "distributions": [
         "personal"
       ],
@@ -614,34 +613,21 @@
       "updates": "manual"
     },
     {
-      "class": "on_demand",
-      "digest": "839e860bdc084747065940d8b7e74c8ddc2c1e30f72a68cb69d87d0c5629998c",
+      "class": "router",
+      "digest": "6bf712c89a2d32210ed3e2cb4f82cc10effdd69b699fad77decd776e0024022c",
       "distributions": [
-        "technology:python"
+        "technology:jvm"
       ],
       "max_lines": 500,
-      "max_tokens": 5000,
-      "name": "jamie-bitflight-python3-bug",
+      "max_tokens": 500,
+      "name": "jvm-development",
       "owner": "agents",
-      "provenance": "adopted",
-      "updates": "manual"
-    },
-    {
-      "class": "on_demand",
-      "digest": "dd36f2a9ceb51723346f38744347b86d431038b313870b897a669d7290cec3b7",
-      "distributions": [
-        "technology:python"
-      ],
-      "max_lines": 500,
-      "max_tokens": 5000,
-      "name": "majiayu000-config-schema-migrator",
-      "owner": "agents",
-      "provenance": "adopted",
+      "provenance": "agents-owned",
       "updates": "manual"
     },
     {
       "class": "router",
-      "digest": "f122a5b1e4db8ceccfaf7aaae381ce55cba0349ef4219768bf696ce17f2632a5",
+      "digest": "2ad9d5df5b098bf9d2875afeb21db2a855d5ce76cff3fabeb1c2db0ee1b5c1ca",
       "distributions": [
         "personal"
       ],
@@ -654,7 +640,7 @@
     },
     {
       "class": "on_demand",
-      "digest": "b1123c5bb478b2d34a0fb9dead205c6124e3abea3e6e851732436f6a8eb5cbab",
+      "digest": "694588e488c6c074f67c15f10d12d1e95139bb540be69689a2c20c0a670fdb02",
       "distributions": [
         "personal"
       ],
@@ -662,38 +648,38 @@
       "max_tokens": 5000,
       "name": "market-research",
       "owner": "agents",
-      "provenance": "adopted",
+      "provenance": "agents-owned",
       "updates": "manual"
     },
     {
       "class": "on_demand",
-      "digest": "66035e569f2dff893c6643307878cc5b63ab2cbb6d05c5f966b3d0fa136dbb41",
+      "digest": "c807c0284417ecec3764cd76d78b3bfcc0ab5439080405f34fe12798f6055405",
       "distributions": [
-        "technology:javascript"
+        "technology:mcp"
       ],
       "max_lines": 500,
       "max_tokens": 5000,
       "name": "mcp-server-patterns",
       "owner": "agents",
-      "provenance": "adopted",
+      "provenance": "agents-owned",
       "updates": "manual"
     },
     {
       "class": "on_demand",
-      "digest": "d7fe5202e8d85a09f4851c3383c51f44726ae67b82e2b7e8e45090be87334f90",
+      "digest": "b8f111b183954fd32a631609e2ab250d9a1f3a5b0ecb73ae8db920eb2280da64",
       "distributions": [
-        "personal"
+        "technology:machine-learning"
       ],
       "max_lines": 500,
       "max_tokens": 5000,
       "name": "mle-workflow",
       "owner": "agents",
-      "provenance": "adopted",
+      "provenance": "agents-owned",
       "updates": "manual"
     },
     {
       "class": "on_demand",
-      "digest": "3e9881b23f134ec5d63893919a3b738f71fa826c4a6f934e4c621900dfdde4eb",
+      "digest": "292e0e54abb6444605be18b6db263606130f79dd9930f544aa3deaf77744da9d",
       "distributions": [
         "technology:nextjs"
       ],
@@ -701,25 +687,25 @@
       "max_tokens": 5000,
       "name": "nextjs-turbopack",
       "owner": "agents",
-      "provenance": "adopted",
+      "provenance": "agents-owned",
       "updates": "manual"
     },
     {
       "class": "on_demand",
-      "digest": "27e0d39895b2ee023bb3585a2ece08d771ae2cd1f51e848d2fb1c53038eb1023",
+      "digest": "89098b6079250b9e1f25a538a32bb6546dfc30b45e9ad94998e5249bd4c2be9e",
       "distributions": [
-        "personal"
+        "technology:openspec"
       ],
       "max_lines": 500,
       "max_tokens": 5000,
       "name": "openspec-verify-change",
       "owner": "agents",
-      "provenance": "adopted",
+      "provenance": "agents-owned",
       "updates": "manual"
     },
     {
       "class": "router",
-      "digest": "a528c132c984cbedcaa7cc3b1714b39207b042aca33f9d10737714b917210f8a",
+      "digest": "1e31accc53f562684ca5a560ab815c65e31dda494b32a1885fdd4194cc9b1e7f",
       "distributions": [
         "personal"
       ],
@@ -732,7 +718,7 @@
     },
     {
       "class": "on_demand",
-      "digest": "1585eadd2976bbc73662d482af5402bde0c077dc576a4cf5f1fa9f20709049f4",
+      "digest": "b6a5bbea9b1f7fe4bd15a724cb1d2d916bb2c62bc838c9c1b7efcec563cf9de2",
       "distributions": [
         "personal"
       ],
@@ -740,12 +726,12 @@
       "max_tokens": 5000,
       "name": "pr-list",
       "owner": "agents",
-      "provenance": "adopted",
+      "provenance": "agents-owned",
       "updates": "manual"
     },
     {
       "class": "on_demand",
-      "digest": "475d57d43894e52d7590734d203269e0a2ae22c9a8ca97dffb0428fd433a92cb",
+      "digest": "617434a8776e5b8086752adf982834ed2fcd57485e13870d456554d10ef69bfa",
       "distributions": [
         "personal"
       ],
@@ -753,12 +739,12 @@
       "max_tokens": 5000,
       "name": "pr-sheriff",
       "owner": "agents",
-      "provenance": "adopted",
+      "provenance": "agents-owned",
       "updates": "manual"
     },
     {
       "class": "on_demand",
-      "digest": "c0ebecf7e842fef08efaa4568a86d97f04e1df8d55773841f1a75f298321e025",
+      "digest": "cb722ada4f1b02d0be5570920843e9a2b3fec32c6ea59e6c4b79c3c228b09aa5",
       "distributions": [
         "personal"
       ],
@@ -766,38 +752,38 @@
       "max_tokens": 5000,
       "name": "product-capability",
       "owner": "agents",
-      "provenance": "adopted",
+      "provenance": "agents-owned",
       "updates": "manual"
     },
     {
-      "class": "on_demand",
-      "digest": "cf3daa844b6d15ebcdc4ae794ee0fc2dcdc2e308e8ab0424edaf6c19e35ddf23",
+      "class": "router",
+      "digest": "140b2a161d38bbb4dc82b785d1dc42f897d0cff12bcc49df530401127989bcba",
       "distributions": [
         "technology:python"
       ],
       "max_lines": 500,
-      "max_tokens": 5000,
-      "name": "python-production",
+      "max_tokens": 500,
+      "name": "python-development",
       "owner": "agents",
-      "provenance": "adopted",
+      "provenance": "agents-owned",
       "updates": "manual"
     },
     {
-      "class": "on_demand",
-      "digest": "275654ec856494040e620352307c573d4555f6dcf6195b12435a8b6ca9b21691",
+      "class": "router",
+      "digest": "dd8098ad7cc49fa2a5cf86346d8e196b53d6318a1efd61cdaa729bbd02e9237b",
       "distributions": [
         "technology:python"
       ],
       "max_lines": 500,
-      "max_tokens": 5000,
-      "name": "python-refactoring",
+      "max_tokens": 500,
+      "name": "python-parallelization",
       "owner": "agents",
-      "provenance": "adopted",
+      "provenance": "agents-owned",
       "updates": "manual"
     },
     {
       "class": "on_demand",
-      "digest": "c7b661c8221ef52d766147b74cf7fe9db3c0db9a381e78e6d8ff8e8fa2c3f2f4",
+      "digest": "b3c7b55f515d29307acad3014cb97fe1a459048ef5adb783236599d231e2f707",
       "distributions": [
         "personal"
       ],
@@ -805,25 +791,25 @@
       "max_tokens": 5000,
       "name": "ralph-loop",
       "owner": "agents",
-      "provenance": "adopted",
+      "provenance": "agents-owned",
       "updates": "manual"
     },
     {
-      "class": "on_demand",
-      "digest": "e1c836212950376f1b3ac63e32061c531ff9592b50b4a63acff4ca2c7e2a33fa",
+      "class": "router",
+      "digest": "d4b59649b0b74351acedca64e918cf9e22a26709a47c1360e5f28d064eae0326",
       "distributions": [
         "technology:rust"
       ],
       "max_lines": 500,
-      "max_tokens": 5000,
+      "max_tokens": 500,
       "name": "rust-development",
       "owner": "agents",
-      "provenance": "adopted",
+      "provenance": "agents-owned",
       "updates": "manual"
     },
     {
       "class": "on_demand",
-      "digest": "d06164fc27f0a99a0819ad3ab4c374cf1f6dcacc72382acd23e4eb60b3d86582",
+      "digest": "e496b9ff8ad53de4711496bb750afed12549de417946f78310cf64b5a2407164",
       "distributions": [
         "personal"
       ],
@@ -831,12 +817,12 @@
       "max_tokens": 5000,
       "name": "safe-delete",
       "owner": "agents",
-      "provenance": "adopted",
+      "provenance": "agents-owned",
       "updates": "manual"
     },
     {
       "class": "on_demand",
-      "digest": "70b484f45c5a4bcea1bc5694adfe51b1ab8f12d74006e73faf1250abb580741f",
+      "digest": "bcc5d2aa57e7c747b64772ce85f0ce52d238f6aec36212bd58194b51578a696d",
       "distributions": [
         "project-generic"
       ],
@@ -844,12 +830,12 @@
       "max_tokens": 5000,
       "name": "security-review",
       "owner": "agents",
-      "provenance": "adopted",
+      "provenance": "agents-owned",
       "updates": "manual"
     },
     {
       "class": "on_demand",
-      "digest": "9b6f9e9666105b64c1f762da8a22d941edb0bde37373b09754bc24b0ffab674f",
+      "digest": "e11200ccf3e5516b5caa03a52454f698883148141de7f0135f64e6b71a186f06",
       "distributions": [
         "personal"
       ],
@@ -857,12 +843,12 @@
       "max_tokens": 5000,
       "name": "sequential-thinking",
       "owner": "agents",
-      "provenance": "adopted",
+      "provenance": "agents-owned",
       "updates": "manual"
     },
     {
       "class": "on_demand",
-      "digest": "1dbfa12b85c4b4742a464fc63166400be15a1dfa5964681bd2e5b212c59fe057",
+      "digest": "1844eb4b7449aee8cccca48a0adc57a13795c4ab51dfb5f95dd45373a266b0f2",
       "distributions": [
         "project-generic"
       ],
@@ -870,12 +856,12 @@
       "max_tokens": 5000,
       "name": "simplify",
       "owner": "agents",
-      "provenance": "adopted",
+      "provenance": "agents-owned",
       "updates": "manual"
     },
     {
       "class": "on_demand",
-      "digest": "88ff9d916d42ed4e1106ab5617130b0c7aedf6bd2b19abd385a24ab0677c3d40",
+      "digest": "2be05ae723602ed21bcda77605a7c9d1d7d39696b74280a027e00ab98f8c7a45",
       "distributions": [
         "personal"
       ],
@@ -883,12 +869,12 @@
       "max_tokens": 5000,
       "name": "skill-creator",
       "owner": "agents",
-      "provenance": "adopted",
+      "provenance": "agents-owned",
       "updates": "manual"
     },
     {
       "class": "router",
-      "digest": "7a2503ebd1cfd1bda8417e9a093831e097ec834c0ad129849a097196ffdd61b1",
+      "digest": "67cd7862cb5ce62b51cd07622e9414c775d656ffd9242274ad2afac0b7d4ed91",
       "distributions": [
         "personal"
       ],
@@ -901,7 +887,7 @@
     },
     {
       "class": "on_demand",
-      "digest": "e1f3d6a94a553906390f190a53061923edde5a17cffed83b2c5a3a0789382703",
+      "digest": "1ed998430ae681c57cf82ffd5bbc8a96aaf7150434618f4360670c557ddd34e9",
       "distributions": [
         "personal"
       ],
@@ -909,12 +895,12 @@
       "max_tokens": 5000,
       "name": "strategic-compact",
       "owner": "agents",
-      "provenance": "adopted",
+      "provenance": "agents-owned",
       "updates": "manual"
     },
     {
       "class": "on_demand",
-      "digest": "63479a7d51bb01c0325490a7181eecbba332e4c627db8fcfdfeb36f3c70c62f7",
+      "digest": "c2e4f994d72e855cc69cd2052b00c58d20f75a33c8fd4817909f3c94172333ba",
       "distributions": [
         "personal"
       ],
@@ -922,12 +908,12 @@
       "max_tokens": 5000,
       "name": "summarization",
       "owner": "agents",
-      "provenance": "adopted",
+      "provenance": "agents-owned",
       "updates": "manual"
     },
     {
       "class": "on_demand",
-      "digest": "e2d72d6c7549c144120ca7b773239e2e10d5f8063d7e0a9a8396554df48da2c9",
+      "digest": "5d0ce883f10ab7e4faac3c9d929e8b65226bf8bd401b57e4bd4f99375b8106ca",
       "distributions": [
         "project-generic"
       ],
@@ -935,12 +921,12 @@
       "max_tokens": 5000,
       "name": "tdd-workflow",
       "owner": "agents",
-      "provenance": "adopted",
+      "provenance": "agents-owned",
       "updates": "manual"
     },
     {
       "class": "on_demand",
-      "digest": "3b7d3de54a92e498163fbe9313b930ec544d7f9c6a506ab2b420f5c72086fb7c",
+      "digest": "ff11aba13e686aed972b68dabb1b7dce043edcb8a69135db81d239c14d2e4deb",
       "distributions": [
         "project-generic"
       ],
@@ -948,12 +934,25 @@
       "max_tokens": 5000,
       "name": "technical-writing-style",
       "owner": "agents",
-      "provenance": "adopted",
+      "provenance": "agents-owned",
       "updates": "manual"
     },
     {
       "class": "router",
-      "digest": "6d86c1987a62aa5707e54de7a9059c4ca8d45e83575e52ee8b140b46735bdc88",
+      "digest": "97198e3e9adf44a9c3de0d67e6a8188f0df4e44be6e1d3fd3c9b528fb7916fe2",
+      "distributions": [
+        "technology:typescript"
+      ],
+      "max_lines": 500,
+      "max_tokens": 500,
+      "name": "typescript-development",
+      "owner": "agents",
+      "provenance": "agents-owned",
+      "updates": "manual"
+    },
+    {
+      "class": "router",
+      "digest": "8658e30e6b34c93b672ae39d4a2c0f18945dd7c630b7109ff887d4cf4883d8a6",
       "distributions": [
         "personal"
       ],
@@ -966,7 +965,7 @@
     },
     {
       "class": "on_demand",
-      "digest": "f3f376dd72a135e4ebdef6f5528a6e3aeea34c76d1721b314ac9801c7943804d",
+      "digest": "2a9a19467107425ed48dcfa9ebd722b1fe46708656ddb8c18a0645dc34ffc069",
       "distributions": [
         "personal"
       ],
@@ -974,12 +973,12 @@
       "max_tokens": 5000,
       "name": "video-editing",
       "owner": "agents",
-      "provenance": "adopted",
+      "provenance": "agents-owned",
       "updates": "manual"
     },
     {
       "class": "on_demand",
-      "digest": "1760c35bb3ecec8eb6e8e698f4daac50b684fec50540852951323b2baf9f6b5c",
+      "digest": "97f38fc074da4b338811e0c2c978230cf81b29b5df55b737609cd8bff8470844",
       "distributions": [
         "personal"
       ],
@@ -987,7 +986,7 @@
       "max_tokens": 5000,
       "name": "x-api",
       "owner": "agents",
-      "provenance": "adopted",
+      "provenance": "agents-owned",
       "updates": "manual"
     }
   ],

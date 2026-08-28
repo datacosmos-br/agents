@@ -1,0 +1,11 @@
+id: typescript-boundary-001
+name: Validate an external payload
+description: Repair typing in an async TypeScript module through the declared compiler and test owners.
+tags: [typescript, typing, modules, async, testing, tooling, happy-path]
+inputs:
+  prompt: Review sample.ts and tsconfig.json. Identify the unchecked external-data path, propose an unknown-to-domain validation boundary without choosing a new library, preserve the declared async module and compiler tooling contracts, and name success and malformed-payload tests.
+  files:
+  - path: sample.ts
+  - path: tsconfig.json
+expected:
+  output_contains: [unknown, validation]

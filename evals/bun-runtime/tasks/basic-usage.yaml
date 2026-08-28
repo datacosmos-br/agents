@@ -1,15 +1,14 @@
-id: basic-usage-001
-name: Basic Usage
-description: 'Test that the skill handles a typical request correctly.
-
-  '
-tags:
-- basic
-- happy-path
+id: bun-runtime-happy-001
+name: Derive a reproducible Bun workflow
+description: Use the declared Bun version, lockfile, and scripts as the only toolchain owner.
+tags: [bun, runtime, packages, testing, bundling, node, happy-path]
 inputs:
-  prompt: 'Apply the bun-runtime capability to the provided fixture. Exercise these requirements: bun, runtime, package, manager, bundler, test, runner, choose, vs, node. Return a concrete result.'
+  prompt: >-
+    Read package.json and bun.lock. Give the exact reproducible install, test,
+    build, and start commands for CI and local use, preserving the declared Bun
+    version and scripts without adding npm or Node alternatives.
   files:
-  - path: sample.py
+  - path: package.json
+  - path: bun.lock
 expected:
-  outcomes:
-  - type: task_completed
+  output_contains: [bun install --frozen-lockfile, bun test, bun run build, bun run start]

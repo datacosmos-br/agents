@@ -1,15 +1,10 @@
-id: basic-usage-001
-name: Basic Usage
-description: 'Test that the skill handles a typical request correctly.
-
-  '
-tags:
-- basic
-- happy-path
+id: verification-loop-projection-001
+name: Audit fresh projection evidence
+description: Turn complete gate output into a bounded verification record.
+tags: [verification, evidence, completion, happy-path]
 inputs:
-  prompt: 'Apply the verification-loop capability to the provided fixture. Exercise these requirements: verification, loop, every, completion, boundary, claiming, work, done, run, continuous-green. Return a concrete result.'
+  prompt: Evaluate gate-evidence.md in completion-gate order and state exactly what scope is proven green.
   files:
-  - path: sample.py
+  - path: gate-evidence.md
 expected:
-  outcomes:
-  - type: task_completed
+  output_contains: [31 passed, 'PASS: projections converged', fixed point]

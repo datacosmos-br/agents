@@ -1,0 +1,29 @@
+name: cpp-development-eval
+description: C and C++ ownership, build, and verification decisions.
+skill: cpp-development
+schemaVersion: '1.0'
+version: '1.0'
+config:
+  trials_per_task: 1
+  timeout_seconds: 300
+  parallel: false
+  executor: copilot-sdk
+  model: gpt-5.4
+  skill_directories:
+  - ../../skills/technology/cpp-development
+  required_skills:
+  - cpp-development
+graders:
+- type: prompt
+  name: cpp-development-contract
+  config:
+    prompt: |
+      Grade the cpp-development response. Pass only when it traces ownership in the supplied C++ fixture,
+      preserves the project build contract, proposes a concrete RAII correction,
+      and names focused runtime or sanitizer evidence. Reject framework mandates
+      and generic style summaries.
+- type: behavior
+  name: bounded_execution
+  config: {max_duration_ms: 240000}
+tasks:
+- tasks/*.yaml

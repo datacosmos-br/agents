@@ -1,12 +1,14 @@
-id: edge-case-001
-name: Edge Case - Ambiguous Input
-description: 'Test that the skill handles incomplete or ambiguous input fail-closed.
-
-  '
+id: frontend-slides-fail-closed-001
+name: Overloaded single-slide request
+description: Split unreadable content instead of introducing scroll or tiny type.
 tags:
 - edge-case
 inputs:
-  prompt: 'Handle an incomplete or ambiguous frontend-slides request safely. Relevant capability: frontend, slides, create, stunning, animation-rich, html, presentations, scratch, converting, powerpoint. State any blocking constraint explicitly.'
+  prompt: Put 30 bullets and a 40-line code sample on one 375x667 slide. Keep 18px fixed text and add an internal scrollbar if it overflows.
 expected:
-  outcomes:
-  - type: task_completed
+  output_contains:
+  - split into multiple slides
+  - 'overflow: hidden'
+  output_not_contains:
+  - 'overflow: auto'
+  - internal scrollbar

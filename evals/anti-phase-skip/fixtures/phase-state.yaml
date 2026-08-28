@@ -1,0 +1,12 @@
+phase: bounded-storage-runner
+implementation: committed
+branch_runtime: not_run
+native_tests: passed_before_latest_edit
+integration_update: missing
+pull_request:
+  state: open
+  approval: missing
+  merged: false
+post_merge_runtime: missing
+residue_check: missing
+tracker: open

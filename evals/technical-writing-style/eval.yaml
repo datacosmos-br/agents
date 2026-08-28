@@ -1,5 +1,5 @@
 name: technical-writing-style-eval
-description: Evaluation suite for technical-writing-style.
+description: Direct technical prose, evidence, preserved meaning, and human tone.
 skill: technical-writing-style
 schemaVersion: '1.0'
 version: '1.0'
@@ -10,27 +10,21 @@ config:
   executor: copilot-sdk
   model: gpt-5.4
   skill_directories:
-  - ../../skills/technical-writing-style
+  - ../../skills/project-wide/technical-writing-style
   required_skills:
   - technical-writing-style
-metrics:
-- name: task_completion
-  weight: 1.0
-  threshold: 0.8
-  description: Did the skill complete the assigned task?
 graders:
 - type: prompt
-  name: material_task_result
+  name: technical-writing-style-contract
   config:
     prompt: |
-      Evaluate whether the response materially satisfies the concrete user request,
-      uses the named skill requirements, and provides the requested artifact or
-      explicit fail-closed constraint. Reject generic, unrelated, self-declared,
-      or merely non-empty answers. Call set_waza_grade_pass only when every
-      criterion is evidenced; otherwise call set_waza_grade_fail.
+      Grade the technical-writing-style response. Pass only when it leads with the
+      measured Linux result, preserves both timings and 240-run sample, explicitly
+      limits the claim to Linux, removes hype and LLM filler, and stays concise in
+      active voice. Reject invented percentages, Windows claims, corporate jargon,
+      meta introductions, or a meaning-changing rewrite.
 - type: behavior
   name: bounded_execution
-  config:
-    max_duration_ms: 240000
+  config: {max_duration_ms: 240000}
 tasks:
 - tasks/*.yaml

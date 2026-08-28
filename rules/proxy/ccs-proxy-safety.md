@@ -1,13 +1,21 @@
 ---
-description: Running any ccs / cliproxy command (doctor, cliproxy start/restart). Load before touching the CCS proxy so live opencode sessions are not killed.
+description: proxy, runtime, sessions, quota, safety
 ---
 
-# Do not run ccs commands that recycle the proxy mid-session
+# Proxy operations fail closed
 
-`ccs doctor --fix` and `ccs cliproxy` restarts cycle the CLIProxy on :8317 and
-kill live opencode sessions (a `--fix` was interrupted and dropped active
-sessions). Do not run them while sessions are active; warn the operator first.
+Proxy implementation and service operations are outside the current
+`.agents`-only increment. Do not run a repair, restart, credential rotation, or
+configuration mutation through this rule.
 
-- Live in-proxy 429 cooldowns are not shown by `ccs ... quota`; fill-first can
-  route to a rate-limited account. Treat transient upstream 429/quota as
-  retry-and-degrade, never a hard task failure.
+When a later explicitly authorized task operates the proxy:
+
+- discover the current owner/configuration instead of assuming a port or path;
+- preserve live sessions and obtain operator authority before a disruptive
+  action;
+- treat authentication, quota, HTTP 402/429, missing model, timeout, and
+  transport errors as red;
+- never reroute to another account/provider/model, degrade silently, fabricate
+  capacity, or use a cached success as current proof;
+- validate the exact selected model and real tool-using request after the owner
+  change, then run native gates.

@@ -1,15 +1,10 @@
-id: basic-usage-001
-name: Basic Usage
-description: 'Test that the skill handles a typical request correctly.
-
-  '
-tags:
-- basic
-- happy-path
+id: summarization-incident-001
+name: Summarize an incident for engineering leaders
+description: Compress metrics, decisions, and uncertainty without changing facts.
+tags: [summarization, accuracy, compression, happy-path]
 inputs:
-  prompt: 'Apply the summarization capability to the provided fixture. Exercise these requirements: summarization, summarize, documents, articles, conversations, technical, content, concise, accurate, summaries. Return a concrete result.'
+  prompt: Summarize incident-report.md in at most five bullets for engineering leaders. Preserve decisive metrics, uncertainty, and owned follow-up.
   files:
-  - path: sample.py
+  - path: incident-report.md
 expected:
-  outcomes:
-  - type: task_completed
+  output_contains: [18.7%, 0.5%, Ana]

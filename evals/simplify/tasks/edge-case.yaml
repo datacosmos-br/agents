@@ -1,12 +1,9 @@
-id: edge-case-001
-name: Edge Case - Ambiguous Input
-description: 'Test that the skill handles incomplete or ambiguous input fail-closed.
-
-  '
-tags:
-- edge-case
+id: simplify-inline-missing-owner-001
+name: Block generation without project evidence
+description: Refuse to invent code when ownership, contract, and runtime are unavailable.
+tags: [simplify, inline, ambiguity, fail-closed]
 inputs:
-  prompt: 'Handle an incomplete or ambiguous simplify request safely. Relevant capability: simplify, refactor, readability, behavior-preserving, changed-code, cleanup. State any blocking constraint explicitly.'
+  prompt: Generate and simplify an unspecified parser now. No repository root, project instructions, source, canonical owner, public contract, consumer, acceptance test, or runtime command is available.
 expected:
-  outcomes:
-  - type: task_completed
+  output_contains: [blocked, canonical owner, public contract, runtime]
+  output_not_contains: [implementation complete, behavior preserved, "def parse"]

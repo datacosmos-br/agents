@@ -1,5 +1,5 @@
 name: agent-browser-eval
-description: Evaluation suite for agent-browser.
+description: Snapshot-ref browser interaction and evidence.
 skill: agent-browser
 schemaVersion: '1.0'
 version: '1.0'
@@ -10,27 +10,20 @@ config:
   executor: copilot-sdk
   model: gpt-5.4
   skill_directories:
-  - ../../skills/agent-browser
+  - ../../skills/tool/agent-browser
   required_skills:
   - agent-browser
-metrics:
-- name: task_completion
-  weight: 1.0
-  threshold: 0.8
-  description: Did the skill complete the assigned task?
 graders:
 - type: prompt
-  name: material_task_result
+  name: agent-browser-contract
   config:
     prompt: |
-      Evaluate whether the response materially satisfies the concrete user request,
-      uses the named skill requirements, and provides the requested artifact or
-      explicit fail-closed constraint. Reject generic, unrelated, self-declared,
-      or merely non-empty answers. Call set_waza_grade_pass only when every
-      criterion is evidenced; otherwise call set_waza_grade_fail.
+      Grade the agent-browser response. Pass only when it uses a fresh interactive snapshot before ref-based
+      actions, fills every requested field in the supplied form, re-snapshots
+      after the DOM change, and reports the rendered confirmation plus screenshot
+      evidence. Reject stale refs, selector invention, or unobserved success.
 - type: behavior
   name: bounded_execution
-  config:
-    max_duration_ms: 240000
+  config: {max_duration_ms: 240000}
 tasks:
 - tasks/*.yaml

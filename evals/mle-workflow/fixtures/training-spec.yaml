@@ -1,0 +1,19 @@
+decision: Offer a retention call before subscription cancellation
+entity_grain: customer_account
+prediction_time: end of billing day
+label:
+  name: cancelled_within_30_days
+  available_after_days: 30
+features:
+  - name: tickets_last_14d
+    available_at_prediction: true
+  - name: plan_age_days
+    available_at_prediction: true
+  - name: outcome_30d
+    available_at_prediction: false
+success_metric: recall_at_fixed_contact_capacity
+guardrails:
+  - false_positive_rate_by_plan
+  - p95_inference_latency_ms
+data_snapshot: warehouse/churn/2026-07-31
+existing_stack: Python package with project-owned training and serving commands

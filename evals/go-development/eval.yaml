@@ -1,5 +1,5 @@
 name: go-development-eval
-description: Evaluation suite for go-development.
+description: Go cancellation, error, race, ownership, and native-gate decisions.
 skill: go-development
 schemaVersion: '1.0'
 version: '1.0'
@@ -10,24 +10,19 @@ config:
   executor: copilot-sdk
   model: gpt-5.4
   skill_directories:
-  - ../../skills/go-development
+  - ../../skills/technology/go-development
   required_skills:
   - go-development
-metrics:
-- name: task_completion
-  weight: 1.0
-  threshold: 0.8
-  description: Did the skill complete the assigned task?
 graders:
 - type: prompt
-  name: material_task_result
+  name: go-development-contract
   config:
     prompt: |
-      Evaluate whether the response materially satisfies the concrete user request,
-      uses the named skill requirements, and provides the requested artifact or
-      explicit fail-closed constraint. Reject generic, unrelated, self-declared,
-      or merely non-empty answers. Call set_waza_grade_pass only when every
-      criterion is evidenced; otherwise call set_waza_grade_fail.
+      Grade the go-development response. Pass only when it cites the supplied Go
+      module and worker code, identifies the detached goroutine and discarded
+      error, proposes explicit context ownership and wrapped errors that preserve
+      errors.Is/errors.As, and names project-native format, vet, race, test, and
+      build evidence. Reject generic Go advice or an invented module/toolchain.
 - type: behavior
   name: bounded_execution
   config:

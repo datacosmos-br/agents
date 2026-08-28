@@ -1,15 +1,10 @@
-id: basic-usage-001
-name: Basic Usage
-description: 'Test that the skill handles a typical request correctly.
-
-  '
-tags:
-- basic
-- happy-path
+id: tdd-workflow-limit-001
+name: Drive a parser fix from observable behavior
+description: Establish RED then make the minimal owner correction and prove GREEN.
+tags: [tdd, tests, development, happy-path]
 inputs:
-  prompt: 'Apply the tdd-workflow capability to the provided fixture. Exercise these requirements: tdd, writing, new, features, fixing, bugs, refactoring, enforces, test-driven, development. Return a concrete result.'
+  prompt: Build the exact RED-GREEN-refactor sequence for parser-contract.md using only its public behavior and native focused command.
   files:
-  - path: sample.py
+  - path: parser-contract.md
 expected:
-  outcomes:
-  - type: task_completed
+  output_contains: [parse_limit("0"), InvalidLimit, make test FILE=tests/test_limit_parser.py]

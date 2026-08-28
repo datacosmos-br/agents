@@ -1,0 +1,23 @@
+schema = 1
+
+[city]
+name = "atlas"
+runtime = "suspended"
+
+[[rigs]]
+name = "ledger"
+project = "ledger-service"
+provider = "persistent"
+
+[packs.governance]
+schema = 2
+source = "packs/governance"
+revision = "8e4d1c2"
+lock = "packs.lock"
+
+[agents.maintainer]
+rig = "ledger"
+formula = "maintain"
+
+[providers.persistent]
+workspace = "/srv/gascity/ledger"

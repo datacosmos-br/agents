@@ -1,15 +1,10 @@
-id: basic-usage-001
-name: Basic Usage
-description: 'Test that the skill handles a typical request correctly.
-
-  '
-tags:
-- basic
-- happy-path
+id: mle-workflow-leakage-contract-001
+name: Design a point-in-time churn experiment
+description: Detect future leakage and define reproducible evaluation and rollout evidence.
+tags: [machine-learning, training, evaluation, serving, monitoring, reproducibility, happy-path]
 inputs:
-  prompt: 'Apply the mle-workflow capability to the provided fixture. Exercise these requirements: mle, production, machine-learning, engineering, data, contracts, reproducible, training, model, evaluation. Return a concrete result.'
+  prompt: Review training-spec.yaml as a machine-learning engineering workflow spanning data, training, evaluation, serving, monitoring, and reproducibility. Define the contract, detect unavailable features, select a temporal split and baseline, and specify slice, artifact, runtime, and rollback evidence.
   files:
-  - path: sample.py
+  - path: training-spec.yaml
 expected:
-  outcomes:
-  - type: task_completed
+  output_contains: [outcome_30d, leakage, temporal split, baseline]

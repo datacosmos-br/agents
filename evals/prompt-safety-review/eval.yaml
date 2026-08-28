@@ -1,0 +1,29 @@
+name: prompt-safety-review-eval
+description: Prompt safety, security, bias, and repository-governance review.
+skill: prompt-safety-review
+schemaVersion: '1.0'
+version: '1.0'
+config:
+  trials_per_task: 1
+  timeout_seconds: 300
+  parallel: false
+  executor: copilot-sdk
+  model: gpt-5.4
+  skill_directories:
+  - ../../skills/agent-wide/prompt-safety-review
+  required_skills:
+  - prompt-safety-review
+graders:
+- type: prompt
+  name: prompt-safety-review-contract
+  config:
+    prompt: |
+      Grade the prompt-safety-review response. Pass only when it identifies the supplied prompt's
+      injection, secret-exposure, destructive-Git, governance, and false-green
+      risks; separates evidence from assumptions; and supplies a complete safer
+      prompt that points to canonical repository law. Reject cosmetic rewriting.
+- type: behavior
+  name: bounded_execution
+  config: {max_duration_ms: 240000}
+tasks:
+- tasks/*.yaml

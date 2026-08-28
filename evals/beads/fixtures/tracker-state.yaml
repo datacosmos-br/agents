@@ -1,0 +1,10 @@
+repository: /workspace/agents
+issue_id: ag-417
+runtime: explicitly_suspended
+integration_branch: dev
+evidence:
+  pull_request: merged
+  integration_sha: 81af30c
+  post_merge_command: make check
+  post_merge_exit: 0
+canonical_issue_closed: false

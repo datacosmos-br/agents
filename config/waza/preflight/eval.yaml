@@ -22,6 +22,6 @@ graders:
 - type: behavior
   name: bounded_execution
   config:
-    max_duration_ms: 60000
+    max_duration_ms: 50000
 tasks:
 - tasks/tool-read.yaml

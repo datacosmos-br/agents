@@ -1,0 +1,29 @@
+name: python-parallelization-eval
+description: Python workload classification, bounded concurrency, and measured proof.
+skill: python-parallelization
+schemaVersion: '1.0'
+version: '1.0'
+config:
+  trials_per_task: 1
+  timeout_seconds: 300
+  parallel: false
+  executor: copilot-sdk
+  model: gpt-5.4
+  skill_directories:
+  - ../../skills/technology/python-parallelization
+  required_skills:
+  - python-parallelization
+graders:
+- type: prompt
+  name: python-parallelization-contract
+  config:
+    prompt: |
+      Grade the python-parallelization response. Pass only when it classifies the supplied workload, uses the
+      established concurrency cap, defines cancellation and cleanup, and
+      compares observable results with the sequential baseline. Reject an
+      unbounded executor, unevidenced primitive, or generic Python refactor.
+- type: behavior
+  name: bounded_execution
+  config: {max_duration_ms: 240000}
+tasks:
+- tasks/*.yaml

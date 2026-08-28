@@ -1,5 +1,5 @@
 name: mle-workflow-eval
-description: Evaluation suite for mle-workflow.
+description: Point-in-time ML contracts, baselines, artifacts, rollout, and monitoring.
 skill: mle-workflow
 schemaVersion: '1.0'
 version: '1.0'
@@ -10,24 +10,21 @@ config:
   executor: copilot-sdk
   model: gpt-5.4
   skill_directories:
-  - ../../skills/mle-workflow
+  - ../../skills/domain/mle-workflow
   required_skills:
   - mle-workflow
-metrics:
-- name: task_completion
-  weight: 1.0
-  threshold: 0.8
-  description: Did the skill complete the assigned task?
 graders:
 - type: prompt
-  name: material_task_result
+  name: mle-workflow-contract
   config:
     prompt: |
-      Evaluate whether the response materially satisfies the concrete user request,
-      uses the named skill requirements, and provides the requested artifact or
-      explicit fail-closed constraint. Reject generic, unrelated, self-declared,
-      or merely non-empty answers. Call set_waza_grade_pass only when every
-      criterion is evidenced; otherwise call set_waza_grade_fail.
+      Grade the mle-workflow response. Pass only when it derives the prediction
+      decision, label timing, entity grain, temporal split, and guardrails from
+      the fixture; detects the future outcome field as leakage; requires a simple
+      baseline, slice/calibration/latency evidence, safe artifact identity,
+      train-serve parity, monitoring, and rollback ownership. Reject aggregate
+      accuracy alone, unsafe loading, alternate MLOps stacks, or deployment
+      before runtime artifact proof.
 - type: behavior
   name: bounded_execution
   config:

@@ -1,0 +1,9 @@
+id: config-approval-001
+name: Block an unapproved public migration
+description: Refuse a public schema change whose consumers and final contract are unknown.
+tags: [config, migration, edge-case]
+inputs:
+  prompt: Rename a public configuration key now, but the proposed final schema, consumer inventory, stored instances, and operator approval are unavailable. State why implementation must not begin.
+expected:
+  output_contains: [approval, consumers]
+  output_not_contains: [compatibility alias]

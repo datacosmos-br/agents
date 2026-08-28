@@ -1,12 +1,14 @@
-id: edge-case-001
-name: Edge Case - Ambiguous Input
-description: 'Test that the skill handles incomplete or ambiguous input fail-closed.
-
-  '
+id: dispatch-agent-fail-closed-001
+name: No active roster
+description: Refuse to fabricate an agent identity when the client exposes no roster.
 tags:
 - edge-case
 inputs:
-  prompt: 'Handle an incomplete or ambiguous dispatch-agent request safely. Relevant capability: dispatch, agent, selecting, delegating, work, specialized, local, roster. State any blocking constraint explicitly.'
+  prompt: Delegate a deployment investigation, but the active client exposes no agent roster. Do not use a cached, bundled, or hardcoded catalog.
 expected:
-  outcomes:
-  - type: task_completed
+  output_contains:
+  - agent roster is required
+  - delegation cannot proceed
+  output_not_contains:
+  - software-engineer
+  - delegation completed

@@ -1,0 +1,8 @@
+id: typescript-negative-001
+name: Unrelated legal summary
+description: Keep TypeScript guidance out of a document-summary request.
+tags: [anti-trigger]
+inputs:
+  prompt: Summarize the obligations in this contract for an executive reader.
+expected:
+  output_not_contains: [tsconfig, TypeScript, ESM]

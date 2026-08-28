@@ -1,5 +1,5 @@
 name: human-writing-style-eval
-description: Evaluation suite for human-writing-style.
+description: Fact-preserving prose revision without generic AI mannerisms.
 skill: human-writing-style
 schemaVersion: '1.0'
 version: '1.0'
@@ -10,24 +10,19 @@ config:
   executor: copilot-sdk
   model: gpt-5.4
   skill_directories:
-  - ../../skills/human-writing-style
+  - ../../skills/agent-wide/human-writing-style
   required_skills:
   - human-writing-style
-metrics:
-- name: task_completion
-  weight: 1.0
-  threshold: 0.8
-  description: Did the skill complete the assigned task?
 graders:
 - type: prompt
-  name: material_task_result
+  name: human-writing-style-contract
   config:
     prompt: |
-      Evaluate whether the response materially satisfies the concrete user request,
-      uses the named skill requirements, and provides the requested artifact or
-      explicit fail-closed constraint. Reject generic, unrelated, self-declared,
-      or merely non-empty answers. Call set_waza_grade_pass only when every
-      criterion is evidenced; otherwise call set_waza_grade_fail.
+      Grade the human-writing-style response. Pass only when it preserves every
+      concrete fact and the direct technical voice in the supplied draft while
+      removing generic praise, AI vocabulary clusters, heavy transitions, and
+      -ing tails. Reject invented specifics, flattened voice, lost measurements,
+      or a style critique without the requested rewritten artifact.
 - type: behavior
   name: bounded_execution
   config:

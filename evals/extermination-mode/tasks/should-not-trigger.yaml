@@ -1,0 +1,9 @@
+id: extermination-generated-cache-adjacent-001
+name: Clean declared generated cache output
+description: Route ordinary recoverable cleanup outside contract extermination.
+tags: [cleanup, generated-output, anti-trigger]
+inputs:
+  prompt: The UI schema and every public contract stay unchanged. Remove only the owner-declared generated .cache/ui bundle with make clean-ui-cache, preserve all source files, and report the cleanup evidence.
+expected:
+  output_contains: [make clean-ui-cache, preserve]
+  output_not_contains: [superseded contract, consumer rewiring, zero-residue cutover]

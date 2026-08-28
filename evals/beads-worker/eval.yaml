@@ -1,5 +1,5 @@
 name: beads-worker-eval
-description: Evaluation suite for beads-worker.
+description: Assigned-slice execution evidence and role boundaries.
 skill: beads-worker
 schemaVersion: '1.0'
 version: '1.0'
@@ -10,27 +10,20 @@ config:
   executor: copilot-sdk
   model: gpt-5.4
   skill_directories:
-  - ../../skills/beads-worker
+  - ../../skills/tool/beads-worker
   required_skills:
   - beads-worker
-metrics:
-- name: task_completion
-  weight: 1.0
-  threshold: 0.8
-  description: Did the skill complete the assigned task?
 graders:
 - type: prompt
-  name: material_task_result
+  name: beads-worker-contract
   config:
     prompt: |
-      Evaluate whether the response materially satisfies the concrete user request,
-      uses the named skill requirements, and provides the requested artifact or
-      explicit fail-closed constraint. Reject generic, unrelated, self-declared,
-      or merely non-empty answers. Call set_waza_grade_pass only when every
-      criterion is evidenced; otherwise call set_waza_grade_fail.
+      Grade the beads-worker response. Pass only when it uses the supplied assigned-slice evidence to produce a
+      READY_FOR_REVIEW report with branch, SHA, scoped files, gates, PR, residue,
+      and tracker-suspension caveat while leaving merge and closure to the owner.
+      Reject semantic tracker mutations or unsupported completion claims.
 - type: behavior
   name: bounded_execution
-  config:
-    max_duration_ms: 240000
+  config: {max_duration_ms: 240000}
 tasks:
 - tasks/*.yaml

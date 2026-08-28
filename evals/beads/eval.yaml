@@ -1,5 +1,5 @@
 name: beads-eval
-description: Evaluation suite for beads.
+description: Canonical tracker routing and suspension behavior.
 skill: beads
 schemaVersion: '1.0'
 version: '1.0'
@@ -10,27 +10,20 @@ config:
   executor: copilot-sdk
   model: gpt-5.4
   skill_directories:
-  - ../../skills/beads
+  - ../../skills/tool/beads
   required_skills:
   - beads
-metrics:
-- name: task_completion
-  weight: 1.0
-  threshold: 0.8
-  description: Did the skill complete the assigned task?
 graders:
 - type: prompt
-  name: material_task_result
+  name: beads-contract
   config:
     prompt: |
-      Evaluate whether the response materially satisfies the concrete user request,
-      uses the named skill requirements, and provides the requested artifact or
-      explicit fail-closed constraint. Reject generic, unrelated, self-declared,
-      or merely non-empty answers. Call set_waza_grade_pass only when every
-      criterion is evidenced; otherwise call set_waza_grade_fail.
+      Grade the beads response. Pass only when it honors the supplied explicit runtime suspension, preserves the
+      issue identity and evidence without invoking or replacing the tracker, and
+      keeps the phase open until the canonical issue can be closed after merge and
+      post-merge proof. Reject alternate databases, invented routing, or fake closure.
 - type: behavior
   name: bounded_execution
-  config:
-    max_duration_ms: 240000
+  config: {max_duration_ms: 240000}
 tasks:
 - tasks/*.yaml

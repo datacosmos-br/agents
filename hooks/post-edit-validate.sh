@@ -23,49 +23,56 @@ fi
 
 [[ -z "$PROJECT" ]] && exit 0
 
-ERRORS=""
+ERRORS=()
+
+run_validator() {
+    local label=$1
+    local executable=$2
+    shift 2
+
+    if ! command -v "$executable" >/dev/null 2>&1; then
+        ERRORS+=("${label}: ${executable} is unavailable")
+        return
+    fi
+
+    local output
+    local status
+    if output=$("$@" 2>&1); then
+        return
+    else
+        status=$?
+    fi
+    ERRORS+=("${label} failed (exit ${status}):"$'\n'"${output}")
+}
 
 # ── FLEXT: ruff check on single file ──
 if [[ "$PROJECT" == "flext" ]]; then
-    if command -v ruff &>/dev/null; then
-        if ! ruff check "$FILE" 2>&1; then
-            ERRORS="ruff check failed on $FILE"
-        fi
-    fi
+    run_validator "ruff check on ${FILE}" ruff ruff check "$FILE"
 fi
 
 # ── MCB: cargo check on modified crate ──
 if [[ "$PROJECT" == "mcb" ]]; then
     if [[ "$FILE" == *.rs ]]; then
-        # Try cargo check on the workspace (fast for single-file changes)
-        if command -v cargo &>/dev/null; then
-            CARGO_OUT=$(cargo check --message-format=short 2>&1) || true
-            if echo "$CARGO_OUT" | grep -q "error"; then
-                ERRORS="cargo check found errors"
-            fi
-        fi
+        run_validator \
+            "cargo check for ${FILE}" \
+            cargo \
+            cargo check --message-format=short
     fi
 fi
 
 # ── cosmos-main: yamllint on YAML files ──
 if [[ "$PROJECT" == "cosmos-main" ]]; then
     if [[ "$FILE" == *.yml || "$FILE" == *.yaml ]]; then
-        if command -v yamllint &>/dev/null; then
-            if ! yamllint -d relaxed "$FILE" 2>&1; then
-                ERRORS="yamllint failed on $FILE"
-            fi
-        fi
+        run_validator \
+            "yamllint on ${FILE}" \
+            yamllint \
+            yamllint -d relaxed "$FILE"
     fi
 fi
 
-if [[ -n "$ERRORS" ]]; then
-    cat <<EOF
-{
-  "hookSpecificOutput": {
-    "additionalContext": "⚠️ Validation failed for $FILE:\n$ERRORS\n\nFix before continuing."
-  }
-}
-EOF
+if (( ${#ERRORS[@]} > 0 )); then
+    reason=$(printf '%s\n\n' "${ERRORS[@]}")
+    jq -nc --arg reason "$reason" '{"decision":"block","reason":$reason}'
 fi
 
 exit 0

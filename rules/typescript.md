@@ -1,15 +1,26 @@
 ---
-globs: ["*.ts", "*.tsx", "**/*.ts", "**/*.tsx"]
+globs: ["*.ts", "*.tsx", "**/*.ts", "**/*.tsx", "tsconfig.json"]
 ---
-# TypeScript Rules
 
-> ⛔ **LEI SUPREMA — RESOLVER, NUNCA ESCONDER.** Prevalece sobre toda regra deste arquivo: defeito
-> corrige-se na RAIZ e verifica-se verde — nunca `catch {}` vazio, `?? default` mascarando falha,
-> `as any`, ou claim verde sem verificação. Canônico: `~/.claude/AGENTS.md` §0.
+# TypeScript rules
 
-- Strict mode sempre (noImplicitAny, strictNullChecks)
-- Use LSP diagnostics (typescript-language-server) após cada Edit
-- Prefer `interface` sobre `type` para objetos (extensibilidade)
-- Prefer `const` sobre `let` quando possível
-- Use `make lint`, `make typecheck`, `make format` (não tsc/eslint direto)
-- Async/await sobre .then() chains
+Use the project's declared runtime, TypeScript version, module system, package
+manager, framework, and canonical command facade. Never impose a repository-
+specific architecture on a generic TypeScript project.
+
+- Enable the project's strictest supported type checks; do not use `any`,
+  unchecked casts, blanket diagnostic suppression, or empty `catch` blocks.
+- Model nullability and external input explicitly. Validate untrusted data once
+  at the boundary with the project's declared schema owner.
+- Prefer immutable bindings/data where practical and `async`/`await` for
+  readable asynchronous control flow.
+- Preserve structured errors and causes. A missing value is not permission to
+  invent a default success.
+- Run the real public runtime first, then every declared lint, format, type,
+  test, build, security, and package gate affected by the change.
+- Use project-local dependencies and physical files only: no symlink, path
+  dependency to another checkout, cross-repository reference, inherited secret,
+  or project state under `/tmp`.
+- Install TypeScript technology skills only when project-local markers prove
+  TypeScript. FLEXT content remains absent unless independent FLEXT detection
+  succeeds.

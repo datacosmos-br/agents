@@ -1,0 +1,8 @@
+id: python-negative-001
+name: Non-Python writing request
+description: Keep Python implementation guidance out of an unrelated writing task.
+tags: [anti-trigger]
+inputs:
+  prompt: Rewrite this product announcement in a warmer tone.
+expected:
+  output_not_contains: [pytest, pyproject.toml, asyncio]

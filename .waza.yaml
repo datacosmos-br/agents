@@ -1,5 +1,5 @@
-# Waza configuration for the ~/.agents universal skill authority.
-# Enforces the classed workspace budgets owned directly by ~/.agents.
+# Waza configuration for the canonical agents skill authority.
+# Enforces independent file ceilings; agentsctl owns semantic class budgets.
 # No external tool distributes or regenerates this authority.
 
 defaults:
@@ -11,7 +11,7 @@ tokens:
   limits:
     defaults:
       "SKILL.md": 5000
-      "skills/*/references/*.md": 15000
+      "skills/*/*/references/*.md": 15000
       "*.md": 2000
     overrides:
       "README.md": 3000
@@ -21,11 +21,10 @@ tokens:
       "docs/references/*.md": 15000
       "docs/prompts/*.md": 10000
       "docs/architecture/*.md": 10000
-      "skills/frontend-slides/STYLE_PRESETS.md": 3000
-      # Per-class SKILL.md budgets are enforced by agentsctl from
-      # config/skills.json. Waza 0.38.x does not reliably match a wildcard in
-      # an intermediate path segment, so it remains the independent 5k/15k
-      # file-ceiling gate instead of silently pretending to enforce classes.
+      "skills/agent-wide/frontend-slides/STYLE_PRESETS.md": 3000
+      # Per-class SKILL.md budgets are derived by agentsctl from local tags;
+      # config/skills.json owns numeric ceilings only. Waza remains the
+      # independent 5k/15k file-ceiling gate.
       # AGENTS.md intentionally uses the default *.md limit (2000 tokens).
 
 paths:

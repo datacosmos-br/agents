@@ -6,7 +6,13 @@ from pathlib import Path
 
 from agents_governance.temp import TempPolicy, run_command
 
-FAST_POLICY = TempPolicy(poll_seconds=0.01)
+FAST_POLICY = TempPolicy(
+    warning_bytes=1 << 30,
+    failure_bytes=5 << 30,
+    orphan_age_seconds=7 * 24 * 60 * 60,
+    poll_seconds=0.01,
+    termination_grace_seconds=0.1,
+)
 
 
 def _git_repo(path: Path) -> Path:

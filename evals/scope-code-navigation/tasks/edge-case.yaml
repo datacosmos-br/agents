@@ -1,0 +1,11 @@
+id: scope-code-navigation-edge-001
+name: Refuse structural claims without a checkout
+description: Require repository and index evidence before reporting symbols or call paths.
+tags: [scope-code-navigation, edge-case]
+inputs:
+  prompt: >-
+    Find every validator and its callers, but no repository checkout, file tree,
+    Scope index, symbol name, or source is available. State what blocks a factual map.
+expected:
+  output_contains: [repository checkout, index unavailable]
+  output_not_contains: [found all callers, 'call graph:']

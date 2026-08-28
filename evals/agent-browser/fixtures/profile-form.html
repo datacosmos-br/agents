@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <body>
+    <form id="profile-form">
+      <label>Name <input name="name" /></label>
+      <label>Plan
+        <select name="plan">
+          <option value="starter">Starter</option>
+          <option value="pro">Pro</option>
+        </select>
+      </label>
+      <label><input name="terms" type="checkbox" /> Accept terms</label>
+      <button type="submit">Save profile</button>
+    </form>
+    <output id="result" aria-live="polite"></output>
+    <script>
+      document.querySelector("#profile-form").addEventListener("submit", (event) => {
+        event.preventDefault();
+        const data = new FormData(event.currentTarget);
+        document.querySelector("#result").textContent =
+          `profile-saved:${data.get("name")}:${data.get("plan")}`;
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,8 @@
+id: architecture-negative-001
+name: Unrelated copy edit
+description: Keep architecture artifacts out of a prose-only request.
+tags: [anti-trigger]
+inputs:
+  prompt: Shorten this meeting invitation to one friendly sentence.
+expected:
+  output_not_contains: [architecture diagram, ADR, data flow]

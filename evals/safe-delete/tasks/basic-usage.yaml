@@ -1,15 +1,10 @@
-id: basic-usage-001
-name: Basic Usage
-description: 'Test that the skill handles a typical request correctly.
-
-  '
-tags:
-- basic
-- happy-path
+id: safe-delete-inventory-001
+name: Classify a mixed deletion request
+description: Remove only owner-declared generated output and preserve uncertain work.
+tags: [delete, preserve, recover, happy-path]
 inputs:
-  prompt: 'Apply the safe-delete capability to the provided fixture. Exercise these requirements: safe, delete, whenever, asked, remove, files, directories, archive, bak/.bkp, sibling. Return a concrete result.'
+  prompt: Review deletion-inventory.md and give the only safe action now, plus the evidence required afterward.
   files:
-  - path: sample.py
+  - path: deletion-inventory.md
 expected:
-  outcomes:
-  - type: task_completed
+  output_contains: [make clean, operator-draft.md, src/api.py]

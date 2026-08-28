@@ -1,74 +1,59 @@
-# Agent Workflows — Implementation Playbooks
+# Personal implementation playbooks
 
-Each file in this directory is a **complete, copy-pasteable workflow** for a specific task type. No manual command lookup required.
+These playbooks guide an operator or personal agent. They are not project
+projection content. A project receives only the generic, detected-technology,
+and conditionally detected FLEXT skill bundles selected by the projection owner.
 
-## Quick Reference
+## Playbooks
 
-| Task Type | File | Projects | Key Command |
-|-----------|------|----------|-------------|
-| Bug Fix | `bug-fix.md` | flext, mcb, cosmos-main | `make check && make test` |
-| New Feature | `feature.md` | flext, mcb, cosmos-main | `make check && make test && make val` |
-| Refactor | `refactor.md` | flext, mcb | `make check && make test` |
-| Documentation | `docs.md` | All | `make docs` |
-| GitOps / K8s | `gitops.md` | cosmos-main | `make check && make sync` |
-| Emergency Fix | `hotfix.md` | All | `git diff + make check + commit` |
+| Work type | File |
+|---|---|
+| Bug fix | [bug-fix.md](bug-fix.md) |
+| Feature | [feature.md](feature.md) |
+| Refactor | [refactor.md](refactor.md) |
+| Documentation | [docs.md](docs.md) |
+| GitOps/Kubernetes | [gitops.md](gitops.md) |
 
-## Project Detection
+## Entry contract
 
-The agent should auto-detect the project type by checking for these files:
+1. Read repository law and the relevant local docs.
+2. Inspect Git remote, branch, integration branch, dirty state, upstream, and
+   concurrent WIP.
+3. Run `make help` or the repository's declared command discovery surface.
+4. Select only commands that the current repository actually declares.
+5. Observe the real runtime behavior before changing tests.
+6. Work in the existing authorized checkout. While orchestration is suspended,
+   create no clone, worktree, workspace, orchestration session, tracker item, or
+   substitute ledger.
+7. Keep scratch and caches within the storage policy; never use `/tmp` for
+   project state.
 
-```bash
-# FLEXT (Python monorepo)
-[[ -f "pyproject.toml" && -d "flext-core" ]] → PROJECT=flext
+## Validation contract
 
-# MCB (Rust workspace)
-[[ -f "Cargo.toml" && -d "mcb-domain" ]] → PROJECT=mcb
+Run the smallest native gate that covers each changed slice. Before landing,
+run every repository-declared runtime, lint, format, type, test, build,
+security, documentation, and generation/fixed-point gate applicable to the
+change. Any warning, skip, missing tool, or non-zero exit is red and must be
+fixed at its owner.
 
-# DataCosmos (K8s/GitOps)
-[[ -d "apps" && -d "makefiles" && -f "Makefile" ]] → PROJECT=cosmos-main
-```
+Every pass claim includes the command, working directory, exit code, decisive
+output, commit SHA, and scope. A later edit invalidates earlier evidence for the
+affected scope.
 
-## Universal Validation Gate
+## Landing contract
 
-After **every** edit, run the project-specific validation:
+1. Fetch the configured integration branch.
+2. If it advanced or diverged, merge `origin/<integration>` into the work
+   branch with `--no-ff`; never rebase or force-push.
+3. Re-run representative runtime and native gates.
+4. Commit explicit paths, push normally, and open or update a PR against the
+   configured integration branch.
+5. Resolve every conversation, obtain required approval, and require green
+   checks.
+6. Merge by merge commit.
+7. Fast-forward the existing checkout to the integration merge SHA and re-run
+   runtime plus native gates there.
 
-```bash
-# FLEXT
-make check WHAT=fmt,types,lint && make test
-
-# MCB
-make check WHAT=fmt,lint,validate && make test
-
-# cosmos-main
-make check WHAT=quick,validate,scripts
-```
-
-If any gate fails, **fix before continuing**. No exceptions.
-
-## Pre-Session Checklist
-
-Before starting any implementation:
-
-1. `git status` — understand current state
-2. `git branch` — confirm you're on the right branch
-3. `make check WHAT=coordination` — beads/bd status
-4. Read the project's `AGENTS.md` and `CLAUDE.md`
-5. Check for `.continue-here.md` or `CONTINUATION-*.md` files
-
-## Post-Session Checklist
-
-Before ending any session:
-
-1. `git diff` — review all changes
-2. Run the universal validation gate (above)
-3. `make check WHAT=coordination` — update beads status
-4. If changes are complete and validated, ask user about commit
-5. Never leave uncommitted changes without a bead tracking them
-
-## Workflow Principles
-
-- **SSOT**: Universal governance lives here; typed runtime and MCP configuration lives in AI Hub.
-- **MCP Sync**: Run `make mcp`; it delegates generation and validation to the installed `ai-hub` owner.
-- **Evidence**: Every claim needs command output + exit code
-- **No manual commands**: If a step requires a command, it should be in this workflow
-- **Blocked ops**: When R10 applies (blocked operation), hand exact command to user
+A phase is `DONE` only after the approved PR is merged into integration and
+its canonical tracker item is closed with evidence. Tracker runtime is
+suspended, so the strongest current state is `LANDED_VERIFIED`, never `DONE`.

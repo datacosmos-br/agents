@@ -35,3 +35,22 @@ def test_clean_generated_refuses_symlink(tmp_path: Path) -> None:
 
     assert marker.read_text(encoding="utf-8") == "keep"
     (tmp_path / ".waza-cache").unlink()
+
+
+def test_clean_generated_preflights_every_candidate_before_deleting_anything(
+    tmp_path: Path,
+) -> None:
+    cache = tmp_path / ".waza-cache"
+    cache.mkdir()
+    cache_marker = cache / "preserve-on-failure"
+    cache_marker.write_text("keep", encoding="utf-8")
+    outside = tmp_path / "outside"
+    outside.mkdir()
+    latest = tmp_path / "results" / "latest"
+    latest.mkdir(parents=True)
+    (latest / "foreign").symlink_to(outside, target_is_directory=True)
+
+    with pytest.raises(RuntimeError, match="symlink"):
+        clean_generated(tmp_path)
+
+    assert cache_marker.read_text(encoding="utf-8") == "keep"

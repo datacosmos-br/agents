@@ -1,17 +1,21 @@
 ---
-globs: **/*.py
+globs: "**/*.py"
 ---
 
-# Read configuration only through the typed config/settings SSOT
+# Read configuration through the project's typed owner
 
-Access every value via `from ai_hub import config, settings`, then
-`config.AiHub.<domain>` / `settings.AiHub.<domain>` — each returns a validated
-typed model, never a raw dict.
+Use the configuration/settings facade declared by the current repository. Parse
+environment variables, files, and CLI input only at that boundary; consumers
+receive validated typed values, never raw dictionaries or repeated environment
+lookups.
 
-- config = fixed business rules; settings = anything the user can parametrize.
-- No `os.environ[...]` reads, no `ECC_HOME`/`*_ENV`, no custom `*_home()` helper,
-  no duplicated SSOT. Fixed value -> config; user override -> settings.
-- Tests vary valid config/settings values and validate schema, types, invariants,
-  derivations, precedence, round-trip, consumer behavior, and generated structure.
-  Never assert today's config-owned IDs, paths, endpoints, models, rankings,
-  defaults, or scalars. Derive expectations from test input or typed SSOT.
+- Fixed business rules and user-overridable settings have one owner each.
+- No product-specific import, tool-home helper, duplicated constant, implicit
+  home discovery, or inherited-secret precedence in generic Python guidance.
+- Tests vary valid inputs and verify schema, types, invariants, derivations,
+  precedence, round-trip, consumer behavior, and generated structure.
+- Never assert today's configurable paths, endpoints, model names, rankings,
+  defaults, or scalars. Derive expectations from fixture input or the typed
+  owner.
+- When the schema changes, migrate every consumer atomically, reject the old
+  format, delete superseded fixtures/docs, and prove second-run fixed point.

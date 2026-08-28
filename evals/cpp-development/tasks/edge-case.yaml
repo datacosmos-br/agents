@@ -1,0 +1,9 @@
+id: cpp-toolchain-001
+name: Unknown native toolchain
+description: Do not invent a standard or build framework without repository evidence.
+tags: [cpp, edge-case]
+inputs:
+  prompt: Rewrite an unavailable C++ library using the newest standard. No build files, compiler matrix, ABI policy, or source are supplied. Explain the blocking evidence.
+expected:
+  output_contains: [toolchain, ABI]
+  output_not_contains: [-std=c++23]

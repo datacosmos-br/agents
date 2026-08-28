@@ -4,11 +4,13 @@ Do not bypass the command surface with ad-hoc `uv run ruff/pytest/...`. Use
 `make <verb> WHAT=<x>` (or the documented CLI) so guards, locks, dry-run, and
 evidence apply.
 
-A broken or out-of-pattern canonical command is a defect to FIX at its owner
-(file a bead, repair it, rerun through it) — never a reason to route around it.
+A broken or out-of-pattern canonical command is a defect to fix at its owner
+and rerun through the same surface—never a reason to route around it. While the
+tracker is suspended, preserve the exact blocker in Git/PR/CI evidence and keep
+the phase open; create no substitute ledger.
 
-Use and prefer MCP tools and skills alongside the Make verbs for every
-action. Large-scale refactors run through `make mod` and ast-grep
+Use available declared tools and skills alongside Make verbs. Large-scale
+refactors run through the repository's declared structural-editing surface and ast-grep
 search-and-replace, never manual file-by-file edits. Hooks detect raw-command
 bypasses of these surfaces and emit a command warning naming the canonical
 verb.

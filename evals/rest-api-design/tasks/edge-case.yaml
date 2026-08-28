@@ -1,0 +1,13 @@
+id: rest-api-design-edge-001
+name: Refuse an arbitrary pagination contract
+description: Require workload, ordering, mutation, and consumer evidence before fixing pagination semantics.
+tags: [rest-api-design, edge-case]
+inputs:
+  prompt: >-
+    Choose the final pagination contract for an unspecified public collection.
+    Dataset size, stable ordering key, insert behavior, consumer requirements,
+    current envelope, and compatibility policy are unavailable. State the
+    decisions and evidence that block a safe contract.
+expected:
+  output_contains: [stable ordering, consumer requirements]
+  output_not_contains: [next_cursor=abc, GET /api/v1/items]

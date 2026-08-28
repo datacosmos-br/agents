@@ -1,15 +1,14 @@
-id: basic-usage-001
-name: Basic Usage
-description: 'Test that the skill handles a typical request correctly.
-
-  '
-tags:
-- basic
-- happy-path
+id: agent-introspection-debugging-happy-001
+name: Diagnose a repeated wrong-directory search
+description: Turn a concrete retry loop into one falsifiable check and contained recovery.
+tags: [agent, introspection, debugging, failures, diagnosis, recovery, happy-path]
 inputs:
-  prompt: 'Apply the agent-introspection-debugging capability to the provided fixture. Exercise these requirements: agent, introspection, debugging, structured, self-debugging, ai, failures, capture, diagnosis, contained. Return a concrete result.'
+  prompt: >-
+    Analyze retry-loop.log. Produce a Failure Capture, identify the most likely
+    state mismatch, choose one cheap command that discriminates the hypothesis,
+    and give the contained recovery and Agent Self-Debug Report. Do not retry the
+    failed search until the check supports it.
   files:
-  - path: sample.py
+  - path: retry-loop.log
 expected:
-  outcomes:
-  - type: task_completed
+  output_contains: [wrong working directory, pwd, Agent Self-Debug Report]

@@ -1,12 +1,9 @@
-id: edge-case-001
-name: Edge Case - Ambiguous Input
-description: 'Test that the skill handles incomplete or ambiguous input fail-closed.
-
-  '
-tags:
-- edge-case
+id: mle-workflow-deployment-evidence-missing-001
+name: Block an unproven model deployment
+description: Require label, snapshot, artifact, and rollback contracts before production.
+tags: [mle, deployment, fail-closed]
 inputs:
-  prompt: 'Handle an incomplete or ambiguous mle-workflow request safely. Relevant capability: mle, production, machine-learning, engineering, data, contracts, reproducible, training, model, evaluation. State any blocking constraint explicitly.'
+  prompt: Deploy an unspecified model because its reported accuracy is 99 percent. Label timing, data snapshot, baseline, protected slices, calibration, latency, artifact schema, safe loader, runtime inference, monitoring, and rollback owner are all unavailable.
 expected:
-  outcomes:
-  - type: task_completed
+  output_contains: [label timing, rollback]
+  output_not_contains: [deployment approved, production rollout complete]

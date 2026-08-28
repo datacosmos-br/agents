@@ -1,0 +1,28 @@
+name: flutter-development-eval
+description: Dart and Flutter lifecycle, state, and test decisions.
+skill: flutter-development
+schemaVersion: '1.0'
+version: '1.0'
+config:
+  trials_per_task: 1
+  timeout_seconds: 300
+  parallel: false
+  executor: copilot-sdk
+  model: gpt-5.4
+  skill_directories:
+  - ../../skills/framework/flutter-development
+  required_skills:
+  - flutter-development
+graders:
+- type: prompt
+  name: flutter-development-contract
+  config:
+    prompt: |
+      Grade the flutter-development response. Pass only when it identifies the asynchronous widget lifecycle
+      risk in the fixture, preserves the project's state architecture, proposes a
+      concrete correction, and names a meaningful widget test.
+- type: behavior
+  name: bounded_execution
+  config: {max_duration_ms: 240000}
+tasks:
+- tasks/*.yaml

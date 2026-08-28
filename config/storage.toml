@@ -1,8 +1,12 @@
-version = 1
+version = 2
 repositories = []
 
 [policy]
 shell_temp = "${HOME}/tmp"
 shell_temp_max_bytes = 1073741824
 report_max_bytes = 104857600
+warning_bytes = 1073741824
+failure_bytes = 5368709120
 orphan_age_days = 7
+poll_seconds = 0.25
+termination_grace_seconds = 5.0

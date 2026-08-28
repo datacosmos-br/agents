@@ -1,5 +1,5 @@
 name: openspec-verify-change-eval
-description: Evaluation suite for openspec-verify-change.
+description: Evidence-mapped OpenSpec completeness, correctness, and coherence review.
 skill: openspec-verify-change
 schemaVersion: '1.0'
 version: '1.0'
@@ -10,24 +10,20 @@ config:
   executor: copilot-sdk
   model: gpt-5.4
   skill_directories:
-  - ../../skills/openspec-verify-change
+  - ../../skills/tool/openspec-verify-change
   required_skills:
   - openspec-verify-change
-metrics:
-- name: task_completion
-  weight: 1.0
-  threshold: 0.8
-  description: Did the skill complete the assigned task?
 graders:
 - type: prompt
-  name: material_task_result
+  name: openspec-verify-change-contract
   config:
     prompt: |
-      Evaluate whether the response materially satisfies the concrete user request,
-      uses the named skill requirements, and provides the requested artifact or
-      explicit fail-closed constraint. Reject generic, unrelated, self-declared,
-      or merely non-empty answers. Call set_waza_grade_pass only when every
-      criterion is evidenced; otherwise call set_waza_grade_fail.
+      Grade the openspec-verify-change response. Pass only when it verifies the
+      explicitly selected change, maps every requirement and scenario to exact
+      implementation and project-native test evidence, checks accepted design
+      coherence, and classifies missing implementation as blocking. Reject
+      keyword-only conformance, inferred target selection, artifact mutation,
+      task completion edits, or a verified claim with missing evidence.
 - type: behavior
   name: bounded_execution
   config:

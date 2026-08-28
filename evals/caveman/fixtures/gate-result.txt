@@ -1,0 +1,5 @@
+command=make test PYTEST_ADDOPTS=tests/test_catalog.py
+cwd=/workspace/agents
+exit_code=2
+decisive_output=FAIL tests/test_catalog.py::test_distribution_contract
+not_run=security,build

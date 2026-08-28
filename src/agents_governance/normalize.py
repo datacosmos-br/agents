@@ -3,50 +3,16 @@
 from __future__ import annotations
 
 import re
+import stat
 from dataclasses import dataclass
+from pathlib import Path
 
-import yaml
-
+from .atomic_io import discard_physical_file, stage_text
 from .catalog import Catalog
 from .tokens import bpe_tokens
+from .validation import description_contract_error
 
 _LOCAL_LINK = re.compile(r"(!?\[[^\]]+\]\()([^)]+)(\))")
-_KEYWORD = re.compile(r"[A-Za-z0-9][A-Za-z0-9+.#/_-]*")
-_STOPWORDS = {
-    "a",
-    "an",
-    "and",
-    "are",
-    "as",
-    "at",
-    "be",
-    "before",
-    "by",
-    "code",
-    "for",
-    "from",
-    "in",
-    "into",
-    "is",
-    "it",
-    "of",
-    "on",
-    "or",
-    "the",
-    "this",
-    "to",
-    "use",
-    "uses",
-    "using",
-    "when",
-    "with",
-    "without",
-    "workflow",
-    "skill",
-    "skills",
-    "project",
-    "projects",
-}
 
 
 def _rebase_links(body: str) -> str:
@@ -71,98 +37,46 @@ class Normalization:
     destination: str
 
 
-def keyword_description(name: str, description: str, *, limit: int = 10) -> str:
-    """Reduce prose to stable, discriminating trigger keywords."""
-
-    candidates = [*name.split("-"), *_KEYWORD.findall(description)]
-    keywords: list[str] = []
-    seen: set[str] = set()
-    for candidate in candidates:
-        keyword = candidate.strip("._-/").lower()
-        if len(keyword) < 2 or keyword in _STOPWORDS or keyword in seen:
-            continue
-        seen.add(keyword)
-        keywords.append(keyword)
-        if len(keywords) == limit:
-            break
-    return ", ".join(keywords)
-
-
 def normalize_descriptions(catalog: Catalog, *, apply: bool) -> list[Normalization]:
-    """Replace every skill discovery description with compact keyword lists."""
+    """Report descriptions that require a semantic author rewrite."""
 
+    catalog.require_valid()
     changes: list[Normalization] = []
     for directory in catalog.skill_dirs():
-        if catalog.policy(directory.name).updates == "forbidden":
+        if catalog.policy_for(directory).updates == "forbidden":
             continue
         skill = directory / "SKILL.md"
-        text = skill.read_text(encoding="utf-8")
-        marker = text.find("\n---\n", 4)
-        if not text.startswith("---\n") or marker < 0:
-            continue
-        metadata = yaml.safe_load(text[4:marker])
-        if not isinstance(metadata, dict) or not isinstance(
-            metadata.get("description"), str
-        ):
-            continue
-        description = keyword_description(directory.name, metadata["description"])
-        if metadata["description"] != description:
+        frontmatter = Catalog._frontmatter(skill)
+        description = frontmatter.get("description")
+        if description_contract_error(description) is not None:
             changes.append(
                 Normalization(
                     name=directory.name,
-                    tokens=len(_KEYWORD.findall(metadata["description"])),
+                    tokens=len(description.split())
+                    if isinstance(description, str)
+                    else 0,
                     lines=1,
                     destination=(skill.relative_to(catalog.root)).as_posix(),
                 )
             )
-            if apply:
-                metadata["description"] = description
-                frontmatter = yaml.safe_dump(
-                    metadata, sort_keys=False, allow_unicode=True, width=4096
-                ).rstrip()
-                skill.write_text(
-                    f"---\n{frontmatter}\n---\n{text[marker + 5 :]}", encoding="utf-8"
-                )
-        openai = directory / "agents" / "openai.yaml"
-        if not openai.is_file():
-            continue
-        openai_metadata = yaml.safe_load(openai.read_text(encoding="utf-8"))
-        if not isinstance(openai_metadata, dict) or not isinstance(
-            openai_metadata.get("description"), str
-        ):
-            continue
-        openai_description = keyword_description(
-            directory.name, openai_metadata["description"]
+    if apply and changes:
+        names = ", ".join(change.name for change in changes)
+        raise ValueError(
+            "description normalization requires an authored capability + when-to-use "
+            f"sentence: {names}"
         )
-        if openai_metadata["description"] == openai_description:
-            continue
-        changes.append(
-            Normalization(
-                name=directory.name,
-                tokens=len(_KEYWORD.findall(openai_metadata["description"])),
-                lines=1,
-                destination=openai.relative_to(catalog.root).as_posix(),
-            )
-        )
-        if apply:
-            openai_metadata["description"] = openai_description
-            openai.write_text(
-                yaml.safe_dump(
-                    openai_metadata, sort_keys=False, allow_unicode=True, width=4096
-                ),
-                encoding="utf-8",
-            )
     return changes
 
 
 def normalize(catalog: Catalog, *, apply: bool) -> list[Normalization]:
     """Move oversized bodies into one required procedure reference."""
 
+    catalog.require_valid()
     changes: list[Normalization] = []
     for directory in catalog.skill_dirs():
         skill = directory / "SKILL.md"
         text = skill.read_text(encoding="utf-8")
-        policy = catalog.policy(directory.name)
+        policy = catalog.policy_for(directory)
         if policy.updates == "forbidden":
             continue
         tokens = bpe_tokens(skill, catalog.root)
@@ -190,7 +104,6 @@ def normalize(catalog: Catalog, *, apply: bool) -> list[Normalization]:
         frontmatter = text[: marker + 5]
         body = text[marker + 5 :].lstrip()
         destination.parent.mkdir(parents=True, exist_ok=True)
-        destination.write_text(_rebase_links(body), encoding="utf-8")
         title = directory.name.replace("-", " ").title()
         router = (
             f"{frontmatter}\n# {title}\n\n"
@@ -199,5 +112,40 @@ def normalize(catalog: Catalog, *, apply: bool) -> list[Normalization]:
             "The referenced procedure is canonical for this skill; do not improvise "
             "missing steps or restore an upstream synchronization path.\n"
         )
-        skill.write_text(router, encoding="utf-8")
+        procedure_candidate = stage_text(
+            destination,
+            _rebase_links(body),
+            mode=stat.S_IMODE(skill.stat().st_mode),
+        )
+        try:
+            router_candidate = stage_text(skill, router)
+        except BaseException as error:
+            _rollback_files((procedure_candidate,), error)
+            raise
+        procedure_installed = False
+        try:
+            procedure_candidate.replace(destination)
+            procedure_installed = True
+            router_candidate.replace(skill)
+        except BaseException as error:
+            rollback = [procedure_candidate, router_candidate]
+            if procedure_installed:
+                rollback.append(destination)
+            _rollback_files(tuple(rollback), error)
+            raise
     return changes
+
+
+def _rollback_files(paths: tuple[Path, ...], error: BaseException) -> None:
+    cleanup_errors: list[Exception] = []
+    for path in paths:
+        try:
+            discard_physical_file(path)
+        except (OSError, RuntimeError) as cleanup_error:
+            cleanup_errors.append(cleanup_error)
+    if cleanup_errors:
+        error.add_note(
+            "normalization rollback failed: "
+            + "; ".join(str(item) for item in cleanup_errors)
+        )
+        raise error from cleanup_errors[0]

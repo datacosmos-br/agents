@@ -1,5 +1,5 @@
 name: documentation-criteria-eval
-description: Evaluation suite for documentation-criteria.
+description: Semantic evaluation suite for documentation-criteria.
 skill: documentation-criteria
 schemaVersion: '1.0'
 version: '1.0'
@@ -10,24 +10,24 @@ config:
   executor: copilot-sdk
   model: gpt-5.4
   skill_directories:
-  - ../../skills/documentation-criteria
+  - ../../skills/project-wide/documentation-criteria
   required_skills:
   - documentation-criteria
 metrics:
 - name: task_completion
   weight: 1.0
   threshold: 0.8
-  description: Did the skill complete the assigned task?
+  description: Did the response select the required documents and order from evidence?
 graders:
 - type: prompt
-  name: material_task_result
+  name: documentation-criteria-contract
   config:
     prompt: |
-      Evaluate whether the response materially satisfies the concrete user request,
-      uses the named skill requirements, and provides the requested artifact or
-      explicit fail-closed constraint. Reject generic, unrelated, self-declared,
-      or merely non-empty answers. Call set_waza_grade_pass only when every
-      criterion is evidenced; otherwise call set_waza_grade_fail.
+      Grade the documentation-criteria response. Pass only if it applies the
+      file-count and ADR trigger matrix to the supplied change, selects every
+      required document in the correct order, assigns each concern to the
+      proper document scope, and names measurable structural and approval gates
+      without producing unnecessary documentation.
 - type: behavior
   name: bounded_execution
   config:

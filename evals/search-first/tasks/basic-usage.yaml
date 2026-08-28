@@ -1,0 +1,26 @@
+id: search-first-pagination-owner-001
+name: Reuse the canonical pagination owner
+description: Discover architecture, callers, and dependencies before changing code.
+tags: [search, architecture, reuse, dependencies, dry, yagni, happy-path]
+inputs:
+  prompt: |
+    The supplied mini-project must return an opaque URL-safe next-page token from
+    list_orders. Apply search-first before proposing the exact smallest patch.
+    Inspect every supplied file, identify the owner and current consumer, prove
+    the pinned dependency, and explain how the optimized
+    search-first -> YAGNI -> optional SOLID -> simplify inline -> optional DRY ->
+    YAGNI/SOLID recheck -> simplify final cycle
+    applies here. Include the runtime and native test that must prove the change.
+  files:
+  - path: mini-project/AGENTS.md
+  - path: mini-project/docs/architecture.md
+  - path: mini-project/pyproject.toml
+  - path: mini-project/uv.lock
+  - path: mini-project/src/shop/pagination.py
+  - path: mini-project/src/shop/orders.py
+  - path: mini-project/src/shop/api.py
+  - path: mini-project/tests/test_orders.py
+expected:
+  outcomes:
+  - type: task_completed
+  output_contains: [AGENTS.md, architecture.md, PageTokenCodec, list_orders, itsdangerous, 2.2.0, YAGNI, no new SOLID boundary, simplify inline, no structural DRY, pytest tests/test_orders.py]

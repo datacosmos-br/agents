@@ -1,0 +1,8 @@
+id: flutter-negative-001
+name: Unrelated database request
+description: Keep Flutter guidance out of a database-only task.
+tags: [anti-trigger]
+inputs:
+  prompt: Normalize these PostgreSQL tables and define foreign keys.
+expected:
+  output_not_contains: [widget, pubspec, Flutter]

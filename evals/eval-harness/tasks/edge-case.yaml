@@ -1,12 +1,14 @@
-id: edge-case-001
-name: Edge Case - Ambiguous Input
-description: 'Test that the skill handles incomplete or ambiguous input fail-closed.
-
-  '
+id: eval-harness-fail-closed-001
+name: Undefined behavior and baseline
+description: Require observable criteria before inventing an evaluation.
 tags:
 - edge-case
 inputs:
-  prompt: 'Handle an incomplete or ambiguous eval-harness request safely. Relevant capability: eval, harness, formal, evaluation, framework, claude, sessions, implementing, eval-driven, development. State any blocking constraint explicitly.'
+  prompt: Build an eval for “make it better,” but no behavior, input, expected output, baseline, artifact, or success threshold is defined.
 expected:
-  outcomes:
-  - type: task_completed
+  output_contains:
+  - observable behavior is required
+  - success threshold is required
+  output_not_contains:
+  - 'Status: SHIP IT'
+  - baseline passed

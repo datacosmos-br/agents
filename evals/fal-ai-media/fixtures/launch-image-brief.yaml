@@ -1,0 +1,16 @@
+purpose: product launch hero
+model_quality: production
+prompt: >-
+  Editorial product photograph of a matte-black portable synthesizer on a
+  brushed aluminum desk, warm side light, restrained shadows, no text or logos.
+image_size: landscape_16_9
+num_images: 1
+seed: 1842
+guidance_scale: 7.5
+cost_estimate_required: true
+video_continuation:
+  prompt: Slow camera push toward the synthesizer while the warm light shifts.
+  duration: 5s
+  aspect_ratio: '16:9'
+  seed: 1842
+  image_url: use-the-generated-image-artifact

@@ -1,0 +1,11 @@
+id: yagni-future-platform-001
+name: Block a consumer-free platform
+description: Refuse speculative infrastructure without current evidence.
+tags: [yagni, ambiguity, fail-closed]
+inputs:
+  prompt: Build the universal future platform described in future-platform.md immediately. No project, approved requirement, consumer, owner, runtime path, dependency policy, or acceptance test exists.
+  files:
+  - path: future-platform.md
+expected:
+  output_contains: [blocked, current requirement, current consumer, canonical owner, runtime path, missing evidence]
+  output_not_contains: ['class FuturePlatformFactory(']

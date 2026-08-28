@@ -1,0 +1,11 @@
+scope_index:
+  present: true
+  freshness: current
+  project: checkout-service
+change:
+  symbol: PaymentService.authorize
+  kind: public-signature-change
+  known_definition: src/payments/service.ts
+  callers: unknown
+constraint:
+  maximum_scope_commands_before_read: 3

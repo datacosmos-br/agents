@@ -1,15 +1,10 @@
-id: should-not-trigger-001
-name: Should Not Trigger
-description: 'Test that the skill does NOT activate on unrelated prompts.
-
-  This validates trigger specificity.
-
-  '
-tags:
-- anti-trigger
-- negative-test
+id: caveman-negative-001
+name: Write deliberately ornate fiction
+description: Do not force an evidence-status format onto explicitly creative prose.
+tags: [caveman, anti-trigger]
 inputs:
-  prompt: What is the weather today?
+  prompt: >-
+    Write a lush, atmospheric paragraph about a lighthouse during a storm. The
+    requested output is fiction, not an operator status or technical document.
 expected:
-  output_not_contains:
-  - skill activated
+  output_not_contains: [exit code, decisive output, command evidence]

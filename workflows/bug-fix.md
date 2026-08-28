@@ -1,99 +1,35 @@
-# Workflow: Bug Fix
+# Workflow: bug fix
 
 ## Goal
-Fix a bug with root-cause analysis, minimal change, and full validation.
 
-## Prerequisites
-- [ ] `git status` shows clean working tree or known state
-- [ ] You are on the correct branch (feature/fix branch, not main)
-- [ ] Project detected (see WORKFLOWS.md)
+Correct the observed root cause with the smallest complete owner change and a
+regression test that proves public behavior.
 
-## Steps
+## Procedure
 
-### 1. Understand the Bug (Investigate)
-```bash
-# Read error logs, stack traces, or user description
-# Search codebase for related code
-grep -rn "error_pattern" src/ tests/
-# Or use active structural tools: ast-grep, scope, or repository-native search
-```
+1. Read repository law, current documentation, owners, consumers, Git state, and
+   concurrent WIP.
+2. Discover the repository's canonical commands through `make help` or its
+   declared equivalent.
+3. Reproduce the failure through the real public runtime surface. Record the
+   command, cwd, exit code, and decisive output.
+4. Trace inputs to the canonical owner. Search all consumers for the same defect
+   class before choosing the change.
+5. Add or correct an observable regression test. Do not mock away the failing
+   boundary or encode an implementation detail.
+6. Change the owner and complete the cutover. Remove superseded code, docs,
+   fixtures, and compatibility paths in the same change.
+7. Re-run the real runtime first, then the affected native lint, format, type,
+   test, build, security, and generated-surface gates.
+8. Search for contradictory documentation and stale consumers.
+9. Follow the landing contract in [WORKFLOWS.md](WORKFLOWS.md).
 
-### 2. Reproduce
-```bash
-# FLEXT: run specific failing test
-pytest tests/path/to/test_file.py::test_name -xvs
+## Fail-closed rules
 
-# MCB: run specific failing test
-cargo test --package mcb-domain test_name -- --nocapture
-
-# cosmos-main: check live state (read-only)
-make status WHAT=app,health
-```
-
-### 3. Root Cause Analysis
-```bash
-# Use scientific method — form hypothesis, test, validate
-# Search for related tests to understand expected behavior
-grep -rn "related_function" tests/
-# Check git history for recent changes
-git log --oneline -10 -- path/to/file
-```
-
-### 4. Implement Fix
-- Make the **smallest possible change** that fixes the bug
-- Add or update tests that reproduce the bug
-- Follow project typing and lint rules
-
-### 5. Validate
-```bash
-# ── FLEXT ──
-make check WHAT=fmt,types,lint && make test
-
-# ── MCB ──
-make check WHAT=fmt,lint,validate && make test
-
-# ── cosmos-main ──
-make check WHAT=quick,validate,scripts
-# If K8s manifests changed:
-make check WHAT=render-noop
-```
-
-### 6. Evidence Collection
-```bash
-# Show what changed
-git diff --stat
-git diff path/to/fixed_file
-
-# Show tests passing
-# (output from step 5)
-```
-
-### 7. Session End
-```bash
-# Update beads tracking
-bd update <id> --json
-
-# If user authorizes:
-git add -u
-git commit -m "fix(scope): description
-
-Root cause: <one-line explanation>
-Validation: make check && make test (all pass)"
-```
-
-## Decision Tree
-
-```
-Can you reproduce the bug?
-├── NO  → Ask user for more info / logs / environment
-│
-├── YES → Is the root cause clear?
-│         ├── NO  → Add debug logging / tracing, reproduce again
-│         │
-│         └── YES → Is the fix a one-liner?
-│                   ├── YES → Fix + test + validate + done
-│                   │
-│                   └── NO  → Does it need a design change?
-│                             ├── YES → Escalate to feature workflow
-│                             └── NO  → Fix + test + validate + done
-```
+- No bypass, fallback, shim, suppression, hardcode, weakened assertion, skipped
+  gate, or dual old/new behavior.
+- A missing tool, warning, timeout, auth failure, quota failure, or unexplained
+  environment difference remains red.
+- Preserve unknown and concurrent WIP; never reset, stash, or overwrite it.
+- While tracker runtime is suspended, create no substitute tracker or ledger
+  and do not call the phase `DONE`.

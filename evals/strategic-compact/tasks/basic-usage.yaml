@@ -1,15 +1,10 @@
-id: basic-usage-001
-name: Basic Usage
-description: 'Test that the skill handles a typical request correctly.
-
-  '
-tags:
-- basic
-- happy-path
+id: strategic-compact-boundary-001
+name: Compact at a proven phase boundary
+description: Preserve the approved contract while discarding bulky research context.
+tags: [context, compaction, continuity, happy-path]
 inputs:
-  prompt: 'Apply the strategic-compact capability to the provided fixture. Exercise these requirements: strategic, compact, suggests, manual, context, compaction, logical, intervals, preserve, through. Return a concrete result.'
+  prompt: Decide whether to compact at session-boundary.md and give the exact continuation context to reload.
   files:
-  - path: sample.py
+  - path: session-boundary.md
 expected:
-  outcomes:
-  - type: task_completed
+  output_contains: [compact, durable plan, repository state]

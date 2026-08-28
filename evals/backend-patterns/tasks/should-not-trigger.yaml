@@ -1,15 +1,10 @@
-id: should-not-trigger-001
-name: Should Not Trigger
-description: 'Test that the skill does NOT activate on unrelated prompts.
-
-  This validates trigger specificity.
-
-  '
-tags:
-- anti-trigger
-- negative-test
+id: backend-patterns-negative-001
+name: Name one public REST resource
+description: Route a contract-only naming question to API design.
+tags: [backend-patterns, anti-trigger]
 inputs:
-  prompt: What is the weather today?
+  prompt: >-
+    Decide whether a public collection URL should be /team-member or
+    /team-members. No server implementation or database change is requested.
 expected:
-  output_not_contains:
-  - skill activated
+  output_not_contains: [repository layer, database index, Redis cache]

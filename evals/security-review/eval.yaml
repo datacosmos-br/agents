@@ -1,5 +1,5 @@
 name: security-review-eval
-description: Evaluation suite for security-review.
+description: Reproduction, owner correction, scanner evidence, and strict closure.
 skill: security-review
 schemaVersion: '1.0'
 version: '1.0'
@@ -10,27 +10,21 @@ config:
   executor: copilot-sdk
   model: gpt-5.4
   skill_directories:
-  - ../../skills/security-review
+  - ../../skills/project-wide/security-review
   required_skills:
   - security-review
-metrics:
-- name: task_completion
-  weight: 1.0
-  threshold: 0.8
-  description: Did the skill complete the assigned task?
 graders:
 - type: prompt
-  name: material_task_result
+  name: security-review-contract
   config:
     prompt: |
-      Evaluate whether the response materially satisfies the concrete user request,
-      uses the named skill requirements, and provides the requested artifact or
-      explicit fail-closed constraint. Reject generic, unrelated, self-declared,
-      or merely non-empty answers. Call set_waza_grade_pass only when every
-      criterion is evidenced; otherwise call set_waza_grade_fail.
+      Grade the security-review response. Pass only when it reproduces the named
+      finding, traces it to Exporter.render, replaces shell interpretation with
+      the existing argument-vector primitive, and requires fresh make security
+      plus runtime evidence. Reject ignores, risk acceptance, hardcoded input,
+      shell escaping wrappers, or a green claim without scanner output.
 - type: behavior
   name: bounded_execution
-  config:
-    max_duration_ms: 240000
+  config: {max_duration_ms: 240000}
 tasks:
 - tasks/*.yaml

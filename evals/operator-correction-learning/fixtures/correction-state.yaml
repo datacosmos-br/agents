@@ -1,0 +1,22 @@
+tracker:
+  mode: explicitly_suspended
+substitute_tracker:
+  authorized: false
+evidence:
+  owners: [git-commit, pull-request, review, ci]
+correction:
+  prohibited_behavior: Project scratch or caches under /tmp
+  required_replacement: Repository-local .test-tmp or .cache on persistent storage
+  scope: Project test and build execution
+  incident: Root filesystem exhausted by multi-gigabyte temporary builds
+owners:
+  canonical: rules/storage.md
+  consumers:
+    - AGENTS.md
+    - skills/make-check/SKILL.md
+opposing_active_instruction:
+  path: docs/legacy-testing.md
+  text: Use /tmp for project test scratch
+closure:
+  canonical_tracker_available: false
+  phase_done_allowed: false

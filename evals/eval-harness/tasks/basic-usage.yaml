@@ -1,15 +1,23 @@
-id: basic-usage-001
-name: Basic Usage
-description: 'Test that the skill handles a typical request correctly.
-
-  '
-tags:
-- basic
-- happy-path
+id: eval-harness-happy-path-001
+name: Define CSV-validation capability and regression evals
+description: Convert an observable contract into deterministic eval definitions.
+tags: [evals, harness, scenarios, graders, fixtures, validation, happy-path]
 inputs:
-  prompt: 'Apply the eval-harness capability to the provided fixture. Exercise these requirements: eval, harness, formal, evaluation, framework, claude, sessions, implementing, eval-driven, development. Return a concrete result.'
+  prompt: |
+    Use the formal eval-harness evaluation framework to implement eval-driven
+    development for Claude sessions from the supplied capability contract. Include
+    separate capability and regression evals, deterministic grader commands,
+    expected artifacts, pass@3 and pass^3 targets, and the evidence report shape.
+    Do not claim that any unexecuted eval passed.
   files:
-  - path: sample.py
+  - path: csv-validator-contract.md
 expected:
   outcomes:
   - type: task_completed
+  output_contains:
+  - CAPABILITY EVAL
+  - REGRESSION EVAL
+  - pass@3
+  - pass^3
+  - exit code 2
+  - report.json

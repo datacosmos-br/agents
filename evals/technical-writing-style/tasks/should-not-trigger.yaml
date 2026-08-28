@@ -1,15 +1,8 @@
-id: should-not-trigger-001
-name: Should Not Trigger
-description: 'Test that the skill does NOT activate on unrelated prompts.
-
-  This validates trigger specificity.
-
-  '
-tags:
-- anti-trigger
-- negative-test
+id: technical-writing-negative-001
+name: Preserve a requested poetic voice
+description: Do not impose technical prose rules on creative writing.
+tags: [anti-trigger]
 inputs:
-  prompt: What is the weather today?
+  prompt: Write a lyrical four-line poem about moonlight on the sea, using deliberate metaphor.
 expected:
-  output_not_contains:
-  - skill activated
+  output_not_contains: [measured result, technical constraint, active-voice edit]

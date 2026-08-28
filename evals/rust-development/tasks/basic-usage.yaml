@@ -1,15 +1,10 @@
-id: basic-usage-001
-name: Basic Usage
-description: 'Test that the skill handles a typical request correctly.
-
-  '
-tags:
-- basic
-- happy-path
+id: rust-development-port-001
+name: Repair a panicking Rust parser
+description: Preserve a typed public API while removing invalid-input panic behavior.
+tags: [rust, cargo, development, happy-path]
 inputs:
-  prompt: 'Apply the rust-development capability to the provided fixture. Exercise these requirements: rust, development, building, reviewing, testing, simplifying, detected, cargo.toml. Return a concrete result.'
+  prompt: Propose the minimal owner-level correction for crate-context.md and state the exact validation sequence.
   files:
-  - path: sample.py
+  - path: crate-context.md
 expected:
-  outcomes:
-  - type: task_completed
+  output_contains: [Result<u16, ParsePortError>, cargo clippy, cargo test]

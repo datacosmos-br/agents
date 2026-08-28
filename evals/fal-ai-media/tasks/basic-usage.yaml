@@ -1,15 +1,27 @@
-id: basic-usage-001
-name: Basic Usage
-description: 'Test that the skill handles a typical request correctly.
-
-  '
-tags:
-- basic
-- happy-path
+id: fal-ai-media-happy-path-001
+name: Generate a reproducible launch image
+description: Estimate cost and invoke the high-fidelity image model with exact inputs.
+tags: [fal.ai, media, image, video, generation, cost, happy-path]
 inputs:
-  prompt: 'Apply the fal-ai-media capability to the provided fixture. Exercise these requirements: fal, ai, media, unified, generation, via, fal.ai, mcp, image, video. Return a concrete result. Exercise the following parameter contract: Param: Type; prompt: string; image_size: string; num_images: number; seed: number; guidance_scale: number; Param: Type; prompt: string; duration: string; aspect_ratio: string; seed: number; image_url: string.'
+  prompt: |
+    Use the unified fal.ai MCP media-generation workflow in the supplied brief
+    to produce an image and its image-to-video continuation. Show the exact
+    estimate_cost and generate input contracts. For each `Param: Type` table,
+    include prompt string, image_size string,
+    num_images number, seed number, guidance_scale number for the image; prompt
+    string, duration string, aspect_ratio string, seed number, and image_url
+    string for video. Preserve the values, then describe the artifact or asynchronous job
+    evidence that must be returned. Do not fabricate a completed result.
   files:
-  - path: sample.py
+  - path: launch-image-brief.yaml
 expected:
   outcomes:
   - type: task_completed
+  output_contains:
+  - estimate_cost
+  - fal-ai/nano-banana-pro
+  - landscape_16_9
+  - 'seed: 1842'
+  - guidance_scale
+  - image_url
+  - generate

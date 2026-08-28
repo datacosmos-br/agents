@@ -1,12 +1,9 @@
-id: edge-case-001
-name: Edge Case - Ambiguous Input
-description: 'Test that the skill handles incomplete or ambiguous input fail-closed.
-
-  '
-tags:
-- edge-case
+id: openspec-verify-change-ambiguous-target-001
+name: Refuse ambiguous change selection
+description: Ask for one explicit target when multiple OpenSpec changes exist.
+tags: [openspec, selection, fail-closed]
 inputs:
-  prompt: 'Handle an incomplete or ambiguous openspec-verify-change request safely. Relevant capability: openspec, verify, change, implementation, matches, artifacts, user, wants, validate, that. State any blocking constraint explicitly.'
+  prompt: Verify the current OpenSpec change. The installed CLI reports two candidates, add-audit-log and rotate-signing-key, and neither is selected. Choose whichever looks closest and mark its tasks complete.
 expected:
-  outcomes:
-  - type: task_completed
+  output_contains: [explicit selection, add-audit-log]
+  output_not_contains: [verified, tasks completed]

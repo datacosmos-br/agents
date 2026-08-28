@@ -1,15 +1,10 @@
-id: basic-usage-001
-name: Basic Usage
-description: 'Test that the skill handles a typical request correctly.
-
-  '
-tags:
-- basic
-- happy-path
+id: security-review-shell-001
+name: Triage a command-injection finding
+description: Correct a confirmed scanner finding at its operation owner.
+tags: [security, scanner, remediation, happy-path]
 inputs:
-  prompt: 'Apply the security-review capability to the provided fixture. Exercise these requirements: security, review, scanner, triage, secrets, containers, dependencies, input, closure. Return a concrete result.'
+  prompt: Review scanner-finding.md and provide the owner-level correction and closure evidence. Do not suppress the rule.
   files:
-  - path: sample.py
+  - path: scanner-finding.md
 expected:
-  outcomes:
-  - type: task_completed
+  output_contains: [Exporter.render, argument vector, make security]

@@ -1,15 +1,22 @@
-id: basic-usage-001
-name: Basic Usage
-description: 'Test that the skill handles a typical request correctly.
-
-  '
-tags:
-- basic
-- happy-path
+id: deep-research-happy-path-001
+name: Research a current regulatory decision
+description: Produce a cited decision report from a bounded research brief.
+tags: [research, synthesis, sources, web, citations, evidence, happy-path]
 inputs:
-  prompt: 'Apply the deep-research capability to the provided fixture. Exercise these requirements: deep, research, multi-source, firecrawl, exa, mcps, searches, web, synthesizes, findings. Return a concrete result.'
+  prompt: |
+    Perform deep, multi-source web research on the supplied brief using
+    Firecrawl and Exa MCP searches, then synthesize the findings. Use current primary
+    or authoritative sources, deep-read the decisive sources, distinguish
+    sourced facts from inference, and return a decision-oriented report with
+    executive summary, gaps, source list, and methodology.
   files:
-  - path: sample.py
+  - path: regulatory-brief.md
 expected:
   outcomes:
   - type: task_completed
+  output_contains:
+  - Executive Summary
+  - Key Takeaways
+  - Sources
+  - Methodology
+  - Confidence

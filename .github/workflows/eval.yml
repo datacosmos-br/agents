@@ -1,20 +1,48 @@
 name: Run Skill Evaluations
 
 on:
+  push:
+    branches: [dev]
+    paths:
+      - 'evals/**'
+      - 'skills/**'
+      - 'commands/**'
+      - 'agents/**'
+      - 'src/**'
+      - 'tests/**'
+      - 'config/**'
+      - 'bin/**'
+      - 'hooks/**'
+      - 'rules/**'
+      - 'docs/**'
+      - 'Makefile'
+      - '.waza.yaml'
+      - '.mise.toml'
+      - 'AGENTS.md'
+      - 'CLAUDE.md'
+      - 'UNIVERSAL_CORE.md'
+      - 'pyproject.toml'
+      - 'uv.lock'
   pull_request:
     branches: [dev, main]
     paths:
       - 'evals/**'
       - 'skills/**'
+      - 'commands/**'
+      - 'agents/**'
       - 'src/**'
       - 'tests/**'
       - 'config/**'
-      - 'mcp/**'
       - 'bin/**'
       - 'hooks/**'
       - 'rules/**'
+      - 'docs/**'
       - 'Makefile'
+      - '.waza.yaml'
       - '.mise.toml'
+      - 'AGENTS.md'
+      - 'CLAUDE.md'
+      - 'UNIVERSAL_CORE.md'
       - 'pyproject.toml'
       - 'uv.lock'
 

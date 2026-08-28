@@ -1,15 +1,8 @@
-id: should-not-trigger-001
-name: Should Not Trigger
-description: 'Test that the skill does NOT activate on unrelated prompts.
-
-  This validates trigger specificity.
-
-  '
-tags:
-- anti-trigger
-- negative-test
+id: rust-development-negative-001
+name: Define the word rust
+description: Keep language-development guidance out of a vocabulary request.
+tags: [anti-trigger]
 inputs:
-  prompt: What is the weather today?
+  prompt: Give a one-sentence dictionary definition of rust on iron.
 expected:
-  output_not_contains:
-  - skill activated
+  output_not_contains: [Cargo.toml, cargo clippy, Result<T>]

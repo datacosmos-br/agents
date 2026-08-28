@@ -1,0 +1,29 @@
+name: config-schema-migration-eval
+description: Atomic configuration-schema cutover decisions.
+skill: config-schema-migration
+schemaVersion: '1.0'
+version: '1.0'
+config:
+  trials_per_task: 1
+  timeout_seconds: 300
+  parallel: false
+  executor: copilot-sdk
+  model: gpt-5.4
+  skill_directories:
+  - ../../skills/project-wide/config-schema-migration
+  required_skills:
+  - config-schema-migration
+graders:
+- type: prompt
+  name: config-schema-migration-contract
+  config:
+    prompt: |
+      Grade the config-schema-migration response. Pass only when it defines one final schema, names producers and
+      consumers to rewire, rejects the old format, removes the superseded path,
+      and proves an idempotent second run. Fail any dual-read, alias, fallback,
+      deprecation window, or deferred cleanup.
+- type: behavior
+  name: bounded_execution
+  config: {max_duration_ms: 240000}
+tasks:
+- tasks/*.yaml

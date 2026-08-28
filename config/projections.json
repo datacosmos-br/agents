@@ -1,24 +1,29 @@
 {
-  "version": 2,
+  "version": 3,
   "surfaces": {
-    "commands": {"entries": ["security-triage.md"]},
-    "rules": {"entries": ["security"]}
+    "rules": {
+      "personal": {"entries": ["security"]},
+      "project_generic": {"entries": []}
+    }
   },
   "personal_targets": {
-    "claude": {"skills": "${HOME}/.claude/skills", "commands": "${HOME}/.claude/commands", "rules": "${HOME}/.claude/rules"},
+    "claude": {"skills": "${HOME}/.claude/skills", "commands": {"provider": "claude", "path": "${HOME}/.claude/commands"}, "rules": "${HOME}/.claude/rules"},
     "codex": {"skills": "${HOME}/.codex/skills", "rules": "${HOME}/.codex/rules"},
-    "cursor": {"skills": "${HOME}/.cursor/skills", "commands": "${HOME}/.cursor/commands"},
-    "gemini": {"skills": "${HOME}/.gemini/skills"},
-    "opencode": {"skills": "${HOME}/.config/opencode/skills"},
-    "copilot": {"skills": "${HOME}/.copilot/skills"},
+    "cursor": {"skills": "${HOME}/.cursor/skills"},
+    "gemini": {"skills": "${HOME}/.gemini/skills", "commands": {"provider": "gemini", "path": "${HOME}/.gemini/commands"}},
+    "opencode": {"skills": "${HOME}/.config/opencode/skills", "commands": {"provider": "opencode", "path": "${HOME}/.config/opencode/commands"}},
+    "copilot": {"skills": "${HOME}/.copilot/skills", "commands": {"provider": "copilot", "path": "${HOME}/.claude/commands"}},
     "antigravity": {"skills": "${HOME}/.gemini/antigravity/skills"}
   },
   "projects": {
-    "town_root": "${HOME}/gt",
-    "checkout_glob": "*/mayor/rig",
     "skills_path": ".agents/skills",
-    "commands_path": ".agents/commands",
-    "rules_path": ".agents/rules",
-    "flext_remote": "flext-sh/flext"
+    "command_targets": {
+      "claude": {"path": ".claude/commands"},
+      "copilot": {"path": ".claude/commands"},
+      "cursor": {"path": ".cursor/commands"},
+      "gemini": {"path": ".gemini/commands"},
+      "opencode": {"path": ".opencode/commands"}
+    },
+    "rules_path": ".agents/rules"
   }
 }

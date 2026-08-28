@@ -1,0 +1,14 @@
+id: context7-documentation-fail-closed-001
+name: Missing library identity
+description: Refuse to query documentation when the target package is unknowable.
+tags:
+- edge-case
+inputs:
+  prompt: Look up the current API for `createClient`, but no library, package, framework, version, import path, or surrounding code is available.
+expected:
+  output_contains:
+  - library name is required
+  - package or import path is required
+  output_not_contains:
+  - query-docs completed
+  - /vercel/next.js

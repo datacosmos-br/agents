@@ -1,12 +1,9 @@
-id: edge-case-001
-name: Edge Case - Ambiguous Input
-description: 'Test that the skill handles incomplete or ambiguous input fail-closed.
-
-  '
-tags:
-- edge-case
+id: nextjs-turbopack-version-unknown-001
+name: Refuse an unverified bundler flag
+description: Require release and plugin evidence before selecting a fallback flag.
+tags: [nextjs, bundler, fail-closed]
 inputs:
-  prompt: 'Handle an incomplete or ambiguous nextjs-turbopack request safely. Relevant capability: nextjs, turbopack, next.js, 16+, incremental, bundling, fs, caching, dev, speed. State any blocking constraint explicitly.'
+  prompt: Fix an unavailable Next.js app by choosing a Turbopack-disable flag from memory. The Next.js version, package manifest, lockfile, scripts, plugins, config, error, and official release documentation are unavailable.
 expected:
-  outcomes:
-  - type: task_completed
+  output_contains: [version, official documentation]
+  output_not_contains: [flag confirmed, webpack fallback applied]

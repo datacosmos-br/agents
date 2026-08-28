@@ -1,60 +1,39 @@
-# Workflow: Documentation
+# Workflow: documentation
 
 ## Goal
-Update or create documentation that matches the current code state.
 
-## Prerequisites
-- [ ] The code change that requires docs is already implemented and validated
-- [ ] You know the audience (user docs, API docs, ADR, runbook)
+Make active documentation match the current runtime, interfaces, ownership, and
+delivery law without duplicating canonical procedures.
 
-## Steps
+Documentation-only drift fixes are valid changes; they do not require an
+unrelated code change first.
 
-### 1. Identify What Needs Docs
-```bash
-# Check for stale docs
-git diff --name-only | grep -E '\.(md|rst)$'
-# Check for undocumented public APIs
-# MCB: cargo doc --document-private-items 2>&1 | grep "missing_docs"
-# FLEXT: check docstring coverage
-```
+## Procedure
 
-### 2. Write / Update
-- Update docstrings/comments for code changes
-- Update user-facing docs (README, guides)
-- Update ADR if architectural decision changed
-- Update runbooks if operational behavior changed
+1. Read repository law and identify the canonical code, configuration, schema,
+   CLI help, or pinned upstream source for every changed claim.
+2. Inventory commands, flags, paths, model names, generated surfaces, PR facts,
+   integration branches, and status language in the affected documents.
+3. Reproduce local help or read the owning parser/configuration. Never invent a
+   flag or infer behavior from stale examples.
+4. Replace stale active guidance at the owner. Preserve useful history only when
+   it is explicitly marked non-executable and cannot be mistaken for current
+   instruction.
+5. Prefer a link to a local canonical document over duplicated prose.
+6. Keep examples portable: no private absolute paths, symlinks,
+   cross-repository references, embedded secrets, or project-specific defaults
+   in generic/projected content.
+7. Validate local Markdown links, contradiction searches, formatting, and every
+   repository-native documentation gate.
+8. Review `git diff --check` and the exact documentation diff.
+9. Follow the landing contract in [WORKFLOWS.md](WORKFLOWS.md).
 
-### 3. Validate Docs
-```bash
-# ── FLEXT ──
-make docs WHAT=validate
-make check WHAT=markdown
+## Acceptance
 
-# ── MCB ──
-make docs WHAT=lint,validate
-# Check rustdoc builds without warnings
-cargo doc --no-deps 2>&1 | grep -i "warning" || true
+Commands and flags match current owners; active links resolve; historical facts
+are labeled; project projection is limited to generic, detected-technology, and
+conditional FLEXT content; closure language requires both merged integration PR
+and canonical tracker closure.
 
-# ── cosmos-main ──
-make docs WHAT=validate,standardize
-make check WHAT=adr
-```
-
-### 4. Cross-Reference Check
-```bash
-# Ensure all links work
-# Ensure code examples in docs compile/run
-# Ensure ADR index is up to date
-```
-
-### 5. Session End
-```bash
-git add -u
-git commit -m "docs(scope): description
-
-Changes: <what docs changed>
-Validation: make docs (pass)"
-```
-
-## Rule
-Docs must be updated in the **same bead** as the code change that makes them necessary. Stale docs become bug beads.
+Tracker runtime is suspended. Documentation evidence belongs in commits,
+reviews, checks, and CI; no manual ledger or substitute tracker may be created.

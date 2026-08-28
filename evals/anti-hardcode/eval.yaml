@@ -1,0 +1,33 @@
+name: anti-hardcode-eval
+description: Operational-value ownership, migration, and loud configuration failure.
+skill: anti-hardcode
+schemaVersion: '1.0'
+version: '1.0'
+config:
+  trials_per_task: 1
+  timeout_seconds: 300
+  parallel: false
+  executor: copilot-sdk
+  model: gpt-5.4
+  skill_directories:
+  - ../../skills/project-wide/anti-hardcode
+  required_skills:
+  - anti-hardcode
+graders:
+- type: prompt
+  name: anti-hardcode-owner-contract
+  config:
+    prompt: |
+      Grade the anti-hardcode response. Pass only when it classifies the embedded
+      endpoint, database, model, and output path as critical runtime defects;
+      migrates them into one required typed RuntimeConfig owner; injects that
+      owner into the consumer; removes all literal/default lookup paths; and
+      requires ConfigError propagation to CLI stderr/nonzero exit plus fixed-point
+      proof. Reject environment scraping, a constants module, duplicate defaults,
+      compatibility aliases, fallback values, or lexical deletion of a protocol
+      invariant.
+- type: behavior
+  name: bounded_execution
+  config: {max_duration_ms: 240000}
+tasks:
+- tasks/*.yaml

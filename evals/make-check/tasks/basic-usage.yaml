@@ -1,15 +1,10 @@
-id: basic-usage-001
-name: Basic Usage
-description: 'Test that the skill handles a typical request correctly.
-
-  '
-tags:
-- basic
-- happy-path
+id: make-check-scoped-gates-001
+name: Select scoped lint and format gates
+description: Choose the declared fast path for one changed Python file.
+tags: [make, gates, validation, happy-path]
 inputs:
-  prompt: 'Apply the make-check capability to the provided fixture. Exercise these requirements: make, check, running, any, build, test, lint, format, validation, find. Return a concrete result.'
+  prompt: Find the declared Make validation targets before running any check, test, lint, format, or build command. For a change limited to src/widget.py, select the exact scoped lint-and-format command from Makefile and state the evidence required for green.
   files:
-  - path: sample.py
+  - path: Makefile
 expected:
-  outcomes:
-  - type: task_completed
+  output_contains: [make check, 'CHECK_GATES=lint,format', 'FILES=src/widget.py']

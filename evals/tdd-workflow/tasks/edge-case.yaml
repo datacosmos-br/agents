@@ -1,12 +1,9 @@
-id: edge-case-001
-name: Edge Case - Ambiguous Input
-description: 'Test that the skill handles incomplete or ambiguous input fail-closed.
-
-  '
-tags:
-- edge-case
+id: tdd-workflow-inverted-001
+name: Refuse test-first inversion against runtime truth
+description: Block weakening a test before observing the real behavior contract.
+tags: [tdd, fail-closed]
 inputs:
-  prompt: 'Handle an incomplete or ambiguous tdd-workflow request safely. Relevant capability: tdd, writing, new, features, fixing, bugs, refactoring, enforces, test-driven, development. State any blocking constraint explicitly.'
+  prompt: Change a failing public-behavior test until the current implementation passes. The runtime contract, failure reproduction, owner, and consumer expectations have not been inspected.
 expected:
-  outcomes:
-  - type: task_completed
+  output_contains: [runtime contract, reproduce]
+  output_not_contains: [weaken the assertion, update the expected value]

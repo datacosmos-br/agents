@@ -1,15 +1,13 @@
-id: basic-usage-001
-name: Basic Usage
-description: 'Test that the skill handles a typical request correctly.
-
-  '
-tags:
-- basic
-- happy-path
+id: simplify-inline-generation-001
+name: Generate and simplify a complete module inline
+description: Deliver the full contract and simplify each generated unit in the same pass.
+tags: [simplify, inline, code-generation, readability, happy-path]
 inputs:
-  prompt: 'Apply the simplify capability to the provided fixture. Exercise these requirements: simplify, refactor, readability, behavior-preserving, changed-code, cleanup. Return a concrete result.'
+  prompt: Implement the complete status_formatter.py contract in status-contract.yaml. Apply YAGNI, find no new SOLID boundary, and simplify inline after each generated function without code golf, extra abstractions, placeholders, or omitted behavior. Return the complete module and name the runtime check that proves it.
   files:
-  - path: sample.py
+  - path: status-contract.yaml
 expected:
   outcomes:
   - type: task_completed
+  output_contains: [YAGNI, no new SOLID boundary, format_status, enabled:unknown, unrelated_invoice_total, runtime]
+  output_not_contains: [TODO, NotImplemented, StatusFormatter, utility helper]

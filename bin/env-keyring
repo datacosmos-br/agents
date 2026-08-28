@@ -58,6 +58,15 @@ class KeyringError(RuntimeError):
     pass
 
 
+def subprocess_error(
+    operation: str, process: subprocess.CompletedProcess[str]
+) -> KeyringError:
+    """Preserve a subprocess exit and its non-secret diagnostic stderr."""
+    detail = process.stderr.strip()
+    suffix = f": {detail}" if detail else ""
+    return KeyringError(f"{operation} failed (exit {process.returncode}){suffix}")
+
+
 def event(action: str, profile: str, *, name: str = "", result: str) -> None:
     EVENTS.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
     payload = {
@@ -211,12 +220,15 @@ def lookup(profile: str, name: str) -> str:
     process = subprocess.run(
         ["secret-tool", "lookup", "application", APP, "profile", profile, "name", name],
         check=False,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.DEVNULL,
+        capture_output=True,
         text=True,
         timeout=15,
     )
-    if process.returncode != 0 or not process.stdout:
+    if process.returncode == 1 and not process.stderr.strip():
+        raise KeyringError(f"missing secret: {name}")
+    if process.returncode != 0:
+        raise subprocess_error("secret-tool lookup", process)
+    if not process.stdout:
         raise KeyringError(f"missing secret: {name}")
     return process.stdout.rstrip("\n")
 
@@ -275,11 +287,14 @@ def store(profile: str, name: str, from_stdin: bool) -> int:
         input=value,
         text=True,
         stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL,
+        stderr=subprocess.PIPE,
         check=False,
         timeout=30,
     )
-    if process.returncode != 0 or not hmac.compare_digest(lookup(profile, name), value):
+    if process.returncode != 0:
+        event("store", profile, name=name, result="failed")
+        raise subprocess_error("secret-tool store", process)
+    if not hmac.compare_digest(lookup(profile, name), value):
         event("store", profile, name=name, result="failed")
         raise KeyringError("keyring verification failed")
     event("store", profile, name=name, result="ok")
@@ -375,7 +390,7 @@ def execute(profile: str, consumer: str, command: list[str]) -> int:
             for name in declared_export_names(item):
                 environment.pop(str(name), None)
     environment.update(secrets)
-    event("exec", profile, result="ok")
+    event("exec", profile, result="dispatch")
     os.execvpe(command[0], command, environment)
     return 70
 
@@ -394,7 +409,7 @@ def execute_auto(directory: str | None, consumer: str, command: list[str]) -> in
                 environment.pop(str(name), None)
     environment.update(secrets)
     environment["ENV_KEYRING_PROFILE"] = profile
-    event("auto-exec", profile, result="ok")
+    event("auto-exec", profile, result="dispatch")
     os.execvpe(command[0], command, environment)
     return 70
 
@@ -407,7 +422,8 @@ def remove(profile: str, name: str, confirmed: bool) -> int:
         ["secret-tool", "clear", "application", APP, "profile", profile, "name", name],
         check=False,
         stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL,
+        stderr=subprocess.PIPE,
+        text=True,
         timeout=15,
     )
     event(
@@ -416,6 +432,8 @@ def remove(profile: str, name: str, confirmed: bool) -> int:
         name=name,
         result="ok" if process.returncode == 0 else "failed",
     )
+    if process.returncode != 0:
+        print(f"env-keyring: {subprocess_error('secret-tool clear', process)}", file=sys.stderr)
     return process.returncode
 
 

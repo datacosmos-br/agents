@@ -1,15 +1,10 @@
-id: basic-usage-001
-name: Basic Usage
-description: 'Test that the skill handles a typical request correctly.
-
-  '
-tags:
-- basic
-- happy-path
+id: governance-audit-static-snapshot-001
+name: Audit a suspended governance snapshot
+description: Classify tracker conflicts and document drift from supplied evidence only.
+tags: [governance, audit, drift, staleness, tracker, documentation, happy-path]
 inputs:
-  prompt: 'Apply the governance-audit capability to the provided fixture. Exercise these requirements: governance, audit, standing, drift, staleness, beads, tracker, canonical, doc, surfaces. Return a concrete result.'
+  prompt: Conduct a governance audit of governance-snapshot.yaml while the Beads tracker is suspended. Check standing items, staleness, canonical document surfaces, and source/projection drift; return the required evidence and severity table without mutation.
   files:
-  - path: sample.py
+  - path: governance-snapshot.yaml
 expected:
-  outcomes:
-  - type: task_completed
+  output_contains: [OPS-12, OPS-20, zombie, P0]

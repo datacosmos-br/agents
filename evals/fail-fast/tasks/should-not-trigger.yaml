@@ -1,0 +1,10 @@
+id: fail-fast-ui-placeholder-negative-001
+name: Preserve a loading placeholder
+description: Avoid treating a UI placeholder as error-triggered failover.
+tags: [anti-trigger, frontend, suspense]
+inputs:
+  prompt: Improve the accessibility label and visual stability of the loading placeholder in SearchPanel.tsx without changing its data-fetching behavior.
+  files:
+  - path: SearchPanel.tsx
+expected:
+  output_not_contains: [remove fallback, throw an exception, nonzero exit]

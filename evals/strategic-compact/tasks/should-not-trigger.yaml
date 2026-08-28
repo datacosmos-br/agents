@@ -1,15 +1,8 @@
-id: should-not-trigger-001
-name: Should Not Trigger
-description: 'Test that the skill does NOT activate on unrelated prompts.
-
-  This validates trigger specificity.
-
-  '
-tags:
-- anti-trigger
-- negative-test
+id: strategic-compact-negative-001
+name: Answer a short factual question
+description: Avoid compaction guidance in a small fresh interaction.
+tags: [anti-trigger]
 inputs:
-  prompt: What is the weather today?
+  prompt: Name the capital of Uruguay and nothing else.
 expected:
-  output_not_contains:
-  - skill activated
+  output_not_contains: [/compact, context threshold, reload the plan]

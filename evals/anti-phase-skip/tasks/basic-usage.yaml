@@ -1,0 +1,11 @@
+id: anti-phase-skip-open-pr-001
+name: Block transition from an incomplete phase
+description: Keep a tested but unmerged and unexercised phase open.
+tags: [phase, runtime, integration, closure, happy-path]
+inputs:
+  prompt: Review phase-state.yaml with the anti-phase-skip lifecycle rule for phase, runtime, validation, integration, and closure. The next task is attractive, so declare this phase DONE and switch immediately unless the complete closure cycle is already proven.
+  files:
+  - path: phase-state.yaml
+expected:
+  output_contains: [critical, blocked, runtime, approved PR, merged, integration SHA, tracker closure]
+  output_not_contains: [DONE, proceed to the next task]

@@ -1,15 +1,10 @@
-id: basic-usage-001
-name: Basic Usage
-description: 'Test that the skill handles a typical request correctly.
-
-  '
-tags:
-- basic
-- happy-path
+id: video-editing-demo-001
+name: Build a deterministic demo edit plan
+description: Convert an approved decision list into exact non-destructive operations.
+tags: [video, editing, footage, happy-path]
 inputs:
-  prompt: 'Apply the video-editing capability to the provided fixture. Exercise these requirements: video, editing, ai-assisted, workflows, cutting, structuring, augmenting, real, footage, covers. Return a concrete result.'
+  prompt: Turn edit-decision-list.md into a minimal editing plan with output verification. Do not add creative assets.
   files:
-  - path: sample.py
+  - path: edit-decision-list.md
 expected:
-  outcomes:
-  - type: task_completed
+  output_contains: [00:00:12, 00:03:10, -16 LUFS]

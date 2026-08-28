@@ -7,8 +7,8 @@ configures it; it never competes. Project law may be stricter. Newest explicit
 operator instruction prevails; reconcile lower/older artifacts upward.
 
 **Skill owners (do not restate their procedures here):**
-`inviolable-rules`, `make-check`, `verification-loop`, `beads-orchestrator`,
-`beads-worker`, `governance-audit`, `safe-delete`, `skill-creator`,
+`make-check`, `verification-loop`, `beads-orchestrator`,
+`beads-worker`, `governance-audit`, `safe-delete`, `skill-governance`,
 `context-canary`, `caveman`, `sprint-closure`. Domain law loads only via provider routers (e.g. FLEXT
 `flext-context-routing` → local `flext-law`).
 
@@ -23,14 +23,13 @@ Goldens = structure only. Literals only for immutable external protocols.
 ## Laws
 
 1. **Truth with evidence.** Claims need command, cwd, exit, decisive output, scope.
-   See `inviolable-rules` §Truth.
 2. **Research before mutation.** Read authority, Bead, owners, consumers, WIP,
    validation route. Never invent APIs or results.
 3. **One active intent.** Preserve goal, Bead, exclusions, phase, gates, stop.
 4. **Root cause, one owner.** Change the canonical owner; complete cutover. No
    bypass, shim, fallback, hardcode, or old+new coexistence.
 5. **Fix forward.** Preserve shared/unknown WIP. No reset/restore/clean/stash/
-   force-push to discard it. See `inviolable-rules` §Execution.
+   force-push to discard it. See `rules/git/destructive-git-guard.md`.
 6. **Typed and generated boundaries.** Parse untrusted input once into canonical
    types. Edit sources, not projections; regenerate; prove idempotence.
 7. **Continuous green (policy).** No Done while broken, drifted, or unverified.
@@ -47,13 +46,12 @@ Goldens = structure only. Literals only for immutable external protocols.
    mechanics: `beads-orchestrator` / `beads-worker`. See §Tracker.
 9. **Separated roles.** Orchestrator: semantics, evidence review, merge/rollout/
    close. Worker: one Bead/branch/worktree, push, PR. Auditor: `governance-audit`.
-   See `inviolable-rules` §Role.
+   See `beads-orchestrator` and `beads-worker` when that tracker is active.
 10. **No stall by reporting.** Heartbeats never stop execution. Unowned WIP = stall.
 11. **History is evidence, never rollback authority.** Refactor forward to current law.
 12. **Stop only for a real blocker.** Destructive action, competing contracts,
     security/privacy, `main`/production promotion, authority conflict, material
     scope change — one precise question. Else evidence and continue.
-    See `inviolable-rules` §Stop Only For A Real Blocker.
 13. **Short validated slices.** Land small green stages; commit explicit paths; FF push.
     Orchestration identity is declared through Gas City native primitives and
     repository Git/PR owns landing; base = project `integration.branch` (never invent
@@ -64,7 +62,6 @@ Goldens = structure only. Literals only for immutable external protocols.
     `~/flext` path, no unofficial build).
     Detail: `rules/git/gitflow-branch-pr.md` + project `docs/worktrees.md` /
     ADR-0016.
-    See `inviolable-rules` §Green Checkpoint.
 14. **Living documentation.** Project docs/skills/ADRs are mandatory context for
     every change — read them before acting. Update them in the **same** change as
     code/functionality; if they are stale relative to runtime, the docs are the
@@ -92,8 +89,9 @@ Goldens = structure only. Literals only for immutable external protocols.
 24. **Beads continuously current.** Update after every state-changing stage.
 25. **Heartbeat without interruption.** Status includes Bead/lane/PR/gate/blocker/next.
 26. **Ordinary uncertainty → evidence.** Do not interrupt for resolvable questions.
-27. **Complete cutover on refactors.** Migrate all consumers; delete superseded paths.
-    See `inviolable-rules` §Complete Refactor.
+27. **Complete cutover on refactors.** Migrate all consumers; delete superseded
+    paths. Use `config-schema-migration` for schema cutovers and
+    `extermination-mode` for zero-residue contract removal.
 28. **Learned memory ≠ law.** `AGENTS.md` Learned sections are owned by
     continual-learning (high-signal prefs/facts only). `bd remember` is operational.
     Neither overrides this CORE or skills.

@@ -3,7 +3,7 @@
 
 1. Truth: never claim done/green/resolved without command, exit code, decisive output.
 2. Root cause: no bypass, fallback, shim, suppression, stub, hardcode, or old+new coexistence.
-3. Tracker first: claim/update the canonical tracker before file writes or multi-step work. If its runtime is explicitly suspended, preserve evidence locally and do not declare the phase DONE.
+3. Tracker first: claim/update the canonical tracker before file writes or multi-step work. If its runtime is explicitly suspended, create no substitute ledger; preserve evidence in Git/PR/CI and do not declare the phase DONE.
 4. Research first: inspect code, docs, canonical sources before acting; never invent APIs, flags, facts, or behavior.
 5. Owner first: use the project's declared facades/primitives; do not reimplement them locally.
 6. Gate discipline: if a gate blocks, stop and escalate with the exact command/edit; never route around it.
@@ -79,7 +79,8 @@ Universal law owns closure. Local delta only:
 - Gas City configuration owns orchestration identity; ai-hub owns living runtime registration for tools, CRG, LSP/observer state, and maintenance daemons.
 - Rules, managed hooks, and product hook inventory are SSOT under `config/`; foreign agent hooks are warnings like foreign MCPs; managed product hooks stay disabled at the product and route through one socket executor per event type.
 - Every declared workspace must reconstruct dependencies locally; cross-repository dependency links are prohibited.
-- CI codegen must emit `CI=Y` on generated `ci.yml` / `ci-matrix.yml` / Dockerfiles; under `CI=Y`, `make check` skips executing ruff, pyrefly, and pytest.
+- CI runs the complete `make ci` owner. `check`, `static`, and `test` remain
+  separate blocking stages; setting `CI=Y` never authorizes omitting them.
 - Workspace/worktree watch is incremental and state-driven from last hook or MCP touch (configurable interval and parallelism); first use builds or copies from the parent workspace.
 - Rope/LSP activation shares the same observer/MCP/hooks funnel; any git-stored LSP artifacts come from the project generator templates.
 - Cursor Shared MCP must resolve the active workspace/worktree across multiple Cursor sessions; its context wiring differs from other agents.
@@ -169,5 +170,5 @@ bd prime                # Refresh Beads context
 - Run `bd prime` when Beads context is missing or stale. Codex 0.129.0+ can load Beads context automatically through native hooks; use `/hooks` to inspect or toggle them.
 - Keep persistent project memory in Beads via `bd remember`; do not create ad hoc memory files.
 
-**Runtime suspension:** do not invoke Beads, Dolt, Gas City, or a substitute ledger until the operator explicitly restores the canonical runtime.
+**Runtime suspension:** do not invoke Beads, Dolt, Gas City, or any substitute tracker or ledger until the operator explicitly restores the canonical runtime. Evidence belongs only in Git commits, PRs, reviews, and CI.
 <!-- END BEADS CODEX SETUP -->

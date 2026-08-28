@@ -1,15 +1,8 @@
-id: should-not-trigger-001
-name: Should Not Trigger
-description: 'Test that the skill does NOT activate on unrelated prompts.
-
-  This validates trigger specificity.
-
-  '
-tags:
-- anti-trigger
-- negative-test
+id: market-research-customer-interview-script-negative-001
+name: Draft an existing-customer interview guide
+description: Do not manufacture market sizing for a qualitative research script.
+tags: [customer, interview, anti-trigger]
 inputs:
-  prompt: What is the weather today?
+  prompt: Draft five open-ended questions for interviews with our existing customers about onboarding friction. Do not estimate market size or compare competitors.
 expected:
-  output_not_contains:
-  - skill activated
+  output_not_contains: [TAM, SAM, SOM, competitive landscape]

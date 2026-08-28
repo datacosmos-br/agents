@@ -1,6 +1,6 @@
 # ~/.agents skill authority — canonical execution surface.
 # Every command runs here; no ad-hoc invocations (make-check law).
-# UX: `make help` is the menu. Parameters: SKILL= MODEL= APPLY= BASELINE= FOCUS= COUNT=.
+# UX: `make help` is the menu. Parameters: SKILL= APPLY= BASELINE= FOCUS= COUNT=.
 
 PATH := $(HOME)/.local/bin:$(PATH)
 export PATH
@@ -16,14 +16,19 @@ SKILL ?=
 APPLY ?=
 FOCUS ?=
 COUNT ?=
-RESULTS_DIR ?= results
+PROJECT_ROOTS ?=
+override RESULTS_DIR := results
 BASELINE_DIR := $(RESULTS_DIR)/baseline
 LATEST_DIR := $(RESULTS_DIR)/latest
 
-SKILLS := $(patsubst skills/%/SKILL.md,%,$(wildcard skills/*/SKILL.md))
+SKILL_FILES := $(sort $(wildcard skills/*/*/SKILL.md))
+SKILL_DIRS := $(patsubst %/SKILL.md,%,$(SKILL_FILES))
+SKILLS := $(sort $(notdir $(SKILL_DIRS)))
+skill_file = $(firstword $(filter %/$(1)/SKILL.md,$(SKILL_FILES)))
+skill_dir = $(patsubst %/SKILL.md,%,$(call skill_file,$(1)))
 
 .DEFAULT_GOAL := help
-.PHONY: help status setup models audit check static shell build ci security temp sync mcp adjust normalize descriptions test preflight validate-live rate baseline suggest spec coverage run gate compare validate clean
+.PHONY: help status setup models audit check static shell build ci security temp sync adjust normalize descriptions test preflight validate-live rate baseline suggest spec coverage run gate compare validate clean
 .DELETE_ON_ERROR:
 
 define BANNER
@@ -36,14 +41,14 @@ help: ## show this menu (default)
 ## inspection
 status: ## panel: tools, proxy, skills, baseline presence
 	$(call BANNER,status · environment)
-	@for t in waza git awk; do command -v $$t >/dev/null && printf '  ok   %s\n' $$t || printf '  MISS %s\n' $$t; done
-	@if $(WAZA_KEYRING_EXEC) sh -c 'curl -fsS -o /dev/null -m 2 -H "Authorization: Bearer $$CLIPROXY_API_KEY" "$$COPILOT_PROVIDER_BASE_URL/models"'; then echo "  ok   cliproxy :8317"; else echo "  DOWN cliproxy :8317"; fi
+	@missing=0; for t in waza git awk; do command -v $$t >/dev/null && printf '  ok   %s\n' $$t || { printf '  MISS %s\n' $$t; missing=1; }; done; exit $$missing
+	@$(WAZA_AUTHENTICATED) uv run agentsctl temp run -- sh -eu -c 'curl -fsS --max-time "$$WAZA_HTTP_TIMEOUT_SECONDS" -o /dev/null -H "Authorization: Bearer $$CLIPROXY_API_KEY" "$$COPILOT_PROVIDER_BASE_URL/models"' && echo "  ok   cliproxy $(CLIPROXY_BASE_URL)"
 	@echo "  skills discovered: $(words $(SKILLS))"
 	@if [ -f "$(BASELINE_DIR)/results.json" ]; then echo "  baseline: present ($(BASELINE_DIR)/results.json)"; else echo "  baseline: absent — run 'make baseline'"; fi
 
 models: ## list judge models available through cliproxy
-	$(call BANNER,models · via cliproxy $(if $(COPILOT_BASE_URL),$(COPILOT_BASE_URL),UNSET))
-	@$(WAZA_KEYRING_EXEC) waza models
+	$(call BANNER,models · via cliproxy $(COPILOT_PROVIDER_BASE_URL))
+	@$(WAZA_AUTHENTICATED) uv run agentsctl temp run -- sh -eu -c 'catalog=$$(mktemp "$$TMPDIR/waza-models.XXXXXX.json"); curl -fsS --max-time "$$WAZA_HTTP_TIMEOUT_SECONDS" -H "Authorization: Bearer $$CLIPROXY_API_KEY" -o "$$catalog" "$$COPILOT_PROVIDER_BASE_URL/models"; uv run agentsctl waza-model-catalog "$$catalog"'
 
 setup: ## idempotent project bootstrap (waza init + env sanity)
 	$(call BANNER,setup · scaffold + env)
@@ -51,7 +56,7 @@ setup: ## idempotent project bootstrap (waza init + env sanity)
 	@install -m 0755 bin/env-keyring bin/environment-d-loader "$(HOME)/.local/bin/"
 	@waza init --no-skill >/dev/null && echo "  waza init: ok"
 	@$(WAZA_KEYRING_EXEC) sh -c 'test -n "$$CLIPROXY_API_KEY"' && echo "  judge credentials: available"
-	@echo "  judge model: $(if $(MODEL),$(MODEL),waza default)"
+	@printf '  judge model: ' && uv run agentsctl waza-config --model
 
 audit: ## deterministic inventory; APPLY=Y refreshes skills.lock.json
 	$(call BANNER,audit · canonical skill inventory)
@@ -61,7 +66,8 @@ check: ## blocking local validation + strict Waza tokens
 	$(call BANNER,check · agents authority $(if $(SKILL),[$(SKILL)],[all]))
 	@uv run agentsctl validate $(if $(SKILL),--skill $(SKILL),)
 	@uv run agentsctl waza-config --check
-	@uv run agentsctl temp run -- waza tokens check $(if $(SKILL),skills/$(SKILL),./skills) --strict
+	@test -z "$(SKILL)" || test -n "$(call skill_dir,$(SKILL))" || { echo "unknown skill: $(SKILL)" >&2; exit 2; }
+	@uv run agentsctl temp run -- waza tokens check $(if $(SKILL),$(call skill_dir,$(SKILL)),./skills) --strict
 	@uv run agentsctl temp audit
 	@uv run agentsctl normalize
 	@uv run agentsctl descriptions
@@ -95,8 +101,8 @@ ci: ## complete offline CI pipeline
 security: ## live secret, static-analysis, Snyk, and triage gates (all severities)
 	$(call BANNER,security · all severities)
 	@gitleaks dir --no-banner --exit-code 1 --redact .
-	@semgrep scan --config p/default --error --metrics=off --no-git-ignore --exclude .git --exclude .venv --exclude .cache --exclude .test-tmp --exclude results --exclude '$$HOME' .
-	@snyk test --all-projects --exclude=.venv,.cache,.test-tmp --severity-threshold=low
+	@semgrep scan --jobs 1 --config p/default --error --metrics=off --no-git-ignore --exclude .git --exclude .venv --exclude .cache --exclude .test-tmp --exclude results --exclude '$$HOME' .
+	@snyk test --file=uv.lock --dev --severity-threshold=low
 	@uv run agentsctl security-triage .
 
 temp: ## audit /tmp; STATUS=Y reports; APPLY=Y collects safe old owned runs
@@ -105,16 +111,11 @@ temp: ## audit /tmp; STATUS=Y reports; APPLY=Y collects safe old owned runs
 
 sync: ## check skills, commands, and rules projections; APPLY=Y reconciles
 	$(call BANNER,sync · $(or $(SCOPE),personal) $(or $(SURFACE),all) copies $(if $(TARGET),[$(TARGET)],[all]))
-	@uv run agentsctl project --scope $(or $(SCOPE),personal) --surface $(or $(SURFACE),all) $(if $(APPLY),--apply,--check) $(if $(TARGET),--target $(TARGET),)
+	@uv run agentsctl project --scope $(or $(SCOPE),personal) --surface $(or $(SURFACE),all) $(if $(APPLY),--apply,--check) $(if $(TARGET),--target $(TARGET),) $(foreach root,$(PROJECT_ROOTS),--project-root $(root))
 
-mcp: ## synchronize MCP through the canonical ai-hub owner
-	$(call BANNER,mcp · ai-hub canonical sync $(if $(APPLY),[apply],[check]))
-	@env-keyring auto-exec --directory "$(CURDIR)" --consumer agent:agents-mcp -- \
-	  ai-hub mcp --action sync $(if $(APPLY),,--dry-run)
-
-discover-projects: ## show automatic project/FLEXT/technology classification
-	$(call BANNER,discover · configured project roots)
-	@uv run agentsctl discover-projects
+discover-projects: ## show automatic project capability classification
+	$(call BANNER,discover · explicit project roots)
+	@uv run agentsctl discover-projects $(foreach root,$(PROJECT_ROOTS),--project-root $(root))
 
 adjust: ## Waza suggestions by default; APPLY=Y edits the canonical skill
 	$(call BANNER,adjust · $(if $(SKILL),$(SKILL),MISSING SKILL=))
@@ -125,8 +126,8 @@ normalize: ## split oversized SKILL.md routers losslessly; APPLY=Y writes
 	$(call BANNER,normalize · progressive disclosure)
 	@uv run agentsctl normalize $(if $(APPLY),--apply,)
 
-descriptions: ## compact skill descriptions to trigger keywords; APPLY=Y writes
-	$(call BANNER,descriptions · keyword frontmatter)
+descriptions: ## validate short capability + activation descriptions
+	$(call BANNER,descriptions · discovery sentences)
 	@uv run agentsctl descriptions $(if $(APPLY),--apply,)
 
 test: ## unit tests for agentsctl
@@ -135,52 +136,55 @@ test: ## unit tests for agentsctl
 
 preflight: ## prove selected model, auth, Responses transport, tools, and artifact
 	$(call BANNER,preflight · live Waza transport)
-	@mkdir -p $(RESULTS_DIR)/preflight; \
-	  model="$(WAZA_MODEL)"; candidate=$(RESULTS_DIR)/preflight/results.json.candidate; \
-	  $(WAZA_ONLINE) run config/waza/preflight/eval.yaml --model "$$model" --output "$$candidate"; \
-	  uv run agentsctl waza-preflight --model "$$model" --output "$$candidate"; classified=$$?; \
-	  if [ $$classified -eq 0 ]; then mv "$$candidate" $(RESULTS_DIR)/preflight/results.json; fi; \
-	  exit $$classified
+	@$(WAZA_AUTHENTICATED) uv run agentsctl waza-preflight
 
 validate-live: preflight run gate compare ## preflight plus full live regression validation
 
-rate: preflight ## AI judge 1-5 per dimension (or SKILL=name); MODEL= to override
-	$(call BANNER,rate · judge=$(if $(MODEL),$(MODEL),waza-default) $(if $(SKILL),[$(SKILL)],[all]))
+rate: preflight ## AI judge 1-5 per dimension (or SKILL=name)
+	$(call BANNER,rate · owner model $(if $(SKILL),[$(SKILL)],[all]))
 ifeq ($(SKILL),)
-	@mkdir -p $(LATEST_DIR)/quality; failed=0; for s in $(SKILLS); do \
-	  final=$(LATEST_DIR)/quality/$$s.json; candidate=$$final.candidate; echo "--- $$s"; mkdir -p $$(dirname $$final) && \
-	  $(WAZA_ONLINE) quality skills/$$s $(MODEL_ARG) --format json > $$candidate && uv run agentsctl waza-artifact $$candidate && mv $$candidate $$final \
-	    || { failed=1; echo "RATE FAILED: $$s → retry: make rate SKILL=$$s MODEL=$(MODEL)"; }; done; exit $$failed
+	@set -eu; mkdir -p $(LATEST_DIR)/quality; failed=0; for skill_dir in $(SKILL_DIRS); do \
+	  s=$${skill_dir##*/}; \
+	  final=$(LATEST_DIR)/quality/$$s.json; candidate=$$(mktemp "$$final.XXXXXX.candidate"); echo "--- $$s"; \
+	  if $(WAZA_ONLINE) quality "$$skill_dir" --format json > "$$candidate" && uv run agentsctl waza-artifact "$$candidate" --publish "$$final"; then :; \
+	  else status=$$?; failed=1; echo "RATE FAILED ($$status): $$s → retry: make rate SKILL=$$s" >&2; fi; \
+	  if [ -e "$$candidate" ] || [ -L "$$candidate" ]; then unlink "$$candidate" || { echo "RATE FAILED: candidate cleanup failed after status $${status:-0}: $$candidate" >&2; exit 70; }; fi; \
+	done; exit $$failed
 else
+	@test -n "$(call skill_dir,$(SKILL))" || { echo "unknown skill: $(SKILL)" >&2; exit 2; }
 	@mkdir -p $(LATEST_DIR)/quality
-	@final=$(LATEST_DIR)/quality/$(SKILL).json; candidate=$$final.candidate; mkdir -p $$(dirname $$final) && \
-	  $(WAZA_ONLINE) quality skills/$(SKILL) $(MODEL_ARG) --format json > $$candidate && \
-	  uv run agentsctl waza-artifact $$candidate && mv $$candidate $$final && cat $$final
+	@set -eu; final=$(LATEST_DIR)/quality/$(SKILL).json; candidate=$$(mktemp "$$final.XXXXXX.candidate"); \
+	  if $(WAZA_ONLINE) quality "$(call skill_dir,$(SKILL))" --format json > "$$candidate" && uv run agentsctl waza-artifact "$$candidate" --publish "$$final"; then cat "$$final"; \
+	  else status=$$?; if [ -e "$$candidate" ] || [ -L "$$candidate" ]; then unlink "$$candidate" || { echo "RATE FAILED: operation status $$status and candidate cleanup failed: $$candidate" >&2; exit 70; }; fi; exit $$status; fi
 endif
 
 baseline: preflight ## execute evals and write per-skill gate baselines
 	$(call BANNER,baseline · snapshot → $(BASELINE_DIR))
 	@mkdir -p $(BASELINE_DIR)
-	@candidate=$(BASELINE_DIR)/results.json.candidate; \
-	  $(WAZA_ONLINE) run skills --discover --strict $(MODEL_ARG) --output $$candidate && \
-	  mv $$candidate $(BASELINE_DIR)/results.json
+	@set -eu; final=$(BASELINE_DIR)/results.json; candidate=$$(mktemp "$$final.XXXXXX.candidate"); \
+	  if $(WAZA_ONLINE) run skills --discover --strict --output "$$candidate" && uv run agentsctl waza-artifact "$$candidate" --publish "$$final"; then :; \
+	  else status=$$?; if [ -e "$$candidate" ] || [ -L "$$candidate" ]; then unlink "$$candidate" || { echo "BASELINE FAILED: operation status $$status and candidate cleanup failed: $$candidate" >&2; exit 70; }; fi; exit $$status; fi
 
 suggest: preflight ## propose evals (dry-run default; APPLY=1 writes, merge-safe)
 	$(call BANNER,suggest · $(if $(SKILL),$(SKILL),MISSING SKILL=))
 	@if [ -z "$(SKILL)" ]; then echo "  usage: make suggest SKILL=<name> [FOCUS=triggers|negative-triggers|edge-fixtures|do-not-use-for|parameters] [COUNT=n] [APPLY=1]"; exit 2; fi
-	@$(WAZA_ONLINE) suggest skills/$(SKILL) $(if $(APPLY),--apply,--dry-run) $(if $(FOCUS),--focus $(FOCUS)) $(if $(COUNT),--count $(COUNT)) $(MODEL_ARG)
+	@test -n "$(call skill_dir,$(SKILL))" || { echo "unknown skill: $(SKILL)" >&2; exit 2; }
+	@$(WAZA_ONLINE) suggest "$(call skill_dir,$(SKILL))" $(if $(APPLY),--apply,--dry-run) $(if $(FOCUS),--focus $(FOCUS)) $(if $(COUNT),--count $(COUNT))
 
 spec: ## verify eval coverage vs SKILL.md requirements
 	$(call BANNER,spec · coverage)
 	@if [ -n "$(SKILL)" ]; then \
 	  test -f "evals/$(SKILL)/eval.yaml" || { echo "missing eval: evals/$(SKILL)/eval.yaml"; exit 2; }; \
-	  uv run agentsctl temp run -- waza spec verify --skill "skills/$(SKILL)" --eval "evals/$(SKILL)/eval.yaml" --fail; \
+	  test -n "$(call skill_dir,$(SKILL))" || { echo "unknown skill: $(SKILL)"; exit 2; }; \
+	  uv run agentsctl temp run -- waza spec verify --skill "$(call skill_dir,$(SKILL))" --eval "evals/$(SKILL)/eval.yaml" --fail; \
 	else \
 	  failed=0; for eval in evals/*/eval.yaml; do \
 	    skill=$$(awk '$$1 == "skill:" { print $$2; exit }' "$$eval"); \
-	    test -n "$$skill" && test -f "skills/$$skill/SKILL.md" \
+	    skill_file=$$(find skills -mindepth 3 -maxdepth 3 -type f -path "*/$$skill/SKILL.md" -print); \
+	    test -n "$$skill" && test "$$(printf '%s\n' "$$skill_file" | sed '/^$$/d' | wc -l)" -eq 1 \
 	      || { echo "invalid eval skill mapping: $$eval -> $${skill:-MISSING}"; failed=1; continue; }; \
-	    uv run agentsctl temp run -- waza spec verify --skill "skills/$$skill" --eval "$$eval" --fail \
+	    skill_dir=$${skill_file%/SKILL.md}; \
+	    uv run agentsctl temp run -- waza spec verify --skill "$$skill_dir" --eval "$$eval" --fail \
 	      || failed=1; \
 	  done; exit $$failed; \
 	fi
@@ -188,26 +192,29 @@ spec: ## verify eval coverage vs SKILL.md requirements
 coverage: ## require every canonical skill to have full Waza grader coverage
 	$(call BANNER,coverage · all skills fully covered)
 	@uv run agentsctl temp run -- sh -eu -c 'artifact=$$(mktemp "$$TMPDIR/coverage.XXXXXX.json"); \
-	  trap '\''unlink "$$artifact"'\'' EXIT; \
 	  waza coverage . --format json > "$$artifact"; \
 	  uv run agentsctl waza-coverage "$$artifact"'
 
 run: preflight ## execute eval benchmark (BASELINE=1 adds A/B with-vs-without skills)
-	$(call BANNER,run · model=$(if $(MODEL),$(MODEL),waza-default) $(if $(SKILL),[$(SKILL)],[discover all]))
+	$(call BANNER,run · owner model $(if $(SKILL),[$(SKILL)],[discover all]))
 	@mkdir -p $(LATEST_DIR)
-	@candidate=$(LATEST_DIR)/results.json.candidate; \
-	  $(WAZA_ONLINE) run $(if $(SKILL),evals/$(SKILL)/eval.yaml,skills --discover --strict) $(MODEL_ARG) $(if $(BASELINE),--baseline) --output $$candidate && \
-	  mv $$candidate $(LATEST_DIR)/results.json
+	@set -eu; final=$(LATEST_DIR)/results.json; candidate=$$(mktemp "$$final.XXXXXX.candidate"); \
+	  if $(WAZA_ONLINE) run $(if $(SKILL),evals/$(SKILL)/eval.yaml,skills --discover --strict) $(if $(BASELINE),--baseline) --output "$$candidate" && uv run agentsctl waza-artifact "$$candidate" --publish "$$final"; then :; \
+	  else status=$$?; if [ -e "$$candidate" ] || [ -L "$$candidate" ]; then unlink "$$candidate" || { echo "RUN FAILED: operation status $$status and candidate cleanup failed: $$candidate" >&2; exit 70; }; fi; exit $$status; fi
 
 gate: ## regression gate vs baseline (non-zero exit on regression)
 	$(call BANNER,gate · vs $(BASELINE_DIR))
 	@if [ ! -f "$(BASELINE_DIR)/results.json" ]; then echo "  no baseline results.json — run: make baseline"; exit 2; fi
 	@if [ ! -f "$(LATEST_DIR)/results.json" ]; then echo "  no current results.json — run: make run"; exit 2; fi
+	@uv run agentsctl waza-artifact $(BASELINE_DIR)/results.json
+	@uv run agentsctl waza-artifact $(LATEST_DIR)/results.json
 	@uv run agentsctl temp run -- waza gate --baseline $(BASELINE_DIR)/results.json --current $(LATEST_DIR)/results.json
 
 compare: ## diff baseline vs latest scores
 	$(call BANNER,compare · $(BASELINE_DIR) vs $(LATEST_DIR))
 	@if [ ! -f "$(BASELINE_DIR)/results.json" ] || [ ! -f "$(LATEST_DIR)/results.json" ]; then echo "  baseline/current results.json missing"; exit 2; fi
+	@uv run agentsctl waza-artifact $(BASELINE_DIR)/results.json
+	@uv run agentsctl waza-artifact $(LATEST_DIR)/results.json
 	@uv run agentsctl temp run -- waza compare $(BASELINE_DIR)/results.json $(LATEST_DIR)/results.json
 
 validate: ## aggregate gate: check + spec + gate (stop on first red)

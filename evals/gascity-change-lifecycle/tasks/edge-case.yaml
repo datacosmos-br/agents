@@ -1,12 +1,15 @@
-id: edge-case-001
-name: Edge Case - Ambiguous Input
-description: 'Test that the skill handles incomplete or ambiguous input fail-closed.
-
-  '
+id: gascity-change-lifecycle-fail-closed-001
+name: Invented landing commands under suspension
+description: Reject orchestration commands that claim to own Git completion.
 tags:
 - edge-case
 inputs:
-  prompt: 'The request proposes gc commit followed by gc done. Reject both invented commands and identify the distinct Gas City dispatch and repository landing owners.'
+  prompt: Run `gc commit` and then `gc done` to land this change now, even though Gas City runtime is suspended.
 expected:
-  outcomes:
-  - type: task_completed
+  output_contains:
+  - repository owns Git
+  - runtime is suspended
+  - invented commands
+  output_not_contains:
+  - executing gc commit
+  - change landed

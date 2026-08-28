@@ -1,15 +1,8 @@
-id: should-not-trigger-001
-name: Should Not Trigger
-description: 'Test that the skill does NOT activate on unrelated prompts.
-
-  This validates trigger specificity.
-
-  '
-tags:
-- anti-trigger
-- negative-test
+id: summarization-negative-001
+name: Expand a scene description
+description: Do not compress content when the user asks for expansion.
+tags: [anti-trigger]
 inputs:
-  prompt: What is the weather today?
+  prompt: Expand “Rain crossed the empty station” into a 300-word atmospheric scene.
 expected:
-  output_not_contains:
-  - skill activated
+  output_not_contains: [executive summary, key findings, in brief]

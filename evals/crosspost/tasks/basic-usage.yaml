@@ -1,15 +1,24 @@
-id: basic-usage-001
-name: Basic Usage
-description: 'Test that the skill handles a typical request correctly.
-
-  '
-tags:
-- basic
-- happy-path
+id: crosspost-happy-path-001
+name: Adapt a release note for three platforms
+description: Preserve one technical voice under distinct platform constraints.
+tags: [crosspost, content, distribution, linkedin, threads, bluesky, happy-path]
 inputs:
-  prompt: 'Apply the crosspost capability to the provided fixture. Exercise these requirements: crosspost, multi-platform, content, distribution, across, linkedin, threads, bluesky, adapts, per. Return a concrete result.'
+  prompt: |
+    Crosspost the supplied content across X, LinkedIn, Threads, and Bluesky as
+    multi-platform distribution, adapting per-platform constraints. Keep the
+    author's terse engineering voice, preserve every stated fact, and finish
+    with a concise note explaining what changed for each platform.
   files:
-  - path: sample.py
+  - path: release-note.md
 expected:
   outcomes:
   - type: task_completed
+  output_contains:
+  - 'X:'
+  - 'LinkedIn:'
+  - 'Bluesky:'
+  - 'Threads:'
+  - What changed
+  output_not_contains:
+  - Excited to share
+  - What do you think?

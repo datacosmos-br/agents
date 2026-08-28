@@ -1,5 +1,5 @@
 name: article-writing-eval
-description: Evaluation suite for article-writing.
+description: Source-backed long-form technical writing.
 skill: article-writing
 schemaVersion: '1.0'
 version: '1.0'
@@ -10,27 +10,20 @@ config:
   executor: copilot-sdk
   model: gpt-5.4
   skill_directories:
-  - ../../skills/article-writing
+  - ../../skills/agent-wide/article-writing
   required_skills:
   - article-writing
-metrics:
-- name: task_completion
-  weight: 1.0
-  threshold: 0.8
-  description: Did the skill complete the assigned task?
 graders:
 - type: prompt
-  name: material_task_result
+  name: article-writing-contract
   config:
     prompt: |
-      Evaluate whether the response materially satisfies the concrete user request,
-      uses the named skill requirements, and provides the requested artifact or
-      explicit fail-closed constraint. Reject generic, unrelated, self-declared,
-      or merely non-empty answers. Call set_waza_grade_pass only when every
-      criterion is evidenced; otherwise call set_waza_grade_fail.
+      Grade the article-writing response. Pass only when the article leads with the supplied benchmark, explains
+      the concrete cache mechanism accurately, keeps one useful job per section,
+      and limits claims to the release-note evidence. Reject generic AI framing,
+      hype, invented customers, filler conclusions, or unsupported numbers.
 - type: behavior
   name: bounded_execution
-  config:
-    max_duration_ms: 240000
+  config: {max_duration_ms: 240000}
 tasks:
 - tasks/*.yaml

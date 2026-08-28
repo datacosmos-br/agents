@@ -1,15 +1,8 @@
-id: should-not-trigger-001
-name: Should Not Trigger
-description: 'Test that the skill does NOT activate on unrelated prompts.
-
-  This validates trigger specificity.
-
-  '
-tags:
-- anti-trigger
-- negative-test
+id: gascity-workspace-lifecycle-git-layout-negative-001
+name: Ordinary repository layout question
+description: Keep Gas City placement out of a local Git organization question.
+tags: [git, layout, anti-trigger]
 inputs:
-  prompt: What is the weather today?
+  prompt: Suggest a clearer name for the existing docs/architecture directory in this repository. Do not change workspace placement.
 expected:
-  output_not_contains:
-  - skill activated
+  output_not_contains: [city.toml, Pack V2, gc sling]

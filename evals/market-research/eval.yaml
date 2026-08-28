@@ -1,5 +1,5 @@
 name: market-research-eval
-description: Evaluation suite for market-research.
+description: Source-backed market conclusions with assumptions and downside evidence.
 skill: market-research
 schemaVersion: '1.0'
 version: '1.0'
@@ -10,24 +10,20 @@ config:
   executor: copilot-sdk
   model: gpt-5.4
   skill_directories:
-  - ../../skills/market-research
+  - ../../skills/agent-wide/market-research
   required_skills:
   - market-research
-metrics:
-- name: task_completion
-  weight: 1.0
-  threshold: 0.8
-  description: Did the skill complete the assigned task?
 graders:
 - type: prompt
-  name: material_task_result
+  name: market-research-contract
   config:
     prompt: |
-      Evaluate whether the response materially satisfies the concrete user request,
-      uses the named skill requirements, and provides the requested artifact or
-      explicit fail-closed constraint. Reject generic, unrelated, self-declared,
-      or merely non-empty answers. Call set_waza_grade_pass only when every
-      criterion is evidenced; otherwise call set_waza_grade_fail.
+      Grade the market-research response. Pass only when it cites the supplied
+      sources and dates, labels assumptions and inference separately, reconciles
+      top-down and bottom-up estimates, includes the stated counterevidence, and
+      reaches a decision that follows from those facts. Reject unsourced numbers,
+      stale data presented as current, omitted downside, or research theater
+      without a recommendation.
 - type: behavior
   name: bounded_execution
   config:

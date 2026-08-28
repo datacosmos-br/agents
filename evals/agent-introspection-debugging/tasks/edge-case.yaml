@@ -1,12 +1,12 @@
-id: edge-case-001
-name: Edge Case - Ambiguous Input
-description: 'Test that the skill handles incomplete or ambiguous input fail-closed.
-
-  '
-tags:
-- edge-case
+id: agent-introspection-debugging-edge-001
+name: Refuse a diagnosis without failure state
+description: Separate missing evidence from a demonstrated agent root cause.
+tags: [agent-introspection-debugging, edge-case]
 inputs:
-  prompt: 'Handle an incomplete or ambiguous agent-introspection-debugging request safely. Relevant capability: agent, introspection, debugging, structured, self-debugging, ai, failures, capture, diagnosis, contained. State any blocking constraint explicitly.'
+  prompt: >-
+    Diagnose why an agent failed and apply recovery. No objective, error,
+    transcript, tool call, environment state, or last successful step is
+    available. State the minimum capture required before choosing a cause.
 expected:
-  outcomes:
-  - type: task_completed
+  output_contains: [failure evidence, last failed tool]
+  output_not_contains: [reset agent state, 'Root cause: context overflow']

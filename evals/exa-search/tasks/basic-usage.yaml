@@ -1,15 +1,22 @@
-id: basic-usage-001
-name: Basic Usage
-description: 'Test that the skill handles a typical request correctly.
-
-  '
-tags:
-- basic
-- happy-path
+id: exa-search-happy-path-001
+name: Find current primary sources for Rust cancellation
+description: Use advanced filters and crawl a decisive technical source.
+tags: [exa, search, web, research, crawling, filters, happy-path]
 inputs:
-  prompt: 'Apply the exa-search capability to the provided fixture. Exercise these requirements: exa, search, neural, via, mcp, web, company, research, user, needs. Return a concrete result.'
+  prompt: |
+    Use Exa neural web search via MCP for these user research needs, selecting
+    technical search rather than company research. Execute the supplied bounded request. Select the Exa
+    tool that supports its publication-date and domain filters, return five
+    results, then crawl the strongest primary source before summarizing its
+    cancellation guidance with source attribution.
   files:
-  - path: sample.py
+  - path: rust-search-request.md
 expected:
   outcomes:
   - type: task_completed
+  output_contains:
+  - web_search_advanced_exa
+  - startPublishedDate
+  - includeDomains
+  - crawling_exa
+  - tokio.rs

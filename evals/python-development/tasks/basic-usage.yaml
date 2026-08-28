@@ -1,0 +1,11 @@
+id: python-review-001
+name: Diagnose shared mutable state
+description: Debug a typed Python defect while preserving the package and test owners.
+tags: [python, development, typing, testing, debugging, packaging, happy-path]
+inputs:
+  prompt: Review sample.py and pyproject.toml. Debug the cross-call defect, propose a typed correction that preserves the annotated return type and declared package contract, and name an observable pytest regression using the configured test owner.
+  files:
+  - path: sample.py
+  - path: pyproject.toml
+expected:
+  output_contains: [mutable, regression]

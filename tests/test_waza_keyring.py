@@ -28,6 +28,91 @@ def test_waza_auth_uses_automatic_keyring_execution() -> None:
     assert "$(WAZA_ONLINE) quality" in makefile
     assert "$(WAZA_ONLINE) run" in makefile
     assert "$(WAZA_ONLINE) suggest" in makefile
+    status_recipe = makefile.split("\nstatus:", maxsplit=1)[1].split(
+        "\nmodels:", maxsplit=1
+    )[0]
+    assert 'models"\' && echo "  ok   cliproxy' in status_recipe
+    assert 'models"\'; echo "  ok   cliproxy' not in status_recipe
+
+
+def test_models_uses_the_canonical_online_waza_contract() -> None:
+    """Model discovery must validate the real proxy catalog against its owner."""
+    root = Path(__file__).parents[1]
+    makefile = (root / "Makefile").read_text(encoding="utf-8")
+    recipe = makefile.split("\nmodels:", maxsplit=1)[1].split("\nsetup:", maxsplit=1)[0]
+
+    assert "COPILOT_PROVIDER_BASE_URL" in recipe
+    assert "COPILOT_BASE_URL" not in recipe
+    assert '"$$COPILOT_PROVIDER_BASE_URL/models"' in recipe
+    assert "waza-model-catalog" in recipe
+    assert "$(WAZA_ONLINE) models" not in recipe
+    assert "$(WAZA_KEYRING_EXEC) waza models" not in recipe
+
+
+def test_waza_model_is_resolved_only_from_the_project_owner() -> None:
+    root = Path(__file__).parents[1]
+    config = (root / "config" / "waza.mk").read_text(encoding="utf-8")
+    makefile = (root / "Makefile").read_text(encoding="utf-8")
+
+    assert "MODEL ?=" not in makefile
+    assert "MODEL=" not in makefile
+    assert "MODEL_ARG" not in config
+    assert "WAZA_MODEL =" not in config
+    assert "waza-config --model" in config
+    assert 'COPILOT_MODEL="$$owner_model"' in config
+    assert '--model "$$owner_model"' in config
+
+
+def test_waza_results_use_unique_candidates_and_owner_publication() -> None:
+    root = Path(__file__).parents[1]
+    makefile = (root / "Makefile").read_text(encoding="utf-8")
+
+    assert "results.json.candidate" not in makefile
+    assert "$$final.candidate" not in makefile
+    assert makefile.count('mktemp "$$final.XXXXXX.candidate"') == 4
+    assert makefile.count('waza-artifact "$$candidate" --publish "$$final"') == 4
+    assert "agentsctl waza-preflight --model" not in makefile
+    assert "agentsctl waza-preflight" in makefile
+    coverage_recipe = makefile.split("\ncoverage:", maxsplit=1)[1].split(
+        "\nrun:", maxsplit=1
+    )[0]
+    assert "trap" not in coverage_recipe
+    assert 'mktemp "$$TMPDIR/coverage.XXXXXX.json"' in coverage_recipe
+    gate_recipe = makefile.split("\ngate:", maxsplit=1)[1].split(
+        "\ncompare:", maxsplit=1
+    )[0]
+    assert gate_recipe.count("agentsctl waza-artifact") == 2
+
+
+def test_make_rejects_model_override_as_an_execution_interface() -> None:
+    root = Path(__file__).parents[1]
+    environment = {**os.environ, "COPILOT_MODEL": "ambient-alternate"}
+
+    result = subprocess.run(
+        [
+            "make",
+            "--no-print-directory",
+            "-n",
+            "run",
+            "SKILL=fail-fast",
+            "MODEL=command-line-alternate",
+            "WAZA_MODEL=legacy-alternate",
+            "RESULTS_DIR=../outside",
+        ],
+        cwd=root,
+        check=False,
+        capture_output=True,
+        text=True,
+        env=environment,
+    )
+
+    assert result.returncode == 0, result.stderr
+    assert "command-line-alternate" not in result.stdout
+    assert "legacy-alternate" not in result.stdout
+    assert "ambient-alternate" not in result.stdout
+    assert "../outside" not in result.stdout
+    assert "results/latest/results.json" in result.stdout
+    assert "waza-config --model" in result.stdout
 
 
 def test_keyring_aliases_export_one_canonical_secret_under_declared_names(

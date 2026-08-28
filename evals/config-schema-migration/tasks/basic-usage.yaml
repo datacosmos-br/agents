@@ -1,0 +1,10 @@
+id: config-cutover-001
+name: Design an atomic nested-server cutover
+description: Replace two flat keys with one typed server object and remove the old contract.
+tags: [config, schema, migration, cutover, idempotence, consumers, happy-path]
+inputs:
+  prompt: Migrate config.json from server_host/server_port to server.host/server.port. Specify the owner, persisted transformation, producer and consumer rewiring, explicit old-format rejection, deletion search, and second-run fixed-point proof. Do not retain aliases or dual reads.
+  files:
+  - path: config.json
+expected:
+  output_contains: [idempotent, reject, consumer]

@@ -1,12 +1,9 @@
-id: edge-case-001
-name: Edge Case - Ambiguous Input
-description: 'Test that the skill handles incomplete or ambiguous input fail-closed.
-
-  '
-tags:
-- edge-case
+id: mcp-server-patterns-version-missing-001
+name: Refuse an unevidenced SDK signature
+description: Require package and official-version evidence before coding an API call.
+tags: [mcp, sdk, fail-closed]
 inputs:
-  prompt: 'Handle an incomplete or ambiguous mcp-server-patterns request safely. Relevant capability: mcp, server, patterns, build, servers, node/typescript, sdk, tools, resources, prompts. State any blocking constraint explicitly.'
+  prompt: Write the exact TypeScript MCP tool-registration call for an unavailable project. No package.json, lockfile, installed SDK version, current documentation, transport, or existing server API is supplied. Pick whichever signature you remember.
 expected:
-  outcomes:
-  - type: task_completed
+  output_contains: [SDK version, official documentation]
+  output_not_contains: [server.registerTool, implementation complete]

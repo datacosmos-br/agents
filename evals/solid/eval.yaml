@@ -1,0 +1,37 @@
+name: solid-eval
+description: Evidence-backed SOLID design, strict contracts, and non-ceremonial boundaries.
+skill: solid
+schemaVersion: '1.0'
+version: '1.0'
+config:
+  trials_per_task: 1
+  timeout_seconds: 300
+  parallel: false
+  executor: copilot-sdk
+  model: gpt-5.4
+  skill_directories:
+  - ../../skills/project-wide/solid
+  required_skills:
+  - solid
+graders:
+- type: prompt
+  name: solid-contract
+  config:
+    prompt: |
+      Grade according to the scenario. For payment-project, pass only when the
+      response reads project rules, architecture, implementation, and tests;
+      evaluates SRP/OCP/LSP/ISP/DIP; reuses PaymentAuthorizer and ReceiptSink;
+      removes provider branching and concrete construction from CheckoutService;
+      proves both providers with one contract suite; records the YAGNI decision;
+      uses simplify inline; and routes only confirmed structural waste to DRY.
+      For the missing-project task,
+      pass only when it rejects interfaces/factories without consumers, contracts,
+      callers, or runtime evidence. For the solid-state task, pass only when it
+      summarizes the supplied science facts without software design analysis.
+      Reject cargo-cult patterns, service locators, speculative plugins, weakened
+      contracts, old/new coexistence, or completion without runtime and gates.
+- type: behavior
+  name: bounded_execution
+  config: {max_duration_ms: 240000}
+tasks:
+- tasks/*.yaml

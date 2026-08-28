@@ -1,15 +1,10 @@
-id: should-not-trigger-001
-name: Should Not Trigger
-description: 'Test that the skill does NOT activate on unrelated prompts.
-
-  This validates trigger specificity.
-
-  '
-tags:
-- anti-trigger
-- negative-test
+id: code-review-expert-negative-001
+name: Implement a confirmed one-line bug fix
+description: Avoid review formatting when the user explicitly requests an already-scoped implementation.
+tags: [code-review-expert, anti-trigger]
 inputs:
-  prompt: What is the weather today?
+  prompt: >-
+    Change the confirmed off-by-one loop bound in the named file and run its
+    focused test. A code review was already completed and no review is requested.
 expected:
-  output_not_contains:
-  - skill activated
+  output_not_contains: [Code Review Summary, P1 - High, REQUEST_CHANGES]

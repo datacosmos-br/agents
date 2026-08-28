@@ -1,0 +1,8 @@
+id: jvm-negative-001
+name: Unrelated image request
+description: Keep JVM guidance out of an image-editing request.
+tags: [anti-trigger]
+inputs:
+  prompt: Remove the background from this portrait.
+expected:
+  output_not_contains: [Gradle, Maven, Kotlin]

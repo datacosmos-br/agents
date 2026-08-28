@@ -1,0 +1,11 @@
+id: solid-state-summary-negative-001
+name: Summarize solid-state matter
+description: Avoid software design analysis for a science summary.
+tags: [anti-trigger, science, summary]
+inputs:
+  prompt: Summarize solid-state-notes.md in two sentences for a physics class. No software system is involved.
+  files:
+  - path: solid-state-notes.md
+expected:
+  output_contains: [fixed shape, particles]
+  output_not_contains: [PaymentAuthorizer, dependency inversion, code refactor]

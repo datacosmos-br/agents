@@ -1,0 +1,9 @@
+id: skill-governance-negative-001
+name: Edit a résumé bullet
+description: Avoid skill scaffolding for a one-off writing edit.
+tags: [anti-trigger]
+inputs:
+  prompt: |
+    Rewrite this résumé bullet with a measurable result: “Helped improve build speed.”
+expected:
+  output_not_contains: [SKILL.md, skill directory, frontmatter]

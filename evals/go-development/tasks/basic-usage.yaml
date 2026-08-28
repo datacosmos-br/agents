@@ -1,15 +1,11 @@
-id: basic-usage-001
-name: Basic Usage
-description: 'Test that the skill handles a typical request correctly.
-
-  '
-tags:
-- basic
-- happy-path
+id: go-development-worker-lifecycle-001
+name: Review a cancellable Go worker
+description: Diagnose goroutine ownership and error propagation in a declared module.
+tags: [go, development, testing, concurrency, errors, modules, happy-path]
 inputs:
-  prompt: 'Apply the go-development capability to the provided fixture. Exercise these requirements: go, development, building, reviewing, testing, simplifying, detected, go.mod, go.work. Return a concrete result.'
+  prompt: Exercise Go development by building, reviewing, testing, and simplifying this detected module. Read go.mod, note that no go.work is present, preserve worker.go's public API, identify its lifecycle and error defects, and specify race-detector evidence.
   files:
-  - path: sample.py
+  - path: go.mod
+  - path: worker.go
 expected:
-  outcomes:
-  - type: task_completed
+  output_contains: [context.Context, errors.Is, go test -race]

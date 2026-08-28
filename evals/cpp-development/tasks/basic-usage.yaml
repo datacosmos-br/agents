@@ -1,0 +1,11 @@
+id: cpp-ownership-001
+name: Repair native ownership and concurrency
+description: Correct ownership and a data race through the declared CMake target and sanitizer path.
+tags: [cpp, cmake, ownership, sanitizers, concurrency, testing, happy-path]
+inputs:
+  prompt: Review sample.cpp and CMakeLists.txt. Identify the lifetime and concurrency defects, propose RAII and bounded synchronization that preserve the declared C++ standard and target, and specify focused tests plus the owning project's configured leak and thread sanitizer proof.
+  files:
+  - path: sample.cpp
+  - path: CMakeLists.txt
+expected:
+  output_contains: [RAII, race, CMake]

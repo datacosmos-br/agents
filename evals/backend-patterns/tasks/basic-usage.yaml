@@ -1,15 +1,14 @@
-id: basic-usage-001
-name: Basic Usage
-description: 'Test that the skill handles a typical request correctly.
-
-  '
-tags:
-- basic
-- happy-path
+id: backend-patterns-happy-001
+name: Remove an N-plus-one tenant query
+description: Correct a concrete server-side query path without replacing the stack.
+tags: [backend, architecture, api, database, performance, reliability, happy-path]
 inputs:
-  prompt: 'Apply the backend-patterns capability to the provided fixture. Exercise these requirements: backend, patterns, architecture, api, design, database, optimization, server-side, best, practices. Return a concrete result.'
+  prompt: >-
+    Review orders-service.ts for a customer-scoped list endpoint. Identify the
+    query and ownership risks, propose the smallest repository/service change
+    that batches item loading and bounds the result set, and name tests for tenant
+    isolation, empty results, and database failure.
   files:
-  - path: sample.py
+  - path: orders-service.ts
 expected:
-  outcomes:
-  - type: task_completed
+  output_contains: [N+1, customerId, batch, pagination]

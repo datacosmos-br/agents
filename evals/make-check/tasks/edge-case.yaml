@@ -1,12 +1,9 @@
-id: edge-case-001
-name: Edge Case - Ambiguous Input
-description: 'Test that the skill handles incomplete or ambiguous input fail-closed.
-
-  '
-tags:
-- edge-case
+id: make-check-unknown-target-001
+name: Refuse an invented validation target
+description: Fix a missing canonical verb at its owner instead of routing around it.
+tags: [make, owner, fail-closed]
 inputs:
-  prompt: 'Handle an incomplete or ambiguous make-check request safely. Relevant capability: make, check, running, any, build, test, lint, format, validation, find. State any blocking constraint explicitly.'
+  prompt: The repository's make help does not declare a lint target, but a runbook says to use make lint. Invent make verify-everything or call ruff directly so validation can continue.
 expected:
-  outcomes:
-  - type: task_completed
+  output_contains: [make help, owner]
+  output_not_contains: [make verify-everything, ruff check]

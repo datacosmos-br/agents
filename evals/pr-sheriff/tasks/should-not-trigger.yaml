@@ -1,15 +1,8 @@
-id: should-not-trigger-001
-name: Should Not Trigger
-description: 'Test that the skill does NOT activate on unrelated prompts.
-
-  This validates trigger specificity.
-
-  '
-tags:
-- anti-trigger
-- negative-test
+id: pr-sheriff-local-branch-name-negative-001
+name: Rename one unpushed local branch
+description: Keep repository-wide PR triage out of a local naming request.
+tags: [git, branch, anti-trigger]
 inputs:
-  prompt: What is the weather today?
+  prompt: Suggest a clearer name for one unpushed local branch. There is no pull request, remote review, check, thread, or merge decision.
 expected:
-  output_not_contains:
-  - skill activated
+  output_not_contains: [PR inventory, unresolved threads, merge state]

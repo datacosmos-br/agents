@@ -1,110 +1,382 @@
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
 
-from agents_governance.catalog import Catalog
+import pytest
+
+from agents_governance.catalog import Catalog, SkillCategory
+
+REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
+
+_BUDGETS = {
+    "router_tokens": 500,
+    "frozen_tokens": 1200,
+    "on_demand_tokens": 5000,
+    "max_lines": 500,
+}
+_BASE_TAGS = (
+    "provenance:agents-owned",
+    "updates:manual",
+    "usage:on-demand",
+)
 
 
-def test_inventory_is_deterministic_and_owned(tmp_path: Path) -> None:
-    (tmp_path / "config").mkdir()
-    (tmp_path / "skills" / "example").mkdir(parents=True)
-    (tmp_path / "skills" / "example" / "SKILL.md").write_text(
-        "---\nname: example\ndescription: Example.\n---\n# Example\n",
+def _write_config(root: Path, **legacy: object) -> None:
+    (root / "config").mkdir(exist_ok=True)
+    payload: dict[str, object] = {"version": 2, "budgets": _BUDGETS}
+    payload.update(legacy)
+    (root / "config" / "skills.json").write_text(json.dumps(payload), encoding="utf-8")
+
+
+def _write_skill(
+    root: Path,
+    category: str,
+    name: str,
+    *,
+    declared_name: str | None = None,
+    tags: tuple[str, ...] = _BASE_TAGS,
+) -> Path:
+    directory = root / "skills" / category / name
+    directory.mkdir(parents=True)
+    encoded_tags = json.dumps(tags, separators=(",", ":"))
+    (directory / "SKILL.md").write_text(
+        "---\n"
+        f"name: {declared_name or name}\n"
+        f"description: {name}, validation\n"
+        "metadata:\n"
+        '  version: "1.0.0"\n'
+        f"  aihub.tags: '{encoded_tags}'\n"
+        "---\n"
+        f"# {name}\n",
         encoding="utf-8",
     )
-    config = {
-        "budgets": {
-            "router_tokens": 500,
-            "frozen_tokens": 1200,
-            "on_demand_tokens": 5000,
-            "max_lines": 500,
-            "universal_core_tokens": 2000,
-        },
-        "classification": [],
-        "personal": ["example"],
-        "project_generic": [],
-        "technologies": {},
-        "default": {"class": "on_demand", "provenance": "adopted", "updates": "manual"},
-    }
-    (tmp_path / "config" / "skills.json").write_text(
-        json.dumps(config), encoding="utf-8"
-    )
+    return directory
 
-    first = Catalog(tmp_path).inventory()
-    second = Catalog(tmp_path).inventory()
+
+def test_inventory_is_recursive_deterministic_and_typed(tmp_path: Path) -> None:
+    _write_config(tmp_path)
+    directory = _write_skill(tmp_path, "agent-wide", "example")
+
+    catalog = Catalog(tmp_path)
+    first = catalog.inventory()
+    second = catalog.inventory()
 
     assert first == second
-    assert first[0]["owner"] == "agents"
-    assert len(first[0]["digest"]) == 64
-
-
-def test_forbidden_third_party_skill_is_not_distributed(tmp_path: Path) -> None:
-    (tmp_path / "config").mkdir()
-    skill = tmp_path / "skills" / "vendor-frozen-plan"
-    skill.mkdir(parents=True)
-    (skill / "SKILL.md").write_text(
-        "---\nname: vendor-frozen-plan\ndescription: vendor, frozen, plan\n---\n",
-        encoding="utf-8",
-    )
-    config = {
-        "budgets": {
-            "router_tokens": 500,
-            "frozen_tokens": 1200,
-            "on_demand_tokens": 5000,
+    assert catalog.skill_dirs() == (directory,)
+    assert first == [
+        {
+            "name": "example",
+            "owner": "agents",
+            "category": "agent-wide",
+            "class": "on_demand",
+            "provenance": "agents-owned",
+            "updates": "manual",
+            "max_tokens": 5000,
             "max_lines": 500,
-        },
-        "classification": [
-            {
-                "pattern": "vendor-frozen-*",
-                "class": "router",
-                "provenance": "vendor",
-                "updates": "forbidden",
-            }
-        ],
-        "technologies": {},
-        "personal": [],
-        "project_generic": [],
-        "default": {"class": "on_demand", "provenance": "adopted", "updates": "manual"},
-    }
-    (tmp_path / "config" / "skills.json").write_text(
-        json.dumps(config), encoding="utf-8"
+            "distributions": ["personal"],
+            "tags": list(_BASE_TAGS),
+            "path": "skills/agent-wide/example",
+            "digest": Catalog.digest_tree(directory),
+        }
+    ]
+
+
+def test_legacy_distribution_registries_are_rejected(tmp_path: Path) -> None:
+    _write_config(
+        tmp_path,
+        personal=["project-capability"],
+        project_generic=["agent-capability"],
+        technologies={"wrong": {"skills": ["agent-capability"]}},
+    )
+    _write_skill(tmp_path, "agent-wide", "agent-capability")
+    _write_skill(tmp_path, "project-wide", "project-capability")
+
+    with pytest.raises(ValueError, match="unsupported skills policy fields"):
+        Catalog(tmp_path)
+
+
+def test_conditional_profiles_are_derived_from_local_tags(tmp_path: Path) -> None:
+    _write_config(tmp_path)
+    _write_skill(
+        tmp_path,
+        "technology",
+        "go-development",
+        tags=(
+            "activation:detected",
+            "detect:marker:go.mod",
+            "detect:marker:go.work",
+            "provenance:agents-owned",
+            "route:project",
+            "technology:go",
+            "updates:manual",
+            "usage:router",
+        ),
+    )
+    _write_skill(
+        tmp_path,
+        "framework",
+        "react-frontend",
+        tags=(
+            "activation:detected",
+            "detect:dependency:npm:react",
+            "framework:react",
+            "provenance:agents-owned",
+            "route:project",
+            "updates:manual",
+            "usage:on-demand",
+        ),
     )
 
     catalog = Catalog(tmp_path)
 
-    assert catalog.policy("vendor-frozen-plan").distributions == ()
-    assert "vendor-frozen-plan" not in catalog.names_for("personal")
-
-
-def test_distribution_classes_are_explicit_and_disjoint(tmp_path: Path) -> None:
-    (tmp_path / "config").mkdir()
-    skill = tmp_path / "skills" / "example"
-    skill.mkdir(parents=True)
-    (skill / "SKILL.md").write_text(
-        "---\nname: example\ndescription: example\n---\n", encoding="utf-8"
-    )
-    config = {
-        "budgets": {
-            "router_tokens": 500,
-            "frozen_tokens": 1200,
-            "on_demand_tokens": 5000,
-            "max_lines": 500,
+    assert catalog.conditional_project_profiles() == {
+        "framework:react": {
+            "markers": [],
+            "dependencies": {"npm": ["react"]},
+            "owned_extensions": [],
+            "owned_globs": [],
+            "opt_ins": [],
+            "selected_tags": [],
+            "skills": ["react-frontend"],
         },
-        "classification": [],
-        "personal": ["example"],
-        "project_generic": ["example"],
-        "technologies": {},
-        "default": {
-            "class": "on_demand",
-            "provenance": "adopted",
-            "updates": "manual",
+        "technology:go": {
+            "markers": ["go.mod", "go.work"],
+            "dependencies": {},
+            "owned_extensions": [],
+            "owned_globs": [],
+            "opt_ins": [],
+            "selected_tags": [],
+            "skills": ["go-development"],
         },
     }
-    (tmp_path / "config" / "skills.json").write_text(
-        json.dumps(config), encoding="utf-8"
+    assert catalog.names_for("project-capability:technology:go") == {"go-development"}
+    assert catalog.names_for("project-capability:framework:react") == {"react-frontend"}
+
+
+@pytest.mark.parametrize(
+    ("tags", "expected_code"),
+    [
+        ((_BASE_TAGS[0], _BASE_TAGS[0], *_BASE_TAGS[1:]), "tag-duplicate"),
+        (tuple(reversed(_BASE_TAGS)), "tag-order"),
+        ((_BASE_TAGS[0], _BASE_TAGS[2]), "tag-required"),
+        ((_BASE_TAGS[0], "updates:manual", "usage:unknown"), "tag-value"),
+        ((_BASE_TAGS[0], "custom:value", *_BASE_TAGS[1:]), "tag-namespace"),
+    ],
+)
+def test_tag_contract_fails_closed(
+    tmp_path: Path, tags: tuple[str, ...], expected_code: str
+) -> None:
+    _write_config(tmp_path)
+    _write_skill(tmp_path, "agent-wide", "example", tags=tags)
+
+    findings = Catalog(tmp_path).contract_findings()
+
+    assert expected_code in {finding.code for finding in findings}
+
+
+@pytest.mark.parametrize(
+    ("raw_tags", "expected_code"),
+    [
+        ('["unterminated"', "tag-json"),
+        ('{"usage":"on-demand"}', "tag-type"),
+    ],
+)
+def test_tags_must_be_a_json_array_string(
+    tmp_path: Path, raw_tags: str, expected_code: str
+) -> None:
+    _write_config(tmp_path)
+    skill = _write_skill(tmp_path, "agent-wide", "example")
+    skill_file = skill / "SKILL.md"
+    text = skill_file.read_text(encoding="utf-8")
+    start = text.index("  aihub.tags:")
+    end = text.index("\n", start)
+    skill_file.write_text(
+        f"{text[:start]}  aihub.tags: '{raw_tags}'{text[end:]}", encoding="utf-8"
     )
 
-    assert Catalog(tmp_path).distribution_errors() == (
-        "example: expected exactly one distribution class",
+    findings = Catalog(tmp_path).contract_findings()
+
+    assert expected_code in {finding.code for finding in findings}
+
+
+@pytest.mark.parametrize(
+    ("tags", "expected_code"),
+    [
+        (
+            (
+                "provenance:agents-owned",
+                "route:project",
+                "technology:go",
+                "updates:manual",
+                "usage:router",
+            ),
+            "activation-required",
+        ),
+        (
+            (
+                "activation:detected",
+                "provenance:agents-owned",
+                "route:project",
+                "technology:go",
+                "updates:manual",
+                "usage:router",
+            ),
+            "detector-required",
+        ),
+        (
+            (
+                "activation:detected",
+                "detect:marker:go.mod",
+                "provenance:agents-owned",
+                "route:project",
+                "updates:manual",
+                "usage:router",
+            ),
+            "category-tag-required",
+        ),
+    ],
+)
+def test_conditional_category_contract_fails_closed(
+    tmp_path: Path, tags: tuple[str, ...], expected_code: str
+) -> None:
+    _write_config(tmp_path)
+    _write_skill(tmp_path, "technology", "go-development", tags=tags)
+
+    findings = Catalog(tmp_path).contract_findings()
+
+    assert expected_code in {finding.code for finding in findings}
+
+
+def test_duplicate_names_across_categories_are_rejected(tmp_path: Path) -> None:
+    _write_config(tmp_path)
+    _write_skill(tmp_path, "agent-wide", "example")
+    _write_skill(tmp_path, "project-wide", "example")
+
+    findings = Catalog(tmp_path).contract_findings()
+
+    assert [(finding.code, finding.message) for finding in findings] == [
+        ("duplicate", "duplicate skill name: example")
+    ]
+
+
+def test_noncanonical_skill_path_is_rejected(tmp_path: Path) -> None:
+    _write_config(tmp_path)
+    flat = tmp_path / "skills" / "example"
+    flat.mkdir(parents=True)
+    (flat / "SKILL.md").write_text(
+        "---\nname: example\ndescription: example, validation\n---\n",
+        encoding="utf-8",
     )
+
+    findings = Catalog(tmp_path).contract_findings()
+
+    assert [(finding.code, finding.path) for finding in findings] == [
+        ("skill-path", "skills/example/SKILL.md")
+    ]
+
+
+def test_forbidden_skill_preserves_frozen_budget_and_is_not_distributed(
+    tmp_path: Path,
+) -> None:
+    _write_config(tmp_path)
+    _write_skill(
+        tmp_path,
+        "agent-wide",
+        "vendor-frozen",
+        tags=(
+            "provenance:vendor",
+            "updates:forbidden",
+            "usage:frozen",
+        ),
+    )
+
+    catalog = Catalog(tmp_path)
+    policy = catalog.policy("vendor-frozen")
+
+    assert policy.max_tokens == 1200
+    assert policy.updates == "forbidden"
+    assert policy.distributions == ()
+    assert catalog.names_for("personal") == set()
+
+
+def test_content_digest_stays_stable_while_physical_contract_tracks_mode_and_type(
+    tmp_path: Path,
+) -> None:
+    source = tmp_path / "source"
+    source.write_text("same payload\n", encoding="utf-8")
+    source.chmod(0o600)
+    private_content = Catalog.digest_tree(source)
+    private_physical = Catalog.physical_tree_contract(source)
+
+    source.chmod(0o644)
+    public_content = Catalog.digest_tree(source)
+    public_physical = Catalog.physical_tree_contract(source)
+
+    source.unlink()
+    source.mkdir()
+    directory_physical = Catalog.physical_tree_contract(source)
+
+    assert private_content == public_content
+    assert private_physical != public_physical
+    assert public_physical != directory_physical
+
+
+def test_digest_rejects_symlinks_and_special_files(tmp_path: Path) -> None:
+    source = tmp_path / "source"
+    source.mkdir()
+    regular = source / "regular.txt"
+    regular.write_text("payload\n", encoding="utf-8")
+    symlink = source / "linked.txt"
+    symlink.symlink_to(regular)
+
+    with pytest.raises(ValueError, match="symlink"):
+        Catalog.digest_tree(source)
+
+    symlink.unlink()
+    fifo = source / "events.fifo"
+    os.mkfifo(fifo)
+
+    with pytest.raises(ValueError, match="unsupported file type"):
+        Catalog.digest_tree(source)
+
+
+def test_canonical_catalog_is_exhaustive_disjoint_and_agents_owned() -> None:
+    catalog = Catalog(REPOSITORY_ROOT)
+    inventory = catalog.inventory()
+
+    assert catalog.contract_findings() == ()
+    assert catalog.distribution_errors() == ()
+    assert {item["category"] for item in inventory} <= {
+        category.value for category in SkillCategory
+    }
+    assert {item["provenance"] for item in inventory} == {"agents-owned"}
+    assert {item["name"] for item in inventory} == {
+        directory.name for directory in catalog.skill_dirs()
+    }
+
+
+def test_canonical_skills_have_no_import_registry_identity() -> None:
+    skills = REPOSITORY_ROOT / "skills"
+    legacy_prefixes = (
+        "aiskillstore-",
+        "benchflow-",
+        "copyleftdev-",
+        "diegosouzapw-",
+        "jamie-bitflight-",
+        "majiayu000-",
+    )
+
+    assert not any(
+        directory.name.startswith(legacy_prefixes)
+        for directory in skills.glob("*/*")
+        if directory.is_dir()
+    )
+    assert list(skills.rglob("metadata.json")) == []
+    assert list(skills.rglob("skill-report.json")) == []
+    for path in skills.rglob("*"):
+        if path.is_file() and path.suffix in {".md", ".json", ".yaml", ".yml"}:
+            text = path.read_text(encoding="utf-8", errors="replace").lower()
+            assert "skillshare" not in text, path
+            assert "skillsmp synced skills" not in text, path

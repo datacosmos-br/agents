@@ -1,0 +1,8 @@
+id: config-negative-001
+name: Ordinary value change
+description: Do not invoke schema migration for a value-only edit under an unchanged schema.
+tags: [anti-trigger]
+inputs:
+  prompt: Change the existing log_level value from info to debug without changing any field, type, loader, or schema.
+expected:
+  output_not_contains: [schema migration, dual-read, cutover]

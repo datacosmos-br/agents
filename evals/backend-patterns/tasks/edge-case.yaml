@@ -1,12 +1,13 @@
-id: edge-case-001
-name: Edge Case - Ambiguous Input
-description: 'Test that the skill handles incomplete or ambiguous input fail-closed.
-
-  '
-tags:
-- edge-case
+id: backend-patterns-edge-001
+name: Refuse an unevidenced cache and queue stack
+description: Require workload and consistency contracts before adding infrastructure.
+tags: [backend-patterns, edge-case]
 inputs:
-  prompt: 'Handle an incomplete or ambiguous backend-patterns request safely. Relevant capability: backend, patterns, architecture, api, design, database, optimization, server-side, best, practices. State any blocking constraint explicitly.'
+  prompt: >-
+    Add Redis caching and a background queue to an unavailable backend. No hot
+    path, latency profile, consistency requirement, invalidation owner, retry
+    contract, deployment topology, or existing framework is known. State why an
+    implementation choice is blocked.
 expected:
-  outcomes:
-  - type: task_completed
+  output_contains: [workload evidence, invalidation owner]
+  output_not_contains: [redis.setex, npm install redis]

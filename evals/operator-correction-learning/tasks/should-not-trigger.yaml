@@ -1,15 +1,8 @@
-id: should-not-trigger-001
-name: Should Not Trigger
-description: 'Test that the skill does NOT activate on unrelated prompts.
-
-  This validates trigger specificity.
-
-  '
-tags:
-- anti-trigger
-- negative-test
+id: operator-correction-learning-acknowledgment-negative-001
+name: Continue after an acknowledgment
+description: Do not create correction evidence when the operator changed no rule.
+tags: [operator, acknowledgment, anti-trigger]
 inputs:
-  prompt: What is the weather today?
+  prompt: The operator says, "Thanks, continue with the approved implementation." No behavior, prohibition, replacement, or scope was corrected.
 expected:
-  output_not_contains:
-  - skill activated
+  output_not_contains: [substitute tracker, contradiction search, correction recorded]

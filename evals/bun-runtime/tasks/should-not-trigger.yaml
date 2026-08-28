@@ -1,15 +1,10 @@
-id: should-not-trigger-001
-name: Should Not Trigger
-description: 'Test that the skill does NOT activate on unrelated prompts.
-
-  This validates trigger specificity.
-
-  '
-tags:
-- anti-trigger
-- negative-test
+id: bun-runtime-negative-001
+name: Define one TypeScript domain type
+description: Keep package-manager and runtime commands out of a source-only type change.
+tags: [bun-runtime, anti-trigger]
 inputs:
-  prompt: What is the weather today?
+  prompt: >-
+    Define a TypeScript union for pending, active, and closed states. Do not
+    change dependencies, scripts, lockfiles, runtime, tests, or build tooling.
 expected:
-  output_not_contains:
-  - skill activated
+  output_not_contains: [bun install, bun run, bun build]

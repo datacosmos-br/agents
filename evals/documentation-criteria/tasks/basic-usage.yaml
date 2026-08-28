@@ -1,15 +1,22 @@
-id: basic-usage-001
-name: Basic Usage
-description: 'Test that the skill handles a typical request correctly.
-
-  '
-tags:
-- basic
-- happy-path
+id: documentation-criteria-happy-path-001
+name: Classify a cross-layer frontend feature
+description: Derive the complete document set from file and architecture impact.
+tags: [documentation, prd, adr, design, planning, criteria, happy-path]
 inputs:
-  prompt: 'Apply the documentation-criteria capability to the provided fixture. Exercise these requirements: documentation, criteria, creation, including, prd, adr, design, doc, work, plan. Return a concrete result.'
+  prompt: |
+    Apply the documentation decision matrix to the supplied change request.
+    Return the required documents in creation order, explain the trigger for
+    each, assign the listed concerns to the correct document, and state the
+    measurable structural and approval gates before implementation.
   files:
-  - path: sample.py
+  - path: change-request.md
 expected:
   outcomes:
   - type: task_completed
+  output_contains:
+  - PRD
+  - UI Specification
+  - ADR
+  - Design Document
+  - Work Plan
+  - acceptance criteria

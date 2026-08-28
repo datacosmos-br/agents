@@ -1,5 +1,5 @@
 name: governance-audit-eval
-description: Evaluation suite for governance-audit.
+description: Static tracker and documentation-drift classification with evidence.
 skill: governance-audit
 schemaVersion: '1.0'
 version: '1.0'
@@ -10,24 +10,20 @@ config:
   executor: copilot-sdk
   model: gpt-5.4
   skill_directories:
-  - ../../skills/governance-audit
+  - ../../skills/agent-wide/governance-audit
   required_skills:
   - governance-audit
-metrics:
-- name: task_completion
-  weight: 1.0
-  threshold: 0.8
-  description: Did the skill complete the assigned task?
 graders:
 - type: prompt
-  name: material_task_result
+  name: governance-audit-contract
   config:
     prompt: |
-      Evaluate whether the response materially satisfies the concrete user request,
-      uses the named skill requirements, and provides the requested artifact or
-      explicit fail-closed constraint. Reject generic, unrelated, self-declared,
-      or merely non-empty answers. Call set_waza_grade_pass only when every
-      criterion is evidenced; otherwise call set_waza_grade_fail.
+      Grade the governance-audit response. Pass only when it audits every supplied
+      tracker/document fact, identifies the state conflict, zombie lane, NULL
+      epic, and source/projection drift, assigns the documented severities, and
+      presents evidence plus owner-correct recommendations. While tracking is
+      suspended it must remain read-only and static. Reject tracker commands,
+      direct closure, projection edits, omissions, or claims based on timestamps.
 - type: behavior
   name: bounded_execution
   config:

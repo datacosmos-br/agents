@@ -1,0 +1,10 @@
+id: skill-governance-schema-diff-001
+name: Design one missing schema-diff skill
+description: Create a compact router for a proven recurring workflow.
+tags: [skills, authoring, governance, happy-path]
+inputs:
+  prompt: Use capability-inventory.md to design the minimal canonical skill bundle and its validation contract.
+  files:
+  - path: capability-inventory.md
+expected:
+  output_contains: [schema-diff, SKILL.md, references]

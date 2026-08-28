@@ -1,0 +1,18 @@
+id: dry-order-coordinator-001
+name: Split an order god module and remove duplicated policy
+description: Consolidate real owners while preserving the endpoint contract.
+tags: [dry, duplication, god-patterns, efficiency, tokei, readability, happy-path]
+inputs:
+  prompt: Apply the optimized search-first -> YAGNI -> SOLID -> simplify-inline -> DRY flow to order-project. Remove the confirmed duplication, god-pattern responsibilities, and repeated lookup while preserving complete behavior, readability, documentation, and error semantics. Recheck YAGNI and SOLID, compare Tokei on the same scope, and define runtime plus native-gate proof.
+  files:
+  - path: order-project/AGENTS.md
+  - path: order-project/docs/architecture.md
+  - path: order-project/pyproject.toml
+  - path: order-project/src/orders/identity.py
+  - path: order-project/src/orders/repository.py
+  - path: order-project/src/orders/csv_exporter.py
+  - path: order-project/src/orders/audit.py
+  - path: order-project/src/orders/service.py
+  - path: order-project/tests/test_service.py
+expected:
+  output_contains: [OrderId, OrderRepository, CsvOrderExporter, AuditSink, thin orchestrator, YAGNI recheck, SOLID recheck, simplify, tokei, runtime]

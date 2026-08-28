@@ -3,7 +3,7 @@
 
 1. Truth: never claim done/green/resolved without command, exit code, decisive output.
 2. Root cause: no bypass, fallback, shim, suppression, stub, hardcode, or old+new coexistence.
-3. Tracker first: claim/update the canonical tracker before file writes or multi-step work. If its runtime is explicitly suspended, preserve evidence locally and do not declare the phase DONE.
+3. Tracker first: claim/update the canonical tracker before file writes or multi-step work. If its runtime is explicitly suspended, create no substitute ledger; preserve evidence in Git/PR/CI and do not declare the phase DONE.
 4. Research first: inspect code, docs, canonical sources before acting; never invent APIs, flags, facts, or behavior.
 5. Owner first: use the project's declared facades/primitives; do not reimplement them locally.
 6. Gate discipline: if a gate blocks, stop and escalate with the exact command/edit; never route around it.
@@ -85,7 +85,10 @@ When working inside a repository, load that repository's `AGENTS.md` and `CLAUDE
 
 ## Issue Tracker
 
-This project uses an issue tracker for execution state. Run the tracker prime command to see full workflow context.
+This project uses the canonical tracker for execution state. Its runtime is
+currently suspended: do not invoke Beads, Dolt, Gas City, or any substitute
+tracker or ledger until the operator explicitly restores it. The commands below
+are reference-only for the restored runtime.
 
 ### Quick Reference
 
@@ -98,13 +101,15 @@ bd close <id>         # Complete work
 
 ### Rules
 
-- Use the tracker for ALL task tracking — do not use ad-hoc TODO lists.
-- Run the tracker prime command for detailed reference and session close protocol.
-- Use the tracker remember command for persistent knowledge — do not use memory files.
+- After explicit restoration, use the tracker for all task state and memory.
+- During suspension, preserve execution evidence only in Git commits, PRs,
+  reviews, and CI; do not create an ad-hoc TODO list or memory file.
+- Tracker closure remains open during suspension, so no phase may be called DONE.
 
 ## Session Completion
 
-1. **File issues for remaining work** — Create tracker items for anything that needs follow-up.
+1. **Tracker state** — Update canonical items only when the runtime is explicitly
+   restored; otherwise keep closure open without creating a substitute.
 2. **Run quality gates** (if code changed) — Tests, linters, builds.
 3. **Update issue status** — Close finished work, update in-progress items.
 4. **Land git/sync by active profile**:
@@ -123,7 +128,8 @@ bd close <id>         # Complete work
 
 - Explicit user or orchestrator instructions override this block.
 - Normal scoped commit and fast-forward push are authorized by the default profile after validation.
-- If a required sync or push is blocked, record the exact command, exit code, and decisive output in the tracker before stopping.
+- If sync or push is blocked while the tracker is suspended, report the exact
+  command, exit code, and decisive output in the PR/CI evidence and final response.
 
 
 <!-- BEGIN BEADS INTEGRATION v:1 profile:minimal hash:6cd5cc61 -->
@@ -134,6 +140,7 @@ This project uses **bd (beads)** for issue tracking. Run `bd prime` to see full 
 ### Quick Reference
 
 ```bash
+# Reference only after explicit tracker-runtime restoration.
 bd ready              # Find available work
 bd show <id>          # View issue details
 bd update <id> --claim  # Claim work
@@ -145,10 +152,11 @@ bd close <id>         # Complete work
 - Use `bd` for ALL task tracking — do NOT use TodoWrite, TaskCreate, or markdown TODO lists
 - Run `bd prime` for detailed command reference and session close protocol
 - Use `bd remember` for persistent knowledge — do NOT use MEMORY.md files
+- Tracker runtime is suspended; do not execute these commands until explicitly restored.
 
-**Architecture in one line:** the town routes each rig to its own database on
-the shared Dolt service; `bd where <id>` resolves the ledger before any write.
-Sync uses `refs/dolt/data`; `.beads/issues.jsonl` is a passive export.
+**Runtime suspension:** do not select or infer an endpoint, embedded database,
+alternate server, or substitute tracker. Architecture and CLI behavior must be
+re-read from the canonical owner only after restoration.
 
 ## Agent Context Profiles
 
@@ -162,16 +170,16 @@ The managed Beads block is task-tracking guidance, not permission to override re
 
 This protocol applies when ending a Beads implementation workflow. It is subordinate to explicit user, repository, and orchestrator instructions.
 
-1. **File issues for remaining work** - Create beads for anything that needs follow-up
+1. **Tracker state** - Update canonical items only after explicit runtime restoration
 2. **Run quality gates** (if code changed) - Tests, linters, builds
 3. **Update issue status** - Close finished work, update in-progress items
 4. **Handle git/sync by active profile**:
    ```bash
-   # Conservative/minimal/default: report status and proposed commands; wait for approval.
+   # Conservative/minimal/default: inspect and report status; wait for authority.
    git status
 
-   # Team-maintainer opt-in only, unless current instructions forbid it:
-   git pull --rebase
+   # Team-maintainer opt-in only. If the integration base diverged, cooperate:
+   git merge --no-ff origin/<integration>
    git push
    git status
    ```
@@ -181,4 +189,6 @@ This protocol applies when ending a Beads implementation workflow. It is subordi
 - Explicit user or orchestrator instructions override this Beads block.
 - Do not commit or push without clear authority from the active profile or the current user request.
 - If a required sync or push is blocked, stop and report the exact command and error.
+- During tracker suspension, do not execute Beads/Dolt/Gas City commands and do
+  not create a substitute ledger; tracker closure remains unresolved.
 <!-- END BEADS INTEGRATION -->

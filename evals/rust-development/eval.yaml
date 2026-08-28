@@ -1,5 +1,5 @@
 name: rust-development-eval
-description: Evaluation suite for rust-development.
+description: Rust contracts, ownership, error semantics, safety, and native gates.
 skill: rust-development
 schemaVersion: '1.0'
 version: '1.0'
@@ -10,27 +10,21 @@ config:
   executor: copilot-sdk
   model: gpt-5.4
   skill_directories:
-  - ../../skills/rust-development
+  - ../../skills/technology/rust-development
   required_skills:
   - rust-development
-metrics:
-- name: task_completion
-  weight: 1.0
-  threshold: 0.8
-  description: Did the skill complete the assigned task?
 graders:
 - type: prompt
-  name: material_task_result
+  name: rust-development-contract
   config:
     prompt: |
-      Evaluate whether the response materially satisfies the concrete user request,
-      uses the named skill requirements, and provides the requested artifact or
-      explicit fail-closed constraint. Reject generic, unrelated, self-declared,
-      or merely non-empty answers. Call set_waza_grade_pass only when every
-      criterion is evidenced; otherwise call set_waza_grade_fail.
+      Grade the rust-development response. Pass only when it preserves the public
+      Result signature, removes the panic through typed error propagation, honors
+      the unsafe prohibition, and names the crate's canonical fmt, clippy, and test
+      evidence. Reject signature drift, unwrap replacement by another panic, or an
+      invented dependency.
 - type: behavior
   name: bounded_execution
-  config:
-    max_duration_ms: 240000
+  config: {max_duration_ms: 240000}
 tasks:
 - tasks/*.yaml

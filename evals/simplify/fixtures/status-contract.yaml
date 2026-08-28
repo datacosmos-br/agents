@@ -1,0 +1,23 @@
+module: status_formatter.py
+public_contract:
+  format_status:
+    signature: "format_status(enabled: bool, code: str | None) -> str"
+    behavior:
+      - "disabled returns disabled"
+      - "enabled with a nonblank code returns enabled:<trimmed-code>"
+      - "enabled with None, empty, or whitespace-only code returns enabled:unknown"
+  unrelated_invoice_total:
+    signature: "unrelated_invoice_total(values: list[int]) -> int"
+    behavior:
+      - "returns the sum of values"
+constraints:
+  - "implement the complete module without TODOs or placeholders"
+  - "keep both public functions and their type annotations"
+  - "use direct readable control flow; no helper or class is justified"
+  - "do not swallow exceptions or hardcode test-only results"
+runtime_checks:
+  - "format_status(False, ' X ') == 'disabled'"
+  - "format_status(True, ' X ') == 'enabled:X'"
+  - "format_status(True, '   ') == 'enabled:unknown'"
+  - "format_status(True, None) == 'enabled:unknown'"
+  - "unrelated_invoice_total([2, 3]) == 5"

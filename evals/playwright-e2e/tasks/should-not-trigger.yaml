@@ -1,0 +1,13 @@
+id: playwright-e2e-should-not-trigger-001
+name: Unit-test a pure parser
+description: Pure deterministic logic belongs in a unit test, not a browser flow.
+tags:
+- anti-trigger
+- negative-test
+inputs:
+  prompt: Write unit tests for a pure function that parses an ISO date string; no browser behavior exists.
+expected:
+  output_not_contains:
+  - playwright
+  - page.goto
+  - browser context

@@ -1,0 +1,36 @@
+name: context7-documentation-eval
+description: Semantic evaluation suite for context7-documentation.
+skill: context7-documentation
+schemaVersion: '1.0'
+version: '1.0'
+config:
+  trials_per_task: 1
+  timeout_seconds: 300
+  parallel: false
+  executor: copilot-sdk
+  model: gpt-5.4
+  skill_directories:
+  - ../../skills/tool/context7-documentation
+  required_skills:
+  - context7-documentation
+metrics:
+- name: task_completion
+  weight: 1.0
+  threshold: 0.8
+  description: Did lookup resolve and use the correct current documentation?
+graders:
+- type: prompt
+  name: context7-documentation-contract
+  config:
+    prompt: |
+      Grade the context7-documentation response. Pass only if it resolves the
+      requested library before querying, selects the closest reputable and
+      version-appropriate Context7 ID, answers from fetched documentation,
+      cites the relevant library/version, respects the three-call limit, and
+      sends no secret-bearing text to the documentation service.
+- type: behavior
+  name: bounded_execution
+  config:
+    max_duration_ms: 240000
+tasks:
+- tasks/*.yaml

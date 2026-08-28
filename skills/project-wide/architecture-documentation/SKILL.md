@@ -1,0 +1,17 @@
+---
+name: architecture-documentation
+description: 'Document system boundaries and decisions when architecture must be explained or updated.'
+metadata:
+  aihub.tags: '["provenance:agents-owned","role:documentation","updates:manual","usage:on-demand"]'
+---
+
+# Architecture Documentation
+
+Read [the evidence procedure](references/procedure.md) before documenting system
+structure, ownership, data flow, runtime topology, or an architectural decision.
+
+Use maintained code, configuration, schemas, and runtime observations as the
+source of truth. Invoke `documentation-criteria` for project-owned document and
+ADR templates instead of duplicating them here. Never fabricate a component,
+copy an owned contract into a second authority, or present a proposal as current
+architecture.

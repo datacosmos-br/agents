@@ -1,5 +1,5 @@
 name: context-canary-eval
-description: Evaluation suite for context-canary.
+description: Semantic evaluation suite for context-canary.
 skill: context-canary
 schemaVersion: '1.0'
 version: '1.0'
@@ -10,24 +10,23 @@ config:
   executor: copilot-sdk
   model: gpt-5.4
   skill_directories:
-  - ../../skills/context-canary
+  - ../../skills/agent-wide/context-canary
   required_skills:
   - context-canary
 metrics:
 - name: task_completion
   weight: 1.0
   threshold: 0.8
-  description: Did the skill complete the assigned task?
+  description: Did the response preserve and recover the session contract?
 graders:
 - type: prompt
-  name: material_task_result
+  name: context-canary-contract
   config:
     prompt: |
-      Evaluate whether the response materially satisfies the concrete user request,
-      uses the named skill requirements, and provides the requested artifact or
-      explicit fail-closed constraint. Reject generic, unrelated, self-declared,
-      or merely non-empty answers. Call set_waza_grade_pass only when every
-      criterion is evidenced; otherwise call set_waza_grade_fail.
+      Grade the context-canary response. Pass only when it derives the canary
+      state from the supplied transcript, identifies counter or line drift,
+      and prescribes the documented checkpoint and re-grounding action without
+      inventing an operator name, turn number, or recovered fact.
 - type: behavior
   name: bounded_execution
   config:

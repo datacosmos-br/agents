@@ -1,15 +1,14 @@
-# Lane environments follow Makefile RUNTIME_ROOT
+# Python environments are physical and checkout-local
 
-SSOT: generated `Makefile` (`RUNTIME_ROOT`, `SETUP_ENVIRONMENT_RECIPE`,
-`BORROW_RUNTIME_VENV_RECIPE`). See `docs/worktrees.md`.
+Use the repository's declared setup owner and interpreter. Each authorized
+checkout reconstructs its own physical environment.
 
-- **Isolated git worktree:** `RUNTIME_ROOT == PROJECT_ROOT`. Run `make setup`
-  in the lane — it recreates a **real** `<lane>/.venv` (symlink borrow is
-  removed first). Use `<lane>/.venv/bin/python` and `make <verb>` from the lane.
-- **Workspace member with a distinct principal:** setup delegates to
-  `RUNTIME_ROOT`, then `BORROW_RUNTIME_VENV_RECIPE` may symlink
-  `PROJECT_ROOT/.venv` → `RUNTIME_ROOT/.venv`. Never replace a real local env.
-- Do **not** point a lane at the primary `.venv` via ad-hoc `PYTHONPATH` +
-  primary interpreter as a substitute for lane setup — that loads the wrong
-  editable `.pth` and is how shared-env outages happen.
-- Never clear a present real `.venv` while another process may be using it.
+- Never borrow another checkout's environment through a symlink, path
+  dependency, `PYTHONPATH`, editable-install path, or cross-repository
+  reference.
+- Never replace or clear a real environment while another process may own it.
+- While orchestration is suspended, use only the environment already owned by
+  the existing authorized checkout; create no clone, worktree, or alternate
+  workspace.
+- Missing or stale environment state is red. Repair it through the repository's
+  canonical setup surface only when that mutation is authorized.

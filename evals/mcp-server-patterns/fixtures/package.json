@@ -1,0 +1,8 @@
+{
+  "name": "inventory-mcp",
+  "private": true,
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.17.0",
+    "zod": "3.25.76"
+  }
+}

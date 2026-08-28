@@ -1,17 +1,24 @@
 ---
 name: security-triage
 description: Validate and close scanner findings from project-owned security triage reports.
-argument-hint: "[repository roots]"
+argument-hint: "<one or more explicit repository roots>"
+metadata:
+  aihub.tags: '["intent:verification","risk:write","route:agent"]'
 ---
 
 # Security triage
 
-Use each repository's `docs/security/*-triage.md` as the finding ledger. Run
-`agentsctl security-triage $ARGUMENTS` before changing code, then use the
+Require `$ARGUMENTS` to name one or more explicit repository roots. Reject an
+empty, nonexistent, symlinked, or ambiguous root before scanning. Use each
+repository's `docs/security/*-triage.md` as the evidence report. Run
+`agentsctl security-triage $ARGUMENTS` before changing code, then use each
 project's canonical scanner commands to reproduce every finding.
 
-For each finding, fix the owner source, regenerate derived files, record the
-tracker, decision, and reproducible evidence in the same report, and rerun the scanner.
-Every severity blocks closure. A false positive requires a precise technical
-explanation and a clean reproduction; risk acceptance, generic ignores,
-fallbacks, `|| true`, and unevidenced suppressions do not close findings.
+For each finding, fix the owner source, regenerate derived files, update every
+consumer, record the decision and reproducible evidence in the same report, and
+rerun the exact scanner. Follow an active project tracker only when its runtime
+is authorized; never create a substitute ledger. Every severity blocks closure.
+A false positive requires a precise technical explanation and a clean
+reproduction; risk acceptance, generic ignores, fallbacks, `|| true`, and
+unevidenced suppressions do not close findings. Report every command, exit code,
+decisive output, affected root, and unresolved blocker.
