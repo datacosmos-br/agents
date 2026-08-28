@@ -91,6 +91,11 @@ be smuggled into this checkout-only increment.
 11. [Additive capability composition](10-additive-capability-composition-plan.md)
 12. [Agents repository runbook](repositories/agents.md)
 
+Approved successor increment, gated on this package being integrated and
+revalidated on `main`:
+
+13. [Governed project skill distribution](11-governed-project-skill-distribution-plan.md)
+
 Architecture decisions:
 
 - [ADR-0001: Preserve artifact-type boundaries](../../adr/ADR-0001-artifact-type-boundaries.md)
