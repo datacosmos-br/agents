@@ -10,11 +10,15 @@ jobs:
       - uses: actions/checkout@v4
       - name: Check for merge conflict markers
         run: |
-          markers=$(git grep -l '<<<<<<< HEAD\|=======$' -- \
-            $(git ls-files | grep -vE '\.venv/|node_modules/|dist/|build/|\.cache/|_vendor/' | tr '\n' ' ') 2>/dev/null || true)
-          if [ -n "$markers" ]; then
+          if markers="$(git grep -n \
+            -e '^<<<<<<< ' -e '^=======$' -e '^>>>>>>> ')"; then
             echo "::error::Merge conflict markers found in tracked files:"
             echo "$markers"
             exit 1
+          else
+            status=$?
+            if [ "$status" -ne 1 ]; then
+              exit "$status"
+            fi
           fi
           echo "No conflict markers found."

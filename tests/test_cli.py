@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import ast
+import json
 import os
 import subprocess
 import sys
@@ -8,6 +9,7 @@ from pathlib import Path
 
 import pytest
 
+from agents_governance import runtime
 from agents_governance.cli import main
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -92,6 +94,23 @@ def test_agentsctl_is_the_only_packaged_console_script() -> None:
     )
 
     assert scripts == 'agentsctl = "agents_governance.cli:main"'
+
+
+def test_installed_runtime_resolves_the_physical_source_checkout() -> None:
+    assert runtime.repository_root() == ROOT
+
+
+def test_detached_wheel_runtime_is_rejected(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    class DetachedDistribution:
+        def read_text(self, _filename: str) -> str:
+            return json.dumps({"url": "file:///tmp/agents.whl", "archive_info": {}})
+
+    monkeypatch.setattr(runtime, "distribution", lambda _name: DetachedDistribution())
+
+    with pytest.raises(ValueError, match="editable source checkout"):
+        runtime.repository_root()
 
 
 def test_keyring_maintenance_runtime_is_extinct() -> None:
