@@ -1,6 +1,6 @@
 ---
 name: strategic-compact
-description: 'Preserve execution continuity when a long session needs deliberate context compaction.'
+description: 'context compaction, execution continuity, session recovery'
 metadata:
   aihub.tags: '["provenance:agents-owned","role:continuity","updates:manual","usage:on-demand"]'
 ---

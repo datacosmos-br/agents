@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import os
+import json
 import re
 import stat
 from dataclasses import dataclass
@@ -17,7 +18,9 @@ from yaml.nodes import MappingNode, Node, SequenceNode
 _SLUG = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 _LINK = re.compile(r"!?\[[^\]\n]*\]\(([^)\n]+)\)")
 _SCHEME = re.compile(r"^[A-Za-z][A-Za-z0-9+.-]*:")
-_FRONTMATTER_FIELDS = frozenset({"description", "globs"})
+_FRONTMATTER_FIELDS = frozenset({"description", "globs", "metadata"})
+_METADATA_FIELDS = frozenset({"aihub.tags"})
+_ROUTES = frozenset({"route:both", "route:personal", "route:project"})
 
 
 class RuleActivation(StrEnum):
@@ -25,6 +28,14 @@ class RuleActivation(StrEnum):
 
     ALWAYS = "always"
     PATH_SCOPED = "path-scoped"
+
+
+class RuleDistribution(StrEnum):
+    """Projection route declared by semantic tags, never a registry."""
+
+    PERSONAL = "personal"
+    PROJECT = "project"
+    BOTH = "both"
 
 
 @dataclass(frozen=True)
@@ -47,11 +58,30 @@ class RuleSpec:
     globs: tuple[str, ...]
     references: tuple[str, ...]
     body: str
+    tags: tuple[str, ...] = ()
 
     def __post_init__(self) -> None:
         problem = _spec_problem(self)
         if problem is not None:
             raise ValueError(problem)
+
+    @property
+    def category(self) -> str:
+        """Return the physical directory-owned taxonomy category."""
+
+        parts = PurePosixPath(self.identity).parts
+        return parts[0] if len(parts) > 1 else "root"
+
+    @property
+    def distribution(self) -> RuleDistribution:
+        """Return the tag-derived route; untagged sources stay personal."""
+
+        routes = tuple(tag for tag in self.tags if tag.startswith("route:"))
+        return (
+            RuleDistribution(routes[0].removeprefix("route:"))
+            if routes
+            else RuleDistribution.PERSONAL
+        )
 
 
 @dataclass(frozen=True)
@@ -135,6 +165,11 @@ def _spec_problem(spec: RuleSpec) -> str | None:
         for reference in spec.references
     ):
         return "rule references must target canonical Markdown rules"
+    if len(spec.tags) != len(set(spec.tags)) or spec.tags != tuple(sorted(spec.tags)):
+        return "rule tags must be unique and sorted"
+    route_tags = tuple(tag for tag in spec.tags if tag.startswith("route:"))
+    if spec.tags and (len(route_tags) != 1 or route_tags[0] not in _ROUTES):
+        return "tagged rules require exactly one supported route tag"
     return None
 
 
@@ -196,9 +231,13 @@ def _split_source(text: str) -> tuple[dict[str, object] | None, str]:
 
 def _metadata(
     raw: dict[str, object] | None,
-) -> tuple[str | None, tuple[str, ...]]:
+) -> tuple[
+    str | None,
+    tuple[str, ...],
+    tuple[str, ...],
+]:
     if raw is None:
-        return None, ()
+        return None, (), ()
     description = raw.get("description")
     if description is not None and (
         not isinstance(description, str) or not _description_valid(description)
@@ -227,7 +266,43 @@ def _metadata(
         problem = _glob_problem(glob)
         if problem is not None:
             raise _RuleSourceError("rule-globs", problem)
-    return cast(str | None, description), globs
+    raw_metadata = raw.get("metadata")
+    if raw_metadata is None:
+        tags: tuple[str, ...] = ()
+    else:
+        if not isinstance(raw_metadata, dict) or set(raw_metadata) != _METADATA_FIELDS:
+            raise _RuleSourceError(
+                "rule-tags", "metadata must contain only aihub.tags"
+            )
+        encoded = raw_metadata.get("aihub.tags")
+        if not isinstance(encoded, str):
+            raise _RuleSourceError(
+                "rule-tags", "metadata.aihub.tags must be a JSON string"
+            )
+        try:
+            decoded: object = json.loads(encoded)
+        except json.JSONDecodeError as error:
+            raise _RuleSourceError("rule-tags", "invalid tag JSON") from error
+        if not isinstance(decoded, list) or not all(
+            isinstance(item, str) for item in decoded
+        ):
+            raise _RuleSourceError(
+                "rule-tags", "metadata.aihub.tags must encode an array of strings"
+            )
+        tags = tuple(cast(list[str], decoded))
+        if (
+            len(tags) != len(set(tags))
+            or tags != tuple(sorted(tags))
+            or any(tag not in _ROUTES for tag in tags)
+        ):
+            raise _RuleSourceError(
+                "rule-tags", "rules require unique sorted supported route tags"
+            )
+        if len(tags) != 1:
+            raise _RuleSourceError(
+                "rule-tags", "tagged rules require exactly one route tag"
+            )
+    return cast(str | None, description), globs, tags
 
 
 def _link_target(raw: str) -> str:
@@ -397,7 +472,7 @@ def audit_rule_specs(root: Path) -> RuleAudit:
         try:
             text = path.read_text(encoding="utf-8")
             raw, body = _split_source(text)
-            description, globs = _metadata(raw)
+            description, globs, tags = _metadata(raw)
         except (OSError, UnicodeError) as error:
             file_findings.append(RuleFinding(relative, "rule-io", str(error)))
             findings.extend(file_findings)
@@ -424,6 +499,7 @@ def audit_rule_specs(root: Path) -> RuleAudit:
                     globs=globs,
                     references=references,
                     body=body,
+                    tags=tags,
                 )
             )
         findings.extend(file_findings)
@@ -458,6 +534,7 @@ __all__ = [
     "RuleActivation",
     "RuleAudit",
     "RuleFinding",
+    "RuleDistribution",
     "RuleSpec",
     "audit_rule_specs",
 ]

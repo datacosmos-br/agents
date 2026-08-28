@@ -1,6 +1,6 @@
 ---
 name: extermination-mode
-description: 'Complete a zero-residue cutover when an obsolete contract must be removed entirely.'
+description: 'zero residue, contract removal, consumer rewiring'
 metadata:
   aihub.tags: '["provenance:agents-owned","role:migration","updates:manual","usage:router"]'
 ---

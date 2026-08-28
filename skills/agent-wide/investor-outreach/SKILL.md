@@ -1,6 +1,6 @@
 ---
 name: investor-outreach
-description: 'Draft targeted investor outreach when fundraising introductions or follow-ups are needed.'
+description: 'investor outreach, fundraising introductions, follow-up writing'
 metadata:
   aihub.tags: '["domain:fundraising","provenance:agents-owned","role:communication","updates:manual","usage:on-demand"]'
 ---

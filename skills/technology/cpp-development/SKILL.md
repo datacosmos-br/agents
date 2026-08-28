@@ -1,6 +1,6 @@
 ---
 name: cpp-development
-description: 'Develop modern C++ projects when local build markers prove a C++ toolchain.'
+description: 'c++, build systems, modern development'
 metadata:
   aihub.tags: '["activation:detected","detect:marker:CMakeLists.txt","detect:marker:compile_commands.json","detect:marker:conanfile.py","detect:marker:conanfile.txt","detect:marker:meson.build","detect:marker:vcpkg.json","provenance:agents-owned","route:project","technology:cpp","updates:manual","usage:router"]'
 ---

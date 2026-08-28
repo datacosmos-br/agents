@@ -1,8 +1,6 @@
 ---
 name: context-canary
-description: 'Detect context drift and recover session continuity during long or compacted work.'
-bundle: communication
-scope: universal
+description: 'context drift, session continuity, compaction recovery'
 license: MIT
 metadata:
   aihub.tags: '["provenance:agents-owned","role:continuity","updates:manual","usage:on-demand"]'

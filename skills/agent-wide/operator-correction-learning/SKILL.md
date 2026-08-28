@@ -1,6 +1,6 @@
 ---
 name: operator-correction-learning
-description: 'Reconcile operator corrections into durable owners when guidance changes during a session.'
+description: 'operator corrections, durable governance, authority reconciliation'
 metadata:
   aihub.tags: '["provenance:agents-owned","role:governance","updates:manual","usage:router"]'
 ---

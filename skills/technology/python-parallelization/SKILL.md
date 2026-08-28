@@ -1,6 +1,6 @@
 ---
 name: python-parallelization
-description: 'Design Python concurrency when a detected Python project needs measured parallel execution.'
+description: 'python concurrency, parallel execution, performance measurement'
 metadata:
   aihub.tags: '["activation:detected","detect:marker:poetry.lock","detect:marker:pyproject.toml","detect:marker:requirements-dev.txt","detect:marker:requirements.txt","detect:marker:uv.lock","provenance:agents-owned","route:project","technology:python","updates:manual","usage:router"]'
 ---

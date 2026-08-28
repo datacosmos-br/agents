@@ -1,6 +1,6 @@
 ---
 name: eval-harness
-description: 'Build material eval scenarios and graders when an AI capability needs behavioral proof.'
+description: 'behavioral evaluation, material graders, eval scenarios'
 allowed-tools: Read, Write, Edit, Bash, Grep, Glob
 metadata:
   aihub.tags: '["provenance:agents-owned","role:verification","updates:manual","usage:on-demand"]'

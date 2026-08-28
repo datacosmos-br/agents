@@ -1,6 +1,6 @@
 ---
 name: context7-documentation
-description: 'Fetch current library documentation when the Context7 tool is explicitly available.'
+description: 'context7, library documentation, versioned references'
 metadata:
   aihub.tags: '["activation:opt-in","detect:opt-in:context7","provenance:agents-owned","route:agent","tool:context7","updates:manual","usage:on-demand"]'
 ---

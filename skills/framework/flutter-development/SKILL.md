@@ -1,6 +1,6 @@
 ---
 name: flutter-development
-description: 'Develop Flutter applications when pubspec metadata proves the Flutter SDK.'
+description: 'flutter, dart applications, sdk development'
 metadata:
   aihub.tags: '["activation:detected","detect:dependency:dart:sdk:flutter","framework:flutter","provenance:agents-owned","route:project","technology:dart","updates:manual","usage:router"]'
 ---

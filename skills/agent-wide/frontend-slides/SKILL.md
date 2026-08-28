@@ -1,6 +1,6 @@
 ---
 name: frontend-slides
-description: 'Build animated HTML presentations when a visual narrative or slide deck is requested.'
+description: 'html presentations, animated slides, visual storytelling'
 metadata:
   aihub.tags: '["provenance:agents-owned","role:presentation","updates:manual","usage:on-demand"]'
 ---

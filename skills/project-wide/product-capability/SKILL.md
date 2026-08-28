@@ -1,6 +1,6 @@
 ---
 name: product-capability
-description: 'Translate product intent into a bounded capability contract when requirements need definition.'
+description: 'product intent, capability contracts, requirement boundaries'
 metadata:
   aihub.tags: '["provenance:agents-owned","role:planning","updates:manual","usage:on-demand"]'
 ---

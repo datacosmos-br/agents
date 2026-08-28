@@ -1,5 +1,7 @@
 version = 2
-repositories = []
+
+[[repositories]]
+path = "${CONFIG_DIR}/.."
 
 [policy]
 shell_temp = "${HOME}/tmp"

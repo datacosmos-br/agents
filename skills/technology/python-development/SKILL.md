@@ -1,6 +1,6 @@
 ---
 name: python-development
-description: 'Develop Python projects when local package metadata proves the Python toolchain.'
+description: 'python, package development, toolchain detection'
 metadata:
   aihub.tags: '["activation:detected","detect:marker:poetry.lock","detect:marker:pyproject.toml","detect:marker:requirements-dev.txt","detect:marker:requirements.txt","detect:marker:uv.lock","provenance:agents-owned","route:project","technology:python","updates:manual","usage:router"]'
 ---

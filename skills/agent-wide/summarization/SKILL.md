@@ -1,6 +1,6 @@
 ---
 name: summarization
-description: 'Compress source material accurately when a bounded summary is requested.'
+description: 'source compression, bounded summaries, factual fidelity'
 metadata:
   aihub.tags: '["provenance:agents-owned","role:writing","updates:manual","usage:on-demand"]'
   version: 3.0.0

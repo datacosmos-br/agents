@@ -1,6 +1,6 @@
 ---
 name: search-first
-description: 'Research project owners and reusable code before any technical implementation or design change.'
+description: 'owner discovery, reusable code, architecture research'
 license: MIT
 metadata:
   aihub.tags: '["provenance:agents-owned","role:discovery","updates:manual","usage:router"]'

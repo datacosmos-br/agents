@@ -1,8 +1,6 @@
 ---
 name: make-check
-description: 'Discover and run canonical project gates when code or configuration changes require validation.'
-bundle: governance
-scope: universal
+description: 'native gates, project validation, command discovery'
 license: MIT
 metadata:
   aihub.tags: '["provenance:agents-owned","role:verification","updates:manual","usage:router"]'

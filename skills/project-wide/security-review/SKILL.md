@@ -1,6 +1,6 @@
 ---
 name: security-review
-description: 'Review security findings and attack surfaces when code or dependencies change risk.'
+description: 'security findings, attack surfaces, dependency risk'
 metadata:
   aihub.tags: '["provenance:agents-owned","role:security","updates:manual","usage:on-demand"]'
 ---

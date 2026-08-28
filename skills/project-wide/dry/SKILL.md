@@ -1,6 +1,6 @@
 ---
 name: dry
-description: 'Remove semantic duplication and god patterns when several owners repeat the same responsibility.'
+description: 'semantic duplication, god patterns, structural remediation'
 license: MIT
 metadata:
   aihub.tags: '["provenance:agents-owned","role:refactoring","updates:manual","usage:router"]'

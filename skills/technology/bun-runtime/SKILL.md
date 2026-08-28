@@ -1,6 +1,6 @@
 ---
 name: bun-runtime
-description: 'Develop and validate Bun projects when local manifests or locks prove the Bun runtime.'
+description: 'bun runtime, javascript tooling, project detection'
 metadata:
   aihub.tags: '["activation:detected","detect:marker:bun.lock","detect:marker:bun.lockb","provenance:agents-owned","route:project","technology:bun","updates:manual","usage:on-demand"]'
 ---

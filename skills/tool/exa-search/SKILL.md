@@ -1,6 +1,6 @@
 ---
 name: exa-search
-description: 'Research the web with Exa when that search tool is explicitly available.'
+description: 'exa search, web research, source discovery'
 metadata:
   aihub.tags: '["activation:opt-in","detect:opt-in:exa","provenance:agents-owned","route:agent","tool:exa","updates:manual","usage:on-demand"]'
 ---

@@ -1,6 +1,6 @@
 ---
 name: mcp-server-patterns
-description: 'Build MCP servers when local dependencies prove an MCP SDK is in use.'
+description: 'mcp servers, protocol integration, sdk patterns'
 metadata:
   aihub.tags: '["activation:detected","detect:dependency:npm:@modelcontextprotocol/sdk","detect:dependency:python:mcp","provenance:agents-owned","route:project","tool:mcp","updates:manual","usage:on-demand"]'
 ---

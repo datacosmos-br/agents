@@ -1,6 +1,6 @@
 ---
 name: dispatch-agent
-description: 'Select and brief specialized agents when bounded work benefits from delegation.'
+description: 'agent delegation, specialist selection, bounded work'
 metadata:
   aihub.tags: '["provenance:agents-owned","role:delegation","updates:manual","usage:on-demand"]'
 ---

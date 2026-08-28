@@ -55,6 +55,20 @@ _ACTIVATION_TAGS = frozenset(
         "activation:opt-in",
     }
 )
+_SKILL_FRONTMATTER_FIELDS = frozenset(
+    {
+        "allowed-tools",
+        "compatibility",
+        "description",
+        "license",
+        "metadata",
+        "name",
+    }
+)
+_OPTIONAL_STRING_FIELDS = frozenset(
+    {"allowed-tools", "compatibility", "license"}
+)
+_INVENTORY_VERSION = 1
 
 
 class SkillCategory(str, Enum):
@@ -171,7 +185,19 @@ class Catalog:
         raw = cast(dict[object, object], loaded)
         if not all(isinstance(key, str) for key in raw):
             raise TypeError("frontmatter keys must be strings")
-        return cast(dict[str, object], raw)
+        frontmatter = cast(dict[str, object], raw)
+        unknown = sorted(set(frontmatter) - _SKILL_FRONTMATTER_FIELDS)
+        if unknown:
+            raise ValueError(
+                "unsupported skill frontmatter fields: " + ", ".join(unknown)
+            )
+        for field in sorted(_OPTIONAL_STRING_FIELDS):
+            value = frontmatter.get(field)
+            if value is not None and (
+                not isinstance(value, str) or not value.strip() or value != value.strip()
+            ):
+                raise TypeError(f"{field} must be a non-empty trimmed string")
+        return frontmatter
 
     @staticmethod
     def _singleton(
@@ -745,3 +771,52 @@ class Catalog:
                 }
             )
         return entries
+
+    def inventory_payload(self) -> dict[str, Any]:
+        """Return the single versioned document written to the inventory lock."""
+
+        return {"version": _INVENTORY_VERSION, "skills": self.inventory()}
+
+    def render_inventory(self) -> str:
+        """Render the canonical inventory lock deterministically."""
+
+        return json.dumps(self.inventory_payload(), indent=2, sort_keys=True) + "\n"
+
+    def inventory_lock_findings(
+        self, *, required: bool = True
+    ) -> tuple[CatalogFinding, ...]:
+        """Compare the checked-in inventory lock without mutating it."""
+
+        path = self.root / "skills.lock.json"
+        relative = path.relative_to(self.root).as_posix()
+        if not path.is_file():
+            if not required:
+                return ()
+            return (
+                CatalogFinding(
+                    relative,
+                    "inventory-lock-missing",
+                    "canonical skill inventory lock is missing",
+                ),
+            )
+        try:
+            current = path.read_text(encoding="utf-8")
+            loaded = json.loads(current)
+        except (OSError, UnicodeError, json.JSONDecodeError) as error:
+            return (
+                CatalogFinding(
+                    relative,
+                    "inventory-lock-invalid",
+                    f"canonical skill inventory lock is unreadable: {error}",
+                ),
+            )
+        expected = self.render_inventory()
+        if loaded != self.inventory_payload() or current != expected:
+            return (
+                CatalogFinding(
+                    relative,
+                    "inventory-lock-drift",
+                    "canonical skill inventory lock differs from discovery",
+                ),
+            )
+        return ()

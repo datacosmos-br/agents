@@ -1,6 +1,6 @@
 ---
 name: agent-browser
-description: 'Automate browser interactions when the agent-browser tool is explicitly selected.'
+description: 'browser automation, web interaction, agent-browser'
 allowed-tools: Bash(agent-browser:*)
 metadata:
   aihub.tags: '["activation:opt-in","detect:opt-in:agent-browser","provenance:agents-owned","route:agent","tool:agent-browser","updates:manual","usage:on-demand"]'

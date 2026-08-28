@@ -1,6 +1,6 @@
 ---
 name: yagni
-description: 'Remove speculative scope when no current requirement, consumer, or runtime path justifies it.'
+description: 'speculative scope, current consumers, necessity analysis'
 license: MIT
 metadata:
   aihub.tags: '["provenance:agents-owned","role:scope","updates:manual","usage:router"]'

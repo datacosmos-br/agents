@@ -209,6 +209,40 @@ def cache_root() -> Path:
     return _xdg("XDG_CACHE_HOME", ".cache")
 
 
+def shared_cache_paths() -> dict[str, Path]:
+    """Return reusable cache paths derived from the XDG cache authority."""
+
+    shared = cache_root()
+    return {
+        "GOMODCACHE": shared / "go-mod",
+        "UV_CACHE_DIR": shared / "uv",
+        "PIP_CACHE_DIR": shared / "pip",
+        "npm_config_cache": shared / "npm",
+        "NODE_COMPILE_CACHE": shared / "node-compile-cache",
+        "BUN_INSTALL_CACHE_DIR": shared / "bun",
+        "CARGO_HOME": shared / "cargo",
+        "GRADLE_USER_HOME": shared / "gradle",
+        "CCACHE_DIR": shared / "ccache",
+    }
+
+
+def shell_environment() -> dict[str, str]:
+    """Materialize shell storage variables from the storage manifest SSOT."""
+
+    shell_temp = storage_manifest().policy.shell_temp
+    if shell_temp.is_symlink():
+        raise StorageManifestError(
+            f"policy.shell_temp must not be a symbolic link: {shell_temp}"
+        )
+    paths = {
+        "TMPDIR": shell_temp,
+        "GOTMPDIR": shell_temp,
+        "GOCACHE": cache_root() / "go-build",
+        **shared_cache_paths(),
+    }
+    return {name: str(path) for name, path in paths.items()}
+
+
 def _under(path: Path, parent: Path) -> bool:
     try:
         path.resolve().relative_to(parent.resolve())
@@ -306,21 +340,12 @@ def managed_env(repo: Path, scratch: Path) -> dict[str, str]:
 
     environment = os.environ.copy()
     environment["HOME"] = str(_home())
-    shared = cache_root()
     mappings = {
         "TMPDIR": scratch,
         "GOTMPDIR": scratch / "go-tmp",
         "GOCACHE": scratch / "go-build",
-        "GOMODCACHE": shared / "go-mod",
-        "UV_CACHE_DIR": shared / "uv",
-        "PIP_CACHE_DIR": shared / "pip",
-        "npm_config_cache": shared / "npm",
-        "NODE_COMPILE_CACHE": shared / "node-compile-cache",
-        "BUN_INSTALL_CACHE_DIR": shared / "bun",
-        "CARGO_HOME": shared / "cargo",
         "CARGO_TARGET_DIR": scratch / "cargo-target",
-        "GRADLE_USER_HOME": shared / "gradle",
-        "CCACHE_DIR": shared / "ccache",
+        **shared_cache_paths(),
     }
     for key, value in mappings.items():
         environment[key] = str(_mkdir(value))
@@ -661,9 +686,11 @@ def _positive_float(table: dict[str, Any], key: str) -> float:
     return value
 
 
-def _manifest_path(raw: str, context: str) -> Path:
+def _manifest_path(
+    raw: str, context: str, *, config_dir: Path | None = None
+) -> Path:
     try:
-        return _expand_local_path(raw)
+        return _expand_local_path(raw, config_dir=config_dir)
     except RuntimeError as error:
         raise StorageManifestError(f"{context}: {error}") from error
 
@@ -706,7 +733,11 @@ def storage_manifest() -> StorageManifest:
             raise StorageManifestError(
                 f"storage.repositories[{index}].path must be a non-empty string"
             )
-        repository = _manifest_path(raw_path, f"storage.repositories[{index}].path")
+        repository = _manifest_path(
+            raw_path,
+            f"storage.repositories[{index}].path",
+            config_dir=path.parent,
+        )
         if repository in repositories:
             raise StorageManifestError(
                 f"duplicate storage repository path: {repository}"
@@ -762,13 +793,15 @@ def storage_manifest() -> StorageManifest:
     )
 
 
-def _expand_local_path(raw: str) -> Path:
+def _expand_local_path(raw: str, *, config_dir: Path | None = None) -> Path:
     values = {
         "HOME": str(_home()),
         "XDG_CONFIG_HOME": str(_xdg("XDG_CONFIG_HOME", ".config")),
         "XDG_CACHE_HOME": str(_xdg("XDG_CACHE_HOME", ".cache")),
         "XDG_STATE_HOME": str(_xdg("XDG_STATE_HOME", ".local/state")),
     }
+    if config_dir is not None:
+        values["CONFIG_DIR"] = str(config_dir.resolve())
     expanded = raw
     for name, value in values.items():
         expanded = expanded.replace(f"${{{name}}}", value)
@@ -777,7 +810,7 @@ def _expand_local_path(raw: str) -> Path:
     result = Path(expanded)
     if not result.is_absolute():
         raise RuntimeError(f"storage path must be absolute: {raw}")
-    return result
+    return result.resolve()
 
 
 def registered_repositories(
@@ -851,9 +884,14 @@ def global_findings() -> list[TempFinding]:
 
 def gc_all(*, apply: bool) -> tuple[list[Path], list[TempFinding]]:
     manifest = storage_manifest()
+    repositories = registered_repositories(manifest)
+    if not repositories:
+        raise StorageManifestError(
+            "storage.repositories is empty; refusing a successful no-op global GC"
+        )
     eligible: list[Path] = []
     blocked: list[TempFinding] = []
-    for repo in registered_repositories(manifest):
+    for repo in repositories:
         repo_eligible, repo_blocked = gc(repo, apply=apply, policy=manifest.policy.temp)
         eligible.extend(repo_eligible)
         blocked.extend(repo_blocked)

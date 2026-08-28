@@ -1,6 +1,6 @@
 ---
 name: nextjs-turbopack
-description: 'Optimize Next.js and Turbopack workflows when a project dependency proves Next.js.'
+description: 'next.js, turbopack, frontend performance'
 metadata:
   aihub.tags: '["activation:detected","detect:dependency:npm:next","framework:nextjs","provenance:agents-owned","route:project","tool:turbopack","updates:manual","usage:on-demand"]'
 ---

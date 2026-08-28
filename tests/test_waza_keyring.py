@@ -3,6 +3,7 @@
 import os
 import runpy
 import subprocess
+import sys
 from pathlib import Path
 from typing import Any, cast
 
@@ -10,8 +11,15 @@ import pytest
 
 
 def _keyring_namespace() -> dict[str, Any]:
+    return runpy.run_module("agents_governance.keyring")
+
+
+def test_keyring_is_a_packaged_console_script_without_loose_launcher() -> None:
     root = Path(__file__).parents[1]
-    return runpy.run_path(str(root / "bin" / "env-keyring"))
+    pyproject = (root / "pyproject.toml").read_text(encoding="utf-8")
+
+    assert 'env-keyring = "agents_governance.keyring:main"' in pyproject
+    assert not (root / "bin" / "env-keyring").exists()
 
 
 def test_waza_auth_uses_automatic_keyring_execution() -> None:
@@ -194,10 +202,10 @@ aliases = { GH_TOKEN = "GITHUB_TOKEN" }
         "XDG_CONFIG_HOME": str(config_home),
         "XDG_STATE_HOME": str(tmp_path / "state"),
     }
-    root = Path(__file__).parents[1]
-
     command = [
-        str(root / "bin" / "env-keyring"),
+        sys.executable,
+        "-m",
+        "agents_governance.keyring",
         "remove",
         "--profile",
         "test",

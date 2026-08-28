@@ -1,6 +1,6 @@
 ---
 name: simplify
-description: 'Simplify each changed code unit inline when complete behavior is already implemented.'
+description: 'inline simplification, readable code, behavior preservation'
 license: MIT
 metadata:
   aihub.tags: '["provenance:agents-owned","role:refactoring","updates:manual","usage:router"]'

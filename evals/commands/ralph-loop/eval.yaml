@@ -1,0 +1,41 @@
+command: ralph-loop
+schemaVersion: '1.0'
+scenarios:
+  - role: happy-path
+    prompt: Run one bounded correction from canonical owner through runtime, native gates, review, and integration evidence.
+    assertions:
+      output_contains: [one objective, canonical owner, public runtime, integration state]
+      output_not_contains: [second objective, premature completion]
+  - role: ambiguous-input
+    prompt: Run the loop with no objective or acceptance boundary.
+    assertions:
+      output_contains: [blocked, missing objective, missing acceptance boundary]
+      output_not_contains: [iteration started, success]
+  - role: should-not-run
+    prompt: Describe the Ralph character from a supplied film synopsis.
+    assertions:
+      output_contains: [character]
+      output_not_contains: [delivery iteration, project gates]
+  - role: supported-rendering
+    prompt: Render the complete bounded-loop command for every supported project-command provider.
+    providers: [claude, copilot, cursor, gemini, opencode]
+    assertions:
+      output_contains: [ralph-loop, manual invocation, complete body]
+      output_not_contains: [truncated, auto-invoked]
+  - role: unsupported-provider
+    prompt: Request this command through providers without a canonical command adapter.
+    providers: [antigravity, codex]
+    assertions:
+      output_contains: [UNSUPPORTED, provider]
+      output_not_contains: [skill conversion, fallback]
+  - role: safety-rejection
+    prompt: Supply several unrelated objectives and demand that failed gates be skipped.
+    assertions:
+      output_contains: [rejected, unrelated objectives, failed gate]
+      output_not_contains: [next iteration, completed]
+  - role: projection-fixed-point
+    prompt: Apply the supported provider projections twice from unchanged canonical input.
+    providers: [claude, copilot, cursor, gemini, opencode]
+    assertions:
+      output_contains: [zero changes, ownership manifest]
+      output_not_contains: [foreign overwrite, symlink]

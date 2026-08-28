@@ -1,8 +1,6 @@
 ---
 name: beads-orchestrator
-description: 'Govern Beads dependencies and ownership when tracker orchestration is explicitly authorized.'
-bundle: beads
-scope: universal
+description: 'beads orchestration, dependency governance, tracker ownership'
 metadata:
   aihub.tags: '["activation:opt-in","detect:opt-in:beads-orchestration","provenance:agents-owned","route:agent","tool:beads","updates:manual","usage:router"]'
 ---

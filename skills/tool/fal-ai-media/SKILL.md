@@ -1,6 +1,6 @@
 ---
 name: fal-ai-media
-description: 'Generate media with fal.ai when that external service is explicitly selected.'
+description: 'fal.ai, media generation, external service'
 metadata:
   aihub.tags: '["activation:opt-in","detect:opt-in:fal-ai","provenance:agents-owned","route:agent","tool:fal-ai","updates:manual","usage:on-demand"]'
 ---

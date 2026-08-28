@@ -1,6 +1,6 @@
 ---
 name: tdd-workflow
-description: 'Drive behavior with failing and passing tests when project policy calls for test-first development.'
+description: 'test driven development, behavior contracts, regression tests'
 metadata:
   aihub.tags: '["provenance:agents-owned","role:testing","updates:manual","usage:on-demand"]'
 ---

@@ -1,6 +1,6 @@
 ---
 name: brand-voice
-description: 'Derive and apply a consistent brand voice when writing from an approved corpus.'
+description: 'brand voice, corpus analysis, writing consistency'
 metadata:
   aihub.tags: '["provenance:agents-owned","role:writing","updates:manual","usage:on-demand"]'
 ---

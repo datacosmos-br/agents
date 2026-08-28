@@ -1,6 +1,6 @@
 ---
 name: ssot
-description: 'Select one writable authority when facts, configuration, or projections have competing owners.'
+description: 'single authority, projection convergence, ownership mapping'
 license: MIT
 metadata:
   aihub.tags: '["provenance:agents-owned","role:governance","updates:manual","usage:router"]'

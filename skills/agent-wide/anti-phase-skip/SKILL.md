@@ -1,8 +1,6 @@
 ---
 name: anti-phase-skip
-description: 'Enforce the complete phase lifecycle when work moves toward integration or closure.'
-bundle: governance
-scope: universal
+description: 'phase lifecycle, runtime validation, integration closure'
 license: MIT
 metadata:
   aihub.tags: '["provenance:agents-owned","role:governance","updates:manual","usage:router"]'

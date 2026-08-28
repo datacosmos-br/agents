@@ -9,6 +9,7 @@ import pytest
 import agents_governance.cli as cli_module
 from agents_governance.catalog import Catalog
 from agents_governance.cli import main
+from agents_governance.command_evals import CommandEvalRole
 from agents_governance.commands import (
     CommandAdapterStatus,
     CommandArtifact,
@@ -73,6 +74,33 @@ def _write_catalog_config(root: Path) -> None:
     (config / "skills.json").write_text(
         '{"version":2,"budgets":{"router_tokens":500,'
         '"frozen_tokens":1200,"on_demand_tokens":5000,"max_lines":500}}\n',
+        encoding="utf-8",
+    )
+
+
+def _write_command_eval(root: Path, name: str = "deploy-service") -> None:
+    destination = root / "evals" / "commands" / name / "eval.yaml"
+    destination.parent.mkdir(parents=True)
+    blocks: list[str] = []
+    for role in CommandEvalRole:
+        providers = ""
+        if role in {
+            CommandEvalRole.SUPPORTED_RENDERING,
+            CommandEvalRole.PROJECTION_FIXED_POINT,
+        }:
+            providers = "\n    providers: [claude, copilot, cursor, gemini, opencode]"
+        elif role is CommandEvalRole.UNSUPPORTED_PROVIDER:
+            providers = "\n    providers: [antigravity, codex]"
+        blocks.append(
+            f"  - role: {role.value}\n"
+            f"    prompt: Material {role.value} request for {name}."
+            f"{providers}\n"
+            "    assertions:\n"
+            "      output_contains: [owner, evidence]\n"
+            "      output_not_contains: [fallback]\n"
+        )
+    destination.write_text(
+        f"command: {name}\nschemaVersion: '1.0'\nscenarios:\n" + "".join(blocks),
         encoding="utf-8",
     )
 
@@ -466,9 +494,10 @@ def test_commands_cli_audits_renders_and_reports_unsupported_explicitly(
 ) -> None:
     _write_catalog_config(tmp_path)
     _write_command(tmp_path)
+    _write_command_eval(tmp_path)
 
     assert main(["--root", str(tmp_path), "commands", "audit"]) == 0
-    assert "PASS: 1 commands validated" in capsys.readouterr().out
+    assert "PASS: 1 commands and 1 eval suites validated" in capsys.readouterr().out
 
     assert (
         main(
@@ -506,6 +535,18 @@ def test_commands_cli_audits_renders_and_reports_unsupported_explicitly(
     assert "UNSUPPORTED: Codex has no canonical command adapter" in (
         capsys.readouterr().err
     )
+
+
+def test_commands_cli_fails_when_semantic_eval_suite_is_missing(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    _write_catalog_config(tmp_path)
+    _write_command(tmp_path)
+
+    assert main(["--root", str(tmp_path), "commands", "audit"]) == 1
+    captured = capsys.readouterr()
+    assert captured.out == ""
+    assert "command-eval-directory" in captured.err
 
 
 def test_command_render_reports_bpe_runtime_failure_without_traceback(

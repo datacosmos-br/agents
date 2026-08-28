@@ -1,6 +1,6 @@
 ---
 name: crosspost
-description: 'Adapt one approved message across social platforms when cross-posting is requested.'
+description: 'cross-platform posting, message adaptation, content distribution'
 metadata:
   aihub.tags: '["provenance:agents-owned","role:content","updates:manual","usage:on-demand"]'
 ---

@@ -3,7 +3,7 @@
 # No external tool distributes or regenerates this authority.
 
 defaults:
-  model: gpt-5.4
+  model: aihub-primary
 
 tokens:
   warningThreshold: 450

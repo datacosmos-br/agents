@@ -1,7 +1,6 @@
 ---
 name: doc-drift
-description: 'Detect and correct documentation drift when written contracts may disagree with runtime.'
-version: 2.0.0
+description: 'documentation drift, runtime contracts, authority reconciliation'
 metadata:
   aihub.tags: '["provenance:agents-owned","role:documentation","updates:manual","usage:on-demand"]'
 ---

@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Scoped GNOME Keyring bridge for direnv, agents, and user services."""
 
 from __future__ import annotations

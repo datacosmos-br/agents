@@ -1,6 +1,6 @@
 ---
 name: openspec-verify-change
-description: 'Verify OpenSpec changes when a local openspec directory proves the workflow.'
+description: 'openspec, change verification, specification evidence'
 license: MIT
 compatibility: Requires openspec CLI.
 metadata:

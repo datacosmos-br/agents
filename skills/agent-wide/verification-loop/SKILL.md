@@ -1,8 +1,6 @@
 ---
 name: verification-loop
-description: 'Verify every completion claim when implementation or remediation reaches a boundary.'
-bundle: verification
-scope: universal
+description: 'completion evidence, runtime verification, native gates'
 license: MIT
 metadata:
   aihub.tags: '["provenance:agents-owned","role:verification","updates:manual","usage:router"]'

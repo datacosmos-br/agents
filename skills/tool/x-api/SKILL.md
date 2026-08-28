@@ -1,6 +1,6 @@
 ---
 name: x-api
-description: 'Publish through the X API when that external integration is explicitly selected.'
+description: 'x api, social publishing, external integration'
 metadata:
   aihub.tags: '["activation:opt-in","detect:opt-in:x-api","provenance:agents-owned","route:agent","tool:x-api","updates:manual","usage:on-demand"]'
 ---

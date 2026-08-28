@@ -1,6 +1,6 @@
 ---
 name: market-research
-description: 'Analyze markets and competitors when a sourced commercial decision needs evidence.'
+description: 'market analysis, competitor research, commercial evidence'
 metadata:
   aihub.tags: '["domain:market-research","provenance:agents-owned","role:research","updates:manual","usage:on-demand"]'
 ---

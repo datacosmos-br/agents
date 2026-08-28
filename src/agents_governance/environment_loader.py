@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Load the user's environment.d modules consistently across shells."""
 
 from __future__ import annotations
@@ -10,6 +9,8 @@ import shlex
 import sys
 import tomllib
 from pathlib import Path
+
+from .temp import StorageManifestError, shell_environment
 
 CONFIG_ROOT = Path(os.environ.get("XDG_CONFIG_HOME", Path.home() / ".config"))
 ENV_ROOT = CONFIG_ROOT / "environment.d"
@@ -76,8 +77,23 @@ def load_environment() -> dict[str, str]:
     return managed
 
 
+def materialize_storage(managed: dict[str, str]) -> dict[str, str]:
+    """Merge the storage SSOT and reject stale environment.d projections."""
+
+    owned = shell_environment()
+    conflicts = sorted(
+        name for name, value in owned.items() if name in managed and managed[name] != value
+    )
+    if conflicts:
+        raise ValueError(
+            "environment.d storage projection differs from config/storage.toml: "
+            + ", ".join(conflicts)
+        )
+    return {**managed, **owned}
+
+
 def emit_environment(shell: str, *, preserve_inherited_path: bool = False) -> None:
-    for name, value in load_environment().items():
+    for name, value in materialize_storage(load_environment()).items():
         if preserve_inherited_path and name == "PATH":
             continue
         quoted = shlex.quote(value)
@@ -150,6 +166,7 @@ def validate_environment() -> None:
         value = managed.get(name)
         if value and (not Path(value).is_absolute() or Path(value) == Path("/tmp")):
             raise ValueError(f"{name} must be absolute and must not equal /tmp")
+    materialize_storage(managed)
     aliases_path = ENV_ROOT / "shell" / "aliases.toml"
     aliases = tomllib.loads(aliases_path.read_text(encoding="utf-8")).get("aliases", {})
     if not isinstance(aliases, dict) or any(
@@ -215,7 +232,7 @@ def main() -> int:
             emit_completions(args.shell)
         else:
             validate_environment()
-    except (OSError, ValueError, tomllib.TOMLDecodeError) as error:
+    except (OSError, StorageManifestError, ValueError, tomllib.TOMLDecodeError) as error:
         print(f"environment-d-loader: {error}", file=sys.stderr)
         return 78
     return 0

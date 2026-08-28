@@ -97,6 +97,59 @@ def test_legacy_distribution_registries_are_rejected(tmp_path: Path) -> None:
         Catalog(tmp_path)
 
 
+@pytest.mark.parametrize(
+    "legacy_field",
+    ["author", "bundle", "scope", "triggers", "version"],
+)
+def test_legacy_skill_frontmatter_fields_are_rejected(
+    tmp_path: Path, legacy_field: str
+) -> None:
+    _write_config(tmp_path)
+    directory = _write_skill(tmp_path, "agent-wide", "example")
+    skill = directory / "SKILL.md"
+    text = skill.read_text(encoding="utf-8")
+    skill.write_text(
+        text.replace("metadata:\n", f"{legacy_field}: legacy\nmetadata:\n"),
+        encoding="utf-8",
+    )
+
+    findings = Catalog(tmp_path).contract_findings()
+
+    assert [(finding.code, finding.message) for finding in findings] == [
+        (
+            "frontmatter",
+            f"unsupported skill frontmatter fields: {legacy_field}",
+        )
+    ]
+
+
+def test_inventory_lock_has_one_exact_check_and_render_contract(
+    tmp_path: Path,
+) -> None:
+    _write_config(tmp_path)
+    _write_skill(tmp_path, "agent-wide", "example")
+    catalog = Catalog(tmp_path)
+    lock = tmp_path / "skills.lock.json"
+
+    assert [item.code for item in catalog.inventory_lock_findings()] == [
+        "inventory-lock-missing"
+    ]
+    assert catalog.inventory_lock_findings(required=False) == ()
+
+    lock.write_text("not-json\n", encoding="utf-8")
+    assert [item.code for item in catalog.inventory_lock_findings()] == [
+        "inventory-lock-invalid"
+    ]
+
+    lock.write_text('{"skills": [], "version": 1}\n', encoding="utf-8")
+    assert [item.code for item in catalog.inventory_lock_findings()] == [
+        "inventory-lock-drift"
+    ]
+
+    lock.write_text(catalog.render_inventory(), encoding="utf-8")
+    assert catalog.inventory_lock_findings() == ()
+
+
 def test_conditional_profiles_are_derived_from_local_tags(tmp_path: Path) -> None:
     _write_config(tmp_path)
     _write_skill(
@@ -355,6 +408,7 @@ def test_canonical_catalog_is_exhaustive_disjoint_and_agents_owned() -> None:
     assert {item["name"] for item in inventory} == {
         directory.name for directory in catalog.skill_dirs()
     }
+    assert catalog.inventory_lock_findings() == ()
 
 
 def test_canonical_skills_have_no_import_registry_identity() -> None:

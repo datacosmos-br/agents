@@ -1,8 +1,6 @@
 ---
 name: anti-hardcode
-description: 'Remove hardcoded policy and environment values when configuration must remain portable.'
-bundle: engineering
-scope: universal
+description: 'configuration ownership, portable policy, hardcode removal'
 license: MIT
 metadata:
   aihub.tags: '["provenance:agents-owned","role:configuration","updates:manual","usage:router"]'

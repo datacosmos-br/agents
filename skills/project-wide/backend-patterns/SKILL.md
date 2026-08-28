@@ -1,6 +1,6 @@
 ---
 name: backend-patterns
-description: 'Apply backend architecture patterns when services, persistence, or reliability boundaries change.'
+description: 'backend architecture, service boundaries, persistence patterns'
 metadata:
   aihub.tags: '["provenance:agents-owned","role:architecture","updates:manual","usage:on-demand"]'
 ---

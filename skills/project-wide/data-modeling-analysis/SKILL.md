@@ -1,6 +1,6 @@
 ---
 name: data-modeling-analysis
-description: 'Analyze data models when types, validation, serialization, or immutability boundaries change.'
+description: 'data models, serialization boundaries, validation design'
 metadata:
   aihub.tags: '["provenance:agents-owned","role:architecture","updates:manual","usage:on-demand"]'
 ---

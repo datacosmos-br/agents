@@ -204,7 +204,7 @@ def test_session_init_outside_repository_is_a_silent_success(tmp_path: Path) -> 
 
 
 def _keyring_namespace() -> dict[str, Any]:
-    return runpy.run_path(str(ROOT / "bin" / "env-keyring"))
+    return runpy.run_module("agents_governance.keyring")
 
 
 def test_headless_lookup_preserves_secret_tool_failure(

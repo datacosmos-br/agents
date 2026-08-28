@@ -1,8 +1,6 @@
 ---
 name: beads-worker
-description: 'Execute one Beads-scoped lane when tracker work is explicitly authorized.'
-bundle: beads
-scope: universal
+description: 'beads execution, scoped work, tracker workflow'
 metadata:
   aihub.tags: '["activation:opt-in","detect:opt-in:beads-worker","provenance:agents-owned","route:agent","tool:beads","updates:manual","usage:router"]'
 ---

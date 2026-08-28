@@ -10,6 +10,7 @@ from pathlib import Path
 from .atomic_io import atomic_write_text
 from .catalog import Catalog
 from .cleanup import clean_generated
+from .command_evals import audit_command_evals
 from .commands import (
     CommandArtifact,
     CommandAudit,
@@ -102,7 +103,19 @@ def _commands_audit(root: Path) -> int:
             file=sys.stderr,
         )
         return 1
-    print(f"PASS: {len(audit.commands)} commands validated")
+    eval_audit = audit_command_evals(root, audit.commands)
+    for item in eval_audit.findings:
+        print(f"{item.path}: {item.code}: {item.message}", file=sys.stderr)
+    if eval_audit.findings:
+        print(
+            f"FAIL: {len(eval_audit.findings)} blocking command eval finding(s)",
+            file=sys.stderr,
+        )
+        return 1
+    print(
+        f"PASS: {len(audit.commands)} commands and "
+        f"{len(eval_audit.specs)} eval suites validated"
+    )
     return 0
 
 

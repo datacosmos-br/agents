@@ -1,6 +1,6 @@
 ---
 name: video-editing
-description: 'Plan and perform AI-assisted video editing when supplied footage needs a finished cut.'
+description: 'video editing, footage assembly, finished cuts'
 metadata:
   aihub.tags: '["domain:video","provenance:agents-owned","role:media","updates:manual","usage:on-demand"]'
 ---

@@ -1,6 +1,6 @@
 ---
 name: mle-workflow
-description: 'Apply production machine-learning lifecycle controls when project evidence or opt-in proves ML work.'
+description: 'machine learning, model lifecycle, production operations'
 metadata:
   aihub.tags: '["activation:detected-or-opt-in","detect:marker:MLproject","detect:marker:dvc.lock","detect:marker:dvc.yaml","detect:opt-in:machine-learning","domain:mle","provenance:agents-owned","route:project","updates:manual","usage:on-demand"]'
 ---

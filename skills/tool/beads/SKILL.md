@@ -1,6 +1,6 @@
 ---
 name: beads
-description: 'Operate Beads issue tracking when the canonical tracker runtime is explicitly authorized.'
+description: 'beads, issue tracking, task workflow'
 metadata:
   aihub.tags: '["activation:opt-in","detect:opt-in:beads","provenance:agents-owned","route:agent","tool:beads","updates:manual","usage:router"]'
 ---

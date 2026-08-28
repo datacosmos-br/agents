@@ -1,8 +1,6 @@
 ---
 name: safe-delete
-description: 'Remove governed artifacts safely when deletion or retirement is explicitly authorized.'
-bundle: governance
-scope: universal
+description: 'safe deletion, artifact retirement, recovery evidence'
 license: MIT
 metadata:
   aihub.tags: '["provenance:agents-owned","role:governance","updates:manual","usage:on-demand"]'

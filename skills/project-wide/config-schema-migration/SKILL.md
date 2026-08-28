@@ -1,6 +1,6 @@
 ---
 name: config-schema-migration
-description: 'Migrate a configuration schema atomically when a public config contract changes.'
+description: 'configuration migration, schema cutover, consumer rewiring'
 metadata:
   aihub.tags: '["provenance:agents-owned","role:migration","updates:manual","usage:router"]'
 ---

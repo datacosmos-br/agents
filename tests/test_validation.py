@@ -341,7 +341,7 @@ def test_all_project_distributions_reject_private_references(
             '"usage:on-demand"]\'\n'
         )
     (skill / "SKILL.md").write_text(
-        "---\nname: example\ndescription: Validate example behavior when this test exercises the skill contract.\n"
+        "---\nname: example\ndescription: record validation, schema reports, material results\n"
         f"{metadata}"
         "---\n"
         f"Private owner reference: {private_reference}\n",
@@ -358,7 +358,7 @@ def test_project_distribution_accepts_lowercase_rest_user_route(tmp_path: Path) 
     skill = tmp_path / "skills" / "project-wide" / "example"
     skill.mkdir(parents=True)
     (skill / "SKILL.md").write_text(
-        "---\nname: example\ndescription: Validate example behavior when this test exercises the skill contract.\n---\n"
+        "---\nname: example\ndescription: rest routes, user resources, documentation\n---\n"
         "Document the resource routes `/api/v1/users/123` and `/api/v1/Users/123`.\n",
         encoding="utf-8",
     )
@@ -371,7 +371,7 @@ def test_generic_eval_scaffold_fails_closed(tmp_path: Path) -> None:
     skill = tmp_path / "skills" / "agent-wide" / "example"
     skill.mkdir(parents=True)
     (skill / "SKILL.md").write_text(
-        "---\nname: example\ndescription: Validate example behavior when this test exercises the skill contract.\n---\n# Example\n",
+        "---\nname: example\ndescription: record validation, schema reports, material results\n---\n# Example\n",
         encoding="utf-8",
     )
     tasks = tmp_path / "evals" / "example" / "tasks"
@@ -397,7 +397,7 @@ def test_function_in_realistic_prompt_is_not_a_generic_assertion(
     skill = tmp_path / "skills" / "agent-wide" / "example"
     skill.mkdir(parents=True)
     (skill / "SKILL.md").write_text(
-        "---\nname: example\ndescription: Validate example behavior when this test exercises the skill contract.\n---\n# Example\n",
+        "---\nname: example\ndescription: record validation, schema reports, material results\n---\n# Example\n",
         encoding="utf-8",
     )
     directory = _write_semantic_eval(tmp_path)
@@ -415,7 +415,7 @@ def test_semantic_eval_contract_is_accepted(tmp_path: Path) -> None:
     skill = tmp_path / "skills" / "agent-wide" / "example"
     skill.mkdir(parents=True)
     (skill / "SKILL.md").write_text(
-        "---\nname: example\ndescription: Validate example behavior when this test exercises the skill contract.\n---\n# Example\n",
+        "---\nname: example\ndescription: record validation, schema reports, material results\n---\n# Example\n",
         encoding="utf-8",
     )
     _write_semantic_eval(tmp_path)
@@ -427,7 +427,7 @@ def test_fail_closed_role_accepts_a_genuinely_empty_request(tmp_path: Path) -> N
     skill = tmp_path / "skills" / "agent-wide" / "example"
     skill.mkdir(parents=True)
     (skill / "SKILL.md").write_text(
-        "---\nname: example\ndescription: Validate example behavior when this test exercises the skill contract.\n---\n# Example\n",
+        "---\nname: example\ndescription: record validation, schema reports, material results\n---\n# Example\n",
         encoding="utf-8",
     )
     directory = _write_semantic_eval(tmp_path)
@@ -443,7 +443,7 @@ def test_eval_requires_exact_roles_and_unique_ids(tmp_path: Path) -> None:
     skill = tmp_path / "skills" / "agent-wide" / "example"
     skill.mkdir(parents=True)
     (skill / "SKILL.md").write_text(
-        "---\nname: example\ndescription: Validate example behavior when this test exercises the skill contract.\n---\n# Example\n",
+        "---\nname: example\ndescription: record validation, schema reports, material results\n---\n# Example\n",
         encoding="utf-8",
     )
     directory = _write_semantic_eval(tmp_path)
@@ -463,7 +463,7 @@ def test_eval_rejects_duplicate_and_weather_scaffold_prompts(tmp_path: Path) -> 
     skill = tmp_path / "skills" / "agent-wide" / "example"
     skill.mkdir(parents=True)
     (skill / "SKILL.md").write_text(
-        "---\nname: example\ndescription: Validate example behavior when this test exercises the skill contract.\n---\n# Example\n",
+        "---\nname: example\ndescription: record validation, schema reports, material results\n---\n# Example\n",
         encoding="utf-8",
     )
     directory = _write_semantic_eval(tmp_path)
@@ -495,7 +495,7 @@ def test_eval_fixtures_must_be_internal_regular_and_specific(tmp_path: Path) -> 
     skill = tmp_path / "skills" / "agent-wide" / "example"
     skill.mkdir(parents=True)
     (skill / "SKILL.md").write_text(
-        "---\nname: example\ndescription: Validate example behavior when this test exercises the skill contract.\n---\n# Example\n",
+        "---\nname: example\ndescription: record validation, schema reports, material results\n---\n# Example\n",
         encoding="utf-8",
     )
     directory = _write_semantic_eval(tmp_path)
@@ -526,14 +526,14 @@ def test_eval_rejects_scaffolds_and_non_material_expectations(tmp_path: Path) ->
     skill = tmp_path / "skills" / "agent-wide" / "example"
     skill.mkdir(parents=True)
     (skill / "SKILL.md").write_text(
-        "---\nname: example\ndescription: Validate example behavior when this test exercises the skill contract.\n---\n# Example\n",
+        "---\nname: example\ndescription: record validation, schema reports, material results\n---\n# Example\n",
         encoding="utf-8",
     )
     directory = _write_semantic_eval(tmp_path)
     basic = directory / "tasks" / "basic-usage.yaml"
     task = yaml.safe_load(basic.read_text(encoding="utf-8"))
     task["inputs"]["prompt"] = (
-        "Validate example behavior when this test exercises the skill contract. "
+        "record validation, schema reports, material results "
         "Apply the example capability to the provided fixture. Exercise these "
         "requirements: return a concrete result."
     )
@@ -559,7 +559,7 @@ def test_eval_requires_skill_grader_and_shorter_duration(tmp_path: Path) -> None
     skill = tmp_path / "skills" / "agent-wide" / "example"
     skill.mkdir(parents=True)
     (skill / "SKILL.md").write_text(
-        "---\nname: example\ndescription: Validate example behavior when this test exercises the skill contract.\n---\n# Example\n",
+        "---\nname: example\ndescription: record validation, schema reports, material results\n---\n# Example\n",
         encoding="utf-8",
     )
     directory = _write_semantic_eval(tmp_path)
@@ -591,7 +591,7 @@ def test_eval_model_must_match_project_owner(tmp_path: Path) -> None:
     skill = tmp_path / "skills" / "agent-wide" / "example"
     skill.mkdir(parents=True)
     (skill / "SKILL.md").write_text(
-        "---\nname: example\ndescription: Validate example behavior when this test exercises the skill contract.\n---\n# Example\n",
+        "---\nname: example\ndescription: record validation, schema reports, material results\n---\n# Example\n",
         encoding="utf-8",
     )
     (tmp_path / ".waza.yaml").write_text(

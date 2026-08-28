@@ -1,8 +1,6 @@
 ---
 name: gascity-workspace-lifecycle
-description: 'Apply Gas City workspace semantics when its runtime is explicitly restored and selected.'
-bundle: governance
-scope: personal
+description: 'gas city, workspace lifecycle, runtime orchestration'
 metadata:
   aihub.tags: '["activation:opt-in","detect:opt-in:gascity","provenance:agents-owned","route:agent","tool:gascity","updates:manual","usage:on-demand"]'
 ---

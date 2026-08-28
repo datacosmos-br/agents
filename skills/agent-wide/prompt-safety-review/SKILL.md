@@ -1,6 +1,6 @@
 ---
 name: prompt-safety-review
-description: 'Review AI prompts for injection and unsafe instruction handling before deployment.'
+description: 'prompt injection, instruction safety, deployment review'
 metadata:
   aihub.tags: '["provenance:agents-owned","role:security","updates:manual","usage:on-demand"]'
 ---

@@ -1,6 +1,6 @@
 ---
 name: go-development
-description: 'Develop Go projects when go.mod or go.work proves the Go toolchain.'
+description: 'go, module development, toolchain detection'
 license: MIT
 metadata:
   aihub.tags: '["activation:detected","detect:marker:go.mod","detect:marker:go.work","provenance:agents-owned","route:project","technology:go","updates:manual","usage:router"]'

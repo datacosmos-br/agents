@@ -18,12 +18,14 @@ from agents_governance.temp import (
     create_run,
     findings,
     gc,
+    gc_all,
     global_findings,
     managed_env,
     managed_temp,
     repository_findings,
     resolve_repo,
     run_command,
+    shell_environment,
     storage_manifest,
 )
 
@@ -117,6 +119,41 @@ def test_storage_manifest_is_typed_and_owns_every_operational_threshold(
     assert manifest.policy.report_max_bytes == 10 << 20
     assert manifest.policy.temp == temp_policy()
     assert local_storage_manifest.is_file()
+
+
+def test_repository_registration_resolves_from_the_manifest_location(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    repo = tmp_path / "repo"
+    repo.mkdir()
+    subprocess.run(["git", "init", "-q", str(repo)], check=True)
+    config = repo / "config" / "storage.toml"
+    config.parent.mkdir()
+    config.write_text(
+        storage_manifest_text(tmp_path / "shell").replace(
+            "repositories = []", '[[repositories]]\npath = "${CONFIG_DIR}/.."'
+        ),
+        encoding="utf-8",
+    )
+    monkeypatch.setenv("AGENTS_STORAGE_CONFIG", str(config))
+
+    assert storage_manifest().repositories == (repo.resolve(),)
+
+
+def test_global_gc_refuses_an_empty_registry(tmp_path: Path) -> None:
+    with pytest.raises(RuntimeError, match="successful no-op global GC"):
+        gc_all(apply=False)
+
+
+def test_shell_environment_is_materialized_from_storage_owner(
+    tmp_path: Path,
+) -> None:
+    environment = shell_environment()
+
+    assert environment["TMPDIR"] == str(tmp_path / "shell-tmp")
+    assert environment["GOTMPDIR"] == environment["TMPDIR"]
+    assert environment["GOCACHE"] == str(tmp_path / "cache" / "go-build")
+    assert environment["GOMODCACHE"] == str(tmp_path / "cache" / "go-mod")
 
 
 def test_storage_manifest_rejects_repository_list_nested_under_policy(

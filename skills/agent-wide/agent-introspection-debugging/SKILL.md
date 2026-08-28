@@ -1,6 +1,6 @@
 ---
 name: agent-introspection-debugging
-description: 'Diagnose agent behavior and recovery when an agent session or tool flow fails.'
+description: 'agent behavior, session recovery, tool debugging'
 metadata:
   aihub.tags: '["provenance:agents-owned","role:debug","updates:manual","usage:on-demand"]'
 ---

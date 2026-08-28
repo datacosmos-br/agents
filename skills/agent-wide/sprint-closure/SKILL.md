@@ -1,8 +1,6 @@
 ---
 name: sprint-closure
-description: 'Close an increment only when integration, runtime, residue, and tracker evidence are complete.'
-bundle: verification
-scope: universal
+description: 'increment closure, integration evidence, residue elimination'
 metadata:
   aihub.tags: '["provenance:agents-owned","role:governance","updates:manual","usage:router"]'
 ---

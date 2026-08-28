@@ -1,6 +1,6 @@
 ---
 name: technical-writing-style
-description: 'Write clear evidence-based technical documentation when engineering prose needs revision.'
+description: 'technical writing, evidence based, documentation clarity'
 metadata:
   aihub.tags: '["provenance:agents-owned","role:documentation","updates:manual","usage:on-demand"]'
 ---

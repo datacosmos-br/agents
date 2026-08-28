@@ -1,6 +1,6 @@
 ---
 name: solid
-description: 'Apply SOLID boundaries when a surviving change alters responsibilities or dependency direction.'
+description: 'solid principles, responsibility boundaries, dependency direction'
 license: MIT
 metadata:
   aihub.tags: '["provenance:agents-owned","role:architecture","updates:manual","usage:router"]'

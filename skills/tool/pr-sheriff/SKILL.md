@@ -1,11 +1,11 @@
 ---
 name: pr-sheriff
-description: 'Triage pull requests when GitHub review work is explicitly requested.'
+description: 'pull requests, review triage, github workflow'
 allowed-tools: Bash(gh pr *), Bash(git *)
-version: 3.0.0
-author: .agents
 metadata:
   aihub.tags: '["activation:opt-in","detect:opt-in:pr-sheriff","provenance:agents-owned","route:agent","tool:github","updates:manual","usage:on-demand"]'
+  author: .agents
+  version: 3.0.0
 ---
 
 # PR sheriff

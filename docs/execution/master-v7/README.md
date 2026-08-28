@@ -31,16 +31,21 @@ formats; reading a source does not authorize importing its artifacts.
 
 ## Current baseline and target
 
-The source baseline inspected on 2026-08-27 contains 85 flat skills and one
-canonical command. The approved semantic migration produces 76 skills by
-converting six command-shaped artifacts to commands and removing three
-misclassified/duplicated skills. Seven retained skills are renamed to make their
-contracts explicit. These counts are consequences of the mapping in
-[Skill taxonomy](02-skill-taxonomy.md), never quota targets.
+The repository snapshot inspected on 2026-08-28 is a partial, unvalidated
+cutover: 76 recursively discovered skills, seven flat commands, 62 categorized
+agents, 32 rules, 76 Waza skill suites, 228 skill tasks, and 133 fixtures. The
+physical skill and command moves already happened, but this state is not a green
+baseline: every skill description violates the active keyword-description
+schema, the Waza owner still selects `gpt-5.4` instead of exact
+`aihub-primary`, commands and agents lack complete semantic eval surfaces, and
+rules/provider adapters are not wired through the public projection runtime.
 
-Do not trust the baseline as current after another change. Re-run discovery and
-fail if an unclassified artifact appears; never force it into a category to
-preserve a count.
+The target is therefore not another inventory migration. It is one atomic
+cutover from this partial state to strict typed owners, provider-native physical
+rendering, complete offline and live gates, and integration-lane runtime proof.
+Counts remain discovered consequences, never quota targets. Re-run discovery
+after every owner change and fail on an unknown, duplicate, unreachable, or
+unclassified artifact; never coerce one into a category to preserve a count.
 
 ## Runtime state
 
@@ -52,7 +57,10 @@ evidence only in authorized Git commits, pull requests, reviews, required
 checks, and CI after Git execution is separately authorized.
 
 While tracker closure is unavailable, a merged and post-merge-verified phase is
-`LANDED_VERIFIED`, not `DONE`.
+`LANDED_VERIFIED`, not `DONE`. The physical source move from `~/.agents` to
+`~/agents`, provider-home installation, external imports, and service/timer
+installation are separate increments after this repository cutover; they cannot
+be smuggled into this checkout-only increment.
 
 ## Reading order
 

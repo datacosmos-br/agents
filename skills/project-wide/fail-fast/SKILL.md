@@ -1,8 +1,6 @@
 ---
 name: fail-fast
-description: 'Eliminate silent failure and failover when runtime errors can be hidden or misreported.'
-bundle: engineering
-scope: universal
+description: 'silent failure, failover removal, error propagation'
 license: MIT
 metadata:
   aihub.tags: '["provenance:agents-owned","role:reliability","updates:manual","usage:router"]'

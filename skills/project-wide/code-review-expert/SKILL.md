@@ -1,6 +1,6 @@
 ---
 name: code-review-expert
-description: 'Review code for correctness, security, and regressions when a change needs critical assessment.'
+description: 'code review, correctness analysis, regression detection'
 metadata:
   aihub.tags: '["provenance:agents-owned","role:review","updates:manual","usage:on-demand"]'
 ---

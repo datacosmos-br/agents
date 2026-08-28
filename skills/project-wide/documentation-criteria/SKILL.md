@@ -1,6 +1,6 @@
 ---
 name: documentation-criteria
-description: 'Define evidence-backed documentation artifacts when a PRD, ADR, design, or plan is required.'
+description: 'documentation criteria, artifact selection, evidence requirements'
 metadata:
   aihub.tags: '["provenance:agents-owned","role:documentation","updates:manual","usage:on-demand"]'
 ---

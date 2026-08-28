@@ -1,8 +1,6 @@
 ---
 name: caveman
-description: 'Produce concise evidence-first operator communication when reporting technical work.'
-bundle: communication
-scope: universal
+description: 'operator communication, concise reporting, evidence first'
 metadata:
   aihub.tags: '["provenance:agents-owned","role:communication","updates:manual","usage:on-demand"]'
 ---

@@ -1,6 +1,6 @@
 ---
 name: rust-development
-description: 'Develop Rust projects when Cargo.toml proves the Rust toolchain.'
+description: 'rust, cargo development, toolchain detection'
 license: MIT
 metadata:
   aihub.tags: '["activation:detected","detect:marker:Cargo.toml","provenance:agents-owned","route:project","technology:rust","updates:manual","usage:router"]'

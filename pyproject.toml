@@ -7,6 +7,12 @@ dependencies = ["PyYAML>=6.0.2,<7"]
 
 [project.scripts]
 agentsctl = "agents_governance.cli:main"
+agents-security = "agents_governance.security:main"
+env-keyring = "agents_governance.keyring:main"
+environment-d-loader = "agents_governance.environment_loader:main"
+
+[tool.agents-governance.security]
+fixture-roots = ["evals"]
 
 [dependency-groups]
 dev = [

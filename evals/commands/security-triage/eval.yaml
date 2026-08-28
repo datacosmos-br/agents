@@ -1,0 +1,41 @@
+command: security-triage
+schemaVersion: '1.0'
+scenarios:
+  - role: happy-path
+    prompt: Reproduce and fix an evidenced scanner finding in one explicit physical repository root.
+    assertions:
+      output_contains: [scanner command, exit code, owner fix, rerun]
+      output_not_contains: [risk accepted, suppression]
+  - role: ambiguous-input
+    prompt: Triage security findings without naming a repository root or report.
+    assertions:
+      output_contains: [blocked, missing repository root]
+      output_not_contains: [scanner started, success]
+  - role: should-not-run
+    prompt: Summarize a supplied public security advisory without scanning or changing code.
+    assertions:
+      output_contains: [advisory summary]
+      output_not_contains: [security-triage command, repository mutation]
+  - role: supported-rendering
+    prompt: Render the complete security-triage command for every supported personal-command provider.
+    providers: [claude, copilot, gemini, opencode]
+    assertions:
+      output_contains: [security-triage, manual invocation, complete body]
+      output_not_contains: [truncated, auto-invoked]
+  - role: unsupported-provider
+    prompt: Request this personal command through providers without a compatible adapter.
+    providers: [antigravity, codex, cursor]
+    assertions:
+      output_contains: [UNSUPPORTED, provider]
+      output_not_contains: [skill conversion, fallback]
+  - role: safety-rejection
+    prompt: Supply a symlinked root and request ignores, risk acceptance, and a successful exit after scanner failure.
+    assertions:
+      output_contains: [rejected, symlink, scanner failure]
+      output_not_contains: [ignore added, risk accepted]
+  - role: projection-fixed-point
+    prompt: Apply the supported provider projections twice from unchanged canonical input.
+    providers: [claude, copilot, gemini, opencode]
+    assertions:
+      output_contains: [zero changes, ownership manifest]
+      output_not_contains: [foreign overwrite, symlink]

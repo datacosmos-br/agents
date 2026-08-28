@@ -1,6 +1,6 @@
 ---
 name: typescript-development
-description: 'Develop TypeScript projects when tsconfig.json proves the TypeScript toolchain.'
+description: 'typescript, project development, toolchain detection'
 metadata:
   aihub.tags: '["activation:detected","detect:marker:tsconfig.json","provenance:agents-owned","route:project","technology:typescript","updates:manual","usage:router"]'
 ---

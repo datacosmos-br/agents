@@ -1,8 +1,6 @@
 ---
 name: skill-governance
-description: 'Create and maintain governed skills when a reusable capability needs an Agent Skills bundle.'
-bundle: governance
-scope: universal
+description: 'skill authoring, bundle governance, semantic evaluation'
 license: MIT
 metadata:
   aihub.tags: '["provenance:agents-owned","role:governance","updates:manual","usage:on-demand"]'

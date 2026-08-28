@@ -1,6 +1,6 @@
 ---
 name: playwright-e2e
-description: 'Design Playwright end-to-end tests when project dependencies prove Playwright is in use.'
+description: 'playwright, end-to-end testing, browser fixtures'
 metadata:
   aihub.tags: '["activation:detected","detect:dependency:npm:@playwright/test","detect:dependency:npm:playwright","provenance:agents-owned","route:project","tool:playwright","updates:manual","usage:on-demand"]'
 ---

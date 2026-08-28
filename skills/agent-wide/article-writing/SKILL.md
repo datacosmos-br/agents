@@ -1,6 +1,6 @@
 ---
 name: article-writing
-description: 'Write structured technical articles when a sourced long-form publication is requested.'
+description: 'technical articles, source synthesis, long-form writing'
 metadata:
   aihub.tags: '["provenance:agents-owned","role:writing","updates:manual","usage:on-demand"]'
 ---

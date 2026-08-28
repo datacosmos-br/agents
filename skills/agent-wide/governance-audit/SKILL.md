@@ -1,8 +1,6 @@
 ---
 name: governance-audit
-description: 'Audit governance drift and stale instructions when repositories or trackers may disagree.'
-bundle: beads
-scope: universal
+description: 'governance drift, authority conflicts, stale instructions'
 metadata:
   aihub.tags: '["provenance:agents-owned","role:governance","updates:manual","usage:on-demand"]'
 ---

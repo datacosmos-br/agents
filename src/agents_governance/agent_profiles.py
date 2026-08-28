@@ -3,8 +3,11 @@
 from __future__ import annotations
 
 import json
-from dataclasses import dataclass
-from pathlib import Path
+import re
+from dataclasses import dataclass, field
+from enum import StrEnum
+from pathlib import Path, PurePosixPath
+from typing import cast
 
 import yaml
 
@@ -20,6 +23,36 @@ _MODES = frozenset(
 _RETIRED_SURFACES = frozenset({"dispatcher.md", "manifest.json"})
 _PROMPT_DEFENSE_RULE = "rules/security/prompt-defense.md"
 _INLINE_PROMPT_DEFENSE = "## Prompt Defense Baseline"
+_TOP_LEVEL_FIELDS = frozenset(
+    {"name", "description", "tools", "color", "metadata", "model"}
+)
+_TOOL = re.compile(r"^[A-Za-z0-9_.:-]+$")
+
+
+class AgentProvider(StrEnum):
+    """Provider identities with explicit native agent contracts."""
+
+    CLAUDE = "claude"
+    CODEX = "codex"
+    CURSOR = "cursor"
+    COPILOT = "copilot"
+    GEMINI = "gemini"
+    OPENCODE = "opencode"
+    ANTIGRAVITY = "antigravity"
+
+
+class AgentContext(StrEnum):
+    """Supported projection contexts."""
+
+    PERSONAL = "personal"
+    PROJECT = "project"
+
+
+class AgentAdapterStatus(StrEnum):
+    """Typed adapter outcome; unsupported never means skipped."""
+
+    SUPPORTED = "SUPPORTED"
+    UNSUPPORTED = "UNSUPPORTED"
 
 
 @dataclass(frozen=True)
@@ -32,7 +65,61 @@ class AgentProfile:
     distribution: str
     tags: tuple[str, ...]
     rule_paths: tuple[str, ...]
+    tools: tuple[str, ...]
+    color: str | None
+    activation: str
+    mode: str
+    role: str
+    detectors: tuple[str, ...]
     instructions: str
+
+
+@dataclass(frozen=True)
+class AgentArtifact:
+    """One complete provider-native agent projection."""
+
+    provider: AgentProvider
+    context: AgentContext
+    name: str
+    destination: PurePosixPath
+    content: str
+    status: AgentAdapterStatus = field(
+        default=AgentAdapterStatus.SUPPORTED, init=False
+    )
+
+    def __post_init__(self) -> None:
+        if (
+            self.destination.is_absolute()
+            or ".." in self.destination.parts
+            or self.destination.name in {"", ".", ".."}
+        ):
+            raise ValueError("agent destination must be a relative physical path")
+        if not self.content.strip():
+            raise ValueError("agent artifact content must be non-empty")
+
+
+@dataclass(frozen=True)
+class UnsupportedAgent:
+    """An explicit provider/context incompatibility."""
+
+    provider: AgentProvider
+    context: AgentContext
+    name: str
+    reason: str
+    status: AgentAdapterStatus = field(
+        default=AgentAdapterStatus.UNSUPPORTED, init=False
+    )
+
+    def __post_init__(self) -> None:
+        if not self.reason.startswith("UNSUPPORTED: "):
+            raise ValueError("unsupported agent reason must be explicit")
+
+
+type AgentRender = AgentArtifact | UnsupportedAgent
+
+
+class AgentRenderError(ValueError):
+    """A supported adapter refused a lossy or unsafe projection."""
 
 
 @dataclass(frozen=True)
@@ -61,7 +148,14 @@ def _frontmatter(text: str) -> tuple[dict[str, object], str]:
     loaded = yaml.safe_load(text[4:marker])
     if not isinstance(loaded, dict):
         raise TypeError("frontmatter must be a mapping")
-    return loaded, text[marker + 5 :]
+    raw = cast(dict[object, object], loaded)
+    if not all(isinstance(key, str) for key in raw):
+        raise TypeError("frontmatter keys must be strings")
+    metadata = cast(dict[str, object], raw)
+    unknown = sorted(set(metadata) - _TOP_LEVEL_FIELDS)
+    if unknown:
+        raise ValueError(f"unknown agent frontmatter fields: {', '.join(unknown)}")
+    return metadata, text[marker + 5 :]
 
 
 def _relative(root: Path, path: Path) -> str:
@@ -165,7 +259,59 @@ def _tag_findings(
                 "detect tags are allowed only with activation:detected",
             )
         )
+    for detector in detectors:
+        parts = detector.split(":", 2)
+        if (
+            len(parts) != 3
+            or parts[1] not in {"dependency", "extension", "marker"}
+            or not parts[2]
+        ):
+            findings.append(
+                _finding(
+                    relative,
+                    "agent-profile-detector",
+                    f"unsupported detector tag: {detector}",
+                )
+            )
+            continue
+        value = parts[2]
+        if parts[1] == "marker":
+            marker = PurePosixPath(value)
+            if marker.is_absolute() or marker == PurePosixPath(".") or ".." in marker.parts:
+                findings.append(
+                    _finding(
+                        relative,
+                        "agent-profile-detector",
+                        f"detector marker must remain inside a project: {detector}",
+                    )
+                )
+        elif "/" in value or "\\" in value or any(char.isspace() for char in value):
+            findings.append(
+                _finding(
+                    relative,
+                    "agent-profile-detector",
+                    f"invalid detector value: {detector}",
+                )
+            )
     return findings
+
+
+def _tools(raw: object) -> tuple[str, ...]:
+    if raw is None:
+        return ()
+    if isinstance(raw, str):
+        values = tuple(part.strip() for part in raw.split(","))
+    elif isinstance(raw, list) and all(isinstance(item, str) for item in raw):
+        values = tuple(cast(list[str], raw))
+    else:
+        raise TypeError("tools must be a comma-delimited string or an array of strings")
+    if (
+        not values
+        or any(value != value.strip() or not _TOOL.fullmatch(value) for value in values)
+        or len(values) != len(set(values))
+    ):
+        raise ValueError("tools must contain unique provider-neutral capability names")
+    return values
 
 
 def _candidate_paths(
@@ -320,6 +466,23 @@ def audit_agent_profiles(root: Path) -> AgentProfileAudit:
                     "provider-neutral agent profiles must not declare model",
                 )
             )
+        try:
+            tools = _tools(metadata.get("tools"))
+        except (TypeError, ValueError) as error:
+            profile_findings.append(
+                _finding(relative, "agent-profile-tools", str(error))
+            )
+            tools = ()
+        raw_color = metadata.get("color")
+        color = raw_color if isinstance(raw_color, str) and raw_color.strip() else None
+        if raw_color is not None and color is None:
+            profile_findings.append(
+                _finding(
+                    relative,
+                    "agent-profile-color",
+                    "color must be a non-empty string when declared",
+                )
+            )
         if _INLINE_PROMPT_DEFENSE in instructions:
             profile_findings.append(
                 _finding(
@@ -342,6 +505,9 @@ def audit_agent_profiles(root: Path) -> AgentProfileAudit:
             continue
         assert profile_name is not None
         assert profile_description is not None
+        activation = _one_tag(tags, "activation:")[0].removeprefix("activation:")
+        mode = _one_tag(tags, "mode:")[0].removeprefix("mode:")
+        role = _one_tag(tags, "role:")[0].removeprefix("role:")
         pending.append(
             AgentProfile(
                 path=path,
@@ -350,6 +516,12 @@ def audit_agent_profiles(root: Path) -> AgentProfileAudit:
                 distribution=path.parent.name,
                 tags=tags,
                 rule_paths=(_PROMPT_DEFENSE_RULE,),
+                tools=tools,
+                color=color,
+                activation=activation,
+                mode=mode,
+                role=role,
+                detectors=_one_tag(tags, "detect:"),
                 instructions=instructions,
             )
         )
@@ -383,3 +555,202 @@ def audit_agent_profiles(root: Path) -> AgentProfileAudit:
     return AgentProfileAudit(
         profiles, tuple(sorted(findings, key=lambda item: (item.path, item.code)))
     )
+
+
+def _render_frontmatter(metadata: dict[str, object], body: str) -> str:
+    dumped = yaml.safe_dump(
+        metadata,
+        allow_unicode=True,
+        default_flow_style=False,
+        sort_keys=False,
+    ).removesuffix("\n")
+    return f"---\n{dumped}\n---\n\n{body}"
+
+
+def _body(profile: AgentProfile, prompt_defense: str) -> str:
+    if not prompt_defense.strip():
+        raise AgentRenderError("prompt-defense composition source is empty")
+    return f"{prompt_defense.rstrip()}\n\n{profile.instructions.lstrip()}"
+
+
+def _unsupported(
+    profile: AgentProfile,
+    provider: AgentProvider,
+    context: AgentContext,
+    reason: str,
+) -> UnsupportedAgent:
+    return UnsupportedAgent(
+        provider=provider,
+        context=context,
+        name=profile.name,
+        reason=f"UNSUPPORTED: {reason}",
+    )
+
+
+_COPILOT_TOOLS = {
+    "Bash": "execute",
+    "Edit": "edit",
+    "Glob": "search",
+    "Grep": "search",
+    "Read": "read",
+    "WebFetch": "web",
+    "WebSearch": "web",
+    "Write": "edit",
+}
+_GEMINI_TOOLS = {
+    "Bash": "run_shell_command",
+    "Edit": "replace",
+    "Glob": "glob",
+    "Grep": "grep_search",
+    "Read": "read_file",
+    "WebFetch": "web_fetch",
+    "WebSearch": "google_web_search",
+    "Write": "write_file",
+}
+
+
+def _mapped_tools(
+    profile: AgentProfile,
+    provider: AgentProvider,
+    context: AgentContext,
+    mapping: dict[str, str],
+) -> tuple[str, ...] | UnsupportedAgent:
+    unknown = tuple(tool for tool in profile.tools if tool not in mapping)
+    if unknown:
+        return _unsupported(
+            profile,
+            provider,
+            context,
+            f"{provider.value} cannot preserve canonical capabilities: "
+            f"{', '.join(unknown)}",
+        )
+    return tuple(dict.fromkeys(mapping[tool] for tool in profile.tools))
+
+
+def render_agent(
+    profile: AgentProfile,
+    provider: AgentProvider | str,
+    context: AgentContext | str,
+    *,
+    prompt_defense: str,
+) -> AgentRender:
+    """Render one profile without emitting a model or weakening capabilities."""
+
+    try:
+        selected_provider = AgentProvider(provider)
+    except ValueError as error:
+        raise ValueError(f"unknown agent provider: {provider}") from error
+    try:
+        selected_context = AgentContext(context)
+    except ValueError as error:
+        raise ValueError(f"unknown agent context: {context}") from error
+
+    if selected_provider is AgentProvider.CURSOR:
+        return _unsupported(
+            profile,
+            selected_provider,
+            selected_context,
+            "Cursor has no documented custom-agent file adapter",
+        )
+    if selected_provider is AgentProvider.CODEX:
+        return _unsupported(
+            profile,
+            selected_provider,
+            selected_context,
+            "Codex agent TOML has no native capability allowlist equivalent",
+        )
+    if selected_provider is AgentProvider.OPENCODE:
+        return _unsupported(
+            profile,
+            selected_provider,
+            selected_context,
+            "OpenCode permissions cannot preserve the canonical tool allowlist",
+        )
+
+    body = _body(profile, prompt_defense)
+    if selected_provider is AgentProvider.CLAUDE:
+        metadata: dict[str, object] = {
+            "name": profile.name,
+            "description": profile.description,
+        }
+        if profile.tools:
+            metadata["tools"] = list(profile.tools)
+        if profile.color is not None:
+            metadata["color"] = profile.color
+        destination = PurePosixPath(".claude", "agents", f"{profile.name}.md")
+    elif selected_provider is AgentProvider.COPILOT:
+        if profile.color is not None:
+            return _unsupported(
+                profile,
+                selected_provider,
+                selected_context,
+                "Copilot agent schema cannot preserve canonical color metadata",
+            )
+        mapped = _mapped_tools(
+            profile, selected_provider, selected_context, _COPILOT_TOOLS
+        )
+        if isinstance(mapped, UnsupportedAgent):
+            return mapped
+        metadata = {
+            "name": profile.name,
+            "description": profile.description,
+            "tools": list(mapped),
+        }
+        destination = (
+            PurePosixPath(".copilot", "agents", f"{profile.name}.md")
+            if selected_context is AgentContext.PERSONAL
+            else PurePosixPath(".github", "agents", f"{profile.name}.md")
+        )
+    else:
+        assert selected_provider in {
+            AgentProvider.GEMINI,
+            AgentProvider.ANTIGRAVITY,
+        }
+        if profile.color is not None:
+            return _unsupported(
+                profile,
+                selected_provider,
+                selected_context,
+                f"{selected_provider.value} cannot preserve canonical color metadata",
+            )
+        mapped = _mapped_tools(
+            profile, selected_provider, selected_context, _GEMINI_TOOLS
+        )
+        if isinstance(mapped, UnsupportedAgent):
+            return mapped
+        metadata = {
+            "name": profile.name,
+            "description": profile.description,
+            "tools": list(mapped),
+        }
+        if selected_provider is AgentProvider.GEMINI:
+            destination = PurePosixPath(".gemini", "agents", f"{profile.name}.md")
+        elif selected_context is AgentContext.PERSONAL:
+            destination = PurePosixPath(
+                ".gemini", "config", "agents", profile.name, "agent.md"
+            )
+        else:
+            destination = PurePosixPath(".agents", "agents", profile.name, "agent.md")
+    return AgentArtifact(
+        provider=selected_provider,
+        context=selected_context,
+        name=profile.name,
+        destination=destination,
+        content=_render_frontmatter(metadata, body),
+    )
+
+
+__all__ = (
+    "AgentAdapterStatus",
+    "AgentArtifact",
+    "AgentContext",
+    "AgentProfile",
+    "AgentProfileAudit",
+    "AgentProfileFinding",
+    "AgentProvider",
+    "AgentRender",
+    "AgentRenderError",
+    "UnsupportedAgent",
+    "audit_agent_profiles",
+    "render_agent",
+)

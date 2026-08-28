@@ -1,6 +1,6 @@
 ---
 name: investor-materials
-description: 'Create fundraising decks and memos when investor-facing materials are requested.'
+description: 'fundraising decks, investor memos, capital narratives'
 metadata:
   aihub.tags: '["domain:fundraising","provenance:agents-owned","role:writing","updates:manual","usage:on-demand"]'
 ---

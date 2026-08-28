@@ -28,7 +28,7 @@ skill_file = $(firstword $(filter %/$(1)/SKILL.md,$(SKILL_FILES)))
 skill_dir = $(patsubst %/SKILL.md,%,$(call skill_file,$(1)))
 
 .DEFAULT_GOAL := help
-.PHONY: help status setup models audit check static shell build ci security temp sync adjust normalize descriptions test preflight validate-live rate baseline suggest spec coverage run gate compare validate clean
+.PHONY: help status setup models audit check static shell build ci security security-inventory temp sync adjust normalize descriptions test preflight validate-live rate baseline suggest spec coverage run gate compare validate clean
 .DELETE_ON_ERROR:
 
 define BANNER
@@ -53,7 +53,7 @@ models: ## list judge models available through cliproxy
 setup: ## idempotent project bootstrap (waza init + env sanity)
 	$(call BANNER,setup · scaffold + env)
 	@uv sync --all-groups
-	@install -m 0755 bin/env-keyring bin/environment-d-loader "$(HOME)/.local/bin/"
+	@uv tool install --reinstall --offline --link-mode clone .
 	@waza init --no-skill >/dev/null && echo "  waza init: ok"
 	@$(WAZA_KEYRING_EXEC) sh -c 'test -n "$$CLIPROXY_API_KEY"' && echo "  judge credentials: available"
 	@printf '  judge model: ' && uv run agentsctl waza-config --model
@@ -81,7 +81,7 @@ static: ## lint, format, and Python type analysis
 
 shell: ## shell scripts and GitHub workflow syntax
 	$(call BANNER,shell · shellcheck + actionlint)
-	@shellcheck hooks/quality-gate.sh hooks/session-init.sh
+	@shellcheck hooks/*.sh
 	@actionlint .github/workflows/*.yml
 
 build: ## build source and wheel artifacts
@@ -89,7 +89,7 @@ build: ## build source and wheel artifacts
 	@uv run agentsctl temp run -- uv build
 
 ci: ## complete offline CI pipeline
-	$(call BANNER,ci · check + static + shell + build + test + spec + coverage)
+	$(call BANNER,ci · check + static + shell + build + test + spec + coverage + security inventory)
 	@$(MAKE) --no-print-directory check
 	@$(MAKE) --no-print-directory static
 	@$(MAKE) --no-print-directory shell
@@ -97,12 +97,18 @@ ci: ## complete offline CI pipeline
 	@$(MAKE) --no-print-directory test
 	@$(MAKE) --no-print-directory spec
 	@$(MAKE) --no-print-directory coverage
+	@$(MAKE) --no-print-directory security-inventory
+
+security-inventory: ## verify every tracked project manifest has one scanner route
+	$(call BANNER,security · deterministic manifest inventory)
+	@uv run agents-security inventory .
 
 security: ## live secret, static-analysis, Snyk, and triage gates (all severities)
 	$(call BANNER,security · all severities)
+	@$(MAKE) --no-print-directory security-inventory
 	@gitleaks dir --no-banner --exit-code 1 --redact .
 	@semgrep scan --jobs 1 --config p/default --error --metrics=off --no-git-ignore --exclude .git --exclude .venv --exclude .cache --exclude .test-tmp --exclude results --exclude '$$HOME' .
-	@snyk test --file=uv.lock --dev --severity-threshold=low
+	@uv run agents-security snyk .
 	@uv run agentsctl security-triage .
 
 temp: ## audit /tmp; STATUS=Y reports; APPLY=Y collects safe old owned runs

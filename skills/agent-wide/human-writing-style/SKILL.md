@@ -1,6 +1,6 @@
 ---
 name: human-writing-style
-description: 'Edit prose for natural human style when text sounds formulaic or machine-generated.'
+description: 'natural prose, formulaic writing, style editing'
 metadata:
   aihub.tags: '["provenance:agents-owned","role:writing","updates:manual","usage:on-demand"]'
 ---

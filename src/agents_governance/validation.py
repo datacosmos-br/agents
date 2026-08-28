@@ -28,8 +28,9 @@ _DESCRIPTION_MIN_CHARACTERS = 12
 _DESCRIPTION_MAX_CHARACTERS = 96
 _DESCRIPTION_MIN_TERMS = 3
 _DESCRIPTION_MAX_TERMS = 10
+_DESCRIPTION_TOKEN = r"[a-z0-9](?:[a-z0-9+./_-]*[a-z0-9+])?"
 _DESCRIPTION_TERM = re.compile(
-    r"[a-z0-9][a-z0-9+./_-]*(?: [a-z0-9][a-z0-9+./_-]*){0,2}"
+    rf"{_DESCRIPTION_TOKEN}(?: {_DESCRIPTION_TOKEN}){{0,2}}"
 )
 _DESCRIPTION_PROSE_MARKERS = frozenset(
     {
@@ -447,6 +448,10 @@ def validate(catalog: Catalog) -> list[Finding]:
     if catalog_contract:
         return findings
     records = catalog.records()
+    findings.extend(
+        Finding(item.path, item.code, item.message)
+        for item in catalog.inventory_lock_findings(required=False)
+    )
     if (catalog.root / ".waza.yaml").is_file():
         for waza_item in waza_config_findings(catalog.root):
             findings.append(

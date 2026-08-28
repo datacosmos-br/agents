@@ -1,6 +1,6 @@
 ---
 name: architecture-documentation
-description: 'Document system boundaries and decisions when architecture must be explained or updated.'
+description: 'architecture decisions, system boundaries, technical documentation'
 metadata:
   aihub.tags: '["provenance:agents-owned","role:documentation","updates:manual","usage:on-demand"]'
 ---

@@ -1,6 +1,6 @@
 ---
 name: deep-research
-description: 'Research complex questions across authoritative sources when evidence and citations are required.'
+description: 'multi-source research, authoritative evidence, source citations'
 metadata:
   aihub.tags: '["provenance:agents-owned","role:research","updates:manual","usage:on-demand"]'
 ---

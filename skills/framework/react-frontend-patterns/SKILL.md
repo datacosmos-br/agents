@@ -1,6 +1,6 @@
 ---
 name: react-frontend-patterns
-description: 'Apply React UI patterns when a project dependency proves React is in use.'
+description: 'react, ui architecture, component patterns'
 metadata:
   aihub.tags: '["activation:detected","detect:dependency:npm:react","framework:react","provenance:agents-owned","route:project","updates:manual","usage:on-demand"]'
 ---

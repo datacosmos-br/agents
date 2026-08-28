@@ -1,6 +1,6 @@
 ---
 name: rest-api-design
-description: 'Design REST APIs when resources, authorization, pagination, and errors need a stable contract.'
+description: 'rest api, resource contracts, error semantics'
 metadata:
   aihub.tags: '["provenance:agents-owned","role:architecture","updates:manual","usage:on-demand"]'
 ---

@@ -1,20 +1,6 @@
 ---
 name: scope-code-navigation
-description: 'Trace code and references when scoped repository navigation is explicitly requested.'
-triggers:
-- reading a file to understand its structure
-- searching for a function, class, or symbol
-- finding references or callers
-- before editing or refactoring code
-- understanding dependencies or call chains
-- exploring an unfamiliar codebase
-- finding who calls a function
-- checking blast radius before a change
-- navigating code
-- finding entry points or API controllers
-- grep for function or class names
-- understanding how code is structured
-- looking at imports or dependencies
+description: 'code navigation, reference tracing, scope cli'
 metadata:
   aihub.tags: '["activation:opt-in","detect:opt-in:scope-code-navigation","provenance:agents-owned","route:project","tool:scope-code-navigation","updates:manual","usage:on-demand"]'
 ---

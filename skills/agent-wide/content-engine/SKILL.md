@@ -1,6 +1,6 @@
 ---
 name: content-engine
-description: 'Design reusable social content systems when a multi-channel campaign needs production.'
+description: 'content systems, campaign production, channel adaptation'
 metadata:
   aihub.tags: '["provenance:agents-owned","role:content","updates:manual","usage:on-demand"]'
 ---

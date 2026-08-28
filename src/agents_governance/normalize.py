@@ -62,8 +62,8 @@ def normalize_descriptions(catalog: Catalog, *, apply: bool) -> list[Normalizati
     if apply and changes:
         names = ", ".join(change.name for change in changes)
         raise ValueError(
-            "description normalization requires an authored capability + when-to-use "
-            f"sentence: {names}"
+            "description normalization requires an authored discriminating keyword "
+            f"list: {names}"
         )
     return changes
 

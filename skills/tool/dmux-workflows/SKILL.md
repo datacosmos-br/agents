@@ -1,6 +1,6 @@
 ---
 name: dmux-workflows
-description: 'Coordinate terminal panes and agents when dmux orchestration is explicitly selected.'
+description: 'dmux, terminal orchestration, agent coordination'
 metadata:
   aihub.tags: '["activation:opt-in","detect:opt-in:dmux","provenance:agents-owned","route:agent","tool:dmux","updates:manual","usage:on-demand"]'
 ---
