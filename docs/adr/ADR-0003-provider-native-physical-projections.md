@@ -25,12 +25,14 @@ generated ownership manifest and source digest. Unsupported combinations fail
 explicitly. Apply preserves foreign or ambiguous content and must reach a fixed
 point on the second unchanged run.
 
-The public apply is `agentsctl sync`. It accepts no option and derives its
-project target from the invocation directory's nearest physical `.git/`
-ancestor and its personal target from the current process home. It plans every
-supported personal and project surface before the first publication, stages on
-each destination filesystem, publishes every changed target as one transaction,
-and rolls earlier publications back if a later publication fails.
+The public apply is `agentsctl sync`. It accepts no option and derives the
+invocation directory's nearest physical `.git/` ancestor and the current
+process home. Invoking the verb selects personal projection. A physical
+project-owned `.agents/projection.json` additionally authorizes and selects
+tracked project projection; absence produces zero project output. The owner
+plans every selected surface before publication, stages on each destination
+filesystem, publishes all selected targets as one transaction, and rolls back
+only effects created by that failed invocation.
 
 ### Principles
 
@@ -67,6 +69,7 @@ flowchart LR
 | Storage | One physical copy primitive and destination-local staging | Storage/projection owners | Provider loads its normal path |
 | Cleanup | Manifest-proven managed outputs only | Projection subsystem | Foreign/unknown files remain preserved |
 | Validation | Syntax, capability, runtime canary, fixed point | Adapter and Waza gates | Provider outages remain red external evidence |
+| Authorization | Physical project selection file | Project owner | Installation, remote, or forge access grants no write authority |
 
 ## Consequences
 
@@ -82,6 +85,6 @@ flowchart LR
 | Decision part | Status | Durable evidence |
 |---|---|---|
 | Projection architecture | Accepted | This ADR and master v7 contracts |
-| Typed adapters and ownership manifest | Implemented on work lane | Schema v4, project/context/surface/provider/selection ownership, source/physical digests, and activation evidence |
+| Typed adapters and ownership manifest | Implemented on work lane | Schema v5, project/context/surface/provider/selection ownership, source/physical digests, and activation evidence |
 | Full projection fixed point | Not evidenced | Master v7 Phase 5 |
 | Physical root cutover | Future increment | Explicitly excluded from the current repository cutover |

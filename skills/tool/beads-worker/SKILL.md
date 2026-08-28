@@ -22,8 +22,10 @@ invalidated native path; do not repeat unchanged, switch execution paths,
 normalize red evidence, or perform a tracker mutation. Owner-only work remains
 active in the same issue and is handed to that owner, never treated as closure.
 
-During tracker suspension, do not invoke or replace Beads. Record evidence in
-the repository's declared manual ledger. Handoff must state issue, branch, SHA,
-scoped files, exact command/exit/decisive output, PR and integration evidence,
-residue, and unverified owner-only work. Report ready for review only when the
-slice itself is validated and residue-free; never infer merge or closure.
+During tracker suspension, do not invoke or replace Beads and create no
+substitute tracker or ledger. Preserve evidence only in separately authorized
+Git, PR, review, check, and CI surfaces. Handoff must state issue, branch, SHA,
+scoped files, exact command/exit/decisive output, PR
+and integration evidence, residue, and unverified owner-only work. Report ready
+for review only when the slice itself is validated and residue-free; never infer
+merge or closure.

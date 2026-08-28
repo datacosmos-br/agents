@@ -170,9 +170,9 @@ Canonical references:
 | `rules` | Provider-composed personal baseline | Provider-composed project baseline |
 
 An unsupported combination is a declarative non-target in the capability
-matrix. `sync` applies every `SUPPORTED` project cell and never requests an
-`UNSUPPORTED` cell or renders it as another artifact type. The same invocation
-also applies every supported personal cell.
+matrix. `sync` applies every `SUPPORTED` authorized project cell and never
+requests an `UNSUPPORTED` cell or renders it as another artifact type. The same
+invocation applies every supported personal cell.
 
 The project target is the nearest ancestor of the invocation cwd that owns a
 physical `.git/` directory; the personal target is the current process home.
@@ -183,11 +183,11 @@ absent by construction.
 Optional activation is project-owned at `.agents/projection.json`. If present,
 the v1 object has exactly `version`, sorted unique `opt_ins`, sorted unique
 `selected_tags`, and sorted unique `agents`. Unknown values raise before any
-effect. If absent, the typed owner derives empty selections while detectors
-still activate project evidence. The generated v5 manifest records portable
-project identity (`.`), project-relative destination, context, surface,
-providers, selection, source type, slug, activation evidence, logical digest,
-physical digest, and adapter version.
+effect. The same physical file authorizes tracked project projection; if absent,
+the project is a non-target and no detector or project surface is loaded. The
+generated v5 manifest records portable project identity (`.`), project-relative
+destination, context, surface, providers, selection, source type, slug,
+activation evidence, logical digest, physical digest, and adapter version.
 
 ## Physical projection law
 

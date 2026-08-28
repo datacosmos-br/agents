@@ -103,8 +103,12 @@ def test_rule_spec_rejects_mutated_derived_contract(tmp_path: Path) -> None:
 
 def test_canonical_inventory_is_discovered_without_extinct_hook_rules() -> None:
     root = Path(__file__).resolve().parents[1]
-    identities = tuple(spec.identity for spec in audit_rule_specs(root))
+    specs = {spec.identity: spec for spec in audit_rule_specs(root)}
+    engineering_core = specs["architecture/engineering-core"].body
 
-    assert "architecture/engineering-core" in identities
-    assert "security/prompt-defense" in identities
-    assert not any(identity.startswith("hooks/") for identity in identities)
+    assert "Auxiliary capabilities apply" in engineering_core
+    assert "only when authorized and selected" in engineering_core
+    assert "The first exception escapes" in engineering_core
+    assert "complete the approved\n   landing cycle" in engineering_core
+    assert "security/prompt-defense" in specs
+    assert not any(identity.startswith("hooks/") for identity in specs)

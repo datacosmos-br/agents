@@ -24,6 +24,7 @@ from .cleanup import (
 )
 from .commands import CommandSpec
 from .governance_config import GovernanceConfig
+from .projection_authorization import project_projection_authorized
 from .projection_config import (
     ProjectionConfig,
     ProjectionContext,
@@ -35,10 +36,6 @@ from .rules import RuleSpec
 
 _MANIFEST_VERSION = 2
 _OWNER = "agents-governance"
-_STALE_COMMANDS = (
-    "bd codex-hook ",
-    "bd prime --hook-json",
-)
 _INSTRUCTIONS_BEGIN = "<!-- AIHUB-GOVERNANCE-INSTRUCTIONS-BEGIN -->"
 _INSTRUCTIONS_END = "<!-- AIHUB-GOVERNANCE-INSTRUCTIONS-END -->"
 _CAPSULE_PREFIX = "<!-- AIHUB-GOVERNANCE-CAPSULE v1 sha256:"
@@ -230,9 +227,7 @@ def _managed_command(value: object, script_root: Path) -> bool:
     if not isinstance(value, dict):
         return False
     command = value.get("command")
-    return isinstance(command, str) and (
-        str(script_root) in command or command.startswith(_STALE_COMMANDS)
-    )
+    return isinstance(command, str) and str(script_root) in command
 
 
 def _nested_config(
@@ -645,6 +640,7 @@ class HookProjector:
     def _plans(self, project: Path) -> tuple[HookPlan, ...]:
         home = _physical_boundary(Path.home(), "personal home")
         repository = _physical_boundary(project, "project root")
+        project_authorized = project_projection_authorized(repository)
         capsule = _capsule(self.governance, self.commands, self.rules)
         hooks = tuple(
             self._plan(
@@ -655,10 +651,13 @@ class HookProjector:
             )
             for provider in AgentProvider
             for context in ProjectionContext
+            if context is ProjectionContext.PERSONAL or project_authorized
         )
         instructions: list[HookPlan] = []
         for provider in AgentProvider:
             for context in ProjectionContext:
+                if context is ProjectionContext.PROJECT and not project_authorized:
+                    continue
                 cell = self.config.cell(provider, context, ProjectionSurface.RULES)
                 if (
                     cell.status is not ProjectionStatus.SUPPORTED

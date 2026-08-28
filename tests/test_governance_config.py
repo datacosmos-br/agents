@@ -32,7 +32,9 @@ def test_repository_governance_resolves_every_retired_clause_owner() -> None:
     audit_governance_config(root, config, catalog, commands, rules)
 
     assert len(config.legacy_core_clauses) == 47
+    assert "architecture/engineering-core" in config.bootstrap_rules
     assert "coordination/fix-forward-collaboration" in config.bootstrap_rules
+    assert "workflow/beads-traceability" not in config.bootstrap_rules
     assert "fix-forward-collaboration" in config.bootstrap_skills
 
 

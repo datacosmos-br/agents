@@ -12,8 +12,9 @@ durable tracker. The active repository contract owns lifecycle and closure.
 
 While the canonical tracker is suspended, do not invoke it, select an endpoint,
 start an embedded database, recreate issues elsewhere, or claim tracker state.
-Preserve execution evidence in the repository's declared manual ledger and keep
-the issue and phase open.
+Create no substitute tracker or ledger. Preserve evidence only in separately
+authorized Git, PR, review, check, and CI surfaces; keep tracker state and phase
+closure unresolved.
 
 After explicit restoration, preflight the repository identity, canonical
 runtime, current issue revision, actor authority, operation scope, integration

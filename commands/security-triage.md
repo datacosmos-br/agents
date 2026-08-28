@@ -19,7 +19,9 @@ consumer, record the decision and reproducible evidence in the same report, and
 rerun the exact scanner. Follow an active project tracker only when its runtime
 is authorized; otherwise update the repository-declared manual ledger. Every
 severity blocks closure.
-A false positive requires a precise technical explanation and a clean
-reproduction; risk acceptance, generic ignores, fallbacks, `|| true`, and
-unevidenced suppressions do not close findings. Report every command, exit code,
-decisive output, affected root, and unresolved blocker.
+A false-positive or compatibility classification requires prior operator
+discussion, a precise reproducible technical proof, and explicit authorization.
+Use the newest released scanner; never cap, downgrade, substitute, or suppress
+it to avoid findings. Risk acceptance, generic ignores, fallbacks, `|| true`,
+and unevidenced suppressions do not close findings. Report every command, exit
+code, decisive output, affected root, and unresolved blocker.

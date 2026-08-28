@@ -5,18 +5,18 @@ substitute_tracker:
 evidence:
   owners: [git-commit, pull-request, review, ci]
 correction:
-  prohibited_behavior: Project scratch or caches under /tmp
-  required_replacement: Repository-local .test-tmp or .cache on persistent storage
-  scope: Project test and build execution
-  incident: Root filesystem exhausted by multi-gigabyte temporary builds
+  prohibited_behavior: Change a conforming generator to accommodate an invalid receiver
+  required_replacement: Prove the producer contract and correct the causal owner
+  scope: Cross-boundary defect remediation
+  incident: A generated facade was blamed before validating the receiving import
 owners:
-  canonical: rules/storage.md
+  canonical: rules/architecture/engineering-core.md
   consumers:
     - AGENTS.md
-    - skills/make-check/SKILL.md
+    - skills/operator-correction-learning/SKILL.md
 opposing_active_instruction:
-  path: docs/legacy-testing.md
-  text: Use /tmp for project test scratch
+  path: docs/legacy-debugging.md
+  text: Patch the generator whenever a generated consumer fails
 closure:
   canonical_tracker_available: false
   phase_done_allowed: false

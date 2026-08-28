@@ -7,10 +7,13 @@ metadata:
 
 # Gas City Workspace Lifecycle
 
-Activate only for an explicitly Gas City-managed workspace decision. Derive all
+Activate only when the project authorizes Gas City and the workflow explicitly
+selects a Gas City-managed workspace decision. Installation or detection is not
+selection. Derive all
 placement and identity from the repository's Gas City owner rule and declared
-city, rig, pinned Pack, agent, formula, provider, and physical workspace. Never
-infer or locally recreate that configuration.
+city, rig, pinned Pack, agent, formula, provider, store, and physical workspace.
+Beads requirements exist only when the project also selects Beads. Never infer
+or locally recreate configuration.
 
 While runtime is suspended, validate supplied configuration statically and make
 no workspace or runtime effect. A missing or conflicting declaration is the

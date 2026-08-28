@@ -32,8 +32,12 @@ categories, destinations, or activation.
 1. One skill has one canonical path; multi-axis meaning uses tags.
 2. Directory placement follows distribution or primary runtime dependency, not
    a target count.
-3. Conditional projection requires project evidence or explicit opt-in.
+3. Project projection itself requires the project-owned
+   `.agents/projection.json`; conditional capabilities inside that boundary
+   require validated project evidence or explicit opt-in.
 4. Unknown, contradictory, or detectorless classification fails loudly.
+5. Installation and detection provide evidence but never select an auxiliary
+   capability.
 
 ## Options considered
 
@@ -78,4 +82,4 @@ flowchart TD
 |---|---|---|
 | Taxonomy and current mapping | Accepted | Master v7 skill taxonomy |
 | Recursive discovery and validation | Implemented on work lane | `Catalog` strict recursive path/tag schema and canonical inventory lock |
-| Physical migration | Implemented on work lane | 76 canonical bundles under the six source groups; integration pending |
+| Physical migration | Implemented on work lane | 76 migrated bundles plus two authorized governance additions under the six source groups; 78 current bundles; integration pending |

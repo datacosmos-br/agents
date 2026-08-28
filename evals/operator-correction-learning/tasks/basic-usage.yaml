@@ -1,15 +1,16 @@
-id: operator-correction-learning-suspended-tracker-001
-name: Reconcile a storage correction during suspension
+id: operator-correction-learning-root-owner-001
+name: Reconcile a wrong-side remediation correction
 description: Turn operator corrections into durable governance through authority reconciliation.
 tags: [operator-corrections, durable-governance, authority-reconciliation, precedence, contradiction, evidence, happy-path]
 inputs:
   prompt: Reconcile the operator correction in correction-state.yaml against its
     active authority, then make the replacement durable in governance owners and
-    consumers. Preserve evidence through the repository manual ledger plus canonical
-    Git and PR surfaces, remove opposing instructions, define validation and repeated
-    search, and keep suspended runtime owners untouched.
+    consumers. Preserve evidence only through separately authorized canonical
+    Git and PR surfaces, update the owning
+    skill's semantic regression role, remove opposing instructions, define
+    validation and repeated search, and keep suspended runtime owners untouched.
   files:
   - path: correction-state.yaml
 expected:
-  output_contains: [Git, PR, rules/storage.md, /tmp, not DONE, manual ledger, atomic, zero residue]
-  output_not_contains: [alternate tracker, partial reconciliation, retry]
+  output_contains: [Git, PR, rules/architecture/engineering-core.md, semantic regression, producer contract, receiver, causal owner, not DONE, atomic, zero residue]
+  output_not_contains: [patch the generator, adjacent workaround, alternate tracker, replacement ledger, partial reconciliation, retry]

@@ -30,7 +30,6 @@ from .cleanup import (
     remove_physical,
     run_atomic_publications,
     run_with_cleanup,
-    validate_physical,
 )
 from .commands import (
     CommandProvider,
@@ -39,6 +38,10 @@ from .commands import (
     CommandTokenBudget,
     render_command,
     waza_bpe_counter,
+)
+from .projection_authorization import (
+    PROJECT_SELECTION,
+    project_projection_authorized,
 )
 from .projection_config import (
     ProjectionCell,
@@ -217,6 +220,57 @@ def _symlink_component(path: Path) -> Path | None:
     return None
 
 
+def _tree_snapshot(root: Path) -> str:
+    """Digest one destination tree without following foreign symlinks."""
+
+    digest = hashlib.sha256()
+
+    def visit(path: Path) -> None:
+        metadata = path.lstat()
+        relative = path.relative_to(root).as_posix() if path != root else "."
+        digest.update(relative.encode())
+        digest.update(b"\0")
+        digest.update(f"{stat.S_IMODE(metadata.st_mode):04o}".encode())
+        digest.update(b"\0")
+        if stat.S_ISLNK(metadata.st_mode):
+            digest.update(b"symlink\0")
+            digest.update(os.readlink(path).encode())
+            digest.update(b"\0")
+            return
+        if stat.S_ISDIR(metadata.st_mode):
+            digest.update(b"directory\0")
+            with os.scandir(path) as entries:
+                children = sorted((Path(entry.path) for entry in entries), key=str)
+            for child in children:
+                visit(child)
+            return
+        if stat.S_ISREG(metadata.st_mode):
+            digest.update(b"file\0")
+            digest.update(path.read_bytes())
+            digest.update(b"\0")
+            return
+        raise RuntimeError(f"projection destination contains a special file: {path}")
+
+    visit(root)
+    return digest.hexdigest()
+
+
+def _discard_owned_tree(path: Path) -> None:
+    """Remove one exact staging/publication tree without following links."""
+
+    metadata = path.lstat()
+    if stat.S_ISLNK(metadata.st_mode) or stat.S_ISREG(metadata.st_mode):
+        path.unlink()
+        return
+    if not stat.S_ISDIR(metadata.st_mode):
+        raise RuntimeError(f"owned projection artifact has unsupported type: {path}")
+    with os.scandir(path) as entries:
+        children = tuple(Path(entry.path) for entry in entries)
+    for child in children:
+        _discard_owned_tree(child)
+    path.rmdir()
+
+
 def _physical_project(cwd: Path) -> Path:
     current = _absolute(cwd)
     if _symlink_component(current) is not None or not current.is_dir():
@@ -313,8 +367,9 @@ def _rendered_source(
     slug: str,
     activation: tuple[str, ...],
     content: str,
+    project_portability: bool,
 ) -> ProjectionSource:
-    if NON_PORTABLE_PROJECT_REFERENCE.search(content):
+    if project_portability and NON_PORTABLE_PROJECT_REFERENCE.search(content):
         raise ValueError(
             f"project {source_type} contains a non-portable reference: {source}"
         )
@@ -336,7 +391,7 @@ class Projector:
     """Converge every supported project surface for the invocation project."""
 
     MANIFEST = ".agents-governance.json"
-    SELECTION = Path(".agents/projection.json")
+    SELECTION = PROJECT_SELECTION
 
     def __init__(
         self,
@@ -359,12 +414,10 @@ class Projector:
         return _physical_project(Path.cwd())
 
     @staticmethod
-    def _selection(project: Path) -> ProjectionSelection:
+    def _selection(project: Path) -> ProjectionSelection | None:
         path = project / Projector.SELECTION
-        if not path.exists() and not path.is_symlink():
-            return ProjectionSelection()
-        if path.is_symlink() or not path.is_file():
-            raise ValueError(f"projection selection must be a physical file: {path}")
+        if not project_projection_authorized(project):
+            return None
         payload = _mapping(json.loads(path.read_text(encoding="utf-8")), str(path))
         _exact(payload, _SELECTION_FIELDS, str(path))
         if payload["version"] != 1:
@@ -627,7 +680,6 @@ class Projector:
         sources: list[ProjectionSource] = []
         for name in sorted(self.catalog.names_for("personal")):
             record = self.catalog.record(name)
-            _validate_source_portability(record.directory)
             sources.append(
                 ProjectionSource(
                     name,
@@ -692,9 +744,15 @@ class Projector:
 
     def _plans(self, project: Path) -> tuple[ProjectionPlan, ...]:
         project_selection = self._selection(project)
-        dependencies = self._dependencies(project)
-        project_skills = self._skill_sources(
-            self._activated_skills(project, project_selection, dependencies)
+        dependencies = (
+            self._dependencies(project) if project_selection is not None else set()
+        )
+        project_skills = (
+            self._skill_sources(
+                self._activated_skills(project, project_selection, dependencies)
+            )
+            if project_selection is not None
+            else ()
         )
         personal_skills = self._personal_skill_sources()
         prompt_defense: str | None = None
@@ -704,22 +762,21 @@ class Projector:
 
         for context in ProjectionContext:
             boundary = home if context is ProjectionContext.PERSONAL else project
-            selection = (
-                ProjectionSelection()
-                if context is ProjectionContext.PERSONAL
-                else project_selection
-            )
-            selected_agents = (
-                {
+            selected_agents: dict[str, tuple[str, ...]]
+            if context is ProjectionContext.PERSONAL:
+                selection = ProjectionSelection()
+                selected_agents = {
                     profile.name: ("always",)
                     for profile in self.agents
                     if profile.distribution == "agent-wide"
                 }
-                if context is ProjectionContext.PERSONAL
-                else self._selected_agents(
+            else:
+                if project_selection is None:
+                    continue
+                selection = project_selection
+                selected_agents = self._selected_agents(
                     project, project_selection, dependencies, self.agents
                 )
-            )
             for provider in AgentProvider:
                 for surface in ProjectionSurface:
                     if surface is ProjectionSurface.HOOKS:
@@ -793,6 +850,9 @@ class Projector:
                                     slug=command_spec.name,
                                     activation=(f"route:{route.value}",),
                                     content=command_artifact.content,
+                                    project_portability=(
+                                        context is ProjectionContext.PROJECT
+                                    ),
                                 )
                             )
                     elif surface is ProjectionSurface.AGENTS:
@@ -824,6 +884,9 @@ class Projector:
                                     slug=agent_profile.name,
                                     activation=selected_agents[agent_profile.name],
                                     content=agent_artifact.content,
+                                    project_portability=(
+                                        context is ProjectionContext.PROJECT
+                                    ),
                                 )
                             )
                     else:
@@ -854,6 +917,9 @@ class Projector:
                                         f"route:{rule_spec.distribution.value}",
                                     ),
                                     content=rule_artifact.content,
+                                    project_portability=(
+                                        context is ProjectionContext.PROJECT
+                                    ),
                                 )
                             )
                     by_name = cast(dict[str, ProjectionSource], bucket["sources"])
@@ -999,8 +1065,7 @@ class Projector:
             return _TargetState(plan, {}, None, True)
         if not root.is_dir():
             raise ValueError(f"projection destination is not a directory: {root}")
-        validate_physical(root)
-        snapshot = self.catalog.physical_tree_contract(root)
+        snapshot = _tree_snapshot(root)
         payload = self._manifest(root)
         desired = self._manifest_payload(plan)
         previous: dict[str, dict[str, object]] = {}
@@ -1026,11 +1091,40 @@ class Projector:
         for name, source in expected.items():
             destination = root / name
             metadata = previous.get(name)
-            if not destination.exists():
+            if not destination.exists() and not destination.is_symlink():
                 drift = True
                 continue
             if metadata is None:
-                raise ValueError(f"foreign projection collision: {destination}")
+                if (
+                    not destination.is_symlink()
+                    and (destination.is_file() or destination.is_dir())
+                ) and (
+                    self.catalog.digest_tree(destination) == source.source_digest
+                    and self.catalog.physical_tree_contract(destination)
+                    == source.physical_digest
+                ):
+                    drift = True
+                    continue
+                if destination.is_symlink():
+                    observed = f"symlink_target={os.readlink(destination)}"
+                elif destination.is_file() or destination.is_dir():
+                    observed = (
+                        "current_logical_digest="
+                        f"{self.catalog.digest_tree(destination)}; "
+                        "current_physical_digest="
+                        f"{self.catalog.physical_tree_contract(destination)}"
+                    )
+                else:
+                    observed = f"current_mode={destination.lstat().st_mode:o}"
+                raise ValueError(
+                    "unadjudicated projection divergence: "
+                    f"destination={destination}; proposed_source={source.source}; "
+                    f"source_type={source.source_type}; proposed_origin={source.origin}; "
+                    f"{observed}; proposed_logical_digest={source.source_digest}; "
+                    f"proposed_physical_digest={source.physical_digest}; "
+                    "current_owner=unproven; disposition=preserve current object; "
+                    "operator decision required before replacement"
+                )
             logical = self.catalog.digest_tree(destination)
             physical = self.catalog.physical_tree_contract(destination)
             if (
@@ -1044,7 +1138,7 @@ class Projector:
             if name in expected:
                 continue
             destination = root / name
-            if destination.exists():
+            if destination.exists() or destination.is_symlink():
                 logical = self.catalog.digest_tree(destination)
                 physical = self.catalog.physical_tree_contract(destination)
                 if (
@@ -1075,20 +1169,28 @@ class Projector:
 
         def build() -> _StagedTarget:
             if plan.root.exists():
-                shutil.copytree(plan.root, candidate, symlinks=False)
-                if self.catalog.physical_tree_contract(candidate) != state.snapshot:
+                shutil.copytree(plan.root, candidate, symlinks=True)
+                if _tree_snapshot(candidate) != state.snapshot:
                     raise RuntimeError(f"projection staging copy differs: {plan.root}")
             else:
                 candidate.mkdir()
             expected = {source.name: source for source in plan.sources}
             for stale in set(state.previous) - set(expected):
                 destination = candidate / stale
-                if destination.exists():
-                    remove_physical(destination)
+                if destination.exists() or destination.is_symlink():
+                    _discard_owned_tree(destination)
             for source in plan.sources:
                 destination = candidate / source.name
-                if destination.exists():
-                    remove_physical(destination)
+                if (
+                    destination.exists()
+                    and not destination.is_symlink()
+                    and self.catalog.digest_tree(destination) == source.source_digest
+                    and self.catalog.physical_tree_contract(destination)
+                    == source.physical_digest
+                ):
+                    continue
+                if destination.exists() or destination.is_symlink():
+                    _discard_owned_tree(destination)
                 if source.content is None:
                     if source.source.is_file():
                         shutil.copy2(source.source, destination)
@@ -1115,10 +1217,9 @@ class Projector:
                 self._render_manifest(self._manifest_payload(plan)), encoding="utf-8"
             )
             manifest.chmod(0o644)
-            validate_physical(candidate)
             return _StagedTarget(state, stage, candidate, backup)
 
-        return run_with_cleanup(build, lambda: remove_physical(stage))
+        return run_with_cleanup(build, lambda: _discard_owned_tree(stage))
 
     @staticmethod
     def _create_parent(staged: _StagedTarget) -> None:
@@ -1140,7 +1241,7 @@ class Projector:
 
     def _publish(self, staged: _StagedTarget) -> None:
         root = staged.state.plan.root
-        current = self.catalog.physical_tree_contract(root) if root.exists() else None
+        current = _tree_snapshot(root) if root.exists() else None
         if current != staged.state.snapshot:
             raise RuntimeError(f"projection changed after preflight: {root}")
         self._create_parent(staged)
@@ -1158,7 +1259,7 @@ class Projector:
     def _rollback(self, staged: _StagedTarget) -> None:
         root = staged.state.plan.root
         if staged.installed:
-            remove_physical(root)
+            _discard_owned_tree(root)
             staged.installed = False
         if staged.backup.exists():
             staged.backup.replace(root)
@@ -1178,7 +1279,9 @@ class Projector:
         return PreparedPublication(
             lambda: self._publish(staged),
             lambda: self._rollback(staged),
-            lambda: remove_physical(staged.stage) if staged.stage.exists() else None,
+            lambda: (
+                _discard_owned_tree(staged.stage) if staged.stage.exists() else None
+            ),
         )
 
     def publications(self, project: Path | None = None) -> tuple[Publication, ...]:

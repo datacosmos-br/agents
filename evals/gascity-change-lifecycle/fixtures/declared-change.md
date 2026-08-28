@@ -5,6 +5,8 @@
 - Agent: `reviewer`
 - Formula: `docs-audit`
 - Work identifier: `work-217`
+- Work store: `file`
+- Beads selected: no
 - Repository integration branch: `dev`
 - Runtime state: suspended
 

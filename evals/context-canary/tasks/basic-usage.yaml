@@ -17,3 +17,7 @@ expected:
   - ctx thin
   - durable checkpoint
   - re-read project instructions
+  - approved plan
+  output_not_contains:
+  - substitute tracker
+  - replacement ledger

@@ -3,10 +3,13 @@ name: Adopt compatible parallel work
 description: Preserve and integrate compatible changes from another lane.
 tags: [concurrent-work, integration-adoption, fix-forward, happy-path]
 inputs:
-  prompt: Handle concurrent work and anti-rollback coordination. The authorized
-    worktree already contains dirty validation with unknown provenance while this
-    integration lane changed the projection owner. Adopt the complete current
-    state, reconcile both contributions, and land without discarding either one.
+  prompt: Handle concurrent work and anti-rollback coordination. Agent A owns a
+    dirty CI workflow and test; Agent B can work in parallel on disjoint skills
+    and docs, but later needs the same workflow. An unmanifested provider output
+    outside the authorized repository also has semantic changes and no adoption
+    rule. Define sync checkpoints, adopt both repository contributions through
+    the integration lane, and distinguish what must be preserved for operator
+    adjudication instead of promoted to canonical input.
 expected:
-  output_contains: [current, preserve, adopt, integration, combined, revalidate]
-  output_not_contains: [stash, reset, force-push, discard, rollback code]
+  output_contains: [ownership, reread, current, preserve, adopt, integration, combined, revalidate, Git, manifest, operator]
+  output_not_contains: [stash, reset, force-push, discard, rollback code, promote external, substitute tracker, replacement ledger]

@@ -43,24 +43,45 @@ def test_eval_workflow_covers_integration_push_and_pull_requests() -> None:
     )
     events = workflow["on"]
     required_paths = {
+        ".agents/**",
+        ".github/workflows/**",
+        ".mise.toml",
         ".waza.yaml",
         "AGENTS.md",
         "CLAUDE.md",
+        "README.md",
         "agents/**",
+        "bin/**",
         "commands/**",
+        "config/**",
         "docs/**",
         "evals/**",
+        "Makefile",
+        "pyproject.toml",
+        "rules/**",
         "skills/**",
+        "skills.lock.json",
         "src/**",
         "tests/**",
-        "config/**",
-        "Makefile",
+        "uv.lock",
     }
 
     assert events["push"]["branches"] == ["dev"]
     assert set(events["pull_request"]["branches"]) == {"dev", "main"}
     assert required_paths <= set(events["push"]["paths"])
     assert required_paths <= set(events["pull_request"]["paths"])
+
+
+def test_eval_workflow_materializes_derived_shell_storage() -> None:
+    workflow = yaml.load(
+        (ROOT / ".github" / "workflows" / "eval.yml").read_text(encoding="utf-8"),
+        Loader=yaml.BaseLoader,
+    )
+    commands = tuple(
+        step.get("run") for step in workflow["jobs"]["eval"]["steps"] if "run" in step
+    )
+
+    assert 'install -d -m 700 "$HOME/tmp"' in commands
 
 
 def test_makefile_exposes_no_cross_repository_mcp_target() -> None:

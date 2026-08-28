@@ -12,6 +12,12 @@ continuously adopts compatible landed work from other lanes so the combined
 result, not an isolated lane snapshot, is the delivery target. “Mine”, “theirs”,
 “legacy”, and “pre-existing” never exempt a current defect from fix-forward.
 
+Authorized repository work is not the same as an unmanifested provider output,
+generated destination, external file, or ownership-ambiguous object. Preserve
+such an object, but never promote it to canonical input merely because it exists.
+Before any mass adoption or replacement, apply the divergent-object adjudication
+in [preflight before effects](../runtime/preflight-before-effects.md).
+
 Never stash, reset, restore, revert, rebase, force-push, roll back code or
 history, or replace a shared file to remove work. Correct defects forward at
 their canonical owner. Transaction rollback may undo only effects created by

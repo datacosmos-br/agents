@@ -18,3 +18,8 @@ sufficient.
   the declared authoritative revision or release. An editable checkout, local
   cache, generated copy, or stale environment is not evidence of remote/runtime
   behavior until identity is verified.
+- Use the newest released version of every required tool. Every diagnostic it
+  emits is blocking. A cap, downgrade, substitution, suppression, compatibility
+  classification, or false-positive classification requires prior operator
+  discussion, reproducible evidence, and explicit authorization; without all
+  three, correct the owner and rerun that released version.

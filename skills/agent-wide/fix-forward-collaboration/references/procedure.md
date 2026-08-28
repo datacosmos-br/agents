@@ -1,0 +1,40 @@
+# Concurrent sync procedure
+
+## Establish ownership
+
+Before effects, load current repository law, the approved plan, the
+authorized worktree, branch, PR, and every mutable target. Declare bounded file
+ownership in the active collaboration channel. When tracker/orchestration is
+explicitly suspended and another harness has no shared channel, coordinate only
+through existing authorized Git/PR/CI surfaces; create no substitute tracker,
+ledger, or workspace.
+
+Separate current work in the authorized repository from unmanifested provider
+outputs, generated destinations, external files, and ownership-ambiguous
+objects. Preserve both, but adopt only the repository work. A divergent external
+object follows the canonical divergent-object preflight and cannot become a
+source or be replaced until an approved class rule or operator adjudication
+resolves it.
+
+Choose disjoint files for parallel work. If two tasks need one file, one actor
+owns it until a material checkpoint; the next actor rereads and adopts that
+checkpoint before editing. Ownership coordinates writes but never makes current
+content disposable.
+
+## Sync cycle
+
+At start, before each shared-file edit, after each material publication or gate,
+and before commit, push, review resolution, merge, or handoff:
+
+1. reread the approved plan, target files, worktree, integration base, and PR;
+2. attribute every new intent and preserve all compatible contributions;
+3. update only the canonical owner and its consumers;
+4. integrate through the declared non-destructive lane flow;
+5. rerun every gate invalidated by the combined state; and
+6. publish one current checkpoint with owner, evidence, first red result, and
+   next action.
+
+The integration lane owns the combined runtime, gates, review, landing, and
+post-merge proof. Agent-local green never advances the phase cursor. Only two
+evidenced current intentions that cannot coexist under active authority stop
+before effects for one operator decision.

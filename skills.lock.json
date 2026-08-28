@@ -93,7 +93,7 @@
     {
       "category": "agent-wide",
       "class": "router",
-      "digest": "dffac547bfa8486e020cdd9b19e0094632706dd907d4c7967524106da1d59a2e",
+      "digest": "e509af4f19fd797656e57819842603ad181b4dc7e14b1e4bf0f51d16a2b48853",
       "distributions": [
         "personal"
       ],
@@ -202,7 +202,7 @@
     {
       "category": "tool",
       "class": "router",
-      "digest": "55a844561bde4895a2666e3acac146d428f56a0d7e54453f79d712a6d7d4c36d",
+      "digest": "374ba5333f46373488811060a060984fe2b7b3b58da10c871acf535808c09ff5",
       "distributions": [
         "agent-capability:tool:beads"
       ],
@@ -268,7 +268,7 @@
     {
       "category": "tool",
       "class": "router",
-      "digest": "ef58f537c70b22cd16b94ebeef1e64c8d7f00cab4a1a4c14801d2710033910b6",
+      "digest": "737dfe5d99c6beb93089f5abde7e7d788694473cfc06e248c9bb1e4cfc18d08a",
       "distributions": [
         "agent-capability:tool:beads"
       ],
@@ -409,7 +409,7 @@
     {
       "category": "project-wide",
       "class": "router",
-      "digest": "ecbe53f8fbbc6d2b0ad0284d9758954029b82acd080a94334d38f613ad6effe0",
+      "digest": "fdc6ab025184274e8a6df27dec7c308ece4d4be4a2e16d360d186ebbcb80a770",
       "distributions": [
         "project-generic"
       ],
@@ -461,7 +461,7 @@
     {
       "category": "agent-wide",
       "class": "on_demand",
-      "digest": "e0198fca6880323bbc8563dab97db6bab63922cbff07a5b2aaa3d2e97da33539",
+      "digest": "62a68f07c0e552757854bfeb6b982fae2a2d83cb3cde23d62af0f60deb5486fd",
       "distributions": [
         "personal"
       ],
@@ -925,7 +925,7 @@
     {
       "category": "agent-wide",
       "class": "router",
-      "digest": "1aa308ef207ac6e9d6f9f742642ae9ea9fb1496f9f73578b1594837b916bf0a7",
+      "digest": "d08ba67b4b234d7ec2a3cd3b7ecb6f5f322e3645f74cf413af474ea3013850d7",
       "distributions": [
         "personal"
       ],
@@ -1012,7 +1012,7 @@
     {
       "category": "tool",
       "class": "on_demand",
-      "digest": "9c3b4cb021de89469674d21dc1e4d7b8d0f7997b9f5266ed43071384f4b480df",
+      "digest": "5a9dc8a53910aacd6b469e0c72dadfebe2931c01fba5f19c58f0d58b58dcf239",
       "distributions": [
         "agent-capability:tool:gascity"
       ],
@@ -1045,7 +1045,7 @@
     {
       "category": "tool",
       "class": "on_demand",
-      "digest": "c17f7e3e5912fb7fa4ebf0b1084bce1c1ec89b2bcd058e8a45d1a4d5f8957c7c",
+      "digest": "8c5d9b8a9ec9a3ce12af6afc3be97b44a0166163b76fef460eec448119262c80",
       "distributions": [
         "agent-capability:tool:gascity"
       ],
@@ -1250,7 +1250,7 @@
     {
       "category": "agent-wide",
       "class": "router",
-      "digest": "009964c64ea868b680a5077c60235d80c1265ca1d5970fc01f87d20d95d3f41d",
+      "digest": "11d586a3b2c70a17d12e45d53abb06c28fc554015206d5fdc7d52d6a9b126260",
       "distributions": [
         "personal"
       ],
@@ -1435,7 +1435,7 @@
     {
       "category": "agent-wide",
       "class": "router",
-      "digest": "dd23cbd060223ef3d87427f919d3afba4c391ede32d20918f9206468ba34953d",
+      "digest": "1a16f32499f8f32f6454b768e947cc5e375e9928628c3af4947c30462c9dca88",
       "distributions": [
         "personal"
       ],
@@ -1851,7 +1851,7 @@
     {
       "category": "project-wide",
       "class": "on_demand",
-      "digest": "5d03520d67c2d6d226f694cd5ed992b78732ef255b8edf6847fbbd15561feca5",
+      "digest": "cf1983815e4b81fbd530ffb44e1d47ced6c048921b1b43d7b40b6e94efae09ea",
       "distributions": [
         "project-generic"
       ],
@@ -1908,7 +1908,7 @@
     {
       "category": "agent-wide",
       "class": "on_demand",
-      "digest": "b9730e9880f7206253c2f9d97e509164a5f5c3de0dcee8e7a870c462a56454c1",
+      "digest": "ed7819bc13f3469b4e6f16edb7b18a0110c8ae397f1b7699d7150e371005c7a8",
       "distributions": [
         "personal"
       ],
@@ -1963,7 +1963,7 @@
     {
       "category": "agent-wide",
       "class": "router",
-      "digest": "0e8f7e9b6aac9caa25aaf220caea89cc9bdf5d65228d45ecfd615cf5f48b0554",
+      "digest": "aa51bfa72fb48807b1501024cc7495ee86e20845cc98ddb97f02d06a411ce593",
       "distributions": [
         "personal"
       ],
@@ -2152,7 +2152,7 @@
     {
       "category": "agent-wide",
       "class": "router",
-      "digest": "10494eba425e3e2f3e1cb1bfe1ff97bbc851d515b3ff892acaff1cdb6151b6db",
+      "digest": "b3c6cb4d0ad55f0d4b43873e80cebb19bdefe2bec166dfe97f8925610bde261b",
       "distributions": [
         "personal"
       ],

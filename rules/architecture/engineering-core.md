@@ -4,31 +4,34 @@ description: Apply the mandatory engineering decision and delivery sequence.
 
 # Engineering core
 
-For every implementation, use this order:
+For every implementation:
 
-1. Search the repository, declared owners, dependencies, and current canonical
-   documentation before designing anything.
-2. Remove scope with no current requirement or consumer (YAGNI).
-3. Elect one writable authority and classify every other copy as a generated
-   projection (SSOT).
-4. Apply SOLID only where a real responsibility, substitution, interface, or
-   dependency boundary is under change.
-5. Implement through the owner and simplify inline without weakening behavior.
-6. Remove proven semantic duplication and god components, then recheck YAGNI,
-   SSOT, and SOLID.
-7. Simplify once more, exercise real runtime behavior, run every native gate,
-   and complete the approved landing cycle before changing phase.
+1. Research repository owners, dependencies, and canonical documentation.
+2. Remove scope without a current requirement or consumer (YAGNI).
+3. Elect one writable authority; every other copy is a generated projection
+   (SSOT).
+4. Apply SOLID only to a responsibility or dependency boundary under change.
+5. Implement through the owner and simplify without weakening behavior.
+6. Remove duplication and god components; recheck YAGNI, SSOT, SOLID.
+7. Exercise runtime behavior, run every native gate, and complete the approved
+   landing cycle before changing phase.
 
-Hardcoded environment facts, caught or normalized failure, hidden failover,
-retry, undeclared or error-triggered defaults, compatibility, partial execution,
-keyring, and success without decisive evidence are runtime-critical defects.
-Canonical calculated defaults remain at their typed owner and are omitted from
-consumers. The first exception escapes the owning CLI with its raw traceback and
-causal chain.
+At a cross-boundary failure, prove the producer contract and output. Fix its
+owner when invalid or the receiver when it conforms. Never alter a correct
+adjacent owner for an invalid consumer; symptom workarounds are defects.
 
-Compose this sequence with [generalized ownership](generalized-abstraction.md),
+Hardcodes, normalized failure, failover, retry, fallback, compatibility,
+partial execution, keyring, and unevidenced success are defects. Typed owners
+keep defaults. The first exception escapes its CLI with traceback and cause.
+
+Git, runtime, build, and tests are baseline. Auxiliary tracking is a capability.
+Auxiliary capabilities apply only when authorized and selected; installation
+never selects. Do not load, probe, or gate dormant capabilities. Invalid
+selected authorization, configuration, readiness, or result fails without
+fallback. Require only non-derivable values.
+
+Compose with [generalized ownership](generalized-abstraction.md),
 [strict execution](../runtime/strict-execution.md),
 [runtime evidence](../workflow/runtime-is-reality.md),
 [storage isolation](../storage.md),
-[security closure](../security/scanner-closure.md), and
-[landing discipline](../git/gitflow-branch-pr.md).
+[security closure](../security/scanner-closure.md).

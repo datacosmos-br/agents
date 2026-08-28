@@ -7,4 +7,4 @@ inputs:
   files:
   - path: city.toml
 expected:
-  output_contains: [atlas, ledger, managed-workspaces/ledger, suspended]
+  output_contains: [atlas, ledger, managed-workspaces/ledger, suspended, without Beads]

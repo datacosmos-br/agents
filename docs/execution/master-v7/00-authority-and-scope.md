@@ -34,7 +34,8 @@ suspended runtimes.
   current process home and physical Git project from which the operator invokes
   it.
 - Beads, Dolt, Gas City, Gas Town, and alternate tracker runtimes while they are
-  suspended. Use the repository manual ledger for execution state.
+  suspended. Create no substitute tracker or ledger; preserve evidence only in
+  separately authorized Git/PR/CI surfaces.
 - Promotion beyond the configured integration branch, package publication,
   release, tag, or unrelated credential changes.
 - Physical owner relocation from `~/.agents` to `~/agents`; it is a separately

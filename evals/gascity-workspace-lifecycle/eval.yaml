@@ -21,7 +21,8 @@ graders:
       Grade the gascity-workspace-lifecycle response. Pass only when it derives
       the city, rig, pinned Pack V2 import, agent, formula, provider, and physical
       workspace from the supplied city.toml while keeping the suspended runtime
-      entirely static with zero workspace effects. Reject invented commands,
+      entirely static with zero workspace effects. Beads requirements apply only
+      when the project explicitly selects Beads. Reject invented commands,
       active dispatch, loose clones, worktrees, temporary or cross-repository
       paths, symlinks, provider fallback, or mechanical command translation.
 - type: behavior

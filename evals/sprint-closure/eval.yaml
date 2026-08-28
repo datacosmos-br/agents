@@ -22,7 +22,8 @@ graders:
       category as binary, cites the merged integration SHA and real runtime, states
       the PR and tracker closure, reports net LOC, and declares closure only because
       the whole residue set is empty. Reject branch-only green, deferred cleanup,
-      open work, report-and-abandon behavior, or a closure claim without
+      open work, split implementation/phase success claims, report-and-abandon
+      behavior, or a closure claim without
       integration evidence. Every actionable open row must be corrected and
       revalidated inside the same increment before another increment begins.
 - type: behavior

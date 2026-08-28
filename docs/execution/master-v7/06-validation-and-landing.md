@@ -7,9 +7,9 @@ directory, exit code, decisive output, and affected scope. Do not print full
 environments, secret values, hashes/fingerprints, raw credential records, or
 scanner payloads containing secrets.
 
-During tracker suspension, the manual execution ledger owns current state;
-authorized Git commits, PRs, reviews, required checks, and CI own validation and
-landing evidence. This documentation package is a specification, not the ledger.
+During tracker suspension, create no substitute tracker or ledger. Authorized
+Git commits, PRs, reviews, required checks, and CI own validation and landing
+evidence. This documentation package is a specification, not a state store.
 
 ## Runtime before broad gates
 
@@ -80,12 +80,13 @@ exact `aihub-primary` and a non-empty valid `CLIPROXY_API_KEY` in the current
 process environment; it never reads a credential store or selects another
 model.
 
-`agentsctl sync` derives the target physical Git root from cwd and the personal
-target from the current process home. It applies every supported personal and
-project surface, including static instructions and native lifecycle hooks, as
-one transaction. Its only optional activation input is the strict project-owned
-`.agents/projection.json`; it accepts no CLI or environment target selection and
-has no personal mode.
+`agentsctl sync` derives the physical Git root from cwd and the personal target
+from the current process home. Invocation selects every supported personal
+surface. A physical project-owned `.agents/projection.json` additionally
+selects tracked project surfaces; absence writes nothing to the project. All
+selected static instructions and native lifecycle hooks publish as one
+transaction. The verb accepts no CLI or environment target selection and has no
+personal mode.
 
 Make remains development support and gate composition. Its required surface is
 discovered with `make help` and covers:
@@ -120,10 +121,10 @@ first; a required rewrite is reviewed as an explicit source change.
 |---|---|
 | Documentation | One active master v7 package; links resolve; old plan/type instructions absent. |
 | Discovery | Recursive source count/mapping; unknown path/tag/type fails; no name registry consulted. |
-| Skills | 76 mapped sources; BPE budgets; short descriptions; semantic scenarios; no command syntax. |
+| Skills | 78 mapped sources: 76 migrated plus `plan-focus-recovery` and `fix-forward-collaboration`; BPE budgets; short descriptions; semantic scenarios; no command syntax. |
 | Commands | Seven flat sources; complete provider render; independent size gate; no skill conversion. |
 | Agents/rules | Distribution paths and tags agree; universal rules compose once; no model declaration. |
-| Projection | Atomic personal/project physical copies; ownership-safe cleanup; provider-native instructions/hooks; second apply changes nothing. |
+| Projection | Atomic personal plus authorized-project physical copies; unselected project writes nothing; ownership-safe cleanup; provider-native instructions/hooks; second apply changes nothing. |
 | Temp/storage | Exact manifest; physical registered checkout; `/tmp`, overlap, residue, symlink, special-file, and unknown deletion rejection. |
 | Credentials | Process environment only; required values fail immediately; no keyring code, 401, or secret output. |
 | Security | Deterministic tracked manifest inventory; every applicable scanner exits zero. |
@@ -176,5 +177,5 @@ to another task or repository.
 
 A phase is `DONE` only after its approved PR is merged, post-merge runtime is
 green, and its canonical Bead is closed with evidence. While tracker runtime is
-suspended, record state in the manual execution ledger and stop at
-`LANDED_VERIFIED`; the ledger cannot substitute for tracker closure.
+suspended, preserve evidence only in separately authorized Git/PR/CI and stop at
+`LANDED_VERIFIED`; no substitute can satisfy tracker closure.

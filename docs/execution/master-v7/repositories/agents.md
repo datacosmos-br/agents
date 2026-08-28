@@ -51,10 +51,11 @@ generated index/manifest fixed point.
 
 ### A2 — Skills and commands
 
-Perform the exact 85-to-76 skill migration and one-to-seven command migration.
-Apply renames, removals, consumer rewiring, description/tag normalization, Waza
-scenarios, BPE counting, and contradiction cleanup together. Add no capability
-from outside this repository.
+Preserve the completed 85-to-76 skill migration and one-to-seven command
+migration, then include the two authorized post-migration governance additions
+for exactly 78 current skills. Apply renames, removals, consumer rewiring,
+description/tag normalization, Waza scenarios, BPE counting, and contradiction
+cleanup together. Add no capability from outside this repository.
 
 ### A3 — Agents, rules, and adapters
 

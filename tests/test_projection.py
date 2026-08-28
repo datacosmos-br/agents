@@ -129,10 +129,24 @@ def _source(
     return root, Projector(Catalog(root), load_projection_config(root), (), (), ())
 
 
-def _project(tmp_path: Path) -> Path:
+def _project(tmp_path: Path, *, authorized: bool = True) -> Path:
     project = tmp_path / "project"
     project.mkdir()
     (project / ".git").mkdir()
+    if authorized:
+        selection = project / ".agents" / "projection.json"
+        selection.parent.mkdir()
+        selection.write_text(
+            json.dumps(
+                {
+                    "version": 1,
+                    "agents": [],
+                    "opt_ins": [],
+                    "selected_tags": [],
+                }
+            ),
+            encoding="utf-8",
+        )
     return project
 
 
@@ -190,6 +204,19 @@ def test_apply_derives_nested_invocation_project_and_reaches_fixed_point(
     assert _manifest(target)["destination"] == ".agents/skills"
 
 
+def test_absent_project_authorization_is_a_non_target(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _, projector = _source(tmp_path)
+    project = _project(tmp_path, authorized=False)
+    monkeypatch.chdir(project)
+
+    projector.apply()
+    projector.check()
+
+    assert not (project / ".agents").exists()
+
+
 def test_foreign_collision_fails_before_any_publication(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
@@ -207,12 +234,139 @@ def test_foreign_collision_fails_before_any_publication(
     marker.write_text("keep", encoding="utf-8")
     monkeypatch.chdir(project)
 
-    with pytest.raises(ValueError, match="foreign projection collision"):
+    with pytest.raises(ValueError, match="unadjudicated projection divergence"):
         projector.apply()
 
     assert marker.read_text(encoding="utf-8") == "keep"
     assert not (project / ".agents" / "skills").exists()
     assert not tuple(project.rglob(".agents-stage.*"))
+
+
+def test_divergent_unmanifested_agent_requires_adjudication_before_publication(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    root = tmp_path / "source"
+    root.mkdir()
+    _skill(root, "project-guidance")
+    _agent_source(root)
+    _config(
+        root,
+        {
+            ("codex", "skills"): ".agents/skills",
+            ("claude", "agents"): ".claude/agents",
+        },
+    )
+    projector = Projector(
+        Catalog(root),
+        load_projection_config(root),
+        (),
+        audit_agent_profiles(root),
+        (),
+    )
+    project = _project(tmp_path)
+    selection = project / ".agents" / "projection.json"
+    selection.write_text(
+        json.dumps(
+            {
+                "version": 1,
+                "agents": ["reviewer"],
+                "opt_ins": [],
+                "selected_tags": [],
+            }
+        ),
+        encoding="utf-8",
+    )
+    collision = project / ".claude" / "agents" / "reviewer.md"
+    collision.parent.mkdir(parents=True)
+    foreign = (
+        "---\n"
+        "name: reviewer\n"
+        "description: Review project changes.\n"
+        "tools: [Read]\n"
+        "model: opus\n"
+        "---\n\n"
+        "## Prompt Defense Baseline\n\n"
+        "Locally authored semantic requirement.\n"
+    )
+    collision.write_text(foreign, encoding="utf-8")
+    monkeypatch.chdir(project)
+
+    with pytest.raises(
+        ValueError, match="unadjudicated projection divergence"
+    ) as raised:
+        projector.apply()
+
+    message = str(raised.value)
+    assert f"destination={collision}" in message
+    assert "source_type=agent" in message
+    assert "operator decision required before replacement" in message
+    assert collision.read_text(encoding="utf-8") == foreign
+    assert not (collision.parent / Projector.MANIFEST).exists()
+    assert not (project / ".agents" / "skills").exists()
+    assert not tuple(project.rglob(".agents-stage.*"))
+
+
+def test_foreign_symlink_is_preserved_and_does_not_block_projection(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _, projector = _source(tmp_path)
+    project = _project(tmp_path)
+    target = project / ".agents" / "skills"
+    target.mkdir(parents=True)
+    outside = project / "foreign-source"
+    outside.mkdir()
+    link = target / "foreign-link"
+    link.symlink_to(outside, target_is_directory=True)
+    original = link.readlink()
+    monkeypatch.chdir(project)
+
+    projector.apply()
+    projector.check()
+
+    assert link.is_symlink()
+    assert link.readlink() == original
+    assert (target / "project-guidance" / "SKILL.md").is_file()
+
+
+def test_unmanifested_source_symlink_requires_adjudication(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    source, projector = _source(tmp_path)
+    project = _project(tmp_path)
+    target = project / ".agents" / "skills"
+    target.mkdir(parents=True)
+    retired = source / "skills" / "project-guidance"
+    managed = target / "project-guidance"
+    managed.symlink_to(retired, target_is_directory=True)
+    assert managed.is_symlink()
+    assert not managed.exists()
+    monkeypatch.chdir(project)
+
+    with pytest.raises(ValueError, match="unadjudicated projection divergence"):
+        projector.apply()
+
+    assert managed.is_symlink()
+    assert managed.readlink() == retired
+    assert not (target / Projector.MANIFEST).exists()
+
+
+def test_exact_orphaned_projection_is_adopted_by_digest(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _, projector = _source(tmp_path)
+    project = _project(tmp_path)
+    monkeypatch.chdir(project)
+    projector.apply()
+    target = project / ".agents" / "skills"
+    managed = target / "project-guidance"
+    before = managed.stat().st_mtime_ns
+    (target / Projector.MANIFEST).unlink()
+
+    projector.apply()
+    projector.check()
+
+    assert managed.stat().st_mtime_ns == before
+    assert (target / Projector.MANIFEST).is_file()
 
 
 def test_managed_source_update_is_reconciled_but_local_edit_is_rejected(
@@ -263,6 +417,24 @@ def test_invalid_manifest_and_destination_symlink_are_never_rewritten(
     assert target.is_symlink()
 
 
+def test_removed_manifest_schema_is_rejected_without_rewrite(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _, projector = _source(tmp_path)
+    project = _project(tmp_path)
+    target = project / ".agents" / "skills"
+    target.mkdir(parents=True)
+    manifest = target / Projector.MANIFEST
+    removed = json.dumps({"managed": {}, "version": 2})
+    manifest.write_text(removed, encoding="utf-8")
+    monkeypatch.chdir(project)
+
+    with pytest.raises(ValueError, match="fields must equal"):
+        projector.apply()
+
+    assert manifest.read_text(encoding="utf-8") == removed
+
+
 def test_absolute_manifest_identity_is_rejected_without_rewrite(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
@@ -307,7 +479,7 @@ def test_project_selection_activates_only_declared_project_opt_in(
     projector = Projector(Catalog(root), load_projection_config(root), (), (), ())
     project = _project(tmp_path)
     selection = project / ".agents" / "projection.json"
-    selection.parent.mkdir()
+    selection.parent.mkdir(exist_ok=True)
     selection.write_text(
         json.dumps(
             {
@@ -347,7 +519,7 @@ def test_project_selection_projects_copilot_agent_with_native_identity(
     )
     project = _project(tmp_path)
     selection = project / ".agents" / "projection.json"
-    selection.parent.mkdir()
+    selection.parent.mkdir(exist_ok=True)
     selection.write_text(
         json.dumps(
             {
@@ -377,7 +549,7 @@ def test_unknown_selection_fails_without_creating_projection(
     _, projector = _source(tmp_path)
     project = _project(tmp_path)
     selection = project / ".agents" / "projection.json"
-    selection.parent.mkdir()
+    selection.parent.mkdir(exist_ok=True)
     selection.write_text(
         json.dumps(
             {

@@ -21,8 +21,10 @@ graders:
       Grade the skill-governance response. Pass only when it proves the capability is
       absent from the supplied inventory, proposes one kebab-case router with a
       short keyword description, places detailed procedure in a local reference,
-      and defines activation plus non-activation boundaries and validation. Reject
-      duplicate skills, prose descriptions, copied templates, or external paths.
+      defines activation plus non-activation boundaries and validation, and
+      migrates every current count/map/fixture/lock consumer atomically while
+      preserving historical evidence. Reject duplicate skills, count drift,
+      documentation follow-ups, prose descriptions, copied templates, or external paths.
 - type: behavior
   name: bounded_execution
   config: {max_duration_ms: 240000}

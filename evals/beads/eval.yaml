@@ -19,9 +19,11 @@ graders:
   config:
     prompt: |-
       Grade the beads response. Pass only when it honors explicit runtime
-      suspension, preserves issue identity and material merge evidence in the
-      manual ledger without invoking or replacing the tracker, and keeps the
-      phase open until the canonical issue can be closed after restoration.
+      suspension, preserves issue identity and material merge evidence only in
+      separately authorized Git, PR, review, check, and CI surfaces without
+      invoking or replacing the tracker, creates no substitute state store, and
+      keeps the phase open until the
+      canonical issue can be closed after restoration.
       Reject alternate databases, invented commands or routing, retries,
       partial tracker state, keyring, fallback, or fake closure.
 - type: behavior

@@ -24,7 +24,12 @@ graders:
       competing or default-on-error value, repeated canonical default input,
       deprecation window, deferred cleanup, partial write, or normalized failure.
       Require calculated defaults to resolve once at the typed owner, complete
-      preflight, first-cause propagation, zero effects on invalid input, and zero residue.
+      preflight, first-cause propagation, zero effects on invalid input, and zero
+      residue. When a mass population contains an unmanifested, semantically
+      divergent, or ownership-ambiguous object without an approved class rule,
+      require preservation in place plus an operator decision packet with
+      provenance, normalized delta, consumers, impact, disposition, recovery,
+      and fixed-point proof. Reject authorization by sampling or superficial shape.
 - type: behavior
   name: bounded_execution
   config: {max_duration_ms: 240000}

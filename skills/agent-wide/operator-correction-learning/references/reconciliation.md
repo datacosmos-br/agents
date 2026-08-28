@@ -16,10 +16,10 @@ tracker action:
   through its documented interface before recording or querying evidence. Never
   select an endpoint, database, prefix, or substitute from inference.
 - **Explicitly suspended:** do not invoke the tracker or its runtime and do not
-  create an alternate database. Update the repository-declared manual ledger
-  after each material state change and preserve validation evidence in the
-  canonical Git commit, PR, review, and CI surfaces. Canonical tracker state
-  remains unresolved, so do not claim tracker closure or phase completion.
+  create an alternate database, tracker, or ledger. Preserve validation evidence
+  only in separately authorized canonical Git commit, PR, review, check, and CI
+  surfaces. Canonical tracker state remains unresolved, so do not claim tracker
+  closure or phase completion.
 
 When canonical tracking is explicitly restored, reconcile the landed Git/PR
 history through its owner and verify the resulting tracker state. Restoration
@@ -28,22 +28,31 @@ must not create a dual-tracking period.
 ## Reconcile
 
 1. Identify the correction, current mode, scope, incident, and intended owners.
+   For a cross-boundary defect, prove the producing owner's declared contract
+   and actual output first. A conforming producer is not a remediation target:
+   correct the invalid receiver. A nonconforming producer is corrected only at
+   its canonical owner. Never redirect the fix to a correct generator,
+   dependency, validator, test, facade, or adjacent layer because it is easier
+   to change than the causal owner.
 2. Resolve precedence. A newer operator rule replaces conflicting lower or older
    guidance. Two current operator rules that materially conflict require one
    precise question before mutation.
 3. Change canonical owners and every affected consumer as one atomic cutover,
-   not projections. Regenerate managed consumers through their owner. Preserve
+   not projections. When the incident exposes an agent decision failure, update
+   the owning skill procedure and one of its three semantic regression roles in
+   the same cutover. Regenerate managed consumers through their owner. Preserve
    decision history by superseding it explicitly.
 4. Remove every opposing active instruction in scope. Do not retain compatibility
-   notes, soften absolute language, or leave old and new behavior coexisting.
+   notes, soften absolute language, leave old and new behavior coexisting, or
+   preserve symptom-side accommodation of a defective receiver.
 5. Run owner-native document, skill, projection, and runtime gates. The first
    causal failure stops that invocation. Correct its owner and rerun every
    invalidated gate in the same reconciliation; never repeat unchanged,
    substitute a gate, publish partial evidence, or hand the red state off. Then
    repeat the contradiction search and require zero active opposites.
-6. Preserve command, working directory, exit code, decisive output, unresolved
-   boundary, and next action in the repository-declared manual ledger and
-   canonical Git/PR evidence when tracking is suspended.
+6. When tracking is suspended, create no replacement state store and preserve
+   command, working directory, exit code, decisive output, unresolved boundary,
+   and next action only in separately authorized canonical Git/PR/CI evidence.
 
 At each checkpoint, compare new operator corrections with changes since the prior
 checkpoint. An unreconciled correction pauses the affected feature work until

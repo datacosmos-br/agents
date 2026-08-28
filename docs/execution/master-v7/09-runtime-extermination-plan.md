@@ -60,11 +60,12 @@ Each verb runs its complete workflow over the canonical inventory. The CLI and
 orchestrators contain no catches. Make owns only development support and gate
 composition; all agent-domain behavior belongs to these verbs.
 
-`sync` is the complete personal/project projection workflow. It derives one
-physical Git root from cwd and the current process home, loads an optional
-strict project-owned selection, preflights every supported surface, and
-publishes directory, instruction, and lifecycle-hook artifacts atomically. It
-has no personal mode or hook subcommand.
+`sync` is the complete selected-projection workflow. It derives one physical Git
+root from cwd and the current process home. Invocation selects personal
+surfaces; the strict project-owned selection additionally authorizes project
+surfaces. It preflights every selected surface and publishes directory,
+instruction, and lifecycle-hook artifacts atomically. It has no personal mode
+or hook subcommand.
 
 ## Enforcement and landing
 
@@ -78,8 +79,8 @@ Every mutating workflow validates all sources, inputs, variables, destinations,
 ownership, collisions, and candidates before its first effect. Publication is
 atomic; rollback failure is attached to the original publication failure.
 
-Update the manual ledger after every material state change and publish a WIP
-commit after every coherent unit. Integrate `origin/dev` only with
+When Git is authorized, publish a WIP commit after every coherent unit. While
+tracking is suspended, create no substitute tracker or ledger. Integrate `origin/dev` only with
 `git merge --no-ff`, revalidate the integrated SHA, and land by independently
 approved merge commit. Never rebase, squash, force-push, destructively reset, or
 stash. Beads, Dolt, Gas City, and Gas Town remain suspended. The maximum state is

@@ -85,7 +85,8 @@ Apply the 4-tier system to each message. Priority order: skip → info_only → 
 For each action_required message:
 
 1. Read `private/relationships.md` for sender context
-2. Read `SOUL.md` for tone rules
+2. Load the operator-configured tone owner. If none is configured, ask before
+   inferring the operator's tone or signature.
 3. Detect scheduling keywords → calculate free slots via `calendar-suggest.js`
 4. Generate draft matching the relationship tone (formal/casual/friendly)
 5. Present with `[Send] [Edit] [Skip]` options

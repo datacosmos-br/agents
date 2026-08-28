@@ -23,14 +23,15 @@ graders:
       runtime before gates, complete native gates, integration update, approved
       merged PR, runtime on the merged integration SHA, zero residue, and
       canonical tracker closure. When tracking is suspended, require a loud final
-      blocker and an updated repository manual ledger. Reject partial completion,
+      unresolved boundary, no substitute state store, and separately authorized
+      Git/PR/CI evidence. Reject split claims such
+      as “implementation complete” plus “phase not done”, partial completion,
       test-only runtime claims, deferred validation, warnings in place of failure,
       report-and-abandon behavior, or silent task switching. Red checks and
       actionable review findings must be corrected and revalidated inside the
       same phase; missing approval stays active until solicited or escalated after
       all technical work is green. On an incomplete contract, require the first
-      missing prerequisite, zero phase-transition effects, and a manual-ledger
-      update when canonical tracking is suspended.
+      missing prerequisite and zero phase-transition or substitute-tracker effects.
 - type: behavior
   name: bounded_execution
   config: {max_duration_ms: 240000}

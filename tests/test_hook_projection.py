@@ -36,6 +36,22 @@ def _json(path: Path) -> dict[str, object]:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def _authorize(project: Path) -> None:
+    selection = project / ".agents" / "projection.json"
+    selection.parent.mkdir()
+    selection.write_text(
+        json.dumps(
+            {
+                "version": 1,
+                "agents": [],
+                "opt_ins": [],
+                "selected_tags": [],
+            }
+        ),
+        encoding="utf-8",
+    )
+
+
 def test_hook_projection_preserves_foreign_content_and_reaches_fixed_point(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
@@ -44,6 +60,7 @@ def test_hook_projection_preserves_foreign_content_and_reaches_fixed_point(
     project = tmp_path / "project"
     home.mkdir()
     project.mkdir()
+    _authorize(project)
     monkeypatch.setenv("HOME", str(home))
     claude = project / ".claude" / "settings.json"
     claude.parent.mkdir()
@@ -54,14 +71,6 @@ def test_hook_projection_preserves_foreign_content_and_reaches_fixed_point(
                 "hooks": {
                     "SessionStart": [
                         {"hooks": [{"type": "command", "command": "foreign"}]},
-                        {
-                            "hooks": [
-                                {
-                                    "type": "command",
-                                    "command": "bd codex-hook old",
-                                }
-                            ]
-                        },
                     ]
                 },
             }
@@ -83,10 +92,6 @@ def test_hook_projection_preserves_foreign_content_and_reaches_fixed_point(
     session_groups = rendered_claude["hooks"]["SessionStart"]  # type: ignore[index]
     assert any(
         group["hooks"][0].get("command") == "foreign" for group in session_groups
-    )
-    assert not any(
-        group["hooks"][0].get("command", "").startswith("bd codex-hook")
-        for group in session_groups
     )
     assert agents.read_text().startswith("# Existing project law\n")
     assert agents.read_text().count("AIHUB-GOVERNANCE-INSTRUCTIONS-BEGIN") == 1
@@ -110,6 +115,23 @@ def test_hook_projection_preserves_foreign_content_and_reaches_fixed_point(
     assert "event: async" not in plugin
 
 
+def test_absent_project_authorization_projects_personal_hooks_only(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    root = Path(__file__).resolve().parents[1]
+    home = tmp_path / "home"
+    project = tmp_path / "project"
+    home.mkdir()
+    project.mkdir()
+    monkeypatch.setenv("HOME", str(home))
+
+    _projector(root).apply(project)
+
+    assert (home / ".codex" / "hooks.json").is_file()
+    assert not (project / ".codex").exists()
+    assert not (project / ".claude").exists()
+
+
 def test_generated_hook_executes_and_malformed_input_fails_loudly(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
@@ -118,6 +140,7 @@ def test_generated_hook_executes_and_malformed_input_fails_loudly(
     project = tmp_path / "project"
     home.mkdir()
     project.mkdir()
+    _authorize(project)
     monkeypatch.setenv("HOME", str(home))
     projector = _projector(root)
     projector.apply(project)
@@ -153,6 +176,7 @@ def test_modified_managed_hook_and_instruction_region_are_rejected(
     project = tmp_path / "project"
     home.mkdir()
     project.mkdir()
+    _authorize(project)
     monkeypatch.setenv("HOME", str(home))
     projector = _projector(root)
     projector.apply(project)

@@ -24,6 +24,9 @@ test, lint, format, generation, security, or release commands.
    invocation, correct its canonical owner, and rerun the native target. Keep the
    same task active; request authority only when the required owner is materially
    outside the approved scope. Never substitute a raw command.
+6. Verify the project's version owner resolves every required tool to its newest
+   released version. Treat every resulting diagnostic as blocking and repair its
+   owner through the native workflow.
 
 ## Rules
 
@@ -32,4 +35,8 @@ test, lint, format, generation, security, or release commands.
   authority required by project law.
 - A warning, skip, empty report, or missing tool is red. Preserve its exact
   output, correct the owner, and rerun only the invalidated native target.
+- Never cap, downgrade, override, substitute, or suppress the newest released
+  tool version or classify its diagnostic as compatibility or false positive
+  without prior operator discussion, reproducible evidence, and explicit
+  authorization.
 - Later edits invalidate earlier gate evidence for their affected scope.

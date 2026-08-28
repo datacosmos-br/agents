@@ -32,10 +32,11 @@ loss of the contract.
 
 - **Any miss, counter discontinuity, or declared loss:**
   1. Stop trusting drift-prone chat state.
-  2. Validate the checkpoint owner and complete content, then publish one durable
-     checkpoint atomically (goal, decisions, files, verified evidence, next step).
-     Use the canonical tracker when available or the repository manual ledger
-     while tracking is explicitly suspended.
+  2. Validate the checkpoint owner and complete content. When the selected
+     canonical tracker is available, publish one durable checkpoint atomically
+     (goal, decisions, files, verified evidence, next step). While it is
+     explicitly suspended, publish no substitute tracker or ledger and re-anchor
+     from the approved plan, canonical files, and authorized Git/PR/CI evidence.
   3. Re-read project instructions + the checkpoint before continuing.
   4. Re-verify recent facts against canonical files and the declared tracker
      surface before acting on them.

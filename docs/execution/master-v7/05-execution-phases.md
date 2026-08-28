@@ -78,9 +78,10 @@ unknown or contradictory artifact fails loudly.
 8. Run skill and command semantic evals, token gates, contradiction search, and
    fixed-point checks.
 
-Exit: recursive discovery returns exactly the mapped 76 skills and seven
-commands from their canonical surfaces; counts result from the map, with no
-external addition.
+Exit: recursive discovery returns the 76 migrated skills plus the two explicitly
+authorized post-migration governance additions, for exactly 78 current skills,
+and seven commands from their canonical surfaces. Counts result from the map;
+no external addition is present.
 
 ## Phase 3 — Agents, rules, and provider adapters
 
@@ -138,8 +139,9 @@ every accepted defect has a regression test and global same-class search.
 ## Phase 5 — Projection, live model, and landing
 
 1. Invoke `agentsctl sync` from an isolated physical project, validate every
-   supported personal and project matrix cell plus provider-native lifecycle
-   configuration, then invoke it again and prove fixed point.
+   supported personal and authorized project matrix cell plus provider-native
+   lifecycle configuration, validate a project without authorization as a zero-
+   output non-target, then invoke unchanged cases again and prove fixed point.
 2. Run complete offline Waza, command, agent, rule, static, test, build,
    security, storage, and projection gates.
 3. Only then select exact `aihub-primary` through the single model owner and run

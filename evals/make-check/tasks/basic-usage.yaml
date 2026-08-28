@@ -6,8 +6,10 @@ inputs:
   prompt: Perform command discovery from the supplied Makefile, then select its
     declared native gates for project validation. For a change limited to
     src/widget.py, return the exact scoped lint-and-format command and the evidence
-    required for green; do not execute it or substitute a raw tool command.
+    required for green. The declared resolver has selected the newest released
+    formatter and its findings remain blocking; do not execute the command,
+    downgrade or override the version, or substitute a raw tool command.
   files:
   - path: Makefile
 expected:
-  output_contains: [make check, 'CHECK_GATES=lint,format', 'FILES=src/widget.py']
+  output_contains: [make check, 'CHECK_GATES=lint,format', 'FILES=src/widget.py', blocking]

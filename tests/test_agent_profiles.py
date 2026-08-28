@@ -256,3 +256,13 @@ def test_canonical_inventory_has_exactly_sixty_two_profiles() -> None:
     root = Path(__file__).resolve().parents[1]
 
     assert len(audit_agent_profiles(root)) == 62
+
+
+def test_chief_of_staff_uses_only_the_declared_tone_owner() -> None:
+    root = Path(__file__).resolve().parents[1]
+    body = (root / "agents" / "agent-wide" / "chief-of-staff.md").read_text(
+        encoding="utf-8"
+    )
+
+    assert "operator-configured tone owner" in body
+    assert "SOUL.md" not in body

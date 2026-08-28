@@ -1,5 +1,5 @@
 name: operator-correction-learning-eval
-description: Authority reconciliation with suspended-runtime manual tracking.
+description: Authority reconciliation with suspended-runtime evidence boundaries.
 skill: operator-correction-learning
 schemaVersion: '1.0'
 version: '1.0'
@@ -20,15 +20,18 @@ graders:
     prompt: |-
       Grade the operator-correction-learning response. Pass only when it records
       the exact correction, prohibited behavior, replacement, scope, incident,
-      owners, current suspended mode, and material state changes in the
-      repository manual ledger plus canonical Git, PR, review, and CI evidence;
+      owners, current suspended mode, and material state changes only in
+      separately authorized canonical Git, PR, review, check, and CI evidence;
+      proves the producing owner's contract and output before choosing a repair
+      owner; fixes a nonconforming producer at its owner or a defective receiver
+      at the receiver; never changes a correct adjacent layer as accommodation;
       updates canonical owners rather than projections; removes semantic
-      opposites; repeats contradiction search; and keeps canonical tracker
-      closure unavailable. A red correction gate must drive an owner fix and
-      fresh validation in the same reconciliation, never a report-and-abandon
-      handoff. Reject tracker/Gas City invocation, a stale or
-      missing manual ledger, inferred preferences, dual guidance, or a DONE
-      claim.
+      opposites; adds an owning-skill semantic regression when agent behavior
+      caused the incident; repeats contradiction search; and keeps canonical
+      tracker closure unavailable. A red correction gate must drive an owner fix
+      and fresh validation in the same reconciliation, never a report-and-abandon
+      handoff. Reject tracker/Gas City invocation, a substitute tracker or
+      ledger, inferred preferences, dual guidance, or a DONE claim.
 - type: behavior
   name: bounded_execution
   config:

@@ -2,11 +2,12 @@
 
 ## Exclusive objective
 
-Review every one of the 76 canonical skills and its Waza suite against the
-central extermination policies. This plan owns only `skills/**` and the
+Review every current canonical skill and its Waza suite against the central
+extermination policies. The original audit covered 76 migrated skills; the
+current acceptance set is 78 after two authorized governance additions. This plan owns only `skills/**` and the
 `evals/<skill-slug>/**` suites that belong to catalog-discovered skills. It does
 not own runtime code, central rules, configuration, documentation, Make, CI,
-the manual ledger, or `skills.lock.json`.
+or `skills.lock.json`.
 
 ## Per-skill contract
 

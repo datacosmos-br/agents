@@ -10,4 +10,5 @@ inputs:
   files:
   - path: worker-handoff.yaml
 expected:
-  output_contains: [READY_FOR_REVIEW, 91c2f44, make check, 41 passed, explicitly suspended]
+  output_contains: [READY_FOR_REVIEW, 91c2f44, make check, 41 passed, explicitly suspended, Git]
+  output_not_contains: [replacement ledger, substitute tracker, tracker closed]

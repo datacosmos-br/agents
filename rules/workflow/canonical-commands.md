@@ -10,6 +10,4 @@ runtime behavior invokes one public `agentsctl` verb; it never imports a private
 runtime function, reconstructs orchestration, or creates a second API.
 
 A broken or out-of-pattern command is a defect to fix at its owner and rerun
-through the same surface. Bypasses are blocking violations, not warnings. While
-the tracker is suspended, preserve the exact blocker in Git/PR/CI evidence and
-keep the repository-declared manual ledger current and the phase open.
+through the same surface. Bypasses are blocking violations, not warnings.

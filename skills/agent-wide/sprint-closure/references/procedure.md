@@ -10,9 +10,10 @@ Missing, stale, conflicting, or inaccessible evidence stops at the first causal
 defect. Do not run a substitute command, infer a tracker endpoint, accept a
 warning or skip, repeat a failed gate, or narrow the closure claim.
 
-When the canonical tracker runtime is explicitly suspended, update only the
-repository-declared manual ledger after each material state change. The ledger
-preserves evidence but cannot close the tracker item or make the increment done.
+When the canonical tracker runtime is explicitly suspended, create no alternate
+database, tracker, or ledger. Preserve evidence only in separately authorized
+Git, PR, review, check, and CI surfaces; the tracker item remains unresolved and
+the increment is not done.
 
 ## Required evidence
 
@@ -27,8 +28,13 @@ All evidence must describe the same merged integration SHA:
 6. net line change for a replacement, or an explicit additive-capability
    classification when nothing was superseded.
 
-Do not treat local or branch-only green, an open review, a pushed commit, manual
-ledger state, or an unmerged artifact as integration evidence.
+Do not treat local or branch-only green, an open review, a pushed commit, or an
+unmerged artifact as integration evidence.
+
+Do not label the implementation complete, delivered, resolved, or ready while
+any required CI, approval, merge, post-merge, residue, or tracker row is open.
+Such a split claim is partial closure even when the report separately says the
+phase remains open.
 
 ## Zero-residue audit
 

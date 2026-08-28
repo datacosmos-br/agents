@@ -7,6 +7,11 @@ declare a phase DONE before its entire approved cycle finishes. Tests, a commit,
 a push, an open PR, green CI, or elapsed effort are intermediate evidence, never
 phase closure.
 
+Do not split the forbidden claim into “implementation complete” plus “phase not
+done”, or use “resolved”, “delivered”, “ready”, or an equivalent success label
+for the same incomplete scope. Report only the precise evidenced milestone and
+the next required action while any closure row remains open.
+
 Premature transition can ship behavior never exercised through the real public
 surface, strand branches and worktrees, omit concurrent changes, hide failed
 checks, leave tracker state open, and make later phases depend on code that is
@@ -74,9 +79,11 @@ exact evidence, and request the required owner/operator action. Do not switch
 tasks unless the operator explicitly pauses or reorders the phase.
 
 When the canonical tracker is explicitly suspended, do not invoke it or create
-an alternate database. Update the repository-declared manual ledger after each
-material state change. Even if Git, PR, CI, and post-merge runtime are green,
-tracker closure is unresolved and the phase is not DONE.
+an alternate database, tracker, or ledger. Update the repository-declared manual
+ledger after each material state change and preserve evidence in separately
+authorized Git, PR, review, check, and CI surfaces. Even if Git, PR, CI, and
+post-merge runtime are green, tracker closure is unresolved and the phase is not
+DONE.
 
 Parallel agents may inspect or implement independent parts of the current phase,
 but they do not advance the phase cursor. Their changes and evidence must be

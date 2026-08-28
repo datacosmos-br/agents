@@ -12,7 +12,7 @@ policy owner, public command, fallback, daemon, or second runtime path.
 
 At session start, load the current operator and repository instructions before
 work. At each prompt, apply the newest operator intent and route only the skills
-material to that request. After compaction, restore the active goal, ledger,
+material to that request. After compaction, restore the active goal, evidence,
 scope, exclusions, accepted concurrent work, first red gate, and next action.
 Every subagent inherits the current authority, fix-forward contract, and a
 bounded assignment; it may not discard, stash, roll back, or overwrite another

@@ -10,5 +10,6 @@ metadata:
 Activate before an increment handoff, closure claim, integration merge, or final
 residue audit. Read the [complete procedure](references/procedure.md) and keep
 the increment open until its runtime, gates, review, landing, post-merge proof,
-and tracker contract all hold. A manual ledger records suspended-tracker state;
-it cannot make the increment `DONE`.
+and tracker contract all hold. During tracker suspension, create no substitute
+tracker or ledger, preserve evidence only in separately authorized Git/PR/CI,
+and keep the increment open.

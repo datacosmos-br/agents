@@ -4,6 +4,9 @@ schema = 1
 name = "atlas"
 runtime = "suspended"
 
+[beads]
+provider = "file"
+
 [[rigs]]
 name = "ledger"
 project = "ledger-service"

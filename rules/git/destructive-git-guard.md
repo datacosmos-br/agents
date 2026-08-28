@@ -1,6 +1,6 @@
 # Adopt the current worktree and never discard it with Git
 
-Two `git reset` runs wiped multi-agent worktrees (and nearly the `.beads` DB).
+Two `git reset` runs wiped multi-agent worktrees and endangered shared state.
 Treat every current change in an authorized repository or worktree as owned input,
 regardless of when it appeared or who authored it. These are forbidden as change
 management operations:

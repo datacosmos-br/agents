@@ -13,8 +13,8 @@
    only to discover development and gate-composition targets.
 6. Build one search-first evidence packet: canonical owner, affected consumers,
    runtime surface, current tests, provider formats, and native gates.
-7. Update the manual execution ledger with the first bounded owner change and
-   its proof.
+7. When tracking is suspended, create no substitute state store and preserve
+   proof only in separately authorized Git/PR/CI.
 
 ## Work cycle
 
@@ -31,7 +31,8 @@ For each cohesive owner change:
 
 After an operator correction, immediately search for both the new rule and its
 semantic opposite, update canonical owners, and remove the opposite. While the
-tracker is suspended, update the manual execution ledger.
+tracker is suspended, create no substitute tracker or ledger and preserve
+evidence only in separately authorized Git/PR/CI surfaces.
 
 ## Concurrent work
 

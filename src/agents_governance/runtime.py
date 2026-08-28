@@ -23,7 +23,8 @@ from .governance_config import (
 from .hook_projection import HookProjector
 from .native_evals import evaluate_native
 from .projection import Projector
-from .projection_config import ProjectionConfig, load_projection_config
+from .projection_authorization import project_projection_authorized
+from .projection_config import load_projection_config
 from .rules import RuleSpec, audit_rule_specs
 from .security import ScannerRoute
 from .security import audit as audit_security_evidence
@@ -39,12 +40,9 @@ _MODEL = "aihub-primary"
 class RuntimeInventory:
     catalog: Catalog
     governance: GovernanceConfig
-    projection: ProjectionConfig
-    model: str
     commands: tuple[CommandSpec, ...]
     agents: tuple[AgentProfile, ...]
     rules: tuple[RuleSpec, ...]
-    security_routes: tuple[ScannerRoute, ...]
 
 
 def repository_root() -> Path:
@@ -58,15 +56,11 @@ def _catalog(root: Path) -> Catalog:
     return catalog
 
 
-def _doctor(root: Path) -> RuntimeInventory:
+def _inventory(root: Path) -> RuntimeInventory:
+    """Load only the native governance inventory shared by its consumers."""
+
     catalog = _catalog(root)
-    projection = load_projection_config(root)
     require_repository_storage(root)
-
-    model = require_model_projection(root)
-    if model != _MODEL:
-        raise ValueError(f"Waza model must equal {_MODEL}; got {model}")
-
     commands = audit_command_specs(
         root, (directory.name for directory in catalog.skill_dirs())
     )
@@ -76,19 +70,20 @@ def _doctor(root: Path) -> RuntimeInventory:
     rules = audit_rule_specs(root)
     governance = load_governance_config(root)
     audit_governance_config(root, governance, catalog, commands, rules)
+    return RuntimeInventory(catalog, governance, commands, agents, rules)
 
-    security_routes = security_inventory((root,))
+
+def _model(root: Path) -> str:
+    model = require_model_projection(root)
+    if model != _MODEL:
+        raise ValueError(f"Waza model must equal {_MODEL}; got {model}")
+    return model
+
+
+def _security(root: Path) -> tuple[ScannerRoute, ...]:
+    routes = security_inventory((root,))
     audit_security_evidence((root,))
-    return RuntimeInventory(
-        catalog,
-        governance,
-        projection,
-        model,
-        commands,
-        agents,
-        rules,
-        security_routes,
-    )
+    return routes
 
 
 def help_workflow(_root: Path) -> None:
@@ -106,7 +101,7 @@ def help_workflow(_root: Path) -> None:
 
 
 def doctor(root: Path) -> None:
-    inventory = _doctor(root)
+    inventory = _inventory(root)
     print(
         "doctor: "
         f"{len(inventory.catalog.skill_dirs())} skills, "
@@ -116,10 +111,12 @@ def doctor(root: Path) -> None:
 
 
 def check(root: Path) -> None:
-    inventory = _doctor(root)
+    inventory = _inventory(root)
+    load_projection_config(root)
+    model = _model(root)
     validate(
         inventory.catalog,
-        inventory.model,
+        model,
         inventory.commands,
         inventory.agents,
         inventory.rules,
@@ -133,25 +130,32 @@ def check(root: Path) -> None:
 
 
 def sync(root: Path) -> None:
-    inventory = _doctor(root)
+    inventory = _inventory(root)
+    projection = load_projection_config(root)
     projector = Projector(
         inventory.catalog,
-        inventory.projection,
+        projection,
         inventory.commands,
         inventory.agents,
         inventory.rules,
     )
     project = projector.project_root()
+    project_selected = project_projection_authorized(project)
     hooks = HookProjector(
         inventory.governance,
-        inventory.projection,
+        projection,
         inventory.commands,
         inventory.rules,
     )
     run_atomic_publications(
         (*projector.publications(project), *hooks.publications(project))
     )
-    print(f"sync: personal and project projections converged at {project}")
+    if project_selected:
+        print(f"sync: personal and project projections converged at {project}")
+    else:
+        print(
+            f"sync: personal projections converged; project not selected at {project}"
+        )
 
 
 def _waza_executable() -> str:
@@ -162,11 +166,13 @@ def _waza_executable() -> str:
 
 
 def evaluate(root: Path) -> None:
-    inventory = _doctor(root)
+    inventory = _inventory(root)
+    projection = load_projection_config(root)
+    _model(root)
     executable = _waza_executable()
     native = evaluate_native(
         root,
-        inventory.projection,
+        projection,
         inventory.commands,
         inventory.agents,
         inventory.rules,
@@ -203,7 +209,8 @@ def evaluate(root: Path) -> None:
 
 
 def secure(root: Path) -> None:
-    inventory = _doctor(root)
+    require_repository_storage(root)
+    routes = _security(root)
     executables = {name: shutil.which(name) for name in ("gitleaks", "semgrep", "snyk")}
     missing = tuple(name for name, path in executables.items() if path is None)
     if missing:
@@ -249,9 +256,9 @@ def secure(root: Path) -> None:
         cwd=root,
         check=True,
     )
-    for route in inventory.security_routes:
+    for route in routes:
         subprocess.run(route.command, cwd=route.root, check=True)
-    print(f"secure: {len(inventory.security_routes)} dependency route(s) passed")
+    print(f"secure: {len(routes)} dependency route(s) passed")
 
 
 def clean(root: Path) -> None:
@@ -272,12 +279,12 @@ def live(root: Path) -> None:
     api_key = required_environment(
         "CLIPROXY_API_KEY", conflicts=("COPILOT_PROVIDER_API_KEY",)
     )
-    inventory = _doctor(root)
+    model = _model(root)
     environment = dict(os.environ)
     del environment["CLIPROXY_API_KEY"]
     environment["COPILOT_PROVIDER_API_KEY"] = api_key
-    environment["COPILOT_MODEL"] = inventory.model
-    run_preflight(root, inventory.model, runner=_live_runner(environment))
+    environment["COPILOT_MODEL"] = model
+    run_preflight(root, model, runner=_live_runner(environment))
     print("live: aihub-primary preflight passed")
 
 

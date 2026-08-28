@@ -21,3 +21,4 @@ expected:
   - repository owns Git
   - merged SHA
   - runtime is suspended
+  - without Beads

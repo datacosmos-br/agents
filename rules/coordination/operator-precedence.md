@@ -6,8 +6,8 @@ adjust the lower or older artifact to match; never override the operator to
 satisfy stale guidance.
 
 While orchestration and tracker runtimes are suspended, do not invoke them.
-Update the repository-declared manual ledger after every material state change,
-preserve implementation evidence in Git/PR/CI, and leave phase closure open.
+Create no substitute tracker or ledger, preserve implementation evidence only
+in separately authorized Git/PR/CI, and leave phase closure open.
 
 When authority genuinely conflicts or an action is destructive, ask one precise
 question first. Otherwise continue. Never guess on ambiguity.

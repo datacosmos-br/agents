@@ -42,12 +42,18 @@ invoke only these public verbs when it needs runtime behavior.
 
 `sync` derives its destination project from the invocation cwd's nearest
 physical `.git/` ancestor and its personal destination from the current process
-home. It preflights and atomically publishes every supported personal and
-project surface, including provider-native instruction and lifecycle-hook
-artifacts. This is one workflow: there is no hook verb, personal mode, hidden
-runtime path, or second CLI. Project selection, when needed, is the strict
-project-owned `.agents/projection.json` v1 document; absence means the typed
-empty selection, not an error-triggered fallback.
+home. Invocation selects every supported personal surface. A physical
+project-owned `.agents/projection.json` v1 document additionally selects tracked
+project surfaces; absence is a non-target and creates no project output. It
+preflights and atomically publishes every selected provider-native instruction
+and lifecycle-hook artifact. This is one workflow: there is no hook verb,
+personal mode, hidden runtime path, or second CLI.
+
+Each verb loads only its selected capability set. `doctor` does not probe
+projection, models, providers, or scanners; `sync` does not load live or scanner
+configuration; `secure` and `live` fail on their own complete selected
+prerequisites. Installation never selects a workflow, and a dormant dependency
+cannot create a warning, skip, fallback, or global gate.
 
 Every verb performs complete preflight before its first effect. A missing,
 empty, conflicting, unexpanded, or invalid genuinely required external value

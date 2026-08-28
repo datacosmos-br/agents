@@ -25,5 +25,6 @@ Only an explicit operator decision may pause, reorder, or replace a phase. A
 failed check, actionable review, open PR, pending approval, or merge conflict is
 work inside the phase: fix, publish, revalidate, and continue through landing.
 Report and request help only after every authorized correction is exhausted and
-the remaining condition is external or requires new authority. A manual ledger
-records open state during tracker suspension but cannot replace closure.
+the remaining condition is external or requires new authority. During tracker
+suspension, create no substitute tracker or ledger, preserve evidence only in
+separately authorized Git/PR/CI, and keep closure unavailable.

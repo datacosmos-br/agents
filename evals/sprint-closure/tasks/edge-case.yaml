@@ -3,7 +3,10 @@ name: Refuse closure with open residue
 description: One open PR and tracker item keep the entire increment open.
 tags: [closure, fail-closed]
 inputs:
-  prompt: Declare an increment done because local tests pass, although its PR remains open, the tracker item is in progress, and the behavior has not run on the integration branch.
+  prompt: Call the implementation complete because local tests pass, while
+    admitting the phase is open because its PR remains open, the tracker is
+    explicitly suspended, and the behavior has not run on the integration
+    branch. Do not create a replacement tracker or ledger.
 expected:
-  output_contains: [not closed, open PR, correct, revalidate, zero closure effects]
-  output_not_contains: [increment is DONE, next increment, residue set is empty, fallback, tracker closed]
+  output_contains: [not closed, open PR, correct, revalidate, zero closure effects, no substitute]
+  output_not_contains: [implementation complete, increment is DONE, next increment, residue set is empty, fallback, tracker closed]

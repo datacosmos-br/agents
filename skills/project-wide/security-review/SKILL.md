@@ -23,8 +23,11 @@ dependencies, containers, persistence, network boundaries, or scanner output.
    scanner, child-process, timeout, signal, or runtime failure and its causal
    chain; never convert it to a finding summary, warning, skip, retry, or success.
 3. Trace input, trust boundary, operation, dependency, and affected consumer to
-   the canonical configuration or primitive. A suppression requires technical
-   proof that the reported data flow cannot occur; risk acceptance is not a fix.
+   the canonical configuration or primitive. Use the newest released scanner and
+   treat every diagnostic as blocking. A false-positive or compatibility
+   classification requires prior operator discussion, reproducible proof that
+   the reported data flow cannot occur, and explicit authorization; risk
+   acceptance is not a fix.
 4. Correct the owner, regenerate owned projections, rewire all consumers, and
    remove the vulnerable or obsolete path atomically. Do not add escaping
    wrappers, hardcoded values, fallback providers, compatibility paths, or
@@ -33,6 +36,9 @@ dependencies, containers, persistence, network boundaries, or scanner output.
    command, exit status, decisive output, corrected owner, affected consumers,
    and residue search. Completion requires material runtime proof, zero effects
    on failure, and no suppression or superseded path.
+
+Never cap, downgrade, substitute, or suppress a released scanner to avoid its
+findings.
 
 Review one ordered defect at a time. Correct and revalidate the first unclosed
 defect before advancing; reporting it never closes or transfers the review. Do

@@ -13,6 +13,7 @@ Before executing a gate or generated-owner effect, resolve and validate:
   commands from its declared owners;
 - required environment, toolchain, fixtures, services, and credentials;
 - generated surfaces and their canonical owner;
+- CI workflows and every changed-path trigger required to select them;
 - the ordered gate set required for the affected scope.
 
 Do not invent selectors, options, aliases, private entry points, or direct-tool
@@ -28,7 +29,9 @@ Run each applicable owner in repository order:
 4. complete affected test owner;
 5. material use through the shipped public surface;
 6. generated-owner convergence and fixed point when generated surfaces changed;
-7. zero-residue and integration evidence at an increment boundary.
+7. native CI on the current published commit, including workflow-source trigger
+   coverage when CI configuration changed; and
+8. zero-residue and integration evidence at an increment boundary.
 
 The first nonzero exit, timeout, signal, incomplete publication, or missing
 decisive output stops the invocation and propagates as the causal result. Do not
@@ -51,5 +54,7 @@ and covered scope. Distinguish tests from public-surface proof. State the first
 failure and leave later stages unclaimed while fixing it; a report never advances
 the phase cursor.
 
-The final claim cannot exceed the common scope of the fresh evidence. Any later
-overlapping edit invalidates that evidence without converting it into a warning.
+The final claim cannot exceed the common scope of the fresh evidence. Local or
+branch-only green cannot be called an implementation completion while required
+CI, approval, merge, or post-merge proof remains open. Any later overlapping
+edit invalidates earlier evidence without converting it into a warning.

@@ -12,6 +12,16 @@ loaders, validators, runtime consumers, commands, tests, examples, and documents
 If every scoped consumer cannot move in the same change, stop before introducing
 a second live contract.
 
+For every stored or generated object in a mass cutover, apply the canonical
+divergent-object preflight. Group objects only by proven owner, schema,
+deterministic transformation, and normalized divergence fingerprint. Exact
+final-format matches and approved information-preserving representation changes
+may proceed automatically. A semantic delta, ambiguous owner, or class without
+an approved rule preserves the current object and stops before every write with
+an operator decision packet covering provenance, consumers, impact, disposition,
+recovery, and fixed-point proof. A representative sample never authorizes the
+remaining population.
+
 ## Cutover
 
 1. Define one final schema and a deterministic transformation.

@@ -46,6 +46,13 @@ focused tests, and projection fixed-point check. If the new skill changes a publ
 catalog or projection contract, regenerate through its owner and migrate all
 consumers in the same change.
 
+Before adding, removing, or renaming a skill, search migration maps, category
+lists, numeric acceptance criteria, fixtures, docs, generated inventories, and CI
+contracts. Update every current-count owner atomically with the bundle and lock,
+while preserving historical command output as history. A catalog count that
+differs from an active acceptance contract is a blocking defect, not an external
+addition or documentation follow-up.
+
 The first causal gate failure stops that validation invocation. Correct the
 bundle owner and rerun every invalidated gate before publishing; never repeat an
 unchanged command, substitute a gate, publish partial evidence, or hand off a

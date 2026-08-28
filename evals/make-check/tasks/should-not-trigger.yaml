@@ -3,6 +3,7 @@ name: Insert a Markdown check mark
 description: Avoid build-gate guidance for an ordinary writing-format request.
 tags: [markdown, symbol, anti-trigger]
 inputs:
-  prompt: Show me the Markdown syntax for a checked task-list item in a README.
+  prompt: Show me the Markdown syntax for a checked task-list item in a README;
+    do not start a build-gate or released-tool workflow.
 expected:
-  output_not_contains: [make help, CHECK_GATES, CHANGED_ONLY]
+  output_not_contains: [make help, CHECK_GATES, CHANGED_ONLY, released analyzer]

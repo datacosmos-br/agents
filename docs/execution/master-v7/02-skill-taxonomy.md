@@ -31,15 +31,19 @@ The remaining groups are conditional semantic families:
 Each skill has one canonical directory. A skill that touches several subjects
 uses multiple tags; it is never copied into several groups.
 
-## Current migration map
+## Migration and current catalog map
 
-The migration starts from 85 flat skills. The target contains the following 76
-skills. The table is a semantic map for this one cutover, not a permanent
-registry; after migration, recursive discovery from paths and tags replaces it.
+The migration started from 85 flat skills and reached the following 76 retained
+targets. Two later operator-authorized governance capabilities were added after
+that cutover: `plan-focus-recovery` for preserving active-plan intent across
+detours and `fix-forward-collaboration` for concurrent adoption and anti-rollback
+coordination. The current catalog therefore contains 78 skills. The table is an
+acceptance map, not a runtime registry; recursive discovery from paths and tags
+remains the runtime owner.
 
 | Target group | Retained target slugs |
 |---|---|
-| `agent-wide` | `agent-introspection-debugging`, `prompt-safety-review`, `anti-phase-skip`, `article-writing`, `brand-voice`, `caveman`, `content-engine`, `context-canary`, `crosspost`, `deep-research`, `dispatch-agent`, `frontend-slides`, `governance-audit`, `human-writing-style`, `investor-materials`, `investor-outreach`, `make-check`, `market-research`, `operator-correction-learning`, `safe-delete`, `skill-governance`, `sprint-closure`, `strategic-compact`, `summarization`, `verification-loop`, `video-editing` |
+| `agent-wide` | `agent-introspection-debugging`, `prompt-safety-review`, `anti-phase-skip`, `article-writing`, `brand-voice`, `caveman`, `content-engine`, `context-canary`, `crosspost`, `deep-research`, `dispatch-agent`, `fix-forward-collaboration`, `frontend-slides`, `governance-audit`, `human-writing-style`, `investor-materials`, `investor-outreach`, `make-check`, `market-research`, `operator-correction-learning`, `plan-focus-recovery`, `safe-delete`, `skill-governance`, `sprint-closure`, `strategic-compact`, `summarization`, `verification-loop`, `video-editing` |
 | `project-wide` | `anti-hardcode`, `rest-api-design`, `architecture-documentation`, `backend-patterns`, `code-review-expert`, `config-schema-migration`, `data-modeling-analysis`, `doc-drift`, `documentation-criteria`, `dry`, `eval-harness`, `extermination-mode`, `fail-fast`, `product-capability`, `search-first`, `security-review`, `simplify`, `solid`, `ssot`, `tdd-workflow`, `technical-writing-style`, `yagni` |
 | `technology` | `bun-runtime`, `cpp-development`, `go-development`, `jvm-development`, `python-development`, `python-parallelization`, `rust-development`, `typescript-development` |
 | `framework` | `flutter-development`, `react-frontend-patterns`, `nextjs-turbopack` |
@@ -147,8 +151,8 @@ moving prose into another unvalidated file.
 ## Import boundary
 
 No external artifact is copied, forked, synchronized, or translated during this
-increment. After the 76-skill set is integrated and green, a separately approved
-import plan may compare official/provider-curated sources against this taxonomy.
+increment. After the current 78-skill set is integrated and green, a separately
+approved import plan may compare official/provider-curated sources against this taxonomy.
 That future plan must deduplicate first, audit provenance/license/scripts, and
 adopt content physically into the same semantic layer without leaving an
 updater or foreign runtime owner.

@@ -2,8 +2,9 @@
 
 This package is the active authority for reorganizing the existing `.agents`
 inventory. It replaces master v6. Git history retains older plans; no second
-active plan or compatibility copy is permitted. The single manual execution
-ledger is [owned here](../manual-ledger.md) while tracking is suspended.
+active plan, tracker, ledger, or compatibility copy is permitted. While
+canonical tracking is suspended, create no substitute state owner and preserve
+evidence only in separately authorized Git/PR/CI surfaces.
 
 The first increment classifies and migrates only artifacts already present in
 this repository. External skill or command import, ECC synchronization,
@@ -63,10 +64,10 @@ unclassified artifact; never coerce one into a category to preserve a count.
 
 Beads, Dolt, Gas Town, and Gas City are explicitly suspended. Do not invoke,
 inspect, start, migrate, select an endpoint for, or depend on those runtimes.
-Use [the manual execution ledger](../manual-ledger.md) for state throughout the
-suspension. Create no alternate database, workspace, city, rig, Pack, clone, or
-worktree. Preserve validation evidence in authorized Git commits, pull requests,
-reviews, required checks, and CI after Git execution is separately authorized.
+Create no alternate database, tracker, ledger, workspace, city, rig, Pack,
+clone, or worktree. Preserve validation evidence in authorized Git
+commits, pull requests, reviews, required checks, and CI after Git execution is
+separately authorized.
 
 While tracker closure is unavailable, a merged and post-merge-verified phase is
 `LANDED_VERIFIED`, not `DONE`. The physical source move from `~/.agents` to
@@ -86,7 +87,8 @@ be smuggled into this checkout-only increment.
 8. [Session protocol](07-session-protocol.md)
 9. [Plan 1: skills strict execution](08-skills-strict-execution-plan.md)
 10. [Plan 2: runtime extermination](09-runtime-extermination-plan.md)
-11. [Agents repository runbook](repositories/agents.md)
+11. [Additive capability composition](10-additive-capability-composition-plan.md)
+12. [Agents repository runbook](repositories/agents.md)
 
 Architecture decisions:
 
@@ -94,6 +96,7 @@ Architecture decisions:
 - [ADR-0002: Derive skill distribution from paths and tags](../../adr/ADR-0002-skill-distribution-paths-and-tags.md)
 - [ADR-0003: Render provider-native physical projections](../../adr/ADR-0003-provider-native-physical-projections.md)
 - [ADR-0004: Enforce one optionless fail-loud runtime CLI](../../adr/ADR-0004-optionless-fail-loud-cli.md)
+- [ADR-0005: Compose governance and native lifecycle delivery](../../adr/ADR-0005-composed-governance-delivery.md)
 
 ## Status vocabulary
 

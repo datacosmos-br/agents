@@ -10,4 +10,5 @@ inputs:
   files:
   - path: tracker-state.yaml
 expected:
-  output_contains: [ag-417, explicitly suspended, phase remains open]
+  output_contains: [ag-417, explicitly suspended, Git, phase remains open]
+  output_not_contains: [replacement ledger, substitute tracker, tracker closed]

@@ -22,12 +22,14 @@ no legacy package, command, rule, projection, or synchronization surface remains
 - `.waza.yaml` and `evals/`: Waza gates and behavioral evaluation.
 
 When `agentsctl sync` is invoked, the nearest ancestor that owns a physical
-`.git/` directory is the destination project. The typed personal and project
-surfaces are fully preflighted and published as one transaction. Provider-native
-instructions and hooks refresh the composed governance capsule without becoming
-policy owners or public commands. Managed regions and manifests preserve foreign
-content and reject modified owned content. Symbolic links, cross-repository
-local-path references, and shared mutable skill directories are forbidden.
+`.git/` directory is the candidate project. Personal surfaces are selected by
+the invocation; a physical project-owned `.agents/projection.json` additionally
+authorizes project surfaces. Selected surfaces are fully preflighted and
+published as one transaction. Provider-native instructions and hooks refresh the
+composed governance capsule without becoming policy owners or public commands.
+Managed regions and manifests preserve foreign content and reject modified owned
+content. Symbolic links, cross-repository local-path references, and shared
+mutable skill directories are forbidden.
 
 ## Distribution boundary
 
@@ -63,9 +65,9 @@ rig, Pack V2, agent, formula, run, and session primitives. Its runtime is
 currently suspended, so only existing checkouts are execution surfaces; loose
 clones and manual worktrees remain prohibited.
 
-The [manual execution ledger](docs/execution/manual-ledger.md) owns increment
-state while Gas City, Gas Town, Beads, and Dolt are suspended. It records work
-but cannot satisfy tracker closure.
+While Gas City, Gas Town, Beads, and Dolt are suspended, create no substitute
+tracker or ledger. Preserve evidence only in separately authorized Git commits,
+pull requests, reviews, checks, and CI; tracker closure remains unresolved.
 
 Storage registration and shell scratch placement are owned by
 [`rules/storage.md`](rules/storage.md).

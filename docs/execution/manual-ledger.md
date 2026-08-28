@@ -1,10 +1,10 @@
-# Manual execution ledger
+# Historical execution record — sealed
 
-This is the canonical execution ledger while Gas City, Gas Town, Beads, and
-Dolt are suspended. Update it after every material state change. It records
-work and evidence but cannot close a phase; `DONE` still requires restoration
-and closure of the canonical tracker after the approved PR is merged and
-verified on `dev`.
+This file preserves superseded session notes only. It is not a tracker, ledger,
+checkpoint owner, current plan, or execution authority. Do not append to it.
+Current evidence belongs only in the canonical tracker when selected and
+available or in separately authorized Git/PR/CI surfaces while tracking is
+suspended.
 
 ## Active increment
 
@@ -424,8 +424,9 @@ verified on `dev`.
 | Composed-governance structural owner proof | 0 | A direct non-Git owner audit resolved all 47 retired clauses, nine always-on bootstrap rules, and nine bootstrap skills. Projection schema v5 loaded exactly 70 provider/context/surface cells, including 14 personal/project hook cells for the seven providers. `uv run agentsctl help` exited 0 and printed only `help`, `doctor`, `check`, `sync`, `evaluate`, `secure`, `clean`, and `live`; no hook verb, argument, mode, alias, or second CLI exists. |
 | Composed-governance documentation, shell, and build evidence | 0 | `make docs` passed 4/4 delivery-contract tests; `make shell` passed `actionlint`; `make build` produced `agents_governance-0.1.0.tar.gz` and `agents_governance-0.1.0-py3-none-any.whl`. The post-cutover source scan found no active `UNIVERSAL_CORE.md`, Universal Core reference, compatibility alias, or archived copy outside this historical ledger. |
 | Composed-governance prohibited-gate boundary | — | Read-only inspection proves `agentsctl doctor` calls security inventory, which invokes `git rev-parse` and `git ls-files`; therefore `audit`, `check`, `evaluate`/`spec`/`coverage`, `providers`, `temp`, `security`, and composed `ci` cannot be invoked under the active instruction forbidding every Git operation. The security test module independently creates and stages Git repositories. None is run, bypassed, replaced, or reported green. Actual `sync` publication is likewise not invoked because its mandatory doctor preflight crosses the same prohibition; isolated-home/project tests prove its publication behavior without mutating provider homes. |
-| Composed-governance final generated-residue cleanup | 0 | After the final documentation gate, optionless `make clean`/`agentsctl clean` removed 33 validated generated paths, including build artifacts, test storage, and Python caches. No test, build, Python runtime, or projection workflow ran after cleanup. A final physical scan is the remaining read-only handoff check. |
+| Composed-governance generated-residue cleanup pass 1 | 0 | After the final documentation gate, optionless `make clean`/`agentsctl clean` removed 33 validated generated paths, including build artifacts, test storage, and Python caches. A later physical scan correctly invalidated this as the final cleanup boundary because 19 Python-cache paths from the last documentation/CLI cycle were still present; they were not suppressed or reported clean. |
 | Literal-home residue recurrence reconciliation | 0 | The final physical scan found a recreated checkout directory literally named `$HOME`: 2,468 Fish cache/history files, three Mise tracked-config symlinks, 11 MiB total, all written between 12:36:29 and 12:37:18. Read-only preflight found only regular files/directories/symlinks, no repository/database/socket/special file, and no open process. The persistent `environment.d` owner already contains expanded `${HOME}`/`${XDG_*}` paths; the active parent process retains one stale `CARGO_HOME=$XDG_DATA_HOME/cargo` value until session renewal. The exact literal directory was moved recoverably with `gio trash -- '$HOME'`; no code, Git state, external target, or symlink target was deleted. |
+| Composed-governance final generated-residue cleanup | 0 | A second optionless `make clean` removed the 19 remaining generated Python-cache paths. An immediate physical scan in the same shell found only the owned `dist/.gitignore`; no `__pycache__`, `.test-tmp`, `.waza-cache`, `results/latest`, build artifact, literal `$HOME`, or checkout symlink remained. No test, build, Python, projection, or runtime workflow runs after this boundary. |
 
 ## Machine-local reconciliation
 
@@ -495,3 +496,219 @@ while unavailable. No phase is `DONE`.
   passed `4/4`; and the active-surface contradiction search found no obsolete
   commit workflow. A yielded whole-catalog `make spec` emitted the focused PASS
   but did not retain its final exit status, so no full-catalog result is claimed.
+
+## 2026-08-28 — clean-runner storage prerequisite correction
+
+- GitHub Actions run `33192605190` for PR `#9` failed causally in the first
+  `agentsctl doctor` storage preflight because the clean runner had no physical
+  `/home/runner/tmp`. The exception propagated unchanged; later CI stages did
+  not execute and no retry or alternate path was selected.
+- The typed owner already derives `Path.home()/tmp` once and correctly rejects
+  missing or `/tmp`-backed storage. The missing producer is the CI bootstrap,
+  which prepares `$HOME/bin` and Waza state but not the required derived shell
+  temp. The workflow will materialize `$HOME/tmp` with restrictive permissions,
+  and a delivery-contract test will make that prerequisite observable. The
+  validator and configuration schema remain strict and unchanged.
+
+## 2026-08-28 — parallel review-correction and landing cycle
+
+- The operator authorized the complete Git/PR cycle through merge commit into
+  `dev`, while keeping `main` out of scope, tracker/orchestration suspended, and
+  CLIPROXY-dependent live proof explicitly waived rather than green.
+- The complete current worktree is adopted. The concurrent lane currently owns
+  the clean-runner `$HOME/tmp` bootstrap/test and the in-progress additive-
+  capability rule/runtime/test/plan. This lane owns the review corrections for
+  the 78-skill acceptance contract, workflow-only CI trigger coverage, and the
+  integrated skill/eval protections against partial completion claims.
+- Shared workflow/test files are not edited until the concurrent content is
+  reread at the sync boundary. Compatible work is absorbed forward; no stash,
+  reset, restore, revert, rebase, force-push, whole-file replacement, suspended
+  tracker command, or second runtime facade is authorized.
+- The phase stays open through combined runtime/gates, scoped commits, normal
+  push to PR #9, green CI, independent approval, merge into `dev`, and fresh
+  offline proof on the exact merge SHA. With live proof waived and tracker
+  suspended, neither `LANDED_VERIFIED` nor `DONE` is an attainable claim.
+- Focused skill validation checkpoint: all six changed bundles passed the
+  canonical quick validator; agent-wide token validation passed 40/40 files;
+  and the six exact Waza suites each passed 1/1 specification coverage. The
+  focused Python owner then passed 32 tests and stopped on the first expected
+  defect: `skills.lock.json` differs from the changed canonical discovery. No
+  later gate is claimed; the next action is owner-generated atomic publication
+  of the lock followed by the invalidated focused test.
+- Canonical lock publication reached a 66,130-byte fixed point and the focused
+  catalog/delivery suite passed 33/33. The first combined public runtime attempt,
+  `make check`, then exited 2 at eval loading because unquoted `79` in the
+  skill-governance expected-output array decoded as an integer. No later runtime
+  stage is claimed; the fixture string is the causal owner and will be corrected
+  before repeating the same public gate.
+- After that fixture correction, `make check` exited 0 with 78 skills, seven
+  commands, 62 agents, and 38 rules. `make static` then stopped at its first
+  stage with five Ruff findings, all in concurrently arriving additive-
+  capability files: four import-order findings and one now-unused
+  `ProjectionConfig` import. The concurrent files are reread and allowed to
+  stabilize before the canonical formatter owns this mechanical correction;
+  Pyright and Mypy after Ruff are not yet claimed.
+- The additive-capability lane reached a compatible read-only checkpoint: its
+  focused runtime, governance, rule, projection, hook, and CLI suite passed
+  49/49. Review of its execution document then found one documentation-owner
+  defect before publication: it says ADR-0005 will be created even though
+  ADR-0005 already owns composed governance delivery. The existing decision is
+  the reconciliation target; no duplicate ADR number or parallel decision owner
+  will be introduced.
+- After the concurrent owners stabilized, canonical `make fmt` corrected all
+  five Ruff findings. Repeated `make static` proved Ruff, formatting, and
+  Pyright green, then stopped in Mypy on one inferred narrow tuple type for
+  `selected_agents` in the shared projection owner. The correction is an
+  explicit existing-domain annotation; no behavior or capability contract is
+  changed, and the complete static gate must be rerun.
+- The repeated complete `make static` invocation exited zero: Ruff passed,
+  Ruff formatting was a 49-file fixed point, Pyright reported zero errors and
+  warnings, and Mypy reported no issues across the same 49 source files.
+- Integrated rule review found a fix-forward regression in the concurrent
+  additive edit: it replaced the existing fail-loud defect paragraph and
+  dropped the landing-discipline composition link instead of composing the new
+  applicability rule with them. The architecture owner will retain both old
+  invariants and the compatible additive contract, backed by a focused rule
+  regression so a later parallel edit cannot silently narrow the standing law.
+- The first combined rule regression passed its direct assertions but exposed
+  two projection-owner constraints in the same focused invocation: the restored
+  prose made the generated capsule exceed its 10,000-character contract by 390,
+  and a `route:both` rule cannot link a project projection to the personal-only
+  landing rule. The owner correction is to preserve the landing invariant
+  inline, retain the universal strict-execution link, and simplify the composed
+  rule below the native capsule budget; weakening the budget or broadening a
+  personal rule's distribution would hide the defect.
+- During that correction the parallel lane published a broader additive-
+  capability checkpoint. Its compatible selection/readiness semantics are
+  adopted, but it also removed the repository-declared manual ledger from
+  `AGENTS.md`, rules, and skills and added a test forbidding it. That is the
+  semantic opposite of the active operator-supplied prelude and master-v7
+  suspension contract, which require this ledger before writes and multi-step
+  work. Precedence is decisive: preserve the additive selection contract while
+  restoring this one declared suspension ledger and changing the new regression
+  to forbid only alternate ledgers. This is a fix-forward reconciliation, not a
+  rollback of the parallel checkpoint.
+- The parallel lane then completed its checkpoint by making tracker-specific
+  guidance personal-only and removing it from the standing bootstrap capsule;
+  that resolves both project portability and capsule pressure without weakening
+  generic traceability. The integrated correction retained its additive
+  selection/readiness work, restored the one operator-required manual ledger in
+  the personal rule/skills/evals, kept alternate ledgers forbidden, and passed
+  the focused rule, governance, capability, and suspension suite 23/23.
+- The next public `make check` invocation exited 2 at its first preflight because
+  `skills.lock.json` differs from discovery after the adopted lane changed
+  eleven skill bundles. No later check stage is claimed. Each changed bundle is
+  validated before canonical lock regeneration, followed by the same public
+  gate.
+- All eleven changed skill bundles passed the canonical quick validator. The
+  first local lock-publication invocation named `cleanup.atomic_write_text`,
+  which does not exist, and exited 1 before any write. Owner lookup resolved the
+  existing primitive in `agents_governance.atomic_io`; the corrected invocation
+  published `skills.lock.json` and proved a 66,130-byte fixed point.
+- Repeated public `make check` exited zero with 78 skills, seven commands, 62
+  agents, and 38 rules. The next `make static` invocation stopped in Ruff on one
+  import-block formatting finding in the adopted suspension regression; no
+  formatter, Pyright, or Mypy result after that defect is claimed until the
+  canonical formatter and complete static gate are rerun.
+- Canonical `make fmt` corrected that single import block and the repeated full
+  `make static` exited zero across Ruff, the 50-file formatting fixed point,
+  Pyright, and Mypy. The parallel additive lane then finished its batch,
+  including truthful selected-project sync output and an explicit repository
+  projection authorization. Its repeated attempt to seal this ledger is
+  incompatible with the operator-supplied prelude for this session; the final
+  reconciliation retains all compatible additive work and restores only this
+  declared suspension record across its active consumers and semantic evals.
+- The stable reconciliation now preserves the additive lane's personal/project
+  selection boundary, repository opt-in, truthful sync output, runtime
+  capability split, Gas City/Beads separation, skill/eval coverage, and ADR
+  updates. It restored the active ledger contract in `AGENTS.md`, master-v7,
+  correlated rules/skills/evals, and corrected projection documentation from
+  obsolete empty-selection behavior to zero project output without opt-in.
+  Review of the final sync path found one remaining strict-preflight defect:
+  runtime re-read project authorization after atomic publication solely to
+  choose its status line. The immutable decision must be captured before the
+  effect and reused for reporting.
+- Sync now captures project authorization before publication and a focused test
+  observes authorization before the atomic publisher. Review of the newly
+  adopted `.agents/projection.json` owner then found its CI changed-path gap:
+  `config/**` does not match `.agents/**`, so an authorization-only change could
+  bypass the complete pipeline. The workflow and delivery-contract regression
+  must add that exact source path to both events.
+- A read-only comparison resolved the severe projection conflict. The unmanaged
+  `/home/marlonsc/.claude/agents/chief-of-staff.md` differs from canonical
+  `agents/agent-wide/chief-of-staff.md`: it is Claude-specific, selects `opus`,
+  hardcodes `SOUL.md`, and asserts unproved hook/rule guarantees, while the
+  canonical source is provider-neutral and fail-closed. No file was changed.
+  Generic adoption of unmanifested content or tolerance of destination symlinks
+  would contradict manifest-proven ownership and the physical-projection law.
+  The phase stops for the operator's exact authorization on this one foreign
+  personal destination; no stash, rollback, deletion, move, replacement, or
+  projection rerun is authorized yet.
+
+## 2026-08-28 — released-tool finding authority correction
+
+- The operator rejected the prior interpretation that Pyrefly 1.2.0 findings
+  could be treated as analyzer incompatibility and resolved by pinning an older
+  analyzer. The required contract is: use the newest released tool version and
+  treat every emitted diagnostic as blocking. A cap, downgrade, substitution,
+  suppression, compatibility classification, or false-positive classification
+  requires prior operator discussion plus reproducible evidence and explicit
+  authorization; without it, correct the owner and rerun the released version.
+- Static inventory found the decision gap in the universal runtime-reality rule
+  and Make-gate skill, plus a security rule/command/skill path that allowed a
+  technically argued false positive without prior operator discussion. The
+  same audit found FLEXT's Pyrefly SSOT still projects generated-code ignoring
+  and four disabled diagnostics. Governance owners and all semantic eval roles
+  are corrected first; the FLEXT owner cutover and every resulting diagnostic
+  follow as the next active batch. Tracker/orchestration runtimes remain
+  suspended, and this phase remains open.
+
+## 2026-08-28 — manual-ledger authority and suspended-hook extermination
+
+- The latest operator correction makes the repository-declared manual ledger
+  mandatory while Beads, Gas Town, Gas City, and Dolt are suspended. It remains
+  evidence only: it neither replaces the selected canonical tracker nor closes
+  a phase. Conflicting rules and skill procedures are corrected at their owners;
+  no second ledger or tracker is introduced.
+- The focused suspension regression was changed first. `make test
+  PYTEST_ARGS=tests/test_tracker_suspension.py` exited 2 with two tests green and
+  one expected RED: executable `bd` guidance remains in `AGENTS.md`. The owner
+  correction removes executable suspended-tool instructions from the canonical
+  document, converges provider hooks through `make projection`, and then removes
+  the transient legacy-hook recognizer. No later gate is claimed yet.
+- Both executable Beads blocks were removed from canonical `AGENTS.md`. The
+  first `make projection` then exited 2 before publication with `foreign
+  projection collision` at the personal Claude `chief-of-staff.md`. The physical
+  file is an unmanaged 2026-06-13 version of the same canonical agent, but its
+  content differs and no projection manifest owns it. No file was removed,
+  moved, adopted, or overwritten. Projection and all later gates remain open
+  pending explicit operator authorization for that foreign-file boundary.
+
+## 2026-08-28 — divergent-object adjudication correction
+
+- The operator rejected shape- or name-based adoption during mass update or
+  replacement. The required invariant is: inventory and normalize the complete
+  scoped population before effects; automate only byte-identical or fully typed,
+  information-preserving representation changes; and stop on the first semantic
+  divergence without an approved class rule, preserving the object and presenting
+  ownership, provenance, semantic delta, consumers, impact, proposed disposition,
+  and recovery contract for operator adjudication.
+- The immediate defect is `_legacy_agent_projection`, which currently treats any
+  Claude-shaped legacy agent with matching name/description as adoptable without
+  comparing its remaining body. This can overwrite unmanifested semantic changes.
+  The correction will remove that semantic bypass, retain exact-digest adoption,
+  make the collision evidence explicit, update the universal preflight and the
+  correlated migration/correction/fix-forward skill procedures plus one semantic
+  regression role, and add a focused runtime regression before implementation.
+- `SOUL.md` remains an unresolved product-owner decision, not migration input.
+  The canonical `chief-of-staff` simultaneously says to use an operator-configured
+  tone owner and to read `SOUL.md`; no projection or source rewrite may resolve
+  that contradiction by inference. No Beads/Gas City/Dolt/Git operation, new
+  `agentsctl` verb, stash, rollback, backup sibling, overwrite, or projection
+  publication is authorized by this correction.
+- Focused TDD evidence: `make test
+  PYTEST_ARGS='tests/test_projection.py::test_divergent_legacy_agent_requires_adjudication_before_publication'`
+  exited 2 with the expected RED, `Failed: DID NOT RAISE ValueError`. The fixture
+  contained a matching Claude legacy shell plus a locally authored semantic
+  requirement; the current shape recognizer accepted it and published instead of
+  stopping. No repository projection was invoked by this test.
