@@ -11,7 +11,8 @@ no legacy package, command, rule, projection, or synchronization surface remains
 - `AGENTS.md` and `UNIVERSAL_CORE.md`: universal execution law.
 - `skills/`: canonical, independently materialized skill bundles.
 - `agents/`, `commands/`, `rules/`, `workflows/`: personal agent capabilities.
-- `config/skills.json`: skill classification and distribution policy.
+- `config/skills.json`: skill BPE and line-budget policy; recursive paths and
+  frontmatter own classification and distribution.
 - `config/projections.json`: personal destinations and project-relative copy paths.
 - `src/agents_governance/`: validation, normalization, discovery, and copying.
 - `.waza.yaml` and `evals/`: Waza gates and behavioral evaluation.
@@ -23,23 +24,23 @@ directories are forbidden.
 
 ## Distribution boundary
 
-Personal targets receive the non-technological skills and supported
-command/rule surfaces declared by the projection owner. Technology profiles
-never enter personal targets. `agents/` and `workflows/` remain canonical
-personal source material; they are not silently copied by an undeclared
-projection surface.
+Personal targets receive `agent-wide` skills plus conditional skills, commands,
+agents, and rules only when route and provider capability authorize them.
+Technology and framework bundles never enter personal targets by default.
+`agents/`, `commands/`, `rules/`, and `workflows/` remain distinct canonical
+source types; provider representation never changes those types.
 
 Explicit project roots receive only:
 
 1. explicitly classified project-generic skills;
 2. technology skills selected from detected project markers or dependencies;
-3. FLEXT-owned skills when, and only when, the project is detected as a FLEXT
-   consumer.
+3. conditional tool/domain skills selected by validated project evidence or an
+   explicit opt-in.
 
 Orchestrator, tracker, AI Hub, `~/.agents`, operator workflow, and repository-local
 development contracts are private and must never enter generic project
-projections. FLEXT is a conditional framework source, not a universal project
-template.
+projections. External skill sources, including FLEXT, are outside this
+increment.
 
 The current `.agents`-only increment validates projection behavior on local
 fixtures. It does not apply changes to tool homes or external project checkouts.
@@ -50,6 +51,10 @@ Gas City configuration owns project identity and placement through native city,
 rig, Pack V2, agent, formula, run, and session primitives. Its runtime is
 currently suspended, so only existing checkouts are execution surfaces; loose
 clones and manual worktrees remain prohibited.
+
+The [manual execution ledger](docs/execution/manual-ledger.md) owns increment
+state while Gas City, Gas Town, Beads, and Dolt are suspended. It records work
+but cannot satisfy tracker closure.
 
 Storage placement and bounded scratch are owned by [`rules/storage.md`](rules/storage.md).
 Managed build/test commands use unique repository-local scratch; shells retain

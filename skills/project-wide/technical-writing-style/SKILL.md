@@ -7,6 +7,8 @@ metadata:
 
 # Technical Writing Style
 
-This file is the activation router. Read the [complete procedure](references/procedure.md)
-before writing or revising technical prose. Preserve meaning and evidence; prefer
-deletion over decorative rewriting.
+Activate when writing or revising technical prose, including guides, ADRs,
+runbooks, references, and code-facing explanations. Read the
+[complete procedure](references/procedure.md), preserve meaning and evidence,
+and prefer deletion over decorative rewriting. It does not own product voice or
+marketing copy.

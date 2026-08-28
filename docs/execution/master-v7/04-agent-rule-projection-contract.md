@@ -64,7 +64,7 @@ Agent tags describe orthogonal facets rather than folders:
 - `mode:plan|execute|review|debug|operate`
 - `technology:*`, `framework:*`, `tool:*`, `domain:*`
 - `capability:*`
-- `activation:always|detected|opt-in`
+- `activation:always|detected|detected-or-opt-in|opt-in`
 - `detect:*` when conditional
 
 No target count is permitted. Discovery must fail on an undecided duplicate or
@@ -176,11 +176,12 @@ projects no FLEXT-owned skill. A later approved import must adopt physical
 content into the declared owner/destination contract without symlinks,
 cross-repository references, or a second synchronizing writer.
 
-## Root cutover
+## Future root cutover
 
-`~/.agents` remains the active checkout throughout semantic migration. After all
-earlier phases are integrated and no process has an open file or current working
-directory under it, the owner moves physically to `~/agents`.
+`~/.agents` remains the active checkout throughout this increment. A separate
+future increment may move the owner physically to `~/agents` only after the
+current work is integrated and no process has an open file or current working
+directory under it.
 
 The cutover rewires every supported consumer and removes the old path. It does
 not leave a compatibility symlink, path alias, cross-repository reference,

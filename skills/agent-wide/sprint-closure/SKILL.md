@@ -7,4 +7,8 @@ metadata:
 
 # Sprint Closure
 
-This file is the activation router. Before acting, read [the complete procedure](references/procedure.md) in full and follow it. The referenced procedure is canonical for this skill; do not improvise missing steps or restore an upstream synchronization path.
+Activate before an increment handoff, closure claim, integration merge, or final
+residue audit. Read the [complete procedure](references/procedure.md) and keep
+the increment open until its runtime, gates, review, landing, post-merge proof,
+and tracker contract all hold. A manual ledger records suspended-tracker state;
+it cannot make the increment `DONE`.

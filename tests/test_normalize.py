@@ -25,7 +25,9 @@ _FROZEN_METADATA = (
 )
 
 
-def test_normalize_preserves_body_in_required_reference(tmp_path: Path) -> None:
+def test_normalize_reports_authored_progressive_disclosure_needed(
+    tmp_path: Path,
+) -> None:
     (tmp_path / "config").mkdir()
     skill = tmp_path / "skills" / "agent-wide" / "router"
     skill.mkdir(parents=True)
@@ -51,19 +53,17 @@ def test_normalize_preserves_body_in_required_reference(tmp_path: Path) -> None:
         json.dumps(config), encoding="utf-8"
     )
 
-    changes = normalize(Catalog(tmp_path), apply=True)
+    original = (skill / "SKILL.md").read_text(encoding="utf-8")
+    changes = normalize(Catalog(tmp_path), apply=False)
 
     assert len(changes) == 1
-    procedure = (skill / "references" / "procedure.md").read_text(encoding="utf-8")
-    assert "[Read](../guide.md)" in procedure
-    assert "step\n" * 20 in procedure
-    router = (skill / "SKILL.md").read_text(encoding="utf-8")
-    assert "references/procedure.md" in router
-    assert original_body not in router
+    assert changes[0].destination == "skills/agent-wide/router/references/procedure.md"
+    assert (skill / "SKILL.md").read_text(encoding="utf-8") == original
+    assert not (skill / "references").exists()
 
 
-def test_normalize_rolls_back_new_procedure_when_router_promotion_fails(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+def test_normalize_refuses_to_invent_a_generic_activation_router(
+    tmp_path: Path,
 ) -> None:
     (tmp_path / "config").mkdir()
     skill = tmp_path / "skills" / "agent-wide" / "router"
@@ -90,16 +90,11 @@ def test_normalize_rolls_back_new_procedure_when_router_promotion_fails(
         ),
         encoding="utf-8",
     )
-    original_replace = Path.replace
 
-    def fail_router_promotion(source: Path, target: Path) -> Path:
-        if target == skill_file:
-            raise OSError("injected router promotion failure")
-        return original_replace(source, target)
-
-    monkeypatch.setattr(Path, "replace", fail_router_promotion)
-
-    with pytest.raises(OSError, match="injected router promotion failure"):
+    with pytest.raises(
+        ValueError,
+        match="normalization requires an authored activation router",
+    ):
         normalize(Catalog(tmp_path), apply=True)
 
     assert skill_file.read_text(encoding="utf-8") == original

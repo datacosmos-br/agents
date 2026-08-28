@@ -1,34 +1,33 @@
 {
   "skills": [
     {
+      "category": "tool",
       "class": "on_demand",
-      "digest": "d954a23ed166a5aab8542ca38c8c8c8e2c3e1daade7666cbb382423c384f06b6",
+      "digest": "40f851d2e18e849602ae7fe424f23c404d00bc7b12d79a1a9c9b72f0b17c6dc0",
       "distributions": [
-        "project-generic"
-      ],
-      "max_lines": 500,
-      "max_tokens": 5000,
-      "name": "add-language-rules",
-      "owner": "agents",
-      "provenance": "agents-owned",
-      "updates": "manual"
-    },
-    {
-      "class": "on_demand",
-      "digest": "e45d22281b1130a91bf248838d23bd5aef1a63cee241c0bcfe9d5a603e8571e8",
-      "distributions": [
-        "personal"
+        "agent-capability:tool:agent-browser"
       ],
       "max_lines": 500,
       "max_tokens": 5000,
       "name": "agent-browser",
       "owner": "agents",
+      "path": "skills/tool/agent-browser",
       "provenance": "agents-owned",
+      "tags": [
+        "activation:opt-in",
+        "detect:opt-in:agent-browser",
+        "provenance:agents-owned",
+        "route:agent",
+        "tool:agent-browser",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
+      "category": "agent-wide",
       "class": "on_demand",
-      "digest": "8ee7c29d26c4b5e6e8decb23cf6cee250d03763ff6153493e23e940091868d7b",
+      "digest": "a0dc2a259e33f69dca37985cde277092fd8f95ae5b08467893e94f758096e4d9",
       "distributions": [
         "personal"
       ],
@@ -36,38 +35,62 @@
       "max_tokens": 5000,
       "name": "agent-introspection-debugging",
       "owner": "agents",
+      "path": "skills/agent-wide/agent-introspection-debugging",
       "provenance": "agents-owned",
-      "updates": "manual"
-    },
-    {
-      "class": "on_demand",
-      "digest": "4269cfcd60897bb6371db77e71f9888bcbbcef35c42d8c223ec2710bc7e27296",
-      "distributions": [
-        "personal"
+      "tags": [
+        "provenance:agents-owned",
+        "role:debug",
+        "updates:manual",
+        "usage:on-demand"
       ],
-      "max_lines": 500,
-      "max_tokens": 5000,
-      "name": "ai-prompt-engineering-safety-review",
-      "owner": "agents",
-      "provenance": "agents-owned",
       "updates": "manual"
     },
     {
-      "class": "on_demand",
-      "digest": "e32f8d250a957d648ac6c32db1c6339df839b82741b73aca07a17a7502c38f01",
+      "category": "project-wide",
+      "class": "router",
+      "digest": "99c52e36dd832547d2772e747773e414202f575a91f707a6183f9475fa24f9c8",
       "distributions": [
         "project-generic"
       ],
       "max_lines": 500,
-      "max_tokens": 5000,
-      "name": "api-design",
+      "max_tokens": 500,
+      "name": "anti-hardcode",
       "owner": "agents",
+      "path": "skills/project-wide/anti-hardcode",
       "provenance": "agents-owned",
+      "tags": [
+        "provenance:agents-owned",
+        "role:configuration",
+        "updates:manual",
+        "usage:router"
+      ],
       "updates": "manual"
     },
     {
+      "category": "agent-wide",
+      "class": "router",
+      "digest": "20780563cbca66809d4e27bbc477bb7d220ca172dc95501a54c65636e0188c66",
+      "distributions": [
+        "personal"
+      ],
+      "max_lines": 500,
+      "max_tokens": 500,
+      "name": "anti-phase-skip",
+      "owner": "agents",
+      "path": "skills/agent-wide/anti-phase-skip",
+      "provenance": "agents-owned",
+      "tags": [
+        "provenance:agents-owned",
+        "role:governance",
+        "updates:manual",
+        "usage:router"
+      ],
+      "updates": "manual"
+    },
+    {
+      "category": "project-wide",
       "class": "on_demand",
-      "digest": "e362bae37fb0c04935619e87f010f62c92efad03556f86f7b1ce6366bd2f7bad",
+      "digest": "3e3a0d3f32ec401dfb62f01e9efa8dce3c58505f29bdb8c1c51895a7b6a9133e",
       "distributions": [
         "project-generic"
       ],
@@ -75,12 +98,20 @@
       "max_tokens": 5000,
       "name": "architecture-documentation",
       "owner": "agents",
+      "path": "skills/project-wide/architecture-documentation",
       "provenance": "agents-owned",
+      "tags": [
+        "provenance:agents-owned",
+        "role:documentation",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
+      "category": "agent-wide",
       "class": "on_demand",
-      "digest": "3898715a497dca25b87101bed5889dd845213974bb8240239d607df1c1c06469",
+      "digest": "8db01db9543fa41be0ecdb81e46ab1e7a292943ea7bb616eca15d4ff68e77c46",
       "distributions": [
         "personal"
       ],
@@ -88,12 +119,20 @@
       "max_tokens": 5000,
       "name": "article-writing",
       "owner": "agents",
+      "path": "skills/agent-wide/article-writing",
       "provenance": "agents-owned",
+      "tags": [
+        "provenance:agents-owned",
+        "role:writing",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
+      "category": "project-wide",
       "class": "on_demand",
-      "digest": "331e213aa96bf40c42510a3fca1c978d29c0f434e331b0d4f47290294be605ed",
+      "digest": "d0665066d81cf95b162ab70b70551d4faf0860ea282b003dcc4c11e340301c92",
       "distributions": [
         "project-generic"
       ],
@@ -101,51 +140,92 @@
       "max_tokens": 5000,
       "name": "backend-patterns",
       "owner": "agents",
+      "path": "skills/project-wide/backend-patterns",
       "provenance": "agents-owned",
+      "tags": [
+        "provenance:agents-owned",
+        "role:architecture",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
+      "category": "tool",
       "class": "router",
-      "digest": "df5bc2d3258df4d2bc2f4d69b53177523d1a571af821ec8a0404bec0c794a9f5",
+      "digest": "d2885a03d37ad398086fbaa596e07b121bdbfd7f72c22684bf833e7d10ffd924",
       "distributions": [
-        "personal"
+        "agent-capability:tool:beads"
       ],
       "max_lines": 500,
       "max_tokens": 500,
       "name": "beads",
       "owner": "agents",
+      "path": "skills/tool/beads",
       "provenance": "agents-owned",
+      "tags": [
+        "activation:opt-in",
+        "detect:opt-in:beads",
+        "provenance:agents-owned",
+        "route:agent",
+        "tool:beads",
+        "updates:manual",
+        "usage:router"
+      ],
       "updates": "manual"
     },
     {
+      "category": "tool",
       "class": "router",
-      "digest": "6ab6d151a90d220e0de499cf16824e10f2aa0cfcd485b68eda88d275cdf2060d",
+      "digest": "a5545ce6a5a4162d678d277f79ff9f0cdc8cfb203493880355e02ad21da0439d",
       "distributions": [
-        "personal"
+        "agent-capability:tool:beads"
       ],
       "max_lines": 500,
       "max_tokens": 500,
       "name": "beads-orchestrator",
       "owner": "agents",
+      "path": "skills/tool/beads-orchestrator",
       "provenance": "agents-owned",
+      "tags": [
+        "activation:opt-in",
+        "detect:opt-in:beads-orchestration",
+        "provenance:agents-owned",
+        "route:agent",
+        "tool:beads",
+        "updates:manual",
+        "usage:router"
+      ],
       "updates": "manual"
     },
     {
+      "category": "tool",
       "class": "router",
-      "digest": "7bbb287400da980db704dc9b259edae2e1b439ba649d83958ae6a8c6968e2a74",
+      "digest": "19e8ba1cfddbebf92a714f81ad83785cf980a5c393956f9db488915361a71bf1",
       "distributions": [
-        "personal"
+        "agent-capability:tool:beads"
       ],
       "max_lines": 500,
       "max_tokens": 500,
       "name": "beads-worker",
       "owner": "agents",
+      "path": "skills/tool/beads-worker",
       "provenance": "agents-owned",
+      "tags": [
+        "activation:opt-in",
+        "detect:opt-in:beads-worker",
+        "provenance:agents-owned",
+        "route:agent",
+        "tool:beads",
+        "updates:manual",
+        "usage:router"
+      ],
       "updates": "manual"
     },
     {
+      "category": "agent-wide",
       "class": "on_demand",
-      "digest": "d548146a5dc61583b0abc906de5b2cee895770cf8505511f9088318af9cd1fb3",
+      "digest": "270be889c9473c395d2ffb7ebb2d231ce5b40fe594fbb1488e63d8745520ddc6",
       "distributions": [
         "personal"
       ],
@@ -153,25 +233,45 @@
       "max_tokens": 5000,
       "name": "brand-voice",
       "owner": "agents",
+      "path": "skills/agent-wide/brand-voice",
       "provenance": "agents-owned",
+      "tags": [
+        "provenance:agents-owned",
+        "role:writing",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
+      "category": "technology",
       "class": "on_demand",
-      "digest": "95715fb4e19e60a00e2c90be3e861871d7f90ad9b0915a17cba541f1cf0105bb",
+      "digest": "2417eef299a63fb9bb566d3b955ec5485d01aa32e0f83959c3e522a2fe77570d",
       "distributions": [
-        "technology:bun"
+        "project-capability:technology:bun"
       ],
       "max_lines": 500,
       "max_tokens": 5000,
       "name": "bun-runtime",
       "owner": "agents",
+      "path": "skills/technology/bun-runtime",
       "provenance": "agents-owned",
+      "tags": [
+        "activation:detected",
+        "detect:marker:bun.lock",
+        "detect:marker:bun.lockb",
+        "provenance:agents-owned",
+        "route:project",
+        "technology:bun",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
+      "category": "agent-wide",
       "class": "on_demand",
-      "digest": "4f7d74181aabfff5739a32199d338e73787e9b0a41f0526888d13897abcf7f52",
+      "digest": "f5c6081cf75e2afc509670bb9e5edec54ad17a9d5f1266b3b581d58da0f6d9f5",
       "distributions": [
         "personal"
       ],
@@ -179,25 +279,20 @@
       "max_tokens": 5000,
       "name": "caveman",
       "owner": "agents",
+      "path": "skills/agent-wide/caveman",
       "provenance": "agents-owned",
-      "updates": "manual"
-    },
-    {
-      "class": "on_demand",
-      "digest": "5287db89b02ab8969a077c6c1e3057f8b9eed1c9e06348734c28554c4e0402d5",
-      "distributions": [
-        "project-generic"
+      "tags": [
+        "provenance:agents-owned",
+        "role:communication",
+        "updates:manual",
+        "usage:on-demand"
       ],
-      "max_lines": 500,
-      "max_tokens": 5000,
-      "name": "code-navigation",
-      "owner": "agents",
-      "provenance": "agents-owned",
       "updates": "manual"
     },
     {
+      "category": "project-wide",
       "class": "on_demand",
-      "digest": "d9d22f05747b28e2febbcc2036f3c863d89873c8da2570889e5928a6efe7933e",
+      "digest": "3c42f86489a8e0964853a9798ad704e8ff2826e2fdb574969e5c2cd44138ae1c",
       "distributions": [
         "project-generic"
       ],
@@ -205,25 +300,20 @@
       "max_tokens": 5000,
       "name": "code-review-expert",
       "owner": "agents",
+      "path": "skills/project-wide/code-review-expert",
       "provenance": "agents-owned",
-      "updates": "manual"
-    },
-    {
-      "class": "on_demand",
-      "digest": "9289eae327b99f15f0091017464f08f7f06cfe8975b8682895f07d2eaa33688e",
-      "distributions": [
-        "project-generic"
+      "tags": [
+        "provenance:agents-owned",
+        "role:review",
+        "updates:manual",
+        "usage:on-demand"
       ],
-      "max_lines": 500,
-      "max_tokens": 5000,
-      "name": "coding-standards",
-      "owner": "agents",
-      "provenance": "agents-owned",
       "updates": "manual"
     },
     {
+      "category": "project-wide",
       "class": "router",
-      "digest": "a2e47b3021c01af7edeb326eb4dbb2560bc2b7671570189ec87aabcd7bf0a63b",
+      "digest": "b993512c71721777bff62e83bfd5acbc4262e920b8f4cc028214943746d568f2",
       "distributions": [
         "project-generic"
       ],
@@ -231,12 +321,20 @@
       "max_tokens": 500,
       "name": "config-schema-migration",
       "owner": "agents",
+      "path": "skills/project-wide/config-schema-migration",
       "provenance": "agents-owned",
+      "tags": [
+        "provenance:agents-owned",
+        "role:migration",
+        "updates:manual",
+        "usage:router"
+      ],
       "updates": "manual"
     },
     {
+      "category": "agent-wide",
       "class": "on_demand",
-      "digest": "e8d2a442ead85ecd8d805d36155d4a3040df36fc73392d1e624d3a24c3f2b33b",
+      "digest": "99c496063e8338d46980985c5fde7220a3970faf1a15488931cceaf647918183",
       "distributions": [
         "personal"
       ],
@@ -244,12 +342,20 @@
       "max_tokens": 5000,
       "name": "content-engine",
       "owner": "agents",
+      "path": "skills/agent-wide/content-engine",
       "provenance": "agents-owned",
+      "tags": [
+        "provenance:agents-owned",
+        "role:content",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
+      "category": "agent-wide",
       "class": "on_demand",
-      "digest": "6d7673d83c882669d0424532e5292b3c59261a63f306c45c73762972b4b09592",
+      "digest": "15fc8a76133da421cb21432f69c43d717ba06013b787953982900b2d60db48cd",
       "distributions": [
         "personal"
       ],
@@ -257,25 +363,73 @@
       "max_tokens": 5000,
       "name": "context-canary",
       "owner": "agents",
+      "path": "skills/agent-wide/context-canary",
       "provenance": "agents-owned",
+      "tags": [
+        "provenance:agents-owned",
+        "role:continuity",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
-      "class": "router",
-      "digest": "cd9bb8477b9eef1ed2f1b81fe5b4e2ee01fcb620c1f32049745848ae939fafef",
+      "category": "tool",
+      "class": "on_demand",
+      "digest": "a752641319929b02c1df79ac4f3e4d4dd8365d0544e52b9eeed8ed191bc2f4d2",
       "distributions": [
-        "technology:cpp"
+        "agent-capability:tool:context7"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "context7-documentation",
+      "owner": "agents",
+      "path": "skills/tool/context7-documentation",
+      "provenance": "agents-owned",
+      "tags": [
+        "activation:opt-in",
+        "detect:opt-in:context7",
+        "provenance:agents-owned",
+        "route:agent",
+        "tool:context7",
+        "updates:manual",
+        "usage:on-demand"
+      ],
+      "updates": "manual"
+    },
+    {
+      "category": "technology",
+      "class": "router",
+      "digest": "0d936f8a0d34fe7c660c3898fcba58181729dd35cf76e1201825db054da62eaa",
+      "distributions": [
+        "project-capability:technology:cpp"
       ],
       "max_lines": 500,
       "max_tokens": 500,
       "name": "cpp-development",
       "owner": "agents",
+      "path": "skills/technology/cpp-development",
       "provenance": "agents-owned",
+      "tags": [
+        "activation:detected",
+        "detect:marker:CMakeLists.txt",
+        "detect:marker:compile_commands.json",
+        "detect:marker:conanfile.py",
+        "detect:marker:conanfile.txt",
+        "detect:marker:meson.build",
+        "detect:marker:vcpkg.json",
+        "provenance:agents-owned",
+        "route:project",
+        "technology:cpp",
+        "updates:manual",
+        "usage:router"
+      ],
       "updates": "manual"
     },
     {
+      "category": "agent-wide",
       "class": "on_demand",
-      "digest": "431cfa92e169089b3cfca559863795bdc758e7436f1bf8d6681b58638f4745b7",
+      "digest": "d593866b3f3dfd1b6bc63ade8ecfb2fe4d0433c617267bbaa0a13ab4ef8e052a",
       "distributions": [
         "personal"
       ],
@@ -283,12 +437,20 @@
       "max_tokens": 5000,
       "name": "crosspost",
       "owner": "agents",
+      "path": "skills/agent-wide/crosspost",
       "provenance": "agents-owned",
+      "tags": [
+        "provenance:agents-owned",
+        "role:content",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
+      "category": "project-wide",
       "class": "on_demand",
-      "digest": "630f71a71f556a494a071ed449382994151979c2ffffdac3e51f9a67b86dff75",
+      "digest": "e2a488a163510c0295894409179df9f00eabd7a952022725db79b634018c46fc",
       "distributions": [
         "project-generic"
       ],
@@ -296,25 +458,20 @@
       "max_tokens": 5000,
       "name": "data-modeling-analysis",
       "owner": "agents",
+      "path": "skills/project-wide/data-modeling-analysis",
       "provenance": "agents-owned",
-      "updates": "manual"
-    },
-    {
-      "class": "on_demand",
-      "digest": "86e46c7c56f266365616a4263d38ee5c3ad5f715d7b50a83eb631263185458f2",
-      "distributions": [
-        "project-generic"
+      "tags": [
+        "provenance:agents-owned",
+        "role:architecture",
+        "updates:manual",
+        "usage:on-demand"
       ],
-      "max_lines": 500,
-      "max_tokens": 5000,
-      "name": "database-migration",
-      "owner": "agents",
-      "provenance": "agents-owned",
       "updates": "manual"
     },
     {
+      "category": "agent-wide",
       "class": "on_demand",
-      "digest": "a42415196779a541a10f0c00f50f5544d5982bd97bd8265917156b0e4b1450fc",
+      "digest": "09767c73cf0c27ad12a5d9dbdecf24a9dfbfbd9ca822f15501e47d2dffaf0df4",
       "distributions": [
         "personal"
       ],
@@ -322,12 +479,20 @@
       "max_tokens": 5000,
       "name": "deep-research",
       "owner": "agents",
+      "path": "skills/agent-wide/deep-research",
       "provenance": "agents-owned",
+      "tags": [
+        "provenance:agents-owned",
+        "role:research",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
+      "category": "agent-wide",
       "class": "on_demand",
-      "digest": "20dc99dff74fb6a7d570774d1f3801d4a9e09a083d49bd28946c014205e63112",
+      "digest": "51174a80e237b8ddc7fb20a98356df13893bb44a44fc06b20c16bb7d96243844",
       "distributions": [
         "personal"
       ],
@@ -335,38 +500,65 @@
       "max_tokens": 5000,
       "name": "dispatch-agent",
       "owner": "agents",
+      "path": "skills/agent-wide/dispatch-agent",
       "provenance": "agents-owned",
+      "tags": [
+        "provenance:agents-owned",
+        "role:delegation",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
+      "category": "tool",
       "class": "on_demand",
-      "digest": "c45b7855e5d728704c99d872c066f11229638e40c775b4c365ae98232c6237f5",
+      "digest": "c03e4040f2b566b4c9ac71063773836ef9689993dccaafbfc641920ff23c99a2",
       "distributions": [
-        "personal"
+        "agent-capability:tool:dmux"
       ],
       "max_lines": 500,
       "max_tokens": 5000,
       "name": "dmux-workflows",
       "owner": "agents",
+      "path": "skills/tool/dmux-workflows",
       "provenance": "agents-owned",
+      "tags": [
+        "activation:opt-in",
+        "detect:opt-in:dmux",
+        "provenance:agents-owned",
+        "route:agent",
+        "tool:dmux",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
+      "category": "project-wide",
       "class": "on_demand",
-      "digest": "a7200a12d58394c7d5318f7285ed064f9e073a8fb6f59af55f17cb4aa658f356",
+      "digest": "07f51880f40d02135f04dafea352c7b78cfd98e9284959fd238c8a0148a460be",
       "distributions": [
-        "personal"
+        "project-generic"
       ],
       "max_lines": 500,
       "max_tokens": 5000,
       "name": "doc-drift",
       "owner": "agents",
+      "path": "skills/project-wide/doc-drift",
       "provenance": "agents-owned",
+      "tags": [
+        "provenance:agents-owned",
+        "role:documentation",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
+      "category": "project-wide",
       "class": "on_demand",
-      "digest": "df3ffdd831097256a8028b28002cdc731bc05f2b6ca411e82a7019877cb83b76",
+      "digest": "1435180adf233d18d83d488238f5b942857bbcb24cae53798ef4ee28106d466d",
       "distributions": [
         "project-generic"
       ],
@@ -374,38 +566,41 @@
       "max_tokens": 5000,
       "name": "documentation-criteria",
       "owner": "agents",
+      "path": "skills/project-wide/documentation-criteria",
       "provenance": "agents-owned",
+      "tags": [
+        "provenance:agents-owned",
+        "role:documentation",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
-      "class": "on_demand",
-      "digest": "0135c8f02be3a6641889453ed64b173d08ae640c9dc4181c54f08bbc7bee9a5f",
+      "category": "project-wide",
+      "class": "router",
+      "digest": "4a6e3884fea600c429d5c6a23b27c1b2656264720244c76cea99ce4601a8d975",
       "distributions": [
         "project-generic"
       ],
       "max_lines": 500,
-      "max_tokens": 5000,
-      "name": "documentation-lookup",
+      "max_tokens": 500,
+      "name": "dry",
       "owner": "agents",
+      "path": "skills/project-wide/dry",
       "provenance": "agents-owned",
-      "updates": "manual"
-    },
-    {
-      "class": "on_demand",
-      "digest": "db20a5628734ee5407ed960058534841d60fe39a427ddbb13797cb7187325042",
-      "distributions": [
-        "technology:playwright"
+      "tags": [
+        "provenance:agents-owned",
+        "role:refactoring",
+        "updates:manual",
+        "usage:router"
       ],
-      "max_lines": 500,
-      "max_tokens": 5000,
-      "name": "e2e-testing",
-      "owner": "agents",
-      "provenance": "agents-owned",
       "updates": "manual"
     },
     {
+      "category": "project-wide",
       "class": "on_demand",
-      "digest": "fa2de66c640931f6cbf019ab088625cea209848da5d123b54d492b8063e3ed3b",
+      "digest": "e3257d2d75bad499975d89c4bf4b1ddf70e9ddb3c054e5d82442fdfadd47a08f",
       "distributions": [
         "project-generic"
       ],
@@ -413,78 +608,135 @@
       "max_tokens": 5000,
       "name": "eval-harness",
       "owner": "agents",
+      "path": "skills/project-wide/eval-harness",
       "provenance": "agents-owned",
+      "tags": [
+        "provenance:agents-owned",
+        "role:verification",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
+      "category": "tool",
       "class": "on_demand",
-      "digest": "9f7001bb9efa1cdb558fa11229715c9ba28a76ca177d7ca725dc61455ed69344",
+      "digest": "53c1b7585e8cdce75fbffaa27d422f08f8febddccc6e585fc11b9f2078bd493e",
       "distributions": [
-        "personal"
+        "agent-capability:tool:exa"
       ],
       "max_lines": 500,
       "max_tokens": 5000,
       "name": "exa-search",
       "owner": "agents",
+      "path": "skills/tool/exa-search",
       "provenance": "agents-owned",
-      "updates": "manual"
-    },
-    {
-      "class": "on_demand",
-      "digest": "fe7056fd93f13399008d3167c612a22ac8c2bae8cb4fd86479e966d75aa3f377",
-      "distributions": [
-        "personal"
+      "tags": [
+        "activation:opt-in",
+        "detect:opt-in:exa",
+        "provenance:agents-owned",
+        "route:agent",
+        "tool:exa",
+        "updates:manual",
+        "usage:on-demand"
       ],
-      "max_lines": 500,
-      "max_tokens": 5000,
-      "name": "fal-ai-media",
-      "owner": "agents",
-      "provenance": "agents-owned",
       "updates": "manual"
     },
     {
+      "category": "project-wide",
       "class": "router",
-      "digest": "abbc1a9ffabae69a69d6bed2a83ecec07a0e561ebcefd3f56c4591af634526b4",
+      "digest": "83d22959822caf27ee67a4326772c0f3032c09d8cf6eb25ef3b82241383fd730",
       "distributions": [
         "project-generic"
       ],
       "max_lines": 500,
       "max_tokens": 500,
-      "name": "feature-development",
+      "name": "extermination-mode",
       "owner": "agents",
+      "path": "skills/project-wide/extermination-mode",
       "provenance": "agents-owned",
+      "tags": [
+        "provenance:agents-owned",
+        "role:migration",
+        "updates:manual",
+        "usage:router"
+      ],
       "updates": "manual"
     },
     {
+      "category": "project-wide",
       "class": "router",
-      "digest": "6817475b0b7e43a08fb98e910bd9cbdc7dea4446a12c54fb5e8c4571852122d2",
+      "digest": "50adc799946d1f5dab6036ddb8e7c46f51216c2ae4150ba42b74541c9dcc2f79",
       "distributions": [
-        "technology:flutter"
+        "project-generic"
+      ],
+      "max_lines": 500,
+      "max_tokens": 500,
+      "name": "fail-fast",
+      "owner": "agents",
+      "path": "skills/project-wide/fail-fast",
+      "provenance": "agents-owned",
+      "tags": [
+        "provenance:agents-owned",
+        "role:reliability",
+        "updates:manual",
+        "usage:router"
+      ],
+      "updates": "manual"
+    },
+    {
+      "category": "tool",
+      "class": "on_demand",
+      "digest": "c984fbd7cba5f5d1f6841da6e8921223123b0525f2ca050ce80a968f8ebe4d04",
+      "distributions": [
+        "agent-capability:tool:fal-ai"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "fal-ai-media",
+      "owner": "agents",
+      "path": "skills/tool/fal-ai-media",
+      "provenance": "agents-owned",
+      "tags": [
+        "activation:opt-in",
+        "detect:opt-in:fal-ai",
+        "provenance:agents-owned",
+        "route:agent",
+        "tool:fal-ai",
+        "updates:manual",
+        "usage:on-demand"
+      ],
+      "updates": "manual"
+    },
+    {
+      "category": "framework",
+      "class": "router",
+      "digest": "b7549f027db92c51ffebb59b8a5b4712ae153e9ce8b05cef9e91f0519fab2ebc",
+      "distributions": [
+        "project-capability:framework:flutter"
       ],
       "max_lines": 500,
       "max_tokens": 500,
       "name": "flutter-development",
       "owner": "agents",
+      "path": "skills/framework/flutter-development",
       "provenance": "agents-owned",
-      "updates": "manual"
-    },
-    {
-      "class": "on_demand",
-      "digest": "fd88a54061026271caad9b28a5bd533c6c165b4c3e733c1dcb0f80a72bb1a506",
-      "distributions": [
-        "technology:react",
-        "technology:nextjs"
+      "tags": [
+        "activation:detected",
+        "detect:dependency:dart:sdk:flutter",
+        "framework:flutter",
+        "provenance:agents-owned",
+        "route:project",
+        "technology:dart",
+        "updates:manual",
+        "usage:router"
       ],
-      "max_lines": 500,
-      "max_tokens": 5000,
-      "name": "frontend-patterns",
-      "owner": "agents",
-      "provenance": "agents-owned",
       "updates": "manual"
     },
     {
+      "category": "agent-wide",
       "class": "on_demand",
-      "digest": "858b7a71cfd386927206d306ba2211198a40f443b4ceb1164be1c515da105d67",
+      "digest": "ab2defffd570743d82e0eaa3a3a41ce1d13cc4bfaae2d32f2ceea108e9b3ed03",
       "distributions": [
         "personal"
       ],
@@ -492,64 +744,93 @@
       "max_tokens": 5000,
       "name": "frontend-slides",
       "owner": "agents",
+      "path": "skills/agent-wide/frontend-slides",
       "provenance": "agents-owned",
+      "tags": [
+        "provenance:agents-owned",
+        "role:presentation",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
+      "category": "tool",
       "class": "on_demand",
-      "digest": "536ae6a5e8902022a76076b90caafd90072c1e933363774db01fba76d10461a7",
+      "digest": "d0bb9da2258b446e4b19f184805ce906ddb8e34c63f0acadb714708206fcdd50",
       "distributions": [
-        "personal"
+        "agent-capability:tool:gascity"
       ],
       "max_lines": 500,
       "max_tokens": 5000,
       "name": "gascity-change-lifecycle",
       "owner": "agents",
+      "path": "skills/tool/gascity-change-lifecycle",
       "provenance": "agents-owned",
+      "tags": [
+        "activation:opt-in",
+        "detect:opt-in:gascity",
+        "provenance:agents-owned",
+        "route:agent",
+        "tool:gascity",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
+      "category": "tool",
       "class": "on_demand",
-      "digest": "3af87eb1c011b539430eb4bae1278afabaecc4b3d25ce2836ddd67147bb5ea2c",
+      "digest": "e9224dfe79c93288934ebcca052e70ac3231662cc8e61c676e070c7f0ad6c5c7",
       "distributions": [
-        "personal"
+        "agent-capability:tool:gascity"
       ],
       "max_lines": 500,
       "max_tokens": 5000,
       "name": "gascity-workspace-lifecycle",
       "owner": "agents",
+      "path": "skills/tool/gascity-workspace-lifecycle",
       "provenance": "agents-owned",
-      "updates": "manual"
-    },
-    {
-      "class": "on_demand",
-      "digest": "69005a569390a041d5ae8f45432fec65b2aabe590d30257f817ec199823025f7",
-      "distributions": [
-        "personal"
+      "tags": [
+        "activation:opt-in",
+        "detect:opt-in:gascity",
+        "provenance:agents-owned",
+        "route:agent",
+        "tool:gascity",
+        "updates:manual",
+        "usage:on-demand"
       ],
-      "max_lines": 500,
-      "max_tokens": 5000,
-      "name": "ghi-list",
-      "owner": "agents",
-      "provenance": "agents-owned",
       "updates": "manual"
     },
     {
+      "category": "technology",
       "class": "router",
-      "digest": "dde20caf5735294be6336c60b7c7675e2d50dec303a63814feef959bd3d30d5e",
+      "digest": "063e26e117067a331e5f025507a9952f3f3bb673687210806bd3125c35af2a58",
       "distributions": [
-        "technology:go"
+        "project-capability:technology:go"
       ],
       "max_lines": 500,
       "max_tokens": 500,
       "name": "go-development",
       "owner": "agents",
+      "path": "skills/technology/go-development",
       "provenance": "agents-owned",
+      "tags": [
+        "activation:detected",
+        "detect:marker:go.mod",
+        "detect:marker:go.work",
+        "provenance:agents-owned",
+        "route:project",
+        "technology:go",
+        "updates:manual",
+        "usage:router"
+      ],
       "updates": "manual"
     },
     {
+      "category": "agent-wide",
       "class": "on_demand",
-      "digest": "be2d1801f274205e8495a617b991bb0c8b343ac02ee82aca0d82ea424e16ad5b",
+      "digest": "6568caa409722ff4de828ae9d28e890787c29ab3c084b99dfb512ab374216ec9",
       "distributions": [
         "personal"
       ],
@@ -557,12 +838,20 @@
       "max_tokens": 5000,
       "name": "governance-audit",
       "owner": "agents",
+      "path": "skills/agent-wide/governance-audit",
       "provenance": "agents-owned",
+      "tags": [
+        "provenance:agents-owned",
+        "role:governance",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
+      "category": "agent-wide",
       "class": "on_demand",
-      "digest": "c746c9904520f87368a1261ac78fc6df0620db8919daf46e23521e1037a5c61d",
+      "digest": "8441342847ad29d175f45710436d9743d01836b377bd862fc75cc694c9002768",
       "distributions": [
         "personal"
       ],
@@ -570,12 +859,20 @@
       "max_tokens": 5000,
       "name": "human-writing-style",
       "owner": "agents",
+      "path": "skills/agent-wide/human-writing-style",
       "provenance": "agents-owned",
+      "tags": [
+        "provenance:agents-owned",
+        "role:writing",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
+      "category": "agent-wide",
       "class": "on_demand",
-      "digest": "467a88d91ee0c2e5985fdc3daf29b6a26c491066b0bef0b7f3463689efc5d53d",
+      "digest": "cbaa1ae48eaaf00a5af622d4e69dc9dfe01aed3557d965aa5a221e1458a7a637",
       "distributions": [
         "personal"
       ],
@@ -583,12 +880,21 @@
       "max_tokens": 5000,
       "name": "investor-materials",
       "owner": "agents",
+      "path": "skills/agent-wide/investor-materials",
       "provenance": "agents-owned",
+      "tags": [
+        "domain:fundraising",
+        "provenance:agents-owned",
+        "role:writing",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
+      "category": "agent-wide",
       "class": "on_demand",
-      "digest": "6fba3dfbfb0ccbf5f4e0f92b68d037c2ac841f990ccfbfc93363cc5b93e13cf5",
+      "digest": "36c6c0e3546ba5dd32dca90da4eb9cdb7b410bbd3b8b8e74376dbd0abd36bc25",
       "distributions": [
         "personal"
       ],
@@ -596,38 +902,50 @@
       "max_tokens": 5000,
       "name": "investor-outreach",
       "owner": "agents",
+      "path": "skills/agent-wide/investor-outreach",
       "provenance": "agents-owned",
-      "updates": "manual"
-    },
-    {
-      "class": "router",
-      "digest": "e4dfa413c4d788ddd4d7ff677910f9532a8f88adfc655385dd04b6a512c5f885",
-      "distributions": [
-        "personal"
+      "tags": [
+        "domain:fundraising",
+        "provenance:agents-owned",
+        "role:communication",
+        "updates:manual",
+        "usage:on-demand"
       ],
-      "max_lines": 500,
-      "max_tokens": 500,
-      "name": "inviolable-rules",
-      "owner": "agents",
-      "provenance": "agents-owned",
       "updates": "manual"
     },
     {
+      "category": "technology",
       "class": "router",
-      "digest": "6bf712c89a2d32210ed3e2cb4f82cc10effdd69b699fad77decd776e0024022c",
+      "digest": "52cd2e4a2bbf88c14c174e63c8fd725447c55e0e340e1538b49a2bc1694ec157",
       "distributions": [
-        "technology:jvm"
+        "project-capability:technology:jvm"
       ],
       "max_lines": 500,
       "max_tokens": 500,
       "name": "jvm-development",
       "owner": "agents",
+      "path": "skills/technology/jvm-development",
       "provenance": "agents-owned",
+      "tags": [
+        "activation:detected",
+        "detect:marker:build.gradle",
+        "detect:marker:build.gradle.kts",
+        "detect:marker:gradlew",
+        "detect:marker:pom.xml",
+        "detect:marker:settings.gradle",
+        "detect:marker:settings.gradle.kts",
+        "provenance:agents-owned",
+        "route:project",
+        "technology:jvm",
+        "updates:manual",
+        "usage:router"
+      ],
       "updates": "manual"
     },
     {
+      "category": "agent-wide",
       "class": "router",
-      "digest": "2ad9d5df5b098bf9d2875afeb21db2a855d5ce76cff3fabeb1c2db0ee1b5c1ca",
+      "digest": "0d6b564dd2edd4f76d7ec03078efd170c419ae6db5ceb5963980312744327382",
       "distributions": [
         "personal"
       ],
@@ -635,12 +953,20 @@
       "max_tokens": 500,
       "name": "make-check",
       "owner": "agents",
+      "path": "skills/agent-wide/make-check",
       "provenance": "agents-owned",
+      "tags": [
+        "provenance:agents-owned",
+        "role:verification",
+        "updates:manual",
+        "usage:router"
+      ],
       "updates": "manual"
     },
     {
+      "category": "agent-wide",
       "class": "on_demand",
-      "digest": "694588e488c6c074f67c15f10d12d1e95139bb540be69689a2c20c0a670fdb02",
+      "digest": "f8c0f5e48751d2aaff3d04c9f727fb44b4963ae99191ffc6806845cb68757dce",
       "distributions": [
         "personal"
       ],
@@ -648,64 +974,122 @@
       "max_tokens": 5000,
       "name": "market-research",
       "owner": "agents",
+      "path": "skills/agent-wide/market-research",
       "provenance": "agents-owned",
+      "tags": [
+        "domain:market-research",
+        "provenance:agents-owned",
+        "role:research",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
+      "category": "tool",
       "class": "on_demand",
-      "digest": "c807c0284417ecec3764cd76d78b3bfcc0ab5439080405f34fe12798f6055405",
+      "digest": "5c11d7a30b0823fc426501cb3bf4965dc46ec1bc7b27966f9bbf6367ab46ac5b",
       "distributions": [
-        "technology:mcp"
+        "project-capability:tool:mcp"
       ],
       "max_lines": 500,
       "max_tokens": 5000,
       "name": "mcp-server-patterns",
       "owner": "agents",
+      "path": "skills/tool/mcp-server-patterns",
       "provenance": "agents-owned",
+      "tags": [
+        "activation:detected",
+        "detect:dependency:npm:@modelcontextprotocol/sdk",
+        "detect:dependency:python:mcp",
+        "provenance:agents-owned",
+        "route:project",
+        "tool:mcp",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
+      "category": "domain",
       "class": "on_demand",
-      "digest": "b8f111b183954fd32a631609e2ab250d9a1f3a5b0ecb73ae8db920eb2280da64",
+      "digest": "e3d63478311398ad25a8f1fdfd3ca96ad61207d8d0b93c8e23a8ef7bc44cd7c1",
       "distributions": [
-        "technology:machine-learning"
+        "project-capability:domain:mle"
       ],
       "max_lines": 500,
       "max_tokens": 5000,
       "name": "mle-workflow",
       "owner": "agents",
+      "path": "skills/domain/mle-workflow",
       "provenance": "agents-owned",
+      "tags": [
+        "activation:detected-or-opt-in",
+        "detect:marker:MLproject",
+        "detect:marker:dvc.lock",
+        "detect:marker:dvc.yaml",
+        "detect:opt-in:machine-learning",
+        "domain:mle",
+        "provenance:agents-owned",
+        "route:project",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
+      "category": "framework",
       "class": "on_demand",
-      "digest": "292e0e54abb6444605be18b6db263606130f79dd9930f544aa3deaf77744da9d",
+      "digest": "387182ec48997859dbdc31bdba5abaf78a9a71009cdef5e93be6cbf97c8551d2",
       "distributions": [
-        "technology:nextjs"
+        "project-capability:framework:nextjs"
       ],
       "max_lines": 500,
       "max_tokens": 5000,
       "name": "nextjs-turbopack",
       "owner": "agents",
+      "path": "skills/framework/nextjs-turbopack",
       "provenance": "agents-owned",
+      "tags": [
+        "activation:detected",
+        "detect:dependency:npm:next",
+        "framework:nextjs",
+        "provenance:agents-owned",
+        "route:project",
+        "tool:turbopack",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
+      "category": "tool",
       "class": "on_demand",
-      "digest": "89098b6079250b9e1f25a538a32bb6546dfc30b45e9ad94998e5249bd4c2be9e",
+      "digest": "f2d8e773de56df58853f968aa405e8b8e02935c12d3074de1d9f4cb13aa1bcd0",
       "distributions": [
-        "technology:openspec"
+        "project-capability:tool:openspec"
       ],
       "max_lines": 500,
       "max_tokens": 5000,
       "name": "openspec-verify-change",
       "owner": "agents",
+      "path": "skills/tool/openspec-verify-change",
       "provenance": "agents-owned",
+      "tags": [
+        "activation:detected",
+        "detect:marker:openspec",
+        "provenance:agents-owned",
+        "route:project",
+        "tool:openspec",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
+      "category": "agent-wide",
       "class": "router",
-      "digest": "1e31accc53f562684ca5a560ab815c65e31dda494b32a1885fdd4194cc9b1e7f",
+      "digest": "d626425a9bc737cbe938a61fa6b6db4bac4dcf801568aa22e5ed5c418941d430",
       "distributions": [
         "personal"
       ],
@@ -713,103 +1097,236 @@
       "max_tokens": 500,
       "name": "operator-correction-learning",
       "owner": "agents",
+      "path": "skills/agent-wide/operator-correction-learning",
       "provenance": "agents-owned",
+      "tags": [
+        "provenance:agents-owned",
+        "role:governance",
+        "updates:manual",
+        "usage:router"
+      ],
       "updates": "manual"
     },
     {
+      "category": "tool",
       "class": "on_demand",
-      "digest": "b6a5bbea9b1f7fe4bd15a724cb1d2d916bb2c62bc838c9c1b7efcec563cf9de2",
+      "digest": "0c72e0321bc1caf908d2b3fb401ad13174299e3faddceade749c711eb998885e",
       "distributions": [
-        "personal"
+        "project-capability:tool:playwright"
       ],
       "max_lines": 500,
       "max_tokens": 5000,
-      "name": "pr-list",
+      "name": "playwright-e2e",
       "owner": "agents",
+      "path": "skills/tool/playwright-e2e",
       "provenance": "agents-owned",
+      "tags": [
+        "activation:detected",
+        "detect:dependency:npm:@playwright/test",
+        "detect:dependency:npm:playwright",
+        "provenance:agents-owned",
+        "route:project",
+        "tool:playwright",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
+      "category": "tool",
       "class": "on_demand",
-      "digest": "617434a8776e5b8086752adf982834ed2fcd57485e13870d456554d10ef69bfa",
+      "digest": "b3417c4f2c11b077981309cf889e402b7009508ca9da94f3fc976e4f15f146f6",
       "distributions": [
-        "personal"
+        "agent-capability:tool:github"
       ],
       "max_lines": 500,
       "max_tokens": 5000,
       "name": "pr-sheriff",
       "owner": "agents",
+      "path": "skills/tool/pr-sheriff",
       "provenance": "agents-owned",
+      "tags": [
+        "activation:opt-in",
+        "detect:opt-in:pr-sheriff",
+        "provenance:agents-owned",
+        "route:agent",
+        "tool:github",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
+      "category": "project-wide",
       "class": "on_demand",
-      "digest": "cb722ada4f1b02d0be5570920843e9a2b3fec32c6ea59e6c4b79c3c228b09aa5",
+      "digest": "3a062185d619a7856d9400ac51ca7d33122528859dacadd50e8c38d5642d7ba8",
       "distributions": [
-        "personal"
+        "project-generic"
       ],
       "max_lines": 500,
       "max_tokens": 5000,
       "name": "product-capability",
       "owner": "agents",
+      "path": "skills/project-wide/product-capability",
       "provenance": "agents-owned",
-      "updates": "manual"
-    },
-    {
-      "class": "router",
-      "digest": "140b2a161d38bbb4dc82b785d1dc42f897d0cff12bcc49df530401127989bcba",
-      "distributions": [
-        "technology:python"
+      "tags": [
+        "provenance:agents-owned",
+        "role:planning",
+        "updates:manual",
+        "usage:on-demand"
       ],
-      "max_lines": 500,
-      "max_tokens": 500,
-      "name": "python-development",
-      "owner": "agents",
-      "provenance": "agents-owned",
       "updates": "manual"
     },
     {
-      "class": "router",
-      "digest": "dd8098ad7cc49fa2a5cf86346d8e196b53d6318a1efd61cdaa729bbd02e9237b",
-      "distributions": [
-        "technology:python"
-      ],
-      "max_lines": 500,
-      "max_tokens": 500,
-      "name": "python-parallelization",
-      "owner": "agents",
-      "provenance": "agents-owned",
-      "updates": "manual"
-    },
-    {
+      "category": "agent-wide",
       "class": "on_demand",
-      "digest": "b3c7b55f515d29307acad3014cb97fe1a459048ef5adb783236599d231e2f707",
+      "digest": "2e75dc643631c10a94d21d31e51189dd866d5c45c4e24ad5da4bc41de8efb67a",
       "distributions": [
         "personal"
       ],
       "max_lines": 500,
       "max_tokens": 5000,
-      "name": "ralph-loop",
+      "name": "prompt-safety-review",
       "owner": "agents",
+      "path": "skills/agent-wide/prompt-safety-review",
       "provenance": "agents-owned",
+      "tags": [
+        "provenance:agents-owned",
+        "role:security",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
+      "category": "technology",
       "class": "router",
-      "digest": "d4b59649b0b74351acedca64e918cf9e22a26709a47c1360e5f28d064eae0326",
+      "digest": "817efc719dce1f479788b337f048be6ef1b929b63591f428c00b54c542942377",
       "distributions": [
-        "technology:rust"
+        "project-capability:technology:python"
+      ],
+      "max_lines": 500,
+      "max_tokens": 500,
+      "name": "python-development",
+      "owner": "agents",
+      "path": "skills/technology/python-development",
+      "provenance": "agents-owned",
+      "tags": [
+        "activation:detected",
+        "detect:marker:poetry.lock",
+        "detect:marker:pyproject.toml",
+        "detect:marker:requirements-dev.txt",
+        "detect:marker:requirements.txt",
+        "detect:marker:uv.lock",
+        "provenance:agents-owned",
+        "route:project",
+        "technology:python",
+        "updates:manual",
+        "usage:router"
+      ],
+      "updates": "manual"
+    },
+    {
+      "category": "technology",
+      "class": "router",
+      "digest": "1ed932c95e9d90f6bb78c84493856af3782267822a4b39c7c3c63e1d31e8f1b4",
+      "distributions": [
+        "project-capability:technology:python"
+      ],
+      "max_lines": 500,
+      "max_tokens": 500,
+      "name": "python-parallelization",
+      "owner": "agents",
+      "path": "skills/technology/python-parallelization",
+      "provenance": "agents-owned",
+      "tags": [
+        "activation:detected",
+        "detect:marker:poetry.lock",
+        "detect:marker:pyproject.toml",
+        "detect:marker:requirements-dev.txt",
+        "detect:marker:requirements.txt",
+        "detect:marker:uv.lock",
+        "provenance:agents-owned",
+        "route:project",
+        "technology:python",
+        "updates:manual",
+        "usage:router"
+      ],
+      "updates": "manual"
+    },
+    {
+      "category": "framework",
+      "class": "on_demand",
+      "digest": "2e5521f149ea05e6be2cfdb2796c57fbe5638f96dfc99bd40e0206b12e89e4f1",
+      "distributions": [
+        "project-capability:framework:react"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "react-frontend-patterns",
+      "owner": "agents",
+      "path": "skills/framework/react-frontend-patterns",
+      "provenance": "agents-owned",
+      "tags": [
+        "activation:detected",
+        "detect:dependency:npm:react",
+        "framework:react",
+        "provenance:agents-owned",
+        "route:project",
+        "updates:manual",
+        "usage:on-demand"
+      ],
+      "updates": "manual"
+    },
+    {
+      "category": "project-wide",
+      "class": "on_demand",
+      "digest": "93c0ca5ba8d0a4494bf04bdb75db178069bee8eb64f203765b196e31c7b8ed01",
+      "distributions": [
+        "project-generic"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "rest-api-design",
+      "owner": "agents",
+      "path": "skills/project-wide/rest-api-design",
+      "provenance": "agents-owned",
+      "tags": [
+        "provenance:agents-owned",
+        "role:architecture",
+        "updates:manual",
+        "usage:on-demand"
+      ],
+      "updates": "manual"
+    },
+    {
+      "category": "technology",
+      "class": "router",
+      "digest": "90cb16139a0b1e51b4dc416e037626a6b7b37bbe0492aa141b841a64f0d1cea6",
+      "distributions": [
+        "project-capability:technology:rust"
       ],
       "max_lines": 500,
       "max_tokens": 500,
       "name": "rust-development",
       "owner": "agents",
+      "path": "skills/technology/rust-development",
       "provenance": "agents-owned",
+      "tags": [
+        "activation:detected",
+        "detect:marker:Cargo.toml",
+        "provenance:agents-owned",
+        "route:project",
+        "technology:rust",
+        "updates:manual",
+        "usage:router"
+      ],
       "updates": "manual"
     },
     {
+      "category": "agent-wide",
       "class": "on_demand",
-      "digest": "e496b9ff8ad53de4711496bb750afed12549de417946f78310cf64b5a2407164",
+      "digest": "df08de400dba35591a6eb3faf2555346c553dfa977d3832226b7f4da224f6c6d",
       "distributions": [
         "personal"
       ],
@@ -817,12 +1334,65 @@
       "max_tokens": 5000,
       "name": "safe-delete",
       "owner": "agents",
+      "path": "skills/agent-wide/safe-delete",
       "provenance": "agents-owned",
+      "tags": [
+        "provenance:agents-owned",
+        "role:governance",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
+      "category": "tool",
       "class": "on_demand",
-      "digest": "bcc5d2aa57e7c747b64772ce85f0ce52d238f6aec36212bd58194b51578a696d",
+      "digest": "fecbdc9c9ffb71af5b5c604e9f8d9441323035f86cd6225934845252bda94528",
+      "distributions": [
+        "project-capability:tool:scope-code-navigation"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "scope-code-navigation",
+      "owner": "agents",
+      "path": "skills/tool/scope-code-navigation",
+      "provenance": "agents-owned",
+      "tags": [
+        "activation:opt-in",
+        "detect:opt-in:scope-code-navigation",
+        "provenance:agents-owned",
+        "route:project",
+        "tool:scope-code-navigation",
+        "updates:manual",
+        "usage:on-demand"
+      ],
+      "updates": "manual"
+    },
+    {
+      "category": "project-wide",
+      "class": "router",
+      "digest": "2f991de724bb51a5b54c5b7621a5032c63f3a0f1e1f2369049d5d383277ed290",
+      "distributions": [
+        "project-generic"
+      ],
+      "max_lines": 500,
+      "max_tokens": 500,
+      "name": "search-first",
+      "owner": "agents",
+      "path": "skills/project-wide/search-first",
+      "provenance": "agents-owned",
+      "tags": [
+        "provenance:agents-owned",
+        "role:discovery",
+        "updates:manual",
+        "usage:router"
+      ],
+      "updates": "manual"
+    },
+    {
+      "category": "project-wide",
+      "class": "on_demand",
+      "digest": "ffa6cbc85ba03df89245a5b3dc445912378079ad18e49789f36d4fdcc16b8bef",
       "distributions": [
         "project-generic"
       ],
@@ -830,51 +1400,83 @@
       "max_tokens": 5000,
       "name": "security-review",
       "owner": "agents",
+      "path": "skills/project-wide/security-review",
       "provenance": "agents-owned",
-      "updates": "manual"
-    },
-    {
-      "class": "on_demand",
-      "digest": "e11200ccf3e5516b5caa03a52454f698883148141de7f0135f64e6b71a186f06",
-      "distributions": [
-        "personal"
+      "tags": [
+        "provenance:agents-owned",
+        "role:security",
+        "updates:manual",
+        "usage:on-demand"
       ],
-      "max_lines": 500,
-      "max_tokens": 5000,
-      "name": "sequential-thinking",
-      "owner": "agents",
-      "provenance": "agents-owned",
       "updates": "manual"
     },
     {
-      "class": "on_demand",
-      "digest": "1844eb4b7449aee8cccca48a0adc57a13795c4ab51dfb5f95dd45373a266b0f2",
+      "category": "project-wide",
+      "class": "router",
+      "digest": "189d2378b5b8a842d662aebce9040734a51a93564f5c66c4cd5fcb7644c336aa",
       "distributions": [
         "project-generic"
       ],
       "max_lines": 500,
-      "max_tokens": 5000,
+      "max_tokens": 500,
       "name": "simplify",
       "owner": "agents",
+      "path": "skills/project-wide/simplify",
       "provenance": "agents-owned",
+      "tags": [
+        "provenance:agents-owned",
+        "role:refactoring",
+        "updates:manual",
+        "usage:router"
+      ],
       "updates": "manual"
     },
     {
+      "category": "agent-wide",
       "class": "on_demand",
-      "digest": "2be05ae723602ed21bcda77605a7c9d1d7d39696b74280a027e00ab98f8c7a45",
+      "digest": "ae910f4b7e27665f5c78c04124e8d2c0e48ae7ae38b9804ffd36f50618b5549c",
       "distributions": [
         "personal"
       ],
       "max_lines": 500,
       "max_tokens": 5000,
-      "name": "skill-creator",
+      "name": "skill-governance",
       "owner": "agents",
+      "path": "skills/agent-wide/skill-governance",
       "provenance": "agents-owned",
+      "tags": [
+        "provenance:agents-owned",
+        "role:governance",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
+      "category": "project-wide",
       "class": "router",
-      "digest": "67cd7862cb5ce62b51cd07622e9414c775d656ffd9242274ad2afac0b7d4ed91",
+      "digest": "ef3a82e3c069ce690374e3d73d681d000bb36d2ae5ce4ff2056132884785076c",
+      "distributions": [
+        "project-generic"
+      ],
+      "max_lines": 500,
+      "max_tokens": 500,
+      "name": "solid",
+      "owner": "agents",
+      "path": "skills/project-wide/solid",
+      "provenance": "agents-owned",
+      "tags": [
+        "provenance:agents-owned",
+        "role:architecture",
+        "updates:manual",
+        "usage:router"
+      ],
+      "updates": "manual"
+    },
+    {
+      "category": "agent-wide",
+      "class": "router",
+      "digest": "d14ac4463326c9c99862499999e6e7bc9b4493eaa22c2a3167a789a80e23ad3c",
       "distributions": [
         "personal"
       ],
@@ -882,12 +1484,41 @@
       "max_tokens": 500,
       "name": "sprint-closure",
       "owner": "agents",
+      "path": "skills/agent-wide/sprint-closure",
       "provenance": "agents-owned",
+      "tags": [
+        "provenance:agents-owned",
+        "role:governance",
+        "updates:manual",
+        "usage:router"
+      ],
       "updates": "manual"
     },
     {
+      "category": "project-wide",
+      "class": "router",
+      "digest": "041b945236fcac7c31598199e45020f5975c1da77348455b83ccb8335279c9b9",
+      "distributions": [
+        "project-generic"
+      ],
+      "max_lines": 500,
+      "max_tokens": 500,
+      "name": "ssot",
+      "owner": "agents",
+      "path": "skills/project-wide/ssot",
+      "provenance": "agents-owned",
+      "tags": [
+        "provenance:agents-owned",
+        "role:governance",
+        "updates:manual",
+        "usage:router"
+      ],
+      "updates": "manual"
+    },
+    {
+      "category": "agent-wide",
       "class": "on_demand",
-      "digest": "1ed998430ae681c57cf82ffd5bbc8a96aaf7150434618f4360670c557ddd34e9",
+      "digest": "ecbc3e76d7857eef0ee19b5e13acf7db34aa5b75854d6a67fc8bc2ce7d69d684",
       "distributions": [
         "personal"
       ],
@@ -895,12 +1526,20 @@
       "max_tokens": 5000,
       "name": "strategic-compact",
       "owner": "agents",
+      "path": "skills/agent-wide/strategic-compact",
       "provenance": "agents-owned",
+      "tags": [
+        "provenance:agents-owned",
+        "role:continuity",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
+      "category": "agent-wide",
       "class": "on_demand",
-      "digest": "c2e4f994d72e855cc69cd2052b00c58d20f75a33c8fd4817909f3c94172333ba",
+      "digest": "68ec22f11010f2b8f8ba0f309251d40e60166eea7474e94b776a162b1b5863ec",
       "distributions": [
         "personal"
       ],
@@ -908,12 +1547,20 @@
       "max_tokens": 5000,
       "name": "summarization",
       "owner": "agents",
+      "path": "skills/agent-wide/summarization",
       "provenance": "agents-owned",
+      "tags": [
+        "provenance:agents-owned",
+        "role:writing",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
+      "category": "project-wide",
       "class": "on_demand",
-      "digest": "5d0ce883f10ab7e4faac3c9d929e8b65226bf8bd401b57e4bd4f99375b8106ca",
+      "digest": "3c8f4348d23e6d7c1080720b109b98406bb982ad2fe20179266175731d8453cc",
       "distributions": [
         "project-generic"
       ],
@@ -921,12 +1568,20 @@
       "max_tokens": 5000,
       "name": "tdd-workflow",
       "owner": "agents",
+      "path": "skills/project-wide/tdd-workflow",
       "provenance": "agents-owned",
+      "tags": [
+        "provenance:agents-owned",
+        "role:testing",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
+      "category": "project-wide",
       "class": "on_demand",
-      "digest": "ff11aba13e686aed972b68dabb1b7dce043edcb8a69135db81d239c14d2e4deb",
+      "digest": "a91263993a94a4a88bfd96c86071a0f29eb83b400641c3fc23c4b0cc16b86969",
       "distributions": [
         "project-generic"
       ],
@@ -934,25 +1589,44 @@
       "max_tokens": 5000,
       "name": "technical-writing-style",
       "owner": "agents",
+      "path": "skills/project-wide/technical-writing-style",
       "provenance": "agents-owned",
+      "tags": [
+        "provenance:agents-owned",
+        "role:documentation",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
+      "category": "technology",
       "class": "router",
-      "digest": "97198e3e9adf44a9c3de0d67e6a8188f0df4e44be6e1d3fd3c9b528fb7916fe2",
+      "digest": "c4b10c074a17b4de4d24e267a0345b2893458e935015873c9c4ddb754a58607b",
       "distributions": [
-        "technology:typescript"
+        "project-capability:technology:typescript"
       ],
       "max_lines": 500,
       "max_tokens": 500,
       "name": "typescript-development",
       "owner": "agents",
+      "path": "skills/technology/typescript-development",
       "provenance": "agents-owned",
+      "tags": [
+        "activation:detected",
+        "detect:marker:tsconfig.json",
+        "provenance:agents-owned",
+        "route:project",
+        "technology:typescript",
+        "updates:manual",
+        "usage:router"
+      ],
       "updates": "manual"
     },
     {
+      "category": "agent-wide",
       "class": "router",
-      "digest": "8658e30e6b34c93b672ae39d4a2c0f18945dd7c630b7109ff887d4cf4883d8a6",
+      "digest": "4bfa09d2c44f01cb2e5a208a00b9f78fa184945c86bf3a5fff25d3d13b3770ba",
       "distributions": [
         "personal"
       ],
@@ -960,12 +1634,20 @@
       "max_tokens": 500,
       "name": "verification-loop",
       "owner": "agents",
+      "path": "skills/agent-wide/verification-loop",
       "provenance": "agents-owned",
+      "tags": [
+        "provenance:agents-owned",
+        "role:verification",
+        "updates:manual",
+        "usage:router"
+      ],
       "updates": "manual"
     },
     {
+      "category": "agent-wide",
       "class": "on_demand",
-      "digest": "2a9a19467107425ed48dcfa9ebd722b1fe46708656ddb8c18a0645dc34ffc069",
+      "digest": "fb5c87afaf96d13e3a9aa811a1fe9205a3229c46b1d65da6db3fc73ec1488811",
       "distributions": [
         "personal"
       ],
@@ -973,20 +1655,60 @@
       "max_tokens": 5000,
       "name": "video-editing",
       "owner": "agents",
+      "path": "skills/agent-wide/video-editing",
       "provenance": "agents-owned",
+      "tags": [
+        "domain:video",
+        "provenance:agents-owned",
+        "role:media",
+        "updates:manual",
+        "usage:on-demand"
+      ],
       "updates": "manual"
     },
     {
+      "category": "tool",
       "class": "on_demand",
-      "digest": "97f38fc074da4b338811e0c2c978230cf81b29b5df55b737609cd8bff8470844",
+      "digest": "1c6021b42fbac134592a64560845efef4c9349425574d8386f9f010944941d0c",
       "distributions": [
-        "personal"
+        "agent-capability:tool:x-api"
       ],
       "max_lines": 500,
       "max_tokens": 5000,
       "name": "x-api",
       "owner": "agents",
+      "path": "skills/tool/x-api",
       "provenance": "agents-owned",
+      "tags": [
+        "activation:opt-in",
+        "detect:opt-in:x-api",
+        "provenance:agents-owned",
+        "route:agent",
+        "tool:x-api",
+        "updates:manual",
+        "usage:on-demand"
+      ],
+      "updates": "manual"
+    },
+    {
+      "category": "project-wide",
+      "class": "router",
+      "digest": "eb9e82dede300191a56205eaa44671040e4ddc6d99e4b9601df8f043898a7669",
+      "distributions": [
+        "project-generic"
+      ],
+      "max_lines": 500,
+      "max_tokens": 500,
+      "name": "yagni",
+      "owner": "agents",
+      "path": "skills/project-wide/yagni",
+      "provenance": "agents-owned",
+      "tags": [
+        "provenance:agents-owned",
+        "role:scope",
+        "updates:manual",
+        "usage:router"
+      ],
       "updates": "manual"
     }
   ],

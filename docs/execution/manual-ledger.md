@@ -13,7 +13,7 @@ verified on `dev`.
 - Branch: `feat/agents-skill-distribution`
 - Integration branch: `dev`
 - Tracker/orchestration runtime: suspended; do not invoke it
-- Current owner unit: finish routers/docs, remove `.skill-lock.json`, then perform the final lock write
+- Current owner unit: complete projection schema v4, agent/rule composition, provider matrix, and ownership manifest
 
 ## Operator corrections
 
@@ -36,6 +36,9 @@ verified on `dev`.
 |---|---|
 | `220de69` | Preserved and pushed the inherited dirty implementation state. |
 | `9bdc9e5` | Added the deterministic `agents-security` inventory/Snyk entry point and focused regressions. |
+| `eaeab18` | Reconciled repository governance to this manual ledger during tracker suspension. |
+| `5389b9c` | Fixed static typing and persistent managed test scratch. |
+| `d849c6f` | Connected `agentsctl audit` to the catalog-owned inventory lock check/write contract. |
 
 ## Latest validation evidence
 
@@ -55,6 +58,13 @@ verified on `dev`.
 | Focused keyring/environment/temp/CLI tests | 0 | 100 passed in managed `.test-tmp` scratch. |
 | `make test PYTEST_ARGS=tests/test_cli.py` | 0 | 17 passed, including canonical audit check/write/drift behavior. |
 | `make audit` | 1 | Canonical `inventory-lock-drift`; write intentionally deferred until the last skill edit. |
+| `make test PYTEST_ARGS=tests/test_normalize.py` (RED) | 2 | Generic-router regression failed because normalization still invented one boilerplate router. |
+| `make test PYTEST_ARGS=tests/test_normalize.py` (GREEN) | 0 | 7 passed; normalization now requires an authored activation router. |
+| `make audit APPLY=Y` then `make audit` | 0 | Wrote the sole `skills.lock.json` for 76 skills; unchanged check matched 76/76. |
+| `make check` | 0 | 76 skills validated, exact `aihub-primary`, 131/131 token files, repository temp clean, zero normalization/description changes. |
+| `make static` | 0 | Ruff, format, Pyright, and Mypy passed with zero errors or warnings. |
+| `make test` | 0 | 431 passed; managed scratch was removed. |
+| `make temp` | 2 | Global audit remains red: shell fallback is 6.24 GB and 45 blocking `/tmp` residues remain; foreign/unknown state was preserved. |
 
 ## Machine-local reconciliation
 
@@ -64,8 +74,15 @@ three stale assignments were removed from
 `~/.config/environment.d/30-toolchains.conf`. These machine-local files are not
 part of the Git commit and must remain free of storage-owned duplicates.
 
+The ignored repository-local directory literally named `$HOME` contained only
+Fish/Mise cache/state from an earlier unexpanded environment. After confirming
+no open process, database, special file, or tracked content, it was moved to the
+same-filesystem user trash with `gio trash`. It remains recoverable there and
+the repository-scoped temp audit now passes.
+
 ## Open boundary
 
-The increment remains open. Static types, complete tests, runtime, offline and
-live gates, integration merge, independent review, merge commit, post-merge
-validation, and tracker closure are not yet evidenced.
+The increment remains open. Projection v4, agent/rule evals, offline/live Waza,
+the complete native gate matrix, resolution of the global temp findings,
+integration merge, independent review, merge commit, post-merge validation, and
+tracker closure are not yet evidenced.

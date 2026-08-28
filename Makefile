@@ -133,12 +133,12 @@ adjust: ## Waza suggestions by default; APPLY=Y edits the canonical skill
 	@test -n "$(SKILL)" || { echo "usage: make adjust SKILL=<name> [APPLY=Y]"; exit 2; }
 	@uv run agentsctl adjust --skill $(SKILL) $(if $(APPLY),--apply,)
 
-normalize: ## split oversized SKILL.md routers losslessly; APPLY=Y writes
+normalize: ## report oversized SKILL.md files that need an authored router split
 	$(call BANNER,normalize · progressive disclosure)
 	@uv run agentsctl normalize $(if $(APPLY),--apply,)
 
-descriptions: ## validate short capability + activation descriptions
-	$(call BANNER,descriptions · discovery sentences)
+descriptions: ## validate compact discovery keyword/nominal-phrase lists
+	$(call BANNER,descriptions · discovery vocabulary)
 	@uv run agentsctl descriptions $(if $(APPLY),--apply,)
 
 test: ## unit tests for agentsctl

@@ -5,6 +5,10 @@ metadata:
   aihub.tags: '["activation:detected","detect:dependency:npm:react","framework:react","provenance:agents-owned","route:project","updates:manual","usage:on-demand"]'
 ---
 
-# Frontend Patterns
+# React Frontend Patterns
 
-This file is the activation router. Before acting, read [the complete procedure](references/procedure.md) in full and follow it. The referenced procedure is canonical for this skill; do not improvise missing steps or restore an upstream synchronization path.
+Activate only in a React project for component boundaries, state ownership,
+rendering behavior, accessibility, routing, or client performance. Read the
+[complete procedure](references/procedure.md). General TypeScript work belongs
+to `typescript-development`; non-React frontend work does not activate this
+bundle.

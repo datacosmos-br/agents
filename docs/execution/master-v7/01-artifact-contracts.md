@@ -22,9 +22,10 @@ must not convert that source into a canonical skill.
   explicit slash invocation when its description matches the task.
 - `SKILL.md` is a concise activation router. Detailed procedure lives in local
   `references/`; executable helpers and assets remain local to the bundle.
-- Skill descriptions state capability and activation boundary in one short,
-  discriminating sentence. Search keywords and catalog facets belong in tags,
-  not keyword-only prose.
+- Skill descriptions contain a compact comma-separated discovery vocabulary:
+  3-10 unique lowercase keywords or nominal phrases within 12-96 characters.
+  Activation and non-activation boundaries belong in the authored router; tags
+  own catalog facets and distribution evidence.
 - Skill routers and procedures use BPE token measurement. The command budget is
   never applied to them.
 - A skill never embeds a slash-command usage contract, positional argument
@@ -63,9 +64,10 @@ group from path and validated frontmatter. No JSON or Python registry may list
 artifact names, categories, destinations, or activation modes. Configuration may
 declare only provider capabilities, output roots, schemas, and policy budgets.
 
-Generated indexes and locks are disposable outputs. They must contain source
-digests and ownership markers, reject manual edits, and converge on the second
-unchanged generation. They never become fallback discovery sources.
+Generated indexes and locks are disposable outputs. `skills.lock.json` is the
+sole skill inventory lock; it contains source digests, rejects manual edits, and
+converges on the second unchanged generation. Generated outputs never become
+fallback discovery sources.
 
 ## Type correction rule
 

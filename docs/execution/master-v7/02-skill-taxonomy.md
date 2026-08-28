@@ -97,27 +97,33 @@ Tags are local frontmatter metadata stored as a deterministic sorted JSON array:
 ```yaml
 metadata:
   version: "1.0.0"
-  aihub.tags: '["activation:detected","detect:marker:go.mod","route:project","technology:go","usage:router"]'
+  aihub.tags: '["activation:detected","detect:marker:go.mod","provenance:agents-owned","route:project","technology:go","updates:manual","usage:router"]'
 ```
 
 Allowed axes:
 
-| Axis | Cardinality | Examples |
+| Axis | Cardinality | Allowed examples |
 |---|---:|---|
-| `route` | exactly one for conditional groups; derived for the two wide groups | `route:agent`, `route:project` |
-| `activation` | exactly one | `activation:always`, `activation:detected`, `activation:opt-in` |
-| detector | one or more when detected | `detect:marker:go.mod`, `detect:dependency:react`, `detect:command:waza` |
-| subject | one or more | `technology:go`, `framework:react`, `tool:context7`, `domain:mle` |
-| usage | one or more where relevant | `usage:router`, `usage:procedure`, `usage:review` |
-| risk | optional, one primary value | `risk:read`, `risk:write`, `risk:external` |
+| `usage` | exactly one | `usage:router`, `usage:on-demand`, `usage:frozen` |
+| `updates` | exactly one | `updates:manual`, `updates:forbidden` |
+| `provenance` | exactly one | `provenance:agents-owned`, `provenance:vendor` |
+| `route` | exactly one for conditional groups; absent from wide groups | `route:agent`, `route:project` |
+| `activation` | exactly one for conditional groups; absent from wide groups | `activation:detected`, `activation:detected-or-opt-in`, `activation:opt-in` |
+| detector | required by conditional activation | `detect:marker:go.mod`, `detect:dependency:npm:react`, `detect:owned-extension:.py`, `detect:owned-glob:src/**`, `detect:opt-in:scope-code-navigation`, `detect:selected-tag:tool:mcp` |
+| primary subject | one or more for conditional groups | `technology:go`, `framework:react`, `tool:context7`, `domain:mle` |
+| other semantic facet | optional | `role:verification`, `mode:review`, `lens:security` |
 
 Path-derived invariants:
 
-- `agent-wide` implies `route:agent` and `activation:always`; contradictory
-  frontmatter fails validation.
-- `project-wide` implies `route:project` and `activation:always`.
-- `technology` and `framework` require `activation:detected` plus a detector.
-- `tool` and `domain` require a detector or `activation:opt-in`.
+- `agent-wide` and `project-wide` derive distribution only from their paths;
+  `route:*`, `activation:*`, and `detect:*` are forbidden there.
+- Every conditional group requires exactly one route, one activation, and at
+  least one subject in its own path namespace.
+- `activation:detected` and `activation:detected-or-opt-in` require a non-opt-in
+  detector. `activation:opt-in` and `activation:detected-or-opt-in` require an
+  explicit `detect:opt-in:*` tag.
+- `usage:frozen` and `updates:forbidden` must occur together; every other valid
+  bundle is manually updated.
 - Subject tags may overlap. Directory placement follows the skill's primary
   runtime dependency, not an arbitrary desire to balance counts.
 - Unknown prefixes, duplicate tags, unsorted arrays, missing detector evidence,
@@ -125,10 +131,13 @@ Path-derived invariants:
 
 ## Descriptions and progressive disclosure
 
-Descriptions are short discriminating sentences that answer “what capability”
-and “when to use it.” Raw keyword lists move to tags. Routers stay concise and
-reference local procedures rather than duplicating them. Procedures, scripts,
-and assets must remain inside the bundle and use relative local references.
+Descriptions are comma-separated discovery metadata: 3-10 unique lowercase
+keywords or nominal phrases, 12-96 characters total, with terms separated by
+exactly `, `. Prose and copied activation instructions are invalid. Authored
+routers state when to activate and when not to activate, stay concise, and
+reference local procedures rather than duplicating them. A normalizer may
+report an oversized router but cannot invent its semantic boundary. Procedures,
+scripts, and assets remain inside the bundle and use relative local references.
 
 Waza BPE counts enforce the skill-specific router and procedure policies.
 Whitespace word counts are invalid. A budget violation fails validation; it is

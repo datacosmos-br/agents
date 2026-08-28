@@ -2,15 +2,17 @@
 
 # Universal Agent Engineering Core
 
-`config.AiHub.paths.agents_home` is the sole universal runtime authority. AI Hub distributes and
-configures it; it never competes. Project law may be stricter. Newest explicit
-operator instruction prevails; reconcile lower/older artifacts upward.
+The configured agents source is the sole universal runtime authority. AI Hub
+may configure or invoke it; it never regenerates or competes with it. Project
+law may be stricter. Newest explicit operator instruction prevails; reconcile
+lower and older artifacts upward.
 
 **Skill owners (do not restate their procedures here):**
 `make-check`, `verification-loop`, `beads-orchestrator`,
 `beads-worker`, `governance-audit`, `safe-delete`, `skill-governance`,
-`context-canary`, `caveman`, `sprint-closure`. Domain law loads only via provider routers (e.g. FLEXT
-`flext-context-routing` → local `flext-law`).
+`context-canary`, `caveman`, `sprint-closure`. Tracker-role skills load only when
+the canonical tracker runtime is active. Conditional domain law loads only
+through catalog-owned detection or explicit opt-in.
 
 ## P0 — Tests validate config/settings by construction
 
@@ -23,9 +25,10 @@ Goldens = structure only. Literals only for immutable external protocols.
 ## Laws
 
 1. **Truth with evidence.** Claims need command, cwd, exit, decisive output, scope.
-2. **Research before mutation.** Read authority, Bead, owners, consumers, WIP,
+2. **Research before mutation.** Read authority, active ledger, owners, consumers, WIP,
    validation route. Never invent APIs or results.
-3. **One active intent.** Preserve goal, Bead, exclusions, phase, gates, stop.
+3. **One active intent.** Preserve goal, active ledger item, exclusions, phase,
+   gates, and stop condition.
 4. **Root cause, one owner.** Change the canonical owner; complete cutover. No
    bypass, shim, fallback, hardcode, or old+new coexistence.
 5. **Fix forward.** Preserve shared/unknown WIP. No reset/restore/clean/stash/
@@ -34,7 +37,7 @@ Goldens = structure only. Literals only for immutable external protocols.
    types. Edit sources, not projections; regenerate; prove idempotence.
 7. **Continuous green (policy).** No Done while broken, drifted, or unverified.
    Procedure: `verification-loop`. Later edits invalidate prior evidence.
-   **Land by committing and pushing:** stage bead-scoped paths, `git commit`,
+   **Land by committing and pushing:** stage scope-owned paths, `git commit`,
    `git push` (FF). Let pre-commit / pre-push / CI run the suite. Do NOT
    hand-repeat the same gate matrix before every commit — that multiplies cost
    without new evidence. Run a gate manually only to capture RED→GREEN for the
@@ -45,22 +48,23 @@ Goldens = structure only. Literals only for immutable external protocols.
 8. **Execution ledger SSOT.** Beads owns execution state when available. During
    an explicit runtime suspension, the repository-declared manual ledger owns
    current execution state until it can be migrated back; GitHub mirrors it.
-9. **Separated roles.** Orchestrator: semantics, evidence review, merge/rollout/
-   close. Worker: one Bead/branch/worktree, push, PR. Auditor: `governance-audit`.
-   See `beads-orchestrator` and `beads-worker` when that tracker is active.
+9. **Separated roles.** When the canonical tracker/orchestrator is active,
+   orchestrator owns semantics, evidence review, merge/rollout/close; worker owns
+   one assigned scope, branch, push, and PR; auditor uses `governance-audit`.
+   During suspension, repository law defines the existing-checkout and
+   manual-ledger mode.
 10. **No stall by reporting.** Heartbeats never stop execution. Unowned WIP = stall.
 11. **History is evidence, never rollback authority.** Refactor forward to current law.
 12. **Stop only for a real blocker.** Destructive action, competing contracts,
     security/privacy, `main`/production promotion, authority conflict, material
     scope change — one precise question. Else evidence and continue.
 13. **Short validated slices.** Land small green stages; commit explicit paths; FF push.
-    Orchestration identity is declared through Gas City native primitives and
-    repository Git/PR owns landing; base = project `integration.branch` (never invent
-    `develop` / `epic/*`). Cycle: commit → push → land (PR) → merge `--no-ff`
-    into base → revalidate → finish. FLEXT is consumed ONLY as the official
-    GitHub artifacts pinned `@0.12.0-dev` in `pyproject.toml`; never bind,
-    install or read a local flext checkout (no `FLEXT=<lane>` bind, no
-    `~/flext` path, no unofficial build).
+    Active orchestration identity comes only from the repository-declared native
+    runtime. During an explicit suspension, use only the authorized existing
+    checkout and create no substitute workspace or orchestration identity.
+    Repository Git/PR owns landing; base = project `integration.branch` (never
+    invent `develop` / `epic/*`). Cycle: commit → push → land (PR) → merge
+    `--no-ff` into base → revalidate → finish.
     Detail: `rules/git/gitflow-branch-pr.md` + project `docs/worktrees.md` /
     ADR-0016.
 14. **Living documentation.** Project docs/skills/ADRs are mandatory context for
@@ -96,16 +100,18 @@ Goldens = structure only. Literals only for immutable external protocols.
     paths. Use `config-schema-migration` for schema cutovers and
     `extermination-mode` for zero-residue contract removal.
 28. **Learned memory ≠ law.** `AGENTS.md` Learned sections are owned by
-    continual-learning (high-signal prefs/facts only). `bd remember` is operational.
+    continual-learning (high-signal preferences and facts only). Tracker memory,
+    when available, is operational evidence rather than governing law.
     Neither overrides this CORE or skills.
 29. **Sprint closure is all-or-nothing.** An increment is Done only when its
     residue set is EMPTY and its behavior runs on the integration lane. Residue =
     dead code, compatibility/shim code, un-rewired consumers, un-rewired tests,
-    open worktree, open PR, open Bead — all scoped to that increment. Partial
+    open worktree, open PR, and open canonical tracker item — all scoped to that
+    increment. Partial
     closure is not closure; carry-over is a defect, never a plan. Procedure:
     `sprint-closure`.
 30. **Removal is not deferrable.** Superseded code is DELETED in the cycle that
-    replaces it — never filed as cleanup, never left "until later". A bead, TODO,
+    replaces it — never filed as cleanup, never left "until later". A ledger item, TODO,
     comment or follow-up sprint promising future deletion IS the defect: it turns
     a refactor into accumulation. A refactor that does not end net-negative in LOC
     did not happen. If you cannot delete now, you cannot land now — shrink the
@@ -117,11 +123,11 @@ Goldens = structure only. Literals only for immutable external protocols.
     type and test gates for the scope it touched are green — zero errors AND
     zero warnings. "Warning", "cosmetic", "third-party", "pre-existing" and
     "not mine" are never exemptions: whatever the step surfaces is the step's
-    responsibility to fix at its owner. Red outside the blast radius becomes a
-    child Bead in the same cycle — no Bead, no next step. Never start step N+1
-    over a red step N; never merge two objectives to hide a red. A step lands
-    by pushing an approved PR with every review comment resolved, CI green on
-    the integration branch, and its Bead closed.
+    responsibility to fix at its owner. Red outside the blast radius is recorded
+    in the active execution ledger in the same cycle. Never start step N+1 over
+    a red step N; never merge two objectives to hide a red. Phase landing
+    requires an approved PR with every review comment resolved, CI green on the
+    integration branch, and canonical tracker closure when that runtime exists.
 
 ## Operator contract
 
@@ -139,8 +145,8 @@ Goldens = structure only. Literals only for immutable external protocols.
    they are how a plan earns its evidence. A mid-plan request is mapped into the
    plan and operator-approved; an approved plan runs to completion, with the
    active execution ledger updated at every step.
-1. **Topic monopoly.** Starting or updating a plan immediately reorganizes
-   every correlated Bead, WIP, lane, worktree and PR. "Lane occupied" never
+1. **Topic monopoly.** Starting or updating a plan immediately reconciles every
+   correlated ledger item, WIP, lane, worktree, and PR. "Lane occupied" never
    blocks: adopt, preserve, validate and fix-forward all of it; destroy
    nothing, integrate everything useful.
 2. **Lane ownership.** Work only inside the existing authorized checkout, never on the
@@ -152,7 +158,7 @@ Goldens = structure only. Literals only for immutable external protocols.
    offender is removed completely and every consumer is rewired immediately,
    driven by ruff/pyrefly failures. Integrate only via PR with strict
    pre-commit/pre-push; resolve every PR review comment before merging —
-   question each, accept when correct under global/FLEXT law — then merge
+   question each, accept when correct under global and project law — then merge
    `--no-ff`, fix conflicts, revalidate and integrate the conflict-free PR.
    Required work not yet in the integration branch is adopted into the owned
    lane by reviewed non-FF merge or cherry-pick, with attribution and fresh
@@ -160,8 +166,8 @@ Goldens = structure only. Literals only for immutable external protocols.
    No violation is "cosmetic", "third-party" or "may pass": fix it on
    sight. General/shared fixes land first as hotfixes on the integration
    branch.
-3. **Research and reuse first.** Before building, search WIPs, Beads,
-   libraries and existing code; reuse maximally. SSOT is absolute; YAGNI and DRY.
+3. **Research and reuse first.** Before building, search WIP, the active ledger,
+   libraries, and existing code; reuse maximally. SSOT is absolute; YAGNI and DRY.
    Extend a generalized reusable owner; fix pre-existing in-scope offenders in
    the same cutover.
 4. **Continuous law improvement.** Every operator correction becomes global
@@ -175,15 +181,12 @@ Goldens = structure only. Literals only for immutable external protocols.
    a symptom to make an error pass. Work as a professional specialist, always.
 7. **Real tests.** Tests assert observable behavior — what the module does,
    never how it is built: no mocks, no internal-method assertions, no useless
-   validations, no ignored warnings or errors; FLEXT projects follow
-   flext-tests law.
-8. **FLEXT absolute.** In FLEXT projects flext-law is mandatory, complete and
-   strict; framework warnings are fixed immediately, without question.
-   `make setup`/`make gen` keep every standard artifact regenerated and
-   current; standards are extended generically for all projects via hotfix on
-   the integration branch; project customizations live in `custom.mk`. FLEXT
-   patterns, Pydantic 2-way, PEP, SOLID, Clean Architecture and DI are
-   absolute.
+   validations, and no ignored warnings or errors. Framework-specific law loads
+   only when the project declares and owns it.
+8. **Project framework law.** Apply the active project's declared framework,
+   generation, dependency, and validation contracts completely. Never import a
+   foreign framework law, local checkout, or hidden default into an unrelated
+   project.
 9. **Caveman communication.** The `caveman` skill loads with these global
    rules in every session: operator communication is precise and
    non-prolix; documentation is objective and states purpose, not mechanics.
@@ -197,19 +200,12 @@ Goldens = structure only. Literals only for immutable external protocols.
     inside your lane. Record every step, decision, analysis, result, test,
     PR, merge, resolved conflict and rule/skill/doc change in the active
     execution ledger and Git. After integration and fresh runtime
-    validation, open the promotion PR to `main` and wait for operator approval;
-    never promote `main` autonomously.
-12. **Makefile UX is the law.** The canonical Make verb surface —
-    `help setup deps build check test fmt fix run status docs clean release gen work mod` —
-    is GENERATED by flext-infra from `config/codegen.yaml` + `Makefile.j2`; it is never
-    hand-edited. `custom.mk` is the ONLY manual extension surface and is
-    regex-constrained by `codegen.yaml`. Every new capability runs through an existing
-    `service/` reusing the canonical owner — never a parallel engine. FLEXT packages are
-    consumed ONLY as official GitHub artifacts pinned `@0.12.0-dev`; the `FLEXT=<worktree>`
-    local rebind is forbidden here. A comment (`#`) inside a backslash-continued recipe SEVERS the
-    continuation: the remainder is echoed verbatim and runs in a separate shell, losing earlier
-    variable assignments and escaping guards — comments belong ABOVE the target, never inside.
-    Runtime is tested FIRST; tests are adjusted to the runtime reality AFTER, never the reverse.
+    validation, stop at the configured integration branch. Promotion beyond it
+    requires an explicit operator request and is never autonomous.
+12. **Makefile UX is the law.** Discover the repository's declared Make surface
+    with `make help` and follow its owner/generator contract. Never invent a
+    target, hand-edit a generated Make surface, or introduce a parallel command
+    path. Runtime is tested first; tests confirm that runtime afterward.
 
 ## Delete policy
 

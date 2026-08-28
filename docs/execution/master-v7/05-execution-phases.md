@@ -8,8 +8,9 @@ flowchart TD
     O --> S[Phase 2: current skill and command migration]
     S --> A[Phase 3: agents, rules, and provider adapters]
     A --> F[Phase 4: fundamental review and runtime corrections]
-    F --> P[Phase 5: projections, live model, cutover, and landing]
-    P --> I[Future increment: external import evaluation]
+    F --> P[Phase 5: projections, live model, and landing]
+    P --> R[Future increment: physical root cutover]
+    R --> I[Future increment: external import evaluation]
 ```
 
 No phase may begin while its predecessor has an unresolved contract, red scoped
@@ -55,8 +56,8 @@ unknown or contradictory artifact fails loudly.
 3. Convert the six command-shaped skills to canonical flat commands.
 4. Absorb unique behavior from the three removed skills into existing owners,
    then delete the duplicates.
-5. Rewrite descriptions as short discriminating sentences and normalize local
-   tags without changing behavior.
+5. Rewrite descriptions as discriminating keyword/nominal-phrase lists and
+   normalize local tags without changing behavior.
 6. Generalize `doc-drift`; keep Gas City-specific behavior only in its explicit
    owner.
 7. Remove broken/stale projections, imported identities, command-as-skill
@@ -114,7 +115,7 @@ Complete the related root contracts:
 Exit: representative runtime precedes and passes the complete native gates;
 every accepted defect has a regression test and global same-class search.
 
-## Phase 5 — Projection, live model, root cutover, and landing
+## Phase 5 — Projection, live model, and landing
 
 1. Apply all supported personal and isolated-project projections, validate the
    distribution matrix, then apply again and prove fixed point.
@@ -127,14 +128,18 @@ every accepted defect has a regression test and global same-class search.
    branch after current integration is merged into the work lane with
    `--no-ff` when divergent.
 5. Validate runtime and complete gates on the resulting integration merge SHA.
-6. In a separately controlled window with no live user of the old checkout,
-   move the source owner from `~/.agents` to `~/agents`, rewire consumers, and
-   validate that the old path and all compatibility routes are absent.
-7. Land and post-merge-validate the root cutover through the same contract.
-
 Exit: implementation is merged and verified on integration, projections are at
-fixed point, no increment branch/projection residue remains, and the old source
-path is absent. State is `LANDED_VERIFIED` while tracker closure is suspended.
+fixed point, and no current-increment branch/projection residue remains. State
+is `LANDED_VERIFIED` while tracker closure is suspended. The physical source
+root remains unchanged in this increment.
+
+## Future physical-root increment
+
+In a separately approved window with no live user of the old checkout, move the
+source owner from `~/.agents` to `~/agents`, rewire every consumer, remove the
+old path without a symlink or dual read, and complete a fresh runtime, review,
+landing, and post-merge validation cycle. None of those mutations are authorized
+by the current increment.
 
 ## Future external-import increment
 

@@ -77,5 +77,5 @@ flowchart TD
 | Decision part | Status | Durable evidence |
 |---|---|---|
 | Taxonomy and current mapping | Accepted | Master v7 skill taxonomy |
-| Recursive discovery and validation | Direction | Master v7 Phase 1 |
-| Physical migration | Direction | Master v7 Phase 2 |
+| Recursive discovery and validation | Implemented on work lane | `Catalog` strict recursive path/tag schema and canonical inventory lock |
+| Physical migration | Implemented on work lane | 76 canonical bundles under the six source groups; integration pending |

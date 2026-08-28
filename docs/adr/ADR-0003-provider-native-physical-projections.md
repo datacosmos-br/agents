@@ -75,5 +75,6 @@ flowchart LR
 | Decision part | Status | Durable evidence |
 |---|---|---|
 | Projection architecture | Accepted | This ADR and master v7 contracts |
-| Typed adapters and ownership manifest | Direction | Master v7 Phase 3 |
-| Full fixed-point and root cutover | Direction | Master v7 Phase 5 |
+| Typed adapters and ownership manifest | Partial on work lane | Command/rule adapters and projection tests exist; schema v4 and complete manifest remain open |
+| Full projection fixed point | Not evidenced | Master v7 Phase 5 |
+| Physical root cutover | Future increment | Explicitly excluded from the current repository cutover |

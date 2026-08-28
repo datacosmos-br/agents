@@ -7,4 +7,8 @@ metadata:
 
 # Beads
 
-This file is the activation router. Before acting, read [the complete procedure](references/procedure.md) in full and follow it. The referenced procedure is canonical for this skill; do not improvise missing steps or restore an upstream synchronization path.
+Activate only when the repository selects Beads and its canonical runtime is
+available. Read the [complete procedure](references/procedure.md) before any
+tracker operation. During an explicit suspension, do not invoke Beads, select an
+alternate endpoint, or create a substitute tracker; follow the repository's
+declared suspended-mode ledger contract.

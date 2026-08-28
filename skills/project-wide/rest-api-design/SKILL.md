@@ -5,6 +5,10 @@ metadata:
   aihub.tags: '["provenance:agents-owned","role:architecture","updates:manual","usage:on-demand"]'
 ---
 
-# Api Design
+# REST API Design
 
-This file is the activation router. Before acting, read [the complete procedure](references/procedure.md) in full and follow it. The referenced procedure is canonical for this skill; do not improvise missing steps or restore an upstream synchronization path.
+Activate for REST resource naming, HTTP methods, status codes, pagination,
+versioning, idempotency, and error contracts. Read the
+[complete procedure](references/procedure.md). GraphQL, RPC, event schemas, and
+internal function APIs require their own contract and do not activate this
+bundle merely because they cross a boundary.

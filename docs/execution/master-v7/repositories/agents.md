@@ -7,15 +7,16 @@
 | Working source | Existing `/home/marlonsc/.agents` checkout |
 | Integration branch | `dev` |
 | Future canonical source | `/home/marlonsc/agents` after final physical cutover |
-| Current inspected inventory | 85 flat skills, one canonical command, flat agents |
-| Target inventory in this increment | 76 classified skills, seven flat commands, semantically classified agents/rules |
+| Accepted migration baseline | 85 flat skills, one canonical command, flat agents |
+| Current work-lane inventory | 76 classified skills, seven flat commands, 62 classified agents, 32 rules |
+| Remaining target | Projection v4, complete agent/rule evals, provider/runtime proof, full landing cycle |
 | External imports | Prohibited |
 | Tracker/orchestration runtime | Suspended; no invocation or substitute |
 | Maximum attainable state during suspension | `LANDED_VERIFIED` |
 
 Re-inspect current source and authorized Git/PR state before implementation.
-Counts above are the accepted migration baseline, not permission to ignore a new
-or unknown artifact.
+Counts are discovered facts and migration evidence, not quotas or permission to
+ignore a new or unknown artifact.
 
 ## Mission
 
@@ -25,21 +26,16 @@ provider-native adapters, semantic Waza evaluation, and deterministic physical
 projections. Complete the current inventory before any foreign source is
 considered.
 
-## Current defects carried into implementation
+## Open defects
 
-- Flat skills mix unconditional distribution with technology, framework, tool,
-  and domain capabilities.
-- Six command-shaped workflows are stored as skills.
-- Personal provider roots contain stale/broken command projections, including a
-  removed `simplify` command.
-- The current catalog/config can compete with source paths for category and
-  destination ownership.
-- Skill description/token handling can undercount BPE tokens or rewrite content
-  whose policy forbids updates.
-- Provider surfaces have materially different command contracts; Codex no
-  longer provides the legacy custom-prompt command surface.
-- CI, temp process ownership, MCP comparison, and target selection have the
-  accepted false-green/fail-safe defects listed in Phase 4.
+- Projection still uses the legacy schema/runtime instead of the complete v4
+  source, provider, context, selection, and ownership-manifest contract.
+- Agent/rule Waza coverage and the exhaustive provider/type/context matrix are
+  incomplete.
+- Provider surfaces have materially different command, agent, and rule
+  contracts; unsupported combinations still need complete evidence.
+- CI, MCP comparison, target selection, and remaining runtime foundations still
+  require the complete Phase 4 proof.
 - Universal rules and provider defense text are duplicated across agents.
 - The old source root must eventually be removed without a symlink or dual read.
 
@@ -78,13 +74,12 @@ Fix all accepted review findings, complete storage/keyring/security contracts,
 and validate real CLI/process/shell/projection behavior before complete gates.
 Do not use a live model to make offline/unit/integration gates pass.
 
-### A5 — Projection, model, and cutover
+### A5 — Projection, model, and landing
 
 Prove personal and isolated-project fixed points, run complete offline gates,
 then use exact `aihub-primary` for the live gate. Complete authorized review and
-merge-commit landing. In a no-live-process window, physically move the owner to
-`~/agents`, rewire every consumer, remove the old path, and land/revalidate that
-cutover separately.
+merge-commit landing. The physical move to `~/agents` belongs to a separately
+approved future increment and is prohibited here.
 
 ## Required repository gates
 

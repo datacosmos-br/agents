@@ -78,5 +78,5 @@ flowchart LR
 | Decision part | Status | Durable evidence |
 |---|---|---|
 | Architecture decision | Accepted | This ADR and master v7 contracts |
-| Typed source models/adapters | Direction | Master v7 Phase 1 and Phase 3; implementation evidence pending |
-| Command-shaped skill cutover | Direction | Exact migration map in master v7 Phase 2 |
+| Typed source models/adapters | Partial on work lane | Distinct catalog, command, agent, and rule models/adapters; full projection matrix remains open |
+| Command-shaped skill cutover | Implemented on work lane | Seven flat command sources and seven command-native eval suites; integration pending |

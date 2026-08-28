@@ -9,4 +9,8 @@ metadata:
 
 # Verification Loop
 
-This file is the activation router. Before acting, read [the complete procedure](references/procedure.md) in full and follow it. The referenced procedure is canonical for this skill; do not improvise missing steps or restore an upstream synchronization path.
+Activate after behavior changes and before any pass, resolution, readiness, or
+completion claim. Read the [complete procedure](references/procedure.md), prove
+the smallest real runtime first, and then run the repository-owned gates for the
+affected scope. Later edits invalidate earlier evidence where their scopes
+overlap.

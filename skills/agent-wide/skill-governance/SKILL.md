@@ -7,8 +7,9 @@ metadata:
   version: 2.0.0
 ---
 
-# Skill Creator
+# Skill Governance
 
-This file is the activation router. Before creating or changing a skill, read
-the [complete procedure](references/procedure.md). Search the active catalog
-first and create a new identity only for a distinct recurring capability.
+Activate when creating, changing, classifying, evaluating, or removing a skill
+bundle. Read the [complete procedure](references/procedure.md), search the active
+catalog first, and create a new identity only for a distinct recurring
+capability. Do not use this workflow for commands, agents, or rules.

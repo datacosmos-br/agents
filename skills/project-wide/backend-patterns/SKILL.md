@@ -7,4 +7,8 @@ metadata:
 
 # Backend Patterns
 
-This file is the activation router. Before acting, read [the complete procedure](references/procedure.md) in full and follow it. The referenced procedure is canonical for this skill; do not improvise missing steps or restore an upstream synchronization path.
+Activate for backend service boundaries, request lifecycles, persistence,
+transactions, messaging, caching, or background processing. Read the
+[complete procedure](references/procedure.md) before selecting a pattern. A
+local implementation fix with no architectural boundary does not activate this
+bundle.

@@ -32,17 +32,17 @@ formats; reading a source does not authorize importing its artifacts.
 
 ## Current baseline and target
 
-The repository snapshot inspected on 2026-08-28 is a partial, unvalidated
-cutover: 76 recursively discovered skills, seven flat commands, 62 categorized
-agents, 32 rules, 76 Waza skill suites, 228 skill tasks, and 133 fixtures. The
-physical skill and command moves already happened, but this state is not a green
-baseline: every skill description violates the active keyword-description
-schema, the Waza owner still selects `gpt-5.4` instead of exact
-`aihub-primary`, commands and agents lack complete semantic eval surfaces, and
-rules/provider adapters are not wired through the public projection runtime.
+The repository snapshot inspected on 2026-08-28 is an open cutover: 76
+recursively discovered skills, seven flat commands, 62 categorized agents, 32
+rules, and 76 Waza skill suites. Skill descriptions now satisfy the strict
+keyword/nominal-phrase schema, the command surface owns seven independent eval
+suites, and the Waza configuration selects exact `aihub-primary`. These are
+work-lane facts, not phase completion: agent/rule semantic evals, the projection
+v4 runtime, full provider evidence, offline/live Waza results, integrated gates,
+review, merge, and post-merge validation remain open.
 
-The target is therefore not another inventory migration. It is one atomic
-cutover from this partial state to strict typed owners, provider-native physical
+The target is therefore not another inventory migration. It is one complete
+cutover from the current work-lane state to strict typed owners, provider-native physical
 rendering, complete offline and live gates, and integration-lane runtime proof.
 Counts remain discovered consequences, never quota targets. Re-run discovery
 after every owner change and fail on an unknown, duplicate, unreachable, or
