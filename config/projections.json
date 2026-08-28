@@ -97,7 +97,7 @@
         "skills": {"status": "SUPPORTED", "path": ".agents/skills"},
         "commands": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: Antigravity has no documented custom-command file contract"},
         "agents": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: Antigravity agent MCP tool identity is not documented for the complete catalog"},
-        "rules": {"status": "SUPPORTED", "path": ".agents/rules"}
+        "rules": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: Antigravity has no documented complete physical rule schema"}
       }
     }
   }

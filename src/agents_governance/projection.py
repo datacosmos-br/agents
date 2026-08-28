@@ -18,11 +18,8 @@ from typing import Any, cast
 import yaml
 
 from .agent_profiles import (
-    AgentArtifact,
     AgentContext,
     AgentProvider,
-    AgentRenderError,
-    UnsupportedAgent,
     audit_agent_profiles,
     render_agent,
 )
@@ -45,11 +42,8 @@ from .projection_config import (
     load_projection_config,
 )
 from .rule_adapters import (
-    RuleArtifact,
     RuleContext,
     RuleProvider,
-    RuleRenderError,
-    UnsupportedRule,
     render_rule,
 )
 from .rules import RuleDistribution, audit_rule_specs
@@ -350,13 +344,7 @@ class Projector:
         target: Path,
         label: str,
     ) -> tuple[tuple[SourceSkill, ...], list[ProjectionFinding]]:
-        audit = audit_agent_profiles(self.catalog.root)
-        findings = [
-            ProjectionFinding(label, item.path, f"{item.code}: {item.message}")
-            for item in audit.findings
-        ]
-        if findings:
-            return (), findings
+        profiles = audit_agent_profiles(self.catalog.root)
         distribution = (
             "agent-wide"
             if cell.context is ProjectionContext.PERSONAL
@@ -366,25 +354,15 @@ class Projector:
             self.catalog.root / "rules" / "security" / "prompt-defense.md"
         ).read_text(encoding="utf-8")
         sources: list[SourceSkill] = []
-        for profile in audit.profiles:
+        for profile in profiles:
             if profile.distribution != distribution:
                 continue
-            try:
-                rendered = render_agent(
-                    profile,
-                    AgentProvider(cell.provider.value),
-                    AgentContext(cell.context.value),
-                    prompt_defense=prompt_defense,
-                )
-            except AgentRenderError as error:
-                findings.append(ProjectionFinding(label, str(profile.path), str(error)))
-                continue
-            if isinstance(rendered, UnsupportedAgent):
-                findings.append(
-                    ProjectionFinding(label, str(profile.path), rendered.reason)
-                )
-                continue
-            assert isinstance(rendered, AgentArtifact)
+            rendered = render_agent(
+                profile,
+                AgentProvider(cell.provider.value),
+                AgentContext(cell.context.value),
+                prompt_defense=prompt_defense,
+            )
             if not self._native_artifact_target(target, Path(rendered.destination)):
                 raise ValueError(
                     "agent target is not provider-native: "
@@ -404,7 +382,7 @@ class Projector:
                     slug=profile.name,
                 )
             )
-        return tuple(sources), findings
+        return tuple(sources), []
 
     def _rule_sources(
         self,
@@ -412,37 +390,21 @@ class Projector:
         target: Path,
         label: str,
     ) -> tuple[tuple[SourceSkill, ...], list[ProjectionFinding]]:
-        audit = audit_rule_specs(self.catalog.root)
-        findings = [
-            ProjectionFinding(label, item.path, f"{item.code}: {item.message}")
-            for item in audit.findings
-        ]
-        if findings:
-            return (), findings
+        rules = audit_rule_specs(self.catalog.root)
         accepted = (
             {RuleDistribution.PERSONAL, RuleDistribution.BOTH}
             if cell.context is ProjectionContext.PERSONAL
             else {RuleDistribution.PROJECT, RuleDistribution.BOTH}
         )
         sources: list[SourceSkill] = []
-        for spec in audit.rules:
+        for spec in rules:
             if spec.distribution not in accepted:
                 continue
-            try:
-                rendered = render_rule(
-                    spec,
-                    RuleProvider(cell.provider.value),
-                    RuleContext(cell.context.value),
-                )
-            except RuleRenderError as error:
-                findings.append(ProjectionFinding(label, str(spec.path), str(error)))
-                continue
-            if isinstance(rendered, UnsupportedRule):
-                findings.append(
-                    ProjectionFinding(label, str(spec.path), rendered.reason)
-                )
-                continue
-            assert isinstance(rendered, RuleArtifact)
+            rendered = render_rule(
+                spec,
+                RuleProvider(cell.provider.value),
+                RuleContext(cell.context.value),
+            )
             if not self._native_artifact_target(target, Path(rendered.destination)):
                 raise ValueError(
                     "rule target is not provider-native: "
@@ -462,7 +424,7 @@ class Projector:
                     slug=spec.identity,
                 )
             )
-        return tuple(sources), findings
+        return tuple(sources), []
 
     def _sources_for_cell(
         self,

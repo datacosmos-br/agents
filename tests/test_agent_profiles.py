@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 import json
-from pathlib import Path
+from collections.abc import Callable
+from pathlib import Path, PurePosixPath
 
 import pytest
 
@@ -9,499 +10,217 @@ from agents_governance.agent_profiles import (
     AgentArtifact,
     AgentContext,
     AgentProvider,
-    UnsupportedAgent,
+    AgentRenderError,
     audit_agent_profiles,
     render_agent,
 )
 
 
-def _write_rule(root: Path) -> Path:
+def _authority(root: Path) -> None:
+    (root / "agents" / "agent-wide").mkdir(parents=True)
+    (root / "agents" / "project-wide").mkdir(parents=True)
     rule = root / "rules" / "security" / "prompt-defense.md"
-    rule.parent.mkdir(parents=True, exist_ok=True)
+    rule.parent.mkdir(parents=True)
     rule.write_text("# Prompt defense\n", encoding="utf-8")
-    return rule
 
 
-def _tags(*values: str) -> str:
-    return "metadata:\n  aihub.tags: '" + json.dumps(values) + "'\n"
-
-
-def _valid_frontmatter(
-    name: str,
-    *,
-    distribution: str = "project-wide",
-    description: str = "Review changes for correctness.",
-    extra: str = "",
-    tags: tuple[str, ...] | None = None,
-) -> str:
-    default_tags = (
-        ("activation:always", "mode:review", "role:reviewer")
-        if distribution == "agent-wide"
-        else ("activation:opt-in", "mode:review", "role:reviewer")
-    )
-    return (
-        f"name: {name}\ndescription: {description}\n{extra}"
-        f"{_tags(*(tags or default_tags))}"
-    )
-
-
-def _write_profile(
+def _profile(
     root: Path,
     name: str = "reviewer",
     *,
     distribution: str = "project-wide",
-    frontmatter: str | None = None,
-    instructions: str = "# Instructions\n",
-    write_rule: bool = True,
-) -> Path:
-    agents = root / "agents" / distribution
-    agents.mkdir(parents=True, exist_ok=True)
-    if write_rule:
-        _write_rule(root)
-    metadata = frontmatter or _valid_frontmatter(name, distribution=distribution)
-    profile = agents / f"{name}.md"
-    profile.write_text(f"---\n{metadata}---\n\n{instructions}", encoding="utf-8")
-    return profile
-
-
-def _write_minimal_authority(root: Path) -> None:
-    (root / "config").mkdir()
-    (root / "skills").mkdir()
-    (root / "commands").mkdir()
-    (root / "config" / "skills.json").write_text(
-        json.dumps(
-            {
-                "version": 2,
-                "budgets": {
-                    "router_tokens": 500,
-                    "frozen_tokens": 1200,
-                    "on_demand_tokens": 5000,
-                    "max_lines": 500,
-                },
-            }
-        ),
-        encoding="utf-8",
-    )
-
-
-def test_agent_profile_audit_accepts_strict_recursive_profile(tmp_path: Path) -> None:
-    profile_path = _write_profile(tmp_path)
-
-    audit = audit_agent_profiles(tmp_path)
-
-    assert audit.findings == ()
-    assert len(audit.profiles) == 1
-    profile = audit.profiles[0]
-    assert profile.path == profile_path
-    assert profile.name == "reviewer"
-    assert profile.description == "Review changes for correctness."
-    assert profile.distribution == "project-wide"
-    assert profile.tags == (
+    tags: tuple[str, ...] = (
         "activation:opt-in",
         "mode:review",
         "role:reviewer",
+    ),
+    tools: str = "",
+    instructions: str = "# Instructions\n",
+) -> Path:
+    path = root / "agents" / distribution / f"{name}.md"
+    encoded_tags = json.dumps(tags)
+    path.write_text(
+        "---\n"
+        f"name: {name}\n"
+        "description: Review changes for correctness.\n"
+        f"{tools}"
+        "metadata:\n"
+        f"  aihub.tags: '{encoded_tags}'\n"
+        "---\n\n"
+        f"{instructions}",
+        encoding="utf-8",
     )
-    assert profile.rule_paths == ("rules/security/prompt-defense.md",)
+    return path
 
 
-def test_agent_profile_audit_accepts_detected_and_agent_wide_profiles(
-    tmp_path: Path,
-) -> None:
-    _write_profile(tmp_path, "personal", distribution="agent-wide")
-    _write_profile(
+def test_audit_returns_complete_strict_inventory(tmp_path: Path) -> None:
+    _authority(tmp_path)
+    personal = _profile(
+        tmp_path,
+        "operator",
+        distribution="agent-wide",
+        tags=("activation:always", "mode:operate", "role:operator"),
+    )
+    project = _profile(
         tmp_path,
         "go-reviewer",
-        frontmatter=_valid_frontmatter(
-            "go-reviewer",
-            tags=(
-                "activation:detected",
-                "detect:marker:go.mod",
-                "mode:review",
-                "role:reviewer",
+        tags=(
+            "activation:detected",
+            "detect:marker:go.mod",
+            "mode:review",
+            "role:reviewer",
+        ),
+    )
+
+    profiles = audit_agent_profiles(tmp_path)
+
+    assert [profile.path for profile in profiles] == [personal, project]
+    assert profiles[0].distribution == "agent-wide"
+    assert profiles[1].detectors == ("detect:marker:go.mod",)
+    assert profiles[1].rule_paths == ("rules/security/prompt-defense.md",)
+
+
+@pytest.mark.parametrize(
+    ("mutator", "message"),
+    [
+        (lambda text: text.replace("name: reviewer\n", ""), "name is required"),
+        (lambda text: text.replace("name: reviewer", "name: other"), "equal filename"),
+        (
+            lambda text: text.replace(
+                "description: Review changes for correctness.\n", ""
             ),
-        ),
-    )
-
-    audit = audit_agent_profiles(tmp_path)
-
-    assert audit.findings == ()
-    assert [(item.name, item.distribution) for item in audit.profiles] == [
-        ("personal", "agent-wide"),
-        ("go-reviewer", "project-wide"),
-    ]
-
-
-@pytest.mark.parametrize(
-    "private_reference",
-    [
-        "FLEXT",
-        "AI Hub",
-        "GasCity",
-        "Dolt",
-        "Beads",
-        "~/.agents/rules/python.md",
-        ".claude/settings.json",
-        "$HOME/private/project",
-        "/home/operator/private/project",
-        "file:///private/project",
-    ],
-)
-def test_project_wide_profile_rejects_non_portable_reference(
-    tmp_path: Path, private_reference: str
-) -> None:
-    _write_profile(
-        tmp_path,
-        instructions=f"# Instructions\n\nUse {private_reference}.\n",
-    )
-
-    audit = audit_agent_profiles(tmp_path)
-
-    assert audit.profiles == ()
-    assert [(finding.path, finding.code) for finding in audit.findings] == [
-        ("agents/project-wide/reviewer.md", "agent-profile-non-generic")
-    ]
-
-
-def test_agent_wide_profile_can_own_personal_workflow_reference(
-    tmp_path: Path,
-) -> None:
-    _write_profile(
-        tmp_path,
-        distribution="agent-wide",
-        instructions="# Instructions\n\nUse the operator's AI Hub workflow.\n",
-    )
-
-    audit = audit_agent_profiles(tmp_path)
-
-    assert audit.findings == ()
-    assert [profile.name for profile in audit.profiles] == ["reviewer"]
-
-
-def test_project_wide_profile_accepts_project_owned_configuration(
-    tmp_path: Path,
-) -> None:
-    _write_profile(
-        tmp_path,
-        instructions=(
-            "# Instructions\n\n"
-            "Read AGENTS.md, CLAUDE.md, config/project.yaml, and "
-            ".github/workflows/ci.yml from the active project.\n"
-        ),
-    )
-
-    audit = audit_agent_profiles(tmp_path)
-
-    assert audit.findings == ()
-    assert [profile.name for profile in audit.profiles] == ["reviewer"]
-
-
-@pytest.mark.parametrize(
-    ("frontmatter", "code"),
-    [
-        (
-            "description: Missing name.\n"
-            + _tags("activation:opt-in", "mode:review", "role:reviewer"),
-            "agent-profile-name",
+            "description is required",
         ),
         (
-            _valid_frontmatter("different"),
-            "agent-profile-name",
+            lambda text: text.replace("metadata:\n", "model: invented\nmetadata:\n"),
+            "must not declare model",
         ),
         (
-            "name: reviewer\n"
-            + _tags("activation:opt-in", "mode:review", "role:reviewer"),
-            "agent-profile-description",
-        ),
-        (
-            _valid_frontmatter("reviewer", extra="model: sonnet\n"),
-            "agent-profile-model",
+            lambda text: text.replace("activation:opt-in", "activation:always"),
+            "project-wide profiles forbid activation:always",
         ),
     ],
 )
-def test_agent_profile_audit_rejects_invalid_metadata(
-    tmp_path: Path, frontmatter: str, code: str
+def test_invalid_profile_raises_first_defect(
+    tmp_path: Path, mutator: Callable[[str], str], message: str
 ) -> None:
-    _write_profile(tmp_path, frontmatter=frontmatter)
+    _authority(tmp_path)
+    path = _profile(tmp_path)
+    path.write_text(mutator(path.read_text(encoding="utf-8")), encoding="utf-8")
 
-    assert {finding.code for finding in audit_agent_profiles(tmp_path).findings} == {
-        code
-    }
+    with pytest.raises((TypeError, ValueError), match=message):
+        audit_agent_profiles(tmp_path)
 
 
 @pytest.mark.parametrize(
-    "contents",
-    [
-        "# Missing frontmatter\n",
-        "---\nname: [invalid\n---\n",
-        "---\n- not\n- a\n- mapping\n---\n",
-        "---\nname: reviewer\ndescription: Review.\n",
-    ],
+    "reference",
+    ["Beads", "GasCity", "~/.agents/rules/python.md", "/home/operator/project"],
 )
-def test_agent_profile_audit_requires_yaml_frontmatter(
-    tmp_path: Path, contents: str
+def test_project_profiles_reject_nonportable_references(
+    tmp_path: Path, reference: str
 ) -> None:
-    profile = _write_profile(tmp_path)
-    profile.write_text(contents, encoding="utf-8")
+    _authority(tmp_path)
+    _profile(tmp_path, instructions=f"# Instructions\n\nUse {reference}.\n")
 
-    findings = audit_agent_profiles(tmp_path).findings
-
-    assert len(findings) == 1
-    assert findings[0].code == "agent-profile-frontmatter"
+    with pytest.raises(ValueError, match="not portable"):
+        audit_agent_profiles(tmp_path)
 
 
-def test_agent_profile_audit_rejects_flat_unknown_and_nested_paths(
+def test_discovery_stops_at_first_sorted_defect(tmp_path: Path) -> None:
+    _authority(tmp_path)
+    first = _profile(tmp_path, "a-first")
+    _profile(tmp_path, "z-second")
+    first.write_text("invalid\n", encoding="utf-8")
+
+    with pytest.raises(ValueError, match="a-first.md: missing YAML frontmatter"):
+        audit_agent_profiles(tmp_path)
+
+
+def test_missing_prompt_defense_owner_raises_before_profile_read(
     tmp_path: Path,
 ) -> None:
-    agents = tmp_path / "agents"
-    agents.mkdir()
-    (agents / "flat.md").write_text("# Flat\n", encoding="utf-8")
-    (agents / "foreign" / "nested").mkdir(parents=True)
-    (agents / "foreign" / "nested" / "profile.md").write_text(
-        "# Foreign\n", encoding="utf-8"
-    )
-    (agents / "project-wide" / "nested").mkdir(parents=True)
-    (agents / "project-wide" / "nested" / "profile.md").write_text(
-        "# Nested\n", encoding="utf-8"
-    )
+    _authority(tmp_path)
+    _profile(tmp_path)
+    (tmp_path / "rules" / "security" / "prompt-defense.md").unlink()
 
-    findings = audit_agent_profiles(tmp_path).findings
-
-    assert findings
-    assert {finding.code for finding in findings} == {"agent-profile-path"}
+    with pytest.raises(ValueError, match="prompt-defense owner"):
+        audit_agent_profiles(tmp_path)
 
 
-def test_agent_profile_audit_rejects_symlink_and_non_regular_file(
-    tmp_path: Path,
-) -> None:
-    agents = tmp_path / "agents" / "project-wide"
-    agents.mkdir(parents=True)
-    target = tmp_path / "target.md"
-    target.write_text("# Target\n", encoding="utf-8")
-    (agents / "linked.md").symlink_to(target)
-    (agents / "directory.md").mkdir()
-
-    findings = audit_agent_profiles(tmp_path).findings
-
-    assert {(finding.path, finding.code) for finding in findings} == {
-        ("agents/project-wide/directory.md", "agent-profile-regular-file"),
-        ("agents/project-wide/linked.md", "agent-profile-symlink"),
-    }
-
-
-def test_agent_profile_audit_rejects_retired_manifest_and_dispatcher(
-    tmp_path: Path,
-) -> None:
-    agents = tmp_path / "agents"
-    agents.mkdir()
-    (agents / "manifest.json").write_text("{}\n", encoding="utf-8")
-    (agents / "dispatcher.md").write_text("# Dispatcher\n", encoding="utf-8")
-
-    findings = audit_agent_profiles(tmp_path).findings
-
-    assert {(finding.path, finding.code) for finding in findings} == {
-        ("agents/dispatcher.md", "agent-profile-retired-surface"),
-        ("agents/manifest.json", "agent-profile-retired-surface"),
-    }
-
-
-@pytest.mark.parametrize(
-    ("distribution", "tags", "code"),
-    [
-        (
-            "project-wide",
-            ("activation:opt-in", "mode:review", "mode:review", "role:reviewer"),
-            "agent-profile-tags",
-        ),
-        (
-            "project-wide",
-            ("role:reviewer", "mode:review", "activation:opt-in"),
-            "agent-profile-tags",
-        ),
-        ("project-wide", ("mode:review", "role:reviewer"), "agent-profile-activation"),
-        (
-            "project-wide",
-            ("activation:detected", "mode:review", "role:reviewer"),
-            "agent-profile-detector",
-        ),
-        (
-            "project-wide",
-            (
-                "activation:opt-in",
-                "detect:marker:go.mod",
-                "mode:review",
-                "role:reviewer",
-            ),
-            "agent-profile-detector",
-        ),
-        (
-            "agent-wide",
-            ("activation:opt-in", "mode:review", "role:reviewer"),
-            "agent-profile-distribution",
-        ),
-        (
-            "project-wide",
-            ("activation:always", "mode:review", "role:reviewer"),
-            "agent-profile-distribution",
-        ),
-    ],
-)
-def test_agent_profile_audit_rejects_tag_contract_violations(
-    tmp_path: Path, distribution: str, tags: tuple[str, ...], code: str
-) -> None:
-    _write_profile(
+def test_supported_renderers_preserve_capabilities(tmp_path: Path) -> None:
+    _authority(tmp_path)
+    _profile(
         tmp_path,
-        distribution=distribution,
-        frontmatter=_valid_frontmatter(
-            "reviewer", distribution=distribution, tags=tags
-        ),
+        tools="tools: [filesystem:read, filesystem:write, mcp:context7:query-docs]\n",
     )
-
-    assert code in {finding.code for finding in audit_agent_profiles(tmp_path).findings}
-
-
-def test_agent_profile_audit_rejects_ambiguous_name_across_distributions(
-    tmp_path: Path,
-) -> None:
-    _write_profile(tmp_path, distribution="project-wide")
-    _write_profile(tmp_path, distribution="agent-wide")
-
-    audit = audit_agent_profiles(tmp_path)
-
-    assert audit.profiles == ()
-    assert [finding.code for finding in audit.findings].count(
-        "agent-profile-ambiguous"
-    ) == 2
-
-
-def test_agent_profile_audit_rejects_inline_prompt_defense(tmp_path: Path) -> None:
-    _write_profile(
-        tmp_path,
-        instructions="## Prompt Defense Baseline\n\n- Duplicated policy.\n",
-    )
-
-    assert {finding.code for finding in audit_agent_profiles(tmp_path).findings} == {
-        "agent-profile-inline-rule"
-    }
-
-
-def test_agent_profile_audit_requires_physical_prompt_defense_owner(
-    tmp_path: Path,
-) -> None:
-    _write_profile(tmp_path, write_rule=False)
-
-    audit = audit_agent_profiles(tmp_path)
-
-    assert audit.profiles == ()
-    assert [(finding.path, finding.code) for finding in audit.findings] == [
-        ("rules/security/prompt-defense.md", "agent-profile-rule-owner")
-    ]
-
-
-@pytest.mark.parametrize(
-    ("extra", "code"),
-    [
-        ("color: cyan\n", "agent-profile-frontmatter"),
-        ("tools: [Read]\n", "agent-profile-tools"),
-        ("tools: [filesystem:unknown]\n", "agent-profile-tools"),
-    ],
-)
-def test_agent_profile_rejects_provider_specific_metadata(
-    tmp_path: Path, extra: str, code: str
-) -> None:
-    _write_profile(
-        tmp_path,
-        frontmatter=_valid_frontmatter("reviewer", extra=extra),
-    )
-
-    assert {finding.code for finding in audit_agent_profiles(tmp_path).findings} == {
-        code
-    }
-
-
-def test_supported_agent_adapters_preserve_canonical_capabilities(
-    tmp_path: Path,
-) -> None:
-    _write_profile(
-        tmp_path,
-        frontmatter=_valid_frontmatter(
-            "reviewer",
-            extra=(
-                "tools: [filesystem:read, filesystem:write, filesystem:grep, "
-                "filesystem:glob, shell:execute, web:fetch, web:search, "
-                "mcp:context7:query-docs]\n"
-            ),
-        ),
-    )
-    profile = audit_agent_profiles(tmp_path).profiles[0]
+    profile = audit_agent_profiles(tmp_path)[0]
+    prompt_defense = "# Prompt defense\n"
 
     claude = render_agent(
         profile,
         AgentProvider.CLAUDE,
         AgentContext.PROJECT,
-        prompt_defense="# Prompt defense\n",
+        prompt_defense=prompt_defense,
     )
     gemini = render_agent(
         profile,
         AgentProvider.GEMINI,
         AgentContext.PROJECT,
-        prompt_defense="# Prompt defense\n",
+        prompt_defense=prompt_defense,
     )
     opencode = render_agent(
         profile,
         AgentProvider.OPENCODE,
         AgentContext.PROJECT,
-        prompt_defense="# Prompt defense\n",
+        prompt_defense=prompt_defense,
     )
 
-    assert isinstance(claude, AgentArtifact)
-    assert claude.destination.as_posix() == ".claude/agents/reviewer.md"
+    assert claude.destination == PurePosixPath(".claude/agents/reviewer.md")
     assert "- Read\n" in claude.content
-    assert "- Edit\n" in claude.content
-    assert "- Write\n" in claude.content
     assert "- mcp__context7__query-docs\n" in claude.content
-
-    assert isinstance(gemini, AgentArtifact)
-    assert gemini.destination.as_posix() == ".gemini/agents/reviewer.md"
-    assert "kind: local\n" in gemini.content
-    assert "- read_file\n" in gemini.content
-    assert "- replace\n" in gemini.content
-    assert "- write_file\n" in gemini.content
+    assert gemini.destination == PurePosixPath(".gemini/agents/reviewer.md")
     assert "- mcp_context7_query-docs\n" in gemini.content
-
-    assert isinstance(opencode, AgentArtifact)
-    assert opencode.destination.as_posix() == ".opencode/agents/reviewer.md"
-    assert "mode: subagent\n" in opencode.content
-    assert "permission:\n  '*': deny\n" in opencode.content
-    assert "  read: allow\n" in opencode.content
-    assert "  edit: allow\n" in opencode.content
+    assert opencode.destination == PurePosixPath(".opencode/agents/reviewer.md")
     assert "  context7_query-docs: allow\n" in opencode.content
 
 
 @pytest.mark.parametrize(
-    ("provider", "reason"),
+    "provider",
     [
-        (AgentProvider.CURSOR, "capability allowlist"),
-        (AgentProvider.CODEX, "capability allowlist"),
-        (AgentProvider.ANTIGRAVITY, "MCP tool identity"),
+        AgentProvider.CURSOR,
+        AgentProvider.CODEX,
+        AgentProvider.COPILOT,
+        AgentProvider.ANTIGRAVITY,
     ],
 )
-def test_unrepresentable_agent_adapters_are_explicit(
-    tmp_path: Path, provider: AgentProvider, reason: str
+def test_unproven_agent_providers_raise(
+    provider: AgentProvider, tmp_path: Path
 ) -> None:
-    _write_profile(
-        tmp_path,
-        frontmatter=_valid_frontmatter(
-            "reviewer", extra="tools: [mcp:context7:query-docs]\n"
-        ),
-    )
-    profile = audit_agent_profiles(tmp_path).profiles[0]
+    _authority(tmp_path)
+    _profile(tmp_path)
+    profile = audit_agent_profiles(tmp_path)[0]
 
-    rendered = render_agent(
-        profile,
-        provider,
-        AgentContext.PROJECT,
-        prompt_defense="# Prompt defense\n",
-    )
+    with pytest.raises(AgentRenderError, match="^UNSUPPORTED:"):
+        render_agent(
+            profile,
+            provider,
+            AgentContext.PROJECT,
+            prompt_defense="# Prompt defense\n",
+        )
 
-    assert isinstance(rendered, UnsupportedAgent)
-    assert reason in rendered.reason
+
+def test_artifact_rejects_absolute_destination() -> None:
+    with pytest.raises(ValueError, match="relative physical path"):
+        AgentArtifact(
+            AgentProvider.CLAUDE,
+            AgentContext.PROJECT,
+            "reviewer",
+            PurePosixPath("/reviewer.md"),
+            "# Instructions\n",
+        )
+
+
+def test_canonical_inventory_has_exactly_sixty_two_profiles() -> None:
+    root = Path(__file__).resolve().parents[1]
+
+    assert len(audit_agent_profiles(root)) == 62

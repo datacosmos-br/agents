@@ -61,13 +61,11 @@ def _doctor(root: Path) -> tuple[Catalog, int, int, int]:
     audit_command_evals(root, commands)
 
     agents = audit_agent_profiles(root)
-    _require_empty(agents.findings, "agent source")
     rules = audit_rule_specs(root)
-    _require_empty(rules.findings, "rule source")
 
     security_inventory((root,))
     audit_security_evidence((root,))
-    return catalog, len(commands), len(agents.profiles), len(rules.rules)
+    return catalog, len(commands), len(agents), len(rules)
 
 
 def help_workflow(_root: Path) -> None:

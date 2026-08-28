@@ -4,15 +4,15 @@ from __future__ import annotations
 
 import posixpath
 import re
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from enum import StrEnum
 from pathlib import PurePosixPath
+from typing import Never
 
 import yaml
 
 from .rules import RuleActivation, RuleSpec
 
-_ANTIGRAVITY_RULE_CHARACTER_LIMIT = 12_000
 _ALL_PATHS_GLOB = "**"
 _MARKDOWN_LINK = re.compile(r"(!?)\[([^\]\n]+)\]\(([^)\n]+)\)")
 
@@ -36,13 +36,6 @@ class RuleContext(StrEnum):
     PROJECT = "project"
 
 
-class RuleAdapterStatus(StrEnum):
-    """Typed adapter outcome without implicit fallback."""
-
-    SUPPORTED = "SUPPORTED"
-    UNSUPPORTED = "UNSUPPORTED"
-
-
 @dataclass(frozen=True)
 class RuleArtifact:
     """One complete provider-native physical rule artifact."""
@@ -52,7 +45,6 @@ class RuleArtifact:
     identity: str
     destination: PurePosixPath
     content: str
-    status: RuleAdapterStatus = field(default=RuleAdapterStatus.SUPPORTED, init=False)
 
     def __post_init__(self) -> None:
         if self.destination.is_absolute() or any(
@@ -63,24 +55,6 @@ class RuleArtifact:
             )
         if not self.content.strip():
             raise ValueError("rule artifact content must be non-empty")
-
-
-@dataclass(frozen=True)
-class UnsupportedRule:
-    """Explicit unsupported result; never an alternate artifact projection."""
-
-    provider: RuleProvider
-    context: RuleContext
-    identity: str
-    reason: str
-    status: RuleAdapterStatus = field(default=RuleAdapterStatus.UNSUPPORTED, init=False)
-
-    def __post_init__(self) -> None:
-        if not self.reason.startswith("UNSUPPORTED: "):
-            raise ValueError("unsupported rule reason must be explicit")
-
-
-type RuleRender = RuleArtifact | UnsupportedRule
 
 
 class RuleRenderError(ValueError):
@@ -151,12 +125,9 @@ def _unsupported(
     provider: RuleProvider,
     context: RuleContext,
     reason: str,
-) -> UnsupportedRule:
-    return UnsupportedRule(
-        provider=provider,
-        context=context,
-        identity=spec.identity,
-        reason=f"UNSUPPORTED: {reason}",
+) -> Never:
+    raise RuleRenderError(
+        f"UNSUPPORTED: {provider.value}/{context.value}/{spec.identity}: {reason}"
     )
 
 
@@ -173,7 +144,9 @@ def _claude(
     return _artifact(spec, provider, context, destination, content)
 
 
-def _cursor(spec: RuleSpec, provider: RuleProvider, context: RuleContext) -> RuleRender:
+def _cursor(
+    spec: RuleSpec, provider: RuleProvider, context: RuleContext
+) -> RuleArtifact:
     if context is RuleContext.PERSONAL:
         return _unsupported(
             spec,
@@ -218,54 +191,15 @@ def _copilot(
     )
 
 
-def _antigravity(
-    spec: RuleSpec, provider: RuleProvider, context: RuleContext
-) -> RuleRender:
-    if context is RuleContext.PERSONAL:
-        return _unsupported(
-            spec,
-            provider,
-            context,
-            "Antigravity personal rules require whole-file GEMINI.md ownership",
-        )
-    if spec.activation is RuleActivation.PATH_SCOPED:
-        return _unsupported(
-            spec,
-            provider,
-            context,
-            "Antigravity does not document a physical glob-metadata format",
-        )
-    body = _render_body(spec, ".md")
-    if len(body) > _ANTIGRAVITY_RULE_CHARACTER_LIMIT:
-        raise RuleRenderError(
-            f"{provider.value}/{spec.identity}: rendered rule uses "
-            f"{len(body)} characters; provider limit is "
-            f"{_ANTIGRAVITY_RULE_CHARACTER_LIMIT}"
-        )
-    return _artifact(
-        spec,
-        provider,
-        context,
-        PurePosixPath(".agents", "rules", _physical_name(spec, ".md")),
-        body,
-    )
-
-
 def render_rule(
     spec: RuleSpec,
     provider: RuleProvider | str,
     context: RuleContext | str,
-) -> RuleRender:
-    """Render one complete native rule or return explicit ``UNSUPPORTED``."""
+) -> RuleArtifact:
+    """Render one complete native rule or raise immediately."""
 
-    try:
-        selected_provider = RuleProvider(provider)
-    except ValueError as error:
-        raise ValueError(f"unknown rule provider: {provider}") from error
-    try:
-        selected_context = RuleContext(context)
-    except ValueError as error:
-        raise ValueError(f"unknown rule context: {context}") from error
+    selected_provider = RuleProvider(provider)
+    selected_context = RuleContext(context)
 
     if selected_provider is RuleProvider.CLAUDE:
         return _claude(spec, selected_provider, selected_context)
@@ -274,7 +208,12 @@ def render_rule(
     if selected_provider is RuleProvider.COPILOT:
         return _copilot(spec, selected_provider, selected_context)
     if selected_provider is RuleProvider.ANTIGRAVITY:
-        return _antigravity(spec, selected_provider, selected_context)
+        return _unsupported(
+            spec,
+            selected_provider,
+            selected_context,
+            "Antigravity has no documented complete physical rule schema",
+        )
     if selected_provider is RuleProvider.CODEX:
         return _unsupported(
             spec,
@@ -293,12 +232,9 @@ def render_rule(
 
 
 __all__ = (
-    "RuleAdapterStatus",
     "RuleArtifact",
     "RuleContext",
     "RuleProvider",
-    "RuleRender",
     "RuleRenderError",
-    "UnsupportedRule",
     "render_rule",
 )
