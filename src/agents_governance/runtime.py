@@ -215,9 +215,13 @@ def evaluate(root: Path) -> None:
     )
 
 
-def secure(root: Path) -> None:
-    require_repository_storage(root)
-    routes = _security(root)
+def secure(_root: Path) -> None:
+    target = Projector.project_root()
+    require_repository_storage(target)
+    routes = _security(target)
+    token = required_environment("SNYK_TOKEN")
+    environment = dict(os.environ)
+    environment["SNYK_TOKEN"] = token
     executables = {name: shutil.which(name) for name in ("gitleaks", "semgrep", "snyk")}
     missing = tuple(name for name, path in executables.items() if path is None)
     if missing:
@@ -234,7 +238,8 @@ def secure(root: Path) -> None:
             "--redact",
             ".",
         ),
-        cwd=root,
+        cwd=target,
+        env=environment,
         check=True,
     )
     subprocess.run(
@@ -260,11 +265,12 @@ def secure(root: Path) -> None:
             "results",
             ".",
         ),
-        cwd=root,
+        cwd=target,
+        env=environment,
         check=True,
     )
     for route in routes:
-        subprocess.run(route.command, cwd=route.root, check=True)
+        subprocess.run(route.command, cwd=route.root, env=environment, check=True)
     print(f"secure: {len(routes)} dependency route(s) passed")
 
 

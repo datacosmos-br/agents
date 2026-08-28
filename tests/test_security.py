@@ -5,7 +5,9 @@ from pathlib import Path
 
 import pytest
 
+from agents_governance import runtime
 from agents_governance.security import (
+    ScannerRoute,
     audit,
     inventory,
     validate_document,
@@ -147,3 +149,73 @@ def test_inventory_rejects_a_tracked_manifest_without_a_scanner_route(
 
     with pytest.raises(ValueError, match="has no scanner route"):
         inventory((repository,))
+
+
+def test_secure_targets_the_invocation_repository_and_passes_validated_environment(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    project = tmp_path / "project"
+    nested = project / "nested"
+    nested.mkdir(parents=True)
+    (project / ".git").mkdir()
+    manifest = project / "pyproject.toml"
+    scanner_input = project / "uv.lock"
+    manifest.write_text("[project]\nname='target'\n", encoding="utf-8")
+    scanner_input.write_text("version=1\n", encoding="utf-8")
+    route = ScannerRoute(project, manifest, scanner_input)
+    storage_roots: list[Path] = []
+    inventory_roots: list[Path] = []
+    calls: list[tuple[tuple[str, ...], Path, dict[str, str]]] = []
+
+    def storage(root: Path) -> None:
+        storage_roots.append(root)
+
+    def security(root: Path) -> tuple[ScannerRoute, ...]:
+        inventory_roots.append(root)
+        return (route,)
+
+    def run(
+        command: tuple[str, ...],
+        *,
+        cwd: Path,
+        env: dict[str, str],
+        check: bool,
+    ) -> None:
+        assert check is True
+        calls.append((command, cwd, env))
+
+    monkeypatch.chdir(nested)
+    monkeypatch.setenv("SNYK_TOKEN", "process-token")
+    monkeypatch.setattr(runtime, "require_repository_storage", storage)
+    monkeypatch.setattr(runtime, "_security", security)
+    monkeypatch.setattr(runtime.shutil, "which", lambda name: f"/tools/{name}")
+    monkeypatch.setattr(runtime.subprocess, "run", run)
+
+    runtime.secure(Path("/installed/agents"))
+
+    assert storage_roots == [project]
+    assert inventory_roots == [project]
+    assert [cwd for _command, cwd, _env in calls] == [project, project, project]
+    assert all(environment["SNYK_TOKEN"] == "process-token" for *_, environment in calls)
+    assert calls[-1][0] == route.command
+
+
+def test_secure_rejects_missing_snyk_token_before_any_scanner(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    project = tmp_path / "project"
+    project.mkdir()
+    (project / ".git").mkdir()
+    monkeypatch.chdir(project)
+    monkeypatch.delenv("SNYK_TOKEN", raising=False)
+    monkeypatch.setattr(runtime, "require_repository_storage", lambda _root: None)
+    monkeypatch.setattr(runtime, "_security", lambda _root: ())
+    monkeypatch.setattr(runtime.shutil, "which", lambda name: f"/tools/{name}")
+
+    def unexpected(*_args: object, **_kwargs: object) -> None:
+        raise AssertionError("scanner started before SNYK_TOKEN preflight")
+
+    monkeypatch.setattr(runtime.subprocess, "run", unexpected)
+
+    with pytest.raises(ValueError, match="SNYK_TOKEN"):
+        runtime.secure(Path("/installed/agents"))
