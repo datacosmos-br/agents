@@ -98,6 +98,7 @@ verified on `dev`.
 | `2156471` | Exterminated repository keyring/loaders and established required process-environment ownership. |
 | `ffc59d6` | Restricted catalog policy tags to the nine declared strict-execution policies. |
 | `a0fe936` | Replaced the legacy/nested CLIs with the sole eight-verb optionless `agentsctl` facade. |
+| `3cf24a1` | Removed legacy Make/Waza routes and restricted Make runtime calls to public optionless verbs. |
 
 ## Latest validation evidence
 
@@ -163,9 +164,16 @@ verified on `dev`.
 | `make docs` after Make cutover | 0 | Four delivery-contract tests passed, including the regression that permits only optionless public runtime verbs in Make. |
 | `make static` after Make cutover | 0 | Ruff, format, Pyright, and Mypy passed with zero errors or warnings across 45 source files. |
 | Active Make/config/CLI residue search | 1 | No option-bearing `agentsctl`, removed nested verb, `agents-security`, `config/waza.mk`, or Waza shell-wrapper invocation remains in Make, config, source, packaging, or workflows. |
+| `make test PYTEST_ARGS=tests/test_strict_execution.py` (RED) | 2 | The new whole-source AST gate exposed 125 non-cleanup catches, five normalized child processes, and 33 finding/default protocol owners before the first strict owner batch. |
+| Focused strict environment/projection-config/security tests | 0 | 27 tests passed after direct environment indexing, raw JSON errors, immediate security validation, and native child-process propagation. |
+| `make static` after first strict owner batch | 0 | Ruff, format, Pyright, and Mypy passed with zero errors or warnings across 46 source files. |
+| Whole-source strict inventory after first owner batch | 0 | Remaining red inventory is explicit: 119 forbidden catches, two `check=False`, 24 finding-protocol declarations, and three `os.environ.get` defaults. |
 | Plan 1 critical completeness audit | 0 | Only 2/76 skills had `policy:strict-execution`: `agent-wide` 2/26, `project-wide` 0/22, `technology` 0/8, `framework` 0/3, `tool` 0/16, and `domain` 0/1; all 76 eval suites expose the three required task files. |
 | `make help` after optionless CLI cutover | 0 | The canonical development surface now exposes global `check` and `spec`; Plan 1 will not call `agentsctl` directly or recreate removed focused CLI syntax. |
 | Plan 1 repair of the first two `agent-wide` slugs | — | `agent-introspection-debugging` now references atomic effects and forbids preventive follow-up before current resolution; `anti-phase-skip` fail-closed now requires the first missing prerequisite, zero transition effects, and manual-ledger tracking during suspension. |
+| Plan 1 review: `article-writing`, `brand-voice`, `caveman` | — | Added justified strict/fail-loud/no-fallback/preflight tags; made missing sources stop article/profile publication, made durable voice persistence atomic, removed an absent downstream owner and stale-profile reuse, and made evidence-free status claims fail without publication. |
+| Plan 1 review: `content-engine`, `context-canary`, `crosspost` | — | Made complete source/destination/voice preflight mandatory, removed generic or reduced campaign fallback, replaced warning-and-resume canary behavior with atomic checkpoint-and-stop, and removed default sequencing while requiring complete validated cross-platform publication. |
+| Plan 1 review: `deep-research`, `dispatch-agent`, `frontend-slides` | — | Removed private provider config, arbitrary research quotas, provider switching, provider-specific subagent instructions, general-agent preference, Gas City coupling, remote font dependency, deferred preview cleanup, automatic opener use, and manual conversion fallback; added complete preflight, causal/atomic dispatch, and zero-effect fail-closed evals. |
 
 ## Machine-local reconciliation
 

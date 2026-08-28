@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import json
-import os
 from dataclasses import dataclass
 from enum import StrEnum
 from pathlib import Path, PurePosixPath
@@ -65,16 +64,11 @@ class ProjectionConfig:
         context: ProjectionContext | str,
         surface: ProjectionSurface | str,
     ) -> ProjectionCell:
-        try:
-            key = (
-                AgentProvider(provider),
-                ProjectionContext(context),
-                ProjectionSurface(surface),
-            )
-        except ValueError as error:
-            raise ValueError(
-                f"unknown projection matrix key: {provider}/{context}/{surface}"
-            ) from error
+        key = (
+            AgentProvider(provider),
+            ProjectionContext(context),
+            ProjectionSurface(surface),
+        )
         return self.cells[key]
 
 
@@ -106,12 +100,15 @@ def _validate_path(path: object, context: ProjectionContext, label: str) -> str:
         raise TypeError(f"{label} path must be a non-empty string")
     if path.startswith(("~", "/home/", "/Users/")):
         raise ValueError(f"{label} path must not hardcode a user home")
-    expanded = os.path.expandvars(path)
-    candidate = PurePosixPath(expanded)
     if context is ProjectionContext.PERSONAL:
-        if not path.startswith("${HOME}/") or not candidate.is_absolute():
+        if not path.startswith("${HOME}/"):
             raise ValueError(f"{label} personal path must start with ${{HOME}}/")
-    elif (
+        candidate = PurePosixPath(path.removeprefix("${HOME}/"))
+        if candidate == PurePosixPath(".") or ".." in candidate.parts:
+            raise ValueError(f"{label} personal path must remain below ${{HOME}}")
+    else:
+        candidate = PurePosixPath(path)
+    if context is ProjectionContext.PROJECT and (
         candidate.is_absolute()
         or candidate == PurePosixPath(".")
         or ".." in candidate.parts
@@ -128,13 +125,12 @@ def _cell(
 ) -> ProjectionCell:
     label = f"projection cell {provider.value}/{context.value}/{surface.value}"
     value = _mapping(raw, label)
-    raw_status = value.get("status")
+    if "status" not in value:
+        raise ValueError(f"{label} status is required")
+    raw_status = value["status"]
     if not isinstance(raw_status, str):
         raise TypeError(f"{label} status must be a string")
-    try:
-        status = ProjectionStatus(raw_status)
-    except (TypeError, ValueError) as error:
-        raise ValueError(f"{label} has unknown status {raw_status!r}") from error
+    status = ProjectionStatus(raw_status)
     if status is ProjectionStatus.UNSUPPORTED:
         _exact_fields(
             value, frozenset({"reason", "status"}), f"{label} UNSUPPORTED cell fields"
@@ -174,10 +170,7 @@ def load_projection_config(root: Path) -> ProjectionConfig:
     path = root / "config" / "projections.json"
     if path.is_symlink() or not path.is_file():
         raise ValueError("projection config must be a physical regular file")
-    try:
-        payload = json.loads(path.read_text(encoding="utf-8"))
-    except json.JSONDecodeError as error:
-        raise ValueError("projection config must contain valid JSON") from error
+    payload = json.loads(path.read_text(encoding="utf-8"))
     value = _mapping(payload, "projection config")
     _exact_fields(value, _ROOT_FIELDS, "projection config fields")
     if value["version"] != 4:

@@ -68,9 +68,8 @@ def _doctor(root: Path) -> tuple[Catalog, int, int, int]:
     rules = audit_rule_specs(root)
     _require_empty(rules.findings, "rule source")
 
-    inventory = security_inventory((root,))
-    _require_empty(inventory.findings, "security inventory")
-    _require_empty(audit_security_evidence((root,)), "security evidence")
+    security_inventory((root,))
+    audit_security_evidence((root,))
     return catalog, len(commands.commands), len(agents.profiles), len(rules.rules)
 
 
@@ -160,9 +159,8 @@ def evaluate(root: Path) -> None:
 
 
 def secure(root: Path) -> None:
-    result = security_inventory((root,))
-    _require_empty(result.findings, "security inventory")
-    _require_empty(audit_security_evidence((root,)), "security evidence")
+    routes = security_inventory((root,))
+    audit_security_evidence((root,))
     executables = {name: shutil.which(name) for name in ("gitleaks", "semgrep", "snyk")}
     missing = tuple(name for name, path in executables.items() if path is None)
     if missing:
@@ -210,9 +208,9 @@ def secure(root: Path) -> None:
         cwd=root,
         check=True,
     )
-    for route in result.routes:
+    for route in routes:
         subprocess.run(route.command, cwd=route.root, check=True)
-    print(f"secure: {len(result.routes)} dependency route(s) passed")
+    print(f"secure: {len(routes)} dependency route(s) passed")
 
 
 def clean(root: Path) -> None:

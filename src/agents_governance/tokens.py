@@ -22,19 +22,12 @@ def bpe_tokens(path: Path, root: Path) -> int:
             "--no-update-check",
         ],
         cwd=root,
-        check=False,
+        check=True,
         capture_output=True,
         text=True,
     )
-    if completed.returncode != 0:
-        raise RuntimeError(
-            f"Waza BPE token count failed for {path}: {completed.stderr.strip()}"
-        )
-    try:
-        payload = json.loads(completed.stdout)
-        tokens = payload["totalTokens"]
-    except (json.JSONDecodeError, KeyError, TypeError) as error:
-        raise RuntimeError(f"invalid Waza token output for {path}") from error
+    payload = json.loads(completed.stdout)
+    tokens = payload["totalTokens"]
     if not isinstance(tokens, int) or tokens < 0:
         raise RuntimeError(f"invalid Waza token count for {path}: {tokens!r}")
     return tokens

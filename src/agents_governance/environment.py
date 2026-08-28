@@ -23,8 +23,10 @@ def required_environment(name: str, *, conflicts: tuple[str, ...] = ()) -> str:
         if conflict in os.environ:
             raise ValueError(f"conflicting environment variable for {name}: {conflict}")
 
-    value = os.environ.get(name)
-    if value is None or not value or value != value.strip():
+    if name not in os.environ:
+        raise ValueError(f"required environment variable is missing or empty: {name}")
+    value = os.environ[name]
+    if not value or value != value.strip():
         raise ValueError(f"required environment variable is missing or empty: {name}")
     if _UNEXPANDED.search(value) is not None:
         raise ValueError(f"required environment variable is unexpanded: {name}")

@@ -3,6 +3,8 @@ from __future__ import annotations
 import subprocess
 from pathlib import Path
 
+import pytest
+
 from agents_governance.security import (
     audit,
     inventory,
@@ -49,7 +51,7 @@ def test_complete_finding_is_accepted(tmp_path: Path) -> None:
         tmp_path,
         "# Triagem\n\n## Findings\n\n### 1 · MEDIUM · `rule`\n\n**Decisão**: corrigido\n\n**Evidência**: `semgrep scan` retornou código 0 sem o achado.\n",
     )
-    assert validate_document(path) == ()
+    validate_document(path)
 
 
 def test_empty_decision_fails_closed(tmp_path: Path) -> None:
@@ -57,7 +59,8 @@ def test_empty_decision_fails_closed(tmp_path: Path) -> None:
         tmp_path,
         "# Triagem\n\nBead: `project-123`\n\n## Findings\n\n### 1 · LOW · `rule`\n\n**Decisão**:\n",
     )
-    assert [item.code for item in validate_document(path)] == ["missing-decision"]
+    with pytest.raises(ValueError, match="decision is missing or empty"):
+        validate_document(path)
 
 
 def test_risk_acceptance_is_not_a_closing_decision(tmp_path: Path) -> None:
@@ -65,11 +68,13 @@ def test_risk_acceptance_is_not_a_closing_decision(tmp_path: Path) -> None:
         tmp_path,
         "# Triagem\n\nBead: `project-123`\n\n## Findings\n\n### 1 · LOW · `rule`\n\n**Decisão**: risco-aceito\n\n**Evidência**: nenhuma\n",
     )
-    assert [item.code for item in validate_document(path)] == ["invalid-decision"]
+    with pytest.raises(ValueError, match="unsupported decision"):
+        validate_document(path)
 
 
 def test_missing_report_is_blocking(tmp_path: Path) -> None:
-    assert audit((tmp_path,))[0].code == "missing-report"
+    with pytest.raises(FileNotFoundError, match="no docs/security"):
+        audit((tmp_path,))
 
 
 def test_manual_ledger_reference_does_not_invalidate_security_evidence(
@@ -79,7 +84,7 @@ def test_manual_ledger_reference_does_not_invalidate_security_evidence(
         tmp_path,
         "# Triagem\n\nLedger: manual\n\n## Findings\n\n### 1 · LOW · `rule`\n\n**Decisão**: corrigido\n\n**Evidência**: scanner retornou código 0.\n",
     )
-    assert validate_document(path) == ()
+    validate_document(path)
 
 
 def test_inventory_maps_each_tracked_project_manifest_to_one_scanner_route(
@@ -95,11 +100,10 @@ def test_inventory_maps_each_tracked_project_manifest_to_one_scanner_route(
         ),
     )
 
-    result = inventory((repository,))
+    routes = inventory((repository,))
 
-    assert result.findings == ()
-    assert len(result.routes) == 1
-    route = result.routes[0]
+    assert len(routes) == 1
+    route = routes[0]
     assert route.manifest == repository / "pyproject.toml"
     assert route.scanner_input == repository / "uv.lock"
     assert route.command == (
@@ -117,12 +121,9 @@ def test_inventory_ignores_untracked_manifests(tmp_path: Path) -> None:
     untracked.parent.mkdir()
     untracked.write_text('{"name": "untracked"}\n', encoding="utf-8")
 
-    result = inventory((repository,))
+    routes = inventory((repository,))
 
-    assert result.findings == ()
-    assert [route.manifest for route in result.routes] == [
-        repository / "pyproject.toml"
-    ]
+    assert [route.manifest for route in routes] == [repository / "pyproject.toml"]
 
 
 def test_inventory_rejects_a_tracked_manifest_without_a_scanner_route(
@@ -133,7 +134,5 @@ def test_inventory_rejects_a_tracked_manifest_without_a_scanner_route(
         _python_project({"nested/package.json": '{"name": "unsupported"}\n'}),
     )
 
-    result = inventory((repository,))
-
-    assert [item.code for item in result.findings] == ["missing-scanner-route"]
-    assert result.findings[0].path == str(repository / "nested" / "package.json")
+    with pytest.raises(ValueError, match="has no scanner route"):
+        inventory((repository,))
