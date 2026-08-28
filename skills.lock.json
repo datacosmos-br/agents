@@ -5,6 +5,7 @@
       "class": "on_demand",
       "digest": "126d28a42bcdbc60cf4acca84dc0ad66b8e4ada3ef445bc6d4e06680b3f7370d",
       "distributions": [
+        "personal",
         "agent-capability:tool:agent-browser"
       ],
       "max_lines": 500,
@@ -93,7 +94,7 @@
     {
       "category": "agent-wide",
       "class": "router",
-      "digest": "e509af4f19fd797656e57819842603ad181b4dc7e14b1e4bf0f51d16a2b48853",
+      "digest": "6bb29074bdaee679e5d529182f413da0c1c2feede74a52b923ff528af2dc1fb6",
       "distributions": [
         "personal"
       ],
@@ -204,6 +205,7 @@
       "class": "router",
       "digest": "374ba5333f46373488811060a060984fe2b7b3b58da10c871acf535808c09ff5",
       "distributions": [
+        "personal",
         "agent-capability:tool:beads"
       ],
       "max_lines": 500,
@@ -237,6 +239,7 @@
       "class": "router",
       "digest": "a65346bdab74172ea7cf8bc4f42a804186de85129144979a1d76dcaf6a597a81",
       "distributions": [
+        "personal",
         "agent-capability:tool:beads"
       ],
       "max_lines": 500,
@@ -270,6 +273,7 @@
       "class": "router",
       "digest": "737dfe5d99c6beb93089f5abde7e7d788694473cfc06e248c9bb1e4cfc18d08a",
       "distributions": [
+        "personal",
         "agent-capability:tool:beads"
       ],
       "max_lines": 500,
@@ -489,6 +493,7 @@
       "class": "on_demand",
       "digest": "1bca9ee35788f08435b4f9158f65cd1ff1ceb7d2aa54bdaac98268850618d90d",
       "distributions": [
+        "personal",
         "agent-capability:tool:context7"
       ],
       "max_lines": 500,
@@ -662,6 +667,7 @@
       "class": "on_demand",
       "digest": "9e3190cc3ae182a6a4c4a370fa7b14ed33df0782f776baea2e4516de405995b0",
       "distributions": [
+        "personal",
         "agent-capability:tool:dmux"
       ],
       "max_lines": 500,
@@ -806,6 +812,7 @@
       "class": "on_demand",
       "digest": "5163de08752857ce7e7aa7871caad23b41548dd7f2cff4ce901313cddadaa120",
       "distributions": [
+        "personal",
         "agent-capability:tool:exa"
       ],
       "max_lines": 500,
@@ -894,6 +901,7 @@
       "class": "on_demand",
       "digest": "54aa4262d998160964e0f4206f667759a5aa782f01f2b9a5bfe161f7658c5ffd",
       "distributions": [
+        "personal",
         "agent-capability:tool:fal-ai"
       ],
       "max_lines": 500,
@@ -1014,6 +1022,7 @@
       "class": "on_demand",
       "digest": "5a9dc8a53910aacd6b469e0c72dadfebe2931c01fba5f19c58f0d58b58dcf239",
       "distributions": [
+        "personal",
         "agent-capability:tool:gascity"
       ],
       "max_lines": 500,
@@ -1047,6 +1056,7 @@
       "class": "on_demand",
       "digest": "8c5d9b8a9ec9a3ce12af6afc3be97b44a0166163b76fef460eec448119262c80",
       "distributions": [
+        "personal",
         "agent-capability:tool:gascity"
       ],
       "max_lines": 500,
@@ -1527,6 +1537,7 @@
       "class": "on_demand",
       "digest": "a1d0ba49de0924b3c3e0101279821ccce8a585abda741a24f0f0cdf4b6591068",
       "distributions": [
+        "personal",
         "agent-capability:tool:github"
       ],
       "max_lines": 500,
@@ -2213,6 +2224,7 @@
       "class": "on_demand",
       "digest": "3ce2433eb108d13e7827db85263d8640c26f90fb4f10d32912fce61e7a10ae4c",
       "distributions": [
+        "personal",
         "agent-capability:tool:x-api"
       ],
       "max_lines": 500,

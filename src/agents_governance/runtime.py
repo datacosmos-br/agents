@@ -23,7 +23,7 @@ from .governance_config import (
 from .hook_projection import HookProjector
 from .native_evals import evaluate_native
 from .projection import Projector
-from .projection_authorization import project_projection_authorized
+from .projection_authorization import load_project_authorization
 from .projection_config import load_projection_config
 from .retired_environment import RetiredEnvironmentProjection
 from .rules import RuleSpec, audit_rule_specs
@@ -142,7 +142,7 @@ def sync(root: Path) -> None:
         inventory.rules,
     )
     project = projector.project_root()
-    project_selected = project_projection_authorized(project)
+    authorization = load_project_authorization(project)
     hooks = HookProjector(
         inventory.governance,
         projection,
@@ -153,11 +153,11 @@ def sync(root: Path) -> None:
     run_atomic_publications(
         (
             *retired_environment.publications(),
-            *projector.publications(project),
-            *hooks.publications(project),
+            *projector.publications(authorization),
+            *hooks.publications(authorization),
         )
     )
-    if project_selected:
+    if authorization.selected:
         print(f"sync: personal and project projections converged at {project}")
     else:
         print(

@@ -376,10 +376,11 @@ class Catalog:
         if record.category is SkillCategory.PROJECT_WIDE:
             return ("project-generic",)
         route = "project" if record.route == "project" else "agent"
-        return tuple(
+        capabilities = tuple(
             f"{route}-capability:{record.category.value}:{subject}"
             for subject in record.subjects
         )
+        return ("personal", *capabilities) if route == "agent" else capabilities
 
     def _policy(self, record: SkillRecord) -> SkillPolicy:
         budgets = cast(dict[str, int], self.config["budgets"])

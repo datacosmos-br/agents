@@ -71,14 +71,16 @@ Lifecycle coverage is explicit rather than inferred:
 |---|---|---|---|---|
 | Claude | exact | exact | exact through compact-sourced `SessionStart` | exact |
 | Codex | exact | exact | exact through compact-sourced `SessionStart` | exact |
-| Cursor | exact | advisory | advisory | advisory |
+| Cursor | exact (local only) | advisory | advisory | advisory |
 | Copilot | exact | advisory | advisory | exact |
-| Gemini | exact | exact | equivalent through `BeforeAgent` | equivalent |
-| OpenCode | equivalent system transform | equivalent system transform | exact compaction hook | equivalent system transform |
+| Gemini | exact | exact | equivalent through `BeforeAgent` | unsupported |
+| OpenCode | equivalent system transform | equivalent system transform | exact compaction hook | unsupported |
 | Antigravity | equivalent `PreInvocation` | equivalent `PreInvocation` | equivalent `PreInvocation` | equivalent `PreInvocation` |
 
 `exact`, `equivalent`, and `advisory` are typed configuration values and appear
-in generated manifests. An observational hook never becomes an injection claim.
+with native event names and client scope in generated manifests. A missing
+logical boundary is explicitly `UNSUPPORTED` with a reason; it is never mapped
+to an adjacent event. An observational hook never becomes an injection claim.
 
 ## Provider evidence
 
@@ -99,8 +101,9 @@ in generated manifests. An observational hook never becomes an injection claim.
 
 - A single auditable map replaces duplicated universal prose.
 - Provider limitations stay visible and cannot be silently upgraded.
-- New sessions, prompts, compactions, and subagents receive the strongest native
-  refresh each client actually supports, backed by static instructions.
+- New sessions, prompts, compactions, and supported subagents receive the
+  strongest native refresh each client actually exposes, backed by static
+  instructions.
 - Severe incompatible intent stops before the effect for one operator decision;
   ordinary overlap is reconciled and validated forward.
 - Forks without project authorization retain their native workflow and receive

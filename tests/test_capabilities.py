@@ -86,10 +86,10 @@ def test_sync_selects_projection_without_live_or_security(
     capsys: pytest.CaptureFixture[str],
 ) -> None:
     events: list[str] = []
-    authorize = runtime.project_projection_authorized
+    authorize = runtime.load_project_authorization
     publish = runtime.run_atomic_publications
 
-    def record_authorization(project: Path) -> bool:
+    def record_authorization(project: Path) -> object:
         events.append("authorization")
         return authorize(project)
 
@@ -110,7 +110,7 @@ def test_sync_selects_projection_without_live_or_security(
         "security_inventory",
         lambda _roots: _unexpected("security scanner"),
     )
-    monkeypatch.setattr(runtime, "project_projection_authorized", record_authorization)
+    monkeypatch.setattr(runtime, "load_project_authorization", record_authorization)
     monkeypatch.setattr(runtime, "run_atomic_publications", record_publication)
     home = tmp_path / "home"
     project = tmp_path / "project"
@@ -140,6 +140,42 @@ def test_sync_selects_projection_without_live_or_security(
     assert capsys.readouterr().out == (
         f"sync: personal and project projections converged at {project}\n"
     )
+
+
+def test_sync_reuses_one_project_authorization_snapshot(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(runtime, "_catalog", lambda root: Catalog(root))
+    inventory = runtime._inventory(ROOT)
+    monkeypatch.setattr(runtime, "_inventory", lambda _root: inventory)
+    home = tmp_path / "home"
+    project = tmp_path / "project"
+    home.mkdir()
+    project.mkdir()
+    (project / ".git").mkdir()
+    selection = project / ".agents" / "projection.json"
+    selection.parent.mkdir()
+    selection.write_text(
+        '{"agents":[],"opt_ins":[],"selected_tags":[],"version":1}',
+        encoding="utf-8",
+    )
+    monkeypatch.setenv("HOME", str(home))
+    monkeypatch.chdir(project)
+    original = runtime.Projector.publications
+
+    def mutate_after_static_preflight(projector: object, *args: object) -> object:
+        publications = original(projector, *args)  # type: ignore[arg-type]
+        selection.unlink()
+        return publications
+
+    monkeypatch.setattr(
+        runtime.Projector, "publications", mutate_after_static_preflight
+    )
+
+    runtime.sync(ROOT)
+
+    assert (project / ".codex" / "hooks.json").is_file()
 
 
 def test_sync_reports_an_unselected_project_as_a_non_target(

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import shlex
+import stat
 import subprocess
 from pathlib import Path
 
@@ -79,6 +80,10 @@ def test_hook_projection_preserves_foreign_content_and_reaches_fixed_point(
     )
     agents = project / "AGENTS.md"
     agents.write_text("# Existing project law\n", encoding="utf-8")
+    antigravity_path = project / ".agents" / "hooks.json"
+    antigravity_path.write_text(
+        json.dumps({"foreign-owner": {"PreInvocation": []}}), encoding="utf-8"
+    )
     projector = _projector(root)
 
     projector.apply(project)
@@ -100,11 +105,12 @@ def test_hook_projection_preserves_foreign_content_and_reaches_fixed_point(
     copilot_handler = copilot["hooks"]["sessionStart"][0]  # type: ignore[index]
     assert "bash" in copilot_handler
     assert "command" not in copilot_handler
-    antigravity = _json(
-        project / ".agents" / "plugins" / "aihub-governance" / "hooks.json"
-    )
-    assert set(antigravity) == {"aihub-governance"}
+    antigravity = _json(antigravity_path)
+    assert set(antigravity) == {"aihub-governance", "foreign-owner"}
     assert "PreInvocation" in antigravity["aihub-governance"]  # type: ignore[operator]
+    manifest = _json(project / ".agents" / ".hooks.json.agents-governance.json")
+    assert manifest["version"] == 3
+    assert manifest["events"]["subagent_start"]["status"] == "SUPPORTED"  # type: ignore[index]
 
     plugin = (project / ".opencode" / "plugins" / "aihub-governance.ts").read_text(
         encoding="utf-8"
@@ -146,6 +152,57 @@ def test_foreign_hook_command_containing_managed_path_is_preserved(
 
     rendered = _json(settings_path)
     assert foreign in rendered["hooks"]["SessionStart"]  # type: ignore[index]
+
+
+def test_personal_merged_configs_preserve_existing_mode_and_default_private(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    root = Path(__file__).resolve().parents[1]
+    home = tmp_path / "home"
+    project = tmp_path / "project"
+    home.mkdir()
+    project.mkdir()
+    monkeypatch.setenv("HOME", str(home))
+    claude = home / ".claude" / "settings.json"
+    claude.parent.mkdir()
+    claude.write_text('{"mcpServers": {}}', encoding="utf-8")
+    claude.chmod(0o640)
+
+    _projector(root).apply(project)
+
+    assert stat.S_IMODE(claude.stat().st_mode) == 0o640
+    for destination in (
+        home / ".codex" / "hooks.json",
+        home / ".cursor" / "hooks.json",
+        home / ".gemini" / "settings.json",
+    ):
+        assert stat.S_IMODE(destination.stat().st_mode) == 0o600
+
+
+def test_existing_hook_config_is_replaced_without_unlink(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    root = Path(__file__).resolve().parents[1]
+    home = tmp_path / "home"
+    project = tmp_path / "project"
+    home.mkdir()
+    project.mkdir()
+    monkeypatch.setenv("HOME", str(home))
+    destination = home / ".claude" / "settings.json"
+    destination.parent.mkdir()
+    destination.write_text("{}", encoding="utf-8")
+    original_unlink = Path.unlink
+
+    def reject_destination_unlink(path: Path, *args: object, **kwargs: object) -> None:
+        if path == destination:
+            raise AssertionError("existing config must have one atomic replace point")
+        original_unlink(path, *args, **kwargs)  # type: ignore[arg-type]
+
+    monkeypatch.setattr(Path, "unlink", reject_destination_unlink)
+
+    _projector(root).apply(project)
+
+    assert _json(destination)["hooks"]
 
 
 def test_broken_hook_symlink_created_after_preflight_is_preserved(

@@ -24,8 +24,12 @@ from .cleanup import (
 )
 from .commands import CommandSpec
 from .governance_config import GovernanceConfig
-from .projection_authorization import project_projection_authorized
+from .projection_authorization import (
+    ProjectAuthorization,
+    load_project_authorization,
+)
 from .projection_config import (
+    HookEvent,
     ProjectionConfig,
     ProjectionContext,
     ProjectionStatus,
@@ -34,7 +38,6 @@ from .projection_config import (
 )
 from .rules import RuleSpec
 
-_MANIFEST_VERSION = 2
 _OWNER = "agents-governance"
 _INSTRUCTIONS_BEGIN = "<!-- AIHUB-GOVERNANCE-INSTRUCTIONS-BEGIN -->"
 _INSTRUCTIONS_END = "<!-- AIHUB-GOVERNANCE-INSTRUCTIONS-END -->"
@@ -215,8 +218,17 @@ def _script(provider: AgentProvider, event: str, capsule: str) -> str:
 def _event_names(cell_events: object) -> tuple[str, ...]:
     if cell_events is None:
         raise ValueError("supported hook cell has no event contract")
-    events = cast(dict[str, tuple[str, ...]], cell_events)
-    return tuple(sorted({event for values in events.values() for event in values}))
+    events = cast(Mapping[str, HookEvent], cell_events)
+    return tuple(
+        sorted(
+            {
+                native
+                for event in events.values()
+                if event.status is ProjectionStatus.SUPPORTED
+                for native in event.native
+            }
+        )
+    )
 
 
 def _command(path: Path) -> str:
@@ -339,6 +351,19 @@ def _owned_json(
     raise ValueError(f"provider does not own a standalone hook JSON: {provider.value}")
 
 
+def _antigravity_project_config(
+    current: dict[str, object],
+    events: tuple[str, ...],
+    scripts: dict[str, Path],
+) -> tuple[dict[str, object], dict[str, object]]:
+    result = dict(current)
+    owned = _owned_json(AgentProvider.ANTIGRAVITY, events, scripts)[
+        "aihub-governance"
+    ]
+    result["aihub-governance"] = owned
+    return result, {"aihub-governance": owned}
+
+
 def _opencode_plugin(capsule: str) -> str:
     encoded = json.dumps(capsule, ensure_ascii=False)
     digest = _digest_text(capsule)
@@ -374,7 +399,7 @@ def _manifest_path(config: Path) -> Path:
     return config.with_name(f".{config.name}.agents-governance.json")
 
 
-def _read_manifest(path: Path) -> dict[str, object] | None:
+def _read_manifest(path: Path, expected_version: int) -> dict[str, object] | None:
     if not path.exists() and not path.is_symlink():
         return None
     if path.is_symlink() or not path.is_file():
@@ -383,7 +408,7 @@ def _read_manifest(path: Path) -> dict[str, object] | None:
     expected = {
         "config",
         "context",
-        "coverage",
+        "events",
         "entries",
         "managed",
         "owner",
@@ -392,9 +417,9 @@ def _read_manifest(path: Path) -> dict[str, object] | None:
     }
     if set(payload) != expected:
         raise ValueError(f"hook manifest fields are invalid: {path}")
-    if payload["version"] != _MANIFEST_VERSION or payload["owner"] != _OWNER:
+    if payload["version"] != expected_version or payload["owner"] != _OWNER:
         raise ValueError(f"hook manifest owner/version is invalid: {path}")
-    _mapping(payload["coverage"], f"{path}: coverage")
+    _mapping(payload["events"], f"{path}: events")
     _mapping(payload["entries"], f"{path}: entries")
     managed = _mapping(payload["managed"], f"{path}: managed")
     for relative, raw in managed.items():
@@ -444,6 +469,14 @@ def _validate_previous(
     if entries:
         if current is None:
             raise ValueError(f"managed hook config is missing: {config}")
+        if (
+            provider is AgentProvider.ANTIGRAVITY
+            and context is ProjectionContext.PROJECT
+        ):
+            for key, managed_entry in entries.items():
+                if current.get(key) != managed_entry:
+                    raise ValueError(f"managed hook entry was modified: {config}:{key}")
+            return
         hooks = _mapping(current.get("hooks", {}), f"{config}: hooks")
         for event, managed_entry in entries.items():
             existing = hooks.get(event)
@@ -533,10 +566,15 @@ class HookProjector:
                 f"hook support is required for {provider.value}/{context.value}"
             )
         assert cell.path is not None
-        assert cell.coverage is not None
+        assert cell.events is not None
         config = _destination(boundary, cell.path, context)
+        default_config_mode = (
+            0o600 if context is ProjectionContext.PERSONAL else 0o644
+        )
         manifest_path = _manifest_path(config)
-        previous_manifest = _read_manifest(manifest_path)
+        previous_manifest = _read_manifest(
+            manifest_path, self.config.hook_manifest_version
+        )
         previous_entries = (
             _mapping(previous_manifest["entries"], "hook managed entries")
             if previous_manifest is not None
@@ -553,7 +591,7 @@ class HookProjector:
                 current=None,
             )
             desired: dict[Path, tuple[str, int]] = {
-                config: (_opencode_plugin(capsule), 0o644)
+                config: (_opencode_plugin(capsule), default_config_mode)
             }
             exact = dict(desired)
             _reject_unowned_exact(previous_manifest, exact)
@@ -576,8 +614,16 @@ class HookProjector:
                 AgentProvider.CODEX,
                 AgentProvider.GEMINI,
                 AgentProvider.CURSOR,
-            }
+            } or (
+                provider is AgentProvider.ANTIGRAVITY
+                and context is ProjectionContext.PROJECT
+            )
             current = _read_json(config) if merged_provider else None
+            config_mode = (
+                stat.S_IMODE(config.lstat().st_mode)
+                if merged_provider and config.exists()
+                else default_config_mode
+            )
             _validate_previous(
                 previous_manifest,
                 boundary=boundary,
@@ -600,25 +646,49 @@ class HookProjector:
                 rendered, entries = _cursor_config(
                     current, events, scripts, previous_entries
                 )
+            elif (
+                provider is AgentProvider.ANTIGRAVITY
+                and context is ProjectionContext.PROJECT
+            ):
+                assert current is not None
+                rendered, entries = _antigravity_project_config(
+                    current, events, scripts
+                )
             else:
                 rendered = _owned_json(provider, events, scripts)
-            desired[config] = (_render_json(rendered), 0o644)
+            desired[config] = (_render_json(rendered), config_mode)
             if not merged_provider:
                 exact[config] = desired[config]
-            if provider is AgentProvider.ANTIGRAVITY:
+            if (
+                provider is AgentProvider.ANTIGRAVITY
+                and context is ProjectionContext.PERSONAL
+            ):
                 marker = config.parent / "plugin.json"
                 desired[marker] = (_render_json({"name": "aihub-governance"}), 0o644)
                 exact[marker] = desired[marker]
             _reject_unowned_exact(previous_manifest, exact)
         manifest_payload = {
-            "version": _MANIFEST_VERSION,
+            "version": self.config.hook_manifest_version,
             "owner": _OWNER,
             "provider": provider.value,
             "context": context.value,
             "config": config.name,
-            "coverage": {
-                logical_event: coverage.value
-                for logical_event, coverage in sorted(cell.coverage.items())
+            "events": {
+                logical_event: (
+                    {
+                        "status": event.status.value,
+                        "native": list(event.native),
+                        "coverage": event.coverage.value,
+                        "clients": [client.value for client in event.clients],
+                    }
+                    if event.status is ProjectionStatus.SUPPORTED
+                    and event.coverage is not None
+                    else {
+                        "status": event.status.value,
+                        "reason": event.reason,
+                    }
+                )
+                for logical_event, event in sorted(cell.events.items())
             },
             "entries": entries,
             "managed": {
@@ -634,10 +704,10 @@ class HookProjector:
         desired[manifest_path] = (_render_json(manifest_payload), 0o644)
         return HookPlan(provider, context, boundary, config, desired)
 
-    def _plans(self, project: Path) -> tuple[HookPlan, ...]:
+    def _plans(self, authorization: ProjectAuthorization) -> tuple[HookPlan, ...]:
         home = _physical_boundary(Path.home(), "personal home")
-        repository = _physical_boundary(project, "project root")
-        project_authorized = project_projection_authorized(repository)
+        repository = _physical_boundary(authorization.project, "project root")
+        project_authorized = authorization.selected
         capsule = _capsule(self.governance, self.commands, self.rules)
         hooks = tuple(
             self._plan(
@@ -705,9 +775,9 @@ class HookProjector:
             previous != encoded or previous_mode != mode,
         )
 
-    def _states(self, project: Path) -> tuple[_FileState, ...]:
+    def _states(self, authorization: ProjectAuthorization) -> tuple[_FileState, ...]:
         desired: dict[Path, tuple[str, int]] = {}
-        for plan in self._plans(project):
+        for plan in self._plans(authorization):
             for destination, rendered in plan.desired.items():
                 previous = desired.get(destination)
                 if previous is not None and previous != rendered:
@@ -774,8 +844,6 @@ class HookProjector:
         for directory in reversed(missing):
             directory.mkdir()
             staged.created_parents = (*staged.created_parents, directory)
-        if state.destination.exists():
-            state.destination.unlink()
         staged.candidate.replace(state.destination)
         staged.installed = True
 
@@ -793,10 +861,11 @@ class HookProjector:
                     "installed hook projection changed before rollback: "
                     f"{destination}"
                 )
-            destination.unlink()
+            if staged.backup.exists():
+                staged.backup.replace(destination)
+            else:
+                destination.unlink()
             staged.installed = False
-        if staged.backup.exists():
-            staged.backup.replace(destination)
         for directory in reversed(staged.created_parents):
             directory.rmdir()
 
@@ -806,7 +875,8 @@ class HookProjector:
             remove_physical(staged.stage)
 
     def check(self, project: Path) -> None:
-        for state in self._states(project):
+        authorization = load_project_authorization(project)
+        for state in self._states(authorization):
             if state.drift:
                 raise HookProjectionDriftError(
                     f"hook projection differs: {state.destination}"
@@ -820,17 +890,20 @@ class HookProjector:
             lambda: self._cleanup(staged),
         )
 
-    def publications(self, project: Path) -> tuple[Publication, ...]:
+    def publications(
+        self, authorization: ProjectAuthorization
+    ) -> tuple[Publication, ...]:
         """Preflight and defer every changed provider-hook publication."""
 
         return tuple(
             Publication(partial(self._prepare_publication, state))
-            for state in self._states(project)
+            for state in self._states(authorization)
             if state.drift
         )
 
     def apply(self, project: Path) -> None:
-        run_atomic_publications(self.publications(project))
+        authorization = load_project_authorization(project)
+        run_atomic_publications(self.publications(authorization))
 
 
 __all__ = ("HookProjectionDriftError", "HookProjector")

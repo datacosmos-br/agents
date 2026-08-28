@@ -209,8 +209,9 @@ activation evidence, logical digest, physical digest, and adapter version.
   rolls earlier publications back and re-raises the original exception with
   any rollback failure attached.
 - Provider hooks are generated delivery adapters, never policy owners or public
-  commands. Exact, equivalent, and advisory lifecycle coverage is typed in the
-  matrix and recorded in hook manifests.
+  commands. Exact, equivalent, advisory, and unsupported lifecycle boundaries,
+  native event names, and client scope are typed in the matrix and recorded in
+  hook manifests.
 
 Project content is portable and generic. It must not teach development workflows
 specific to this repository, AI Hub, Beads, Gas City, or a foreign repository.

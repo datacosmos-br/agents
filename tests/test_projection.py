@@ -85,16 +85,18 @@ def _config(root: Path, supported: dict[tuple[str, str], str]) -> None:
                         **(
                             {
                                 "events": {
-                                    "context_refresh": ["ContextRefresh"],
-                                    "prompt_submit": ["PromptSubmit"],
-                                    "session_start": ["SessionStart"],
-                                    "subagent_start": ["SubagentStart"],
-                                },
-                                "coverage": {
-                                    "context_refresh": "exact",
-                                    "prompt_submit": "exact",
-                                    "session_start": "exact",
-                                    "subagent_start": "exact",
+                                    logical: {
+                                        "status": "SUPPORTED",
+                                        "native": [native],
+                                        "coverage": "exact",
+                                        "clients": ["local"],
+                                    }
+                                    for logical, native in {
+                                        "context_refresh": "ContextRefresh",
+                                        "prompt_submit": "PromptSubmit",
+                                        "session_start": "SessionStart",
+                                        "subagent_start": "SubagentStart",
+                                    }.items()
                                 },
                             }
                             if surface == "hooks"
@@ -112,7 +114,13 @@ def _config(root: Path, supported: dict[tuple[str, str], str]) -> None:
             contexts[context] = surfaces
         providers[provider] = contexts
     (config / "projections.json").write_text(
-        json.dumps({"version": 5, "manifest_version": 5, "providers": providers}),
+        json.dumps(
+            {
+                "version": 6,
+                "manifest_versions": {"hooks": 3, "projection": 5},
+                "providers": providers,
+            }
+        ),
         encoding="utf-8",
     )
 
@@ -215,6 +223,63 @@ def test_absent_project_authorization_is_a_non_target(
     projector.check()
 
     assert not (project / ".agents").exists()
+
+
+def test_personal_projection_includes_agent_routed_capabilities(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    root = tmp_path / "source"
+    root.mkdir()
+    _skill(root, "always", category="agent-wide")
+    _skill(
+        root,
+        "agent-tool",
+        category="tool",
+        tags=(
+            "activation:opt-in",
+            "detect:opt-in:agent-tool",
+            "provenance:test",
+            "route:agent",
+            "tool:agent-tool",
+            "updates:manual",
+            "usage:on-demand",
+        ),
+    )
+    _skill(
+        root,
+        "project-tool",
+        category="tool",
+        tags=(
+            "activation:opt-in",
+            "detect:opt-in:project-tool",
+            "provenance:test",
+            "route:project",
+            "tool:project-tool",
+            "updates:manual",
+            "usage:on-demand",
+        ),
+    )
+    _config(root, {})
+    config_path = root / "config" / "projections.json"
+    config = json.loads(config_path.read_text(encoding="utf-8"))
+    config["providers"]["codex"]["personal"]["skills"] = {
+        "status": "SUPPORTED",
+        "path": "${HOME}/.codex/skills",
+    }
+    config_path.write_text(json.dumps(config), encoding="utf-8")
+    project = _project(tmp_path, authorized=False)
+    home = tmp_path / "home"
+    home.mkdir()
+    monkeypatch.setenv("HOME", str(home))
+    monkeypatch.chdir(project)
+    projector = Projector(Catalog(root), load_projection_config(root), (), (), ())
+
+    projector.apply()
+
+    target = home / ".codex" / "skills"
+    assert (target / "always" / "SKILL.md").is_file()
+    assert (target / "agent-tool" / "SKILL.md").is_file()
+    assert not (target / "project-tool").exists()
 
 
 def test_foreign_collision_fails_before_any_publication(

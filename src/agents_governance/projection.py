@@ -41,7 +41,8 @@ from .commands import (
 )
 from .projection_authorization import (
     PROJECT_SELECTION,
-    project_projection_authorized,
+    ProjectAuthorization,
+    load_project_authorization,
 )
 from .projection_config import (
     ProjectionCell,
@@ -412,11 +413,13 @@ class Projector:
         return _physical_project(Path.cwd())
 
     @staticmethod
-    def _selection(project: Path) -> ProjectionSelection | None:
-        path = project / Projector.SELECTION
-        if not project_projection_authorized(project):
+    def _selection(
+        authorization: ProjectAuthorization,
+    ) -> ProjectionSelection | None:
+        if authorization.payload is None:
             return None
-        payload = _mapping(json.loads(path.read_text(encoding="utf-8")), str(path))
+        path = authorization.path
+        payload = _mapping(json.loads(authorization.payload), str(path))
         _exact(payload, _SELECTION_FIELDS, str(path))
         if payload["version"] != 1:
             raise ValueError(f"projection selection version must equal 1: {path}")
@@ -740,8 +743,11 @@ class Projector:
             )
         return destination.name
 
-    def _plans(self, project: Path) -> tuple[ProjectionPlan, ...]:
-        project_selection = self._selection(project)
+    def _plans(
+        self, authorization: ProjectAuthorization
+    ) -> tuple[ProjectionPlan, ...]:
+        project = authorization.project
+        project_selection = self._selection(authorization)
         dependencies = (
             self._dependencies(project) if project_selection is not None else set()
         )
@@ -969,10 +975,9 @@ class Projector:
                         )
         return plans
 
-    @staticmethod
-    def _manifest_payload(plan: ProjectionPlan) -> dict[str, object]:
+    def _manifest_payload(self, plan: ProjectionPlan) -> dict[str, object]:
         return {
-            "version": 5,
+            "version": self.config.projection_manifest_version,
             "owner": "agents-governance",
             "providers": list(plan.providers),
             "context": plan.context.value,
@@ -983,8 +988,7 @@ class Projector:
             "managed": {source.name: source.metadata() for source in plan.sources},
         }
 
-    @staticmethod
-    def _manifest(root: Path) -> dict[str, object] | None:
+    def _manifest(self, root: Path) -> dict[str, object] | None:
         path = root / Projector.MANIFEST
         if not path.exists() and not path.is_symlink():
             return None
@@ -992,7 +996,10 @@ class Projector:
             raise ValueError(f"projection manifest must be a physical file: {path}")
         payload = _mapping(json.loads(path.read_text(encoding="utf-8")), str(path))
         _exact(payload, _MANIFEST_FIELDS, str(path))
-        if payload["version"] != 5 or payload["owner"] != "agents-governance":
+        if (
+            payload["version"] != self.config.projection_manifest_version
+            or payload["owner"] != "agents-governance"
+        ):
             raise ValueError(f"projection manifest owner/version is invalid: {path}")
         if payload["context"] not in {context.value for context in ProjectionContext}:
             raise ValueError(f"projection manifest context is invalid: {path}")
@@ -1296,7 +1303,8 @@ class Projector:
         """Raise on the first project projection defect or drift."""
 
         project = self.project_root()
-        for plan in self._plans(project):
+        authorization = load_project_authorization(project)
+        for plan in self._plans(authorization):
             state = self._state(plan)
             if state.drift:
                 raise ProjectionDriftError(f"project projection differs: {plan.root}")
@@ -1311,10 +1319,16 @@ class Projector:
             ),
         )
 
-    def publications(self, project: Path | None = None) -> tuple[Publication, ...]:
+    def publications(
+        self, authorization: ProjectAuthorization | None = None
+    ) -> tuple[Publication, ...]:
         """Preflight and defer every changed directory publication."""
 
-        selected = self.project_root() if project is None else project
+        selected = (
+            load_project_authorization(self.project_root())
+            if authorization is None
+            else authorization
+        )
         states = tuple(self._state(plan) for plan in self._plans(selected))
         return tuple(
             Publication(partial(self._prepare_publication, state))

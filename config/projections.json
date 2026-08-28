@@ -1,6 +1,6 @@
 {
-  "version": 5,
-  "manifest_version": 5,
+  "version": 6,
+  "manifest_versions": {"hooks": 3, "projection": 5},
   "providers": {
     "claude": {
       "personal": {
@@ -8,14 +8,14 @@
         "commands": {"status": "SUPPORTED", "path": "${HOME}/.claude/commands"},
         "agents": {"status": "SUPPORTED", "path": "${HOME}/.claude/agents"},
         "rules": {"status": "SUPPORTED", "path": "${HOME}/.claude/rules", "layout": "directory"},
-        "hooks": {"status": "SUPPORTED", "path": "${HOME}/.claude/settings.json", "events": {"session_start": ["SessionStart"], "prompt_submit": ["UserPromptSubmit"], "context_refresh": ["SessionStart"], "subagent_start": ["SubagentStart"]}, "coverage": {"session_start": "exact", "prompt_submit": "exact", "context_refresh": "exact", "subagent_start": "exact"}}
+        "hooks": {"status": "SUPPORTED", "path": "${HOME}/.claude/settings.json", "events": {"session_start": {"status": "SUPPORTED", "native": ["SessionStart"], "coverage": "exact", "clients": ["local"]}, "prompt_submit": {"status": "SUPPORTED", "native": ["UserPromptSubmit"], "coverage": "exact", "clients": ["local"]}, "context_refresh": {"status": "SUPPORTED", "native": ["SessionStart"], "coverage": "exact", "clients": ["local"]}, "subagent_start": {"status": "SUPPORTED", "native": ["SubagentStart"], "coverage": "exact", "clients": ["local"]}}}
       },
       "project": {
         "skills": {"status": "SUPPORTED", "path": ".claude/skills"},
         "commands": {"status": "SUPPORTED", "path": ".claude/commands"},
         "agents": {"status": "SUPPORTED", "path": ".claude/agents"},
         "rules": {"status": "SUPPORTED", "path": ".claude/rules", "layout": "directory"},
-        "hooks": {"status": "SUPPORTED", "path": ".claude/settings.json", "events": {"session_start": ["SessionStart"], "prompt_submit": ["UserPromptSubmit"], "context_refresh": ["SessionStart"], "subagent_start": ["SubagentStart"]}, "coverage": {"session_start": "exact", "prompt_submit": "exact", "context_refresh": "exact", "subagent_start": "exact"}}
+        "hooks": {"status": "SUPPORTED", "path": ".claude/settings.json", "events": {"session_start": {"status": "SUPPORTED", "native": ["SessionStart"], "coverage": "exact", "clients": ["local"]}, "prompt_submit": {"status": "SUPPORTED", "native": ["UserPromptSubmit"], "coverage": "exact", "clients": ["local"]}, "context_refresh": {"status": "SUPPORTED", "native": ["SessionStart"], "coverage": "exact", "clients": ["local"]}, "subagent_start": {"status": "SUPPORTED", "native": ["SubagentStart"], "coverage": "exact", "clients": ["local"]}}}
       }
     },
     "codex": {
@@ -24,14 +24,14 @@
         "commands": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: Codex custom prompts are retired in favor of skills"},
         "agents": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: Codex custom-agent TOML has no capability allowlist"},
         "rules": {"status": "SUPPORTED", "path": "${HOME}/.codex/AGENTS.md", "layout": "document"},
-        "hooks": {"status": "SUPPORTED", "path": "${HOME}/.codex/hooks.json", "events": {"session_start": ["SessionStart"], "prompt_submit": ["UserPromptSubmit"], "context_refresh": ["SessionStart"], "subagent_start": ["SubagentStart"]}, "coverage": {"session_start": "exact", "prompt_submit": "exact", "context_refresh": "exact", "subagent_start": "exact"}}
+        "hooks": {"status": "SUPPORTED", "path": "${HOME}/.codex/hooks.json", "events": {"session_start": {"status": "SUPPORTED", "native": ["SessionStart"], "coverage": "exact", "clients": ["local"]}, "prompt_submit": {"status": "SUPPORTED", "native": ["UserPromptSubmit"], "coverage": "exact", "clients": ["local"]}, "context_refresh": {"status": "SUPPORTED", "native": ["SessionStart"], "coverage": "exact", "clients": ["local"]}, "subagent_start": {"status": "SUPPORTED", "native": ["SubagentStart"], "coverage": "exact", "clients": ["local"]}}}
       },
       "project": {
         "skills": {"status": "SUPPORTED", "path": ".agents/skills"},
         "commands": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: Codex custom prompts are retired in favor of skills"},
         "agents": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: Codex custom-agent TOML has no capability allowlist"},
         "rules": {"status": "SUPPORTED", "path": "AGENTS.md", "layout": "document"},
-        "hooks": {"status": "SUPPORTED", "path": ".codex/hooks.json", "events": {"session_start": ["SessionStart"], "prompt_submit": ["UserPromptSubmit"], "context_refresh": ["SessionStart"], "subagent_start": ["SubagentStart"]}, "coverage": {"session_start": "exact", "prompt_submit": "exact", "context_refresh": "exact", "subagent_start": "exact"}}
+        "hooks": {"status": "SUPPORTED", "path": ".codex/hooks.json", "events": {"session_start": {"status": "SUPPORTED", "native": ["SessionStart"], "coverage": "exact", "clients": ["local"]}, "prompt_submit": {"status": "SUPPORTED", "native": ["UserPromptSubmit"], "coverage": "exact", "clients": ["local"]}, "context_refresh": {"status": "SUPPORTED", "native": ["SessionStart"], "coverage": "exact", "clients": ["local"]}, "subagent_start": {"status": "SUPPORTED", "native": ["SubagentStart"], "coverage": "exact", "clients": ["local"]}}}
       }
     },
     "cursor": {
@@ -40,14 +40,14 @@
         "commands": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: Cursor commands are project-scoped only"},
         "agents": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: Cursor subagents expose readonly only, not a capability allowlist"},
         "rules": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: Cursor personal rule files have no documented typed metadata contract"},
-        "hooks": {"status": "SUPPORTED", "path": "${HOME}/.cursor/hooks.json", "events": {"session_start": ["sessionStart"], "prompt_submit": ["beforeSubmitPrompt"], "context_refresh": ["preCompact"], "subagent_start": ["subagentStart"]}, "coverage": {"session_start": "exact", "prompt_submit": "advisory", "context_refresh": "advisory", "subagent_start": "advisory"}}
+        "hooks": {"status": "SUPPORTED", "path": "${HOME}/.cursor/hooks.json", "events": {"session_start": {"status": "SUPPORTED", "native": ["sessionStart"], "coverage": "exact", "clients": ["local"]}, "prompt_submit": {"status": "SUPPORTED", "native": ["beforeSubmitPrompt"], "coverage": "advisory", "clients": ["cloud", "local"]}, "context_refresh": {"status": "SUPPORTED", "native": ["preCompact"], "coverage": "advisory", "clients": ["cloud", "local"]}, "subagent_start": {"status": "SUPPORTED", "native": ["subagentStart"], "coverage": "advisory", "clients": ["cloud", "local"]}}}
       },
       "project": {
         "skills": {"status": "SUPPORTED", "path": ".cursor/skills"},
         "commands": {"status": "SUPPORTED", "path": ".cursor/commands"},
         "agents": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: Cursor subagents expose readonly only, not a capability allowlist"},
         "rules": {"status": "SUPPORTED", "path": ".cursor/rules", "layout": "directory"},
-        "hooks": {"status": "SUPPORTED", "path": ".cursor/hooks.json", "events": {"session_start": ["sessionStart"], "prompt_submit": ["beforeSubmitPrompt"], "context_refresh": ["preCompact"], "subagent_start": ["subagentStart"]}, "coverage": {"session_start": "exact", "prompt_submit": "advisory", "context_refresh": "advisory", "subagent_start": "advisory"}}
+        "hooks": {"status": "SUPPORTED", "path": ".cursor/hooks.json", "events": {"session_start": {"status": "SUPPORTED", "native": ["sessionStart"], "coverage": "exact", "clients": ["local"]}, "prompt_submit": {"status": "SUPPORTED", "native": ["beforeSubmitPrompt"], "coverage": "advisory", "clients": ["cloud", "local"]}, "context_refresh": {"status": "SUPPORTED", "native": ["preCompact"], "coverage": "advisory", "clients": ["cloud", "local"]}, "subagent_start": {"status": "SUPPORTED", "native": ["subagentStart"], "coverage": "advisory", "clients": ["cloud", "local"]}}}
       }
     },
     "copilot": {
@@ -56,14 +56,14 @@
         "commands": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: Copilot commands reuse Claude paths and lose provider ownership"},
         "agents": {"status": "SUPPORTED", "path": "${HOME}/.copilot/agents"},
         "rules": {"status": "SUPPORTED", "path": "${HOME}/.copilot/instructions", "layout": "directory"},
-        "hooks": {"status": "SUPPORTED", "path": "${HOME}/.copilot/hooks/aihub-governance.json", "events": {"session_start": ["sessionStart"], "prompt_submit": ["userPromptSubmitted"], "context_refresh": ["preCompact"], "subagent_start": ["subagentStart"]}, "coverage": {"session_start": "exact", "prompt_submit": "advisory", "context_refresh": "advisory", "subagent_start": "exact"}}
+        "hooks": {"status": "SUPPORTED", "path": "${HOME}/.copilot/hooks/aihub-governance.json", "events": {"session_start": {"status": "SUPPORTED", "native": ["sessionStart"], "coverage": "exact", "clients": ["local"]}, "prompt_submit": {"status": "SUPPORTED", "native": ["userPromptSubmitted"], "coverage": "advisory", "clients": ["local"]}, "context_refresh": {"status": "SUPPORTED", "native": ["preCompact"], "coverage": "advisory", "clients": ["local"]}, "subagent_start": {"status": "SUPPORTED", "native": ["subagentStart"], "coverage": "exact", "clients": ["local"]}}}
       },
       "project": {
         "skills": {"status": "SUPPORTED", "path": ".github/skills"},
         "commands": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: Copilot commands reuse Claude paths and lose provider ownership"},
         "agents": {"status": "SUPPORTED", "path": ".github/agents"},
         "rules": {"status": "SUPPORTED", "path": ".github/instructions", "layout": "directory"},
-        "hooks": {"status": "SUPPORTED", "path": ".github/hooks/aihub-governance.json", "events": {"session_start": ["sessionStart"], "prompt_submit": ["userPromptSubmitted"], "context_refresh": ["preCompact"], "subagent_start": ["subagentStart"]}, "coverage": {"session_start": "exact", "prompt_submit": "advisory", "context_refresh": "advisory", "subagent_start": "exact"}}
+        "hooks": {"status": "SUPPORTED", "path": ".github/hooks/aihub-governance.json", "events": {"session_start": {"status": "SUPPORTED", "native": ["sessionStart"], "coverage": "exact", "clients": ["local"]}, "prompt_submit": {"status": "SUPPORTED", "native": ["userPromptSubmitted"], "coverage": "advisory", "clients": ["local"]}, "context_refresh": {"status": "SUPPORTED", "native": ["preCompact"], "coverage": "advisory", "clients": ["local"]}, "subagent_start": {"status": "SUPPORTED", "native": ["subagentStart"], "coverage": "exact", "clients": ["local"]}}}
       }
     },
     "gemini": {
@@ -72,14 +72,14 @@
         "commands": {"status": "SUPPORTED", "path": "${HOME}/.gemini/commands"},
         "agents": {"status": "SUPPORTED", "path": "${HOME}/.gemini/agents"},
         "rules": {"status": "SUPPORTED", "path": "${HOME}/.gemini/GEMINI.md", "layout": "document"},
-        "hooks": {"status": "SUPPORTED", "path": "${HOME}/.gemini/settings.json", "events": {"session_start": ["SessionStart"], "prompt_submit": ["BeforeAgent"], "context_refresh": ["PreCompress", "BeforeAgent"], "subagent_start": ["BeforeAgent"]}, "coverage": {"session_start": "exact", "prompt_submit": "exact", "context_refresh": "equivalent", "subagent_start": "equivalent"}}
+        "hooks": {"status": "SUPPORTED", "path": "${HOME}/.gemini/settings.json", "events": {"session_start": {"status": "SUPPORTED", "native": ["SessionStart"], "coverage": "exact", "clients": ["local"]}, "prompt_submit": {"status": "SUPPORTED", "native": ["BeforeAgent"], "coverage": "exact", "clients": ["local"]}, "context_refresh": {"status": "SUPPORTED", "native": ["PreCompress", "BeforeAgent"], "coverage": "equivalent", "clients": ["local"]}, "subagent_start": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: Gemini exposes no documented subagent lifecycle boundary"}}}
       },
       "project": {
         "skills": {"status": "SUPPORTED", "path": ".gemini/skills"},
         "commands": {"status": "SUPPORTED", "path": ".gemini/commands"},
         "agents": {"status": "SUPPORTED", "path": ".gemini/agents"},
         "rules": {"status": "SUPPORTED", "path": "GEMINI.md", "layout": "document"},
-        "hooks": {"status": "SUPPORTED", "path": ".gemini/settings.json", "events": {"session_start": ["SessionStart"], "prompt_submit": ["BeforeAgent"], "context_refresh": ["PreCompress", "BeforeAgent"], "subagent_start": ["BeforeAgent"]}, "coverage": {"session_start": "exact", "prompt_submit": "exact", "context_refresh": "equivalent", "subagent_start": "equivalent"}}
+        "hooks": {"status": "SUPPORTED", "path": ".gemini/settings.json", "events": {"session_start": {"status": "SUPPORTED", "native": ["SessionStart"], "coverage": "exact", "clients": ["local"]}, "prompt_submit": {"status": "SUPPORTED", "native": ["BeforeAgent"], "coverage": "exact", "clients": ["local"]}, "context_refresh": {"status": "SUPPORTED", "native": ["PreCompress", "BeforeAgent"], "coverage": "equivalent", "clients": ["local"]}, "subagent_start": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: Gemini exposes no documented subagent lifecycle boundary"}}}
       }
     },
     "opencode": {
@@ -88,14 +88,14 @@
         "commands": {"status": "SUPPORTED", "path": "${HOME}/.config/opencode/commands"},
         "agents": {"status": "SUPPORTED", "path": "${HOME}/.config/opencode/agents"},
         "rules": {"status": "SUPPORTED", "path": "${HOME}/.config/opencode/AGENTS.md", "layout": "document"},
-        "hooks": {"status": "SUPPORTED", "path": "${HOME}/.config/opencode/plugins/aihub-governance.ts", "events": {"session_start": ["experimental.chat.system.transform"], "prompt_submit": ["experimental.chat.system.transform"], "context_refresh": ["experimental.session.compacting", "experimental.chat.system.transform"], "subagent_start": ["experimental.chat.system.transform"]}, "coverage": {"session_start": "equivalent", "prompt_submit": "equivalent", "context_refresh": "exact", "subagent_start": "equivalent"}}
+        "hooks": {"status": "SUPPORTED", "path": "${HOME}/.config/opencode/plugins/aihub-governance.ts", "events": {"session_start": {"status": "SUPPORTED", "native": ["experimental.chat.system.transform"], "coverage": "equivalent", "clients": ["local"]}, "prompt_submit": {"status": "SUPPORTED", "native": ["experimental.chat.system.transform"], "coverage": "equivalent", "clients": ["local"]}, "context_refresh": {"status": "SUPPORTED", "native": ["experimental.session.compacting", "experimental.chat.system.transform"], "coverage": "exact", "clients": ["local"]}, "subagent_start": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: OpenCode exposes no documented subagent lifecycle boundary"}}}
       },
       "project": {
         "skills": {"status": "SUPPORTED", "path": ".opencode/skills"},
         "commands": {"status": "SUPPORTED", "path": ".opencode/commands"},
         "agents": {"status": "SUPPORTED", "path": ".opencode/agents"},
         "rules": {"status": "SUPPORTED", "path": "AGENTS.md", "layout": "document"},
-        "hooks": {"status": "SUPPORTED", "path": ".opencode/plugins/aihub-governance.ts", "events": {"session_start": ["experimental.chat.system.transform"], "prompt_submit": ["experimental.chat.system.transform"], "context_refresh": ["experimental.session.compacting", "experimental.chat.system.transform"], "subagent_start": ["experimental.chat.system.transform"]}, "coverage": {"session_start": "equivalent", "prompt_submit": "equivalent", "context_refresh": "exact", "subagent_start": "equivalent"}}
+        "hooks": {"status": "SUPPORTED", "path": ".opencode/plugins/aihub-governance.ts", "events": {"session_start": {"status": "SUPPORTED", "native": ["experimental.chat.system.transform"], "coverage": "equivalent", "clients": ["local"]}, "prompt_submit": {"status": "SUPPORTED", "native": ["experimental.chat.system.transform"], "coverage": "equivalent", "clients": ["local"]}, "context_refresh": {"status": "SUPPORTED", "native": ["experimental.session.compacting", "experimental.chat.system.transform"], "coverage": "exact", "clients": ["local"]}, "subagent_start": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: OpenCode exposes no documented subagent lifecycle boundary"}}}
       }
     },
     "antigravity": {
@@ -104,14 +104,14 @@
         "commands": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: Antigravity has no documented custom-command file contract"},
         "agents": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: Antigravity agent MCP tool identity is not documented for the complete catalog"},
         "rules": {"status": "SUPPORTED", "path": "${HOME}/.gemini/GEMINI.md", "layout": "document"},
-        "hooks": {"status": "SUPPORTED", "path": "${HOME}/.gemini/antigravity-cli/plugins/aihub-governance/hooks.json", "events": {"session_start": ["PreInvocation"], "prompt_submit": ["PreInvocation"], "context_refresh": ["PreInvocation"], "subagent_start": ["PreInvocation"]}, "coverage": {"session_start": "equivalent", "prompt_submit": "equivalent", "context_refresh": "equivalent", "subagent_start": "equivalent"}}
+        "hooks": {"status": "SUPPORTED", "path": "${HOME}/.gemini/antigravity-cli/plugins/aihub-governance/hooks.json", "events": {"session_start": {"status": "SUPPORTED", "native": ["PreInvocation"], "coverage": "equivalent", "clients": ["local"]}, "prompt_submit": {"status": "SUPPORTED", "native": ["PreInvocation"], "coverage": "equivalent", "clients": ["local"]}, "context_refresh": {"status": "SUPPORTED", "native": ["PreInvocation"], "coverage": "equivalent", "clients": ["local"]}, "subagent_start": {"status": "SUPPORTED", "native": ["PreInvocation"], "coverage": "equivalent", "clients": ["local"]}}}
       },
       "project": {
         "skills": {"status": "SUPPORTED", "path": ".agents/skills"},
         "commands": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: Antigravity has no documented custom-command file contract"},
         "agents": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: Antigravity agent MCP tool identity is not documented for the complete catalog"},
         "rules": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: Antigravity documents activation choices but no file metadata schema for preserving path-scoped semantics"},
-        "hooks": {"status": "SUPPORTED", "path": ".agents/plugins/aihub-governance/hooks.json", "events": {"session_start": ["PreInvocation"], "prompt_submit": ["PreInvocation"], "context_refresh": ["PreInvocation"], "subagent_start": ["PreInvocation"]}, "coverage": {"session_start": "equivalent", "prompt_submit": "equivalent", "context_refresh": "equivalent", "subagent_start": "equivalent"}}
+        "hooks": {"status": "SUPPORTED", "path": ".agents/hooks.json", "events": {"session_start": {"status": "SUPPORTED", "native": ["PreInvocation"], "coverage": "equivalent", "clients": ["local"]}, "prompt_submit": {"status": "SUPPORTED", "native": ["PreInvocation"], "coverage": "equivalent", "clients": ["local"]}, "context_refresh": {"status": "SUPPORTED", "native": ["PreInvocation"], "coverage": "equivalent", "clients": ["local"]}, "subagent_start": {"status": "SUPPORTED", "native": ["PreInvocation"], "coverage": "equivalent", "clients": ["local"]}}}
       }
     }
   }

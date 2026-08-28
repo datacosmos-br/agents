@@ -335,6 +335,17 @@ def test_forbidden_skill_preserves_frozen_budget_and_is_not_distributed(
     assert catalog.names_for("personal") == set()
 
 
+def test_agent_routed_capability_is_a_personal_distribution() -> None:
+    root = Path(__file__).resolve().parents[1]
+    catalog = Catalog(root)
+
+    policy = catalog.policy("agent-browser")
+
+    assert "personal" in policy.distributions
+    assert "agent-capability:tool:agent-browser" in policy.distributions
+    assert "agent-browser" in catalog.names_for("personal")
+
+
 def test_content_digest_stays_stable_while_physical_contract_tracks_mode_and_type(
     tmp_path: Path,
 ) -> None:
