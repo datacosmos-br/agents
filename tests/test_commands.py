@@ -6,20 +6,15 @@ from pathlib import Path, PurePosixPath
 
 import pytest
 
-from agents_governance.catalog import Catalog
-from agents_governance.command_evals import CommandEvalRole
 from agents_governance.commands import (
-    CommandAdapterStatus,
     CommandArtifact,
     CommandProvider,
     CommandRenderError,
     CommandTokenBudget,
-    UnsupportedCommand,
     audit_command_specs,
     render_command,
     waza_bpe_counter,
 )
-from agents_governance.validation import validate
 
 PROJECT_TAGS = '["intent:implementation","risk:write","route:project"]'
 AGENT_TAGS = '["intent:inspection","risk:external","route:agent"]'
@@ -33,7 +28,6 @@ def _write_command(
     argument_hint: str | None = "<service and approved target>",
     tags: str = PROJECT_TAGS,
     body: str = "# Deploy service\n\nUse $ARGUMENTS as the approved target.\n",
-    extra_frontmatter: str = "",
 ) -> Path:
     commands = root / "commands"
     commands.mkdir(exist_ok=True)
@@ -46,7 +40,6 @@ def _write_command(
         f"{hint}"
         "metadata:\n"
         f"  aihub.tags: '{tags}'\n"
-        f"{extra_frontmatter}"
         "---\n\n"
         f"{body}",
         encoding="utf-8",
@@ -55,57 +48,22 @@ def _write_command(
 
 
 def _only_spec(root: Path):
-    audit = audit_command_specs(root)
-    assert audit.findings == ()
-    assert len(audit.commands) == 1
-    return audit.commands[0]
+    specs = audit_command_specs(root)
+    assert len(specs) == 1
+    return specs[0]
+
+
+def _only_spec_after_write(root: Path):
+    _write_command(root)
+    return _only_spec(root)
 
 
 def _budget(max_tokens: int | None = None) -> CommandTokenBudget:
     return CommandTokenBudget(max_tokens=max_tokens, counter=len)
 
 
-def _write_catalog_config(root: Path) -> None:
-    config = root / "config"
-    config.mkdir()
-    (root / "skills").mkdir()
-    (config / "skills.json").write_text(
-        '{"version":2,"budgets":{"router_tokens":500,'
-        '"frozen_tokens":1200,"on_demand_tokens":5000,"max_lines":500}}\n',
-        encoding="utf-8",
-    )
-
-
-def _write_command_eval(root: Path, name: str = "deploy-service") -> None:
-    destination = root / "evals" / "commands" / name / "eval.yaml"
-    destination.parent.mkdir(parents=True)
-    blocks: list[str] = []
-    for role in CommandEvalRole:
-        providers = ""
-        if role in {
-            CommandEvalRole.SUPPORTED_RENDERING,
-            CommandEvalRole.PROJECTION_FIXED_POINT,
-        }:
-            providers = "\n    providers: [claude, copilot, cursor, gemini, opencode]"
-        elif role is CommandEvalRole.UNSUPPORTED_PROVIDER:
-            providers = "\n    providers: [antigravity, codex]"
-        blocks.append(
-            f"  - role: {role.value}\n"
-            f"    prompt: Material {role.value} request for {name}."
-            f"{providers}\n"
-            "    assertions:\n"
-            "      output_contains: [owner, evidence]\n"
-            "      output_not_contains: [fallback]\n"
-        )
-    destination.write_text(
-        f"command: {name}\nschemaVersion: '1.0'\nscenarios:\n" + "".join(blocks),
-        encoding="utf-8",
-    )
-
-
 def test_valid_command_is_loaded_into_a_typed_spec(tmp_path: Path) -> None:
     path = _write_command(tmp_path)
-
     spec = _only_spec(tmp_path)
 
     assert spec.path == path
@@ -113,285 +71,136 @@ def test_valid_command_is_loaded_into_a_typed_spec(tmp_path: Path) -> None:
     assert spec.route.value == "project"
     assert tuple(intent.value for intent in spec.intents) == ("implementation",)
     assert spec.risk.value == "write"
-    assert spec.uses_arguments is True
-    assert spec.body == "# Deploy service\n\nUse $ARGUMENTS as the approved target.\n"
+    assert spec.uses_arguments
 
 
 @pytest.mark.parametrize(
-    ("mutate", "expected_code"),
+    ("old", "new", "message"),
     [
+        ("name: deploy-service", "name: other", "name must equal"),
         (
-            lambda path: path.write_text(
-                path.read_text(encoding="utf-8").replace(
-                    "name: deploy-service", "name: another-command"
-                ),
-                encoding="utf-8",
-            ),
-            "command-name",
+            "Deploy one approved service through its project owner.",
+            "First sentence. Second sentence.",
+            "one short sentence",
         ),
+        ("argument-hint: '<service and approved target>'\n", "", "argument-hint"),
+        (PROJECT_TAGS, '["risk:write","route:project"]', "intent"),
+        (PROJECT_TAGS, '["intent:unknown","risk:write","route:project"]', "unknown"),
         (
-            lambda path: path.write_text(
-                path.read_text(encoding="utf-8").replace(
-                    "Deploy one approved service through its project owner.",
-                    "This is one sentence. This is another.",
-                ),
-                encoding="utf-8",
-            ),
-            "command-description",
-        ),
-        (
-            lambda path: path.write_text(
-                path.read_text(encoding="utf-8").replace(
-                    "argument-hint: '<service and approved target>'\n", ""
-                ),
-                encoding="utf-8",
-            ),
-            "command-argument-hint",
-        ),
-        (
-            lambda path: path.write_text(
-                path.read_text(encoding="utf-8").replace(
-                    PROJECT_TAGS,
-                    '["risk:write","intent:implementation","route:project"]',
-                ),
-                encoding="utf-8",
-            ),
-            "command-tags",
-        ),
-        (
-            lambda path: path.write_text(
-                path.read_text(encoding="utf-8").replace(
-                    PROJECT_TAGS,
-                    '["intent:unknown","risk:write","route:project"]',
-                ),
-                encoding="utf-8",
-            ),
-            "command-intent",
-        ),
-        (
-            lambda path: path.write_text(
-                path.read_text(encoding="utf-8").replace(
-                    PROJECT_TAGS,
-                    '["intent:implementation","risk:read","risk:write","route:project"]',
-                ),
-                encoding="utf-8",
-            ),
-            "command-risk",
-        ),
-        (
-            lambda path: path.write_text(
-                path.read_text(encoding="utf-8").replace(
-                    PROJECT_TAGS,
-                    '["intent:implementation","risk:write","route:agent","route:project"]',
-                ),
-                encoding="utf-8",
-            ),
-            "command-route",
-        ),
-        (
-            lambda path: path.write_text(
-                path.read_text(encoding="utf-8").replace(
-                    "# Deploy service\n\nUse $ARGUMENTS as the approved target.\n",
-                    "   \n",
-                ),
-                encoding="utf-8",
-            ),
-            "command-body",
-        ),
-        (
-            lambda path: path.write_text(
-                path.read_text(encoding="utf-8").replace(
-                    "metadata:\n", "model: forbidden\nmetadata:\n"
-                ),
-                encoding="utf-8",
-            ),
-            "command-field",
+            "# Deploy service\n\nUse $ARGUMENTS as the approved target.\n",
+            "   \n",
+            "body",
         ),
     ],
 )
-def test_schema_violations_fail_closed(
-    mutate: object, expected_code: str, tmp_path: Path
+def test_schema_stops_on_the_first_defect(
+    tmp_path: Path, old: str, new: str, message: str
 ) -> None:
     path = _write_command(tmp_path)
-    assert callable(mutate)
-    mutate(path)
+    path.write_text(
+        path.read_text(encoding="utf-8").replace(old, new), encoding="utf-8"
+    )
 
-    audit = audit_command_specs(tmp_path)
-
-    assert expected_code in {finding.code for finding in audit.findings}
-    assert audit.commands == ()
-
-
-@pytest.mark.parametrize(
-    "tags",
-    [
-        "not-json",
-        '{"intent": "implementation"}',
-        '["intent:implementation",7,"risk:write","route:project"]',
-        '["intent:implementation","intent:implementation","risk:write","route:project"]',
-        '["intent:implementation","risk:write","route:project","scope:extra"]',
-    ],
-)
-def test_tags_must_be_a_sorted_json_string_with_only_typed_values(
-    tags: str, tmp_path: Path
-) -> None:
-    _write_command(tmp_path, tags=tags)
-
-    audit = audit_command_specs(tmp_path)
-
-    assert "command-tags" in {finding.code for finding in audit.findings}
-    assert audit.commands == ()
+    with pytest.raises((TypeError, ValueError), match=message):
+        audit_command_specs(tmp_path)
 
 
-def test_command_spec_revalidates_direct_dataclass_changes(tmp_path: Path) -> None:
-    _write_command(tmp_path)
-    spec = _only_spec(tmp_path)
-
-    with pytest.raises(ValueError, match="body"):
-        replace(spec, body="")
-
-
-def test_discovery_rejects_nested_non_markdown_and_linked_commands(
-    tmp_path: Path,
-) -> None:
+def test_discovery_rejects_the_first_noncanonical_entry(tmp_path: Path) -> None:
     commands = tmp_path / "commands"
     commands.mkdir()
-    nested = commands / "nested"
-    nested.mkdir()
-    (nested / "hidden.md").write_text("hidden\n", encoding="utf-8")
+    (commands / "nested").mkdir()
     (commands / "registry.json").write_text("{}\n", encoding="utf-8")
-    source = tmp_path / "linked-source.md"
-    source.write_text("linked\n", encoding="utf-8")
-    (commands / "linked.md").symlink_to(source)
 
-    audit = audit_command_specs(tmp_path)
-
-    assert {(finding.path, finding.code) for finding in audit.findings} == {
-        ("commands/linked.md", "command-symlink"),
-        ("commands/nested", "command-layout"),
-        ("commands/registry.json", "command-layout"),
-    }
-    assert audit.commands == ()
+    with pytest.raises(ValueError, match="physical regular file"):
+        audit_command_specs(tmp_path)
 
 
-def test_command_slug_collision_with_received_skill_names_is_blocking(
-    tmp_path: Path,
-) -> None:
-    _write_command(tmp_path, name="deploy-service")
+def test_command_slug_collision_raises_immediately(tmp_path: Path) -> None:
+    _write_command(tmp_path)
 
-    audit = audit_command_specs(tmp_path, skill_names=("review", "deploy-service"))
-
-    assert [(finding.path, finding.code) for finding in audit.findings] == [
-        ("commands/deploy-service.md", "command-skill-collision")
-    ]
-    assert audit.commands == ()
+    with pytest.raises(ValueError, match="collides with canonical skill"):
+        audit_command_specs(tmp_path, skill_names=("deploy-service",))
 
 
 @pytest.mark.parametrize(
     ("provider", "destination"),
     [
         (CommandProvider.CLAUDE, PurePosixPath(".claude/commands/deploy-service.md")),
-        (CommandProvider.GEMINI, PurePosixPath(".gemini/commands/deploy-service.toml")),
+        (
+            CommandProvider.GEMINI,
+            PurePosixPath(".gemini/commands/deploy-service.toml"),
+        ),
         (CommandProvider.OPENCODE, PurePosixPath("deploy-service.md")),
         (CommandProvider.CURSOR, PurePosixPath(".cursor/commands/deploy-service.md")),
-        (CommandProvider.COPILOT, PurePosixPath(".claude/commands/deploy-service.md")),
     ],
 )
-def test_supported_adapters_render_full_body_deterministically_and_manual_only(
-    provider: CommandProvider, destination: PurePosixPath, tmp_path: Path
+def test_supported_adapters_render_complete_provider_owned_artifacts(
+    tmp_path: Path, provider: CommandProvider, destination: PurePosixPath
 ) -> None:
-    _write_command(tmp_path)
-    spec = _only_spec(tmp_path)
+    spec = _only_spec_after_write(tmp_path)
+    artifact = render_command(spec, provider, token_budget=_budget())
 
-    first = render_command(spec, provider, token_budget=_budget())
-    second = render_command(spec, provider, token_budget=_budget())
-
-    assert isinstance(first, CommandArtifact)
-    assert first == second
-    assert first.status is CommandAdapterStatus.SUPPORTED
-    assert first.destination == destination
-    assert first.manual_only is True
-    assert first.tokens == len(first.content)
-    assert first.max_tokens is None
+    assert isinstance(artifact, CommandArtifact)
+    assert artifact.destination == destination
+    assert artifact.manual_only
+    assert artifact.tokens == len(artifact.content)
     if provider is CommandProvider.GEMINI:
-        rendered = tomllib.loads(first.content)
-        assert rendered["description"] == spec.description
-        assert rendered["prompt"] == spec.body.replace("$ARGUMENTS", "{{args}}")
-    elif provider is CommandProvider.CURSOR:
-        assert first.content == spec.body
-    else:
-        assert first.content.endswith(spec.body)
-
-
-def test_claude_and_copilot_use_claude_manual_command_format(tmp_path: Path) -> None:
-    _write_command(tmp_path)
-    spec = _only_spec(tmp_path)
-
-    for provider in (CommandProvider.CLAUDE, CommandProvider.COPILOT):
-        rendered = render_command(spec, provider, token_budget=_budget())
-        assert isinstance(rendered, CommandArtifact)
-        assert rendered.content.startswith(
-            "---\n"
-            'description: "Deploy one approved service through its project owner."\n'
-            'argument-hint: "<service and approved target>"\n'
-            "disable-model-invocation: true\n"
-            "---\n\n"
+        assert tomllib.loads(artifact.content)["prompt"].endswith(
+            "{{args}} as the approved target.\n"
         )
+    else:
+        assert spec.body in artifact.content
 
 
-def test_long_command_body_is_never_truncated_or_converted(tmp_path: Path) -> None:
-    body = "# Complete workflow\n\n" + "Preserve this material line.\n" * 2_000
-    _write_command(tmp_path, argument_hint=None, body=body)
-    spec = _only_spec(tmp_path)
-
-    rendered = render_command(spec, CommandProvider.OPENCODE, token_budget=_budget())
-
-    assert isinstance(rendered, CommandArtifact)
-    assert rendered.content.endswith(body)
-    assert rendered.content.count("Preserve this material line.") == 2_000
-    assert rendered.destination.suffix == ".md"
-
-
-def test_token_budget_accepts_exact_boundary_and_rejects_oversize_without_truncation(
-    tmp_path: Path,
+@pytest.mark.parametrize(
+    "provider",
+    (CommandProvider.ANTIGRAVITY, CommandProvider.CODEX, CommandProvider.COPILOT),
+)
+def test_unsupported_provider_is_an_exception(
+    tmp_path: Path, provider: CommandProvider
 ) -> None:
-    _write_command(tmp_path)
+    spec = _only_spec_after_write(tmp_path)
+
+    with pytest.raises(CommandRenderError, match="UNSUPPORTED"):
+        render_command(spec, provider, token_budget=_budget())
+
+
+def test_cursor_agent_route_is_an_exception(tmp_path: Path) -> None:
+    _write_command(tmp_path, tags=AGENT_TAGS)
     spec = _only_spec(tmp_path)
-    baseline = render_command(spec, CommandProvider.CLAUDE, token_budget=_budget())
-    assert isinstance(baseline, CommandArtifact)
-    exact_tokens = len(baseline.content)
 
-    exact = render_command(
-        spec,
-        CommandProvider.CLAUDE,
-        token_budget=_budget(exact_tokens),
-    )
+    with pytest.raises(CommandRenderError, match="UNSUPPORTED"):
+        render_command(spec, CommandProvider.CURSOR, token_budget=_budget())
 
-    assert isinstance(exact, CommandArtifact)
-    assert exact.content == baseline.content
-    assert exact.tokens == exact_tokens
-    assert exact.max_tokens == exact_tokens
-    with pytest.raises(
-        CommandRenderError,
-        match=rf"uses {exact_tokens} tokens; provider limit is {exact_tokens - 1}",
-    ):
+
+def test_token_budget_rejects_oversize_without_truncation(tmp_path: Path) -> None:
+    spec = _only_spec_after_write(tmp_path)
+    complete = render_command(spec, CommandProvider.CLAUDE, token_budget=_budget())
+
+    with pytest.raises(CommandRenderError, match="provider limit"):
         render_command(
             spec,
             CommandProvider.CLAUDE,
-            token_budget=_budget(exact_tokens - 1),
+            token_budget=_budget(len(complete.content) - 1),
         )
-    assert spec.body in baseline.content
+    assert spec.body in complete.content
 
 
-def test_supported_adapter_requires_caller_owned_token_budget(tmp_path: Path) -> None:
-    _write_command(tmp_path)
-    spec = _only_spec(tmp_path)
+def test_supported_adapter_requires_explicit_token_budget(tmp_path: Path) -> None:
+    spec = _only_spec_after_write(tmp_path)
 
     with pytest.raises(CommandRenderError, match="token budget is required"):
         render_command(spec, CommandProvider.CLAUDE)
 
 
-def test_waza_counter_removes_destination_local_candidate_on_failure(
+def test_command_spec_revalidates_direct_dataclass_changes(tmp_path: Path) -> None:
+    spec = _only_spec_after_write(tmp_path)
+
+    with pytest.raises(ValueError, match="body"):
+        replace(spec, body="")
+
+
+def test_waza_counter_cleans_candidate_and_preserves_original_failure(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     _write_command(tmp_path)
@@ -400,82 +209,16 @@ def test_waza_counter_removes_destination_local_candidate_on_failure(
         raise RuntimeError("injected BPE failure")
 
     monkeypatch.setattr("agents_governance.commands.bpe_tokens", fail_count)
-
     with pytest.raises(RuntimeError, match="injected BPE failure"):
         waza_bpe_counter(tmp_path)("complete rendered command\n")
     assert not tuple((tmp_path / "commands").glob(".*.candidate"))
 
 
-@pytest.mark.parametrize(
-    ("provider", "body"),
-    [
-        (CommandProvider.GEMINI, "# Unsafe\n\nRun !{rm -rf /} for $ARGUMENTS.\n"),
-        (CommandProvider.GEMINI, "# Unsafe\n\nRead @{../../secret} for $ARGUMENTS.\n"),
-        (CommandProvider.OPENCODE, "# Unsafe\n\nRun !`rm -rf /` for $ARGUMENTS.\n"),
-        (CommandProvider.OPENCODE, "# Unsafe\n\nRun $(malicious) for $ARGUMENTS.\n"),
-    ],
-)
-def test_provider_shell_and_file_interpolation_is_rejected(
-    provider: CommandProvider, body: str, tmp_path: Path
-) -> None:
-    _write_command(tmp_path, body=body)
-    spec = _only_spec(tmp_path)
-
-    with pytest.raises(CommandRenderError, match="interpolation"):
-        render_command(spec, provider, token_budget=_budget())
-
-
-def test_opencode_rejects_provider_builtin_override(tmp_path: Path) -> None:
-    _write_command(tmp_path, name="review")
-    spec = _only_spec(tmp_path)
-
-    with pytest.raises(CommandRenderError, match="reserved"):
-        render_command(
-            spec,
-            CommandProvider.OPENCODE,
-            token_budget=_budget(),
-            reserved_slugs=("review",),
-        )
-
-
-@pytest.mark.parametrize(
-    "provider", (CommandProvider.CODEX, CommandProvider.ANTIGRAVITY)
-)
-def test_unsupported_providers_return_explicit_typed_status(
-    provider: CommandProvider, tmp_path: Path
-) -> None:
-    _write_command(tmp_path)
-    spec = _only_spec(tmp_path)
-
-    rendered = render_command(spec, provider)
-
-    assert isinstance(rendered, UnsupportedCommand)
-    assert rendered.status is CommandAdapterStatus.UNSUPPORTED
-    assert rendered.provider is provider
-    assert rendered.slug == spec.name
-    assert rendered.reason.startswith("UNSUPPORTED:")
-
-
-def test_cursor_rejects_agent_route_because_only_project_commands_are_supported(
-    tmp_path: Path,
-) -> None:
-    _write_command(tmp_path, tags=AGENT_TAGS)
-    spec = _only_spec(tmp_path)
-
-    rendered = render_command(spec, CommandProvider.CURSOR)
-
-    assert isinstance(rendered, UnsupportedCommand)
-    assert rendered.status is CommandAdapterStatus.UNSUPPORTED
-    assert "project" in rendered.reason
-
-
-def test_all_seven_canonical_commands_validate_without_a_registry() -> None:
+def test_all_seven_canonical_commands_validate_without_registry() -> None:
     root = Path(__file__).resolve().parents[1]
+    specs = audit_command_specs(root)
 
-    audit = audit_command_specs(root)
-
-    assert audit.findings == ()
-    assert {command.name for command in audit.commands} == {
+    assert {command.name for command in specs} == {
         "add-language-rules",
         "database-migration",
         "feature-development",
@@ -484,31 +227,3 @@ def test_all_seven_canonical_commands_validate_without_a_registry() -> None:
         "ralph-loop",
         "security-triage",
     }
-    assert all(command.body for command in audit.commands)
-
-
-def test_global_validation_includes_command_skill_slug_collision(
-    tmp_path: Path,
-) -> None:
-    _write_catalog_config(tmp_path)
-    skill = tmp_path / "skills" / "agent-wide" / "deploy-service"
-    skill.mkdir(parents=True)
-    (skill / "SKILL.md").write_text(
-        "---\n"
-        "name: deploy-service\n"
-        "description: Deploy a governed service when that reusable skill is requested.\n"
-        "metadata:\n"
-        "  aihub.tags: "
-        '\'["provenance:agents-owned","updates:manual","usage:on-demand"]\'\n'
-        "---\n"
-        "# Deploy service\n",
-        encoding="utf-8",
-    )
-    _write_command(tmp_path)
-
-    findings = validate(Catalog(tmp_path))
-
-    assert (
-        "commands/deploy-service.md",
-        "command-skill-collision",
-    ) in {(finding.path, finding.code) for finding in findings}

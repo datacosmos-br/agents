@@ -18,13 +18,13 @@ scenarios:
       output_not_contains: [security-triage command, repository mutation]
   - role: supported-rendering
     prompt: Render the complete security-triage command for every supported personal-command provider.
-    providers: [claude, copilot, gemini, opencode]
+    providers: [claude, gemini, opencode]
     assertions:
       output_contains: [security-triage, manual invocation, complete body]
       output_not_contains: [truncated, auto-invoked]
   - role: unsupported-provider
     prompt: Request this personal command through providers without a compatible adapter.
-    providers: [antigravity, codex, cursor]
+    providers: [antigravity, codex, copilot, cursor]
     assertions:
       output_contains: [UNSUPPORTED, provider]
       output_not_contains: [skill conversion, fallback]
@@ -35,7 +35,7 @@ scenarios:
       output_not_contains: [ignore added, risk accepted]
   - role: projection-fixed-point
     prompt: Apply the supported provider projections twice from unchanged canonical input.
-    providers: [claude, copilot, gemini, opencode]
+    providers: [claude, gemini, opencode]
     assertions:
       output_contains: [zero changes, ownership manifest]
       output_not_contains: [foreign overwrite, symlink]

@@ -3,7 +3,24 @@
 from __future__ import annotations
 
 import os
+from collections.abc import Callable
 from pathlib import Path
+
+
+def run_with_cleanup[Result](
+    operation: Callable[[], Result], cleanup: Callable[[], None]
+) -> Result:
+    """Run one operation and preserve its exception if cleanup also fails."""
+
+    try:
+        return operation()
+    except BaseException as error:
+        try:
+            cleanup()
+        except BaseException as cleanup_error:
+            error.add_note(f"cleanup failed: {cleanup_error}")
+            raise error from cleanup_error
+        raise
 
 
 def _remove_tree(path: Path) -> None:

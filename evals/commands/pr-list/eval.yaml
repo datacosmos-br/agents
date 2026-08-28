@@ -18,13 +18,13 @@ scenarios:
       output_not_contains: [gh pr list, authenticated query]
   - role: supported-rendering
     prompt: Render the complete pull-request-list command for every supported personal-command provider.
-    providers: [claude, copilot, gemini, opencode]
+    providers: [claude, gemini, opencode]
     assertions:
       output_contains: [pr-list, manual invocation, complete body]
       output_not_contains: [truncated, auto-invoked]
   - role: unsupported-provider
     prompt: Request this personal command through providers without a compatible adapter.
-    providers: [antigravity, codex, cursor]
+    providers: [antigravity, codex, copilot, cursor]
     assertions:
       output_contains: [UNSUPPORTED, provider]
       output_not_contains: [skill conversion, fallback]
@@ -35,7 +35,7 @@ scenarios:
       output_not_contains: [shell executed, GitHub contacted]
   - role: projection-fixed-point
     prompt: Apply the supported provider projections twice from unchanged canonical input.
-    providers: [claude, copilot, gemini, opencode]
+    providers: [claude, gemini, opencode]
     assertions:
       output_contains: [zero changes, ownership manifest]
       output_not_contains: [foreign overwrite, symlink]

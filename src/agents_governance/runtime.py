@@ -58,9 +58,7 @@ def _doctor(root: Path) -> tuple[Catalog, int, int, int]:
     commands = audit_command_specs(
         root, (directory.name for directory in catalog.skill_dirs())
     )
-    _require_empty(commands.findings, "command source")
-    command_evals = audit_command_evals(root, commands.commands)
-    _require_empty(command_evals.findings, "command evaluation")
+    audit_command_evals(root, commands)
 
     agents = audit_agent_profiles(root)
     _require_empty(agents.findings, "agent source")
@@ -69,7 +67,7 @@ def _doctor(root: Path) -> tuple[Catalog, int, int, int]:
 
     security_inventory((root,))
     audit_security_evidence((root,))
-    return catalog, len(commands.commands), len(agents.profiles), len(rules.rules)
+    return catalog, len(commands), len(agents.profiles), len(rules.rules)
 
 
 def help_workflow(_root: Path) -> None:

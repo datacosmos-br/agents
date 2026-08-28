@@ -18,13 +18,13 @@ scenarios:
       output_not_contains: [repository discovery, code edit]
   - role: supported-rendering
     prompt: Render the complete feature command for every supported project-command provider.
-    providers: [claude, copilot, cursor, gemini, opencode]
+    providers: [claude, cursor, gemini, opencode]
     assertions:
       output_contains: [feature-development, manual invocation, complete body]
       output_not_contains: [truncated, auto-invoked]
   - role: unsupported-provider
     prompt: Request this command through providers without a canonical command adapter.
-    providers: [antigravity, codex]
+    providers: [antigravity, codex, copilot]
     assertions:
       output_contains: [UNSUPPORTED, provider]
       output_not_contains: [skill conversion, fallback]
@@ -35,7 +35,7 @@ scenarios:
       output_not_contains: [shell executed, assertion weakened]
   - role: projection-fixed-point
     prompt: Apply the supported provider projections twice from unchanged canonical input.
-    providers: [claude, copilot, cursor, gemini, opencode]
+    providers: [claude, cursor, gemini, opencode]
     assertions:
       output_contains: [zero changes, ownership manifest]
       output_not_contains: [foreign overwrite, symlink]

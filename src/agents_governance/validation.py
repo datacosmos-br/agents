@@ -429,11 +429,8 @@ def validate(catalog: Catalog) -> list[Finding]:
         Finding(item.path, item.code, item.message)
         for item in validate_skill_metadata(catalog.root)
     )
-    command_audit = audit_command_specs(
+    audit_command_specs(
         catalog.root, (directory.name for directory in catalog.skill_dirs())
-    )
-    findings.extend(
-        Finding(item.path, item.code, item.message) for item in command_audit.findings
     )
     rule_audit = audit_rule_specs(catalog.root)
     findings.extend(

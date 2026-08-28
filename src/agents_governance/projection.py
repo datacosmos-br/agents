@@ -30,11 +30,9 @@ from .catalog import NON_PORTABLE_PROJECT_REFERENCE, Catalog
 from .commands import (
     CommandArtifact,
     CommandProvider,
-    CommandRenderError,
     CommandRoute,
     CommandSpec,
     CommandTokenBudget,
-    UnsupportedCommand,
     audit_command_specs,
     render_command,
     waza_bpe_counter,
@@ -211,18 +209,11 @@ class Projector:
             for name in sorted(self.catalog.names_for(distribution))
         )
 
-    def _command_specs(
-        self, label: str
-    ) -> tuple[tuple[CommandSpec, ...], list[ProjectionFinding]]:
-        audit = audit_command_specs(
+    def _command_specs(self) -> tuple[CommandSpec, ...]:
+        return audit_command_specs(
             self.catalog.root,
             (directory.name for directory in self.catalog.skill_dirs()),
         )
-        findings = [
-            ProjectionFinding(label, item.path, f"{item.code}: {item.message}")
-            for item in audit.findings
-        ]
-        return audit.commands, findings
 
     @staticmethod
     def _rendered_content_digest(name: str, content: str) -> str:
@@ -301,14 +292,7 @@ class Projector:
         for spec in specs:
             if spec.route is not route:
                 continue
-            try:
-                result = render_command(spec, provider, token_budget=token_budget)
-            except CommandRenderError as error:
-                findings.append(ProjectionFinding(label, str(spec.path), str(error)))
-                continue
-            if isinstance(result, UnsupportedCommand):
-                findings.append(ProjectionFinding(label, str(spec.path), result.reason))
-                continue
+            result = render_command(spec, provider, token_budget=token_budget)
             rendered.append((spec, result))
         return tuple(rendered), findings
 
@@ -331,9 +315,8 @@ class Projector:
         target: Path,
         label: str,
     ) -> tuple[tuple[SourceSkill, ...], list[ProjectionFinding]]:
-        specs, findings = self._command_specs(label)
-        if findings:
-            return (), findings
+        specs = self._command_specs()
+        findings: list[ProjectionFinding] = []
         provider = CommandProvider(cell.provider.value)
         route = (
             CommandRoute.AGENT
