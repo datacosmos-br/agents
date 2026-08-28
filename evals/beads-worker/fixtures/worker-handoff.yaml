@@ -1,0 +1,17 @@
+runtime: explicitly_suspended
+issue: ag-204
+assigned_to: worker-7
+current_worker: worker-7
+scope:
+  - src/cache.py
+  - tests/test_cache.py
+branch: fix/ag-204-cache-boundary
+sha: 91c2f44
+pull_request: https://example.invalid/pull/204
+validation:
+  command: make check
+  exit_code: 0
+  decisive_output: 41 passed
+scope_residue: none
+merged: false
+canonical_issue_closed: false

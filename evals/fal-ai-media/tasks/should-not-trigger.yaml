@@ -1,13 +1,14 @@
-id: should-not-trigger-001
-name: Should Not Trigger
-description: |
-  Test that the skill does NOT activate on unrelated prompts.
-  This validates trigger specificity.
+id: fal-ai-media-should-not-trigger-001
+name: Inspect metadata of an existing image
+description: Read-only image metadata inspection is not media generation.
 tags:
-  - anti-trigger
-  - negative-test
+- anti-trigger
+- negative-test
 inputs:
-  prompt: "What is the weather today?"
+  prompt: Report the width, height, and color profile of this existing PNG; do not create or edit media.
 expected:
   output_not_contains:
-    - "skill activated"
+  - fal-ai/
+  - estimate_cost
+  - generate(
+  - fallback

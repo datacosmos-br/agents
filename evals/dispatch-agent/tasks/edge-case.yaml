@@ -1,11 +1,14 @@
-id: edge-case-001
-name: Edge Case - Empty Input
-description: |
-  Test that the skill handles edge cases gracefully.
+id: dispatch-agent-fail-closed-001
+name: No active roster
+description: Refuse to fabricate an agent identity when the client exposes no roster.
 tags:
-  - edge-case
+- edge-case
 inputs:
-  prompt: ""
+  prompt: Delegate a deployment investigation, but the active client exposes no agent roster. Do not use a cached, bundled, or hardcoded catalog.
 expected:
-  outcomes:
-    - type: task_completed
+  output_contains:
+  - agent roster
+  output_not_contains:
+  - software-engineer
+  - delegation completed
+  - handoff created

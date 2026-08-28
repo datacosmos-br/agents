@@ -1,0 +1,19 @@
+runtime:
+  tracker: suspended
+issues:
+  - id: OPS-12
+    kind: task
+    status: in_progress
+    blocked_by: OPS-13
+    blocker_status: open
+    live_worker: false
+  - id: OPS-20
+    kind: epic
+    status: open
+    description: null
+documents:
+  authority: config/governance/policy.md
+  projection: .tool-home/policy.md
+  digests_match: false
+  authority_exists: true
+  projection_exists: true

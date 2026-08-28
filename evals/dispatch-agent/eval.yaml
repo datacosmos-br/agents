@@ -1,29 +1,39 @@
 name: dispatch-agent-eval
-description: Evaluation suite for dispatch-agent.
+description: Semantic evaluation suite for dispatch-agent.
 skill: dispatch-agent
-schemaVersion: "1.0"
-version: "1.0"
+schemaVersion: '1.0'
+version: '1.0'
 config:
   trials_per_task: 1
   timeout_seconds: 300
   parallel: false
+  max_attempts: 0
+  fail_fast: true
   executor: copilot-sdk
-  model: claude-sonnet-4.6
+  model: aihub-primary
+  skill_directories:
+  - ../../skills/agent-wide/dispatch-agent
+  required_skills:
+  - dispatch-agent
 metrics:
-  - name: task_completion
-    weight: 1.0
-    threshold: 0.8
-    description: Did the skill complete the assigned task?
+- name: task_completion
+  weight: 1.0
+  threshold: 0.8
+  description: Did delegation select the best available specialist with context?
 graders:
-  - type: code
-    name: has_output
-    config:
-      assertions:
-        - "len(output) > 0"
-  - type: text
-    name: relevant_content
-    config:
-      regex_match:
-        - "(?i)(explain|describe|analyze|implement)"
+- type: prompt
+  name: dispatch-agent-contract
+  config:
+    prompt: |-
+      Grade the dispatch-agent response. Pass only if it uses the supplied
+      roster, compares trigger overlap and confidence, selects the strongest
+      available specialist instead of a general fallback, preserves the stated
+      project context, leaves model selection to the canonical runtime owner,
+      and records one concrete native handoff decision. Reject a second agent,
+      partial handoff, or success after native dispatch failure.
+- type: behavior
+  name: bounded_execution
+  config:
+    max_duration_ms: 240000
 tasks:
-  - "tasks/*.yaml"
+- tasks/*.yaml

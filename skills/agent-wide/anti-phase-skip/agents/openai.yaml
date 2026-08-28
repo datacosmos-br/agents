@@ -1,0 +1,7 @@
+interface:
+  display_name: "Anti Phase Skip"
+  short_description: "Enforce every phase through merged runtime closure"
+  brand_color: "#991B1B"
+  default_prompt: "Use $anti-phase-skip to prevent task changes or DONE claims before the full phase cycle closes."
+policy:
+  allow_implicit_invocation: true

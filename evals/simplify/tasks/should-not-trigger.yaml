@@ -1,13 +1,9 @@
-id: should-not-trigger-001
-name: Should Not Trigger
-description: |
-  Test that the skill does NOT activate on unrelated prompts.
-  This validates trigger specificity.
-tags:
-  - anti-trigger
-  - negative-test
+id: simplify-diagnosis-negative-001
+name: Diagnose before changing behavior
+description: Keep inline simplification out of an unproven behavior defect.
+tags: [anti-trigger, diagnosis, negative-test]
 inputs:
-  prompt: "What is the weather today?"
+  prompt: Explain what runtime evidence is needed to diagnose why checkout charges tax twice. Do not activate simplification, fall back to a code rewrite, or generate code before the defect and intended tax behavior are established.
 expected:
-  output_not_contains:
-    - "skill activated"
+  output_contains: [tax, runtime evidence]
+  output_not_contains: [simplification complete, behavior-preserving cleanup, "def calculate_tax", fallback rewrite]

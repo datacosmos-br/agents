@@ -1,0 +1,195 @@
+# Validation and landing
+
+## Evidence contract
+
+Every pass claim records repository, exact source state, command, working
+directory, exit code, decisive output, and affected scope. Do not print full
+environments, secret values, hashes/fingerprints, raw credential records, or
+scanner payloads containing secrets.
+
+During tracker suspension, create no substitute tracker or ledger. Authorized
+Git commits, PRs, reviews, required checks, and CI own validation and landing
+evidence. This documentation package is a specification, not a state store.
+
+## Runtime before broad gates
+
+Exercise the smallest real public behavior before tests that could otherwise
+produce a false green:
+
+- discovery: load every source type and reject a malformed/unknown fixture;
+- skills: route a matching request and reject a should-not-trigger request;
+- commands: render/invoke representative arguments and reject ambiguous input;
+- agents/rules: prove delegation and mandatory-rule behavior;
+- projection: invoke `agentsctl sync` from an isolated physical project, inspect
+  supported personal and project loaders where available, execute representative
+  hook adapters, then prove the second invocation changes nothing;
+- temp/storage: use `agentsctl doctor`, `agentsctl check`, and `agentsctl clean`
+  against the configured physical checkout and an isolated generated tree;
+- credentials: execute from Bash, Zsh, Fish, and a direct subprocess using only
+  the current process environment, without revealing values;
+- live model, when its external-token workflow is selected: exact
+  `aihub-primary`, material grader, and explicit error paths.
+
+A runtime failure keeps the phase active at that stage. Correct its owner and
+rerun the invalidated runtime and gates; unit tests cannot override it and a
+blocker report cannot advance the phase.
+
+## Required semantic scenarios
+
+Each skill has realistic happy-path, empty/ambiguous fail-closed, and
+should-not-trigger scenarios with task-specific fixtures and material assertions.
+Each command has the seven scenario families in the command contract. Agent
+evals prove capability/delegation boundaries; rule evals prove enforcement and
+contradiction rejection.
+
+Waza owns only the `SKILL.md` suites supported by its installed target model.
+The optionless `agentsctl evaluate` workflow validates their specification,
+coverage, and token contracts without treating the always-passing mock executor
+as behavioral proof. The same verb renders every supported command, agent, and
+rule artifact twice through the deterministic native matrix and rejects the
+first lossy, misplaced, expanded-capability, or non-deterministic result.
+
+`agentsctl live` runs the transport/tool preflight followed by every discovered
+skill task and material grader. It validates the complete fresh result inventory
+and atomically publishes one current aggregate only after all suites succeed.
+Workflows that require an external token are not executed as offline landing
+gates. Once `agentsctl live` is explicitly selected, an absent credential or any
+provider, executor, task, grader, timeout, or artifact failure leaves prior
+current evidence unchanged and fails that workflow. Credential-independent CI
+is still useful contribution evidence, but it never approves live skill
+semantics.
+
+The following never prove success:
+
+- non-empty output;
+- `task_completed` without a material grader;
+- frontmatter keywords copied into a prompt;
+- generic fixtures unrelated to the requested operation;
+- a non-empty prompt labeled empty;
+- skip, neutral, expected billing/auth failure, or timeout;
+- a grader duration equal to the executor timeout.
+
+For a 300-second executor, behavior duration remains below it at 240 seconds.
+Authentication, HTTP 402/quota, executor, timeout, and grader errors stay red.
+
+## Runtime and development gate order
+
+The only runtime surface is:
+
+```text
+agentsctl help
+agentsctl doctor
+agentsctl check
+agentsctl sync
+agentsctl evaluate
+agentsctl secure
+agentsctl clean
+agentsctl live
+```
+
+Every line accepts no additional token. Each verb validates its full contract
+before effects and aborts on its first exception. `agentsctl live` requires
+exact `aihub-primary` and a non-empty valid `CLIPROXY_API_KEY` in the current
+process environment; it never reads a credential store, selects another model,
+retries a task, or publishes a partial corpus.
+
+`agentsctl sync` derives the physical Git root from cwd and the personal target
+from the current process home. Invocation selects every supported personal
+surface. A physical project-owned `.agents/projection.json` additionally
+selects tracked project surfaces; absence writes nothing to the project. All
+selected static instructions and native lifecycle hooks publish as one
+transaction. The verb accepts no CLI or environment target selection and has no
+personal mode.
+
+Make remains development support and gate composition. Its declared surface is
+discovered with `make help` and covers:
+
+```text
+make docs
+make audit
+make check
+make static
+make shell
+make build
+make test
+make spec
+make coverage
+make providers
+make projection
+make ci
+make security
+make temp
+make validate-live
+```
+
+Make targets that exercise runtime call only public `agentsctl` verbs. They do
+not import or invoke private runtime functions. Do not invent a missing target
+or omit a required target. Correct Make/help/docs at the owner when the
+documented surface differs. Formatting or generation gates run in check mode
+first; a required rewrite is reviewed as an explicit source change.
+
+## Focused acceptance matrix
+
+| Area | Required proof |
+|---|---|
+| Documentation | One active master v7 package; links resolve; old plan/type instructions absent. |
+| Discovery | Recursive source count/mapping; unknown path/tag/type fails; no name registry consulted. |
+| Skills | 78 mapped sources: 76 migrated plus `plan-focus-recovery` and `fix-forward-collaboration`; BPE budgets; short descriptions; semantic scenarios; no command syntax. |
+| Commands | Seven flat sources; complete provider render; independent size gate; no skill conversion. |
+| Agents/rules | Distribution paths and tags agree; universal rules compose once; no model declaration. |
+| Projection | Atomic personal plus authorized-project physical copies; unselected project writes nothing; ownership-safe cleanup; provider-native instructions/hooks; second apply changes nothing. |
+| Temp/storage | Exact manifest; physical registered checkout; `/tmp`, overlap, residue, symlink, special-file, and unknown deletion rejection. |
+| Credentials | Process environment only; required values fail immediately; no keyring code, 401, or secret output. |
+| Security | Deterministic tracked manifest inventory; selected scanners exit zero; absent-token workflows are `NOT EXECUTED`. |
+| CI | PRs to `dev` and all governance source paths execute required native stages. |
+| Live Waza | When selected, exact `aihub-primary`; all catalog scenarios material; any service/model failure is red. Otherwise `NOT EXECUTED`. |
+
+## Contradiction search
+
+After each owner cutover, search source, tests, configs, docs, fixtures, evals,
+generated outputs, and supported destinations for:
+
+- old paths and renamed slugs;
+- command-as-skill and skill-as-command wording;
+- `personal`, `generic`, or registry categories that compete with the six groups;
+- word-count token enforcement;
+- automatic truncation or normalization of forbidden content;
+- silent empty target success;
+- symlink/cross-repository references;
+- ECC/SkillShare synchronization or current external-import instructions;
+- fallback, shim, dual-read/write, alternate model, skip, suppression, and old
+  `~/.agents` source lookups after cutover.
+- exception catches outside cleanup/rollback, aggregate validators, manual exit
+  translation, retry loops, undeclared or error-triggered defaults, partial
+  publication, and any keyring source or consumer. Canonical calculated defaults
+  declared once at their typed owner are valid.
+
+Any active opposite blocks integration.
+
+## Landing contract
+
+When Git execution is authorized:
+
+1. fetch the configured integration branch and record its SHA;
+2. if divergent, merge `origin/<integration>` into the work lane with
+   `git merge --no-ff origin/<integration>`;
+3. resolve conflicts by preserving every valid concurrent owner change;
+4. rerun representative runtime and all required gates;
+5. commit scoped files and push normally, never force-push;
+6. open/update a PR against the configured integration branch;
+7. resolve every conversation and required check and obtain independent approval;
+8. merge through a merge commit, not squash or rebase;
+9. validate runtime and complete applicable gates on the exact integration
+   merge SHA;
+10. remove only clean, reachable increment branches through safe deletion.
+
+Steps 7–9 are a correction loop, not a one-shot attempt. Every actionable check
+or review failure is fixed, pushed, and revalidated in this same phase. If the
+technical surface is green but independent approval or another external action
+is unavailable, keep the phase active and request that exact action; do not move
+to another task or repository.
+
+A phase is `DONE` only after its approved PR is merged, post-merge runtime is
+green, and its canonical Bead is closed with evidence. While tracker runtime is
+suspended, preserve evidence only in separately authorized Git/PR/CI and stop at
+`LANDED_VERIFIED`; no substitute can satisfy tracker closure.

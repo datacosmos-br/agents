@@ -1,0 +1,13 @@
+id: data-boundary-001
+name: Analyze an underspecified serialized boundary
+description: Analyze data models, serialization boundaries, and validation design.
+tags: [data-models, serialization-boundaries, validation-design, mutation-ownership, happy-path]
+inputs:
+  prompt: Analyze the data model in schema.json at its public serialization
+    boundary. Map validation design and serialization responsibilities; identify
+    the payload ambiguity and missing closed-state constraints; assess mutation
+    ownership without mandating a rewrite; and state required versioning behavior.
+  files:
+  - path: schema.json
+expected:
+  output_contains: [payload, validation, version, owner]

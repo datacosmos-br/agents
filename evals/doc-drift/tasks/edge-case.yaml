@@ -1,11 +1,16 @@
-id: edge-case-001
-name: Edge Case - Empty Input
-description: |
-  Test that the skill handles edge cases gracefully.
+id: doc-drift-fail-closed-001
+name: Documentation claim without an owner
+description: Require owning code or pinned documentation before correcting a command.
 tags:
-  - edge-case
+- edge-case
 inputs:
-  prompt: ""
+  prompt: A guide contains `tool finish`, but no owning code, schema, version, or pinned upstream documentation is available. Correct it now.
 expected:
-  outcomes:
-    - type: task_completed
+  output_contains:
+  - canonical owner is required
+  - replacement command cannot be inferred
+  - zero effects
+  output_not_contains:
+  - replace with tool done
+  - documentation converged
+  - document updated

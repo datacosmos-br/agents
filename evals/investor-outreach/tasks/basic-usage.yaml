@@ -1,16 +1,15 @@
-id: basic-usage-001
-name: Basic Usage
-description: |
-  Test that the skill handles a typical request correctly.
-tags:
-  - basic
-  - happy-path
+id: investor-outreach-cold-email-001
+name: Draft a sourced cold investor email
+description: Use fund-specific evidence, one proof point, and a direct ask.
+tags: [investor, outreach, email, introductions, follow-up, fundraising, happy-path]
 inputs:
-  prompt: "Help me with this task"
+  prompt: >-
+    Use investor-fit.yaml for a focused investor-outreach set: draft a subject
+    and cold email under 120 words to Maya Chen, a forwardable warm-intro blurb,
+    and a concise day-five follow-up update. Ground each in Northstar's thesis,
+    FleetLedger, LedgerFox traction, and the specified ask.
   files:
-    - path: sample.py
+  - path: investor-fit.yaml
 expected:
-  output_contains:
-    - "function"
-  outcomes:
-    - type: task_completed
+  output_contains: [Maya, FleetLedger, '$1.2M ARR', 20-minute]
+  output_not_contains: [I'd love to connect, excited to share]

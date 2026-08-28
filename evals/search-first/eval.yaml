@@ -1,0 +1,51 @@
+name: search-first-eval
+description: Project discovery, bounded reuse decisions, inline simplification, and conditional structural DRY.
+skill: search-first
+schemaVersion: '1.0'
+version: '1.0'
+config:
+  trials_per_task: 1
+  timeout_seconds: 300
+  parallel: false
+  max_attempts: 0
+  fail_fast: true
+  executor: copilot-sdk
+  model: aihub-primary
+  skill_directories:
+  - ../../skills/project-wide/search-first
+  required_skills:
+  - search-first
+graders:
+- type: prompt
+  name: search-first-contract
+  config:
+    prompt: |-
+      Grade according to the task's role.
+
+      For the happy path, pass only when the response derives evidence from the
+      supplied mini-project: its AGENTS.md, architecture document, public caller,
+      PageTokenCodec owner, manifest and pinned lock entry, current test, runtime,
+      and native gate. It must choose extension or reuse at the existing owner,
+      name list_orders as the current consumer, pass the change through YAGNI,
+      find no new SOLID boundary, apply simplify inline, and avoid invoking
+      structural DRY because this fixture proves no duplicate owner or god pattern.
+
+      For the fail-closed task, pass only when the response blocks implementation,
+      identifies the absent project evidence needed for a valid decision, and
+      does not fabricate an architecture, consumer, owner, or implementation.
+
+      For the should-not-trigger task, pass only when it directly produces the
+      requested two-sentence museum summary. It must not demand repository
+      discovery, treat the essay's architectural vocabulary as software, or block
+      a complete non-technical answer.
+
+      In every activated path, reject repeated full discovery without invalidated
+      evidence, recursive search-first/dry routing, speculative abstractions, or a
+      decision based on filenames or one keyword search. Require first-failure
+      propagation and zero implementation effects when preflight is incomplete;
+      the negative path must not activate or fall back to technical discovery.
+- type: behavior
+  name: bounded_execution
+  config: {max_duration_ms: 240000}
+tasks:
+- tasks/*.yaml

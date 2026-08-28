@@ -1,29 +1,40 @@
 name: security-review-eval
-description: Evaluation suite for security-review.
+description: Reproduction, owner correction, scanner evidence, and strict closure.
 skill: security-review
-schemaVersion: "1.0"
-version: "1.0"
+schemaVersion: '1.0'
+version: '1.0'
 config:
   trials_per_task: 1
   timeout_seconds: 300
   parallel: false
+  max_attempts: 0
+  fail_fast: true
   executor: copilot-sdk
-  model: claude-sonnet-4.6
-metrics:
-  - name: task_completion
-    weight: 1.0
-    threshold: 0.8
-    description: Did the skill complete the assigned task?
+  model: aihub-primary
+  skill_directories:
+  - ../../skills/project-wide/security-review
+  required_skills:
+  - security-review
 graders:
-  - type: code
-    name: has_output
-    config:
-      assertions:
-        - "len(output) > 0"
-  - type: text
-    name: relevant_content
-    config:
-      regex_match:
-        - "(?i)(explain|describe|analyze|implement)"
+- type: prompt
+  name: security-review-contract
+  config:
+    prompt: |-
+      Grade the security-review response. Pass only when it reproduces the named
+      finding, traces it to Exporter.render, replaces shell interpretation with
+      the existing argument-vector primitive, and requires fresh make security
+      plus runtime evidence. It must distinguish the confirmed attack surface
+      from the supplied dependency-risk evidence, use process-environment
+      credentials only if required, preserve causal command failure, and prove
+      zero effects and zero residue. The newest released scanner and all of its
+      findings remain blocking; false-positive or compatibility classification
+      requires prior operator discussion, reproducible proof, and explicit
+      authorization. Reject keyring, profiles, aliases, alternate providers,
+      ignores, risk acceptance, hardcoded input, shell escaping wrappers,
+      retries, caps, downgrades, substitutions, or a green claim without scanner
+      output.
+- type: behavior
+  name: bounded_execution
+  config: {max_duration_ms: 240000}
 tasks:
-  - "tasks/*.yaml"
+- tasks/*.yaml

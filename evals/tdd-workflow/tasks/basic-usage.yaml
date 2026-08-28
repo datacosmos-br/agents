@@ -1,16 +1,10 @@
-id: basic-usage-001
-name: Basic Usage
-description: |
-  Test that the skill handles a typical request correctly.
-tags:
-  - basic
-  - happy-path
+id: tdd-workflow-limit-001
+name: Drive a parser fix from observable behavior
+description: Exercise test-driven development, behavior contracts, and regression tests with material RED/GREEN proof.
+tags: [tdd, tests, development, happy-path]
 inputs:
-  prompt: "Help me with this task"
+  prompt: Build the exact RED-GREEN-refactor sequence for parser-contract.md using only its public behavior and native focused command. Preserve the first causal command failure, change the owner atomically, prove the material runtime result and regression behavior, and search for superseded residue.
   files:
-    - path: sample.py
+  - path: parser-contract.md
 expected:
-  output_contains:
-    - "function"
-  outcomes:
-    - type: task_completed
+  output_contains: [parse_limit("0"), InvalidLimit, make test FILE=tests/test_limit_parser.py, causal, residue]

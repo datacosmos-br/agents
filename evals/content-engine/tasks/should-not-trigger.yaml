@@ -1,13 +1,12 @@
-id: should-not-trigger-001
-name: Should Not Trigger
-description: |
-  Test that the skill does NOT activate on unrelated prompts.
-  This validates trigger specificity.
-tags:
-  - anti-trigger
-  - negative-test
+id: content-engine-negative-001
+name: Write one full technical tutorial
+description: Route a single long-form guide to article writing instead of a campaign system.
+tags: [content-engine, anti-trigger]
 inputs:
-  prompt: "What is the weather today?"
+  prompt: >-
+    Write one detailed technical tutorial from the supplied deployment transcript.
+    Do not create social posts, video scripts, newsletters, or a publishing sequence.
+  files:
+  - path: deploy-demo-transcript.md
 expected:
-  output_not_contains:
-    - "skill activated"
+  output_not_contains: [LinkedIn post, X post, posting order]

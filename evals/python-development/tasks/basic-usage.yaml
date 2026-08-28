@@ -1,0 +1,11 @@
+id: python-review-001
+name: Diagnose shared mutable state
+description: Exercise Python package development and toolchain detection through a typed defect repair.
+tags: [python, development, typing, testing, debugging, packaging, happy-path]
+inputs:
+  prompt: Review sample.py and pyproject.toml as a detected Python package. Debug the cross-call defect, provide the smallest material typed owner correction that preserves the return type and package contract, and name the configured test-owner regression plus raw first failure, zero effects, residue search, and runtime proof without inventing Make, Testmon, retry, or fallback.
+  files:
+  - path: sample.py
+  - path: pyproject.toml
+expected:
+  output_contains: [mutable, regression, None, zero effects]

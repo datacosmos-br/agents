@@ -1,0 +1,9 @@
+id: jvm-build-001
+name: Unknown JVM build owner
+description: Refuse Java or Kotlin, Maven or Gradle, and concurrency choices without project evidence.
+tags: [jvm, development, java, kotlin, gradle, maven, testing, concurrency, edge-case]
+inputs:
+  prompt: Upgrade an unavailable JVM project. No wrapper, POM, Gradle files, Java/Kotlin toolchain, modules, test engine, concurrency model, compatibility policy, runtime, or gates are supplied. Stop at the first missing prerequisite and create no build file, version, concurrency primitive, fallback, or other effect.
+expected:
+  output_contains: [toolchain, build, no effect]
+  output_not_contains: [Java 21]

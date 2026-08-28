@@ -1,0 +1,10 @@
+id: anti-hardcode-protocol-invariant-negative-001
+name: Preserve a protocol invariant
+description: Avoid externalizing a mathematically fixed protocol bound.
+tags: [anti-trigger, protocol, invariant]
+inputs:
+  prompt: Add boundary tests and a citation comment for the IPv4 octet invariant in protocol.py without changing the validation behavior. Do not activate configuration migration or fall back to externalizing the invariant.
+  files:
+  - path: protocol.py
+expected:
+  output_not_contains: [environment variable, configuration file, remove 255, fallback config]

@@ -1,29 +1,34 @@
 name: product-capability-eval
-description: Evaluation suite for product-capability.
+description: Product intent, constraints, contracts, and implementation handoff.
 skill: product-capability
-schemaVersion: "1.0"
-version: "1.0"
+schemaVersion: '1.0'
+version: '1.0'
 config:
   trials_per_task: 1
   timeout_seconds: 300
   parallel: false
+  max_attempts: 0
+  fail_fast: true
   executor: copilot-sdk
-  model: claude-sonnet-4.6
-metrics:
-  - name: task_completion
-    weight: 1.0
-    threshold: 0.8
-    description: Did the skill complete the assigned task?
+  model: aihub-primary
+  skill_directories:
+  - ../../skills/project-wide/product-capability
+  required_skills:
+  - product-capability
 graders:
-  - type: code
-    name: has_output
-    config:
-      assertions:
-        - "len(output) > 0"
-  - type: text
-    name: relevant_content
-    config:
-      regex_match:
-        - "(?i)(explain|describe|analyze|implement)"
+- type: prompt
+  name: product-capability-contract
+  config:
+    prompt: |-
+      Grade the product-capability response. Pass only when it derives the actor,
+      visible promise, authorization boundary, lifecycle constraints, explicit
+      non-goals, unresolved retention question, and an honest implementation
+      handoff from the supplied intent. Reject invented product decisions and
+      implementation detail presented as approved policy. Require the one
+      project-owned capability artifact, complete evidence preflight, and no
+      fallback scope or artifact when product truth is missing.
+- type: behavior
+  name: bounded_execution
+  config: {max_duration_ms: 240000}
 tasks:
-  - "tasks/*.yaml"
+- tasks/*.yaml

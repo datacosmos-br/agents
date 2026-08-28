@@ -1,0 +1,18 @@
+components:
+  gateway:
+    owns: request-validation
+    publishes: jobs
+  worker:
+    owns: document-generation
+    consumes: jobs
+  object-store:
+    owns: generated-documents
+flows:
+  generate-document:
+    - gateway
+    - jobs
+    - worker
+    - object-store
+evidence:
+  topology_owner: config/runtime-topology.yaml
+  message_schema_owner: schemas/job.json

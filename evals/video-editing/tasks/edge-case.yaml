@@ -1,11 +1,9 @@
-id: edge-case-001
-name: Edge Case - Empty Input
-description: |
-  Test that the skill handles edge cases gracefully.
-tags:
-  - edge-case
+id: video-editing-missing-source-001
+name: Refuse an edit without footage or decisions
+description: Do not invent source media, cuts, or licensing.
+tags: [video, fail-closed]
 inputs:
-  prompt: ""
+  prompt: Deliver the final edited interview now, but no footage, timecodes, transcript, output specification, usage rights, or destination is available.
 expected:
-  outcomes:
-    - type: task_completed
+  output_contains: [source footage, first missing prerequisite, zero effects]
+  output_not_contains: [final.mp4 created, generated replacement footage, partial render created]

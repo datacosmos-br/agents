@@ -1,11 +1,9 @@
-id: edge-case-001
-name: Edge Case - Empty Input
-description: |
-  Test that the skill handles edge cases gracefully.
-tags:
-  - edge-case
+id: summarization-missing-source-001
+name: Refuse a summary without source material
+description: Do not invent content for an unavailable document.
+tags: [summary, fail-closed]
 inputs:
-  prompt: ""
+  prompt: Summarize the unavailable quarterly report with exact revenue, margin, risks, and decisions; no source text or data is supplied.
 expected:
-  outcomes:
-    - type: task_completed
+  output_contains: [source material, unavailable, zero effects]
+  output_not_contains: [revenue was, margin reached, partial summary, alternate source]

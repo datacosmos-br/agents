@@ -1,16 +1,15 @@
-id: basic-usage-001
-name: Basic Usage
-description: |
-  Test that the skill handles a typical request correctly.
-tags:
-  - basic
-  - happy-path
+id: make-check-scoped-gates-001
+name: Select scoped lint and format gates
+description: Use command discovery to select native gates for project validation.
+tags: [make, native-gates, project-validation, command-discovery, happy-path]
 inputs:
-  prompt: "Help me with this task"
+  prompt: Perform command discovery from the supplied Makefile, then select its
+    declared native gates for project validation. For a change limited to
+    src/widget.py, return the exact scoped lint-and-format command and the evidence
+    required for green. The declared resolver has selected the newest released
+    formatter and its findings remain blocking; do not execute the command,
+    downgrade or override the version, or substitute a raw tool command.
   files:
-    - path: sample.py
+  - path: Makefile
 expected:
-  output_contains:
-    - "function"
-  outcomes:
-    - type: task_completed
+  output_contains: [make check, 'CHECK_GATES=lint,format', 'FILES=src/widget.py', blocking]

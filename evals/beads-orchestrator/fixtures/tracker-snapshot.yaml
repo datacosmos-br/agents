@@ -1,0 +1,23 @@
+runtime: explicitly_suspended
+designated_orchestrator: orch-a
+current_actor: orch-a
+observed_revision: 184
+epics:
+  - id: ag-100
+    objective: consolidate skill governance
+    owner: orch-a
+    children_total: 8
+    children_closed: 6
+    children_open: 2
+  - id: ag-101
+    objective: consolidate skill governance
+    owner: orch-b
+    children_total: 2
+    children_closed: 0
+    children_open: 2
+  - id: ag-130
+    objective: repair cache lifecycle
+    owner: orch-a
+    children_total: 5
+    children_closed: 1
+    children_open: 4

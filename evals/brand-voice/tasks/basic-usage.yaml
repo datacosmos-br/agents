@@ -1,16 +1,13 @@
-id: basic-usage-001
-name: Basic Usage
-description: |
-  Test that the skill handles a typical request correctly.
-tags:
-  - basic
-  - happy-path
+id: brand-voice-happy-001
+name: Build a reusable operator voice profile
+description: Extract observable voice behavior from five recent original samples.
+tags: [brand, voice, style, writing, corpus-analysis, happy-path]
 inputs:
-  prompt: "Help me with this task"
+  prompt: >-
+    Build the canonical reusable VOICE PROFILE from operator-posts.md. Cite the
+    source set, distinguish the X and memo channel evidence, and make every
+    preferred or banned move observable rather than generic.
   files:
-    - path: sample.py
+  - path: operator-posts.md
 expected:
-  output_contains:
-    - "function"
-  outcomes:
-    - type: task_completed
+  output_contains: [VOICE PROFILE, Source Set, Rhythm, Banned Moves]

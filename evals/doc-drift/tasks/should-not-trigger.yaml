@@ -1,13 +1,14 @@
-id: should-not-trigger-001
-name: Should Not Trigger
-description: |
-  Test that the skill does NOT activate on unrelated prompts.
-  This validates trigger specificity.
+id: doc-drift-should-not-trigger-001
+name: Correct prose punctuation
+description: Copy editing without executable claims is not a drift audit.
 tags:
-  - anti-trigger
-  - negative-test
+- anti-trigger
+- negative-test
 inputs:
-  prompt: "What is the weather today?"
+  prompt: Correct the punctuation in this sentence without changing any technical claim.
 expected:
   output_not_contains:
-    - "skill activated"
+  - canonical owner
+  - contract drift
+  - contradiction search
+  - drift workflow activated

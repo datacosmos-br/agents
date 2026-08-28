@@ -1,0 +1,10 @@
+id: anti-phase-skip-lunar-summary-negative-001
+name: Summarize astronomical phases
+description: Avoid applying delivery closure to an unrelated use of phase.
+tags: [anti-trigger, astronomy, summary]
+inputs:
+  prompt: Summarize the four principal lunar phases in moon-phases.md for a middle-school science card.
+  files:
+  - path: moon-phases.md
+expected:
+  output_not_contains: [pull request, integration branch, tracker closure]

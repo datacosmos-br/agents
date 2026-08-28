@@ -1,0 +1,10 @@
+id: prompt-safety-review-negative-001
+name: Correct punctuation in an approved prompt
+description: Avoid a full safety audit for a constrained copy edit with unchanged semantics.
+tags: [prompt-safety-review, anti-trigger]
+inputs:
+  prompt: >-
+    Fix the punctuation in this already approved sentence without changing its
+    meaning: "Summarize the attached report then, list its sources."
+expected:
+  output_not_contains: [Safety Assessment, Improved Prompt, bias mitigation, fallback, safety review activated]

@@ -1,11 +1,11 @@
-id: edge-case-001
-name: Edge Case - Empty Input
-description: |
-  Test that the skill handles edge cases gracefully.
-tags:
-  - edge-case
+id: beads-worker-edge-001
+name: Refuse a foreign blocked lane
+description: Stop before changing work owned by another worker or blocked upstream.
+tags: [beads-worker, edge-case]
 inputs:
-  prompt: ""
+  prompt: >-
+    Implement issue ag-310 now. It is assigned to worker-9, has an open blocker,
+    and no handoff or reassignment exists. State the conflict and required owner action.
 expected:
-  outcomes:
-    - type: task_completed
+  output_contains: [foreign claim, open blocker, no file effects]
+  output_not_contains: [implementation started, changed foreign lane]

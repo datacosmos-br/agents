@@ -1,13 +1,13 @@
-id: should-not-trigger-001
-name: Should Not Trigger
-description: |
-  Test that the skill does NOT activate on unrelated prompts.
-  This validates trigger specificity.
+id: context-canary-should-not-trigger-001
+name: Estimate a static token budget
+description: A standalone arithmetic request must not invent session canary state.
 tags:
-  - anti-trigger
-  - negative-test
+- anti-trigger
+- negative-test
 inputs:
-  prompt: "What is the weather today?"
+  prompt: Calculate 15 percent of a 2000-token documentation budget.
 expected:
   output_not_contains:
-    - "skill activated"
+  - ctx ok
+  - ctx thin
+  - t?

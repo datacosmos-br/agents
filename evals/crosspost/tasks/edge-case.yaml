@@ -1,11 +1,15 @@
-id: edge-case-001
-name: Edge Case - Empty Input
-description: |
-  Test that the skill handles edge cases gracefully.
+id: crosspost-fail-closed-001
+name: Missing source and destinations
+description: Request the minimum publishing contract instead of fabricating copy.
 tags:
-  - edge-case
+- edge-case
 inputs:
-  prompt: ""
+  prompt: Crosspost this everywhere, but no source text or destination platforms were provided.
 expected:
-  outcomes:
-    - type: task_completed
+  output_contains:
+  - source content is required
+  - destination platforms are required
+  - no drafts created
+  output_not_contains:
+  - Excited to share
+  - link in bio

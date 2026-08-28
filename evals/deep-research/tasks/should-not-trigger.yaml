@@ -1,13 +1,13 @@
-id: should-not-trigger-001
-name: Should Not Trigger
-description: |
-  Test that the skill does NOT activate on unrelated prompts.
-  This validates trigger specificity.
+id: deep-research-should-not-trigger-001
+name: Summarize one supplied internal note
+description: Closed-corpus summarization must not launch a web research campaign.
 tags:
-  - anti-trigger
-  - negative-test
+- anti-trigger
+- negative-test
 inputs:
-  prompt: "What is the weather today?"
+  prompt: Summarize the single internal note I supplied; do not search for external information.
 expected:
   output_not_contains:
-    - "skill activated"
+  - firecrawl_search
+  - web_search_exa
+  - Sources searched

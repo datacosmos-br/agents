@@ -1,0 +1,17 @@
+id: solid-payment-boundary-001
+name: Correct payment provider boundaries
+description: Exercise SOLID principles, responsibility boundaries, and dependency direction on one real provider extension.
+tags: [solid, srp, ocp, lsp, isp, dip, architecture, contracts, happy-path]
+inputs:
+  prompt: Apply SOLID principles to correct the responsibility boundaries and dependency direction in payment-project through the optimized search-first -> YAGNI -> SOLID -> simplify-inline flow, using DRY only for confirmed structural waste. Correct the already-required bank-transfer integration without provider branching or catch-based normalization, preserve the public contract and first causal error, rewire consumers atomically, remove superseded construction, recheck YAGNI and SOLID, and define material runtime, zero-effect failure, residue-search, and native-gate proof.
+  files:
+  - path: payment-project/AGENTS.md
+  - path: payment-project/docs/architecture.md
+  - path: payment-project/pyproject.toml
+  - path: payment-project/src/payments/contracts.py
+  - path: payment-project/src/payments/providers.py
+  - path: payment-project/src/payments/checkout.py
+  - path: payment-project/tests/test_authorizer_contract.py
+  - path: payment-project/tests/test_checkout.py
+expected:
+  output_contains: [YAGNI, SRP, OCP, LSP, ISP, DIP, PaymentAuthorizer, ReceiptSink, CheckoutService, contract suite, simplify, zero effects]

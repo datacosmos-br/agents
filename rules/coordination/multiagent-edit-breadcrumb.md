@@ -1,14 +1,19 @@
 ---
-globs: **/*.py, **/*.md, **/*.toml, **/*.yaml, **/*.yml
+globs: ["**/*.py", "**/*.md", "**/*.toml", "**/*.yaml", "**/*.yml"]
 ---
 
-# Leave a breadcrumb when editing shared files; never clobber WIP
+# Coordinate shared-file edits; never clobber WIP
 
-Multiple agents edit the same files concurrently. On any shared-file edit, add a
-short inline comment stating the intent for the other agent
-(e.g. `# Why: purified so foundation does not import c/t/p/m/u`).
+Multiple agents may edit the same files concurrently. Declare file ownership in
+the active collaboration channel before editing; do not add coordination-only
+comments to product code or documentation.
+
+The complete preservation, fix-forward, and severe-conflict contract is owned by
+[fix-forward collaboration](fix-forward-collaboration.md).
 
 - Re-read a mutable file right before editing; converge, never revert another
-  lane's change.
-- Never overwrite another lane's uncommitted WIP. Record progress on the active
-  bead with `bd update <id> --notes '...'`.
+  actor's valid change.
+- Never overwrite or stash uncommitted WIP. Preserve durable evidence in the next
+  canonical commit/PR/CI artifact.
+- Tracker runtime is suspended. Invoke no tracker command, create no substitute
+  tracker or ledger, and keep phase closure unavailable.

@@ -1,13 +1,9 @@
-id: should-not-trigger-001
-name: Should Not Trigger
-description: |
-  Test that the skill does NOT activate on unrelated prompts.
-  This validates trigger specificity.
-tags:
-  - anti-trigger
-  - negative-test
+id: make-check-markdown-symbol-negative-001
+name: Insert a Markdown check mark
+description: Avoid build-gate guidance for an ordinary writing-format request.
+tags: [markdown, symbol, anti-trigger]
 inputs:
-  prompt: "What is the weather today?"
+  prompt: Show me the Markdown syntax for a checked task-list item in a README;
+    do not start a build-gate or released-tool workflow.
 expected:
-  output_not_contains:
-    - "skill activated"
+  output_not_contains: [make help, CHECK_GATES, CHANGED_ONLY, released analyzer]

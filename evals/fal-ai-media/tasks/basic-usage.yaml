@@ -1,16 +1,26 @@
-id: basic-usage-001
-name: Basic Usage
-description: |
-  Test that the skill handles a typical request correctly.
-tags:
-  - basic
-  - happy-path
+id: fal-ai-media-happy-path-001
+name: Verify an authorized reproducible media result
+description: Exercise fal.ai external-service media generation from current owner evidence and report both artifacts.
+tags: [fal.ai, media, image, video, generation, cost, happy-path]
 inputs:
-  prompt: "Help me with this task"
+  prompt: |
+    Audit the supplied current fal.ai external-service media-generation owner
+    snapshot and observed execution.
+    Reconstruct the exact estimate and single-submit input contracts for the
+    image and its image-to-video continuation, preserving every brief value.
+    Verify cost against approval, then report the two material jobs, artifacts,
+    and checksums exactly as observed. Do not infer any missing result.
   files:
-    - path: sample.py
+  - path: launch-image-brief.yaml
 expected:
-  output_contains:
-    - "function"
   outcomes:
-    - type: task_completed
+  - type: task_completed
+  output_contains:
+  - estimate_cost
+  - fal-ai/nano-banana-pro
+  - fal-ai/seedance-1-0-pro
+  - landscape_16_9
+  - 'seed: 1842'
+  - image-job-1842
+  - video-job-1842
+  - sha256

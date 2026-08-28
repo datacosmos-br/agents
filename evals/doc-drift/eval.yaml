@@ -1,29 +1,38 @@
 name: doc-drift-eval
-description: Evaluation suite for doc-drift.
+description: Semantic evaluation suite for doc-drift.
 skill: doc-drift
-schemaVersion: "1.0"
-version: "1.0"
+schemaVersion: '1.0'
+version: '1.0'
 config:
   trials_per_task: 1
   timeout_seconds: 300
   parallel: false
+  max_attempts: 0
+  fail_fast: true
   executor: copilot-sdk
-  model: claude-sonnet-4.6
+  model: aihub-primary
+  skill_directories:
+  - ../../skills/project-wide/doc-drift
+  required_skills:
+  - doc-drift
 metrics:
-  - name: task_completion
-    weight: 1.0
-    threshold: 0.8
-    description: Did the skill complete the assigned task?
+- name: task_completion
+  weight: 1.0
+  threshold: 0.8
+  description: Did the audit reconcile documentation to its declared owner?
 graders:
-  - type: code
-    name: has_output
-    config:
-      assertions:
-        - "len(output) > 0"
-  - type: text
-    name: relevant_content
-    config:
-      regex_match:
-        - "(?i)(explain|describe|analyze|implement)"
+- type: prompt
+  name: doc-drift-contract
+  config:
+    prompt: |-
+      Grade the doc-drift response. Pass only if it compares each documented
+      command and runtime claim with the supplied canonical owner, identifies
+      the exact extinct contract, proposes owner-consistent corrections and
+      contradiction checks, and never invents a replacement command or invokes
+      the explicitly suspended runtime.
+- type: behavior
+  name: bounded_execution
+  config:
+    max_duration_ms: 240000
 tasks:
-  - "tasks/*.yaml"
+- tasks/*.yaml

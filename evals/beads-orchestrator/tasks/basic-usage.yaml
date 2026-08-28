@@ -1,16 +1,14 @@
-id: basic-usage-001
-name: Basic Usage
-description: |
-  Test that the skill handles a typical request correctly.
-tags:
-  - basic
-  - happy-path
+id: beads-orchestrator-happy-001
+name: Classify a suspended tracker snapshot
+description: Produce a semantic convergence plan without mutating a suspended or foreign-owned graph.
+tags: [beads, orchestration, governance, dependencies, deduplication, migration, happy-path]
 inputs:
-  prompt: "Help me with this task"
+  prompt: >-
+    Audit tracker-snapshot.yaml. Classify each epic as keep, drain, or a fold
+    candidate; identify any ownership conflict; and describe the ordered checks
+    required after canonical runtime restoration. Do not execute commands or
+    claim that the graph changed.
   files:
-    - path: sample.py
+  - path: tracker-snapshot.yaml
 expected:
-  output_contains:
-    - "function"
-  outcomes:
-    - type: task_completed
+  output_contains: [ag-100, drain, ag-101, fold candidate, claim collision, ag-130]

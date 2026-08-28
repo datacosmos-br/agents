@@ -1,11 +1,16 @@
-id: edge-case-001
-name: Edge Case - Empty Input
-description: |
-  Test that the skill handles edge cases gracefully.
+id: eval-harness-fail-closed-001
+name: Undefined behavior and baseline
+description: Require observable criteria before inventing an evaluation.
 tags:
-  - edge-case
+- edge-case
 inputs:
-  prompt: ""
+  prompt: Build and publish an eval for “make it better,” but no behavior, input, expected output, baseline, artifact, or success threshold is defined. Prove the first blocking defect and zero created eval or report artifacts; do not retry with invented defaults.
 expected:
-  outcomes:
-    - type: task_completed
+  output_contains:
+  - observable behavior is required
+  - success threshold is required
+  - zero
+  output_not_contains:
+  - 'Status: SHIP IT'
+  - baseline passed
+  - fallback

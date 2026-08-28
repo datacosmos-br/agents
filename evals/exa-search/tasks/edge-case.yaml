@@ -1,11 +1,15 @@
-id: edge-case-001
-name: Edge Case - Empty Input
-description: |
-  Test that the skill handles edge cases gracefully.
+id: exa-search-fail-closed-001
+name: Exa transport unavailable
+description: Report the unavailable owner instead of substituting unapproved search.
 tags:
-  - edge-case
+- edge-case
 inputs:
-  prompt: ""
+  prompt: Exa MCP is not configured. Find current company funding data anyway, but do not use another provider or remembered facts.
 expected:
-  outcomes:
-    - type: task_completed
+  output_contains:
+  - Exa MCP is unavailable
+  - search cannot proceed
+  - no Exa call
+  output_not_contains:
+  - According to the results
+  - funding was

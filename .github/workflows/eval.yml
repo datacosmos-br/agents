@@ -1,19 +1,52 @@
-name: Run Skill Evaluations
+name: Run Offline Governance Gates
 
 on:
-  pull_request:
-    branches: [dev, main]
+  push:
+    branches: [dev]
     paths:
+      - '.agents/**'
+      - '.github/workflows/**'
       - 'evals/**'
       - 'skills/**'
+      - 'commands/**'
+      - 'agents/**'
       - 'src/**'
       - 'tests/**'
       - 'config/**'
-      - 'mcp/**'
       - 'bin/**'
-      - 'hooks/**'
       - 'rules/**'
+      - 'docs/**'
       - 'Makefile'
+      - '.waza.yaml'
+      - '.mise.toml'
+      - 'AGENTS.md'
+      - 'CLAUDE.md'
+      - 'README.md'
+      - 'skills.lock.json'
+      - 'pyproject.toml'
+      - 'uv.lock'
+  pull_request:
+    branches: [dev, main]
+    paths:
+      - '.agents/**'
+      - '.github/workflows/**'
+      - 'evals/**'
+      - 'skills/**'
+      - 'commands/**'
+      - 'agents/**'
+      - 'src/**'
+      - 'tests/**'
+      - 'config/**'
+      - 'bin/**'
+      - 'rules/**'
+      - 'docs/**'
+      - 'Makefile'
+      - '.waza.yaml'
+      - '.mise.toml'
+      - 'AGENTS.md'
+      - 'CLAUDE.md'
+      - 'README.md'
+      - 'skills.lock.json'
       - 'pyproject.toml'
       - 'uv.lock'
 
@@ -25,32 +58,26 @@ jobs:
     name: Run Evaluations
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-      - uses: astral-sh/setup-uv@d0d8abe699bfb85fec6de9f7adb5ae17292296ff # v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+      - uses: jdx/mise-action@c2a87611a18de5b3828c5652fe268e992400cb5c # v4.3.0
+      - name: Prepare canonical shell storage
+        run: install -d -m 700 "$HOME/tmp"
       - name: Install pinned Waza
         run: |
           install -d -m 700 "$HOME/bin"
           install -d -m 700 "$HOME/.local/state/waza-install"
-          curl --fail --location --retry 3 \
+          curl --fail --location \
             --output "$HOME/.local/state/waza-install/waza-linux-amd64" \
             https://github.com/microsoft/waza/releases/download/v0.38.7/waza-linux-amd64
-          curl --fail --location --retry 3 \
+          curl --fail --location \
             --output "$HOME/.local/state/waza-install/checksums.txt" \
             https://github.com/microsoft/waza/releases/download/v0.38.7/checksums.txt
           cd "$HOME/.local/state/waza-install"
           grep ' waza-linux-amd64$' checksums.txt | sha256sum --check --strict -
           install -m 755 waza-linux-amd64 "$HOME/bin/waza"
           echo "$HOME/bin" >> "$GITHUB_PATH"
-      - name: Run offline governance gates
+      - name: Run complete offline pipeline
         run: |
           uv sync --all-groups
-          uv run agentsctl validate
-          waza tokens check ./skills --strict
-          make spec
-      - name: Upload results
-        if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
-        with:
-          name: eval-results
-          path: ./results
-          retention-days: 30
+          make ci

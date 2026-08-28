@@ -1,13 +1,8 @@
-id: should-not-trigger-001
-name: Should Not Trigger
-description: |
-  Test that the skill does NOT activate on unrelated prompts.
-  This validates trigger specificity.
-tags:
-  - anti-trigger
-  - negative-test
+id: governance-audit-api-policy-negative-001
+name: Audit an API authorization policy
+description: Route code-level security review away from tracker-governance checks.
+tags: [api, security, anti-trigger]
 inputs:
-  prompt: "What is the weather today?"
+  prompt: Review an HTTP authorization middleware for tenant isolation bugs. There is no tracker, standing document, projection, or governance-board question.
 expected:
-  output_not_contains:
-    - "skill activated"
+  output_not_contains: [zombie lane, priority inflation, tracker hygiene]

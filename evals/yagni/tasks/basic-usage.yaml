@@ -1,0 +1,15 @@
+id: yagni-report-formats-001
+name: Remove speculative report formats
+description: Exercise speculative-scope removal, current-consumer proof, and necessity analysis.
+tags: [yagni, necessity, scope, consumers, deletion, minimalism, happy-path]
+inputs:
+  prompt: Apply necessity analysis to the report-project's speculative scope and current consumers through the optimized search-first -> YAGNI -> SOLID -> simplify-inline flow, using DRY only for confirmed structural waste. Deliver the current CSV requirement, exterminate every future-only format and supporting surface, preserve raw causal errors, rewire atomically, and define material runtime, zero-effect unsupported-input, residue-search, and native-gate proof.
+  files:
+  - path: report-project/AGENTS.md
+  - path: report-project/docs/architecture.md
+  - path: report-project/pyproject.toml
+  - path: report-project/src/reports/export.py
+  - path: report-project/src/reports/cli.py
+  - path: report-project/tests/test_export.py
+expected:
+  output_contains: [CSV, current consumer, PDF, XML, ExporterRegistry, future-renderer, simplify, runtime, zero effects]

@@ -1,0 +1,8 @@
+id: cpp-negative-001
+name: Unrelated spreadsheet task
+description: Keep native engineering guidance out of a spreadsheet request.
+tags: [anti-trigger]
+inputs:
+  prompt: Summarize quarterly revenue from this spreadsheet. Do not activate or fall back to C++ engineering.
+expected:
+  output_not_contains: [CMake, RAII, sanitizer, fallback toolchain]

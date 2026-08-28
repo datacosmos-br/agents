@@ -1,11 +1,17 @@
-id: edge-case-001
-name: Edge Case - Empty Input
-description: |
-  Test that the skill handles edge cases gracefully.
+id: context-canary-fail-closed-001
+name: Unknown operator and turn counter
+description: Refuse to fabricate missing canary identity and sequence state.
 tags:
-  - edge-case
+- edge-case
 inputs:
-  prompt: ""
+  prompt: |
+    Emit the next context canary, but neither the operator name nor the prior
+    turn counter is available. Handle the missing state according to the
+    canary contract and state explicitly that no work continued.
 expected:
-  outcomes:
-    - type: task_completed
+  output_contains:
+  - t?
+  - operator name is required
+  - no work continued
+  output_not_contains:
+  - t1 · ctx ok

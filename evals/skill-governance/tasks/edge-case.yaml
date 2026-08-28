@@ -1,0 +1,9 @@
+id: skill-governance-duplicate-001
+name: Refuse a duplicate debugging skill
+description: Compose an existing capability instead of creating another identity.
+tags: [skills, fail-closed]
+inputs:
+  prompt: Create a new generic debugging skill even though the catalog already declares debugging as an existing capability. No distinct recurring contract is supplied.
+expected:
+  output_contains: [existing capability, do not create, zero effects]
+  output_not_contains: [mkdir skills/debugging-v2, new debugging skill, fallback, scaffold created]

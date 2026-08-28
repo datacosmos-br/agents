@@ -1,16 +1,10 @@
-id: basic-usage-001
-name: Basic Usage
-description: |
-  Test that the skill handles a typical request correctly.
-tags:
-  - basic
-  - happy-path
+id: nextjs-turbopack-dev-script-001
+name: Diagnose an explicit webpack dev script
+description: Exercise Next.js, Turbopack, and frontend performance through pinned project evidence.
+tags: [next.js, turbopack, bundling, caching, development, performance, happy-path]
 inputs:
-  prompt: "Help me with this task"
+  prompt: Review this pinned Next.js setup for Turbopack and frontend performance. Complete version/script/config/cache preflight, verify release-specific behavior from official documentation, provide the smallest material script-owner correction, preserve `.next`, and define cold start, HMR, unchanged cache reuse, production build, raw first-command failure, zero-effect publication, and residue measurements without guessed flags or fallback bundlers.
   files:
-    - path: sample.py
+  - path: package.json
 expected:
-  output_contains:
-    - "function"
-  outcomes:
-    - type: task_completed
+  output_contains: ['16.1.2', 'next dev', .next, HMR, zero effects]

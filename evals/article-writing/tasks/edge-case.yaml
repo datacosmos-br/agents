@@ -1,11 +1,15 @@
-id: edge-case-001
-name: Edge Case - Empty Input
-description: |
-  Test that the skill handles edge cases gracefully.
-tags:
-  - edge-case
+id: article-writing-edge-001
+name: Refuse unsupported case-study claims
+description: Preserve source boundaries when requested proof and quotations do not exist.
+tags: [article-writing, edge-case]
 inputs:
-  prompt: ""
+  prompt: >-
+    Use cache-release-notes.md to write a customer case study claiming 70 percent
+    cloud-cost savings and include a customer quotation. Stop at the first
+    unsupported requirement, identify the missing source, and do not draft a
+    case study or substitute article.
+  files:
+  - path: cache-release-notes.md
 expected:
-  outcomes:
-    - type: task_completed
+  output_contains: [unsupported claim, customer source, no article]
+  output_not_contains: [This cut our cloud bill in half, case study draft]

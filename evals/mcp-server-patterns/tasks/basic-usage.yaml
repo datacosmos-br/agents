@@ -1,16 +1,17 @@
-id: basic-usage-001
-name: Basic Usage
-description: |
-  Test that the skill handles a typical request correctly.
-tags:
-  - basic
-  - happy-path
+id: mcp-server-patterns-tool-review-001
+name: Review an unsafe MCP lookup tool
+description: Exercise MCP server protocol integration and SDK patterns from the pinned dependency.
+tags: [mcp, server, sdk, tools, resources, transport, happy-path]
 inputs:
-  prompt: "Help me with this task"
+  prompt: >-
+    Review the Node/TypeScript MCP server protocol integration in package.json
+    and server.ts. Apply SDK patterns from the pinned dependency: assess its
+    tool against schema and causal-failure requirements, distinguish tools from
+    resources and prompts, separate handlers from transports, and give
+    version-verified stdio and Streamable HTTP runtime tests without guessing
+    signatures.
   files:
-    - path: sample.py
+  - path: package.json
+  - path: server.ts
 expected:
-  output_contains:
-    - "function"
-  outcomes:
-    - type: task_completed
+  output_contains: ['1.17.0', Zod, causal failure, Streamable HTTP]

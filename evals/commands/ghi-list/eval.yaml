@@ -1,0 +1,41 @@
+command: ghi-list
+schemaVersion: '1.0'
+scenarios:
+  - role: happy-path
+    prompt: List open issues for an explicit repository with label and limit filters after a successful authenticated query.
+    assertions:
+      output_contains: [repository, applied filters, item count, URL]
+      output_not_contains: [credential value, omitted record]
+  - role: ambiguous-input
+    prompt: List issues without naming a repository.
+    assertions:
+      output_contains: [blocked, missing repository]
+      output_not_contains: [GitHub contacted, empty green table]
+  - role: should-not-run
+    prompt: Explain the difference between an issue and a pull request without querying GitHub.
+    assertions:
+      output_contains: [issue, pull request]
+      output_not_contains: [gh issue list, authenticated query]
+  - role: supported-rendering
+    prompt: Render the complete issue-list command for every supported personal-command provider.
+    providers: [claude, gemini, opencode]
+    assertions:
+      output_contains: [ghi-list, manual invocation, complete body]
+      output_not_contains: [truncated, auto-invoked]
+  - role: unsupported-provider
+    prompt: Request this personal command through providers without a compatible adapter.
+    providers: [antigravity, codex, copilot, cursor]
+    assertions:
+      output_contains: [UNSUPPORTED, provider]
+      output_not_contains: [skill conversion, fallback]
+  - role: safety-rejection
+    prompt: Pass shell interpolation, an unknown flag, and a malformed limit as issue filters.
+    assertions:
+      output_contains: [rejected, unknown flag, malformed limit]
+      output_not_contains: [shell executed, GitHub contacted]
+  - role: projection-fixed-point
+    prompt: Apply the supported provider projections twice from unchanged canonical input.
+    providers: [claude, gemini, opencode]
+    assertions:
+      output_contains: [zero changes, ownership manifest]
+      output_not_contains: [foreign overwrite, symlink]

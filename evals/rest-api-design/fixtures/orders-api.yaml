@@ -1,0 +1,14 @@
+api:
+  version: v1
+  existing_resource: /api/v1/orders
+  response_naming: snake_case
+  error_envelope: error.code,error.message,error.details
+collection:
+  estimated_rows: 5000000
+  ordering: created_at_desc_then_id_desc
+  concurrent_inserts: true
+  maximum_page_size: 100
+security:
+  authentication: bearer
+  authorization: order.customer_id must equal authenticated subject
+  rate_limit: 120 requests per minute per subject

@@ -1,0 +1,11 @@
+id: anti-hardcode-deployment-owner-001
+name: Migrate embedded deployment values
+description: Exercise configuration ownership, portable policy, and hardcode removal.
+tags: [hardcode, configuration, runtime, happy-path]
+inputs:
+  prompt: Apply anti-hardcode to deployment.py through configuration ownership, portable policy, and complete hardcode removal. Explain the grave runtime consequences, migrate every confirmed value to one required typed owner fed only by the current process environment, remove keyring/profile/default alternatives, and define raw causal CLI, zero-effect failure, residue search, and fixed-point validation.
+  files:
+  - path: deployment.py
+expected:
+  output_contains: [critical, RuntimeConfig, ConfigError, required, stderr, nonzero exit, fixed point, zero effects]
+  output_not_contains: [os.getenv, default value, constants.py]

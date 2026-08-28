@@ -1,16 +1,12 @@
-id: basic-usage-001
-name: Basic Usage
-description: |
-  Test that the skill handles a typical request correctly.
-tags:
-  - basic
-  - happy-path
+id: caveman-happy-001
+name: Report a failed gate without filler
+description: Preserve all decisive evidence in a terse operator status.
+tags: [operator, communication, concise, evidence, documentation, happy-path]
 inputs:
-  prompt: "Help me with this task"
+  prompt: >-
+    Turn gate-result.txt into an operator update of at most three short sentences.
+    Put the bad news first and preserve every evidence field without guessing a cause.
   files:
-    - path: sample.py
+  - path: gate-result.txt
 expected:
-  output_contains:
-    - "function"
-  outcomes:
-    - type: task_completed
+  output_contains: [exit 2, /workspace/agents, test_distribution_contract, security, build]

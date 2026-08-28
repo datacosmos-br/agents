@@ -1,13 +1,12 @@
-id: should-not-trigger-001
-name: Should Not Trigger
-description: |
-  Test that the skill does NOT activate on unrelated prompts.
-  This validates trigger specificity.
-tags:
-  - anti-trigger
-  - negative-test
+id: article-writing-negative-001
+name: Produce terse changelog bullets
+description: Avoid long-form article structure for a release-note formatting task.
+tags: [article-writing, anti-trigger]
 inputs:
-  prompt: "What is the weather today?"
+  prompt: >-
+    Convert cache-release-notes.md into exactly three terse changelog bullets.
+    Do not add narrative framing.
+  files:
+  - path: cache-release-notes.md
 expected:
-  output_not_contains:
-    - "skill activated"
+  output_not_contains: [Introduction, Conclusion, In today's]

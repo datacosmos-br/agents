@@ -1,0 +1,8 @@
+[project]
+name = "reports"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = ["future-renderer>=0.9"]
+
+[project.scripts]
+reports = "reports.cli:main"

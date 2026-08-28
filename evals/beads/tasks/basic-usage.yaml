@@ -1,16 +1,14 @@
-id: basic-usage-001
-name: Basic Usage
-description: |
-  Test that the skill handles a typical request correctly.
-tags:
-  - basic
-  - happy-path
+id: beads-happy-001
+name: Preserve completion evidence during suspension
+description: Report a merged change without invoking or falsely closing its canonical issue.
+tags: [beads, issues, tracking, dependencies, workflow, happy-path]
 inputs:
-  prompt: "Help me with this task"
+  prompt: >-
+    Read tracker-state.yaml and state the correct issue and phase status. Preserve
+    the supplied merge and validation evidence, explain what must happen after
+    tracker restoration, and do not execute or invent any tracker command.
   files:
-    - path: sample.py
+  - path: tracker-state.yaml
 expected:
-  output_contains:
-    - "function"
-  outcomes:
-    - type: task_completed
+  output_contains: [ag-417, explicitly suspended, Git, phase remains open]
+  output_not_contains: [replacement ledger, substitute tracker, tracker closed]

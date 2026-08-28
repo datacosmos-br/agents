@@ -1,16 +1,15 @@
-id: basic-usage-001
-name: Basic Usage
-description: |
-  Test that the skill handles a typical request correctly.
-tags:
-  - basic
-  - happy-path
+id: backend-patterns-happy-001
+name: Remove an N-plus-one tenant query
+description: Correct persistence patterns at one backend service boundary.
+tags: [backend-architecture, service-boundaries, persistence-patterns, performance, reliability, happy-path]
 inputs:
-  prompt: "Help me with this task"
+  prompt: >-
+    Review orders-service.ts as backend architecture with one service boundary.
+    Identify the query and ownership risks, apply the existing persistence pattern,
+    and propose the smallest repository/service change
+    that batches item loading and bounds the result set, and name tests for tenant
+    isolation, empty results, and database failure.
   files:
-    - path: sample.py
+  - path: orders-service.ts
 expected:
-  output_contains:
-    - "function"
-  outcomes:
-    - type: task_completed
+  output_contains: [N+1, customerId, batch, pagination, tenant, causal]

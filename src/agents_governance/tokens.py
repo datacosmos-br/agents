@@ -7,9 +7,26 @@ import subprocess
 from pathlib import Path
 
 
-def bpe_tokens(path: Path, root: Path) -> int:
-    """Count model tokens with Waza's BPE tokenizer, failing closed."""
+def _tokens(command: list[str], root: Path, content: str | None = None) -> int:
     completed = subprocess.run(
+        command,
+        cwd=root,
+        check=True,
+        stdout=subprocess.PIPE,
+        text=True,
+        input=content,
+    )
+    payload = json.loads(completed.stdout)
+    tokens = payload["totalTokens"]
+    if not isinstance(tokens, int) or tokens < 0:
+        raise RuntimeError(f"invalid Waza token count: {tokens!r}")
+    return tokens
+
+
+def bpe_tokens(path: Path, root: Path) -> int:
+    """Count one physical source with Waza's BPE tokenizer, failing closed."""
+
+    return _tokens(
         [
             "waza",
             "tokens",
@@ -21,20 +38,28 @@ def bpe_tokens(path: Path, root: Path) -> int:
             "bpe",
             "--no-update-check",
         ],
-        cwd=root,
-        check=False,
-        capture_output=True,
-        text=True,
+        root,
     )
-    if completed.returncode != 0:
-        raise RuntimeError(
-            f"Waza BPE token count failed for {path}: {completed.stderr.strip()}"
-        )
-    try:
-        payload = json.loads(completed.stdout)
-        tokens = payload["totalTokens"]
-    except (json.JSONDecodeError, KeyError, TypeError) as error:
-        raise RuntimeError(f"invalid Waza token output for {path}") from error
-    if not isinstance(tokens, int) or tokens < 0:
-        raise RuntimeError(f"invalid Waza token count for {path}: {tokens!r}")
-    return tokens
+
+
+def bpe_content(content: str, root: Path) -> int:
+    """Count in-memory text through Waza stdin without staging a source file."""
+
+    return _tokens(
+        [
+            "waza",
+            "tokens",
+            "count",
+            "/dev/stdin",
+            "--format",
+            "json",
+            "--tokenizer",
+            "bpe",
+            "--no-update-check",
+        ],
+        root,
+        content,
+    )
+
+
+__all__ = ("bpe_content", "bpe_tokens")

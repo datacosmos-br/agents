@@ -3,34 +3,39 @@
 This file owns universal storage placement. Project and skill documents point
 here and add only narrower local constraints.
 
+`config/storage.toml` is the sole writable owner of registered repositories. The
+typed storage owner derives its own manifest path from the physical checkout and
+derives the shell scratch root as the current platform home plus `tmp`. These
+canonical calculations are SSOT defaults, not fallback or required external
+inputs. Every resulting path is physical, canonical, and validated before the
+first effect.
+
 - `/tmp` is limited to small, bounded operating-system ephemera. Never place a
   repository, worktree, virtual environment, persistent database, build cache,
   checkpoint, backup, or report there.
-- Run test and build commands through `agentsctl temp run -- <command>`. Each
-  run owns a physical `<repo>/.test-tmp/run.*` directory created by `mktemp` and
-  receives distinct `TMPDIR`, `GOTMPDIR`, and `GOCACHE` paths.
-- Reusable caches belong to `${XDG_CACHE_HOME:-$HOME/.cache}/<tool>`.
-  Node compile caches use `NODE_COMPILE_CACHE` under this hierarchy.
-  `GOMODCACHE` is shared; execution/build scratch is not.
-- Persistent evidence belongs to
-  `${XDG_STATE_HOME:-$HOME/.local/state}/<tool>`. Shells use only the bounded
-  agents fallback there; managed commands replace it with repository-local
-  per-run paths.
-- GC is fail-closed. Preserve runs younger than seven days and anything with a
-  live lock, process ownership evidence, Git/venv/database content, symlink, or
-  unknown entry. Never use `rm -rf`, `git clean`, reset, or stash for GC.
-- Default limits are warning at 1 GiB and owned-process failure at 5 GiB. A
-  limiter may signal only the child process group it created.
-- A successful owned child is not an orphan: after its report is persisted, its
-  marked run tree is removed immediately. Failed/interrupted runs remain for GC.
-- Linux copies request `cp --reflink=auto`. Copies remain independent physical
-  trees; symbolic links and cross-repository references are prohibited.
+- `agentsctl doctor` and `agentsctl check` derive `config/storage.toml` from the
+  checkout, load the entire manifest, calculate shell scratch once, and reject
+  the first schema, expansion, symlink, Git-root, `/tmp`, overlap, registration,
+  or repository-residue defect.
+- The manifest contains no runner, retention, report, warning, GC, cache, retry,
+  or fallback configuration. Development subprocesses remain Make/tool owned and
+  propagate nonzero exits, timeouts, and signals through their native process API.
+- `agentsctl clean` validates the complete repository-owned generated-artifact
+  set before deletion. It never deletes unknown, dirty, symlinked, special-file,
+  database, provider-home, or external-repository content.
+- Missing, empty, conflicting, unexpanded, relative, or invalid genuinely
+  required external values and configured paths raise immediately. No
+  environment variable, setting, parameter, or argument repeats a derivable
+  canonical default; no failure selects home, XDG, shell, or `/tmp` as an alternate.
+- Preflight selects exactly one supported physical copy primitive for the
+  destination filesystem. Its failure raises; no alternate copy primitive is
+  attempted. Copies remain independent physical trees; symbolic links and
+  cross-repository references are prohibited.
 
-Canonical surface:
+Canonical runtime surface:
 
 ```text
-agentsctl temp audit [--json]
-agentsctl temp status [--json]
-agentsctl temp run -- <command>
-agentsctl temp gc --dry-run|--apply
+agentsctl doctor
+agentsctl check
+agentsctl clean
 ```

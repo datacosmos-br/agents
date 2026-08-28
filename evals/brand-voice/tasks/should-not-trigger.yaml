@@ -1,13 +1,9 @@
-id: should-not-trigger-001
-name: Should Not Trigger
-description: |
-  Test that the skill does NOT activate on unrelated prompts.
-  This validates trigger specificity.
-tags:
-  - anti-trigger
-  - negative-test
+id: brand-voice-negative-001
+name: Correct one sentence's grammar
+description: Avoid constructing a durable identity profile for a local copy edit.
+tags: [brand-voice, anti-trigger]
 inputs:
-  prompt: "What is the weather today?"
+  prompt: >-
+    Correct the grammar in this sentence without changing its tone: "The tests is green."
 expected:
-  output_not_contains:
-    - "skill activated"
+  output_not_contains: [VOICE PROFILE, Source Set, Channel Notes]

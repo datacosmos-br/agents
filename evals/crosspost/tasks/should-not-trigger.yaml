@@ -1,13 +1,13 @@
-id: should-not-trigger-001
-name: Should Not Trigger
-description: |
-  Test that the skill does NOT activate on unrelated prompts.
-  This validates trigger specificity.
+id: crosspost-should-not-trigger-001
+name: Edit an internal memo sentence
+description: A private line edit is not multi-platform distribution.
 tags:
-  - anti-trigger
-  - negative-test
+- anti-trigger
+- negative-test
 inputs:
-  prompt: "What is the weather today?"
+  prompt: Tighten this sentence for an internal incident memo without changing its meaning.
 expected:
   output_not_contains:
-    - "skill activated"
+  - 'LinkedIn:'
+  - 'Bluesky:'
+  - platform adaptation

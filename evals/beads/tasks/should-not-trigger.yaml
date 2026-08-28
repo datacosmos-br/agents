@@ -1,13 +1,10 @@
-id: should-not-trigger-001
-name: Should Not Trigger
-description: |
-  Test that the skill does NOT activate on unrelated prompts.
-  This validates trigger specificity.
-tags:
-  - anti-trigger
-  - negative-test
+id: beads-negative-001
+name: Organize a personal grocery checklist
+description: Avoid repository issue tracking for an ordinary private checklist.
+tags: [beads, anti-trigger]
 inputs:
-  prompt: "What is the weather today?"
+  prompt: >-
+    Group milk, rice, and apples into a grocery checklist for tonight. This is
+    not repository work and needs no durable dependency graph.
 expected:
-  output_not_contains:
-    - "skill activated"
+  output_not_contains: [bd create, Bead ID, canonical tracker]

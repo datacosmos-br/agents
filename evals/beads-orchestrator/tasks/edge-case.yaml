@@ -1,11 +1,12 @@
-id: edge-case-001
-name: Edge Case - Empty Input
-description: |
-  Test that the skill handles edge cases gracefully.
-tags:
-  - edge-case
+id: beads-orchestrator-edge-001
+name: Reject a stale mutation batch
+description: Re-audit when the tracker graph changes after a semantic plan was prepared.
+tags: [beads-orchestrator, edge-case]
 inputs:
-  prompt: ""
+  prompt: >-
+    Apply yesterday's re-parent and close plan now. A newer tracker revision has
+    changed assignees and dependencies since that audit, and the current graph is
+    unavailable. State the only safe next step.
 expected:
-  outcomes:
-    - type: task_completed
+  output_contains: [graph changed, re-audit]
+  output_not_contains: [bd dep remove, re-parented successfully, partial graph]

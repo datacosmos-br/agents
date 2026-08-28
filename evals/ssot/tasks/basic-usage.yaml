@@ -1,0 +1,19 @@
+id: ssot-delivery-policy-cutover-001
+name: Converge delivery timeout policy on one authority
+description: Exercise single authority, projection convergence, and ownership mapping.
+tags: [ssot, authority, ownership, projections, drift, convergence, happy-path]
+inputs:
+  prompt: Apply the complete search-first -> YAGNI -> optional SOLID -> SSOT -> simplify-inline flow to policy-project, using DRY only for confirmed structural rewiring. Make the declared delivery-policy config the only writable authority, remove every competing default/default-on-error path and copied mutable value, preserve the first explicit failure with zero effects, and define real runtime, two-run generation fixed point, residue search, and native-gate proof.
+  files:
+  - path: policy-project/AGENTS.md
+  - path: policy-project/docs/architecture.md
+  - path: policy-project/docs/configuration.md
+  - path: policy-project/config/delivery-policy.toml
+  - path: policy-project/tools/render_policy.py
+  - path: policy-project/src/delivery/generated_policy.py
+  - path: policy-project/src/delivery/worker.py
+  - path: policy-project/src/delivery/cli.py
+  - path: policy-project/tests/test_delivery.py
+expected:
+  output_contains: [config/delivery-policy.toml, sole writable authority, render_policy.py, generated_policy.py, EMAIL_TIMEOUT_SECONDS, fixed point, python -m delivery.cli email, pytest, zero effects]
+  output_not_contains: [hand-edit generated_policy.py, keep both defaults]

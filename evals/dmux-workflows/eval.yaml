@@ -1,29 +1,39 @@
 name: dmux-workflows-eval
-description: Evaluation suite for dmux-workflows.
+description: Semantic evaluation suite for dmux-workflows.
 skill: dmux-workflows
-schemaVersion: "1.0"
-version: "1.0"
+schemaVersion: '1.0'
+version: '1.0'
 config:
   trials_per_task: 1
   timeout_seconds: 300
   parallel: false
+  max_attempts: 0
+  fail_fast: true
   executor: copilot-sdk
-  model: claude-sonnet-4.6
+  model: aihub-primary
+  skill_directories:
+  - ../../skills/tool/dmux-workflows
+  required_skills:
+  - dmux-workflows
 metrics:
-  - name: task_completion
-    weight: 1.0
-    threshold: 0.8
-    description: Did the skill complete the assigned task?
+- name: task_completion
+  weight: 1.0
+  threshold: 0.8
+  description: Did the pane plan respect independence, ownership, and runtime state?
 graders:
-  - type: code
-    name: has_output
-    config:
-      assertions:
-        - "len(output) > 0"
-  - type: text
-    name: relevant_content
-    config:
-      regex_match:
-        - "(?i)(explain|describe|analyze|implement)"
+- type: prompt
+  name: dmux-workflows-contract
+  config:
+    prompt: |-
+      Grade the dmux-workflows response. Pass only if it identifies genuinely
+      independent work, assigns complete non-overlapping read-only pane
+      contracts, keeps dependent synthesis serial, and respects runtime
+      suspension with zero orchestration effects. Reject provider, model, or
+      harness fallback; retries; partial synthesis; branches, worktrees, runs,
+      or write-capable panes. The first pane failure must remain causal.
+- type: behavior
+  name: bounded_execution
+  config:
+    max_duration_ms: 240000
 tasks:
-  - "tasks/*.yaml"
+- tasks/*.yaml

@@ -1,13 +1,8 @@
-id: should-not-trigger-001
-name: Should Not Trigger
-description: |
-  Test that the skill does NOT activate on unrelated prompts.
-  This validates trigger specificity.
-tags:
-  - anti-trigger
-  - negative-test
+id: go-development-rust-review-negative-001
+name: Review a Rust ownership question
+description: Keep Go-specific guidance out of a Rust-only request.
+tags: [rust, ownership, anti-trigger]
 inputs:
-  prompt: "What is the weather today?"
+  prompt: Review a Rust borrow-checker error in lib.rs and explain the lifetime relationship; this repository has Cargo.toml and no Go artifacts. Do not activate or fall back to Go tooling.
 expected:
-  output_not_contains:
-    - "skill activated"
+  output_not_contains: [go.mod, go test, context.Context, fallback Go]

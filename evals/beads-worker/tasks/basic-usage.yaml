@@ -1,16 +1,14 @@
-id: basic-usage-001
-name: Basic Usage
-description: |
-  Test that the skill handles a typical request correctly.
-tags:
-  - basic
-  - happy-path
+id: beads-worker-happy-001
+name: Report a validated assigned slice
+description: Produce the worker handoff without claiming owner-only merge or closure.
+tags: [beads, worker, execution, handoff, evidence, scope, happy-path]
 inputs:
-  prompt: "Help me with this task"
+  prompt: >-
+    Read worker-handoff.yaml and produce the exact worker status report. Include
+    issue, branch, SHA, scoped files, validation command and decisive output, PR,
+    residue, and what remains owner-only. Account for the explicit tracker suspension.
   files:
-    - path: sample.py
+  - path: worker-handoff.yaml
 expected:
-  output_contains:
-    - "function"
-  outcomes:
-    - type: task_completed
+  output_contains: [READY_FOR_REVIEW, 91c2f44, make check, 41 passed, explicitly suspended, Git]
+  output_not_contains: [replacement ledger, substitute tracker, tracker closed]

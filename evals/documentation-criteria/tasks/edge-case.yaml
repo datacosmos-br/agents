@@ -1,11 +1,16 @@
-id: edge-case-001
-name: Edge Case - Empty Input
-description: |
-  Test that the skill handles edge cases gracefully.
+id: documentation-criteria-fail-closed-001
+name: Unknown change scale and contract impact
+description: Request classification inputs before choosing document types.
 tags:
-  - edge-case
+- edge-case
 inputs:
-  prompt: ""
+  prompt: Document this change, but no feature type, touched-file estimate, contract impact, data flow, dependency, or UI scope is known.
 expected:
-  outcomes:
-    - type: task_completed
+  output_contains:
+  - change scope is required
+  - file impact is required
+  - zero effects
+  output_not_contains:
+  - docs/adr/
+  - ADR is mandatory
+  - document created

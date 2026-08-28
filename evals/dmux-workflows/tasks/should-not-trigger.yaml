@@ -1,13 +1,13 @@
-id: should-not-trigger-001
-name: Should Not Trigger
-description: |
-  Test that the skill does NOT activate on unrelated prompts.
-  This validates trigger specificity.
+id: dmux-workflows-should-not-trigger-001
+name: Perform one sequential calculation
+description: A small dependent calculation does not benefit from pane orchestration.
 tags:
-  - anti-trigger
-  - negative-test
+- anti-trigger
+- negative-test
 inputs:
-  prompt: "What is the weather today?"
+  prompt: Calculate the median of 3, 5, and 11, then explain the result.
 expected:
   output_not_contains:
-    - "skill activated"
+  - tmux
+  - Pane 1
+  - parallel agent

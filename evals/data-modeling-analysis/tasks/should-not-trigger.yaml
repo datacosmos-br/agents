@@ -1,0 +1,8 @@
+id: data-negative-001
+name: Unrelated travel request
+description: Keep data-modeling analysis out of travel planning.
+tags: [anti-trigger]
+inputs:
+  prompt: Plan a three-day museum itinerary for Madrid.
+expected:
+  output_not_contains: [serialization, schema, mutation, data-model workflow]

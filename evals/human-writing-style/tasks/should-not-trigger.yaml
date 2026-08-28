@@ -1,13 +1,8 @@
-id: should-not-trigger-001
-name: Should Not Trigger
-description: |
-  Test that the skill does NOT activate on unrelated prompts.
-  This validates trigger specificity.
-tags:
-  - anti-trigger
-  - negative-test
+id: human-writing-style-verbatim-extraction-negative-001
+name: Extract text verbatim
+description: Do not rewrite an exact-transcription request.
+tags: [transcription, exact, anti-trigger]
 inputs:
-  prompt: "What is the weather today?"
+  prompt: Extract the three dates from this legal notice verbatim and preserve its original wording; do not revise style.
 expected:
-  output_not_contains:
-    - "skill activated"
+  output_not_contains: [AI tells, style rewrite, generic praise]

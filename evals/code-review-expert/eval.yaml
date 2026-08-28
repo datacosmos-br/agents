@@ -1,29 +1,33 @@
 name: code-review-expert-eval
-description: Evaluation suite for code-review-expert.
+description: Evidence-backed severity review of current changes.
 skill: code-review-expert
-schemaVersion: "1.0"
-version: "1.0"
+schemaVersion: '1.0'
+version: '1.0'
 config:
   trials_per_task: 1
   timeout_seconds: 300
   parallel: false
+  max_attempts: 0
+  fail_fast: true
   executor: copilot-sdk
-  model: claude-sonnet-4.6
-metrics:
-  - name: task_completion
-    weight: 1.0
-    threshold: 0.8
-    description: Did the skill complete the assigned task?
+  model: aihub-primary
+  skill_directories:
+  - ../../skills/project-wide/code-review-expert
+  required_skills:
+  - code-review-expert
 graders:
-  - type: code
-    name: has_output
-    config:
-      assertions:
-        - "len(output) > 0"
-  - type: text
-    name: relevant_content
-    config:
-      regex_match:
-        - "(?i)(explain|describe|analyze|implement)"
+- type: prompt
+  name: code-review-expert-contract
+  config:
+    prompt: |-
+      Grade the code-review-expert response. Pass only when it reviews the supplied patch without editing, reports
+      file and added-line evidence, assigns defensible severity, explains
+      exploitability and impact for SQL injection and missing ownership checks,
+      and distinguishes the false-success error path. Reject style-only commentary,
+      warnings, optional suggestions, deferred cleanup, approval without complete
+      preflight, or implementation during review.
+- type: behavior
+  name: bounded_execution
+  config: {max_duration_ms: 240000}
 tasks:
-  - "tasks/*.yaml"
+- tasks/*.yaml

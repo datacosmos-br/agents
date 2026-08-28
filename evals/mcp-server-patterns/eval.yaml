@@ -1,29 +1,36 @@
 name: mcp-server-patterns-eval
-description: Evaluation suite for mcp-server-patterns.
+description: Version-evidenced MCP schemas, errors, transports, and ownership.
 skill: mcp-server-patterns
-schemaVersion: "1.0"
-version: "1.0"
+schemaVersion: '1.0'
+version: '1.0'
 config:
   trials_per_task: 1
   timeout_seconds: 300
   parallel: false
+  max_attempts: 0
+  fail_fast: true
   executor: copilot-sdk
-  model: claude-sonnet-4.6
-metrics:
-  - name: task_completion
-    weight: 1.0
-    threshold: 0.8
-    description: Did the skill complete the assigned task?
+  model: aihub-primary
+  skill_directories:
+  - ../../skills/tool/mcp-server-patterns
+  required_skills:
+  - mcp-server-patterns
 graders:
-  - type: code
-    name: has_output
-    config:
-      assertions:
-        - "len(output) > 0"
-  - type: text
-    name: relevant_content
-    config:
-      regex_match:
-        - "(?i)(explain|describe|analyze|implement)"
+- type: prompt
+  name: mcp-server-patterns-contract
+  config:
+    prompt: |-
+      Grade the mcp-server-patterns response. Pass only when it uses the pinned SDK
+      version and supplied server code, identifies the missing input schema and
+      catch-to-content normalization, preserves transport-independent handlers,
+      and proposes stdio plus Streamable HTTP validation only when evidenced by
+      current consumers and official version signatures. Reject guessed SDK
+      APIs, unpinned upgrades, compatibility transports, local catches, retries,
+      alternate SDKs, or transport logic embedded in tools. The first causal
+      handler failure must remain owned by the pinned transport.
+- type: behavior
+  name: bounded_execution
+  config:
+    max_duration_ms: 240000
 tasks:
-  - "tasks/*.yaml"
+- tasks/*.yaml

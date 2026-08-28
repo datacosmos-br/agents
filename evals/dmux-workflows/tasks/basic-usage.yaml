@@ -1,16 +1,22 @@
-id: basic-usage-001
-name: Basic Usage
-description: |
-  Test that the skill handles a typical request correctly.
-tags:
-  - basic
-  - happy-path
+id: dmux-workflows-happy-path-001
+name: Plan independent read-only review panes
+description: Exercise dmux terminal orchestration and agent coordination while keeping dependent synthesis serial.
+tags: [multi-agent, orchestration, tmux, panes, parallelism, workflows, happy-path]
 inputs:
-  prompt: "Help me with this task"
+  prompt: |
+    Apply dmux terminal-orchestration and agent-coordination patterns through its
+    tmux pane manager, assigning agents from the supplied review brief. Parallelize only the
+    independent read-only analyses, keep the synthesis dependent on both, name
+    each pane's boundary and output, and describe the review-before-merge step.
+    The orchestration runtime is suspended and no pane may write files.
   files:
-    - path: sample.py
+  - path: review-brief.md
 expected:
-  output_contains:
-    - "function"
   outcomes:
-    - type: task_completed
+  - type: task_completed
+  output_contains:
+  - Pane 1
+  - Pane 2
+  - read-only
+  - depends on both
+  - review before merge

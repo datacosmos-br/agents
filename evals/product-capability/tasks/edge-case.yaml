@@ -1,11 +1,13 @@
-id: edge-case-001
-name: Edge Case - Empty Input
-description: |
-  Test that the skill handles edge cases gracefully.
-tags:
-  - edge-case
+id: product-capability-missing-intent-001
+name: Refuse to invent missing product truth
+description: Block an implementation contract when no capability intent exists.
+tags: [product, capability, fail-closed]
 inputs:
-  prompt: ""
+  prompt: |
+    Declare a new billing capability ready for engineering, but no PRD, actor,
+    policy, lifecycle, interfaces, constraints, or product decision is available.
+    Identify the first blocking information and confirm that no capability
+    artifact, implementation effect, default scope, or fallback policy is created.
 expected:
-  outcomes:
-    - type: task_completed
+  output_contains: [open questions, product clarification, no capability artifact]
+  output_not_contains: [ready for direct implementation, approved policy]

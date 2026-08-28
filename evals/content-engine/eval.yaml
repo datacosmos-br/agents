@@ -1,29 +1,32 @@
 name: content-engine-eval
-description: Evaluation suite for content-engine.
+description: Source-first platform-native content repurposing.
 skill: content-engine
-schemaVersion: "1.0"
-version: "1.0"
+schemaVersion: '1.0'
+version: '1.0'
 config:
   trials_per_task: 1
   timeout_seconds: 300
   parallel: false
+  max_attempts: 0
+  fail_fast: true
   executor: copilot-sdk
-  model: claude-sonnet-4.6
-metrics:
-  - name: task_completion
-    weight: 1.0
-    threshold: 0.8
-    description: Did the skill complete the assigned task?
+  model: aihub-primary
+  skill_directories:
+  - ../../skills/agent-wide/content-engine
+  required_skills:
+  - content-engine
 graders:
-  - type: code
-    name: has_output
-    config:
-      assertions:
-        - "len(output) > 0"
-  - type: text
-    name: relevant_content
-    config:
-      regex_match:
-        - "(?i)(explain|describe|analyze|implement)"
+- type: prompt
+  name: content-engine-contract
+  config:
+    prompt: |-
+      Grade the content-engine response. Pass only when every platform draft is grounded in the supplied demo,
+      carries one concrete claim, adapts structure rather than persona, and uses
+      the eight-to-two workflow plus visible proof accurately without duplicating
+      copy. Reject hype, engagement bait, invented metrics, generic formulas,
+      reduced campaigns after missing preflight input, or generic-voice fallback.
+- type: behavior
+  name: bounded_execution
+  config: {max_duration_ms: 240000}
 tasks:
-  - "tasks/*.yaml"
+- tasks/*.yaml

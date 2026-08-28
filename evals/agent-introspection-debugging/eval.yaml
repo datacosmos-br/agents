@@ -1,29 +1,35 @@
 name: agent-introspection-debugging-eval
-description: Evaluation suite for agent-introspection-debugging.
+description: Agent-loop failure capture, diagnosis, and contained recovery.
 skill: agent-introspection-debugging
-schemaVersion: "1.0"
-version: "1.0"
+schemaVersion: '1.0'
+version: '1.0'
 config:
   trials_per_task: 1
   timeout_seconds: 300
   parallel: false
+  max_attempts: 0
+  fail_fast: true
   executor: copilot-sdk
-  model: claude-sonnet-4.6
-metrics:
-  - name: task_completion
-    weight: 1.0
-    threshold: 0.8
-    description: Did the skill complete the assigned task?
+  model: aihub-primary
+  skill_directories:
+  - ../../skills/agent-wide/agent-introspection-debugging
+  required_skills:
+  - agent-introspection-debugging
 graders:
-  - type: code
-    name: has_output
-    config:
-      assertions:
-        - "len(output) > 0"
-  - type: text
-    name: relevant_content
-    config:
-      regex_match:
-        - "(?i)(explain|describe|analyze|implement)"
+- type: prompt
+  name: agent-introspection-debugging-contract
+  config:
+    prompt: |-
+      Grade the agent-introspection-debugging response. Pass only when it captures the concrete repeated failure,
+      forms a falsifiable root-cause hypothesis from the supplied session log,
+      chooses one contained discriminating check, and reports the result without
+      pretending to reset hidden state. For missing evidence, require the first
+      causal failure and an explicit statement that no recovery effect occurred.
+      Reject repeated attempts, alternate checks, and generic debugging.
+      Any preventive follow-up must come only after the current failure and its
+      attributable effects are resolved.
+- type: behavior
+  name: bounded_execution
+  config: {max_duration_ms: 240000}
 tasks:
-  - "tasks/*.yaml"
+- tasks/*.yaml

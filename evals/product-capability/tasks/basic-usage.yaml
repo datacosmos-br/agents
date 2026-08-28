@@ -1,16 +1,15 @@
-id: basic-usage-001
-name: Basic Usage
-description: |
-  Test that the skill handles a typical request correctly.
-tags:
-  - basic
-  - happy-path
+id: product-capability-export-001
+name: Define an audit-export capability
+description: Exercise product intent, capability contracts, and requirement boundaries.
+tags: [product, capability, contract, happy-path]
 inputs:
-  prompt: "Help me with this task"
+  prompt: |
+    Turn operator-export.md into a capability contract. Separate the user-visible
+    promise from implementation choices, capture ownership and lifecycle rules,
+    preserve the stated non-goals, expose unresolved decisions, and state whether
+    engineering can implement it now. Name the project-owned product-context
+    artifact rather than inventing a storage path.
   files:
-    - path: sample.py
+  - path: operator-export.md
 expected:
-  output_contains:
-    - "function"
-  outcomes:
-    - type: task_completed
+  output_contains: [operator, draft audits, retention]

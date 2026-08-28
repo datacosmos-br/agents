@@ -1,13 +1,8 @@
-id: should-not-trigger-001
-name: Should Not Trigger
-description: |
-  Test that the skill does NOT activate on unrelated prompts.
-  This validates trigger specificity.
-tags:
-  - anti-trigger
-  - negative-test
+id: verification-loop-negative-001
+name: Define a scientific term
+description: Do not manufacture gate evidence for an explanatory question.
+tags: [anti-trigger]
 inputs:
-  prompt: "What is the weather today?"
+  prompt: Define photosynthesis in one sentence for a twelve-year-old.
 expected:
-  output_not_contains:
-    - "skill activated"
+  output_not_contains: [make check, exit code, verification gate, fallback verification]

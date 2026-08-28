@@ -1,11 +1,12 @@
-id: edge-case-001
-name: Edge Case - Empty Input
-description: |
-  Test that the skill handles edge cases gracefully.
-tags:
-  - edge-case
+id: agent-introspection-debugging-edge-001
+name: Refuse a diagnosis without failure state
+description: Separate missing evidence from a demonstrated agent root cause.
+tags: [agent-introspection-debugging, edge-case]
 inputs:
-  prompt: ""
+  prompt: >-
+    Diagnose why an agent failed and apply recovery. No objective, error,
+    transcript, tool call, environment state, or last successful step is
+    available. State the minimum capture required before choosing a cause.
 expected:
-  outcomes:
-    - type: task_completed
+  output_contains: [failure evidence, last failed tool, no recovery action]
+  output_not_contains: [reset agent state, 'Root cause: context overflow', try another check]

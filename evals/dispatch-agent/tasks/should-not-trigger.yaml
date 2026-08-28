@@ -1,13 +1,13 @@
-id: should-not-trigger-001
-name: Should Not Trigger
-description: |
-  Test that the skill does NOT activate on unrelated prompts.
-  This validates trigger specificity.
+id: dispatch-agent-should-not-trigger-001
+name: Answer a local syntax question directly
+description: A bounded factual answer does not require delegation.
 tags:
-  - anti-trigger
-  - negative-test
+- anti-trigger
+- negative-test
 inputs:
-  prompt: "What is the weather today?"
+  prompt: Explain in one sentence what Python's pathlib.Path.resolve does.
 expected:
   output_not_contains:
-    - "skill activated"
+  - Recommended agent
+  - Hand-off prompt
+  - delegation decision

@@ -1,16 +1,14 @@
-id: basic-usage-001
-name: Basic Usage
-description: |
-  Test that the skill handles a typical request correctly.
-tags:
-  - basic
-  - happy-path
+id: security-review-shell-001
+name: Triage a command-injection finding
+description: Correct a security finding at its attack-surface owner and assess dependency risk.
+tags: [security-findings, attack-surfaces, dependency-risk, scanner, remediation, happy-path]
 inputs:
-  prompt: "Help me with this task"
+  prompt: Review scanner-finding.md with the newest released scanner, distinguish
+    its confirmed command-injection attack surface from the clean dependency-risk
+    result, and provide the owner-level correction plus causal runtime,
+    zero-effect, and zero-residue closure evidence. Treat every scanner diagnostic
+    as blocking; do not downgrade, suppress the rule, or use keyring.
   files:
-    - path: sample.py
+  - path: scanner-finding.md
 expected:
-  output_contains:
-    - "function"
-  outcomes:
-    - type: task_completed
+  output_contains: [Exporter.render, argument vector, dependency, make security, zero effects, blocking]

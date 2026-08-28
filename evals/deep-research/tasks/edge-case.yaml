@@ -1,11 +1,15 @@
-id: edge-case-001
-name: Edge Case - Empty Input
-description: |
-  Test that the skill handles edge cases gracefully.
+id: deep-research-fail-closed-001
+name: Research request without a question
+description: Require a research objective before searching or synthesizing claims.
 tags:
-  - edge-case
+- edge-case
 inputs:
-  prompt: ""
+  prompt: Do deep research, but no topic, decision, audience, or source scope was supplied.
 expected:
-  outcomes:
-    - type: task_completed
+  output_contains:
+  - research question is required
+  - intended decision is required
+  - no search executed
+  output_not_contains:
+  - According to the sources
+  - Executive Summary

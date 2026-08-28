@@ -1,13 +1,10 @@
-id: should-not-trigger-001
-name: Should Not Trigger
-description: |
-  Test that the skill does NOT activate on unrelated prompts.
-  This validates trigger specificity.
-tags:
-  - anti-trigger
-  - negative-test
+id: sprint-closure-negative-001
+name: Summarize a daily stand-up
+description: Do not run increment closure for a status-note request.
+tags: [anti-trigger]
 inputs:
-  prompt: "What is the weather today?"
+  prompt: |
+    Turn these three stand-up notes into one sentence: reviewed logs, paired on
+    tests, meeting at 3 PM.
 expected:
-  output_not_contains:
-    - "skill activated"
+  output_not_contains: [residue set, PR merged, tracker closed, closure workflow activated]

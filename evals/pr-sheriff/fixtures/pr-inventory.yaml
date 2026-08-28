@@ -1,0 +1,27 @@
+repository: datacosmos-br/agents
+integration_branch: dev
+runtime:
+  gascity: suspended
+  tracker: suspended
+pull_requests:
+  - number: 14
+    diff: unique
+    checks: green
+    review: approved
+    unresolved_threads: 0
+    merge_state: clean
+    tip_reachable_from_integration: false
+  - number: 15
+    diff: unique
+    checks: failing
+    review: changes_requested
+    unresolved_threads: 2
+    merge_state: blocked
+    tip_reachable_from_integration: false
+  - number: 16
+    diff: duplicate
+    checks: green
+    review: approved
+    unresolved_threads: 0
+    merge_state: clean
+    tip_reachable_from_integration: true

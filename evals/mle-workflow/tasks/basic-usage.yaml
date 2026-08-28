@@ -1,16 +1,10 @@
-id: basic-usage-001
-name: Basic Usage
-description: |
-  Test that the skill handles a typical request correctly.
-tags:
-  - basic
-  - happy-path
+id: mle-workflow-leakage-contract-001
+name: Verify a material point-in-time churn artifact
+description: Prove a production ML lifecycle from observed experiment, artifact, runtime, and rollback evidence.
+tags: [machine-learning, training, evaluation, serving, monitoring, reproducibility, happy-path]
 inputs:
-  prompt: "Help me with this task"
+  prompt: Review training-spec.yaml as a machine-learning engineering workflow spanning the model lifecycle and production operations. Verify the valid point-in-time contract, confirm the future candidate was rejected before effects, compare the observed baseline and model evidence, and report the exact artifact, serving, monitoring, and rollback proof without inventing results.
   files:
-    - path: sample.py
+  - path: training-spec.yaml
 expected:
-  output_contains:
-    - "function"
-  outcomes:
-    - type: task_completed
+  output_contains: [outcome_30d, rejected before training, temporal split, baseline-v1, retention-model-v17, rollback]

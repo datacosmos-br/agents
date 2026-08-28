@@ -1,29 +1,32 @@
 name: article-writing-eval
-description: Evaluation suite for article-writing.
+description: Source-backed long-form technical writing.
 skill: article-writing
-schemaVersion: "1.0"
-version: "1.0"
+schemaVersion: '1.0'
+version: '1.0'
 config:
   trials_per_task: 1
   timeout_seconds: 300
   parallel: false
+  max_attempts: 0
+  fail_fast: true
   executor: copilot-sdk
-  model: claude-sonnet-4.6
-metrics:
-  - name: task_completion
-    weight: 1.0
-    threshold: 0.8
-    description: Did the skill complete the assigned task?
+  model: aihub-primary
+  skill_directories:
+  - ../../skills/agent-wide/article-writing
+  required_skills:
+  - article-writing
 graders:
-  - type: code
-    name: has_output
-    config:
-      assertions:
-        - "len(output) > 0"
-  - type: text
-    name: relevant_content
-    config:
-      regex_match:
-        - "(?i)(explain|describe|analyze|implement)"
+- type: prompt
+  name: article-writing-contract
+  config:
+    prompt: |-
+      Grade the article-writing response. Pass only when the article leads with the supplied benchmark, explains
+      the concrete cache mechanism accurately, keeps one useful job per section,
+      and limits claims to the release-note evidence. Reject generic AI framing,
+      hype, invented customers, filler conclusions, unsupported numbers, or a
+      partial article after a required source fails preflight.
+- type: behavior
+  name: bounded_execution
+  config: {max_duration_ms: 240000}
 tasks:
-  - "tasks/*.yaml"
+- tasks/*.yaml

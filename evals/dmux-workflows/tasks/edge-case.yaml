@@ -1,11 +1,15 @@
-id: edge-case-001
-name: Edge Case - Empty Input
-description: |
-  Test that the skill handles edge cases gracefully.
+id: dmux-workflows-fail-closed-001
+name: Overlapping writes under suspended isolation
+description: Reject parallel writers that share files without declared isolation.
 tags:
-  - edge-case
+- edge-case
 inputs:
-  prompt: ""
+  prompt: Start two dmux panes that both edit src/auth.py now; no isolated runs exist and the orchestration runtime is suspended.
 expected:
-  outcomes:
-    - type: task_completed
+  output_contains:
+  - overlapping ownership
+  - read-only analysis only
+  - no panes created
+  output_not_contains:
+  - Pane 1 (Writer)
+  - panes started

@@ -1,29 +1,35 @@
 name: openspec-verify-change-eval
-description: Evaluation suite for openspec-verify-change.
+description: Evidence-mapped OpenSpec completeness, correctness, and coherence review.
 skill: openspec-verify-change
-schemaVersion: "1.0"
-version: "1.0"
+schemaVersion: '1.0'
+version: '1.0'
 config:
   trials_per_task: 1
   timeout_seconds: 300
   parallel: false
+  max_attempts: 0
+  fail_fast: true
   executor: copilot-sdk
-  model: claude-sonnet-4.6
-metrics:
-  - name: task_completion
-    weight: 1.0
-    threshold: 0.8
-    description: Did the skill complete the assigned task?
+  model: aihub-primary
+  skill_directories:
+  - ../../skills/tool/openspec-verify-change
+  required_skills:
+  - openspec-verify-change
 graders:
-  - type: code
-    name: has_output
-    config:
-      assertions:
-        - "len(output) > 0"
-  - type: text
-    name: relevant_content
-    config:
-      regex_match:
-        - "(?i)(explain|describe|analyze|implement)"
+- type: prompt
+  name: openspec-verify-change-contract
+  config:
+    prompt: |-
+      Grade the openspec-verify-change response. Pass only when it verifies the
+      explicitly selected change, walks requirements in declared order, maps the
+      proven prefix to exact implementation and project-native test evidence,
+      checks accepted design coherence, and stops at the first missing item as a
+      blocking failure. Reject keyword-only conformance, inferred target
+      selection, warnings/findings/suggestions, aggregation after the first
+      defect, artifact mutation, task edits, or a partial verified claim.
+- type: behavior
+  name: bounded_execution
+  config:
+    max_duration_ms: 240000
 tasks:
-  - "tasks/*.yaml"
+- tasks/*.yaml
