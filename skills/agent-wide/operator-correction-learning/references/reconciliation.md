@@ -5,6 +5,9 @@
 Extract the prohibited behavior, required replacement, scope, authority, and
 failure prevented. Search active law, skills, decisions, templates, generated
 surfaces, and current work for both the replacement and its semantic opposites.
+Complete and validate that inventory before the first write. A missing owner,
+consumer, authority fact, evidence surface, or required gate stops the workflow
+without changing any owner, consumer, or ledger entry.
 
 Determine tracker mode from the active repository instructions before any
 tracker action:
@@ -28,12 +31,16 @@ must not create a dual-tracking period.
 2. Resolve precedence. A newer operator rule replaces conflicting lower or older
    guidance. Two current operator rules that materially conflict require one
    precise question before mutation.
-3. Change canonical owners, not projections. Regenerate managed consumers through
-   their owner. Preserve decision history by superseding it explicitly.
+3. Change canonical owners and every affected consumer as one atomic cutover,
+   not projections. Regenerate managed consumers through their owner. Preserve
+   decision history by superseding it explicitly.
 4. Remove every opposing active instruction in scope. Do not retain compatibility
    notes, soften absolute language, or leave old and new behavior coexisting.
-5. Run owner-native document, skill, projection, and runtime gates, then repeat
-   the contradiction search.
+5. Run owner-native document, skill, projection, and runtime gates. The first
+   causal failure stops that invocation. Correct its owner and rerun every
+   invalidated gate in the same reconciliation; never repeat unchanged,
+   substitute a gate, publish partial evidence, or hand the red state off. Then
+   repeat the contradiction search and require zero active opposites.
 6. Preserve command, working directory, exit code, decisive output, unresolved
    boundary, and next action in the repository-declared manual ledger and
    canonical Git/PR evidence when tracking is suspended.

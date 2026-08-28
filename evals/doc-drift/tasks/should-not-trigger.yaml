@@ -11,3 +11,4 @@ expected:
   - canonical owner
   - contract drift
   - contradiction search
+  - drift workflow activated

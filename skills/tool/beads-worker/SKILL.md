@@ -2,39 +2,28 @@
 name: beads-worker
 description: 'beads execution, scoped work, tracker workflow'
 metadata:
-  aihub.tags: '["activation:opt-in","detect:opt-in:beads-worker","provenance:agents-owned","route:agent","tool:beads","updates:manual","usage:router"]'
+  aihub.tags: '["activation:opt-in","detect:opt-in:beads-worker","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:no-keyring","policy:preflight-before-effects","policy:required-environment","policy:strict-execution","policy:zero-residue","provenance:agents-owned","route:agent","tool:beads","updates:manual","usage:router"]'
 ---
 
 # Beads Worker
 
-## Authority
+Activate only for a currently assigned implementation slice. Semantic graph
+changes, reassignment, merge, and issue closure remain owner operations.
 
-See `UNIVERSAL_CORE`; `governance/rules` §Execution / §Continuous-Green / §Evidence. Not restated here.
+Before editing, verify from current evidence the issue identity and revision,
+assignment, unblocked dependencies, exact file scope, existing checkout and
+branch, acceptance contract, integration target, and required gates. A foreign,
+stale, ambiguous, or blocked assignment stops before effects.
 
-## Before Claiming
+Execute only the assigned slice through repository owners. Preserve concurrent
+work, eliminate superseded code and rewired-consumer residue, and propagate the
+first command or gate failure unchanged. Correct an in-scope owner and rerun the
+invalidated native path; do not repeat unchanged, switch execution paths,
+normalize red evidence, or perform a tracker mutation. Owner-only work remains
+active in the same issue and is handed to that owner, never treated as closure.
 
-1. Only beads assigned or handed by orch. `bd show`: read NOTES; continue from evidence.
-2. Skip blocked (`bd blocked`); verify moved-DB blockers.
-3. One bead, one path scope in the **shared** epic/feature worktree (never per-agent worktree).
-
-## During
-
-- SHORT ATOMIC CYCLES: one bounded outcome; commit + push + Bead evidence; validator PASS before orch integrates.
-- ZERO-RED: never commit/push/handoff with lint/type errors in scope — fix in-cycle.
-- COOPERATIVE FIX-FORWARD: adopt concurrent useful hunks; never clobber or revert other lanes.
-- Evidence: `bd update <id> --append-notes "<date> <slice>: cmd=… cwd=… exit=… decisive=… not-verified=…"`
-- File discovered work immediately (`-t discovered-from`). Living docs in the same change.
-
-## Conflict Escalation
-
-Re-parented/blocked/foreign claim → stop, re-read, confirm with orch. Overlapping PRs → serialize via orch. Duplicates → link; orch dedupes. Unresolvable → one precise question with both states.
-
-## Closure Path
-
-Report `READY_FOR_REVIEW`, `NEEDS_FIX`, or `BLOCKED` with branch, SHA, diffstat, gates, real-use, PR/CI, risks. Push + PR. Merge/close/rollout = orch only.
-
-Leave ZERO residue for your Bead: superseded code deleted, all consumers and tests rewired, no shim. A Bead whose increment cannot close because of your slice is NOT `READY_FOR_REVIEW`. See `verification/closure`.
-
-## Context Budget
-
-Load: UNIVERSAL_CORE + governance/rules + this skill + project AGENTS (+ provider domain law when marker active).
+During tracker suspension, do not invoke or replace Beads. Record evidence in
+the repository's declared manual ledger. Handoff must state issue, branch, SHA,
+scoped files, exact command/exit/decisive output, PR and integration evidence,
+residue, and unverified owner-only work. Report ready for review only when the
+slice itself is validated and residue-free; never infer merge or closure.

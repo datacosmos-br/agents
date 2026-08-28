@@ -5,5 +5,5 @@ tags: [closure, fail-closed]
 inputs:
   prompt: Declare an increment done because local tests pass, although its PR remains open, the tracker item is in progress, and the behavior has not run on the integration branch.
 expected:
-  output_contains: [not closed, open PR]
-  output_not_contains: [increment is DONE, residue set is empty]
+  output_contains: [not closed, open PR, correct, revalidate, zero closure effects]
+  output_not_contains: [increment is DONE, next increment, residue set is empty, fallback, tracker closed]

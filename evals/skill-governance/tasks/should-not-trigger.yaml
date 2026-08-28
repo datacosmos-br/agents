@@ -6,4 +6,4 @@ inputs:
   prompt: |
     Rewrite this résumé bullet with a measurable result: “Helped improve build speed.”
 expected:
-  output_not_contains: [SKILL.md, skill directory, frontmatter]
+  output_not_contains: [SKILL.md, skill directory, frontmatter, fallback skill]

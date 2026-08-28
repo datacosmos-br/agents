@@ -3,7 +3,7 @@ name: anti-phase-skip
 description: 'phase lifecycle, runtime validation, integration closure'
 license: MIT
 metadata:
-  aihub.tags: '["provenance:agents-owned","role:governance","updates:manual","usage:router"]'
+  aihub.tags: '["policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","policy:zero-residue","provenance:agents-owned","role:governance","updates:manual","usage:router"]'
   version: 1.0.0
 ---
 
@@ -22,6 +22,8 @@ zero residue, and canonical tracker closure all have fresh evidence. Missing one
 step keeps the same phase open.
 
 Only an explicit operator decision may pause, reorder, or replace a phase. A
-blocked phase must be reported loudly in the final response; it may never be
-renamed as completed. A manual ledger records the open state during tracker
-suspension but cannot replace canonical tracker closure.
+failed check, actionable review, open PR, pending approval, or merge conflict is
+work inside the phase: fix, publish, revalidate, and continue through landing.
+Report and request help only after every authorized correction is exhausted and
+the remaining condition is external or requires new authority. A manual ledger
+records open state during tracker suspension but cannot replace closure.

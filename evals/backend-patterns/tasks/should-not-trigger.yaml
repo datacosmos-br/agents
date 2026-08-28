@@ -7,4 +7,4 @@ inputs:
     Decide whether a public collection URL should be /team-member or
     /team-members. No server implementation or database change is requested.
 expected:
-  output_not_contains: [repository layer, database index, Redis cache]
+  output_not_contains: [repository layer, database index, Redis cache, backend workflow]

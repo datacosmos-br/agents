@@ -44,7 +44,9 @@ Complete these steps in order, repeating invalidated evidence after every edit:
 6. Commit the exact phase scope, push normally, and open or update a PR against
    the configured integration branch. Resolve every review thread and required
    check, obtain the required independent approval, and merge through the
-   approved merge strategy.
+   approved merge strategy. Each red check or actionable review finding starts
+   another owner-correction, publish, and invalidated-gate cycle inside this same
+   phase; it never terminates the phase or authorizes another task.
 7. Update the integration checkout to the merged SHA. Run the real public runtime
    and closure gates again on that SHA, not on the feature branch artifact.
 8. Prove zero phase residue: no dead or compatibility code, stale projection,
@@ -64,10 +66,12 @@ an alternate runtime or declare tests equivalent.
 
 ## Blocking and suspension
 
-If an authorized external dependency prevents a cycle step, keep the phase open.
-Report the exact command, working directory, exit code, decisive output, impact,
-and required owner action as a prominent warning or blocker. Do not switch tasks
-unless the operator explicitly pauses or reorders the phase.
+An ordinary gate failure is not an external blocker: stop that invocation, fix
+its root cause at the owner, and rerun from the invalidated stage. If an
+authorized external dependency or independent approval remains unavailable only
+after every technical action is exhausted, keep the phase active, report the
+exact evidence, and request the required owner/operator action. Do not switch
+tasks unless the operator explicitly pauses or reorders the phase.
 
 When the canonical tracker is explicitly suspended, do not invoke it or create
 an alternate database. Update the repository-declared manual ledger after each

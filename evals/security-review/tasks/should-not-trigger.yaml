@@ -3,6 +3,6 @@ name: Summarize a historical novel
 description: Avoid scanner workflow for unrelated literary content.
 tags: [anti-trigger]
 inputs:
-  prompt: Summarize the central conflict of A Tale of Two Cities in two sentences.
+  prompt: Summarize the central conflict of A Tale of Two Cities in two sentences. Do not activate or fall back to a security workflow.
 expected:
-  output_not_contains: [Semgrep, secret scanner, vulnerability triage]
+  output_not_contains: [Semgrep, secret scanner, vulnerability triage, fallback security review]

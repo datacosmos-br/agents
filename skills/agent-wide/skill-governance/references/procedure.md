@@ -8,6 +8,10 @@
 3. Extend or compose the existing owner when its contract already covers the
    request. Similar wording is not a distinct capability.
 
+Complete catalog, ownership, capability, path, and validation discovery before
+the first bundle write. A missing or conflicting prerequisite stops creation;
+never create a provisional identity or local fallback.
+
 ## Bundle contract
 
 Create one kebab-case directory containing a compact `SKILL.md` router. Its
@@ -32,12 +36,21 @@ a behavior duration strictly below executor timeout. Task IDs and prompts are
 globally unique. A generic fixture, copied frontmatter prompt, non-empty “empty”
 case, or `task_completed` without proof is invalid.
 
+Create or update the router, supporting resources, and all three semantic eval
+roles as one atomic bundle change. Do not publish a router with partial evals.
+
 ## Validation
 
 Run the repository's canonical skill validator, official Waza spec coverage gate,
 focused tests, and projection fixed-point check. If the new skill changes a public
 catalog or projection contract, regenerate through its owner and migrate all
 consumers in the same change.
+
+The first causal gate failure stops that validation invocation. Correct the
+bundle owner and rerun every invalidated gate before publishing; never repeat an
+unchanged command, substitute a gate, publish partial evidence, or hand off a
+failed scaffold. Require zero duplicate identity, compatibility router,
+placeholder, and superseded consumer residue.
 
 ## Boundaries
 

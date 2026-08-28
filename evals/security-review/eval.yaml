@@ -21,8 +21,12 @@ graders:
       Grade the security-review response. Pass only when it reproduces the named
       finding, traces it to Exporter.render, replaces shell interpretation with
       the existing argument-vector primitive, and requires fresh make security
-      plus runtime evidence. Reject ignores, risk acceptance, hardcoded input,
-      shell escaping wrappers, or a green claim without scanner output.
+      plus runtime evidence. It must distinguish the confirmed attack surface
+      from the supplied dependency-risk evidence, use process-environment
+      credentials only if required, preserve causal command failure, and prove
+      zero effects and zero residue. Reject keyring, profiles, aliases, alternate
+      providers, ignores, risk acceptance, hardcoded input, shell escaping
+      wrappers, retries, or a green claim without scanner output.
 - type: behavior
   name: bounded_execution
   config: {max_duration_ms: 240000}

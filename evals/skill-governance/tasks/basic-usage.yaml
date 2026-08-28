@@ -1,10 +1,13 @@
 id: skill-governance-schema-diff-001
 name: Design one missing schema-diff skill
-description: Create a compact router for a proven recurring workflow.
-tags: [skills, authoring, governance, happy-path]
+description: Exercise skill authoring, bundle governance, and semantic evaluation.
+tags: [skill-authoring, bundle-governance, semantic-evaluation, happy-path]
 inputs:
-  prompt: Use capability-inventory.md to design the minimal canonical skill bundle and its validation contract.
+  prompt: Use capability-inventory.md for governed skill authoring. Prove the
+    capability is absent, design the minimal canonical bundle, and define its
+    three-role semantic evaluation plus validation and zero-residue contract.
   files:
   - path: capability-inventory.md
 expected:
-  output_contains: [schema-diff, SKILL.md, references]
+  output_contains: [schema-diff, SKILL.md, references, three, atomic]
+  output_not_contains: [provisional skill, fallback router, partial eval]

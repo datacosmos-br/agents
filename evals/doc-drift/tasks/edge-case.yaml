@@ -9,6 +9,8 @@ expected:
   output_contains:
   - canonical owner is required
   - replacement command cannot be inferred
+  - zero effects
   output_not_contains:
   - replace with tool done
   - documentation converged
+  - document updated

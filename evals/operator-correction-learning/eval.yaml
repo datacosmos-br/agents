@@ -24,7 +24,9 @@ graders:
       repository manual ledger plus canonical Git, PR, review, and CI evidence;
       updates canonical owners rather than projections; removes semantic
       opposites; repeats contradiction search; and keeps canonical tracker
-      closure unavailable. Reject tracker/Gas City invocation, a stale or
+      closure unavailable. A red correction gate must drive an owner fix and
+      fresh validation in the same reconciliation, never a report-and-abandon
+      handoff. Reject tracker/Gas City invocation, a stale or
       missing manual ledger, inferred preferences, dual guidance, or a DONE
       claim.
 - type: behavior

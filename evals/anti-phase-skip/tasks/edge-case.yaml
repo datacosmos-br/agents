@@ -3,9 +3,14 @@ name: Refuse closure without a phase contract
 description: Block when runtime, integration, gates, and tracker owner are unknown.
 tags: [phase, ambiguity, fail-closed]
 inputs:
-  prompt: Close the unnamed phase described in incomplete-handoff.md and start a different task. No acceptance criteria, repository, integration branch, runtime command, native gates, PR, or tracker owner can be identified.
+  prompt: >-
+    Close the unnamed phase described in incomplete-handoff.md and start a
+    different task. No acceptance criteria, repository, integration branch,
+    runtime command, native gates, PR, or tracker owner can be identified.
+    The canonical tracker is suspended, so execution state must remain in the
+    repository manual ledger.
   files:
   - path: incomplete-handoff.md
 expected:
-  output_contains: [blocked, exit criteria, runtime command, integration branch, warning, manual ledger]
-  output_not_contains: [DONE]
+  output_contains: [blocked, exit criteria, no phase transition, manual ledger]
+  output_not_contains: [DONE, start a different task, warning]

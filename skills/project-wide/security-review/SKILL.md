@@ -2,32 +2,38 @@
 name: security-review
 description: 'security findings, attack surfaces, dependency risk'
 metadata:
-  aihub.tags: '["provenance:agents-owned","role:security","updates:manual","usage:on-demand"]'
+  aihub.tags: '["policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:no-keyring","policy:preflight-before-effects","policy:required-environment","policy:strict-execution","policy:zero-residue","provenance:agents-owned","role:security","updates:manual","usage:on-demand"]'
 ---
 
-# Security review
+# Security Review
 
-Activate for credentials, authentication, authorization, external input,
-dependencies, containers, persistence, network boundaries, and scanner output.
+Activate for credentials, authentication, authorization, untrusted input,
+dependencies, containers, persistence, network boundaries, or scanner output.
 
 ## Procedure
 
-1. Read project governance and discover its security-triage owner and reports.
-2. Run the project's declared security status or triage surface to expose
-   incomplete tracking before implementation. A missing declared surface is red.
-3. Reproduce every finding with the project's canonical Semgrep, Snyk,
-   secret-scanning, dependency, and language gates.
-4. Trace the finding to its owner configuration or primitive. Correct it there,
-   regenerate projections, and remove the obsolete implementation completely.
-5. Record the tracker, decision, and exact command evidence in the source report, then
-   rerun the scanner and runtime path.
+1. Resolve project governance, security-triage owner, exact target, current
+   scanner configuration, non-derivable external process inputs, runtime path,
+   and native security gate before any edit or scan side effect. Owner-calculated
+   defaults require no environment variable, setting, parameter, or argument.
+   Missing or invalid required credentials raise immediately; credentials come
+   only from the current process environment. Keyring, `secret-tool`, profiles,
+   aliases, and credential/provider alternatives are prohibited.
+2. Reproduce the named defect through the declared owner. Preserve the first
+   scanner, child-process, timeout, signal, or runtime failure and its causal
+   chain; never convert it to a finding summary, warning, skip, retry, or success.
+3. Trace input, trust boundary, operation, dependency, and affected consumer to
+   the canonical configuration or primitive. A suppression requires technical
+   proof that the reported data flow cannot occur; risk acceptance is not a fix.
+4. Correct the owner, regenerate owned projections, rewire all consumers, and
+   remove the vulnerable or obsolete path atomically. Do not add escaping
+   wrappers, hardcoded values, fallback providers, compatibility paths, or
+   partial publication.
+5. Rerun the reproducer, public runtime, and declared security gates. Record exact
+   command, exit status, decisive output, corrected owner, affected consumers,
+   and residue search. Completion requires material runtime proof, zero effects
+   on failure, and no suppression or superseded path.
 
-All severities block closure. Only a technically demonstrated false positive is
-a valid alternative to correction. Risk acceptance, ignores, wrappers,
-fallbacks, hardcoded values, stubs, `|| true`, and success without fresh command
-output are forbidden.
-
-Credentials must flow automatically and directly from the authorized system
-keyring integration. Containers must run non-root; dependency automation uses a
-rolling seven-day cooldown; interpreter-bound input uses the owner's validation
-and escaping primitive.
+Review one ordered defect at a time. Correct and revalidate the first unclosed
+defect before advancing; reporting it never closes or transfers the review. Do
+not claim the remaining surface clean without executing its declared gates.

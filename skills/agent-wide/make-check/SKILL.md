@@ -3,7 +3,7 @@ name: make-check
 description: 'native gates, project validation, command discovery'
 license: MIT
 metadata:
-  aihub.tags: '["provenance:agents-owned","role:verification","updates:manual","usage:router"]'
+  aihub.tags: '["policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","provenance:agents-owned","role:verification","updates:manual","usage:router"]'
   version: 2.0.0
 ---
 
@@ -20,8 +20,10 @@ test, lint, format, generation, security, or release commands.
 3. Exercise the real runtime before tests when behavior changes.
 4. Run the chosen target and record working directory, exit code, decisive output,
    covered scope, and warnings.
-5. If the target, dependency, or tool is missing or broken, fix its canonical
-   owner; never substitute a raw command to produce a green result.
+5. If a required target, dependency, or tool is missing or broken, stop that
+   invocation, correct its canonical owner, and rerun the native target. Keep the
+   same task active; request authority only when the required owner is materially
+   outside the approved scope. Never substitute a raw command.
 
 ## Rules
 

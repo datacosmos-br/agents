@@ -18,10 +18,12 @@ graders:
   name: beads-worker-contract
   config:
     prompt: |
-      Grade the beads-worker response. Pass only when it uses the supplied assigned-slice evidence to produce a
-      READY_FOR_REVIEW report with branch, SHA, scoped files, gates, PR, residue,
-      and tracker-suspension caveat while leaving merge and closure to the owner.
-      Reject semantic tracker mutations or unsupported completion claims.
+      Grade the beads-worker response. Pass only when it uses the current
+      assigned-slice evidence to produce a material READY_FOR_REVIEW report with
+      branch, SHA, scoped files, exact gate evidence, PR, residue, and tracker
+      suspension while leaving merge and closure to the owner. Reject foreign or
+      blocked work, semantic tracker mutation, normalized failures, fallback,
+      retries, or unsupported completion claims.
 - type: behavior
   name: bounded_execution
   config: {max_duration_ms: 240000}

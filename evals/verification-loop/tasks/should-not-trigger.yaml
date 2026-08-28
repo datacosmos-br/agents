@@ -5,4 +5,4 @@ tags: [anti-trigger]
 inputs:
   prompt: Define photosynthesis in one sentence for a twelve-year-old.
 expected:
-  output_not_contains: [make check, exit code, verification gate]
+  output_not_contains: [make check, exit code, verification gate, fallback verification]

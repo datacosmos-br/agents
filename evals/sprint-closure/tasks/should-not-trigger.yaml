@@ -7,4 +7,4 @@ inputs:
     Turn these three stand-up notes into one sentence: reviewed logs, paired on
     tests, meeting at 3 PM.
 expected:
-  output_not_contains: [residue set, PR merged, tracker closed]
+  output_not_contains: [residue set, PR merged, tracker closed, closure workflow activated]

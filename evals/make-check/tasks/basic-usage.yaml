@@ -1,9 +1,12 @@
 id: make-check-scoped-gates-001
 name: Select scoped lint and format gates
-description: Choose the declared fast path for one changed Python file.
-tags: [make, gates, validation, happy-path]
+description: Use command discovery to select native gates for project validation.
+tags: [make, native-gates, project-validation, command-discovery, happy-path]
 inputs:
-  prompt: Find the declared Make validation targets before running any check, test, lint, format, or build command. For a change limited to src/widget.py, select the exact scoped lint-and-format command from Makefile and state the evidence required for green.
+  prompt: Perform command discovery from the supplied Makefile, then select its
+    declared native gates for project validation. For a change limited to
+    src/widget.py, return the exact scoped lint-and-format command and the evidence
+    required for green; do not execute it or substitute a raw tool command.
   files:
   - path: Makefile
 expected:

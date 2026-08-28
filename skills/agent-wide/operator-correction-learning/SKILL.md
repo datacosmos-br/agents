@@ -2,7 +2,7 @@
 name: operator-correction-learning
 description: 'operator corrections, durable governance, authority reconciliation'
 metadata:
-  aihub.tags: '["provenance:agents-owned","role:governance","updates:manual","usage:router"]'
+  aihub.tags: '["policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","policy:zero-residue","provenance:agents-owned","role:governance","updates:manual","usage:router"]'
 ---
 
 # Operator Correction Learning

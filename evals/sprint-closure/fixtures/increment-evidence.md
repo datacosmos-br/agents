@@ -1,7 +1,7 @@
 # Increment evidence
 
 - Integration SHA: `7ac912e` on `dev`.
-- Runtime: `agentsctl validate`, exit 0, `PASS: 76 skills validated`.
+- Runtime: `agentsctl check`, exit 0, `PASS: 76 skills validated`.
 - Native gates: exit 0, zero warnings.
 - Residue audit: zero dead or compatibility code; all consumers and tests use
   the new contract; no increment worktree remains.

@@ -7,5 +7,5 @@ inputs:
     Implement issue ag-310 now. It is assigned to worker-9, has an open blocker,
     and no handoff or reassignment exists. State the conflict and required owner action.
 expected:
-  output_contains: [foreign claim, open blocker]
+  output_contains: [foreign claim, open blocker, no file effects]
   output_not_contains: [implementation started, changed foreign lane]

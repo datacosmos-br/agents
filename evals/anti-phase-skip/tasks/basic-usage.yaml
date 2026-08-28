@@ -7,5 +7,5 @@ inputs:
   files:
   - path: phase-state.yaml
 expected:
-  output_contains: [critical, blocked, runtime, approved PR, merged, integration SHA, tracker closure]
-  output_not_contains: [DONE, proceed to the next task]
+  output_contains: [critical, fix, revalidate, runtime, approved PR, merged, integration SHA, tracker closure]
+  output_not_contains: [DONE, proceed to the next task, report and move on]

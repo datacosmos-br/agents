@@ -1,42 +1,55 @@
-# Verification Loop
+# Verification loop procedure
 
-"Done" requires fresh, real, timestamped green — not a claim. Run the gate in
-order; any later edit invalidates earlier evidence, so re-run after changes.
+Fresh executable evidence bounds a readiness or completion claim. A command
+name, stale report, warning, skip, or successful later stage cannot replace a
+missing or failed earlier stage.
 
-## Use for
+## Preflight
 
-- Before saying a task/slice is complete.
-- Before staging, committing, or handing off a PR.
+Before executing a gate or generated-owner effect, resolve and validate:
 
-## Completion Gate
+- the exact changed behavior, paths, consumers, and claim boundary;
+- the repository's current authoritative development and public runtime
+  commands from its declared owners;
+- required environment, toolchain, fixtures, services, and credentials;
+- generated surfaces and their canonical owner;
+- the ordered gate set required for the affected scope.
 
-Stop on first red; fix at the owner.
+Do not invent selectors, options, aliases, private entry points, or direct-tool
+substitutes. A missing or conflicting prerequisite stops with zero gate effects.
 
-1. **Env/bootstrap health** — the venv and toolchain resolve.
-2. **Lint + format** — global (`make check` lint,format).
-3. **Static analysis** — `pyrefly` (baseline).
-4. **Types for changed scope** — `pyrefly` + `mypy` + `pyright` on every changed
-   file AND affected consumers (`make check CHECK_GATES=... FILES=...`).
-5. **Tests** — `make test` for changed behavior (unit + integration as relevant);
-   0 failed / 0 errors; a test >10s is a defect to fix, not to wait on.
-   Impact selection (testmon) is authoritative: a green selected run closes this
-   phase. Do NOT re-run the full suite to "double-check" a green subset —
-   that is the hand-repeat forbidden by `UNIVERSAL_CORE` Law 7. Full suite =
-   CI or explicit operator request only.
-6. **Real-artifact use** — import/run the actual surface (CLI, daemon, `from pkg
-   import ...`); static green is necessary but not sufficient.
-7. **Generated surfaces** — regenerate + prove idempotence (golden diff) if touched.
-8. **Sprint/increment closure** — at an increment boundary only: residue set EMPTY
-   (dead code, compat shims, un-rewired consumers/tests, open worktree/PR/Bead)
-   and the behavior runs on the integration lane via its real surface.
-   Procedure + binary checks: `verification/closure`. `UNIVERSAL_CORE` Law 29.
+## Ordered evidence
+
+Run each applicable owner in repository order:
+
+1. environment and bootstrap health;
+2. repository check, lint, and formatting owner;
+3. static and type analysis owner;
+4. complete affected test owner;
+5. material use through the shipped public surface;
+6. generated-owner convergence and fixed point when generated surfaces changed;
+7. zero-residue and integration evidence at an increment boundary.
+
+The first nonzero exit, timeout, signal, incomplete publication, or missing
+decisive output stops the invocation and propagates as the causal result. Do not
+catch, retry, switch tools, narrow the gate, continue to later stages, or publish
+partial green evidence. Diagnose and correct that root cause at its canonical
+owner, then rerun the failed and invalidated stages. This is a new invocation in
+the same active phase, not an unchanged retry or a handoff. Ask for help only
+when the remaining condition is external or requires authority the active task
+does not grant.
+
+Generated effects must stage on the destination filesystem, verify completely,
+and publish atomically. Cleanup may attach a secondary failure only while
+re-raising the original cause. Leave no generated or temporary residue.
 
 ## Report
 
-For each phase: command, working dir, exit code, decisive output, covered scope,
-and the exact blocker for anything not verified.
+For every attempted stage record the exact command, working directory, exit
+code, decisive output, artifact or runtime observation, timestamp where owned,
+and covered scope. Distinguish tests from public-surface proof. State the first
+failure and leave later stages unclaimed while fixing it; a report never advances
+the phase cursor.
 
-## Critical rules
-
-- Never bypass a red gate, fake a failure, or narrow the claim to hide a defect.
-- Fix the canonical owner and root cause; then re-run — evidence must be current.
+The final claim cannot exceed the common scope of the fresh evidence. Any later
+overlapping edit invalidates that evidence without converting it into a warning.

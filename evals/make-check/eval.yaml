@@ -21,8 +21,10 @@ graders:
       Grade the make-check response. Pass only when it inspects the supplied
       Makefile help contract, chooses the smallest declared native verb and
       scoped arguments for the request, and states the command/cwd/exit/output
-      evidence needed for green. Reject raw ruff, pytest, or uv invocations,
-      invented targets, destructive targets, or claims without fresh evidence.
+      evidence needed for green. A broken required owner must be corrected and
+      the native target rerun in the same task. Reject raw ruff, pytest, or uv invocations,
+      invented targets, destructive targets, claims without fresh evidence, or
+      abandoning a missing target, or an alternate validation command.
 - type: behavior
   name: bounded_execution
   config:

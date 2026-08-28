@@ -5,5 +5,5 @@ tags: [skills, fail-closed]
 inputs:
   prompt: Create a new generic debugging skill even though the catalog already declares debugging as an existing capability. No distinct recurring contract is supplied.
 expected:
-  output_contains: [existing capability, do not create]
-  output_not_contains: [mkdir skills/debugging-v2, new debugging skill]
+  output_contains: [existing capability, do not create, zero effects]
+  output_not_contains: [mkdir skills/debugging-v2, new debugging skill, fallback, scaffold created]

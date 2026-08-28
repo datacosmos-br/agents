@@ -5,9 +5,9 @@ tags: [backend-patterns, edge-case]
 inputs:
   prompt: >-
     Add Redis caching and a background queue to an unavailable backend. No hot
-    path, latency profile, consistency requirement, invalidation owner, retry
+    path, latency profile, consistency requirement, invalidation owner, failure
     contract, deployment topology, or existing framework is known. State why an
     implementation choice is blocked.
 expected:
-  output_contains: [workload evidence, invalidation owner]
-  output_not_contains: [redis.setex, npm install redis]
+  output_contains: [workload evidence, invalidation owner, zero effects]
+  output_not_contains: [redis.setex, npm install redis, cache layer created]

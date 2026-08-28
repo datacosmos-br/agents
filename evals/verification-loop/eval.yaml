@@ -22,7 +22,9 @@ graders:
       command, exit code, decisive output and scope in order, distinguishes tests
       from real-surface proof, includes generated fixed point, and limits the claim
       to the covered projection slice. Reject skipped stages, warnings, stale output,
-      or a broad done claim that exceeds the evidence.
+      broad done claims, or reporting a red result as a handoff. A failed stage
+      must stop that invocation, drive owner correction, and rerun invalidated
+      stages in the same phase without an unchanged retry or alternate gate.
 - type: behavior
   name: bounded_execution
   config: {max_duration_ms: 240000}

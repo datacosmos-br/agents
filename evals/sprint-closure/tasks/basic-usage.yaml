@@ -7,4 +7,5 @@ inputs:
   files:
   - path: increment-evidence.md
 expected:
-  output_contains: [7ac912e, PR 42, net -46]
+  output_contains: [7ac912e, PR 42, net -46, agentsctl check, zero residue]
+  output_not_contains: [agentsctl validate, deferred cleanup, partial closure]

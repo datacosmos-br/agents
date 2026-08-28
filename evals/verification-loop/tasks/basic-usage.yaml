@@ -1,10 +1,13 @@
 id: verification-loop-projection-001
 name: Audit fresh projection evidence
-description: Turn complete gate output into a bounded verification record.
-tags: [verification, evidence, completion, happy-path]
+description: Bound completion evidence with runtime verification and native gates.
+tags: [completion-evidence, runtime-verification, native-gates, happy-path]
 inputs:
-  prompt: Evaluate gate-evidence.md in completion-gate order and state exactly what scope is proven green.
+  prompt: Evaluate gate-evidence.md as completion evidence. Check the native gates
+    in causal order, distinguish their test results from runtime verification on
+    the optionless public surface, and state exactly what scope is proven green.
   files:
   - path: gate-evidence.md
 expected:
-  output_contains: [31 passed, 'PASS: projections converged', fixed point]
+  output_contains: [431 passed, 'PASS: 76 skills validated', fixed point, agentsctl check]
+  output_not_contains: [agentsctl projections, CHECK_GATES, FILE=]

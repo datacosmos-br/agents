@@ -1,9 +1,9 @@
 id: pr-sheriff-inventory-triage-001
 name: Triage every configured PR
-description: Classify ready, blocked, and superseded PRs from complete static evidence.
+description: Exercise pull-request review triage in the configured GitHub workflow.
 tags: [pull-request, triage, review, checks, threads, integration, happy-path]
 inputs:
-  prompt: Triage pr-inventory.yaml for the one configured repository. Account for every PR and classify it from checks, reviews, threads, merge state, diff identity, and integration reachability. Recommend next actions only; Gas City and tracker runtime remain suspended, so do not invoke or propose them.
+  prompt: Perform pull-request review triage for the GitHub workflow in pr-inventory.yaml for the one configured repository. Account for every PR and classify it from checks, reviews, threads, merge state, diff identity, and integration reachability. Recommend next actions only; Gas City and tracker runtime remain suspended, so do not invoke or propose them.
   files:
   - path: pr-inventory.yaml
 expected:

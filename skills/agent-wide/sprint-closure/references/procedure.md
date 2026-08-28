@@ -1,75 +1,56 @@
-# Sprint Closure
+# Sprint closure procedure
 
-## Authority
+## Preflight
 
-`UNIVERSAL_CORE` Law 29 (all-or-nothing), 4 (one owner, no old+new), 21 (finish to
-Done), 28 (complete cutover). Per-change gate: `verification/loop`. Tracker
-semantics: `beads/orchestrator`. Not restated here.
+Resolve the increment scope, integration branch, merged SHA, public runtime
+surface, native gates, generated owners, review and landing state, tracker mode,
+and every touched producer and consumer before changing closure state.
 
-## Scrum shape
+Missing, stale, conflicting, or inaccessible evidence stops at the first causal
+defect. Do not run a substitute command, infer a tracker endpoint, accept a
+warning or skip, repeat a failed gate, or narrow the closure claim.
 
-Milestone → increment epics (ordered, hard deps) → child Beads. Every open Bead
-carries exactly one `lane:<name>` and, inside a release lane, one
-`increment:<epic-id>`. An increment is a SPRINT: it starts only when the previous
-one is closed, and it ships to the integration lane — not to a branch that waits.
+When the canonical tracker runtime is explicitly suspended, update only the
+repository-declared manual ledger after each material state change. The ledger
+preserves evidence but cannot close the tracker item or make the increment done.
 
-Scope is fixed at entry. New work discovered mid-sprint is filed
-(`-t discovered-from`) and assigned to an increment — never silently absorbed,
-never deferred to "later".
+## Required evidence
 
-## Entry criteria
+All evidence must describe the same merged integration SHA:
 
-1. Previous increment CLOSED (this contract satisfied, not asserted).
-2. Integration lane clean: no uncommitted drift, no unpushed commits, gates green.
-3. Every Bead in the increment has an owner and a bounded path scope.
+1. the repository-owned native gates, with command, working directory, exit
+   code, decisive output, and covered scope;
+2. material use through the shipped public runtime surface;
+3. completed independent review and merged change record;
+4. canonical tracker closure when its runtime is available;
+5. removal of the increment's lane workspace after landing;
+6. net line change for a replacement, or an explicit additive-capability
+   classification when nothing was superseded.
 
-## Residue set — must be EMPTY (binary, per increment)
+Do not treat local or branch-only green, an open review, a pushed commit, manual
+ledger state, or an unmerged artifact as integration evidence.
 
-Each item is a command, not an opinion. Scope = paths the increment touched.
+## Zero-residue audit
 
-| Residue | Binary check |
-| --- | --- |
-| Dead code | Symbols added/left by the increment with zero references across src + tests + consumers (structural search, not grep-only). |
-| Compatibility code | Zero shim/alias/wrapper/fallback/`deprecated` path introduced or retained for the old behavior. |
-| Un-rewired consumers | Every caller of a changed contract uses the new one; zero references to the superseded symbol remain. |
-| Un-rewired tests | Zero test asserts the removed behavior or imports a deleted path; tests exercise the public surface. |
-| Open worktree | No lane worktree for this increment still registered. |
-| Open PR | No PR for this increment still open; merged or closed with reason. |
-| Open Bead | No child Bead of the increment still open/in_progress. |
+Require every row to be empty:
 
-Superseded code is DELETED in the same cycle that replaces it. "Kept until later"
-is old+new coexistence (Law 4) — a defect, not a transition.
+- dead code and obsolete generated artifacts;
+- compatibility shims, aliases, wrappers, fallbacks, or dual readers;
+- consumers and tests still using the superseded contract;
+- deferred cleanup notes, follow-up deletion tasks, or partial publications;
+- open increment workspace, review, or tracker item.
 
-**Deletion cannot be deferred (Law 30).** Filing a cleanup bead, a TODO, a
-comment or a follow-up sprint to delete later does not satisfy any row above —
-that promise IS the violation. A refactor lands net-negative in LOC or it does
-not land: measure `git diff --shortstat` for the cycle and state the number in
-the exit report. Net-positive is allowed only when the increment is purely
-additive (new capability, no replacement) — say so explicitly and name what it
-replaced, or nothing. Cannot delete now → the change is too big: shrink it.
+Inspect structurally where available and review every match. A valid remaining
+consumer, nonzero gate, incomplete publication, or open row keeps the whole
+increment active. Correct every actionable row and repeat its invalidated proof;
+never carry it forward as a warning, blocker report, or next-phase task.
 
-## Running on the integration lane
+## Atomic closure
 
-Production quality is proved by USE, not by green gates. Required:
+Publish the closure record and change canonical closure state only after all
+required evidence and zero-residue checks succeed. If any final write or owner
+operation fails, preserve its raw causal chain and leave the increment open.
 
-- The increment's behavior is exercised through the REAL public surface (CLI,
-  API, service, import of the shipped artifact) on the integration lane, at the
-  merged SHA — artifact captured.
-- `verification/loop` completed at that SHA (gates are the floor; real use is the
-  ceiling).
-
-Formal promotion to `main`/production stays operator-gated (`governance/rules`
-§Stop). Integration-lane running is the enforceable bar; `main` promotion is a
-separate, explicitly approved act. Never claim `main` promotion as sprint proof.
-
-## Exit report
-
-Per increment: SHA, gates, residue table with the command + result for each row,
-**net LOC for the cycle**, real-surface artifact, Beads closed, PRs merged,
-worktrees removed. Any non-empty residue row = increment NOT closed. Fix
-in-sprint or STOP and surface it — never carry over silently.
-
-## Context budget
-
-Load: `UNIVERSAL_CORE` + this skill + `verification/loop` at closure time.
-Skip: worker/orchestrator playbooks unless you also hold that role.
+The exit record contains the merged SHA, exact evidence, zero-residue results,
+net line change, review and tracker state, workspace removal, and any blocker.
+Never claim phase completion from commit, push, review, or green CI alone.

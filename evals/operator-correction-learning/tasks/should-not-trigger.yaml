@@ -5,4 +5,4 @@ tags: [operator, acknowledgment, anti-trigger]
 inputs:
   prompt: The operator says, "Thanks, continue with the approved implementation." No behavior, prohibition, replacement, or scope was corrected.
 expected:
-  output_not_contains: [substitute tracker, contradiction search, correction recorded]
+  output_not_contains: [substitute tracker, contradiction search, correction recorded, fallback, manual ledger updated]

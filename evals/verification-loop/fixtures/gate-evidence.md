@@ -1,8 +1,8 @@
 # Gate evidence
 
 - Environment: `uv run python -c "import agents_governance"`, exit 0.
-- Lint and format: `make check CHECK_GATES=lint,format`, exit 0, zero warnings.
-- Types: `make check CHECK_GATES=pyrefly,mypy,pyright`, exit 0, zero errors.
-- Tests: `make test FILE=tests/test_projection.py`, exit 0, 31 passed.
-- Real surface: `agentsctl projections --scope projects --project-root fixture --check`, exit 0, `PASS: projections converged`.
-- Generated fixed point: second apply produced no diff.
+- Repository check: `make check`, exit 0, zero warnings.
+- Static analysis: `make static`, exit 0, zero errors.
+- Tests: `make test`, exit 0, 431 passed.
+- Real surface: `agentsctl check`, exit 0, `PASS: 76 skills validated`.
+- Generated fixed point: `make audit`, exit 0, and its required second owner pass produced no diff.
