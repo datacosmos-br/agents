@@ -44,6 +44,11 @@ tracker is suspended, update the manual execution ledger.
 
 ## Blocking handoff
 
+A handoff is permitted only when the operator pauses/reorders the phase or the
+remaining condition is external and every authorized technical correction is
+exhausted. A red check, actionable review finding, open PR, or pending merge is
+otherwise an instruction to keep correcting and revalidating the same phase.
+
 Report:
 
 ```text

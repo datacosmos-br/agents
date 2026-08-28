@@ -9,4 +9,8 @@ latest_evidence:
   result: The run used an invalid noselect contract.
 incoming_request:
   scope: skills/technology/python-development
-  requirement: Correct the Testmon guidance, checkpoint it, then resume Flext.
+  requirement: Correct the Testmon guidance, pass its checks, obtain review, merge it to dev, verify that integration SHA, then resume Flext.
+detour_state:
+  pull_request: 9
+  required_check: Run Evaluations is red
+  review: approval missing

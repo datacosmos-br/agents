@@ -14,7 +14,7 @@ formats; reading a source does not authorize importing its artifacts.
 
 ## Fixed decisions
 
-- Skills, commands, rules, agents, hooks, and deterministic CLI code are
+- Skills, commands, rules, agents, and deterministic CLI code are
   different artifact types. Provider implementation details do not collapse
   those contracts.
 - Skills use distribution-first directories:
@@ -30,6 +30,7 @@ formats; reading a source does not authorize importing its artifacts.
 - Agent runtime has one public facade: the optionless `agentsctl` verbs `help`,
   `doctor`, `check`, `sync`, `evaluate`, `secure`, `clean`, and `live`. Make is
   development support and gate composition, never a second runtime API.
+  Repository hooks are not an alternate execution surface and do not exist.
 - All workflows use strict fail-loud execution. The first exception and causal
   chain escape unchanged; complete preflight precedes effects; validators stop
   at the first defect; keyring, retries, fallbacks, undeclared, competing, or
@@ -107,3 +108,9 @@ Architecture decisions:
 
 A local edit, test pass, commit, push, open PR, or merge without post-merge
 runtime and tracker closure is never `DONE`.
+
+`BLOCKED` is an active phase state, not abandonment. Red checks and review
+findings require owner correction and fresh publication; pending independent
+approval requires solicitation or operator help after the technical surface is
+green. No state in this table authorizes switching work without an explicit
+operator pause, reorder, or replacement.

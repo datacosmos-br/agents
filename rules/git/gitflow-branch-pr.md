@@ -23,6 +23,11 @@ expands scope.
 - Open/update the PR against integration, resolve every conversation, obtain
   approval, require green checks, and merge by merge commit. Revalidate the
   exact merge SHA on integration.
+- A failed check, actionable review finding, missing approval, or temporarily
+  non-mergeable state keeps this landing cycle active. Fix, push, and rerun every
+  actionable item; solicit or request help for independent approval only after
+  the technical surface is green. Never switch task, phase, or repository merely
+  by reporting the open PR state.
 - Promotion to `main` waits for explicit operator approval.
 
 A phase is `DONE` only after the approved PR is merged into integration and the

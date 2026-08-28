@@ -10,7 +10,8 @@ suspended runtimes.
 ## Included
 
 - Documentation, decisions, discovery, validation, and migration of the current
-  skills, commands, agents, rules, hooks, and their governance code.
+  skills, commands, agents, rules, and their governance code. Repository hooks
+  are removed because agent-domain behavior has one CLI facade.
 - Recursive path-derived discovery, local semantic tags, deterministic physical
   projections, provider adapters, Waza scenarios, and fixed-point checks.
 - The six accepted review corrections: CI path coverage, owned process-group
@@ -28,7 +29,9 @@ suspended runtimes.
   marketplaces, plugins, other repositories, or provider examples.
 - Any synchronization or updater that keeps a foreign source as a competing
   runtime authority.
-- Changes, projections, branches, PRs, or runtime calls in another repository.
+- Unrequested changes, branches, PRs, or runtime calls in another repository.
+  `agentsctl sync` is reusable project infrastructure and applies only to the
+  physical Git project from which the operator invokes it.
 - Beads, Dolt, Gas City, Gas Town, and alternate tracker runtimes while they are
   suspended. Use the repository manual ledger for execution state.
 - Promotion beyond the configured integration branch, package publication,
@@ -52,8 +55,8 @@ active instruction in the same change; do not retain both as alternatives.
 - `/tmp` is limited to small bounded OS primitives. It is never a workspace,
   clone staging area, backup destination, report store, database, reusable
   cache, or build root.
-- Staging and backups remain on the destination filesystem. Linux copy
-  operations use `cp --archive --reflink=auto` where supported.
+- Staging and backups remain on the destination filesystem. Projection has one
+  physical copy implementation and never retries through another strategy.
 - Never remove a live process, valid lock, dirty Git tree, database, symlink, or
   unknown content.
 - No workflow retries or substitutes a failed copy strategy. If the one
@@ -73,9 +76,9 @@ When runtime is explicitly restored, use only its then-current canonical help
 and repository owner. Historical endpoint, flag, prefix, or database knowledge
 is not reusable authority.
 
-## Stop conditions
+## Invocation stop conditions
 
-Stop the affected phase and report exact evidence when:
+Stop the current invocation with exact evidence when:
 
 - a command would invoke a suspended runtime;
 - an artifact cannot be classified from its actual behavior;
@@ -90,3 +93,8 @@ The first defect raises immediately with its raw traceback and causal chain.
 Do not translate a stop condition into a finding, warning, skip, empty result,
 manual exit code, retry, fallback, fake skill, alternate model, suppression,
 weakened gate, compatibility path, or partial success claim.
+
+The phase remains active. Correct each actionable owner and rerun the invalidated
+runtime, gate, review, publication, or integration step. Request operator help
+only after no authorized technical correction remains and the condition is
+external or requires new authority; never switch work by reporting this state.

@@ -13,38 +13,44 @@ no legacy package, command, rule, projection, or synchronization surface remains
 - `agents/`, `commands/`, `rules/`, `workflows/`: personal agent capabilities.
 - `config/skills.json`: skill BPE and line-budget policy; recursive paths and
   frontmatter own classification and distribution.
-- `config/projections.json`: personal destinations and project-relative copy paths.
+- `config/projections.json`: complete provider capability classification and
+  project-relative physical destinations.
 - `src/agents_governance/`: strict validation, discovery, orchestration, and
   provider-native projection behind the sole `agentsctl` runtime facade.
 - `.waza.yaml` and `evals/`: Waza gates and behavioral evaluation.
 
-When an explicitly authorized projection is applied, tool homes and project
-repositories receive physical copies owned by their destination. Symbolic
-links, cross-repository local-path references, and shared mutable skill
-directories are forbidden.
+When `agentsctl sync` is invoked, the nearest ancestor that owns a physical
+`.git/` directory is the only destination project. It receives provider-native
+physical copies owned by destination-local manifests. Tool homes are never
+written by `sync`. Symbolic links, cross-repository local-path references, and
+shared mutable skill directories are forbidden.
 
 ## Distribution boundary
 
-Personal targets receive `agent-wide` skills plus conditional skills, commands,
-agents, and rules only when route and provider capability authorize them.
-Technology and framework bundles never enter personal targets by default.
-`agents/`, `commands/`, `rules/`, and `workflows/` remain distinct canonical
-source types; provider representation never changes those types.
+`agent-wide` and `route:agent` sources remain canonical personal-governance
+inputs, but this increment has no personal-home publication verb. Technology
+and framework bundles never enter personal targets. `agents/`, `commands/`,
+`rules/`, and `workflows/` remain distinct canonical source types; provider
+representation never changes those types.
 
-Explicit project roots receive only:
+The invocation project's physical Git root receives only:
 
 1. explicitly classified project-generic skills;
 2. technology skills selected from detected project markers or dependencies;
 3. conditional tool/domain skills selected by validated project evidence or an
-   explicit opt-in.
+   explicit opt-in from `.agents/projection.json`;
+4. project-routed commands and rules on supported provider surfaces;
+5. detected or explicitly selected project-wide agents on supported provider
+   surfaces.
 
 Orchestrator, tracker, AI Hub, `~/.agents`, operator workflow, and repository-local
 development contracts are private and must never enter generic project
 projections. External skill sources, including FLEXT, are outside this
 increment.
 
-The current `.agents`-only increment validates projection behavior on local
-fixtures. It does not apply changes to tool homes or external project checkouts.
+The source checkout remains the only catalog authority. `sync` applies only to
+the project from which it is called; it has no scope, provider, surface, target,
+project-root, environment-override, or personal-home mode.
 
 ## Workspace and storage
 
@@ -94,3 +100,8 @@ directly. A phase is `DONE` only after its approved PR is merged into the
 configured integration branch and its canonical tracker item is closed with
 evidence. Tracker runtime is suspended, so no phase can currently be called
 `DONE`.
+
+A failed required check, actionable review finding, pending approval, or open
+merge is not a handoff boundary. Keep the same phase active, correct and
+republish every actionable cause, rerun invalidated evidence, obtain independent
+approval, merge, and verify the integration SHA before changing work.

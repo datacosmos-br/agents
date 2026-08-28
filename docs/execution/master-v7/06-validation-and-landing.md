@@ -20,15 +20,18 @@ produce a false green:
 - skills: route a matching request and reject a should-not-trigger request;
 - commands: render/invoke representative arguments and reject ambiguous input;
 - agents/rules: prove delegation and mandatory-rule behavior;
-- projection: apply to isolated personal/project destinations and inspect the
-  provider's live loader where available;
+- projection: invoke `agentsctl sync` from an isolated physical project, inspect
+  supported provider project loaders where available, prove no personal-home
+  write, then prove the second invocation changes nothing;
 - temp/storage: use `agentsctl doctor`, `agentsctl check`, and `agentsctl clean`
   against the configured physical checkout and an isolated generated tree;
 - credentials: execute from Bash, Zsh, Fish, and a direct subprocess using only
   the current process environment, without revealing values;
 - live model: exact `aihub-primary`, material grader, and explicit error paths.
 
-A runtime failure blocks the phase. Unit tests cannot override it.
+A runtime failure keeps the phase active at that stage. Correct its owner and
+rerun the invalidated runtime and gates; unit tests cannot override it and a
+blocker report cannot advance the phase.
 
 ## Required semantic scenarios
 
@@ -71,6 +74,11 @@ before effects and aborts on its first exception. `agentsctl live` requires
 exact `aihub-primary` and a non-empty valid `CLIPROXY_API_KEY` in the current
 process environment; it never reads a credential store or selects another
 model.
+
+`agentsctl sync` derives the target physical Git root from cwd and applies all
+supported project surfaces. Its only optional activation input is the strict
+project-owned `.agents/projection.json`; it accepts no CLI or environment target
+selection and never writes a personal home.
 
 Make remains development support and gate composition. Its required surface is
 discovered with `make help` and covers:
@@ -152,6 +160,12 @@ When Git execution is authorized:
 8. merge through a merge commit, not squash or rebase;
 9. validate runtime and complete gates on the exact integration merge SHA;
 10. remove only clean, reachable increment branches through safe deletion.
+
+Steps 7–9 are a correction loop, not a one-shot attempt. Every actionable check
+or review failure is fixed, pushed, and revalidated in this same phase. If the
+technical surface is green but independent approval or another external action
+is unavailable, keep the phase active and request that exact action; do not move
+to another task or repository.
 
 A phase is `DONE` only after its approved PR is merged, post-merge runtime is
 green, and its canonical Bead is closed with evidence. While tracker runtime is

@@ -21,9 +21,11 @@ graders:
       Pass only when the response preserves the supplied execution cursor,
       classifies the interruption once, performs or proposes only the bounded
       authorized detour, updates invalidated evidence, and returns explicitly to
-      the first unfinished plan step. Reject side quests, repository-wide repair,
-      repeated discovery, silent plan replacement, fabricated completion, or a
-      resume action without a concrete next command.
+      the first unfinished plan step only after the detour's required checks,
+      review, approval, merge, and integration proof are satisfied. Reject side
+      quests, repository-wide repair, repeated discovery, silent plan replacement,
+      fabricated completion, report-and-abandon behavior, or resume while a red
+      check, actionable review, open PR, pending approval, or merge remains.
 - type: behavior
   name: bounded_execution
   config:

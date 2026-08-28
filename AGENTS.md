@@ -6,13 +6,19 @@
 3. Traceability first: use the canonical tracker when available. While its runtime is suspended, update `docs/execution/manual-ledger.md` before file writes or multi-step work; preserve evidence in the ledger and Git/PR/CI, and do not declare the phase DONE.
 4. Research first: inspect code, docs, canonical sources before acting; never invent APIs, flags, facts, or behavior.
 5. Owner first: use the project's declared facades/primitives; do not reimplement them locally.
-6. Gate discipline: if a gate blocks, stop and escalate with the exact command/edit; never route around it.
+6. Gate persistence: a failure stops only that invocation. Correct its owner,
+   republish, and rerun until green; never switch phase or repository because a
+   check, review, approval, or merge is pending. Escalate only after every
+   authorized technical action is exhausted and the remaining condition is
+   genuinely external or requires new authority.
 7. Landing: native gates, commit, fast-forward push, bead evidence.
 8. Divergence: FF push rejected → integrate by cooperation: `git merge --no-ff` the integration base into your lane, resolve conflicts, revalidate, land. Never rebase or force-push a shared branch; never discard another actor's work.
 9. Escalation: impossible rule → exact error. Rule conflict → present both with numbers. Unclear → one targeted question. Never guess.
 10. Precedence: NEWEST > OLDEST. USER REQUEST > BEADS > ADRs > SKILLs > DOCS > default. Adjust lower/older to higher/newer. Doubt → ASK USER FIRST.
 11. Workspace placement: follow the declared Gas City city/rig/Pack V2 contract in `rules/gascity.md`. While its runtime is suspended, operate only in the existing checkout and create no clone, worktree, city, rig, agent, formula, run, or session. Staging and backups stay on the destination filesystem, never `/tmp`.
-12. Phase closure: a phase is DONE only after its approved PR is merged into the configured integration branch and its Bead is closed with evidence. Commit, push, review, or green CI alone is not phase completion.
+12. Phase closure: keep the phase active through check repair, review resolution,
+    independent approval, merge into the configured integration branch, and
+    post-merge proof. Only then, with its Bead closed with evidence, is it DONE.
 <!-- /AIHUB-INVIOLABLE-LAW-PRELUDE -->
 
 # AGENTS.md — ai-hub
@@ -101,12 +107,16 @@ Universal law owns closure. Local delta only:
 - ai-hub Beads/Dolt is the shared user database on the primary checkout (`config.AiHub.paths.ai_hub`), not a per-worktree private DB.
 - Related multi-repo set for shared doc/policy work is declared in configuration.
 - Gas City configuration owns orchestration identity; ai-hub owns living runtime registration for tools, CRG, LSP/observer state, and maintenance daemons.
-- Rules, managed hooks, and product hook inventory are SSOT under `config/`; an unattributable foreign agent hook or MCP is a blocking ownership violation; managed product hooks stay disabled at the product and route through one socket executor per event type.
+- Rules and MCP inventory are SSOT under `config/`; an unattributable foreign
+  agent runtime is a blocking ownership violation. Agent-domain behavior runs
+  only through optionless `agentsctl` verbs; repository hooks are extinct.
 - Every declared workspace must reconstruct dependencies locally; cross-repository dependency links are prohibited.
 - CI runs the complete `make ci` owner. `check`, `static`, and `test` remain
   separate blocking stages; setting `CI=Y` never authorizes omitting them.
-- Workspace/worktree watch is incremental and state-driven from last hook or MCP touch (configurable interval and parallelism); first use builds or copies from the parent workspace.
-- Rope/LSP activation shares the same observer/MCP/hooks funnel; any git-stored LSP artifacts come from the project generator templates.
+- Workspace/worktree watch is incremental and state-driven from the canonical
+  observer/MCP owner; first use builds or copies from the parent workspace.
+- Rope/LSP activation shares the same observer/MCP funnel; any Git-stored LSP
+  artifacts come from project generator templates.
 - Cursor Shared MCP must resolve the active workspace/worktree across multiple Cursor sessions; its context wiring differs from other agents.
 - MCP routing must virtualize session identity so bridges survive daemon restarts without breaking clients.
 - In umbrella workspaces, member-repo push does not require fixing workspace gitlinks first; push from the member repo, then roll up gitlinks in the umbrella after those commits are on the remote.
@@ -171,7 +181,9 @@ This protocol applies when ending a Beads implementation workflow. It is subordi
 **Critical rules:**
 - Explicit user or orchestrator instructions override this Beads block.
 - Do not commit or push without clear authority from the active profile or the current user request.
-- If a required sync or push is blocked, stop and report the exact command and error.
+- If required sync or push fails, stop that invocation, preserve its exact error,
+  correct every authorized cause, and rerun. Keep the phase active and request
+  help only when the remaining condition is external or needs new authority.
 <!-- END BEADS INTEGRATION -->
 
 <!-- BEGIN BEADS CODEX SETUP: generated by bd setup codex -->

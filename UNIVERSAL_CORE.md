@@ -62,6 +62,12 @@ publication propagates without normalization.
    test runs (testmon) ARE the evidence: green selection = green; re-running
    the full suite "to not trust the subset" is the same forbidden hand-repeat.
    Full suite runs belong to CI and explicit operator request only.
+   A red check, actionable review finding, missing approval, or non-mergeable PR
+   keeps the same landing cycle active. Correct every actionable owner, publish,
+   rerun invalidated evidence, resolve review, obtain independent approval, merge,
+   and verify the integration SHA before advancing. Request operator help only
+   after authorized technical work is exhausted and the remaining condition is
+   external or requires new authority.
 8. **Execution ledger SSOT.** Beads owns execution state when available. During
    an explicit runtime suspension, the repository-declared manual ledger owns
    current execution state until it can be migrated back; GitHub mirrors it.
@@ -70,11 +76,14 @@ publication propagates without normalization.
    one assigned scope, branch, push, and PR; auditor uses `governance-audit`.
    During suspension, repository law defines the existing-checkout and
    manual-ledger mode.
-10. **No stall by reporting.** Heartbeats never stop execution. Unowned WIP = stall.
+10. **No stall by reporting.** A red result or pending PR state is work, not a
+    handoff. Heartbeats and blocker reports never stop or transfer execution.
 11. **History is evidence, never rollback authority.** Refactor forward to current law.
-12. **Stop only for a real blocker.** Destructive action, competing contracts,
-    security/privacy, `main`/production promotion, authority conflict, material
-    scope change — one precise question. Else evidence and continue.
+12. **Stop only for a real external or authority blocker.** First exhaust every
+    authorized root-cause correction. Destructive action, competing contracts,
+    security/privacy, `main`/production promotion, authority conflict, or material
+    scope change then requires one precise question. A failed check, review
+    finding, open PR, or pending approval never authorizes task switching.
 13. **Short validated slices.** Land small green stages; commit explicit paths; FF push.
     Active orchestration identity comes only from the repository-declared native
     runtime. During an explicit suspension, use only the authorized existing
@@ -107,7 +116,9 @@ publication propagates without normalization.
 18. **Serialized locks.** Honor project locks (package managers, Helm, etc.); no fan-out.
 19. **No hidden code.** `examples/`, `scripts/`, `tests/` share `src/` gates.
 20. **Cooperate on concurrent WIP.** Adopt useful hunks; never blame concurrency.
-21. **Finish to Done.** No demo/stub/reduced scope. Blocked → stop and ask.
+21. **Finish to Done.** No demo, stub, reduced scope, red-gate handoff, or
+    report-and-abandon cycle. Fix forward until integration proof exists; ask
+    only for an irreducible external condition or new authority.
 22. **Small batches with slack.** Prefer executable slices over optimistic megabatches.
 23. **Canonical-source-first.** Minimal surgical change; validate before claim.
 24. **Execution ledger continuously current.** Update Beads when available or
@@ -143,8 +154,9 @@ publication propagates without normalization.
     zero warnings. "Warning", "cosmetic", "third-party", "pre-existing" and
     "not mine" are never exemptions: whatever the step surfaces is the step's
     responsibility to fix at its owner. Red outside the blast radius is recorded
-    in the active execution ledger in the same cycle. Never start step N+1 over
-    a red step N; never merge two objectives to hide a red. Phase landing
+    in the active execution ledger and corrected in the same cycle when it is a
+    required gate. Never start step N+1, another repository, or a resumed plan
+    over a red step N; never merge two objectives to hide a red. Phase landing
     requires an approved PR with every review comment resolved, CI green on the
     integration branch, and canonical tracker closure when that runtime exists.
 
@@ -209,11 +221,10 @@ publication propagates without normalization.
    rules in every session: operator communication is precise and
    non-prolix; documentation is objective and states purpose, not mechanics.
 10. **Always loaded.** These rules activate in every new session and survive
-    every compaction through each consumer's native declarative surface:
-    persistent instructions, session hooks, or compaction plugins. Never claim
-    unsupported hook semantics. ai-hub hooks enforce the maximum supported
-    automatically; every enforceable rule lives in `config/` as data, never in
-    product-specific code — STRICT.
+    every compaction through each consumer's native declarative instruction or
+    compaction surface. Never claim unsupported runtime semantics. Every
+    enforceable rule lives in its declared SSOT and agent-domain execution runs
+    through the canonical CLI, never a product-specific hook — STRICT.
 11. **Traceability.** No rush and no fear of change: everything happens
     inside your lane. Record every step, decision, analysis, result, test,
     PR, merge, resolved conflict and rule/skill/doc change in the active
