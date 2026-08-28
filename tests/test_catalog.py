@@ -143,12 +143,19 @@ def test_inventory_lock_has_one_exact_check_and_render_contract(
     catalog.require_inventory_lock()
 
 
-def test_repository_catalog_matches_current_78_skill_acceptance_contract() -> None:
+def test_repository_catalog_matches_generated_inventory_without_numeric_cap() -> None:
     catalog = Catalog(REPOSITORY_ROOT)
     names = {record.name for record in catalog.records()}
 
-    assert len(names) == 78
-    assert {"fix-forward-collaboration", "plan-focus-recovery"} <= names
+    catalog.require_inventory_lock()
+    lock = json.loads((REPOSITORY_ROOT / "skills.lock.json").read_text())
+    assert names == {item["name"] for item in lock["skills"]}
+    assert {
+        "brand-discovery",
+        "fix-forward-collaboration",
+        "implementation-plan-review",
+        "plan-focus-recovery",
+    } <= names
 
 
 def test_conditional_profiles_are_derived_from_local_tags(tmp_path: Path) -> None:

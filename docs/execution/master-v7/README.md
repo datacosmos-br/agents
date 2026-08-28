@@ -91,6 +91,11 @@ be smuggled into this checkout-only increment.
 11. [Additive capability composition](10-additive-capability-composition-plan.md)
 12. [Agents repository runbook](repositories/agents.md)
 
+Approved successor increment, gated on this package being integrated and
+revalidated on `main`:
+
+13. [Governed project skill distribution](11-governed-project-skill-distribution-plan.md)
+
 Architecture decisions:
 
 - [ADR-0001: Preserve artifact-type boundaries](../../adr/ADR-0001-artifact-type-boundaries.md)
@@ -98,6 +103,7 @@ Architecture decisions:
 - [ADR-0003: Render provider-native physical projections](../../adr/ADR-0003-provider-native-physical-projections.md)
 - [ADR-0004: Enforce one optionless fail-loud runtime CLI](../../adr/ADR-0004-optionless-fail-loud-cli.md)
 - [ADR-0005: Compose governance and native lifecycle delivery](../../adr/ADR-0005-composed-governance-delivery.md)
+- [ADR-0006: Synthesize historical governance by behavior](../../adr/ADR-0006-semantic-governance-synthesis.md)
 
 ## Status vocabulary
 

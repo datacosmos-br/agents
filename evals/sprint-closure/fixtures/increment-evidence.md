@@ -1,7 +1,7 @@
 # Increment evidence
 
 - Integration SHA: `7ac912e` on `dev`.
-- Runtime: `agentsctl check`, exit 0, `PASS: 78 skills validated`.
+- Runtime: `agentsctl check`, exit 0, current discovered catalog validated.
 - Native gates: exit 0, zero warnings.
 - External-token gates: unavailable before selection and recorded as `NOT
   EXECUTED`; no scanner or live-semantic green claim is made.

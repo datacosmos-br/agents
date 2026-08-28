@@ -33,13 +33,11 @@ uses multiple tags; it is never copied into several groups.
 
 ## Migration and current catalog map
 
-The migration started from 85 flat skills and reached the following 76 retained
-targets. Two later operator-authorized governance capabilities were added after
-that cutover: `plan-focus-recovery` for preserving active-plan intent across
-detours and `fix-forward-collaboration` for concurrent adoption and anti-rollback
-coordination. The current catalog therefore contains 78 skills. The table is an
-acceptance map, not a runtime registry; recursive discovery from paths and tags
-remains the runtime owner.
+The migration started from 85 flat skills and reached the following retained
+baseline. Later operator-authorized capabilities were added through the same
+owners. The table is migration history, not a fixed current total or runtime
+registry; recursive discovery from paths and tags remains the runtime owner for
+every later authorized addition.
 
 | Target group | Retained target slugs |
 |---|---|
@@ -150,9 +148,10 @@ moving prose into another unvalidated file.
 
 ## Import boundary
 
-No external artifact is copied, forked, synchronized, or translated during this
-increment. After the current 78-skill set is integrated and green, a separately
-approved import plan may compare official/provider-curated sources against this taxonomy.
+No external artifact was copied, forked, synchronized, or translated during the
+original migration increment. A separately approved import plan may compare
+official/provider-curated sources against this taxonomy without imposing the
+baseline roster as a current cardinality cap.
 That future plan must deduplicate first, audit provenance/license/scripts, and
 adopt content physically into the same semantic layer without leaving an
 updater or foreign runtime owner.

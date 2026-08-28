@@ -1,11 +1,12 @@
-goal=update config/runtime.yaml
-expected_repository=/workspace/control-plane
-current_working_directory=/workspace/web-ui
-last_success=read operator request
-tool_call_1=rg -n runtime.yaml config
-tool_result_1=rg: config: No such file or directory
-tool_call_2=rg -n runtime.yaml config
-tool_result_2=rg: config: No such file or directory
-tool_call_3=rg -n runtime.yaml config
-tool_result_3=rg: config: No such file or directory
-context_note=the same command was retried without checking cwd
+window=2026-08-28T09:00:00-03:00..2026-08-28T10:00:00-03:00
+goal=start one interactive shell for a Codex session
+last_success=provider opened the workspace
+process_1=PID 4101 PPID 200 executable=/usr/bin/bash argv="bash -l" cwd=/home/user/work
+process_2=PID 4102 PPID 4101 executable=/usr/bin/bash argv="bash -lc environment-d-loader" cwd=/home/user/work
+process_3=PID 4103 PPID 4102 executable=/usr/bin/python3 argv="python3 .local/bin/environment-d-loader" cwd=/home/user
+process_4=PID 4104 PPID 4103 executable=/usr/bin/bash argv="bash -l" cwd=/home/user/work
+resource_pattern=one new bash/python3 pair every 200ms
+startup_observation=.bashrc invokes environment-d-loader for every interactive shell
+loader_observation=environment-d-loader starts bash -l and waits for it
+session_metadata=Codex tool history shows one initial shell launch and no repeated explicit launch
+privacy=message bodies and environment values were not collected

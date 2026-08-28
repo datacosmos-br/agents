@@ -7,6 +7,7 @@
 | [ADR-0003](ADR-0003-provider-native-physical-projections.md) | Accepted | Provider outputs are typed, provider-native physical projections. |
 | [ADR-0004](ADR-0004-optionless-fail-loud-cli.md) | Accepted | Agent runtime uses one optionless fail-loud `agentsctl` facade and no keyring. |
 | [ADR-0005](ADR-0005-composed-governance-delivery.md) | Accepted | Governance composes typed owners and projects through provider-native instructions and lifecycle surfaces. |
+| [ADR-0006](ADR-0006-semantic-governance-synthesis.md) | Accepted | Historical governance is synthesized by behavior into current owners, never copied by structure. |
 
 Implementation order, runtime evidence, and landing state belong to the active
 [master v7 execution package](../execution/master-v7/README.md), not to these

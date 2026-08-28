@@ -79,4 +79,4 @@ flowchart LR
 |---|---|---|
 | Architecture decision | Accepted | This ADR and master v7 contracts |
 | Typed source models/adapters | Partial on work lane | Distinct catalog, command, agent, and rule models/adapters; full projection matrix remains open |
-| Command-shaped skill cutover | Implemented on work lane | Seven flat command sources and seven command-native eval suites; integration pending |
+| Command-shaped skill cutover | Implemented on work lane | Every discovered flat command source has one command-native eval suite; integration pending |

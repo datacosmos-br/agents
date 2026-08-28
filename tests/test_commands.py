@@ -215,16 +215,10 @@ def test_waza_counter_uses_in_memory_content_and_preserves_original_failure(
         waza_bpe_counter(tmp_path)("complete rendered command\n")
 
 
-def test_all_seven_canonical_commands_validate_without_registry() -> None:
+def test_all_canonical_commands_validate_without_registry() -> None:
     root = Path(__file__).resolve().parents[1]
     specs = audit_command_specs(root)
 
     assert {command.name for command in specs} == {
-        "add-language-rules",
-        "database-migration",
-        "feature-development",
-        "ghi-list",
-        "pr-list",
-        "ralph-loop",
-        "security-triage",
+        path.stem for path in (root / "commands").glob("*.md")
     }

@@ -2,10 +2,10 @@ command: add-language-rules
 schemaVersion: '1.0'
 scenarios:
   - role: happy-path
-    prompt: Add Rust unsafe-code rules to a project that already owns Rust policy and exposes Cargo gates.
+    prompt: Add one Rust unsafe-code invariant from a historical rules corpus to a project that already owns Rust policy, technology procedure, and Cargo gates; classify the source statements before adoption.
     assertions:
-      output_contains: [existing rule owner, Cargo runtime, projection fixed point]
-      output_not_contains: [foreign repository, fallback]
+      output_contains: [existing rule owner, technology procedure, explicit command, generated projection, Cargo runtime, projection fixed point]
+      output_not_contains: [corpus copied, foreign repository, fallback]
   - role: ambiguous-input
     prompt: Add the language rules without naming a language, project, or required behavior.
     assertions:

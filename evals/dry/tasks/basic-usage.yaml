@@ -3,7 +3,7 @@ name: Split an order god module and remove duplicated policy
 description: Exercise semantic duplication, god patterns, and structural remediation.
 tags: [dry, duplication, god-patterns, efficiency, tokei, readability, happy-path]
 inputs:
-  prompt: Apply structural remediation to the order-project's semantic duplication and god patterns through the optimized search-first -> YAGNI -> SOLID -> simplify-inline -> DRY flow. Remove confirmed duplication, split responsibilities at existing owners, and remove repeated lookup while preserving complete behavior, readability, documentation, and raw causal error semantics. Rewire atomically, recheck YAGNI and SOLID, compare Tokei on the same scope, and define material runtime, zero-effect failure, residue-search, and native-gate proof.
+  prompt: Apply structural remediation to the order-project's semantic duplication and god patterns through the optimized search-first -> YAGNI -> SOLID -> simplify-inline -> DRY flow. A static graph reports no callers for CsvOrderExporter; treat that as candidate evidence and inspect every supplied dynamic/export surface before deciding. Remove confirmed duplication, split responsibilities at existing owners, and remove repeated lookup while preserving complete behavior, readability, documentation, and raw causal error semantics. Rewire atomically, recheck YAGNI and SOLID, compare Tokei on the same scope, and define material runtime, zero-effect failure, residue-search, and native-gate proof.
   files:
   - path: order-project/AGENTS.md
   - path: order-project/docs/architecture.md
@@ -11,8 +11,9 @@ inputs:
   - path: order-project/src/orders/identity.py
   - path: order-project/src/orders/repository.py
   - path: order-project/src/orders/csv_exporter.py
+  - path: order-project/src/orders/plugins.py
   - path: order-project/src/orders/audit.py
   - path: order-project/src/orders/service.py
   - path: order-project/tests/test_service.py
 expected:
-  output_contains: [OrderId, OrderRepository, CsvOrderExporter, AuditSink, thin orchestrator, YAGNI recheck, SOLID recheck, simplify, tokei, runtime, zero effects]
+  output_contains: [OrderId, OrderRepository, CsvOrderExporter, plugin registry, candidate, preserve, AuditSink, thin orchestrator, YAGNI recheck, SOLID recheck, simplify, tokei, runtime, zero effects]
