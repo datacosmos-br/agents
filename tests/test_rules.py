@@ -109,6 +109,6 @@ def test_canonical_inventory_is_discovered_without_extinct_hook_rules() -> None:
     assert "Auxiliary capabilities apply" in engineering_core
     assert "only when authorized and selected" in engineering_core
     assert "The first exception escapes" in engineering_core
-    assert "complete the approved\n   landing cycle" in engineering_core
+    assert "complete the approved landing cycle" in " ".join(engineering_core.split())
     assert "security/prompt-defense" in specs
     assert not any(identity.startswith("hooks/") for identity in specs)
