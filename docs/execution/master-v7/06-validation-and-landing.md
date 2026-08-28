@@ -42,9 +42,19 @@ evals prove capability/delegation boundaries; rule evals prove enforcement and
 contradiction rejection.
 
 Waza owns only the `SKILL.md` suites supported by its installed target model.
-The optionless `agentsctl evaluate` workflow also renders every supported
-command, agent, and rule artifact twice through the matrix and rejects the
+The optionless `agentsctl evaluate` workflow validates their specification,
+coverage, and token contracts without treating the always-passing mock executor
+as behavioral proof. The same verb renders every supported command, agent, and
+rule artifact twice through the deterministic native matrix and rejects the
 first lossy, misplaced, expanded-capability, or non-deterministic result.
+
+`agentsctl live` runs the transport/tool preflight followed by every discovered
+skill task and material grader. It validates the complete fresh result inventory
+and atomically publishes one current aggregate only after all suites succeed.
+An absent credential or any provider, executor, task, grader, timeout, or
+artifact failure leaves prior current evidence unchanged and keeps landing
+open. Credential-independent CI is still useful contribution evidence, but it
+never approves live skill semantics.
 
 The following never prove success:
 
@@ -77,8 +87,8 @@ agentsctl live
 Every line accepts no additional token. Each verb validates its full contract
 before effects and aborts on its first exception. `agentsctl live` requires
 exact `aihub-primary` and a non-empty valid `CLIPROXY_API_KEY` in the current
-process environment; it never reads a credential store or selects another
-model.
+process environment; it never reads a credential store, selects another model,
+retries a task, or publishes a partial corpus.
 
 `agentsctl sync` derives the physical Git root from cwd and the personal target
 from the current process home. Invocation selects every supported personal

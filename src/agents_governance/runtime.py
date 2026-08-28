@@ -217,8 +217,8 @@ def evaluate(root: Path) -> None:
     for command in commands:
         subprocess.run(command, cwd=root, check=True)
     print(
-        f"evaluate: {len(suites)} skill suites, {native.commands} command, "
-        f"{native.agents} agent, and {native.rules} rule artifacts passed"
+        f"evaluate: {len(suites)} skill specifications and {native.commands} command, "
+        f"{native.agents} agent, and {native.rules} rule artifacts verified offline"
     )
 
 

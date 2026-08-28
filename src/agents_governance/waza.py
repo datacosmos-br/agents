@@ -1,4 +1,4 @@
-"""Strict Waza specification, model, and live-preflight owners."""
+"""Strict Waza specification, model, and complete live-corpus owners."""
 
 from __future__ import annotations
 

@@ -169,15 +169,19 @@ docs, templates, prompts, and generated provider instructions.
 - Regenerate manifests, provider projections, governance capsule, docs, and the
   skill inventory lock through their owners; a second generation changes
   nothing.
-- Run focused runtime checks, then every applicable native gate. Cliproxy-live
-  validation remains outside the applicable set while explicitly unavailable
-  and is never reported green.
+- Run focused runtime checks, then every native offline gate. A host or fork
+  without Cliproxy credentials remains able to contribute and run offline CI;
+  that absence never selects a fallback or yields live evidence.
+- Before landing, run the complete Cliproxy-backed `agentsctl live` corpus. If
+  its current-process credential or service is unavailable, keep the increment
+  open at that exact external condition; never waive, skip, or reinterpret the
+  live gate as green.
 - When tracker/orchestration runtimes are restored, run standalone Beads, one
   Gas City rig, fork without opt-in, fork with opt-in, and outage canaries.
 
-**Exit condition:** runtime and applicable gates are green with zero removed
-contract residue. Authorized Git/PR integration must complete; `DONE` remains
-unavailable until tracker closure exists.
+**Exit condition:** runtime, every offline gate, and the complete live corpus are
+green with zero removed-contract residue. Authorized Git/PR integration must
+complete; `DONE` remains unavailable until tracker closure exists.
 
 ## Test skeletons
 

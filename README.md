@@ -93,10 +93,18 @@ agentsctl clean
 agentsctl live
 ```
 
-`agentsctl evaluate` is the sole evaluation workflow. Waza evaluates canonical
-skills; the same verb runs deterministic provider-native command, agent, and
-rule rendering evaluations because installed Waza targets `SKILL.md`, not the
-distinct command, agent, or rule schemas.
+`agentsctl evaluate` is the sole offline evaluation workflow. It verifies Waza
+skill specifications, coverage, and token contracts and executes deterministic
+provider-native command, agent, and rule evaluations. It does not claim live
+skill behavior: Waza's mock executor cannot provide that evidence.
+
+`agentsctl live` first proves the exact transport, model, and tool path, then
+executes every discovered skill scenario and material grader with
+`aihub-primary`. It stages every result on the repository filesystem and
+publishes one restrictive `results/latest/results.json` only after the entire
+corpus succeeds. Missing credentials, transport errors, task failures, grader
+failures, timeouts, and incomplete artifacts remain raw failures; no partial
+result becomes current.
 
 These are optionless single verbs. They accept no flags, positional arguments,
 mode selectors, JSON switches, or compatibility aliases. Each verb loads and

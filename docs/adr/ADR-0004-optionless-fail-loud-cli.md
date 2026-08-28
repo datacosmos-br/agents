@@ -61,7 +61,11 @@ raises immediately. Canonical calculated defaults resolve at their typed owner
 and are not repeated as environment variables, settings, parameters, or calls.
 Keyring code and integration do not exist. Live evaluation reads only
 `CLIPROXY_API_KEY` from the current process environment and uses exact
-`aihub-primary`.
+`aihub-primary`. `evaluate` owns offline specification, coverage, token, and
+deterministic native-artifact proof; it never reports the mock executor as
+behavioral evidence. `live` runs the transport/tool preflight and every
+discovered skill task and grader, then atomically publishes one complete result
+set only after all suites succeed.
 
 The first exception escapes with raw traceback and chained cause. CLI and
 orchestrators do not catch workflow failures. Validators stop at the first
@@ -83,6 +87,8 @@ publication propagate without normalization.
   must be rewired atomically; compatibility aliases are prohibited.
 - An invalid prerequisite prevents every effect, and an effect failure cannot
   be reported as a successful partial result.
+- Offline CI remains credential-independent and never claims live semantic
+  success; landing still requires the complete `live` workflow.
 - Source and AST gates must reject every superseded entry point, forbidden
   catch, aggregate validator, manual error translation, undeclared, competing,
   or error-triggered default, fallback, retry, and keyring consumer.
