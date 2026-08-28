@@ -80,6 +80,8 @@ verified on `dev`.
 | `a4fc1fe` | Cut projection configuration and its active consumers over to the strict v4 contract. |
 | `c05805e` | Reconciled active documentation and accepted ADR-0004 for the optionless fail-loud runtime. |
 | `322d695` | Added the eight central strict-execution rules and removed the positive keyring rule. |
+| `2156471` | Exterminated repository keyring/loaders and established required process-environment ownership. |
+| `ffc59d6` | Restricted catalog policy tags to the nine declared strict-execution policies. |
 
 ## Latest validation evidence
 
@@ -128,6 +130,19 @@ verified on `dev`.
 | `make test PYTEST_ARGS=tests/test_catalog.py` (RED) | 1 | Five failures proved the catalog rejected the new strict-policy namespace. |
 | `make test PYTEST_ARGS=tests/test_catalog.py` (GREEN) | 0 | 27 catalog tests passed; only the nine declared strict policy tags are accepted, without requiring incomplete parallel skill batches. |
 | `rg` semantic pre-edit scan for `agent-introspection-debugging` | 0 | The first reviewed bundle still authorizes retry/backoff/transient-recovery language, a `partial` result, and references three absent skill owners; correction is required in the canonical bundle/eval. |
+| Plan 1 central-tag owner recheck | 0 | The catalog now accepts exactly the nine declared `policy:*` tags; Plan 1 can proceed without a `POLICY_BASE_SHA`, and concurrent runtime/test changes remain excluded from its batch commits. |
+| Plan 1 `agent-introspection-debugging` owner edit | — | Added directly applicable strict policy tags, removed retry/fallback and absent-owner guidance, required one preflighted correction, and strengthened all three Waza roles. |
+| `make check SKILL=agent-introspection-debugging` (sandbox attempt) | 2 | `uv` could not create its configured cache temporary file on the read-only sandbox filesystem; no skill gate executed. |
+| `make check SKILL=agent-introspection-debugging` (approved run, interrupted observation) | not captured | Validation, exact Waza model, token budget, and repository-temp stages printed PASS; the turn interruption detached observation while `agentsctl normalize` was still running, so no final exit code is claimed. |
+| `make check SKILL=agent-introspection-debugging` | 0 | All 76 sources validated; `aihub-primary` had zero drift; the edited router measured 1,173/5,000 BPE tokens; repository temp, normalization, and descriptions were clean. |
+| `make spec SKILL=agent-introspection-debugging` (RED) | 2 | Coverage was 0/1 because no task exercised the description vocabulary `agent behavior, session recovery, tool debugging`; the eval owner must expose those activation facets. |
+| `make spec SKILL=agent-introspection-debugging` (GREEN) | 0 | Coverage is 1/1; the material happy-path task now covers agent behavior, session recovery, and tool debugging, and managed scratch was removed. |
+| Plan 1 `anti-phase-skip` owner edit | — | Added the directly exercised atomic, causal, fail-loud, no-fallback, preflight, and zero-residue tags; removed warning-as-blocker wording and made the fail-closed eval require the first missing prerequisite with zero transition effects. |
+| `make check SKILL=anti-phase-skip` (RED) | 2 | `Makefile:67` invoked the removed legacy `agentsctl validate --skill` route; the strict CLI raised `ValueError: agentsctl requires exactly one optionless verb` before any skill gate. Make/CLI are outside Plan 1 scope, so no bypass or retry was attempted. |
+| `.venv/bin/agentsctl help` after single-verb cutover | 0 | Printed exactly `help`, `doctor`, `check`, `sync`, `evaluate`, `secure`, `clean`, and `live`; no nested command or option is accepted. |
+| `make static` after single-CLI cutover | 0 | Ruff, format, Pyright, and Mypy passed with zero errors or warnings across 45 source files. |
+| `make test PYTEST_ARGS='tests/test_cli.py tests/test_security.py tests/test_agent_profiles.py tests/test_commands.py tests/test_required_environment.py'` | 0 | 108 focused tests passed; the old CLI surface and the parallel `agents-security` entry point/tests are absent. |
+| `git diff --check` after single-CLI cutover | 0 | No whitespace defects in the Plan 2 CLI/runtime/security unit or preserved concurrent work. |
 
 ## Machine-local reconciliation
 

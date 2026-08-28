@@ -2,10 +2,8 @@
 
 from __future__ import annotations
 
-import argparse
 import re
 import subprocess
-import sys
 import tomllib
 from dataclasses import asdict, dataclass
 from pathlib import Path
@@ -326,85 +324,3 @@ def audit(roots: tuple[Path, ...]) -> tuple[SecurityFinding, ...]:
             ),
         )
     return tuple(finding for path in documents for finding in validate_document(path))
-
-
-def build_parser() -> argparse.ArgumentParser:
-    """Build the security scanner command-line interface."""
-
-    parser = argparse.ArgumentParser(prog="agents-security")
-    commands = parser.add_subparsers(dest="command", required=True)
-    for name in ("inventory", "snyk"):
-        command = commands.add_parser(name)
-        command.add_argument("roots", nargs="+", type=Path)
-    return parser
-
-
-def _print_findings(result: SecurityInventory) -> int:
-    for finding in result.findings:
-        print(f"{finding.path}: {finding.code}: {finding.message}", file=sys.stderr)
-    if result.findings:
-        print(
-            f"FAIL: {len(result.findings)} blocking security inventory finding(s)",
-            file=sys.stderr,
-        )
-        return 1
-    return 0
-
-
-def _inventory_command(result: SecurityInventory) -> int:
-    status = _print_findings(result)
-    if status != 0:
-        return status
-    for route in result.routes:
-        scanner_input = route.scanner_input.relative_to(route.root).as_posix()
-        print(f"{route.manifest}: snyk: {scanner_input}")
-    print(
-        f"PASS: {len(result.routes)} tracked dependency manifest(s); "
-        f"{len(result.routes)} scanner route(s)"
-    )
-    return 0
-
-
-def _snyk_command(result: SecurityInventory) -> int:
-    status = _print_findings(result)
-    if status != 0:
-        return status
-    for route in result.routes:
-        try:
-            process = subprocess.run(route.command, cwd=route.root, check=False)
-        except FileNotFoundError:
-            print("FAIL: snyk executable is unavailable", file=sys.stderr)
-            return 127
-        if process.returncode != 0:
-            manifest = route.manifest.relative_to(route.root).as_posix()
-            print(
-                f"FAIL: snyk exited {process.returncode} for {manifest}",
-                file=sys.stderr,
-            )
-            return (
-                128 + abs(process.returncode)
-                if process.returncode < 0
-                else process.returncode
-            )
-    print(f"PASS: {len(result.routes)} Snyk scanner route(s) completed")
-    return 0
-
-
-def main(argv: list[str] | None = None) -> int:
-    """Run deterministic manifest inventory or its declared Snyk routes."""
-
-    args = build_parser().parse_args(argv)
-    try:
-        result = inventory(tuple(args.roots))
-    except SecurityInventoryError as error:
-        print(f"agents-security: {error}", file=sys.stderr)
-        return 2
-    if args.command == "inventory":
-        return _inventory_command(result)
-    if args.command == "snyk":
-        return _snyk_command(result)
-    raise AssertionError(args.command)
-
-
-if __name__ == "__main__":
-    raise SystemExit(main())

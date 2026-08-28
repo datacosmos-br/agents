@@ -1,15 +1,11 @@
 from __future__ import annotations
 
-import os
 import subprocess
 from pathlib import Path
-
-import pytest
 
 from agents_governance.security import (
     audit,
     inventory,
-    main,
     validate_document,
 )
 
@@ -141,48 +137,3 @@ def test_inventory_rejects_a_tracked_manifest_without_a_scanner_route(
 
     assert [item.code for item in result.findings] == ["missing-scanner-route"]
     assert result.findings[0].path == str(repository / "nested" / "package.json")
-
-
-def test_main_inventory_prints_deterministic_routes(
-    tmp_path: Path, capsys: pytest.CaptureFixture[str]
-) -> None:
-    repository = _repository(tmp_path / "repository", _python_project())
-
-    assert main(["inventory", str(repository)]) == 0
-
-    captured = capsys.readouterr()
-    assert captured.err == ""
-    assert captured.out == (
-        f"{repository / 'pyproject.toml'}: snyk: uv.lock\n"
-        "PASS: 1 tracked dependency manifest(s); 1 scanner route(s)\n"
-    )
-
-
-def test_main_snyk_executes_the_inventory_route_and_propagates_failure(
-    tmp_path: Path,
-    monkeypatch: pytest.MonkeyPatch,
-    capsys: pytest.CaptureFixture[str],
-) -> None:
-    repository = _repository(tmp_path / "repository", _python_project())
-    tools = tmp_path / "tools"
-    tools.mkdir()
-    log = tmp_path / "snyk.log"
-    executable = tools / "snyk"
-    executable.write_text(
-        "#!/bin/sh\n"
-        'printf "%s\\n" "$*" >> "$AGENTS_SECURITY_TEST_LOG"\n'
-        'exit "$AGENTS_SECURITY_TEST_EXIT"\n',
-        encoding="utf-8",
-    )
-    executable.chmod(0o755)
-    monkeypatch.setenv("PATH", f"{tools}{os.pathsep}{os.environ['PATH']}")
-    monkeypatch.setenv("AGENTS_SECURITY_TEST_LOG", str(log))
-    monkeypatch.setenv("AGENTS_SECURITY_TEST_EXIT", "17")
-
-    assert main(["snyk", str(repository)]) == 17
-
-    captured = capsys.readouterr()  # type: ignore[attr-defined]
-    assert "FAIL: snyk exited 17 for pyproject.toml" in captured.err
-    assert log.read_text(encoding="utf-8") == (
-        "test --file=uv.lock --dev --severity-threshold=low\n"
-    )

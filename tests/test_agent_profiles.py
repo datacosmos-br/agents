@@ -13,7 +13,6 @@ from agents_governance.agent_profiles import (
     audit_agent_profiles,
     render_agent,
 )
-from agents_governance.cli import main
 
 
 def _write_rule(root: Path) -> Path:
@@ -396,20 +395,6 @@ def test_agent_profile_audit_requires_physical_prompt_defense_owner(
     assert [(finding.path, finding.code) for finding in audit.findings] == [
         ("rules/security/prompt-defense.md", "agent-profile-rule-owner")
     ]
-
-
-def test_agentsctl_validate_reports_agent_profile_findings(
-    tmp_path: Path, capsys: pytest.CaptureFixture[str]
-) -> None:
-    _write_minimal_authority(tmp_path)
-    _write_profile(
-        tmp_path,
-        frontmatter=_valid_frontmatter("reviewer", extra="model: sonnet\n"),
-    )
-
-    assert main(["--root", str(tmp_path), "validate"]) == 1
-    stderr = capsys.readouterr().err
-    assert "agents/project-wide/reviewer.md: agent-profile-model:" in stderr
 
 
 @pytest.mark.parametrize(

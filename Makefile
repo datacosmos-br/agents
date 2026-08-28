@@ -143,7 +143,9 @@ descriptions: ## validate compact discovery keyword/nominal-phrase lists
 
 test: ## unit tests for agentsctl
 	$(call BANNER,test · agentsctl)
-	@uv run agentsctl temp run -- sh -eu -c 'uv run pytest --basetemp "$$TMPDIR/pytest" $(PYTEST_ARGS)'
+	@mkdir -p $(CURDIR)/.test-tmp/pytest
+	@uv run pytest --basetemp $(CURDIR)/.test-tmp/pytest $(PYTEST_ARGS)
+	@rmdir $(CURDIR)/.test-tmp/pytest
 
 preflight: ## prove selected model, auth, Responses transport, tools, and artifact
 	$(call BANNER,preflight · live Waza transport)

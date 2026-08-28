@@ -6,9 +6,7 @@ from pathlib import Path, PurePosixPath
 
 import pytest
 
-import agents_governance.cli as cli_module
 from agents_governance.catalog import Catalog
-from agents_governance.cli import main
 from agents_governance.command_evals import CommandEvalRole
 from agents_governance.commands import (
     CommandAdapterStatus,
@@ -487,98 +485,6 @@ def test_all_seven_canonical_commands_validate_without_a_registry() -> None:
         "security-triage",
     }
     assert all(command.body for command in audit.commands)
-
-
-def test_commands_cli_audits_renders_and_reports_unsupported_explicitly(
-    tmp_path: Path, capsys: pytest.CaptureFixture[str]
-) -> None:
-    _write_catalog_config(tmp_path)
-    _write_command(tmp_path)
-    _write_command_eval(tmp_path)
-
-    assert main(["--root", str(tmp_path), "commands", "audit"]) == 0
-    assert "PASS: 1 commands and 1 eval suites validated" in capsys.readouterr().out
-
-    assert (
-        main(
-            [
-                "--root",
-                str(tmp_path),
-                "commands",
-                "render",
-                "deploy-service",
-                "--provider",
-                "gemini",
-            ]
-        )
-        == 0
-    )
-    rendered = tomllib.loads(capsys.readouterr().out)
-    assert rendered["prompt"].endswith("Use {{args}} as the approved target.\n")
-
-    assert (
-        main(
-            [
-                "--root",
-                str(tmp_path),
-                "commands",
-                "render",
-                "deploy-service",
-                "--provider",
-                "codex",
-                "--max-tokens",
-                "10000",
-            ]
-        )
-        == 2
-    )
-    assert "UNSUPPORTED: Codex has no canonical command adapter" in (
-        capsys.readouterr().err
-    )
-
-
-def test_commands_cli_fails_when_semantic_eval_suite_is_missing(
-    tmp_path: Path, capsys: pytest.CaptureFixture[str]
-) -> None:
-    _write_catalog_config(tmp_path)
-    _write_command(tmp_path)
-
-    assert main(["--root", str(tmp_path), "commands", "audit"]) == 1
-    captured = capsys.readouterr()
-    assert captured.out == ""
-    assert "command-eval-directory" in captured.err
-
-
-def test_command_render_reports_bpe_runtime_failure_without_traceback(
-    tmp_path: Path,
-    capsys: pytest.CaptureFixture[str],
-    monkeypatch: pytest.MonkeyPatch,
-) -> None:
-    _write_catalog_config(tmp_path)
-    _write_command(tmp_path)
-
-    def unavailable_counter(_root: Path) -> object:
-        raise OSError("BPE runtime unavailable")
-
-    monkeypatch.setattr(cli_module, "waza_bpe_counter", unavailable_counter)
-
-    assert (
-        main(
-            [
-                "--root",
-                str(tmp_path),
-                "commands",
-                "render",
-                "deploy-service",
-                "--provider",
-                "gemini",
-            ]
-        )
-        == 1
-    )
-    captured = capsys.readouterr()
-    assert captured.out == ""
-    assert captured.err == "FAIL: BPE runtime unavailable\n"
 
 
 def test_global_validation_includes_command_skill_slug_collision(
