@@ -743,9 +743,7 @@ class Projector:
             )
         return destination.name
 
-    def _plans(
-        self, authorization: ProjectAuthorization
-    ) -> tuple[ProjectionPlan, ...]:
+    def _plans(self, authorization: ProjectAuthorization) -> tuple[ProjectionPlan, ...]:
         project = authorization.project
         project_selection = self._selection(authorization)
         dependencies = (
@@ -1209,9 +1207,7 @@ class Projector:
                     _discard_owned_tree(destination)
                 if source.content is None:
                     if source.source.is_file():
-                        shutil.copy2(
-                            source.source, destination, follow_symlinks=False
-                        )
+                        shutil.copy2(source.source, destination, follow_symlinks=False)
                     else:
                         shutil.copytree(source.source, destination, symlinks=True)
                 else:
@@ -1265,9 +1261,7 @@ class Projector:
 
     def _publish(self, staged: _StagedTarget) -> None:
         root = staged.state.plan.root
-        current = (
-            _tree_snapshot(root) if root.exists() or root.is_symlink() else None
-        )
+        current = _tree_snapshot(root) if root.exists() or root.is_symlink() else None
         if current != staged.state.snapshot:
             raise RuntimeError(f"projection changed after preflight: {root}")
         self._create_parent(staged)

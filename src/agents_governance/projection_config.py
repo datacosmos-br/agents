@@ -226,9 +226,7 @@ def _cell(
                         f"{event_label} UNSUPPORTED reason must start with "
                         "'UNSUPPORTED: '"
                     )
-                parsed_events[logical_event] = HookEvent(
-                    event_status, reason=reason
-                )
+                parsed_events[logical_event] = HookEvent(event_status, reason=reason)
                 continue
             _exact_fields(
                 event,
@@ -253,16 +251,16 @@ def _cell(
                 )
             selected = tuple(cast(list[str], native))
             if len(selected) != len(set(selected)):
-                raise ValueError(
-                    f"{event_label} native must contain unique names"
-                )
+                raise ValueError(f"{event_label} native must contain unique names")
             raw_coverage = event["coverage"]
             if not isinstance(raw_coverage, str):
                 raise TypeError(f"{event_label} coverage must be a string")
             coverage = HookCoverage(raw_coverage)
             raw_clients = event["clients"]
-            if not isinstance(raw_clients, list) or not raw_clients or not all(
-                isinstance(client, str) for client in raw_clients
+            if (
+                not isinstance(raw_clients, list)
+                or not raw_clients
+                or not all(isinstance(client, str) for client in raw_clients)
             ):
                 raise TypeError(
                     f"{event_label} clients must be a non-empty array of strings"

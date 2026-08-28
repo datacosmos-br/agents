@@ -196,7 +196,9 @@ def test_secure_targets_the_invocation_repository_and_passes_validated_environme
     assert storage_roots == [project]
     assert inventory_roots == [project]
     assert [cwd for _command, cwd, _env in calls] == [project, project, project]
-    assert all(environment["SNYK_TOKEN"] == "process-token" for *_, environment in calls)
+    assert all(
+        environment["SNYK_TOKEN"] == "process-token" for *_, environment in calls
+    )
     assert calls[-1][0] == route.command
 
 

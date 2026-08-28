@@ -357,9 +357,7 @@ def _antigravity_project_config(
     scripts: dict[str, Path],
 ) -> tuple[dict[str, object], dict[str, object]]:
     result = dict(current)
-    owned = _owned_json(AgentProvider.ANTIGRAVITY, events, scripts)[
-        "aihub-governance"
-    ]
+    owned = _owned_json(AgentProvider.ANTIGRAVITY, events, scripts)["aihub-governance"]
     result["aihub-governance"] = owned
     return result, {"aihub-governance": owned}
 
@@ -568,9 +566,7 @@ class HookProjector:
         assert cell.path is not None
         assert cell.events is not None
         config = _destination(boundary, cell.path, context)
-        default_config_mode = (
-            0o600 if context is ProjectionContext.PERSONAL else 0o644
-        )
+        default_config_mode = 0o600 if context is ProjectionContext.PERSONAL else 0o644
         manifest_path = _manifest_path(config)
         previous_manifest = _read_manifest(
             manifest_path, self.config.hook_manifest_version
@@ -858,8 +854,7 @@ class HookProjector:
             )
             if current != installed:
                 raise RuntimeError(
-                    "installed hook projection changed before rollback: "
-                    f"{destination}"
+                    f"installed hook projection changed before rollback: {destination}"
                 )
             if staged.backup.exists():
                 staged.backup.replace(destination)

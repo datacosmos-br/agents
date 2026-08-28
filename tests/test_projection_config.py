@@ -185,7 +185,9 @@ def test_hook_cell_requires_complete_native_event_mapping(tmp_path: Path) -> Non
         load_projection_config(tmp_path)
 
 
-def test_hook_event_requires_native_events_or_unsupported_reason(tmp_path: Path) -> None:
+def test_hook_event_requires_native_events_or_unsupported_reason(
+    tmp_path: Path,
+) -> None:
     payload = _matrix()
     event = payload["providers"]["claude"]["project"]["hooks"]["events"][  # type: ignore[index]
         "context_refresh"
