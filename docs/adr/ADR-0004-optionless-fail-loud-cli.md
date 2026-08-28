@@ -88,7 +88,9 @@ publication propagate without normalization.
 - An invalid prerequisite prevents every effect, and an effect failure cannot
   be reported as a successful partial result.
 - Offline CI remains credential-independent and never claims live semantic
-  success; landing still requires the complete `live` workflow.
+  success. An absent external token leaves its workflow `NOT EXECUTED` and does
+  not block landing; invoking that workflow selects its strict prerequisite and
+  any resulting failure remains red.
 - Source and AST gates must reject every superseded entry point, forbidden
   catch, aggregate validator, manual error translation, undeclared, competing,
   or error-triggered default, fallback, retry, and keyring consumer.

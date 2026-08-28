@@ -77,7 +77,10 @@ def test_additive_capability_rule_is_in_the_generated_session_capsule(
     hooks.apply(project)
 
     script = next((project / ".codex" / "aihub-hooks").glob("*.py"))
-    assert "Auxiliary tracking" in script.read_text(encoding="utf-8")
+    rendered = script.read_text(encoding="utf-8")
+    assert "Auxiliary tracking" in rendered
+    assert "strict execution" in rendered
+    assert "[strict execution](" not in rendered
 
 
 def test_sync_selects_projection_without_live_or_security(

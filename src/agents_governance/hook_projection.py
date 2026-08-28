@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import re
 import shlex
 import stat
 import tempfile
@@ -42,6 +43,7 @@ _OWNER = "agents-governance"
 _INSTRUCTIONS_BEGIN = "<!-- AIHUB-GOVERNANCE-INSTRUCTIONS-BEGIN -->"
 _INSTRUCTIONS_END = "<!-- AIHUB-GOVERNANCE-INSTRUCTIONS-END -->"
 _CAPSULE_PREFIX = "<!-- AIHUB-GOVERNANCE-CAPSULE v1 sha256:"
+_MARKDOWN_LINK = re.compile(r"\[([^\]\n]+)\]\([^)]+\)")
 
 
 class HookProjectionDriftError(RuntimeError):
@@ -137,7 +139,12 @@ def _capsule(
     ]
     for identity in governance.bootstrap_rules:
         sections.extend(
-            ("", f"## Rule `{identity}`", "", by_identity[identity].body.strip())
+            (
+                "",
+                f"## Rule `{identity}`",
+                "",
+                _MARKDOWN_LINK.sub(r"\1", by_identity[identity].body.strip()),
+            )
         )
     sections.extend(("", "## Capability indexes", ""))
     sections.append("Skills: " + ", ".join(governance.bootstrap_skills))

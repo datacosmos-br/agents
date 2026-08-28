@@ -27,7 +27,8 @@ produce a false green:
   against the configured physical checkout and an isolated generated tree;
 - credentials: execute from Bash, Zsh, Fish, and a direct subprocess using only
   the current process environment, without revealing values;
-- live model: exact `aihub-primary`, material grader, and explicit error paths.
+- live model, when its external-token workflow is selected: exact
+  `aihub-primary`, material grader, and explicit error paths.
 
 A runtime failure keeps the phase active at that stage. Correct its owner and
 rerun the invalidated runtime and gates; unit tests cannot override it and a
@@ -51,10 +52,12 @@ first lossy, misplaced, expanded-capability, or non-deterministic result.
 `agentsctl live` runs the transport/tool preflight followed by every discovered
 skill task and material grader. It validates the complete fresh result inventory
 and atomically publishes one current aggregate only after all suites succeed.
-An absent credential or any provider, executor, task, grader, timeout, or
-artifact failure leaves prior current evidence unchanged and keeps landing
-open. Credential-independent CI is still useful contribution evidence, but it
-never approves live skill semantics.
+Workflows that require an external token are not executed as offline landing
+gates. Once `agentsctl live` is explicitly selected, an absent credential or any
+provider, executor, task, grader, timeout, or artifact failure leaves prior
+current evidence unchanged and fails that workflow. Credential-independent CI
+is still useful contribution evidence, but it never approves live skill
+semantics.
 
 The following never prove success:
 
@@ -98,7 +101,7 @@ selected static instructions and native lifecycle hooks publish as one
 transaction. The verb accepts no CLI or environment target selection and has no
 personal mode.
 
-Make remains development support and gate composition. Its required surface is
+Make remains development support and gate composition. Its declared surface is
 discovered with `make help` and covers:
 
 ```text
@@ -137,9 +140,9 @@ first; a required rewrite is reviewed as an explicit source change.
 | Projection | Atomic personal plus authorized-project physical copies; unselected project writes nothing; ownership-safe cleanup; provider-native instructions/hooks; second apply changes nothing. |
 | Temp/storage | Exact manifest; physical registered checkout; `/tmp`, overlap, residue, symlink, special-file, and unknown deletion rejection. |
 | Credentials | Process environment only; required values fail immediately; no keyring code, 401, or secret output. |
-| Security | Deterministic tracked manifest inventory; every applicable scanner exits zero. |
+| Security | Deterministic tracked manifest inventory; selected scanners exit zero; absent-token workflows are `NOT EXECUTED`. |
 | CI | PRs to `dev` and all governance source paths execute required native stages. |
-| Live Waza | Exact `aihub-primary`; all catalog scenarios material; any service/model failure is red. |
+| Live Waza | When selected, exact `aihub-primary`; all catalog scenarios material; any service/model failure is red. Otherwise `NOT EXECUTED`. |
 
 ## Contradiction search
 
@@ -176,7 +179,8 @@ When Git execution is authorized:
 6. open/update a PR against the configured integration branch;
 7. resolve every conversation and required check and obtain independent approval;
 8. merge through a merge commit, not squash or rebase;
-9. validate runtime and complete gates on the exact integration merge SHA;
+9. validate runtime and complete applicable gates on the exact integration
+   merge SHA;
 10. remove only clean, reachable increment branches through safe deletion.
 
 Steps 7–9 are a correction loop, not a one-shot attempt. Every actionable check

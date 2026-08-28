@@ -22,8 +22,9 @@ not own. Cleanup based only on filename can destroy unrelated data.
 Canonical typed sources are rendered through provider-specific adapters into
 independent physical files. Every managed output is attributable through a
 generated ownership manifest and source digest. Unsupported combinations fail
-explicitly. Apply preserves foreign or ambiguous content and must reach a fixed
-point on the second unchanged run.
+explicitly. Apply preserves non-conflicting foreign physical content without
+adopting it, rejects collisions, symlinks, and modified managed content, and
+must reach a fixed point on the second unchanged run.
 
 The public apply is `agentsctl sync`. It accepts no option and derives the
 invocation directory's nearest physical `.git/` ancestor and the current

@@ -395,7 +395,7 @@ def test_foreign_symlink_is_preserved_and_blocks_projection(
     assert not tuple(project.rglob(".agents-stage.*"))
 
 
-def test_foreign_unknown_physical_entry_blocks_before_publication(
+def test_foreign_unknown_physical_entry_is_preserved_at_fixed_point(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     _, projector = _source(tmp_path)
@@ -406,12 +406,20 @@ def test_foreign_unknown_physical_entry_blocks_before_publication(
     foreign.write_text("preserve\n", encoding="utf-8")
     monkeypatch.chdir(project)
 
-    with pytest.raises(ValueError, match="unadjudicated projection divergence"):
-        projector.apply()
+    projector.apply()
+    projector.check()
 
     assert foreign.read_text(encoding="utf-8") == "preserve\n"
-    assert not (target / "project-guidance").exists()
-    assert not (target / Projector.MANIFEST).exists()
+    assert (target / "project-guidance" / "SKILL.md").is_file()
+    manifest = target / Projector.MANIFEST
+    assert manifest.is_file()
+    first = Catalog.physical_tree_contract(target)
+    manifest_mtime = manifest.stat().st_mtime_ns
+
+    projector.apply()
+
+    assert Catalog.physical_tree_contract(target) == first
+    assert manifest.stat().st_mtime_ns == manifest_mtime
     assert not tuple(project.rglob(".agents-stage.*"))
 
 

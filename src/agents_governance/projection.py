@@ -1091,17 +1091,6 @@ class Projector:
                 encoding="utf-8"
             ) != self._render_manifest(desired)
         expected = {source.name: source for source in plan.sources}
-        known = {*expected, *previous, self.MANIFEST}
-        with os.scandir(root) as entries:
-            unknown = sorted(entry.name for entry in entries if entry.name not in known)
-        if unknown:
-            destination = root / unknown[0]
-            raise ValueError(
-                "unadjudicated projection divergence: "
-                f"destination={destination}; current_owner=unproven; "
-                "disposition=preserve current object; operator decision required "
-                "before publication"
-            )
         for name, source in expected.items():
             destination = root / name
             metadata = previous.get(name)

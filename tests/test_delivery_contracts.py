@@ -126,3 +126,29 @@ def test_make_isolates_concurrent_pytest_invocations() -> None:
     assert "PYTEST_SCRATCH := $(CURDIR)/.test-tmp" in makefile
     assert "--basetemp $(PYTEST_SCRATCH)/pytest.$$PPID" in makefile
     assert ".test-tmp/pytest\n" not in makefile
+
+
+def test_external_token_workflows_are_not_offline_landing_gates() -> None:
+    makefile = (ROOT / "Makefile").read_text(encoding="utf-8")
+    ci_prerequisites = re.search(r"^ci:\s*([^#\n]*)", makefile, flags=re.MULTILINE)
+    assert ci_prerequisites is not None
+    assert "security" not in ci_prerequisites.group(1).split()
+    assert "validate-live" not in ci_prerequisites.group(1).split()
+
+    contracts = (
+        ROOT / "rules" / "architecture" / "engineering-core.md",
+        ROOT
+        / "skills"
+        / "agent-wide"
+        / "verification-loop"
+        / "references"
+        / "procedure.md",
+        ROOT / "docs" / "execution" / "master-v7" / "06-validation-and-landing.md",
+    )
+    for path in contracts:
+        text = path.read_text(encoding="utf-8").lower()
+        assert "external token" in text
+        assert "not executed" in text
+
+    validation_contract = contracts[-1].read_text(encoding="utf-8")
+    assert "keeps landing open" not in validation_contract

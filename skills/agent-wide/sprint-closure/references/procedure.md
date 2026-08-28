@@ -3,8 +3,11 @@
 ## Preflight
 
 Resolve the increment scope, integration branch, merged SHA, public runtime
-surface, native gates, generated owners, review and landing state, tracker mode,
-and every touched producer and consumer before changing closure state.
+surface, applicable native gates, generated owners, review and landing state,
+tracker mode, and every touched producer and consumer before changing closure
+state. Classify external-token workflows before invocation. If a token is
+absent, record the workflow as `NOT EXECUTED`; it supplies no green evidence but
+does not block the remaining closure contract.
 
 Missing, stale, conflicting, or inaccessible evidence stops at the first causal
 defect. Do not run a substitute command, infer a tracker endpoint, accept a
@@ -19,8 +22,9 @@ the increment is not done.
 
 All evidence must describe the same merged integration SHA:
 
-1. the repository-owned native gates, with command, working directory, exit
-   code, decisive output, and covered scope;
+1. the repository-owned applicable native gates, with command, working
+   directory, exit code, decisive output, and covered scope, plus each excluded
+   external-token workflow recorded as `NOT EXECUTED`;
 2. material use through the shipped public runtime surface;
 3. completed independent review and merged change record;
 4. canonical tracker closure when its runtime is available;

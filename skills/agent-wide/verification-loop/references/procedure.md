@@ -17,7 +17,12 @@ Before executing a gate or generated-owner effect, resolve and validate:
 - the ordered gate set required for the affected scope.
 
 Do not invent selectors, options, aliases, private entry points, or direct-tool
-substitutes. A missing or conflicting prerequisite stops with zero gate effects.
+substitutes. Resolve external-token workflows before invocation: when the token
+is absent, exclude the dormant workflow from the applicable set and record it
+as `NOT EXECUTED` because the external token is unavailable. This is not green
+evidence and cannot prove that workflow's semantics, but it does not block the
+remaining validation or landing. A missing or conflicting prerequisite for an
+applicable workflow stops with zero gate effects.
 
 ## Ordered evidence
 
@@ -42,6 +47,10 @@ the same active phase, not an unchanged retry or a handoff. Ask for help only
 when the remaining condition is external or requires authority the active task
 does not grant.
 
+Directly invoking an external-token workflow makes it applicable. Missing or
+invalid credentials then remain its raw first failure; never convert that
+attempt into the preflight exclusion above.
+
 Generated effects must stage on the destination filesystem, verify completely,
 and publish atomically. Cleanup may attach a secondary failure only while
 re-raising the original cause. Leave no generated or temporary residue.
@@ -50,9 +59,11 @@ re-raising the original cause. Leave no generated or temporary residue.
 
 For every attempted stage record the exact command, working directory, exit
 code, decisive output, artifact or runtime observation, timestamp where owned,
-and covered scope. Distinguish tests from public-surface proof. State the first
-failure and leave later stages unclaimed while fixing it; a report never advances
-the phase cursor.
+and covered scope. For every excluded external-token workflow, record `NOT
+EXECUTED`, the absent prerequisite by name without its value, and the
+operator-authorized applicability rule. Distinguish tests from public-surface
+proof. State the first failure and leave later stages unclaimed while fixing it;
+a report never advances the phase cursor.
 
 The final claim cannot exceed the common scope of the fresh evidence. Local or
 branch-only green cannot be called an implementation completion while required

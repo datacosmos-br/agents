@@ -106,6 +106,12 @@ corpus succeeds. Missing credentials, transport errors, task failures, grader
 failures, timeouts, and incomplete artifacts remain raw failures; no partial
 result becomes current.
 
+External-token workflows are auxiliary gates. When their token is absent, they
+remain unselected and are recorded as `NOT EXECUTED`; this is not green evidence
+for scanner or live semantics and does not block offline CI, Git landing, or
+post-merge proof. Invoking `secure` or `live` selects that workflow, so its
+credential becomes mandatory and every failure above remains strict.
+
 These are optionless single verbs. They accept no flags, positional arguments,
 mode selectors, JSON switches, or compatibility aliases. Each verb loads and
 validates every prerequisite it needs before its first effect. The first

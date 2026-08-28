@@ -13,8 +13,8 @@ For every implementation:
 4. Apply SOLID only to a responsibility or dependency boundary under change.
 5. Implement through the owner and simplify without weakening behavior.
 6. Remove duplication and god components; recheck YAGNI, SSOT, SOLID.
-7. Exercise runtime behavior, run every native gate, and complete the approved
-   landing cycle before changing phase.
+7. Exercise runtime behavior, run every applicable native gate, and complete
+   the approved landing cycle before changing phase.
 
 At a cross-boundary failure, prove the producer contract and output. Fix its
 owner when invalid or the receiver when it conforms. Never alter a correct
@@ -29,6 +29,11 @@ Auxiliary capabilities apply only when authorized and selected; installation
 never selects. Do not load, probe, or gate dormant capabilities. Invalid
 selected authorization, configuration, readiness, or result fails without
 fallback. Require only non-derivable values.
+
+An external token validation without its token is not executed and is recorded
+as `NOT EXECUTED`, never green; it does not block offline gates, landing, or
+post-merge proof. Direct invocation selects it: the token becomes required and
+any failure escapes without skip, catch, fallback, or normalization.
 
 Compose with [generalized ownership](generalized-abstraction.md),
 [strict execution](../runtime/strict-execution.md),

@@ -133,8 +133,8 @@ Complete the related root contracts:
   execution, or accepted risk. Canonical calculated defaults resolve once at
   their typed owner and are omitted from consumers.
 
-Exit: representative runtime precedes and passes the complete native gates;
-every accepted defect has a regression test and global same-class search.
+Exit: representative runtime precedes and passes the complete applicable native
+gates; every accepted defect has a regression test and global same-class search.
 
 ## Phase 5 — Projection, live model, and landing
 
@@ -142,15 +142,18 @@ every accepted defect has a regression test and global same-class search.
    supported personal and authorized project matrix cell plus provider-native
    lifecycle configuration, validate a project without authorization as a zero-
    output non-target, then invoke unchanged cases again and prove fixed point.
-2. Run complete offline Waza, command, agent, rule, static, test, build,
-   security, storage, and projection gates.
-3. Only then select exact `aihub-primary` through the single model owner and run
-   live Waza. Auth, quota, HTTP 402, timeout, grader, and model failures remain
-   red and cannot select another model.
+2. Run complete offline Waza, command, agent, rule, static, test, build, storage,
+   projection, and every applicable security gate.
+3. When its external token is present and the workflow is selected, use exact
+   `aihub-primary` through the single model owner and run live Waza. Otherwise
+   record it as `NOT EXECUTED`; it is not green and does not block landing. Once
+   invoked, auth, quota, HTTP 402, timeout, grader, and model failures remain red
+   and cannot select another model.
 4. Complete review and merge-commit landing into the configured integration
    branch after current integration is merged into the work lane with
    `--no-ff` when divergent.
-5. Validate runtime and complete gates on the resulting integration merge SHA.
+5. Validate runtime and complete applicable gates on the resulting integration
+   merge SHA.
 Exit: implementation is merged and verified on integration, projections are at
 fixed point, and no current-increment branch/projection residue remains. State
 is `LANDED_VERIFIED` while tracker closure is suspended. The physical source

@@ -28,6 +28,9 @@ graders:
       trigger coverage, or reporting a red result as a handoff. A failed stage
       must stop that invocation, drive owner correction, and rerun invalidated
       stages in the same phase without an unchanged retry or alternate gate.
+      External-token workflows excluded before invocation must be recorded as
+      NOT EXECUTED and never treated as green or as a landing blocker; once
+      invoked, their missing credential or runtime failure remains red.
 - type: behavior
   name: bounded_execution
   config: {max_duration_ms: 240000}

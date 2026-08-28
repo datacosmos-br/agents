@@ -172,16 +172,18 @@ docs, templates, prompts, and generated provider instructions.
 - Run focused runtime checks, then every native offline gate. A host or fork
   without Cliproxy credentials remains able to contribute and run offline CI;
   that absence never selects a fallback or yields live evidence.
-- Before landing, run the complete Cliproxy-backed `agentsctl live` corpus. If
-  its current-process credential or service is unavailable, keep the increment
-  open at that exact external condition; never waive, skip, or reinterpret the
-  live gate as green.
+- When its external token is present and the live workflow is selected, run the
+  complete Cliproxy-backed `agentsctl live` corpus. Otherwise record it as `NOT
+  EXECUTED`; it provides no live evidence and does not block landing. Never
+  reinterpret that exclusion as green or convert a failure after invocation
+  into an exclusion.
 - When tracker/orchestration runtimes are restored, run standalone Beads, one
   Gas City rig, fork without opt-in, fork with opt-in, and outage canaries.
 
-**Exit condition:** runtime, every offline gate, and the complete live corpus are
-green with zero removed-contract residue. Authorized Git/PR integration must
-complete; `DONE` remains unavailable until tracker closure exists.
+**Exit condition:** applicable runtime and every offline gate are green with
+zero removed-contract residue; each excluded external-token workflow is `NOT
+EXECUTED`. Authorized Git/PR integration must complete; `DONE` remains
+unavailable until tracker closure exists.
 
 ## Test skeletons
 
@@ -198,6 +200,6 @@ complete; `DONE` remains unavailable until tracker closure exists.
   assertions.
 - **Early proof:** the always-on rule appears once in the governance bootstrap
   and generated capsule.
-- **Final proof:** applicable runtime, complete native gates, fixed-point
-  projections, contradiction search, reviewed integration SHA, and tracker
-  closure when restored.
+- **Final proof:** applicable runtime, complete applicable native gates,
+  fixed-point projections, contradiction search, reviewed integration SHA, and
+  tracker closure when restored.

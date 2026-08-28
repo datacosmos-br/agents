@@ -22,7 +22,10 @@ delivery-blocking defect.
 
 At entry, identify the bounded value unit, canonical owner, authorized scope,
 configured integration branch, real runtime surface, native gates, projection
-owners, security gates, PR requirements, tracker owner, and exact exit criteria.
+owners, applicable security and external-token gates, PR requirements, tracker
+owner, and exact exit criteria. Record an external-token workflow as `NOT
+EXECUTED` when its token is absent before selection; it is not green evidence
+and does not block the remaining cycle. Direct invocation makes it applicable.
 If any item is unknown, the phase is blocked until it is resolved; never invent
 a command, branch, tracker, or substitute record.
 
@@ -40,9 +43,10 @@ Complete these steps in order, repeating invalidated evidence after every edit:
    fallback, compatibility, generated, test, fixture, and documentation paths.
 3. Exercise the changed behavior through its real public runtime surface on the
    working branch. A mock, import-only smoke test, or static check is insufficient.
-4. Run the repository's complete native unit, integration, static, type, build,
-   shell, security, generation, and projection fixed-point gates. Missing tools,
-   warnings, skips, empty reports, and partial scans are red.
+4. Run the repository's complete applicable native unit, integration, static,
+   type, build, shell, security, generation, and projection fixed-point gates.
+   Missing tools, warnings, skips inside an invoked workflow, empty reports, and
+   partial scans are red.
 5. Fetch the configured integration branch and incorporate its current state
    through the repository-approved non-destructive merge flow. Resolve concurrent
    work semantically, then repeat runtime and every affected gate.
@@ -66,8 +70,10 @@ Runtime validation is mandatory before general gates, after integration changes,
 and after merge on the integration SHA. It must call the shipped CLI, API,
 service, daemon, or import surface with representative input and verify the
 material artifact or state transition. Authentication, quota, timeout, missing
-dependency, or unavailable service remains a loud nonzero failure; never select
-an alternate runtime or declare tests equivalent.
+dependency, or unavailable service in an invoked workflow remains a loud
+nonzero failure; never select an alternate runtime or declare tests equivalent.
+An external-token runtime excluded during applicability preflight is reported
+as not executed and supplies no runtime evidence of its own.
 
 ## Blocking and suspension
 
@@ -91,6 +97,7 @@ adopted, integrated, and revalidated by the owner before closure.
 ## Completion statement
 
 The final phase report lists the integration SHA, real-runtime commands before
-and after merge, every native gate and exit code, PR approval/merge evidence,
-residue checks, and tracker closure. Any missing row must say `OPEN` or `BLOCKED`;
-never use `DONE`, “complete,” or an equivalent success claim.
+and after merge, every applicable native gate and exit code, every excluded
+external-token workflow as `NOT EXECUTED`, PR approval/merge evidence, residue
+checks, and tracker closure. Any missing row must say `OPEN` or `BLOCKED`; never
+use `DONE`, “complete,” or an equivalent success claim.

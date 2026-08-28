@@ -28,6 +28,8 @@ graders:
       behavior, or a closure claim without
       integration evidence. Every actionable open row must be corrected and
       revalidated inside the same increment before another increment begins.
+      Accept an external-token workflow as NOT EXECUTED without calling it green
+      or blocking closure; once invoked, require its raw failure to block.
 - type: behavior
   name: bounded_execution
   config: {max_duration_ms: 240000}

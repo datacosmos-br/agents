@@ -10,5 +10,5 @@ inputs:
   files:
   - path: phase-state.yaml
 expected:
-  output_contains: [critical, fix, revalidate, runtime, approved PR, merged, integration SHA, tracker closure]
+  output_contains: [critical, fix, revalidate, runtime, approved PR, merged, integration SHA, tracker closure, NOT EXECUTED]
   output_not_contains: [implementation complete, DONE, proceed to the next task, report and move on]

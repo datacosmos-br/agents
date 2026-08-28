@@ -33,7 +33,10 @@ graders:
       actionable review findings must be corrected and revalidated inside the
       same phase; missing approval stays active until solicited or escalated after
       all technical work is green. On an incomplete contract, require the first
-      missing prerequisite and zero phase-transition or substitute-tracker effects.
+      missing prerequisite and zero phase-transition or substitute-tracker
+      effects. An absent external-token workflow recorded as NOT EXECUTED is not
+      green but does not block the otherwise applicable phase cycle; failure
+      after invocation remains red.
 - type: behavior
   name: bounded_execution
   config: {max_duration_ms: 240000}

@@ -3,6 +3,8 @@
 - Integration SHA: `7ac912e` on `dev`.
 - Runtime: `agentsctl check`, exit 0, `PASS: 78 skills validated`.
 - Native gates: exit 0, zero warnings.
+- External-token gates: unavailable before selection and recorded as `NOT
+  EXECUTED`; no scanner or live-semantic green claim is made.
 - Residue audit: zero dead or compatibility code; all consumers and tests use
   the new contract; no increment worktree remains.
 - PR 42: merged into `dev` by merge commit.

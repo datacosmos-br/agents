@@ -2,6 +2,9 @@ phase: bounded-storage-runner
 implementation: committed
 branch_runtime: not_run
 native_tests: passed_before_latest_edit
+external_token_gates:
+  state: NOT EXECUTED
+  reason: current_process_tokens_absent
 integration_update: missing
 pull_request:
   state: open

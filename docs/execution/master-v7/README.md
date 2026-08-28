@@ -54,8 +54,9 @@ runtime evidence, full provider evidence, offline/live Waza results, integrated
 gates, review, merge, and post-merge validation remain open.
 
 The target is therefore not another inventory migration. It is one complete
-cutover from the current work-lane state to strict typed owners, provider-native physical
-rendering, complete offline and live gates, and integration-lane runtime proof.
+cutover from the current work-lane state to strict typed owners, provider-native
+physical rendering, complete offline gates, applicable external-token gates,
+and integration-lane runtime proof.
 Counts remain discovered consequences, never quota targets. Re-run discovery
 after every owner change and fail on an unknown, duplicate, unreachable, or
 unclassified artifact; never coerce one into a category to preserve a count.

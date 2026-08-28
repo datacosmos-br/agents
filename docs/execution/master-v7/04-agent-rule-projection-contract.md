@@ -201,8 +201,9 @@ activation evidence, logical digest, physical digest, and adapter version.
 - Every managed output records source type, slug, digest, adapter version, and
   destination in an ownership manifest generated from discovery.
 - Apply removes a stale output only when the prior manifest proves ownership.
-  Foreign, unknown, symlinked, or locally modified content is preserved and
-  makes the apply fail for operator resolution.
+  Non-conflicting foreign physical content is preserved without adoption.
+  A foreign collision, symlink, or locally modified managed output is preserved
+  and makes the apply fail for operator resolution.
 - The second unchanged apply must produce zero semantic and filesystem changes.
 - Every target is preflighted before staging. All changed targets are staged on
   their destination filesystem before publication. A later target failure

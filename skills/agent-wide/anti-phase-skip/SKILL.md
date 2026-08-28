@@ -16,10 +16,14 @@ and runtime failures that green unit tests cannot expose.
 Activate before changing tasks, advancing a plan phase, handing off, or claiming
 completion. Read the [complete procedure](references/procedure.md).
 
-A phase cannot be DONE until implementation, real runtime, native gates,
+A phase cannot be DONE until implementation, real runtime, applicable native gates,
 integration update, commit, push, approved and merged PR, post-merge runtime,
 zero residue, and canonical tracker closure all have fresh evidence. Missing one
 step keeps the same phase open.
+
+An external-token validation excluded before invocation is recorded as `NOT
+EXECUTED`, not green, and does not become a missing phase step. If invoked, it
+is applicable and any credential or runtime failure remains red.
 
 Only an explicit operator decision may pause, reorder, or replace a phase. A
 failed check, actionable review, open PR, pending approval, or merge conflict is

@@ -69,15 +69,17 @@ ownership conflicts.
 Fix all accepted review defects, exterminate keyring and its complete consumer
 graph, require credentials directly from the process environment, and complete
 storage/security contracts. Validate the optionless fail-loud
-CLI/process/shell/projection runtime before complete gates. Do not use a live
-model to make offline/unit/integration gates pass.
+CLI/process/shell/projection runtime before complete applicable gates. Do not
+use a live model to make offline/unit/integration gates pass.
 
 ### A5 — Projection, model, and landing
 
-Prove personal and isolated-project fixed points, run complete offline gates,
-then use exact `aihub-primary` for the live gate. Complete authorized review and
-merge-commit landing. The physical move to `~/agents` belongs to a separately
-approved future increment and is prohibited here.
+Prove personal and isolated-project fixed points and run complete offline gates.
+When its external token is present and the workflow is selected, use exact
+`aihub-primary` for the live gate; otherwise record it as `NOT EXECUTED`, never
+green. Complete authorized review and merge-commit landing. The physical move
+to `~/agents` belongs to a separately approved future increment and is
+prohibited here.
 
 ## Required repository gates
 
