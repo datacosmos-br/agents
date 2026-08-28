@@ -13,9 +13,15 @@ verified on `dev`.
 - Branch: `feat/agents-skill-distribution`
 - Integration branch: `dev`
 - Tracker/orchestration runtime: suspended; do not invoke it
-- Current owner unit: Plan 2 central strict-policy baseline implemented and
-  focused rule gates green in the worktree; keyring/runtime extermination is
-  next. The parallel skills plan is independently owned and outside this lane.
+- Current owner unit: Plan 1 skills strict-execution preflight, explicitly
+  requested by the operator in the existing checkout, is `BLOCKED` before the
+  first skill mutation. The catalog rejects the plan's mandatory `policy:*`
+  namespace, and the required optionless public runtime/gate surface is not yet
+  implemented; both owners are outside Plan 1's write boundary.
+- Concurrent out-of-scope state: Plan 2 published the central strict-policy
+  baseline and has removed the repository keyring/environment-loader code,
+  entrypoints, tests, and Waza consumer graph in its worktree. Existing hook
+  work remains preserved and excluded from both owners' current commits.
 
 ## Operator corrections
 
@@ -60,6 +66,7 @@ verified on `dev`.
 | `7663ce0` | Normalized all 62 agent profiles to semantic capabilities and added provider-specific adapters without capability fallbacks. |
 | `a4fc1fe` | Cut projection configuration and its active consumers over to the strict v4 contract. |
 | `c05805e` | Reconciled active documentation and accepted ADR-0004 for the optionless fail-loud runtime. |
+| `322d695` | Added the eight central strict-execution rules and removed the positive keyring rule. |
 
 ## Latest validation evidence
 
@@ -95,11 +102,20 @@ verified on `dev`.
 | `make static` after projection v4 consumer cutover | 0 | Ruff, format, Pyright, and Mypy passed with zero errors or warnings across 45 source files. |
 | Plan-first boundary inspection | 0 | Clean worktree at `a4fc1fe`; the first mutation created only the two standalone strict-execution plans. |
 | Strict-plan startup-prerequisite residue search | 0 | Both active Plan 1 surfaces contained no removed startup prerequisite. |
+| `rg -n --hidden --glob '!.git/**' 'POLICY_BASE[_]SHA' .` | 1 | No output; ripgrep's no-match status proves the literal identifier is absent from the checkout outside `.git`. |
 | `git diff --check` after Plan 2 documentation reconciliation | 0 | Root instructions, README, master v7, ADRs, and security evidence contain no whitespace defects. |
 | Legacy CLI contradiction search outside historical ledger | 0 | No active documentation contains nested `agentsctl` runtime commands, CLI options, `APPLY=Y`, `PROJECT_ROOTS`, or `SCOPE` selectors. |
 | `make help` diagnostic before Make cutover | 0 | The current Make surface still advertises legacy option-bearing runtime routes; Make/CLI implementation remains intentionally red for the later Plan 2 owner unit. |
 | `make test PYTEST_ARGS='tests/test_rules.py tests/test_rule_adapters.py tests/test_delivery_contracts.py'` | 0 | 59 rule discovery, provider rendering, and delivery-contract tests passed after the eight strict central policies were added and the keyring rule removed. |
 | `git diff --check` after central strict-policy cutover | 0 | No whitespace defects in the policy unit. |
+| `make help` before Plan 1 skill mutation | 0 | The advertised focused gates still route through legacy option-bearing/private `agentsctl` commands owned by Plan 2. |
+| `.venv/bin/agentsctl help` | 2 | `help` is rejected; the installed facade exposes legacy commands instead of the required eight optionless verbs. |
+| Catalog policy-tag namespace inspection | 0 | `src/agents_governance/catalog.py` allows no `policy` namespace, so mandatory `policy:strict-execution` would fail canonical skill validation. |
+| Plan 1 policy-tag residue search | 0 | No strict policy tag is currently present under `skills/**` or skill evals; the command explicitly converted ripgrep's expected no-match status into successful inspection evidence. |
+| `make test PYTEST_ARGS=tests/test_required_environment.py` (RED) | 2 | Collection failed because the strict process-environment owner did not yet exist. |
+| `make test PYTEST_ARGS='tests/test_required_environment.py tests/test_waza_environment.py tests/test_waza_config.py'` (GREEN) | 0 | 27 direct-environment and Waza-owner tests passed after removing loaders and keyring consumers. |
+| `make static` after repository keyring extermination | 0 | Ruff, format, Pyright, and Mypy passed with zero errors or warnings across 44 source files. |
+| Repository keyring/runtime-loader residue gate | 0 | Removed console binaries are absent and no keyring, secret-tool, environment-loader, or Waza-keyring reference remains in active source, tests, config, Make, workflows, commands, agents, or tracked hooks. |
 
 ## Machine-local reconciliation
 
@@ -117,7 +133,10 @@ the repository-scoped temp audit now passes.
 
 ## Open boundary
 
-The increment remains open. Central-policy authority, runtime strict extermination, projection v4 activation semantics, agent/rule evals, offline/live Waza,
+The increment remains open. Plan 1 cannot mutate its first skill until Plan 2
+adds the central `policy:*` vocabulary to the catalog and replaces the legacy
+runtime/gate calls with the required optionless public facade. Runtime strict
+extermination beyond the removed keyring/loader graph, projection v4 activation semantics, agent/rule evals, offline/live Waza,
 the complete native gate matrix, resolution of the global temp findings,
 integration merge, independent review, merge commit, post-merge validation, and
 tracker closure are not yet evidenced.

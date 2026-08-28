@@ -55,7 +55,7 @@ setup: ## idempotent project bootstrap (waza init + env sanity)
 	@uv sync --all-groups
 	@uv tool install --reinstall --offline --link-mode clone .
 	@waza init --no-skill >/dev/null && echo "  waza init: ok"
-	@$(WAZA_KEYRING_EXEC) sh -c 'test -n "$$CLIPROXY_API_KEY"' && echo "  judge credentials: available"
+	@$(WAZA_AUTHENTICATED) sh -eu -c 'printf "%s\n" "  judge credentials: available"'
 	@printf '  judge model: ' && uv run agentsctl waza-config --model
 
 audit: ## deterministic inventory; APPLY=Y refreshes skills.lock.json
