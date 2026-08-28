@@ -1,29 +1,104 @@
 {
-  "version": 3,
-  "surfaces": {
-    "rules": {
-      "personal": {"entries": ["security"]},
-      "project_generic": {"entries": []}
-    }
-  },
-  "personal_targets": {
-    "claude": {"skills": "${HOME}/.claude/skills", "commands": {"provider": "claude", "path": "${HOME}/.claude/commands"}, "rules": "${HOME}/.claude/rules"},
-    "codex": {"skills": "${HOME}/.codex/skills", "rules": "${HOME}/.codex/rules"},
-    "cursor": {"skills": "${HOME}/.cursor/skills"},
-    "gemini": {"skills": "${HOME}/.gemini/skills", "commands": {"provider": "gemini", "path": "${HOME}/.gemini/commands"}},
-    "opencode": {"skills": "${HOME}/.config/opencode/skills", "commands": {"provider": "opencode", "path": "${HOME}/.config/opencode/commands"}},
-    "copilot": {"skills": "${HOME}/.copilot/skills", "commands": {"provider": "copilot", "path": "${HOME}/.claude/commands"}},
-    "antigravity": {"skills": "${HOME}/.gemini/antigravity/skills"}
-  },
-  "projects": {
-    "skills_path": ".agents/skills",
-    "command_targets": {
-      "claude": {"path": ".claude/commands"},
-      "copilot": {"path": ".claude/commands"},
-      "cursor": {"path": ".cursor/commands"},
-      "gemini": {"path": ".gemini/commands"},
-      "opencode": {"path": ".opencode/commands"}
+  "version": 4,
+  "manifest_version": 4,
+  "providers": {
+    "claude": {
+      "personal": {
+        "skills": {"status": "SUPPORTED", "path": "${HOME}/.claude/skills"},
+        "commands": {"status": "SUPPORTED", "path": "${HOME}/.claude/commands"},
+        "agents": {"status": "SUPPORTED", "path": "${HOME}/.claude/agents"},
+        "rules": {"status": "SUPPORTED", "path": "${HOME}/.claude/rules"}
+      },
+      "project": {
+        "skills": {"status": "SUPPORTED", "path": ".claude/skills"},
+        "commands": {"status": "SUPPORTED", "path": ".claude/commands"},
+        "agents": {"status": "SUPPORTED", "path": ".claude/agents"},
+        "rules": {"status": "SUPPORTED", "path": ".claude/rules"}
+      }
     },
-    "rules_path": ".agents/rules"
+    "codex": {
+      "personal": {
+        "skills": {"status": "SUPPORTED", "path": "${HOME}/.agents/skills"},
+        "commands": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: Codex custom prompts are retired in favor of skills"},
+        "agents": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: Codex custom-agent TOML has no capability allowlist"},
+        "rules": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: .codex/rules is Starlark command policy, not Markdown instructions"}
+      },
+      "project": {
+        "skills": {"status": "SUPPORTED", "path": ".agents/skills"},
+        "commands": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: Codex custom prompts are retired in favor of skills"},
+        "agents": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: Codex custom-agent TOML has no capability allowlist"},
+        "rules": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: Codex project instructions require a whole AGENTS.md owner"}
+      }
+    },
+    "cursor": {
+      "personal": {
+        "skills": {"status": "SUPPORTED", "path": "${HOME}/.cursor/skills"},
+        "commands": {"status": "SUPPORTED", "path": "${HOME}/.cursor/commands"},
+        "agents": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: Cursor subagents expose readonly only, not a capability allowlist"},
+        "rules": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: Cursor personal rule files have no documented typed metadata contract"}
+      },
+      "project": {
+        "skills": {"status": "SUPPORTED", "path": ".cursor/skills"},
+        "commands": {"status": "SUPPORTED", "path": ".cursor/commands"},
+        "agents": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: Cursor subagents expose readonly only, not a capability allowlist"},
+        "rules": {"status": "SUPPORTED", "path": ".cursor/rules"}
+      }
+    },
+    "copilot": {
+      "personal": {
+        "skills": {"status": "SUPPORTED", "path": "${HOME}/.copilot/skills"},
+        "commands": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: Copilot commands reuse Claude paths and lose provider ownership"},
+        "agents": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: GitHub Copilot CLI is not installed"},
+        "rules": {"status": "SUPPORTED", "path": "${HOME}/.copilot/instructions"}
+      },
+      "project": {
+        "skills": {"status": "SUPPORTED", "path": ".github/skills"},
+        "commands": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: Copilot commands reuse Claude paths and lose provider ownership"},
+        "agents": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: GitHub Copilot CLI is not installed"},
+        "rules": {"status": "SUPPORTED", "path": ".github/instructions"}
+      }
+    },
+    "gemini": {
+      "personal": {
+        "skills": {"status": "SUPPORTED", "path": "${HOME}/.gemini/skills"},
+        "commands": {"status": "SUPPORTED", "path": "${HOME}/.gemini/commands"},
+        "agents": {"status": "SUPPORTED", "path": "${HOME}/.gemini/agents"},
+        "rules": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: Gemini personal instructions require one whole GEMINI.md owner"}
+      },
+      "project": {
+        "skills": {"status": "SUPPORTED", "path": ".gemini/skills"},
+        "commands": {"status": "SUPPORTED", "path": ".gemini/commands"},
+        "agents": {"status": "SUPPORTED", "path": ".gemini/agents"},
+        "rules": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: Gemini project instructions require one whole GEMINI.md owner"}
+      }
+    },
+    "opencode": {
+      "personal": {
+        "skills": {"status": "SUPPORTED", "path": "${HOME}/.config/opencode/skills"},
+        "commands": {"status": "SUPPORTED", "path": "${HOME}/.config/opencode/commands"},
+        "agents": {"status": "SUPPORTED", "path": "${HOME}/.config/opencode/agents"},
+        "rules": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: OpenCode global instructions require one whole AGENTS.md owner"}
+      },
+      "project": {
+        "skills": {"status": "SUPPORTED", "path": ".opencode/skills"},
+        "commands": {"status": "SUPPORTED", "path": ".opencode/commands"},
+        "agents": {"status": "SUPPORTED", "path": ".opencode/agents"},
+        "rules": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: OpenCode project instructions require one whole AGENTS.md owner"}
+      }
+    },
+    "antigravity": {
+      "personal": {
+        "skills": {"status": "SUPPORTED", "path": "${HOME}/.gemini/antigravity-cli/skills"},
+        "commands": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: Antigravity has no documented custom-command file contract"},
+        "agents": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: Antigravity agent MCP tool identity is not documented for the complete catalog"},
+        "rules": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: Antigravity personal rules require one whole GEMINI.md owner"}
+      },
+      "project": {
+        "skills": {"status": "SUPPORTED", "path": ".agents/skills"},
+        "commands": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: Antigravity has no documented custom-command file contract"},
+        "agents": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: Antigravity agent MCP tool identity is not documented for the complete catalog"},
+        "rules": {"status": "SUPPORTED", "path": ".agents/rules"}
+      }
+    }
   }
 }

@@ -729,7 +729,7 @@ class Catalog:
 
     @staticmethod
     def digest_tree(directory: Path) -> str:
-        """Return the manifest-v2 content identity after physical validation."""
+        """Return the deterministic content identity after physical validation."""
 
         Catalog.physical_tree_contract(directory)
         digest = hashlib.sha256()

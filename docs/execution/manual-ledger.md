@@ -40,6 +40,7 @@ verified on `dev`.
 | `5389b9c` | Fixed static typing and persistent managed test scratch. |
 | `d849c6f` | Connected `agentsctl audit` to the catalog-owned inventory lock check/write contract. |
 | `964b23e` | Replaced generic routers, removed the legacy lock, and regenerated the canonical inventory lock. |
+| `7663ce0` | Normalized all 62 agent profiles to semantic capabilities and added provider-specific adapters without capability fallbacks. |
 
 ## Latest validation evidence
 
@@ -70,6 +71,9 @@ verified on `dev`.
 | `make test PYTEST_ARGS=tests/test_agent_profiles.py` | 0 | 43 passed; canonical capabilities and Claude/Gemini/OpenCode adapters are covered. |
 | `make static` after agent capability cutover | 0 | Ruff, format, Pyright, and Mypy passed with zero errors or warnings. |
 | `.venv/bin/agentsctl validate` | 0 | 76 skills and the strict agent-profile schema validated. |
+| Focused projection v4 tests | 0 | 73 passed across projection, CLI, and strict 56-cell configuration coverage. |
+| Projection v3 residue search | 0 | No v3 target keys, dual-read helpers, manifest-v2 wording, or Copilot-to-Claude adapter identity remain under `src`, `tests`, or `config`. |
+| `make static` after projection v4 consumer cutover | 0 | Ruff, format, Pyright, and Mypy passed with zero errors or warnings across 45 source files. |
 
 ## Machine-local reconciliation
 
@@ -87,7 +91,7 @@ the repository-scoped temp audit now passes.
 
 ## Open boundary
 
-The increment remains open. Projection v4, agent/rule evals, offline/live Waza,
+The increment remains open. Projection v4 activation semantics, agent/rule evals, offline/live Waza,
 the complete native gate matrix, resolution of the global temp findings,
 integration merge, independent review, merge commit, post-merge validation, and
 tracker closure are not yet evidenced.

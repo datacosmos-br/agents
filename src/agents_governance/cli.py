@@ -7,6 +7,7 @@ import json
 import sys
 from pathlib import Path
 
+from .agent_profiles import AgentProvider
 from .atomic_io import atomic_write_text
 from .catalog import Catalog
 from .cleanup import clean_generated
@@ -191,12 +192,13 @@ def _project(
     target: str | None,
     surface: str,
     project_roots: tuple[Path, ...],
+    provider: str | None,
 ) -> int:
     projector = Projector(_catalog(root))
     findings = (
-        projector.apply(scope, target, surface, project_roots)
+        projector.apply(scope, target, surface, project_roots, provider=provider)
         if apply
-        else projector.check(scope, target, surface, project_roots)
+        else projector.check(scope, target, surface, project_roots, provider=provider)
     )
     for item in findings:
         print(f"{item.target}: {item.path}: {item.message}", file=sys.stderr)
@@ -514,10 +516,15 @@ def parser() -> argparse.ArgumentParser:
     mode.add_argument("--check", action="store_true")
     mode.add_argument("--apply", action="store_true")
     projection.add_argument("--target")
+    projection.add_argument(
+        "--provider", choices=tuple(provider.value for provider in AgentProvider)
+    )
     projection.add_argument("--project-root", action="append", default=[], type=Path)
     projection.add_argument("--scope", choices=("personal", "projects"), required=True)
     projection.add_argument(
-        "--surface", choices=("skills", "commands", "rules", "all"), default="all"
+        "--surface",
+        choices=("skills", "commands", "agents", "rules", "all"),
+        default="all",
     )
     discovery = commands.add_parser("discover-projects")
     discovery.add_argument("--project-root", action="append", default=[], type=Path)
@@ -587,6 +594,7 @@ def main(argv: list[str] | None = None) -> int:
             args.target,
             args.surface,
             tuple(args.project_root),
+            args.provider,
         )
     if args.command == "discover-projects":
         return _discover_projects(root, tuple(args.project_root))

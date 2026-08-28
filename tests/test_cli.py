@@ -52,23 +52,42 @@ def _projection_authority(root: Path) -> Path:
     (root / "config" / "projections.json").write_text(
         json.dumps(
             {
-                "version": 3,
-                "surfaces": {
-                    "rules": {
-                        "personal": {"entries": []},
-                        "project_generic": {"entries": []},
-                    },
-                },
-                "personal_targets": {},
-                "projects": {
-                    "skills_path": ".agents/skills",
-                    "command_targets": {
-                        "cursor": {
-                            "path": ".cursor/commands",
-                            "max_tokens": 100_000,
+                "version": 4,
+                "manifest_version": 4,
+                "providers": {
+                    provider: {
+                        context: {
+                            surface: (
+                                {
+                                    "status": "SUPPORTED",
+                                    "path": ".agents/skills",
+                                }
+                                if provider == "codex"
+                                and context == "project"
+                                and surface == "skills"
+                                else {
+                                    "status": "UNSUPPORTED",
+                                    "reason": "UNSUPPORTED: focused CLI fixture",
+                                }
+                            )
+                            for surface in (
+                                "skills",
+                                "commands",
+                                "agents",
+                                "rules",
+                            )
                         }
-                    },
-                    "rules_path": ".agents/rules",
+                        for context in ("personal", "project")
+                    }
+                    for provider in (
+                        "antigravity",
+                        "claude",
+                        "codex",
+                        "copilot",
+                        "cursor",
+                        "gemini",
+                        "opencode",
+                    )
                 },
             }
         ),

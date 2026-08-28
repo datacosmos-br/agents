@@ -75,27 +75,70 @@ def _projector(
     (tmp_path / "config" / "skills.json").write_text(
         json.dumps(skills_config), encoding="utf-8"
     )
-    projections = {
-        "version": 3,
-        "surfaces": {
-            "rules": {
-                "personal": {"entries": []},
-                "project_generic": {"entries": []},
-            },
+    unsupported = {
+        "status": "UNSUPPORTED",
+        "reason": "UNSUPPORTED: not enabled by this focused fixture",
+    }
+    projections: dict[str, object] = {
+        "version": 4,
+        "manifest_version": 4,
+        "providers": {
+            provider: {
+                context: {
+                    surface: dict(unsupported)
+                    for surface in ("skills", "commands", "agents", "rules")
+                }
+                for context in ("personal", "project")
+            }
+            for provider in (
+                "antigravity",
+                "claude",
+                "codex",
+                "copilot",
+                "cursor",
+                "gemini",
+                "opencode",
+            )
         },
-        "personal_targets": {"test": {"skills": str(target)}},
-        "projects": {
-            "skills_path": ".agents/skills",
-            "command_targets": {
-                "cursor": {"path": ".cursor/commands", "max_tokens": 100_000}
-            },
-            "rules_path": ".agents/rules",
-        },
+    }
+    relative_target = target.relative_to(Path.home()).as_posix()
+    providers = projections["providers"]
+    assert isinstance(providers, dict)
+    providers["claude"]["personal"]["skills"] = {
+        "status": "SUPPORTED",
+        "path": f"${{HOME}}/{relative_target}",
+    }
+    providers["codex"]["project"]["skills"] = {
+        "status": "SUPPORTED",
+        "path": ".agents/skills",
+    }
+    providers["cursor"]["project"]["commands"] = {
+        "status": "SUPPORTED",
+        "path": ".cursor/commands",
+        "max_tokens": 100_000,
+    }
+    providers["antigravity"]["project"]["rules"] = {
+        "status": "SUPPORTED",
+        "path": ".agents/rules",
     }
     (tmp_path / "config" / "projections.json").write_text(
         json.dumps(projections), encoding="utf-8"
     )
     return Projector(Catalog(tmp_path))
+
+
+def _configure_cell(
+    projector: Projector,
+    provider: str,
+    context: str,
+    surface: str,
+    cell: dict[str, object],
+) -> Projector:
+    path = projector.catalog.root / "config" / "projections.json"
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    payload["providers"][provider][context][surface] = cell
+    path.write_text(json.dumps(payload), encoding="utf-8")
+    return Projector(Catalog(projector.catalog.root))
 
 
 def _git_project(path: Path) -> Path:
@@ -149,10 +192,7 @@ def test_manifest_digest_contract_drift_is_reconciled(tmp_path: Path) -> None:
     assert projector.apply("personal") == []
     manifest_path = target / Projector.MANIFEST
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-    manifest["managed"]["example"] = {
-        "digest": "legacy-content-only-digest",
-        "origin": "legacy-owner",
-    }
+    manifest["managed"]["example"]["origin"] = "legacy-owner"
     manifest_path.write_text(
         json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8"
     )
@@ -164,7 +204,7 @@ def test_manifest_digest_contract_drift_is_reconciled(tmp_path: Path) -> None:
     assert projector.check("personal") == []
 
 
-def test_manifest_v2_ownership_survives_a_real_source_content_update(
+def test_manifest_v4_ownership_survives_a_real_source_content_update(
     tmp_path: Path,
 ) -> None:
     target = tmp_path / "target"
@@ -172,11 +212,19 @@ def test_manifest_v2_ownership_survives_a_real_source_content_update(
     assert projector.apply("personal") == []
     manifest_path = target / Projector.MANIFEST
     original_manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-    assert original_manifest["version"] == 2
+    assert original_manifest["version"] == 4
+    assert original_manifest["owner"] == "agents-governance"
+    assert original_manifest["providers"] == ["claude"]
+    assert original_manifest["context"] == "personal"
+    assert original_manifest["surface"] == "skills"
     destination = target / "example"
-    assert original_manifest["managed"]["example"]["digest"] == Catalog.digest_tree(
-        destination
-    )
+    metadata = original_manifest["managed"]["example"]
+    assert metadata["source_digest"] == Catalog.digest_tree(destination)
+    assert metadata["physical_digest"] == Catalog.physical_tree_contract(destination)
+    assert metadata["source_type"] == "skill"
+    assert metadata["slug"] == "example"
+    assert metadata["destination"] == "example"
+    assert metadata["adapter_version"] == 1
 
     source_file = _skill_directory(tmp_path) / "SKILL.md"
     _write_skill(tmp_path, body="# Changed\n")
@@ -185,36 +233,38 @@ def test_manifest_v2_ownership_survives_a_real_source_content_update(
     assert [item.message for item in projector.check("personal")] == ["managed update"]
     assert projector.apply("personal") == []
     updated_manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-    assert updated_manifest["version"] == 2
-    assert updated_manifest["managed"]["example"]["digest"] == Catalog.digest_tree(
-        source_file.parent
-    )
+    assert updated_manifest["version"] == 4
+    assert updated_manifest["managed"]["example"][
+        "source_digest"
+    ] == Catalog.digest_tree(source_file.parent)
     assert projector.check("personal") == []
 
 
 @pytest.mark.parametrize(
     "invalid_manifest",
-    [
-        {"version": 1, "managed": {}},
-        {"version": 2, "managed": []},
-    ],
+    ["version-2", "managed-list"],
 )
 def test_invalid_projection_manifest_blocks_check_and_apply_without_rewrite(
-    tmp_path: Path, invalid_manifest: object
+    tmp_path: Path, invalid_manifest: str
 ) -> None:
     target = tmp_path / "target"
     projector = _projector(tmp_path, target)
     assert projector.apply("personal") == []
     manifest_path = target / Projector.MANIFEST
-    manifest_path.write_text(json.dumps(invalid_manifest) + "\n", encoding="utf-8")
+    payload = json.loads(manifest_path.read_text(encoding="utf-8"))
+    if invalid_manifest == "version-2":
+        payload["version"] = 2
+    else:
+        payload["managed"] = []
+    manifest_path.write_text(json.dumps(payload) + "\n", encoding="utf-8")
     before = manifest_path.read_bytes()
 
     check_findings = projector.check("personal")
     apply_findings = projector.apply("personal")
 
     assert [finding.message for finding in check_findings] == [
-        "invalid manifest: projection manifest must use version 2"
-        if isinstance(invalid_manifest, dict) and invalid_manifest.get("version") == 1
+        "invalid manifest: projection manifest must use version 4"
+        if invalid_manifest == "version-2"
         else "invalid manifest: projection manifest managed field must be an object"
     ]
     assert apply_findings == check_findings
@@ -233,7 +283,10 @@ def test_apply_all_propagates_a_child_surface_failure(
         _selected: str | None = None,
         surface: str = "skills",
         _project_roots: tuple[Path, ...] = (),
+        *,
+        provider: str | None = None,
     ) -> list[ProjectionFinding]:
+        assert provider is None
         checked.append(surface)
         return [] if surface == "all" else [failure]
 
@@ -265,23 +318,28 @@ def test_commands_and_rules_are_independently_projected(tmp_path: Path) -> None:
     target = tmp_path / "skills-target"
     projector = _projector(tmp_path, target)
     commands_target = tmp_path / "home" / ".claude" / "commands"
-    rules_target = tmp_path / "rules-target"
-    projector.config["personal_targets"]["test"].update(
+    rules_target = tmp_path / "home" / ".claude" / "rules"
+    projector = _configure_cell(
+        projector,
+        "claude",
+        "personal",
+        "commands",
         {
-            "commands": {
-                "provider": "claude",
-                "path": str(commands_target),
-                "max_tokens": 100_000,
-            },
-            "rules": str(rules_target),
-        }
-    )
-    projector.config["surfaces"] = {
-        "rules": {
-            "personal": {"entries": ["security"]},
-            "project_generic": {"entries": []},
+            "status": "SUPPORTED",
+            "path": f"${{HOME}}/{commands_target.relative_to(Path.home())}",
+            "max_tokens": 100_000,
         },
-    }
+    )
+    projector = _configure_cell(
+        projector,
+        "claude",
+        "personal",
+        "rules",
+        {
+            "status": "SUPPORTED",
+            "path": f"${{HOME}}/{rules_target.relative_to(Path.home())}",
+        },
+    )
     _write_command(
         tmp_path,
         "inspect-repository",
@@ -305,7 +363,7 @@ def test_commands_and_rules_are_independently_projected(tmp_path: Path) -> None:
         encoding="utf-8"
     )
     assert not (commands_target / "review-project.md").exists()
-    assert (rules_target / "security" / "closure.md").read_text(
+    assert (rules_target / "security--closure.md").read_text(
         encoding="utf-8"
     ) == "# Closure\n"
     assert projector.check("personal", surface="commands") == []
@@ -326,7 +384,10 @@ def test_commands_and_rules_are_independently_projected(tmp_path: Path) -> None:
     assert (
         projector.check("projects", surface="commands", project_roots=(project,)) == []
     )
-    assert "commands" not in projector.config["surfaces"]
+    projection_payload = json.loads(
+        (tmp_path / "config" / "projections.json").read_text(encoding="utf-8")
+    )
+    assert set(projection_payload) == {"manifest_version", "providers", "version"}
 
 
 def test_project_command_render_rejects_nonportable_output(
@@ -347,19 +408,21 @@ def test_project_command_render_rejects_nonportable_output(
 
 
 def test_project_commands_render_every_configured_native_provider_at_fixed_point(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    tmp_path: Path,
 ) -> None:
-    monkeypatch.setattr(
-        "agents_governance.projection.shutil.which", lambda _name: "/bin/copilot"
-    )
     projector = _projector(tmp_path, tmp_path / "skills-target")
-    projector.config["projects"]["command_targets"] = {
-        "claude": {"path": ".claude/commands", "max_tokens": 100_000},
-        "copilot": {"path": ".claude/commands", "max_tokens": 100_000},
-        "cursor": {"path": ".cursor/commands", "max_tokens": 100_000},
-        "gemini": {"path": ".gemini/commands", "max_tokens": 100_000},
-        "opencode": {"path": ".opencode/commands", "max_tokens": 100_000},
-    }
+    for provider in ("claude", "gemini", "opencode"):
+        projector = _configure_cell(
+            projector,
+            provider,
+            "project",
+            "commands",
+            {
+                "status": "SUPPORTED",
+                "path": f".{provider}/commands",
+                "max_tokens": 100_000,
+            },
+        )
     _write_command(
         tmp_path,
         "review-project",
@@ -387,9 +450,6 @@ def test_unsupported_personal_command_provider_is_explicit_and_write_free(
     tmp_path: Path,
 ) -> None:
     projector = _projector(tmp_path, tmp_path / "skills-target")
-    projector.config["personal_targets"] = {
-        "codex": {"skills": str(tmp_path / "codex-skills")}
-    }
     _write_command(
         tmp_path,
         "inspect-repository",
@@ -397,30 +457,19 @@ def test_unsupported_personal_command_provider_is_explicit_and_write_free(
         body="Inspect the explicit repository.\n",
     )
 
-    findings = projector.apply("personal", surface="commands")
+    findings = projector.apply("personal", "codex", surface="commands")
 
     assert [finding.message for finding in findings] == [
-        "UNSUPPORTED: Codex has no canonical command adapter"
+        "UNSUPPORTED: not enabled by this focused fixture"
     ]
     assert not (tmp_path / "codex-commands").exists()
 
 
-def test_copilot_command_projection_requires_installed_cli_capability(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+def test_copilot_command_projection_is_explicitly_unsupported(
+    tmp_path: Path,
 ) -> None:
-    monkeypatch.setattr("agents_governance.projection.shutil.which", lambda _name: None)
     target = tmp_path / "home" / ".claude" / "commands"
     projector = _projector(tmp_path, tmp_path / "skills-target")
-    projector.config["personal_targets"] = {
-        "copilot": {
-            "skills": str(tmp_path / "copilot-skills"),
-            "commands": {
-                "provider": "copilot",
-                "path": str(target),
-                "max_tokens": 100_000,
-            },
-        }
-    }
     _write_command(
         tmp_path,
         "inspect-repository",
@@ -428,10 +477,10 @@ def test_copilot_command_projection_requires_installed_cli_capability(
         body="Inspect the explicit repository.\n",
     )
 
-    findings = projector.apply("personal", surface="commands")
+    findings = projector.apply("personal", "copilot", surface="commands")
 
     assert [finding.message for finding in findings] == [
-        "UNSUPPORTED: GitHub Copilot CLI capability is not installed"
+        "UNSUPPORTED: not enabled by this focused fixture"
     ]
     assert not target.exists()
 
@@ -1039,14 +1088,16 @@ def test_project_root_symlink_is_blocked_and_preserved(tmp_path: Path) -> None:
 
 def test_project_target_must_remain_confined(tmp_path: Path) -> None:
     projector = _projector(tmp_path, tmp_path / "target")
-    project = _git_project(tmp_path / "project")
-    projector.config["projects"]["skills_path"] = "../outside"
-
-    findings = projector.apply("projects", surface="skills", project_roots=(project,))
-
-    assert [item.message for item in findings] == [
-        "project projection path escapes repository"
-    ]
+    with pytest.raises(
+        ValueError, match="project path must remain repository-relative"
+    ):
+        _configure_cell(
+            projector,
+            "codex",
+            "project",
+            "skills",
+            {"status": "SUPPORTED", "path": "../outside"},
+        )
     assert not (tmp_path / "outside").exists()
 
 
