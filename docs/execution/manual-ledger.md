@@ -101,6 +101,7 @@ verified on `dev`.
 | `3cf24a1` | Removed legacy Make/Waza routes and restricted Make runtime calls to public optionless verbs. |
 | `b93f66d` | Added whole-source strict AST enforcement and cut environment, projection config, security, and token owners over to immediate exceptions. |
 | `e178d97` | Replaced aggregate catalog findings with first-defect discovery and strict inventory-lock exceptions. |
+| `c8ea26a` | Replaced agent/rule aggregate findings and neutral unsupported results with first-defect exceptions; 51 focused tests, Pyright, Mypy, Ruff, and the 62-agent/40-rule canonical inventories passed before the WIP push. |
 
 ## Latest validation evidence
 
