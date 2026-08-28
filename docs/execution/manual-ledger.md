@@ -102,6 +102,7 @@ verified on `dev`.
 | `b93f66d` | Added whole-source strict AST enforcement and cut environment, projection config, security, and token owners over to immediate exceptions. |
 | `e178d97` | Replaced aggregate catalog findings with first-defect discovery and strict inventory-lock exceptions. |
 | `c8ea26a` | Replaced agent/rule aggregate findings and neutral unsupported results with first-defect exceptions; 51 focused tests, Pyright, Mypy, Ruff, and the 62-agent/40-rule canonical inventories passed before the WIP push. |
+| `75a627c` | Collapsed metadata and governance validation into first-defect owners, deleted the redundant normalization protocol/tests, and removed 1,370 net lines; 31 focused tests and focused static analysis passed. `origin/dev` remained 0 commits ahead after fetch, so no merge was required. |
 
 ## Latest validation evidence
 
