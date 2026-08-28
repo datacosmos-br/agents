@@ -3,8 +3,11 @@ from pathlib import Path
 import pytest
 
 from agents_governance.cleanup import (
+    PreparedPublication,
+    Publication,
     clean_generated,
     remove_physical,
+    run_atomic_publications,
     run_atomic_sequence,
     run_cleanup,
 )
@@ -137,6 +140,39 @@ def test_atomic_sequence_preserves_primary_when_rollback_fails() -> None:
     assert isinstance(captured.value.__cause__, OSError)
     assert captured.value.__notes__ == [
         "rollback or cleanup failed: secondary rollback failure"
+    ]
+
+
+def test_heterogeneous_publications_roll_back_as_one_transaction() -> None:
+    events: list[str] = []
+
+    def prepared(name: str, *, fail: bool = False) -> PreparedPublication:
+        def publish() -> None:
+            events.append(f"publish:{name}")
+            if fail:
+                raise RuntimeError("publication failed")
+
+        return PreparedPublication(
+            publish,
+            lambda: events.append(f"rollback:{name}"),
+            lambda: events.append(f"cleanup:{name}"),
+        )
+
+    with pytest.raises(RuntimeError, match="publication failed"):
+        run_atomic_publications(
+            (
+                Publication(lambda: prepared("directory")),
+                Publication(lambda: prepared("hook", fail=True)),
+            )
+        )
+
+    assert events == [
+        "publish:directory",
+        "publish:hook",
+        "rollback:hook",
+        "rollback:directory",
+        "cleanup:hook",
+        "cleanup:directory",
     ]
 
 

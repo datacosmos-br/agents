@@ -1,8 +1,9 @@
 # ECOSYSTEM — Universal Context Patterns
 
 How context about projects, connections, and patterns is organized across
-every workspace (UNIVERSAL_CORE 14: living doc — update in the same change
-that alters the pattern). Universal law: `AGENTS.md` + `UNIVERSAL_CORE.md`.
+every workspace. The living-documentation owner requires updates in the same
+change that alters the pattern. Governance composes `AGENTS.md` with canonical
+rules, skills, and commands through `config/governance.json`.
 Role playbooks: `skills/beads-orchestrator`, `skills/beads-worker`,
 `skills/governance-audit`.
 
@@ -35,8 +36,8 @@ Every workspace publishes `ECOSYSTEM.md` at its root (≤2000 tokens) with:
 - **Pointers** — AGENTS.md, coding standard, project skill.
 
 Agents entering a workspace read its entry first, validate key claims
-against reality, and update it in the same change that alters the facts
-(CORE 14). Auditors check entries for drift; they never centralize them.
+against reality, and update it in the same change that alters the facts.
+Auditors check entries for drift; they never centralize them.
 
 ## Global Patterns (replicate in EVERY workspace)
 
@@ -52,9 +53,9 @@ against reality, and update it in the same change that alters the facts
    and block the closure epic; P0 = gate/incident/bottleneck only; no stale
    blocks, no inverted supersedes, no in_progress without a live worker, no
    NULL epic descriptions.
-5. **Short validated slices (CORE 13).** One bead = one reviewable PR,
+5. **Short validated slices.** One bead = one reviewable PR,
    green within a session, fast merge to the integration branch.
-6. **Living docs (CORE 14).** Read workspace docs first; validate against
+6. **Living docs.** Read workspace docs first; validate against
    reality; update docs in the SAME change; stale docs → bead.
 7. **Validation surface.** Native gate; Python minimum: Ruff + Pyrefly +
    Pyright + Mypy + Pytest, repo-wide lint/types/tests.

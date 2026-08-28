@@ -8,28 +8,32 @@ no legacy package, command, rule, projection, or synchronization surface remains
 
 ## Surfaces
 
-- `AGENTS.md` and `UNIVERSAL_CORE.md`: universal execution law.
+- `AGENTS.md`: strict project prelude, local scope, and operator-owned facts.
+- `config/governance.json`: typed bootstrap and auditable coverage of the retired
+  monolithic-law clauses by their final rule, skill, command, or document owner.
 - `skills/`: canonical, independently materialized skill bundles.
 - `agents/`, `commands/`, `rules/`, `workflows/`: personal agent capabilities.
 - `config/skills.json`: skill BPE and line-budget policy; recursive paths and
   frontmatter own classification and distribution.
-- `config/projections.json`: complete provider capability classification and
-  project-relative physical destinations.
+- `config/projections.json`: complete provider/context/surface capability
+  classification, hook fidelity, and personal/project destinations.
 - `src/agents_governance/`: strict validation, discovery, orchestration, and
   provider-native projection behind the sole `agentsctl` runtime facade.
 - `.waza.yaml` and `evals/`: Waza gates and behavioral evaluation.
 
 When `agentsctl sync` is invoked, the nearest ancestor that owns a physical
-`.git/` directory is the only destination project. It receives provider-native
-physical copies owned by destination-local manifests. Tool homes are never
-written by `sync`. Symbolic links, cross-repository local-path references, and
-shared mutable skill directories are forbidden.
+`.git/` directory is the destination project. The typed personal and project
+surfaces are fully preflighted and published as one transaction. Provider-native
+instructions and hooks refresh the composed governance capsule without becoming
+policy owners or public commands. Managed regions and manifests preserve foreign
+content and reject modified owned content. Symbolic links, cross-repository
+local-path references, and shared mutable skill directories are forbidden.
 
 ## Distribution boundary
 
-`agent-wide` and `route:agent` sources remain canonical personal-governance
-inputs, but this increment has no personal-home publication verb. Technology
-and framework bundles never enter personal targets. `agents/`, `commands/`,
+`agent-wide` and `route:agent` sources are canonical personal-governance inputs
+published by the same optionless `sync`; there is no personal mode or second
+verb. Technology and framework bundles never enter personal targets. `agents/`, `commands/`,
 `rules/`, and `workflows/` remain distinct canonical source types; provider
 representation never changes those types.
 
@@ -48,9 +52,9 @@ development contracts are private and must never enter generic project
 projections. External skill sources, including FLEXT, are outside this
 increment.
 
-The source checkout remains the only catalog authority. `sync` applies only to
-the project from which it is called; it has no scope, provider, surface, target,
-project-root, environment-override, or personal-home mode.
+The source checkout remains the only catalog authority. `sync` derives the
+project from which it is called and the current process home; it has no scope,
+provider, surface, target, project-root, environment-override, or personal mode.
 
 ## Workspace and storage
 

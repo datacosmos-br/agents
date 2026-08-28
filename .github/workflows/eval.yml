@@ -19,7 +19,6 @@ on:
       - '.mise.toml'
       - 'AGENTS.md'
       - 'CLAUDE.md'
-      - 'UNIVERSAL_CORE.md'
       - 'pyproject.toml'
       - 'uv.lock'
   pull_request:
@@ -40,7 +39,6 @@ on:
       - '.mise.toml'
       - 'AGENTS.md'
       - 'CLAUDE.md'
-      - 'UNIVERSAL_CORE.md'
       - 'pyproject.toml'
       - 'uv.lock'
 

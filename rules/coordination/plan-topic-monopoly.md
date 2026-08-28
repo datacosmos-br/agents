@@ -2,7 +2,9 @@
 
 At plan start or update, reconcile every correlated owner, WIP, branch, commit,
 and PR within the authorized repository. Preserve and adopt useful work into
-the existing change branch. Destroy or revert nothing.
+the existing change branch under
+[fix-forward collaboration](fix-forward-collaboration.md). Destroy, stash, or
+revert nothing.
 
 When required work has not reached the integration branch, adopt it into the
 owned branch by reviewed non-FF merge or attributable cherry-pick. Preserve

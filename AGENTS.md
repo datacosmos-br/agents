@@ -12,7 +12,7 @@
    authorized technical action is exhausted and the remaining condition is
    genuinely external or requires new authority.
 7. Landing: native gates, commit, fast-forward push, bead evidence.
-8. Divergence: FF push rejected → integrate by cooperation: `git merge --no-ff` the integration base into your lane, resolve conflicts, revalidate, land. Never rebase or force-push a shared branch; never discard another actor's work.
+8. Divergence: FF push rejected → integrate by cooperation: `git merge --no-ff` the integration base into your lane, resolve conflicts, revalidate, land. Never rebase or force-push an authorized change or integration branch; adopt all current worktree state and fix it forward.
 9. Escalation: impossible rule → exact error. Rule conflict → present both with numbers. Unclear → one targeted question. Never guess.
 10. Precedence: NEWEST > OLDEST. USER REQUEST > BEADS > ADRs > SKILLs > DOCS > default. Adjust lower/older to higher/newer. Doubt → ASK USER FIRST.
 11. Workspace placement: follow the declared Gas City city/rig/Pack V2 contract in `rules/gascity.md`. While its runtime is suspended, operate only in the existing checkout and create no clone, worktree, city, rig, agent, formula, run, or session. Staging and backups stay on the destination filesystem, never `/tmp`.
@@ -24,7 +24,10 @@
 # AGENTS.md — ai-hub
 
 > **Project execution law:** [`AGENTS.md`](https://github.com/datacosmos-br/ai-hub/blob/dev/AGENTS.md).
-> Universal engineering core: [`UNIVERSAL_CORE.md`](https://github.com/datacosmos-br/ai-hub/blob/dev/UNIVERSAL_CORE.md). Composition: global skills + project `AGENTS.md` + this project scope. Do not re-embed universal law.
+> Composed governance: `config/governance.json` selects canonical `rules/`,
+> `skills/`, `commands/`, and this project scope. `agentsctl sync` projects the
+> composition through provider-native instructions and lifecycle hooks. Do not
+> re-embed canonical rule or skill procedures here.
 >
 > **Standalone / independent mode:** when the canonical remote file does not resolve, pin the raw URL to the same branch or release as this package (never the protected branch).
 
@@ -78,7 +81,7 @@ Gas City configuration owns orchestration identity and dispatch; the repository 
 
 ## Sprint closure
 
-Universal law owns closure. Local delta only:
+The composed governance owners define closure. Local delta only:
 
 - Integration lane is where an increment must be running to count as closed.
 - The closure surface must leave no lane worktree, no open PR, and no open tracker item for the increment.
@@ -109,7 +112,8 @@ Universal law owns closure. Local delta only:
 - Gas City configuration owns orchestration identity; ai-hub owns living runtime registration for tools, CRG, LSP/observer state, and maintenance daemons.
 - Rules and MCP inventory are SSOT under `config/`; an unattributable foreign
   agent runtime is a blocking ownership violation. Agent-domain behavior runs
-  only through optionless `agentsctl` verbs; repository hooks are extinct.
+  only through optionless `agentsctl` verbs. Repository Git hooks are extinct;
+  provider-native lifecycle hooks are generated artifacts owned by `sync`.
 - Every declared workspace must reconstruct dependencies locally; cross-repository dependency links are prohibited.
 - CI runs the complete `make ci` owner. `check`, `static`, and `test` remain
   separate blocking stages; setting `CI=Y` never authorizes omitting them.

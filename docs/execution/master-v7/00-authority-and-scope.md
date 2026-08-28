@@ -31,7 +31,8 @@ suspended runtimes.
   runtime authority.
 - Unrequested changes, branches, PRs, or runtime calls in another repository.
   `agentsctl sync` is reusable project infrastructure and applies only to the
-  physical Git project from which the operator invokes it.
+  current process home and physical Git project from which the operator invokes
+  it.
 - Beads, Dolt, Gas City, Gas Town, and alternate tracker runtimes while they are
   suspended. Use the repository manual ledger for execution state.
 - Promotion beyond the configured integration branch, package publication,

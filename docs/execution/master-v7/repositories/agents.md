@@ -28,15 +28,10 @@ considered.
 
 ## Open defects
 
-- Projection still uses the legacy schema/runtime instead of the complete v4
-  source, provider, context, selection, and ownership-manifest contract.
-- Agent/rule Waza coverage and the exhaustive provider/type/context matrix are
-  incomplete.
-- Provider surfaces have materially different command, agent, and rule
-  contracts; unsupported combinations still need complete evidence.
+- Complete native and live evidence for the v5 personal/project projection,
+  lifecycle adapters, and fixed point remains part of the landing cycle.
 - CI, MCP comparison, target selection, and remaining runtime foundations still
   require the complete Phase 4 proof.
-- Universal rules and provider defense text are duplicated across agents.
 - The old source root must eventually be removed without a symlink or dual read.
 
 ## Repository sequence

@@ -4,8 +4,25 @@ from __future__ import annotations
 
 import os
 from collections.abc import Callable, Sequence
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Never
+
+
+@dataclass(frozen=True)
+class PreparedPublication:
+    """One staged publication with its compensating operations."""
+
+    publish: Callable[[], None]
+    rollback: Callable[[], None]
+    cleanup: Callable[[], None]
+
+
+@dataclass(frozen=True)
+class Publication:
+    """Deferred preparation for one publication target."""
+
+    prepare: Callable[[], PreparedPublication]
 
 
 def run_with_cleanup[Result](
@@ -87,6 +104,37 @@ def run_atomic_sequence[Input, Prepared](
         _raise_with_secondary(primary_failure, _cleanup_all(prepared, cleanup))
 
     cleanup_failures = _cleanup_all(prepared, cleanup)
+    if cleanup_failures:
+        primary = cleanup_failures[0]
+        for secondary_failure in cleanup_failures[1:]:
+            primary.add_note(f"additional cleanup failed: {secondary_failure}")
+        raise primary
+
+
+def run_atomic_publications(publications: Sequence[Publication]) -> None:
+    """Prepare heterogeneous targets, then publish them as one transaction."""
+
+    prepared: list[PreparedPublication] = []
+    try:
+        for publication in publications:
+            prepared.append(publication.prepare())
+    except BaseException as primary_failure:  # noqa: BLE001 - rollback owner
+        _raise_with_secondary(
+            primary_failure,
+            _cleanup_all(prepared, lambda item: item.cleanup()),
+        )
+
+    published: list[PreparedPublication] = []
+    try:
+        for prepared_item in prepared:
+            published.append(prepared_item)
+            prepared_item.publish()
+    except BaseException as primary_failure:  # noqa: BLE001 - rollback owner
+        rollback_failures = _cleanup_all(published, lambda item: item.rollback())
+        cleanup_failures = _cleanup_all(prepared, lambda item: item.cleanup())
+        _raise_with_secondary(primary_failure, [*rollback_failures, *cleanup_failures])
+
+    cleanup_failures = _cleanup_all(prepared, lambda item: item.cleanup())
     if cleanup_failures:
         primary = cleanup_failures[0]
         for secondary_failure in cleanup_failures[1:]:
@@ -182,8 +230,11 @@ def clean_generated(root: Path) -> tuple[Path, ...]:
 
 
 __all__ = (
+    "PreparedPublication",
+    "Publication",
     "clean_generated",
     "remove_physical",
+    "run_atomic_publications",
     "run_atomic_sequence",
     "run_cleanup",
     "run_with_cleanup",

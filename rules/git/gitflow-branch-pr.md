@@ -18,10 +18,11 @@ expands scope.
 - **Commit and push:** stage explicit scoped paths, commit, and push normally.
   Let
   pre-commit/pre-push/CI validate — do not re-run the full gate matrix by hand
-  before every commit (`UNIVERSAL_CORE` Law 7).
+  before every commit; `verification-loop` owns manual RED→GREEN evidence and
+  CI owns the complete repeated matrix.
 - If integration advanced or diverged, merge `origin/<integration>` into the
   change branch with `--no-ff`, resolve by preserving valid concurrent work,
-  and revalidate. Never rebase or force-push a shared branch.
+  and revalidate. Never rebase or force-push an authorized branch.
 - Open/update the PR against integration, resolve every conversation, obtain
   approval, require green checks, and merge by merge commit. Revalidate the
   exact merge SHA on integration.

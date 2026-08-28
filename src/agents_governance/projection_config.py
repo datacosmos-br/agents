@@ -26,6 +26,7 @@ class ProjectionSurface(StrEnum):
     COMMANDS = "commands"
     AGENTS = "agents"
     RULES = "rules"
+    HOOKS = "hooks"
 
 
 class ProjectionStatus(StrEnum):
@@ -33,6 +34,21 @@ class ProjectionStatus(StrEnum):
 
     SUPPORTED = "SUPPORTED"
     UNSUPPORTED = "UNSUPPORTED"
+
+
+class HookCoverage(StrEnum):
+    """Fidelity of a provider event to one logical governance boundary."""
+
+    EXACT = "exact"
+    EQUIVALENT = "equivalent"
+    ADVISORY = "advisory"
+
+
+class RuleLayout(StrEnum):
+    """Native storage shape for synchronized rule instructions."""
+
+    DIRECTORY = "directory"
+    DOCUMENT = "document"
 
 
 @dataclass(frozen=True)
@@ -46,11 +62,14 @@ class ProjectionCell:
     path: str | None = None
     reason: str | None = None
     max_tokens: int | None = None
+    events: MappingProxyType[str, tuple[str, ...]] | None = None
+    coverage: MappingProxyType[str, HookCoverage] | None = None
+    layout: RuleLayout | None = None
 
 
 @dataclass(frozen=True)
 class ProjectionConfig:
-    """Complete immutable v4 projection contract."""
+    """Complete immutable v5 projection contract."""
 
     version: int
     manifest_version: int
@@ -76,6 +95,9 @@ _ROOT_FIELDS = frozenset({"manifest_version", "providers", "version"})
 _CONTEXTS = frozenset(context.value for context in ProjectionContext)
 _SURFACES = frozenset(surface.value for surface in ProjectionSurface)
 _PROVIDERS = frozenset(provider.value for provider in AgentProvider)
+_HOOK_EVENTS = frozenset(
+    {"context_refresh", "prompt_submit", "session_start", "subagent_start"}
+)
 
 
 def _mapping(value: object, label: str) -> dict[str, object]:
@@ -145,6 +167,11 @@ def _cell(
     expected = {"path", "status"}
     if surface is ProjectionSurface.COMMANDS and "max_tokens" in value:
         expected.add("max_tokens")
+    if surface is ProjectionSurface.HOOKS:
+        expected.add("events")
+        expected.add("coverage")
+    if surface is ProjectionSurface.RULES:
+        expected.add("layout")
     _exact_fields(value, frozenset(expected), f"{label} SUPPORTED cell fields")
     path = _validate_path(value["path"], context, label)
     max_tokens = value.get("max_tokens")
@@ -154,6 +181,53 @@ def _cell(
         or max_tokens <= 0
     ):
         raise ValueError(f"{label} max_tokens must be a positive integer")
+    events: MappingProxyType[str, tuple[str, ...]] | None = None
+    coverage: MappingProxyType[str, HookCoverage] | None = None
+    layout: RuleLayout | None = None
+    if surface is ProjectionSurface.HOOKS:
+        raw_events = _mapping(value["events"], f"{label} events")
+        _exact_fields(raw_events, _HOOK_EVENTS, f"{label} events")
+        parsed_events: dict[str, tuple[str, ...]] = {}
+        for logical_event in sorted(_HOOK_EVENTS):
+            native = raw_events[logical_event]
+            if (
+                not isinstance(native, list)
+                or not native
+                or not all(
+                    isinstance(item, str)
+                    and item
+                    and item == item.strip()
+                    and not any(character.isspace() for character in item)
+                    for item in native
+                )
+            ):
+                raise TypeError(
+                    f"{label} events.{logical_event} must be a non-empty "
+                    "array of native event names"
+                )
+            selected = tuple(cast(list[str], native))
+            if len(selected) != len(set(selected)):
+                raise ValueError(
+                    f"{label} events.{logical_event} must contain unique names"
+                )
+            parsed_events[logical_event] = selected
+        events = MappingProxyType(parsed_events)
+        raw_coverage = _mapping(value["coverage"], f"{label} coverage")
+        _exact_fields(raw_coverage, _HOOK_EVENTS, f"{label} coverage")
+        parsed_coverage: dict[str, HookCoverage] = {}
+        for logical_event in sorted(_HOOK_EVENTS):
+            raw_value = raw_coverage[logical_event]
+            if not isinstance(raw_value, str):
+                raise TypeError(f"{label} coverage.{logical_event} must be a string")
+            parsed_coverage[logical_event] = HookCoverage(raw_value)
+        coverage = MappingProxyType(parsed_coverage)
+    if surface is ProjectionSurface.RULES:
+        raw_layout = value["layout"]
+        if not isinstance(raw_layout, str):
+            raise TypeError(f"{label} layout must be a string")
+        layout = RuleLayout(raw_layout)
+        if layout is RuleLayout.DOCUMENT and not path.endswith(".md"):
+            raise ValueError(f"{label} document layout path must end with .md")
     return ProjectionCell(
         provider,
         context,
@@ -161,11 +235,14 @@ def _cell(
         status,
         path=path,
         max_tokens=max_tokens,
+        events=events,
+        coverage=coverage,
+        layout=layout,
     )
 
 
 def load_projection_config(root: Path) -> ProjectionConfig:
-    """Load the only accepted schema; v3 and partial matrices fail closed."""
+    """Load the only accepted schema; legacy and partial matrices fail closed."""
 
     path = root / "config" / "projections.json"
     if path.is_symlink() or not path.is_file():
@@ -173,10 +250,10 @@ def load_projection_config(root: Path) -> ProjectionConfig:
     payload = json.loads(path.read_text(encoding="utf-8"))
     value = _mapping(payload, "projection config")
     _exact_fields(value, _ROOT_FIELDS, "projection config fields")
-    if value["version"] != 4:
-        raise ValueError("projection config must use version 4")
-    if value["manifest_version"] != 4:
-        raise ValueError("projection manifest version must equal 4")
+    if value["version"] != 5:
+        raise ValueError("projection config must use version 5")
+    if value["manifest_version"] != 5:
+        raise ValueError("projection manifest version must equal 5")
 
     providers = _mapping(value["providers"], "projection providers")
     _exact_fields(providers, _PROVIDERS, "projection providers")
@@ -201,14 +278,16 @@ def load_projection_config(root: Path) -> ProjectionConfig:
             for surface in ProjectionSurface:
                 key = (provider, context, surface)
                 cells[key] = _cell(provider, context, surface, surfaces[surface.value])
-    return ProjectionConfig(4, 4, MappingProxyType(cells))
+    return ProjectionConfig(5, 5, MappingProxyType(cells))
 
 
 __all__ = (
+    "HookCoverage",
     "ProjectionCell",
     "ProjectionConfig",
     "ProjectionContext",
     "ProjectionStatus",
     "ProjectionSurface",
+    "RuleLayout",
     "load_projection_config",
 )

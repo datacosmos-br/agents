@@ -21,8 +21,8 @@ produce a false green:
 - commands: render/invoke representative arguments and reject ambiguous input;
 - agents/rules: prove delegation and mandatory-rule behavior;
 - projection: invoke `agentsctl sync` from an isolated physical project, inspect
-  supported provider project loaders where available, prove no personal-home
-  write, then prove the second invocation changes nothing;
+  supported personal and project loaders where available, execute representative
+  hook adapters, then prove the second invocation changes nothing;
 - temp/storage: use `agentsctl doctor`, `agentsctl check`, and `agentsctl clean`
   against the configured physical checkout and an isolated generated tree;
 - credentials: execute from Bash, Zsh, Fish, and a direct subprocess using only
@@ -80,10 +80,12 @@ exact `aihub-primary` and a non-empty valid `CLIPROXY_API_KEY` in the current
 process environment; it never reads a credential store or selects another
 model.
 
-`agentsctl sync` derives the target physical Git root from cwd and applies all
-supported project surfaces. Its only optional activation input is the strict
-project-owned `.agents/projection.json`; it accepts no CLI or environment target
-selection and never writes a personal home.
+`agentsctl sync` derives the target physical Git root from cwd and the personal
+target from the current process home. It applies every supported personal and
+project surface, including static instructions and native lifecycle hooks, as
+one transaction. Its only optional activation input is the strict project-owned
+`.agents/projection.json`; it accepts no CLI or environment target selection and
+has no personal mode.
 
 Make remains development support and gate composition. Its required surface is
 discovered with `make help` and covers:
@@ -121,7 +123,7 @@ first; a required rewrite is reviewed as an explicit source change.
 | Skills | 76 mapped sources; BPE budgets; short descriptions; semantic scenarios; no command syntax. |
 | Commands | Seven flat sources; complete provider render; independent size gate; no skill conversion. |
 | Agents/rules | Distribution paths and tags agree; universal rules compose once; no model declaration. |
-| Projection | Physical copies; ownership-safe cleanup; provider-native syntax; second apply changes nothing. |
+| Projection | Atomic personal/project physical copies; ownership-safe cleanup; provider-native instructions/hooks; second apply changes nothing. |
 | Temp/storage | Exact manifest; physical registered checkout; `/tmp`, overlap, residue, symlink, special-file, and unknown deletion rejection. |
 | Credentials | Process environment only; required values fail immediately; no keyring code, 401, or secret output. |
 | Security | Deterministic tracked manifest inventory; every applicable scanner exits zero. |

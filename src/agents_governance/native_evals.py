@@ -19,6 +19,7 @@ from .projection_config import (
     ProjectionContext,
     ProjectionStatus,
     ProjectionSurface,
+    RuleLayout,
 )
 from .rule_adapters import RuleContext, render_rule
 from .rules import RuleDistribution, RuleSpec
@@ -128,7 +129,10 @@ def evaluate_native(
                         f"agent rendering is not deterministic: {agent.name}"
                     )
                 counts[cell.surface] += 1
-        elif cell.surface is ProjectionSurface.RULES:
+        elif (
+            cell.surface is ProjectionSurface.RULES
+            and cell.layout is RuleLayout.DIRECTORY
+        ):
             for rule in rules:
                 if not _rule_selected(rule, cell.context):
                     continue

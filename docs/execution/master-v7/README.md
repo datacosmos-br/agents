@@ -48,7 +48,7 @@ agents, and typed rules. Skill descriptions now satisfy the strict
 keyword/nominal-phrase schema, the command surface owns seven independent eval
 suites, and the Waza configuration selects exact `aihub-primary`. These are
 work-lane facts, not phase completion: deterministic command/agent/rule native
-rendering evals and the projection v4 implementation exist, while complete
+rendering evals and the projection v5 implementation exist, while complete
 runtime evidence, full provider evidence, offline/live Waza results, integrated
 gates, review, merge, and post-merge validation remain open.
 

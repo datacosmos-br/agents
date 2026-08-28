@@ -1,0 +1,10 @@
+id: fix-forward-collaboration-isolated-edit-001
+name: Leave an isolated read-only task alone
+description: Do not invent collaboration work when no overlap or integration exists.
+tags: [anti-trigger, read-only]
+inputs:
+  prompt: Explain the return type of a pure function from the supplied source.
+    There is no concurrent edit, lane divergence, integration, or destructive
+    operation.
+expected:
+  output_not_contains: [merge lane, stash, operator conflict, rollback, force-push]

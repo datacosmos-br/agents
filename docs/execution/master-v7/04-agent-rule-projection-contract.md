@@ -136,10 +136,11 @@ adapter is allowed only on the provider's documented instruction surface:
 Codex `.codex/rules/*.rules` is an execution-policy language written in
 Starlark. It is not an engineering-instruction surface and must never receive
 canonical Markdown rules. Aggregated `AGENTS.md` or `GEMINI.md` projection is a
-separate whole-file compiler with whole-file ownership; until that compiler is
-implemented and proves foreign-content safety, the combination is
-`UNSUPPORTED`, not approximated with includes, managed fragments, or another
-artifact type.
+separate document compiler. It owns one digest-verified managed region and
+preserves all surrounding foreign content. Codex, Gemini, OpenCode, and the
+Antigravity global surface use this compiler. Antigravity project item rules
+remain `UNSUPPORTED` because the official docs name activation modes but do not
+publish file metadata that preserves path-scoped semantics.
 
 Canonical references:
 
@@ -170,27 +171,28 @@ Canonical references:
 
 An unsupported combination is a declarative non-target in the capability
 matrix. `sync` applies every `SUPPORTED` project cell and never requests an
-`UNSUPPORTED` cell, renders it as another artifact type, or writes a personal
-cell.
+`UNSUPPORTED` cell or renders it as another artifact type. The same invocation
+also applies every supported personal cell.
 
-The only public target is the nearest ancestor of the invocation cwd that owns
-a physical `.git/` directory. Worktree `.git` files, symlinked metadata,
-repositories under `/tmp`, target arguments, environment overrides, and
-personal-home destinations are rejected or absent by construction.
+The project target is the nearest ancestor of the invocation cwd that owns a
+physical `.git/` directory; the personal target is the current process home.
+Worktree `.git` files, symlinked metadata, repositories under `/tmp`, target
+arguments, environment overrides, and alternate personal modes are rejected or
+absent by construction.
 
 Optional activation is project-owned at `.agents/projection.json`. If present,
 the v1 object has exactly `version`, sorted unique `opt_ins`, sorted unique
 `selected_tags`, and sorted unique `agents`. Unknown values raise before any
 effect. If absent, the typed owner derives empty selections while detectors
-still activate project evidence. The generated v4 manifest records portable
+still activate project evidence. The generated v5 manifest records portable
 project identity (`.`), project-relative destination, context, surface,
 providers, selection, source type, slug, activation evidence, logical digest,
 physical digest, and adapter version.
 
 ## Physical projection law
 
-- The source package is the only catalog authority; the invocation project is
-  the only projection destination.
+- The source package is the only catalog authority; the current process home
+  and invocation project are the only projection destinations.
 - Destinations contain independent physical files. No symlink, bind mount,
   cross-repository include, absolute source path, or runtime source lookup is
   allowed.
@@ -206,6 +208,9 @@ physical digest, and adapter version.
   their destination filesystem before publication. A later target failure
   rolls earlier publications back and re-raises the original exception with
   any rollback failure attached.
+- Provider hooks are generated delivery adapters, never policy owners or public
+  commands. Exact, equivalent, and advisory lifecycle coverage is typed in the
+  matrix and recorded in hook manifests.
 
 Project content is portable and generic. It must not teach development workflows
 specific to this repository, AI Hub, Beads, Gas City, or a foreign repository.

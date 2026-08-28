@@ -7,6 +7,7 @@ import pytest
 
 from agents_governance.agent_profiles import AgentProvider
 from agents_governance.projection_config import (
+    HookCoverage,
     ProjectionContext,
     ProjectionStatus,
     ProjectionSurface,
@@ -31,12 +32,28 @@ def _matrix() -> dict[str, object]:
         contexts: dict[str, object] = {}
         for context in ProjectionContext:
             prefix = "${HOME}/." if context is ProjectionContext.PERSONAL else "."
-            contexts[context.value] = {
-                surface.value: _supported(f"{prefix}{provider.value}/{surface.value}")
-                for surface in ProjectionSurface
-            }
+            surfaces: dict[str, object] = {}
+            for surface in ProjectionSurface:
+                cell = _supported(f"{prefix}{provider.value}/{surface.value}")
+                if surface is ProjectionSurface.RULES:
+                    cell["layout"] = "directory"
+                if surface is ProjectionSurface.HOOKS:
+                    cell["events"] = {
+                        "context_refresh": ["ContextRefresh"],
+                        "prompt_submit": ["PromptSubmit"],
+                        "session_start": ["SessionStart"],
+                        "subagent_start": ["SubagentStart"],
+                    }
+                    cell["coverage"] = {
+                        "context_refresh": "exact",
+                        "prompt_submit": "exact",
+                        "session_start": "exact",
+                        "subagent_start": "exact",
+                    }
+                surfaces[surface.value] = cell
+            contexts[context.value] = surfaces
         providers[provider.value] = contexts
-    return {"version": 4, "manifest_version": 4, "providers": providers}
+    return {"version": 5, "manifest_version": 5, "providers": providers}
 
 
 def _write(root: Path, payload: object) -> None:
@@ -45,14 +62,14 @@ def _write(root: Path, payload: object) -> None:
     (config / "projections.json").write_text(json.dumps(payload), encoding="utf-8")
 
 
-def test_projection_config_requires_complete_closed_v4_matrix(tmp_path: Path) -> None:
+def test_projection_config_requires_complete_closed_v5_matrix(tmp_path: Path) -> None:
     _write(tmp_path, _matrix())
 
     config = load_projection_config(tmp_path)
 
-    assert config.version == 4
-    assert config.manifest_version == 4
-    assert len(config.cells) == 7 * 2 * 4
+    assert config.version == 5
+    assert config.manifest_version == 5
+    assert len(config.cells) == 7 * 2 * 5
     assert (
         config.cell("claude", "personal", "skills").status is ProjectionStatus.SUPPORTED
     )
@@ -62,7 +79,7 @@ def test_projection_config_requires_complete_closed_v4_matrix(tmp_path: Path) ->
 @pytest.mark.parametrize(
     ("mutation", "message"),
     [
-        (lambda value: value.update(version=3), "projection config must use version 4"),
+        (lambda value: value.update(version=4), "projection config must use version 5"),
         (
             lambda value: value["providers"].pop("codex"),
             "projection providers must equal",
@@ -118,7 +135,7 @@ def test_repository_projection_matrix_classifies_every_cell(tmp_path: Path) -> N
 
     config = load_projection_config(repository)
 
-    assert len(config.cells) == 56
+    assert len(config.cells) == 70
     assert (
         config.cell("copilot", "personal", "agents").status
         is ProjectionStatus.SUPPORTED
@@ -131,6 +148,39 @@ def test_repository_projection_matrix_classifies_every_cell(tmp_path: Path) -> N
         config.cell("antigravity", "project", "agents").status
         is ProjectionStatus.UNSUPPORTED
     )
-    assert (
-        config.cell("codex", "project", "rules").status is ProjectionStatus.UNSUPPORTED
-    )
+    assert config.cell("codex", "project", "rules").status is ProjectionStatus.SUPPORTED
+    assert config.cell("codex", "project", "rules").path == "AGENTS.md"
+    assert config.cell("codex", "project", "hooks").events == {
+        "context_refresh": ("SessionStart",),
+        "prompt_submit": ("UserPromptSubmit",),
+        "session_start": ("SessionStart",),
+        "subagent_start": ("SubagentStart",),
+    }
+    assert config.cell("cursor", "project", "hooks").coverage == {
+        "context_refresh": HookCoverage.ADVISORY,
+        "prompt_submit": HookCoverage.ADVISORY,
+        "session_start": HookCoverage.EXACT,
+        "subagent_start": HookCoverage.ADVISORY,
+    }
+
+
+def test_hook_cell_requires_complete_native_event_mapping(tmp_path: Path) -> None:
+    payload = _matrix()
+    del payload["providers"]["claude"]["project"]["hooks"]["events"][  # type: ignore[index]
+        "context_refresh"
+    ]
+    _write(tmp_path, payload)
+
+    with pytest.raises(ValueError, match="events must equal"):
+        load_projection_config(tmp_path)
+
+
+def test_hook_cell_requires_complete_coverage_mapping(tmp_path: Path) -> None:
+    payload = _matrix()
+    del payload["providers"]["claude"]["project"]["hooks"]["coverage"][  # type: ignore[index]
+        "context_refresh"
+    ]
+    _write(tmp_path, payload)
+
+    with pytest.raises(ValueError, match="coverage must equal"):
+        load_projection_config(tmp_path)

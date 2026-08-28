@@ -21,7 +21,7 @@ _PROVIDERS = (
     "opencode",
     "antigravity",
 )
-_SURFACES = ("skills", "commands", "agents", "rules")
+_SURFACES = ("skills", "commands", "agents", "rules", "hooks")
 
 
 def _skill(
@@ -79,7 +79,30 @@ def _config(root: Path, supported: dict[tuple[str, str], str]) -> None:
                     supported.get((provider, surface)) if context == "project" else None
                 )
                 surfaces[surface] = (
-                    {"status": "SUPPORTED", "path": path}
+                    {
+                        "status": "SUPPORTED",
+                        "path": path,
+                        **(
+                            {
+                                "events": {
+                                    "context_refresh": ["ContextRefresh"],
+                                    "prompt_submit": ["PromptSubmit"],
+                                    "session_start": ["SessionStart"],
+                                    "subagent_start": ["SubagentStart"],
+                                },
+                                "coverage": {
+                                    "context_refresh": "exact",
+                                    "prompt_submit": "exact",
+                                    "session_start": "exact",
+                                    "subagent_start": "exact",
+                                },
+                            }
+                            if surface == "hooks"
+                            else {"layout": "directory"}
+                            if surface == "rules"
+                            else {}
+                        ),
+                    }
                     if path is not None
                     else {
                         "status": "UNSUPPORTED",
@@ -89,7 +112,7 @@ def _config(root: Path, supported: dict[tuple[str, str], str]) -> None:
             contexts[context] = surfaces
         providers[provider] = contexts
     (config / "projections.json").write_text(
-        json.dumps({"version": 4, "manifest_version": 4, "providers": providers}),
+        json.dumps({"version": 5, "manifest_version": 5, "providers": providers}),
         encoding="utf-8",
     )
 

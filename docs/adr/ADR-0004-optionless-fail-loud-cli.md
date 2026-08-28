@@ -40,11 +40,14 @@ or compatibility syntax. Configuration and environment SSOTs supply the full
 typed contract. Make remains development support and gate composition and may
 invoke only these public verbs when it needs runtime behavior.
 
-`sync` derives its one destination project from the invocation cwd's nearest
-physical `.git/` ancestor. It applies all supported project surfaces and writes
-no personal home. Project selection, when needed, is the strict project-owned
-`.agents/projection.json` v1 document; absence means the typed empty selection,
-not an error-triggered fallback.
+`sync` derives its destination project from the invocation cwd's nearest
+physical `.git/` ancestor and its personal destination from the current process
+home. It preflights and atomically publishes every supported personal and
+project surface, including provider-native instruction and lifecycle-hook
+artifacts. This is one workflow: there is no hook verb, personal mode, hidden
+runtime path, or second CLI. Project selection, when needed, is the strict
+project-owned `.agents/projection.json` v1 document; absence means the typed
+empty selection, not an error-triggered fallback.
 
 Every verb performs complete preflight before its first effect. A missing,
 empty, conflicting, unexpanded, or invalid genuinely required external value

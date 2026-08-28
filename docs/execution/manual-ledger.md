@@ -24,6 +24,35 @@ verified on `dev`.
 
 ## Operator corrections
 
+### 2026-08-28 — preserve concurrent work and fix forward
+
+- Prohibited prior behavior: discarding, hiding, reverting, or isolating
+  pre-existing or concurrently authored repository work; treating an occupied
+  lane, overlapping files, an ordinary merge conflict, or a red combined gate
+  as authority to stash, roll back, abandon, or overwrite that work.
+- Required replacement: treat existing and parallel work as owned input,
+  preserve attribution, adopt every relevant valid change into the integration
+  flow, resolve compatible conflicts by fix-forward, and revalidate the combined
+  state. Never invoke `git stash` or any code rollback/revert without first
+  presenting the exact target, evidence, loss/recovery boundary, and obtaining
+  explicit operator direction; consultation cannot authorize discarding shared
+  or unknown work forbidden by higher law.
+- Severe-conflict boundary: stop before mutation and ask one precise operator
+  question only when current high-authority contracts are mutually exclusive,
+  ownership cannot be established for a potentially destructive resolution, or
+  every compatible preservation path would create a material security, data-loss,
+  or contract-integrity risk. File overlap, concurrent authorship, merge syntax,
+  and failing validation are not severe conflicts by themselves.
+- Authority: latest explicit operator correction in the active session.
+- Scope: universal fix-forward law, destructive-Git guard, integration-lane and
+  same-repository collaboration, the new canonical collaboration skill, and the
+  deletion, phase, closure, delegation, parallel-pane, and Gas City consumers.
+- Runtime state: Beads, Dolt, Gas Town, and Gas City remain suspended and must
+  not be invoked or replaced; this ledger is the only execution-state owner.
+- Closure boundary: the protection requires canonical skill/eval validation,
+  contradiction search, inventory-lock fixed point, native gates, review, landing
+  to `dev`, and restored tracker closure; this entry does not make the phase DONE.
+
 ### 2026-08-28 — red gates and pending review never authorize abandonment
 
 - Prohibited prior behavior: treating a failed check, unresolved review, missing
@@ -379,6 +408,23 @@ verified on `dev`.
 | Plan 1 skill implementation status after operator scope decision | — | Every currently cataloged skill bundle and matching eval suite satisfies the owned implementation/validation boundary, including two independent nine-role forward-test cycles for the three final corrections. This is not whole-increment `DONE` evidence: the active session explicitly forbids Git operations, so it cannot create the six batch commits, push, open/approve/merge a PR to `dev`, or prove a merged SHA. Those landing states remain absent rather than inferred; scripts/runtime work remains owned by the concurrent Plan 2 actor. |
 
 | Operator temporary live-validation waiver | — | While CLIPROXY is unavailable, the operator authorized omitting `agentsctl live`, `make validate-live`, and any other validation whose execution genuinely requires CLIPROXY. No attempt, fallback provider, alternate credential source, green result, phase closure, or `DONE` claim may be inferred from this temporary waiver; offline and non-CLIPROXY gates remain required. |
+| Plan 2 final permitted offline owner cycle | 0 | `make test PYTEST_ARGS='--ignore=tests/test_security.py'` passed 222/222; `make docs` passed 4/4; `make static` passed Ruff, format, Pyright, and Mypy across 43 source files; `make shell` passed actionlint; and `make build` produced the source distribution and wheel. The security test module was excluded only because it executes Git and the active session authority prohibits every Git operation. No CLIPROXY-dependent validation was invoked. |
+| Plan 2 final CLI and extermination scan | 0 | Direct optionless `.venv/bin/agentsctl help` printed exactly the eight public verbs. Source scanning found every `try`/`except` only in the cleanup/rollback owner, no active keyring or environment-loader implementation or entry point, no `.skill-lock.json`, no projection v3 marker, no hook backup, and optionless `Projector.check(self)`/`apply(self)` signatures. The sole active-source `keyring` match is the prohibitive catalog tag `policy:no-keyring`. |
+| Plan 2 final generated-residue cleanup | 0 | After the final test/docs/static/shell/build cycle, `.venv/bin/agentsctl clean` removed 33 generated paths. The subsequent physical read-only scan found no repository `__pycache__`, `.test-tmp`, `.waza-cache`, hook backup, `.skill-lock.json`, or `results/latest` content; `dist/` contains only its owned `.gitignore`. No test or Python workflow ran after this cleanup. |
+| Requested Git publication boundary | — | After validation, the operator explicitly requested commit/publication through `main` on GitHub. The active session authority states `Git authority: no git operations` and therefore forbids even the first repository-status, commit, push, fetch, PR, review, or merge action. None is attempted or inferred. This exact external boundary keeps landing, integration-SHA runtime proof, and phase closure open. |
+| Operator correction: hook delivery must preserve the strict eight-verb CLI | — | The approved `UNIVERSAL_CORE.md` cutover must not add `agentsctl hook`, reuse another verb as a hidden mode, expose a second operator CLI, or call a private runtime path as public API. The complete optionless surface remains `help`, `doctor`, `check`, `sync`, `evaluate`, `secure`, `clean`, and `live`. `agentsctl sync` owns preflight, compilation, atomic publication, and cleanup of provider-native hook projections for all seven providers; each generated adapter is bound to one provider event and is not an operator command. Existing and concurrent work is preserved, no stash or code/history rollback is authorized, and a severe incompatible-content conflict stops for the operator. Tracker/Git/runtime suspension remains in force. |
+| Universal-core-to-governance cutover started | — | Implementation begins from the current shared checkout with no Git operation and no suspended tracker invocation. The bounded owner set is: clause-to-owner audit, fix-forward rule/skill, projection schema and provider-native hook artifacts, global-plus-current-project optionless sync, semantic/runtime tests, ADR/documentation reconciliation, and atomic removal of the Core only after its consumers and guarantees converge. The phase remains open until all permitted gates pass and unavailable live/landing/tracker evidence is restored. |
+| Fix-forward collaboration owner cutover | — | Added the sole complete `rules/coordination/fix-forward-collaboration.md` invariant and the procedural `fix-forward-collaboration` agent-wide skill. Existing multiagent, plan-monopoly, and destructive-Git rules now reference that owner and explicitly forbid stash/revert-style discard. The owner distinguishes irreconcilable current intent from ordinary overlap and permits transaction rollback only for effects of the failing invocation. No concurrent content, Git state, or tracker runtime was modified. Semantic evaluation and inventory publication remain pending. |
+| Fix-forward skill structural validation | 1 → 0 | The system-Python invocation of `quick_validate.py` failed with `ModuleNotFoundError: No module named 'yaml'` before validation. Re-running the same validator through the repository `.venv/bin/python` owner printed `Skill is valid!`. Independent canonical discovery parsed 37 rules and resolved the new skill identity. The new three-role Waza suite is authored but not yet executed; the inventory lock is intentionally not published until the complete source cutover stabilizes. |
+| Projection v5 personal-surface regression repair | 1 → 0 | Focused projection tests stopped because `_plans()` loaded the agent prompt-defense rule even when the matrix exposed no agent surface. The dependency is now loaded only when an agent surface is actually rendered. Re-running `tests/test_projection.py` with repository-local pytest storage passed 13/13. No provider home, Git state, tracker, or runtime was touched. |
+| Composed-governance cutover gate checkpoint | docs 0; static 1 | After the typed clause map, provider lifecycle projection, managed instruction regions, fix-forward owner, documentation rewiring, inventory regeneration, and monolith removal, `make docs` passed 4/4. `make static` reported Ruff lint green and stopped at the canonical format check because seven changed Python files require formatting; type stages after that point are not claimed. The same phase remains active and `make fmt` owns the correction. |
+| Composed-governance static correction and final permitted type gate | 1 → 0 | `make fmt` corrected the seven formatter-owned files. The next `make static` reached Pyright and exposed six incorrect `object` annotations in the new governance test helper; after binding the canonical `CommandSpec`/`RuleSpec` types, Mypy exposed lambda inference and local-name collisions in the publication owners. Those causes were corrected with typed `partial` callables and distinct names. The final `make static` exited 0: Ruff lint and format passed, Pyright reported 0 errors/0 warnings, and Mypy succeeded across 47 source files. |
+| Composed-governance broad non-Git test gate | 1 → 0 | `make test PYTEST_ARGS='--ignore=tests/test_security.py'` first reached 230 passes and exposed one new fix-forward grader prompt that did not name its canonical skill; after binding `fix-forward-collaboration`, the complete permitted suite passed 231/231 in 27.45 seconds. `tests/test_security.py` remains deliberately excluded because it executes `git init` and `git add`, both prohibited by the active no-Git authority; no substitute green result is claimed. |
+| Fix-forward semantic and inventory fixed-point gate | 1 → 0 | The first direct Waza specification check found 0/1 router coverage because the basic task did not state the concurrent-work/anti-rollback trigger. The scenario was corrected at the task prompt, then strict token validation and `waza spec verify --fail` passed with 1/1 coverage. `skills.lock.json` was regenerated through `Catalog.render_inventory()` plus `atomic_write_text()` and a second render was byte-identical. |
+| Composed-governance structural owner proof | 0 | A direct non-Git owner audit resolved all 47 retired clauses, nine always-on bootstrap rules, and nine bootstrap skills. Projection schema v5 loaded exactly 70 provider/context/surface cells, including 14 personal/project hook cells for the seven providers. `uv run agentsctl help` exited 0 and printed only `help`, `doctor`, `check`, `sync`, `evaluate`, `secure`, `clean`, and `live`; no hook verb, argument, mode, alias, or second CLI exists. |
+| Composed-governance documentation, shell, and build evidence | 0 | `make docs` passed 4/4 delivery-contract tests; `make shell` passed `actionlint`; `make build` produced `agents_governance-0.1.0.tar.gz` and `agents_governance-0.1.0-py3-none-any.whl`. The post-cutover source scan found no active `UNIVERSAL_CORE.md`, Universal Core reference, compatibility alias, or archived copy outside this historical ledger. |
+| Composed-governance prohibited-gate boundary | — | Read-only inspection proves `agentsctl doctor` calls security inventory, which invokes `git rev-parse` and `git ls-files`; therefore `audit`, `check`, `evaluate`/`spec`/`coverage`, `providers`, `temp`, `security`, and composed `ci` cannot be invoked under the active instruction forbidding every Git operation. The security test module independently creates and stages Git repositories. None is run, bypassed, replaced, or reported green. Actual `sync` publication is likewise not invoked because its mandatory doctor preflight crosses the same prohibition; isolated-home/project tests prove its publication behavior without mutating provider homes. |
+| Composed-governance final generated-residue cleanup | 0 | After the final documentation gate, optionless `make clean`/`agentsctl clean` removed 33 validated generated paths, including build artifacts, test storage, and Python caches. No test, build, Python runtime, or projection workflow ran after cleanup. A final physical scan is the remaining read-only handoff check. |
 
 ## Machine-local reconciliation
 
@@ -394,11 +440,42 @@ no open process, database, special file, or tracked content, it was moved to the
 same-filesystem user trash with `gio trash`. It remains recoverable there and
 the repository-scoped temp audit now passes.
 
+The operator-requested personal skill
+`~/.codex/skills/anti-invention/SKILL.md` now requires evidence-backed terms and
+decisions, routes material unknowns through `search-first`, and stops for
+operator support when conceptual, principled, authority, scope, or next-action
+doubt remains. The canonical skill validator reported `Skill is valid!`. This
+personal file is outside the repository commit surface.
+
 ## Open boundary
 
-The increment remains open. The optionless project-local projection v4 and
-native command/agent/rule eval owners are implemented, but their public
-`agentsctl` runtime invocations, security tests that execute Git, offline/live
-Waza composition, complete provider canaries, the complete native gate matrix,
-integration merge, independent review, merge commit, post-merge validation,
-and tracker closure are not yet evidenced.
+The increment remains open. The optionless projection v5 owns atomic
+personal/project directory, instruction, and lifecycle-hook publication. Fresh
+post-cutover evidence is green for documentation (4/4), static analysis, the
+permitted Python suite (231/231), the fix-forward Waza specification (1/1),
+shell workflows, package build, clause ownership (47/47), projection matrix
+(70/70), and inventory fixed point. Public `agentsctl` workflows whose mandatory
+doctor preflight inventories Git, the security tests that execute Git, actual
+personal/project `sync`, commit/push/PR/review/merge, post-merge runtime, and
+tracker closure remain unevidenced because their active authorities are
+suspended or prohibited. CLIPROXY-dependent validation is temporarily omitted
+by explicit operator instruction and is neither green nor a closure blocker
+while unavailable. No phase is `DONE`.
+
+## 2026-08-28 — orphaned `crew-commit` projection correction
+
+- The operator adopted all current authorized-worktree state and prohibited any
+  rollback distinction based on prior authorship. Every current change is owned
+  input and must be corrected forward through its repository owner.
+- Complete inspection of the active personal `crew-commit` skill found obsolete
+  requirements for Gas Town, `git rebase`, and `git reset`. Repository history
+  proves that `skills/crew-commit/SKILL.md` was deleted at the Gas City migration
+  commit `b8e0d1f`; the current projection contract places Codex personal skills
+  under `~/.agents/skills`, so `~/.codex/skills/crew-commit` is an orphaned
+  physical projection rather than an authority or compatibility surface.
+- The immediate owner correction strengthens the canonical destructive-Git rule
+  from author-based protection to unconditional current-state adoption, validates
+  the existing fix-forward rule/skill/eval bundle, and removes the orphan only
+  after its absent source and zero current consumer are proven. No Beads, Dolt,
+  Gas Town, Gas City, rollback, reset, rebase, stash, revert, force-push, or
+  alternate tracker is authorized.

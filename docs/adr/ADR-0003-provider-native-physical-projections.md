@@ -25,12 +25,12 @@ generated ownership manifest and source digest. Unsupported combinations fail
 explicitly. Apply preserves foreign or ambiguous content and must reach a fixed
 point on the second unchanged run.
 
-The public apply is `agentsctl sync`. It accepts no option and derives its only
-target from the invocation directory's nearest physical `.git/` ancestor. It
-plans every supported project surface before the first publication, stages on
-the destination filesystem, publishes every changed root as one transaction,
-and rolls earlier roots back if a later publication fails. Personal homes are
-not part of this verb.
+The public apply is `agentsctl sync`. It accepts no option and derives its
+project target from the invocation directory's nearest physical `.git/`
+ancestor and its personal target from the current process home. It plans every
+supported personal and project surface before the first publication, stages on
+each destination filesystem, publishes every changed target as one transaction,
+and rolls earlier publications back if a later publication fails.
 
 ### Principles
 

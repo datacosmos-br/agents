@@ -1,4 +1,4 @@
-"""Strict project-local projection with atomic physical publication."""
+"""Strict directory-surface projection with atomic physical publication."""
 
 from __future__ import annotations
 
@@ -11,6 +11,7 @@ import stat
 import tempfile
 import tomllib
 from dataclasses import dataclass
+from functools import partial
 from pathlib import Path, PurePosixPath
 from typing import cast
 
@@ -24,8 +25,10 @@ from .agent_profiles import (
 )
 from .catalog import NON_PORTABLE_PROJECT_REFERENCE, Catalog
 from .cleanup import (
+    PreparedPublication,
+    Publication,
     remove_physical,
-    run_atomic_sequence,
+    run_atomic_publications,
     run_with_cleanup,
     validate_physical,
 )
@@ -43,6 +46,7 @@ from .projection_config import (
     ProjectionContext,
     ProjectionStatus,
     ProjectionSurface,
+    RuleLayout,
 )
 from .rule_adapters import RuleContext, RuleProvider, render_rule
 from .rules import RuleDistribution, RuleSpec
@@ -147,6 +151,7 @@ class ProjectionPlan:
     project: Path
     root: Path
     providers: tuple[str, ...]
+    context: ProjectionContext
     surface: ProjectionSurface
     selection: ProjectionSelection
     sources: tuple[ProjectionSource, ...]
@@ -489,6 +494,7 @@ class Projector:
                     for cell in self.config.cells.values()
                     if cell.context is ProjectionContext.PROJECT
                     and cell.status is ProjectionStatus.SUPPORTED
+                    and cell.surface is not ProjectionSurface.HOOKS
                 },
                 key=str,
             )
@@ -617,6 +623,25 @@ class Projector:
             )
         return tuple(sources)
 
+    def _personal_skill_sources(self) -> tuple[ProjectionSource, ...]:
+        sources: list[ProjectionSource] = []
+        for name in sorted(self.catalog.names_for("personal")):
+            record = self.catalog.record(name)
+            _validate_source_portability(record.directory)
+            sources.append(
+                ProjectionSource(
+                    name,
+                    record.directory,
+                    "agents:skills",
+                    self.catalog.digest_tree(record.directory),
+                    self.catalog.physical_tree_contract(record.directory),
+                    "skill",
+                    name,
+                    ("personal",),
+                )
+            )
+        return tuple(sources)
+
     def _selected_agents(
         self,
         project: Path,
@@ -657,7 +682,7 @@ class Projector:
     @staticmethod
     def _native_name(cell: ProjectionCell, destination: PurePosixPath) -> str:
         assert cell.path is not None
-        configured = PurePosixPath(cell.path)
+        configured = PurePosixPath(cell.path.removeprefix("${HOME}/"))
         if destination.parent not in {PurePosixPath("."), configured}:
             raise ValueError(
                 "adapter destination differs from projection matrix: "
@@ -666,148 +691,188 @@ class Projector:
         return destination.name
 
     def _plans(self, project: Path) -> tuple[ProjectionPlan, ...]:
-        selection = self._selection(project)
+        project_selection = self._selection(project)
         dependencies = self._dependencies(project)
-        selected_skills = self._activated_skills(project, selection, dependencies)
-        supported_cells = tuple(
-            cell
-            for cell in self.config.cells.values()
-            if cell.context is ProjectionContext.PROJECT
-            and cell.status is ProjectionStatus.SUPPORTED
+        project_skills = self._skill_sources(
+            self._activated_skills(project, project_selection, dependencies)
         )
-        supported_surfaces = {cell.surface for cell in supported_cells}
-        skills = (
-            self._skill_sources(selected_skills)
-            if ProjectionSurface.SKILLS in supported_surfaces
-            else ()
-        )
-        commands = (
-            self.commands if ProjectionSurface.COMMANDS in supported_surfaces else ()
-        )
-        agents = self.agents if ProjectionSurface.AGENTS in supported_surfaces else ()
-        selected_agents = (
-            self._selected_agents(project, selection, dependencies, agents)
-            if agents
-            else {}
-        )
-        rules = self.rules if ProjectionSurface.RULES in supported_surfaces else ()
-        prompt_defense = (
-            (self.catalog.root / "rules" / "security" / "prompt-defense.md").read_text(
-                encoding="utf-8"
+        personal_skills = self._personal_skill_sources()
+        prompt_defense: str | None = None
+        token_counter = waza_bpe_counter(self.catalog.root) if self.commands else None
+        home = Path.home().resolve(strict=True)
+        grouped: dict[tuple[Path, ProjectionContext], dict[str, object]] = {}
+
+        for context in ProjectionContext:
+            boundary = home if context is ProjectionContext.PERSONAL else project
+            selection = (
+                ProjectionSelection()
+                if context is ProjectionContext.PERSONAL
+                else project_selection
             )
-            if agents
-            else ""
-        )
-        token_counter = waza_bpe_counter(self.catalog.root) if commands else None
-        grouped: dict[Path, dict[str, object]] = {}
-        for provider in AgentProvider:
-            for surface in ProjectionSurface:
-                cell = self.config.cell(provider, ProjectionContext.PROJECT, surface)
-                if cell.status is ProjectionStatus.UNSUPPORTED:
-                    continue
-                assert cell.path is not None
-                root = _confined(project, cell.path)
-                if root not in grouped:
-                    grouped[root] = {
-                        "providers": set(),
-                        "sources": {},
-                        "surface": surface,
-                    }
-                bucket = grouped[root]
-                if bucket["surface"] is not surface:
-                    raise ValueError(
-                        f"projection surfaces share one destination: {root}"
-                    )
-                cast(set[str], bucket["providers"]).add(provider.value)
-                rendered: list[ProjectionSource] = []
-                if surface is ProjectionSurface.SKILLS:
-                    rendered.extend(skills)
-                elif surface is ProjectionSurface.COMMANDS:
-                    if token_counter is None:
-                        raise RuntimeError("supported command surface has no inventory")
-                    budget = CommandTokenBudget(cell.max_tokens, token_counter)
-                    for command_spec in commands:
-                        if command_spec.route is not CommandRoute.PROJECT:
-                            continue
-                        command_artifact = render_command(
-                            command_spec,
-                            CommandProvider(provider.value),
-                            token_budget=budget,
-                        )
-                        rendered.append(
-                            _rendered_source(
-                                name=self._native_name(
-                                    cell, command_artifact.destination
-                                ),
-                                source=command_spec.path,
-                                origin=f"agents:commands:{provider.value}",
-                                source_type="command",
-                                slug=command_spec.name,
-                                activation=("route:project",),
-                                content=command_artifact.content,
-                            )
-                        )
-                elif surface is ProjectionSurface.AGENTS:
-                    for agent_profile in agents:
-                        if agent_profile.name not in selected_agents:
-                            continue
-                        agent_artifact = render_agent(
-                            agent_profile,
-                            provider,
-                            AgentContext.PROJECT,
-                            prompt_defense=prompt_defense,
-                        )
-                        rendered.append(
-                            _rendered_source(
-                                name=self._native_name(
-                                    cell, agent_artifact.destination
-                                ),
-                                source=agent_profile.path,
-                                origin=f"agents:agents:{provider.value}",
-                                source_type="agent",
-                                slug=agent_profile.name,
-                                activation=selected_agents[agent_profile.name],
-                                content=agent_artifact.content,
-                            )
-                        )
-                else:
-                    for rule_spec in rules:
-                        if rule_spec.distribution not in {
-                            RuleDistribution.BOTH,
-                            RuleDistribution.PROJECT,
-                        }:
-                            continue
-                        rule_artifact = render_rule(
-                            rule_spec,
-                            RuleProvider(provider.value),
-                            RuleContext.PROJECT,
-                        )
-                        rendered.append(
-                            _rendered_source(
-                                name=self._native_name(cell, rule_artifact.destination),
-                                source=rule_spec.path,
-                                origin=f"agents:rules:{provider.value}",
-                                source_type="rule",
-                                slug=rule_spec.identity,
-                                activation=(f"route:{rule_spec.distribution.value}",),
-                                content=rule_artifact.content,
-                            )
-                        )
-                by_name = cast(dict[str, ProjectionSource], bucket["sources"])
-                for source in rendered:
-                    previous = by_name.get(source.name)
-                    if previous is not None and previous != source:
+            selected_agents = (
+                {
+                    profile.name: ("always",)
+                    for profile in self.agents
+                    if profile.distribution == "agent-wide"
+                }
+                if context is ProjectionContext.PERSONAL
+                else self._selected_agents(
+                    project, project_selection, dependencies, self.agents
+                )
+            )
+            for provider in AgentProvider:
+                for surface in ProjectionSurface:
+                    if surface is ProjectionSurface.HOOKS:
+                        continue
+                    cell = self.config.cell(provider, context, surface)
+                    if cell.status is ProjectionStatus.UNSUPPORTED:
+                        continue
+                    if (
+                        surface is ProjectionSurface.RULES
+                        and cell.layout is RuleLayout.DOCUMENT
+                    ):
+                        continue
+                    assert cell.path is not None
+                    configured = cell.path.removeprefix("${HOME}/")
+                    root = _confined(boundary, configured)
+                    if (
+                        context is ProjectionContext.PERSONAL
+                        and surface is ProjectionSurface.SKILLS
+                        and root == self.catalog.root / "skills"
+                    ):
+                        continue
+                    key = (root, context)
+                    if key not in grouped:
+                        grouped[key] = {
+                            "boundary": boundary,
+                            "providers": set(),
+                            "selection": selection,
+                            "sources": {},
+                            "surface": surface,
+                        }
+                    bucket = grouped[key]
+                    if bucket["surface"] is not surface:
                         raise ValueError(
-                            f"conflicting projection source: {root / source.name}"
+                            f"projection surfaces share one destination: {root}"
                         )
-                    by_name[source.name] = source
+                    cast(set[str], bucket["providers"]).add(provider.value)
+                    rendered: list[ProjectionSource] = []
+                    if surface is ProjectionSurface.SKILLS:
+                        rendered.extend(
+                            personal_skills
+                            if context is ProjectionContext.PERSONAL
+                            else project_skills
+                        )
+                    elif surface is ProjectionSurface.COMMANDS:
+                        if token_counter is None:
+                            raise RuntimeError(
+                                "supported command surface has no inventory"
+                            )
+                        budget = CommandTokenBudget(cell.max_tokens, token_counter)
+                        route = (
+                            CommandRoute.AGENT
+                            if context is ProjectionContext.PERSONAL
+                            else CommandRoute.PROJECT
+                        )
+                        for command_spec in self.commands:
+                            if command_spec.route is not route:
+                                continue
+                            command_artifact = render_command(
+                                command_spec,
+                                CommandProvider(provider.value),
+                                token_budget=budget,
+                            )
+                            rendered.append(
+                                _rendered_source(
+                                    name=self._native_name(
+                                        cell, command_artifact.destination
+                                    ),
+                                    source=command_spec.path,
+                                    origin=f"agents:commands:{provider.value}",
+                                    source_type="command",
+                                    slug=command_spec.name,
+                                    activation=(f"route:{route.value}",),
+                                    content=command_artifact.content,
+                                )
+                            )
+                    elif surface is ProjectionSurface.AGENTS:
+                        if prompt_defense is None:
+                            prompt_defense = (
+                                self.catalog.root
+                                / "rules"
+                                / "security"
+                                / "prompt-defense.md"
+                            ).read_text(encoding="utf-8")
+                        agent_context = AgentContext(context.value)
+                        for agent_profile in self.agents:
+                            if agent_profile.name not in selected_agents:
+                                continue
+                            agent_artifact = render_agent(
+                                agent_profile,
+                                provider,
+                                agent_context,
+                                prompt_defense=prompt_defense,
+                            )
+                            rendered.append(
+                                _rendered_source(
+                                    name=self._native_name(
+                                        cell, agent_artifact.destination
+                                    ),
+                                    source=agent_profile.path,
+                                    origin=f"agents:agents:{provider.value}",
+                                    source_type="agent",
+                                    slug=agent_profile.name,
+                                    activation=selected_agents[agent_profile.name],
+                                    content=agent_artifact.content,
+                                )
+                            )
+                    else:
+                        rule_context = RuleContext(context.value)
+                        distributions = (
+                            {RuleDistribution.BOTH, RuleDistribution.PERSONAL}
+                            if context is ProjectionContext.PERSONAL
+                            else {RuleDistribution.BOTH, RuleDistribution.PROJECT}
+                        )
+                        for rule_spec in self.rules:
+                            if rule_spec.distribution not in distributions:
+                                continue
+                            rule_artifact = render_rule(
+                                rule_spec,
+                                RuleProvider(provider.value),
+                                rule_context,
+                            )
+                            rendered.append(
+                                _rendered_source(
+                                    name=self._native_name(
+                                        cell, rule_artifact.destination
+                                    ),
+                                    source=rule_spec.path,
+                                    origin=f"agents:rules:{provider.value}",
+                                    source_type="rule",
+                                    slug=rule_spec.identity,
+                                    activation=(
+                                        f"route:{rule_spec.distribution.value}",
+                                    ),
+                                    content=rule_artifact.content,
+                                )
+                            )
+                    by_name = cast(dict[str, ProjectionSource], bucket["sources"])
+                    for source in rendered:
+                        previous = by_name.get(source.name)
+                        if previous is not None and previous != source:
+                            raise ValueError(
+                                f"conflicting projection source: {root / source.name}"
+                            )
+                        by_name[source.name] = source
+
         plans = tuple(
             ProjectionPlan(
-                project,
+                cast(Path, bucket["boundary"]),
                 root,
                 tuple(sorted(cast(set[str], bucket["providers"]))),
+                context,
                 cast(ProjectionSurface, bucket["surface"]),
-                selection,
+                cast(ProjectionSelection, bucket["selection"]),
                 tuple(
                     source
                     for _, source in sorted(
@@ -815,7 +880,9 @@ class Projector:
                     )
                 ),
             )
-            for root, bucket in sorted(grouped.items(), key=lambda item: str(item[0]))
+            for (root, context), bucket in sorted(
+                grouped.items(), key=lambda item: (str(item[0][0]), item[0][1].value)
+            )
         )
         for index, plan in enumerate(plans):
             for other in plans[index + 1 :]:
@@ -841,10 +908,10 @@ class Projector:
     @staticmethod
     def _manifest_payload(plan: ProjectionPlan) -> dict[str, object]:
         return {
-            "version": 4,
+            "version": 5,
             "owner": "agents-governance",
             "providers": list(plan.providers),
-            "context": "project",
+            "context": plan.context.value,
             "surface": plan.surface.value,
             "destination": plan.root.relative_to(plan.project).as_posix(),
             "project": ".",
@@ -861,9 +928,9 @@ class Projector:
             raise ValueError(f"projection manifest must be a physical file: {path}")
         payload = _mapping(json.loads(path.read_text(encoding="utf-8")), str(path))
         _exact(payload, _MANIFEST_FIELDS, str(path))
-        if payload["version"] != 4 or payload["owner"] != "agents-governance":
+        if payload["version"] != 5 or payload["owner"] != "agents-governance":
             raise ValueError(f"projection manifest owner/version is invalid: {path}")
-        if payload["context"] != "project":
+        if payload["context"] not in {context.value for context in ProjectionContext}:
             raise ValueError(f"projection manifest context is invalid: {path}")
         _strings(payload["providers"], f"{path}: providers")
         if payload["surface"] not in {surface.value for surface in ProjectionSurface}:
@@ -1106,21 +1173,29 @@ class Projector:
             if state.drift:
                 raise ProjectionDriftError(f"project projection differs: {plan.root}")
 
+    def _prepare_publication(self, state: _TargetState) -> PreparedPublication:
+        staged = self._stage(state)
+        return PreparedPublication(
+            lambda: self._publish(staged),
+            lambda: self._rollback(staged),
+            lambda: remove_physical(staged.stage) if staged.stage.exists() else None,
+        )
+
+    def publications(self, project: Path | None = None) -> tuple[Publication, ...]:
+        """Preflight and defer every changed directory publication."""
+
+        selected = self.project_root() if project is None else project
+        states = tuple(self._state(plan) for plan in self._plans(selected))
+        return tuple(
+            Publication(partial(self._prepare_publication, state))
+            for state in states
+            if state.drift
+        )
+
     def apply(self) -> None:
         """Atomically converge every supported surface for the current project."""
 
-        project = self.project_root()
-        states = tuple(self._state(plan) for plan in self._plans(project))
-        changed = tuple(state for state in states if state.drift)
-        if not changed:
-            return
-        run_atomic_sequence(
-            changed,
-            self._stage,
-            self._publish,
-            self._rollback,
-            lambda staged: remove_physical(staged.stage),
-        )
+        run_atomic_publications(self.publications())
 
 
 __all__ = ("ProjectionDriftError", "Projector")

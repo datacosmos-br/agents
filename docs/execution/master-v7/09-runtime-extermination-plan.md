@@ -26,7 +26,7 @@ to and re-raise the original cause.
    lane.
 5. After the skill-lane handoff, enforce policy tags in the catalog, regenerate
    `skills.lock.json` once, and prove a second generation is unchanged.
-6. Complete the optionless `agentsctl`, projection v4, Waza, Make, CI, runtime,
+6. Complete the optionless `agentsctl`, projection v5, Waza, Make, CI, runtime,
    integration, review, and landing cycle.
 
 ## Central policies
@@ -60,10 +60,11 @@ Each verb runs its complete workflow over the canonical inventory. The CLI and
 orchestrators contain no catches. Make owns only development support and gate
 composition; all agent-domain behavior belongs to these verbs.
 
-`sync` is the complete project-local projection workflow. It derives one
-physical Git root from cwd, loads an optional strict project-owned selection,
-preflights every supported project surface, and publishes them atomically. It
-has no personal mode and writes no tool home.
+`sync` is the complete personal/project projection workflow. It derives one
+physical Git root from cwd and the current process home, loads an optional
+strict project-owned selection, preflights every supported surface, and
+publishes directory, instruction, and lifecycle-hook artifacts atomically. It
+has no personal mode or hook subcommand.
 
 ## Enforcement and landing
 

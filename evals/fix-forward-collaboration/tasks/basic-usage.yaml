@@ -1,0 +1,12 @@
+id: fix-forward-collaboration-adoption-001
+name: Adopt compatible parallel work
+description: Preserve and integrate compatible changes from another lane.
+tags: [concurrent-work, integration-adoption, fix-forward, happy-path]
+inputs:
+  prompt: Handle concurrent work and anti-rollback coordination. The authorized
+    worktree already contains dirty validation with unknown provenance while this
+    integration lane changed the projection owner. Adopt the complete current
+    state, reconcile both contributions, and land without discarding either one.
+expected:
+  output_contains: [current, preserve, adopt, integration, combined, revalidate]
+  output_not_contains: [stash, reset, force-push, discard, rollback code]

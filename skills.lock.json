@@ -923,6 +923,34 @@
       "updates": "manual"
     },
     {
+      "category": "agent-wide",
+      "class": "router",
+      "digest": "1aa308ef207ac6e9d6f9f742642ae9ea9fb1496f9f73578b1594837b916bf0a7",
+      "distributions": [
+        "personal"
+      ],
+      "max_lines": 500,
+      "max_tokens": 500,
+      "name": "fix-forward-collaboration",
+      "owner": "agents",
+      "path": "skills/agent-wide/fix-forward-collaboration",
+      "provenance": "agents-owned",
+      "tags": [
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
+        "provenance:agents-owned",
+        "role:governance",
+        "updates:manual",
+        "usage:router"
+      ],
+      "updates": "manual"
+    },
+    {
       "category": "framework",
       "class": "router",
       "digest": "a00c457db8c7f1641d07d48f44d92cfc9ae6e9ec3c5f3c4a6343ac172495cea5",

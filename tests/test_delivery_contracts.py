@@ -46,7 +46,6 @@ def test_eval_workflow_covers_integration_push_and_pull_requests() -> None:
         ".waza.yaml",
         "AGENTS.md",
         "CLAUDE.md",
-        "UNIVERSAL_CORE.md",
         "agents/**",
         "commands/**",
         "docs/**",

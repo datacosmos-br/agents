@@ -8,9 +8,12 @@ Multiple agents may edit the same files concurrently. Declare file ownership in
 the active collaboration channel before editing; do not add coordination-only
 comments to product code or documentation.
 
+The complete preservation, fix-forward, and severe-conflict contract is owned by
+[fix-forward collaboration](fix-forward-collaboration.md).
+
 - Re-read a mutable file right before editing; converge, never revert another
   actor's valid change.
-- Never overwrite uncommitted WIP. Preserve durable evidence in the next
+- Never overwrite or stash uncommitted WIP. Preserve durable evidence in the next
   canonical commit/PR/CI artifact.
 - Tracker runtime is suspended. Invoke no tracker command; update the
   repository-declared manual ledger and keep phase closure unavailable.

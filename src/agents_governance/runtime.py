@@ -11,10 +11,16 @@ from pathlib import Path
 
 from .agent_profiles import AgentProfile, audit_agent_profiles
 from .catalog import Catalog
-from .cleanup import clean_generated
+from .cleanup import clean_generated, run_atomic_publications
 from .command_evals import audit_command_evals
 from .commands import CommandSpec, audit_command_specs
 from .environment import required_environment
+from .governance_config import (
+    GovernanceConfig,
+    audit_governance_config,
+    load_governance_config,
+)
+from .hook_projection import HookProjector
 from .native_evals import evaluate_native
 from .projection import Projector
 from .projection_config import ProjectionConfig, load_projection_config
@@ -32,6 +38,7 @@ _MODEL = "aihub-primary"
 @dataclass(frozen=True)
 class RuntimeInventory:
     catalog: Catalog
+    governance: GovernanceConfig
     projection: ProjectionConfig
     model: str
     commands: tuple[CommandSpec, ...]
@@ -67,11 +74,20 @@ def _doctor(root: Path) -> RuntimeInventory:
 
     agents = audit_agent_profiles(root)
     rules = audit_rule_specs(root)
+    governance = load_governance_config(root)
+    audit_governance_config(root, governance, catalog, commands, rules)
 
     security_routes = security_inventory((root,))
     audit_security_evidence((root,))
     return RuntimeInventory(
-        catalog, projection, model, commands, agents, rules, security_routes
+        catalog,
+        governance,
+        projection,
+        model,
+        commands,
+        agents,
+        rules,
+        security_routes,
     )
 
 
@@ -125,8 +141,17 @@ def sync(root: Path) -> None:
         inventory.agents,
         inventory.rules,
     )
-    projector.apply()
-    print(f"sync: project projection converged at {projector.project_root()}")
+    project = projector.project_root()
+    hooks = HookProjector(
+        inventory.governance,
+        inventory.projection,
+        inventory.commands,
+        inventory.rules,
+    )
+    run_atomic_publications(
+        (*projector.publications(project), *hooks.publications(project))
+    )
+    print(f"sync: personal and project projections converged at {project}")
 
 
 def _waza_executable() -> str:
