@@ -15,3 +15,20 @@ estimates:
     calculation: 600 reachable accounts * 15 percent adoption * $18000 annual contract
     result_usd: 1620000
 counterevidence: Buyers often bundle maintenance workflow with an existing CMMS.
+positioning_brief:
+  target_customer: multi-site warehouse maintenance managers
+  differentiated_value: visible ownership across shift handoffs
+  strategic_axes: [handoff clarity, implementation effort]
+competitors:
+  - name: WorkGrid
+    role: direct candidate
+    evidence: sells maintenance handoff workflows to multi-site warehouses
+    evidence_kind: independently proven
+  - name: CMMS Suite
+    role: adjacent candidate
+    evidence: vendor claims an all-in-one maintenance module without public handoff evidence
+    evidence_kind: self-asserted
+  - name: ShiftOps
+    role: reference candidate
+    evidence: publishes independently measured shift-handoff outcomes in manufacturing
+    evidence_kind: independently proven

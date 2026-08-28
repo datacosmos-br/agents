@@ -2,9 +2,9 @@ command: feature-development
 schemaVersion: '1.0'
 scenarios:
   - role: happy-path
-    prompt: Implement an approved pagination contract through the existing codec owner and public list-orders runtime.
+    prompt: Implement an approved pagination contract whose implementation-plan-review has no blockers through the existing codec owner and public list-orders runtime.
     assertions:
-      output_contains: [existing owner, current consumer, public runtime, native gates]
+      output_contains: [reviewed plan, existing owner, current consumer, public runtime, native gates]
       output_not_contains: [speculative framework, fallback]
   - role: ambiguous-input
     prompt: Build the feature without a requested outcome, consumer, boundary, or acceptance behavior.

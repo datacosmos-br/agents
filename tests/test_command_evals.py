@@ -130,4 +130,4 @@ def test_repository_has_one_complete_suite_per_command() -> None:
     commands = audit_command_specs(root)
     specs = audit_command_evals(root, commands)
 
-    assert len(specs) == len(commands) == 7
+    assert len(specs) == len(commands)

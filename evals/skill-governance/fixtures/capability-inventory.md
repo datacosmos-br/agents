@@ -7,7 +7,13 @@ operations and types, classify breaking changes, and emit a short report. The
 router must remain compact; detailed comparison criteria belong in one local
 reference file.
 
-The current catalog and active acceptance contract both declare exactly 78
-skills. Adding this distinct capability changes the current total to 79; the
+The supplied historical corpus represents this workflow as a `schema-diff`
+command beside a generated provider copy, updater script, foreign runtime
+manifest, and private checkout path. Those artifacts are evidence only: the
+invocation name, projection, script, runtime, and path have no current consumer
+and must not become owners.
+
+The current catalog total is derived from physical canonical bundles and the
+generated inventory lock. Adding this distinct capability must update the
 migration map, category list, acceptance matrix, fixtures, generated inventory,
-and CI contract must remain consistent without rewriting historical evidence.
+and CI contract consistently without imposing or preserving a numeric cap.

@@ -24,7 +24,9 @@ graders:
       the response reads the supplied project rules, architecture, source, and
       tests; preserves every public behavior; reuses OrderId, OrderRepository,
       CsvOrderExporter, and AuditSink; keeps a thin orchestrator; removes the
-      superseded logic; passes the result through YAGNI and SOLID rechecks; applies
+      superseded logic; treats a graph no-callers result as a candidate; discovers
+      CsvOrderExporter in the string plugin registry and therefore preserves it;
+      passes the result through YAGNI and SOLID rechecks; applies
       simplify inline; compares Tokei on the same scope; and names runtime plus
       native gates. For the missing-baseline task, pass
       only when it blocks compression and names the missing owners, callers,

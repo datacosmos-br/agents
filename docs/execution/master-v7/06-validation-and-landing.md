@@ -134,8 +134,8 @@ first; a required rewrite is reviewed as an explicit source change.
 |---|---|
 | Documentation | One active master v7 package; links resolve; old plan/type instructions absent. |
 | Discovery | Recursive source count/mapping; unknown path/tag/type fails; no name registry consulted. |
-| Skills | 78 mapped sources: 76 migrated plus `plan-focus-recovery` and `fix-forward-collaboration`; BPE budgets; short descriptions; semantic scenarios; no command syntax. |
-| Commands | Seven flat sources; complete provider render; independent size gate; no skill conversion. |
+| Skills | Every discovered canonical source matches the generated inventory; BPE budgets, short descriptions, semantic scenarios, and no command syntax. |
+| Commands | Every discovered flat source has complete provider render and an independent size gate; no skill conversion. |
 | Agents/rules | Distribution paths and tags agree; universal rules compose once; no model declaration. |
 | Projection | Atomic personal plus authorized-project physical copies; unselected project writes nothing; ownership-safe cleanup; provider-native instructions/hooks; second apply changes nothing. |
 | Temp/storage | Exact manifest; physical registered checkout; `/tmp`, overlap, residue, symlink, special-file, and unknown deletion rejection. |

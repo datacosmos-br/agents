@@ -58,6 +58,17 @@ The source checkout remains the only catalog authority. `sync` derives the
 project from which it is called and the current process home; it has no scope,
 provider, surface, target, project-root, environment-override, or personal mode.
 
+Install the facade from that physical checkout so the executable and catalog
+share the same authority:
+
+```bash
+cd ~/.agents
+uv tool install --force --editable .
+```
+
+A detached wheel is invalid because it cannot own the repository data consumed
+by the runtime.
+
 ## Workspace and storage
 
 Gas City configuration owns project identity and placement through native city,

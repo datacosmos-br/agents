@@ -33,6 +33,24 @@ live ownership, and current runtime evidence.
 - treat dual writable paths or source/projection divergence as blocking;
 - preserve projections during audit and recommend correction at the source owner.
 
+## External and historical corpus checks
+
+- inspect relevant routers and every referenced script, asset, manifest,
+  generated marker, provenance, license, and current consumer;
+- derive outcome, trigger, non-trigger, inputs, effects, failure contract, scope,
+  and proof independently of the historical filename or type;
+- compare those semantics with current rules, skills, commands, typed runtime,
+  and provider adapters;
+- classify each behavior as already owned, owner extension, distinct required
+  capability, or rejected residue;
+- reject copied projections, foreign updaters/runtimes, private paths, aliases,
+  fallback, retry, normalized failure, and behavior without a current consumer.
+
+The supplied corpus remains unchanged. An unreadable resource, missing license
+for content that would be copied, executable effect that cannot be attributed,
+or unresolved current owner is a P1 and stops that unit. Original synthesis of
+general behavior may continue only when its evidence and ownership are complete.
+
 ## Severity and report
 
 - **P0**: dual mutating orchestrators, ownerless in-flight work, or two writable truths;

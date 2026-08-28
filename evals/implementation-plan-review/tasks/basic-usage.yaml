@@ -1,0 +1,12 @@
+id: implementation-plan-review-checkout-001
+name: Promote a vague guest-checkout plan
+description: Ground plan findings in repository contracts and return an executable replacement.
+tags: [planning, decision-complete, interfaces, rollout, happy-path]
+inputs:
+  prompt: Review implementation plans for decision completeness through adversarial review using checkout-plan.md and repo-context.md. Preserve approved intent and non-goals, identify every material decision still left to the implementer, and return one decision-complete replacement plan without changing code.
+  files:
+  - path: checkout-plan.md
+  - path: repo-context.md
+expected:
+  output_contains: [CheckoutService, CheckoutRequest, idempotency_key, OutboxPublisher, recovery, non-goals, make integration]
+  output_not_contains: [code changed, supports accounts]

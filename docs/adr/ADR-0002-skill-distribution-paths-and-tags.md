@@ -82,4 +82,4 @@ flowchart TD
 |---|---|---|
 | Taxonomy and current mapping | Accepted | Master v7 skill taxonomy |
 | Recursive discovery and validation | Implemented on work lane | `Catalog` strict recursive path/tag schema and canonical inventory lock |
-| Physical migration | Implemented on work lane | 76 migrated bundles plus two authorized governance additions under the six source groups; 78 current bundles; integration pending |
+| Physical migration | Implemented on work lane | Migration baseline plus every later authorized bundle under the six source groups; current total derived from discovery and the inventory lock; integration pending |

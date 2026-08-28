@@ -17,3 +17,12 @@ documents:
   digests_match: false
   authority_exists: true
   projection_exists: true
+external_corpus:
+  router: external-corpus/router.md
+  references: [external-corpus/procedure.md]
+  provenance: historical-local
+  license: MIT
+  executable_effect: external-corpus/update.sh writes provider projections
+  behavior: audits canonical ownership and projection drift
+  current_overlap: governance-audit
+  disposition: extend current owner; reject updater and generated projections

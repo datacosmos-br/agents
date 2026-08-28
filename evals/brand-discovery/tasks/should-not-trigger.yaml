@@ -1,0 +1,11 @@
+id: brand-discovery-copy-style-negative-001
+name: Analyze supplied copy without rediscovering brand identity
+description: Route corpus-derived voice analysis to its existing owner.
+tags: [brand-voice, corpus, anti-trigger]
+inputs:
+  prompt: Derive a reusable writing voice profile from copy-samples.md. Do not interview stakeholders or redefine positioning.
+  files:
+  - path: copy-samples.md
+expected:
+  output_contains: [voice profile]
+  output_not_contains: [founder interview, positioning discovery, brandbook]

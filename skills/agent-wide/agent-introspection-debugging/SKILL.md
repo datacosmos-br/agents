@@ -77,6 +77,11 @@ Diagnosis questions:
 - what exact evidence distinguishes the leading hypothesis from the alternatives?
 - what is the smallest reversible action that would validate the diagnosis?
 
+For runaway shell, interpreter, loader, or agent processes, read the
+[process-forensics procedure](references/process-forensics.md) before containment.
+It owns producer attribution, persistence discovery, and narrow process/file
+boundaries.
+
 ### Phase 3: Contained Recovery
 
 Run exactly one read-only check that discriminates the chosen hypothesis. If it

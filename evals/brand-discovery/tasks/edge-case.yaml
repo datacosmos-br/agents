@@ -1,0 +1,9 @@
+id: brand-discovery-missing-authority-001
+name: Refuse an identity interview without participants or purpose
+description: Stop before inventing a brand identity or durable destination.
+tags: [brand, ambiguity, fail-closed]
+inputs:
+  prompt: Create and save a complete brandbook. No brand, decision purpose, participant, decision owner, source material, or destination is supplied.
+expected:
+  output_contains: [brand, decision purpose, participants, authority, no file]
+  output_not_contains: [brandbook complete, archetype selected, saved to]
