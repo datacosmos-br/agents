@@ -13,6 +13,12 @@ pull_requests:
     tip_reachable_from_integration: false
   - number: 15
     diff: unique
+    workflow_changes:
+      duplicate_ci_owner: true
+      self_referential_scanner: true
+      actions_pinned_to_full_sha: false
+      error_masking: "|| true"
+      native_owner_command: absent
     checks: failing
     review: changes_requested
     unresolved_threads: 2

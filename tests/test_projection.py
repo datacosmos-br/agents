@@ -282,6 +282,31 @@ def test_personal_projection_includes_agent_routed_capabilities(
     assert not (target / "project-tool").exists()
 
 
+def test_personal_projection_never_publishes_over_canonical_skill_sources(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    root = tmp_path / "source"
+    root.mkdir()
+    _skill(root, "always", category="agent-wide")
+    _config(root, {})
+    config_path = root / "config" / "projections.json"
+    config = json.loads(config_path.read_text(encoding="utf-8"))
+    config["providers"]["codex"]["personal"]["skills"] = {
+        "status": "SUPPORTED",
+        "path": "${HOME}/source/skills",
+    }
+    config_path.write_text(json.dumps(config), encoding="utf-8")
+    project = _project(tmp_path, authorized=False)
+    monkeypatch.setenv("HOME", str(tmp_path))
+    monkeypatch.chdir(project)
+    projector = Projector(Catalog(root), load_projection_config(root), (), (), ())
+
+    projector.apply()
+
+    assert not (root / "skills" / ".agents-governance.json").exists()
+    assert not (root / "skills" / "always").exists()
+
+
 def test_foreign_collision_fails_before_any_publication(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:

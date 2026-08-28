@@ -9,5 +9,5 @@ inputs:
   files:
   - path: gate-evidence.md
 expected:
-  output_contains: [431 passed, 'PASS: 78 skills validated', fixed point, agentsctl check, '.github/workflows/**', NOT EXECUTED]
+  output_contains: [431 passed, 'PASS: 78 skills validated', fixed point, agentsctl check, '.github/workflows/**', eval.yml, full commit SHA, make ci, NOT EXECUTED]
   output_not_contains: [implementation complete, agentsctl projections, CHECK_GATES, FILE=]
