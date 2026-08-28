@@ -99,6 +99,7 @@ verified on `dev`.
 | `ffc59d6` | Restricted catalog policy tags to the nine declared strict-execution policies. |
 | `a0fe936` | Replaced the legacy/nested CLIs with the sole eight-verb optionless `agentsctl` facade. |
 | `3cf24a1` | Removed legacy Make/Waza routes and restricted Make runtime calls to public optionless verbs. |
+| `b93f66d` | Added whole-source strict AST enforcement and cut environment, projection config, security, and token owners over to immediate exceptions. |
 
 ## Latest validation evidence
 
@@ -168,12 +169,18 @@ verified on `dev`.
 | Focused strict environment/projection-config/security tests | 0 | 27 tests passed after direct environment indexing, raw JSON errors, immediate security validation, and native child-process propagation. |
 | `make static` after first strict owner batch | 0 | Ruff, format, Pyright, and Mypy passed with zero errors or warnings across 46 source files. |
 | Whole-source strict inventory after first owner batch | 0 | Remaining red inventory is explicit: 119 forbidden catches, two `check=False`, 24 finding-protocol declarations, and three `os.environ.get` defaults. |
+| Strict catalog source audit | 0 | `catalog.py` contains zero exception catches and zero finding declarations; discovery, tags, physical identity, and inventory lock raise on the first defect. |
+| `make test PYTEST_ARGS="tests/test_catalog.py -k 'not canonical_catalog_is_exhaustive_disjoint_and_agents_owned'"` | 0 | 26 catalog tests passed; the one real-lock assertion stayed excluded only because concurrent Plan 1 skill edits deliberately keep that gate red until handoff. |
+| `make static` after strict catalog cutover | 0 | Ruff, format, Pyright, and Mypy passed with zero errors or warnings across 46 source files. |
 | Plan 1 critical completeness audit | 0 | Only 2/76 skills had `policy:strict-execution`: `agent-wide` 2/26, `project-wide` 0/22, `technology` 0/8, `framework` 0/3, `tool` 0/16, and `domain` 0/1; all 76 eval suites expose the three required task files. |
 | `make help` after optionless CLI cutover | 0 | The canonical development surface now exposes global `check` and `spec`; Plan 1 will not call `agentsctl` directly or recreate removed focused CLI syntax. |
 | Plan 1 repair of the first two `agent-wide` slugs | — | `agent-introspection-debugging` now references atomic effects and forbids preventive follow-up before current resolution; `anti-phase-skip` fail-closed now requires the first missing prerequisite, zero transition effects, and manual-ledger tracking during suspension. |
 | Plan 1 review: `article-writing`, `brand-voice`, `caveman` | — | Added justified strict/fail-loud/no-fallback/preflight tags; made missing sources stop article/profile publication, made durable voice persistence atomic, removed an absent downstream owner and stale-profile reuse, and made evidence-free status claims fail without publication. |
 | Plan 1 review: `content-engine`, `context-canary`, `crosspost` | — | Made complete source/destination/voice preflight mandatory, removed generic or reduced campaign fallback, replaced warning-and-resume canary behavior with atomic checkpoint-and-stop, and removed default sequencing while requiring complete validated cross-platform publication. |
 | Plan 1 review: `deep-research`, `dispatch-agent`, `frontend-slides` | — | Removed private provider config, arbitrary research quotas, provider switching, provider-specific subagent instructions, general-agent preference, Gas City coupling, remote font dependency, deferred preview cleanup, automatic opener use, and manual conversion fallback; added complete preflight, causal/atomic dispatch, and zero-effect fail-closed evals. |
+| Plan 1 review: `governance-audit`, `human-writing-style`, `investor-materials` | — | Replaced suspended Beads command recipes with provider-independent static audit contracts, made causal governance defects blocking, removed private authority paths and three nonexistent writing references, and required fact-complete atomic investor asset publication with zero output on conflicts. |
+| Plan 1 review: `investor-outreach`, `make-check`, `market-research` | — | Removed generic voice and fixed cadence fallback, required complete sourced outbound preflight, made missing Make targets stop without raw-tool substitution or unauthorized owner edits, and required decision/source/tool preflight with no alternate market report or estimate. |
+| Plan 1 pre-edit audit: `operator-correction-learning`, `prompt-safety-review`, `safe-delete` | — | The correction workflow lacked explicit strict-policy ownership for its atomic cutover; prompt safety duplicated a generic provider-oriented manual and prescribed alternative patterns instead of a compact fail-closed review contract; safe deletion had strong behavior but lacked central policy references and explicit zero-effect Waza assertions. |
 
 ## Machine-local reconciliation
 

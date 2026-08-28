@@ -41,8 +41,7 @@ def _require_empty(items: Iterable[object], context: str) -> None:
 
 def _catalog(root: Path) -> Catalog:
     catalog = Catalog(root)
-    catalog.require_valid()
-    _require_empty(catalog.inventory_lock_findings(), "skill inventory lock")
+    catalog.require_inventory_lock()
     return catalog
 
 

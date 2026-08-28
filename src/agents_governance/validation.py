@@ -429,10 +429,6 @@ def validate(catalog: Catalog) -> list[Finding]:
         Finding(item.path, item.code, item.message)
         for item in validate_skill_metadata(catalog.root)
     )
-    catalog_contract = catalog.contract_findings()
-    findings.extend(
-        Finding(item.path, item.code, item.message) for item in catalog_contract
-    )
     command_audit = audit_command_specs(
         catalog.root, (directory.name for directory in catalog.skill_dirs())
     )
@@ -443,13 +439,7 @@ def validate(catalog: Catalog) -> list[Finding]:
     findings.extend(
         Finding(item.path, item.code, item.message) for item in rule_audit.findings
     )
-    if catalog_contract:
-        return findings
     records = catalog.records()
-    findings.extend(
-        Finding(item.path, item.code, item.message)
-        for item in catalog.inventory_lock_findings(required=False)
-    )
     if (catalog.root / ".waza.yaml").is_file():
         for waza_item in waza_config_findings(catalog.root):
             findings.append(

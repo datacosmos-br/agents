@@ -544,7 +544,6 @@ class Projector:
                     and surface is ProjectionSurface.SKILLS
                     and target == self.catalog.root / "skills"
                 ):
-                    self.catalog.require_valid()
                     continue
                 label = cell.provider.value if project is None else str(project)
                 try:

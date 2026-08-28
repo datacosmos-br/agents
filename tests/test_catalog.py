@@ -94,7 +94,7 @@ def test_legacy_distribution_registries_are_rejected(tmp_path: Path) -> None:
     _write_skill(tmp_path, "agent-wide", "agent-capability")
     _write_skill(tmp_path, "project-wide", "project-capability")
 
-    with pytest.raises(ValueError, match="unsupported skills policy fields"):
+    with pytest.raises(ValueError, match="fields must equal budgets, version"):
         Catalog(tmp_path)
 
 
@@ -114,14 +114,10 @@ def test_legacy_skill_frontmatter_fields_are_rejected(
         encoding="utf-8",
     )
 
-    findings = Catalog(tmp_path).contract_findings()
-
-    assert [(finding.code, finding.message) for finding in findings] == [
-        (
-            "frontmatter",
-            f"unsupported skill frontmatter fields: {legacy_field}",
-        )
-    ]
+    with pytest.raises(
+        ValueError, match=f"unsupported skill frontmatter fields: {legacy_field}"
+    ):
+        Catalog(tmp_path)
 
 
 def test_inventory_lock_has_one_exact_check_and_render_contract(
@@ -132,23 +128,19 @@ def test_inventory_lock_has_one_exact_check_and_render_contract(
     catalog = Catalog(tmp_path)
     lock = tmp_path / "skills.lock.json"
 
-    assert [item.code for item in catalog.inventory_lock_findings()] == [
-        "inventory-lock-missing"
-    ]
-    assert catalog.inventory_lock_findings(required=False) == ()
+    with pytest.raises(FileNotFoundError, match="inventory lock is missing"):
+        catalog.require_inventory_lock()
 
     lock.write_text("not-json\n", encoding="utf-8")
-    assert [item.code for item in catalog.inventory_lock_findings()] == [
-        "inventory-lock-invalid"
-    ]
+    with pytest.raises(json.JSONDecodeError):
+        catalog.require_inventory_lock()
 
     lock.write_text('{"skills": [], "version": 1}\n', encoding="utf-8")
-    assert [item.code for item in catalog.inventory_lock_findings()] == [
-        "inventory-lock-drift"
-    ]
+    with pytest.raises(ValueError, match="differs from discovery"):
+        catalog.require_inventory_lock()
 
     lock.write_text(catalog.render_inventory(), encoding="utf-8")
-    assert catalog.inventory_lock_findings() == ()
+    catalog.require_inventory_lock()
 
 
 def test_conditional_profiles_are_derived_from_local_tags(tmp_path: Path) -> None:
@@ -210,13 +202,13 @@ def test_conditional_profiles_are_derived_from_local_tags(tmp_path: Path) -> Non
 
 
 @pytest.mark.parametrize(
-    ("tags", "expected_code"),
+    ("tags", "message"),
     [
-        ((_BASE_TAGS[0], _BASE_TAGS[0], *_BASE_TAGS[1:]), "tag-duplicate"),
-        (tuple(reversed(_BASE_TAGS)), "tag-order"),
-        ((_BASE_TAGS[0], _BASE_TAGS[2]), "tag-required"),
-        ((_BASE_TAGS[0], "updates:manual", "usage:unknown"), "tag-value"),
-        ((_BASE_TAGS[0], "custom:value", *_BASE_TAGS[1:]), "tag-namespace"),
+        ((_BASE_TAGS[0], _BASE_TAGS[0], *_BASE_TAGS[1:]), "tags must be unique"),
+        (tuple(reversed(_BASE_TAGS)), "tags must be sorted"),
+        ((_BASE_TAGS[0], _BASE_TAGS[2]), "exactly one usage"),
+        ((_BASE_TAGS[0], "updates:manual", "usage:unknown"), "unsupported tag"),
+        (("custom:value", *_BASE_TAGS), "unsupported tag namespace"),
         (
             (
                 "policy:compatibility",
@@ -224,30 +216,29 @@ def test_conditional_profiles_are_derived_from_local_tags(tmp_path: Path) -> Non
                 "updates:manual",
                 "usage:on-demand",
             ),
-            "tag-value",
+            "unsupported tag",
         ),
     ],
 )
 def test_tag_contract_fails_closed(
-    tmp_path: Path, tags: tuple[str, ...], expected_code: str
+    tmp_path: Path, tags: tuple[str, ...], message: str
 ) -> None:
     _write_config(tmp_path)
     _write_skill(tmp_path, "agent-wide", "example", tags=tags)
 
-    findings = Catalog(tmp_path).contract_findings()
-
-    assert expected_code in {finding.code for finding in findings}
+    with pytest.raises(ValueError, match=message):
+        Catalog(tmp_path)
 
 
 @pytest.mark.parametrize(
-    ("raw_tags", "expected_code"),
+    ("raw_tags", "exception"),
     [
-        ('["unterminated"', "tag-json"),
-        ('{"usage":"on-demand"}', "tag-type"),
+        ('["unterminated"', json.JSONDecodeError),
+        ('{"usage":"on-demand"}', TypeError),
     ],
 )
 def test_tags_must_be_a_json_array_string(
-    tmp_path: Path, raw_tags: str, expected_code: str
+    tmp_path: Path, raw_tags: str, exception: type[Exception]
 ) -> None:
     _write_config(tmp_path)
     skill = _write_skill(tmp_path, "agent-wide", "example")
@@ -259,13 +250,12 @@ def test_tags_must_be_a_json_array_string(
         f"{text[:start]}  aihub.tags: '{raw_tags}'{text[end:]}", encoding="utf-8"
     )
 
-    findings = Catalog(tmp_path).contract_findings()
-
-    assert expected_code in {finding.code for finding in findings}
+    with pytest.raises(exception):
+        Catalog(tmp_path)
 
 
 @pytest.mark.parametrize(
-    ("tags", "expected_code"),
+    ("tags", "message"),
     [
         (
             (
@@ -275,7 +265,7 @@ def test_tags_must_be_a_json_array_string(
                 "updates:manual",
                 "usage:router",
             ),
-            "activation-required",
+            "exactly one activation",
         ),
         (
             (
@@ -286,7 +276,7 @@ def test_tags_must_be_a_json_array_string(
                 "updates:manual",
                 "usage:router",
             ),
-            "detector-required",
+            "requires runtime detector",
         ),
         (
             (
@@ -297,19 +287,18 @@ def test_tags_must_be_a_json_array_string(
                 "updates:manual",
                 "usage:router",
             ),
-            "category-tag-required",
+            "category tag is required",
         ),
     ],
 )
 def test_conditional_category_contract_fails_closed(
-    tmp_path: Path, tags: tuple[str, ...], expected_code: str
+    tmp_path: Path, tags: tuple[str, ...], message: str
 ) -> None:
     _write_config(tmp_path)
     _write_skill(tmp_path, "technology", "go-development", tags=tags)
 
-    findings = Catalog(tmp_path).contract_findings()
-
-    assert expected_code in {finding.code for finding in findings}
+    with pytest.raises(ValueError, match=message):
+        Catalog(tmp_path)
 
 
 def test_duplicate_names_across_categories_are_rejected(tmp_path: Path) -> None:
@@ -317,11 +306,8 @@ def test_duplicate_names_across_categories_are_rejected(tmp_path: Path) -> None:
     _write_skill(tmp_path, "agent-wide", "example")
     _write_skill(tmp_path, "project-wide", "example")
 
-    findings = Catalog(tmp_path).contract_findings()
-
-    assert [(finding.code, finding.message) for finding in findings] == [
-        ("duplicate", "duplicate skill name: example")
-    ]
+    with pytest.raises(ValueError, match="duplicate skill name: example"):
+        Catalog(tmp_path)
 
 
 def test_noncanonical_skill_path_is_rejected(tmp_path: Path) -> None:
@@ -333,11 +319,8 @@ def test_noncanonical_skill_path_is_rejected(tmp_path: Path) -> None:
         encoding="utf-8",
     )
 
-    findings = Catalog(tmp_path).contract_findings()
-
-    assert [(finding.code, finding.path) for finding in findings] == [
-        ("skill-path", "skills/example/SKILL.md")
-    ]
+    with pytest.raises(ValueError, match="skill path must be"):
+        Catalog(tmp_path)
 
 
 def test_forbidden_skill_preserves_frozen_budget_and_is_not_distributed(
@@ -409,8 +392,6 @@ def test_canonical_catalog_is_exhaustive_disjoint_and_agents_owned() -> None:
     catalog = Catalog(REPOSITORY_ROOT)
     inventory = catalog.inventory()
 
-    assert catalog.contract_findings() == ()
-    assert catalog.distribution_errors() == ()
     assert {item["category"] for item in inventory} <= {
         category.value for category in SkillCategory
     }
@@ -418,7 +399,7 @@ def test_canonical_catalog_is_exhaustive_disjoint_and_agents_owned() -> None:
     assert {item["name"] for item in inventory} == {
         directory.name for directory in catalog.skill_dirs()
     }
-    assert catalog.inventory_lock_findings() == ()
+    catalog.require_inventory_lock()
 
 
 def test_canonical_skills_have_no_import_registry_identity() -> None:

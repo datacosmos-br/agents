@@ -22,7 +22,6 @@ class Normalization:
 def normalize_descriptions(catalog: Catalog, *, apply: bool) -> list[Normalization]:
     """Report descriptions that require a semantic author rewrite."""
 
-    catalog.require_valid()
     changes: list[Normalization] = []
     for directory in catalog.skill_dirs():
         if catalog.policy_for(directory).updates == "forbidden":
@@ -53,7 +52,6 @@ def normalize_descriptions(catalog: Catalog, *, apply: bool) -> list[Normalizati
 def normalize(catalog: Catalog, *, apply: bool) -> list[Normalization]:
     """Report oversized bodies that require an authored activation router."""
 
-    catalog.require_valid()
     changes: list[Normalization] = []
     for directory in catalog.skill_dirs():
         skill = directory / "SKILL.md"

@@ -1,4 +1,4 @@
-"""Typed semantic discovery and deterministic skill inventory."""
+"""Strict semantic discovery and deterministic skill inventory."""
 
 from __future__ import annotations
 
@@ -6,9 +6,8 @@ import hashlib
 import json
 import re
 import stat
-from collections import defaultdict
 from dataclasses import dataclass
-from enum import Enum
+from enum import StrEnum
 from pathlib import Path, PurePosixPath
 from typing import Any, cast
 
@@ -26,8 +25,8 @@ NON_PORTABLE_PROJECT_REFERENCE = re.compile(
     r")"
 )
 
-_NAME = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
-_TAG = re.compile(r"^[a-z][a-z0-9-]*(?::[^\s,\[\]\"']+)+$")
+_NAME = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*\Z")
+_TAG = re.compile(r"[a-z][a-z0-9-]*(?::[^\s,\[\]\"']+)+\Z")
 _TAG_NAMESPACES = frozenset(
     {
         "activation",
@@ -50,11 +49,7 @@ _USAGE_TAGS = frozenset({"usage:frozen", "usage:on-demand", "usage:router"})
 _UPDATES_TAGS = frozenset({"updates:forbidden", "updates:manual"})
 _ROUTE_TAGS = frozenset({"route:agent", "route:project"})
 _ACTIVATION_TAGS = frozenset(
-    {
-        "activation:detected",
-        "activation:detected-or-opt-in",
-        "activation:opt-in",
-    }
+    {"activation:detected", "activation:detected-or-opt-in", "activation:opt-in"}
 )
 _POLICY_TAGS = frozenset(
     {
@@ -69,21 +64,17 @@ _POLICY_TAGS = frozenset(
         "policy:zero-residue",
     }
 )
-_SKILL_FRONTMATTER_FIELDS = frozenset(
-    {
-        "allowed-tools",
-        "compatibility",
-        "description",
-        "license",
-        "metadata",
-        "name",
-    }
+_FRONTMATTER_FIELDS = frozenset(
+    {"allowed-tools", "compatibility", "description", "license", "metadata", "name"}
 )
 _OPTIONAL_STRING_FIELDS = frozenset({"allowed-tools", "compatibility", "license"})
+_BUDGET_FIELDS = frozenset(
+    {"router_tokens", "frozen_tokens", "on_demand_tokens", "max_lines"}
+)
 _INVENTORY_VERSION = 1
 
 
-class SkillCategory(str, Enum):
+class SkillCategory(StrEnum):
     """The path-owned primary semantic category of a skill."""
 
     AGENT_WIDE = "agent-wide"
@@ -96,15 +87,6 @@ class SkillCategory(str, Enum):
     @property
     def conditional(self) -> bool:
         return self not in {self.AGENT_WIDE, self.PROJECT_WIDE}
-
-
-@dataclass(frozen=True)
-class CatalogFinding:
-    """One deterministic semantic catalog defect."""
-
-    path: str
-    code: str
-    message: str
 
 
 @dataclass(frozen=True)
@@ -139,104 +121,88 @@ class SkillPolicy:
     tags: tuple[str, ...]
 
 
+def _mapping(value: object, context: str) -> dict[str, object]:
+    if not isinstance(value, dict) or not all(isinstance(key, str) for key in value):
+        raise TypeError(f"{context} must be an object with string keys")
+    return cast(dict[str, object], value)
+
+
+def _exact_fields(
+    value: dict[str, object], expected: frozenset[str], context: str
+) -> None:
+    if frozenset(value) != expected:
+        raise ValueError(
+            f"{context} fields must equal {', '.join(sorted(expected))}; "
+            f"got {', '.join(sorted(value)) or 'none'}"
+        )
+
+
 class Catalog:
-    """Discover skill contracts from canonical paths and local metadata."""
+    """Discover and validate every canonical skill before returning any record."""
 
     def __init__(self, root: Path) -> None:
-        self.root = root.resolve()
-        self.config = self._load_json(self.root / "config" / "skills.json")
-        self._directories, self._records, self._findings = self._discover()
+        self.root = root.resolve(strict=True)
+        self.config = self._load_policy(self.root / "config" / "skills.json")
+        self._records = self._discover()
+        self._directories = tuple(record.directory for record in self._records)
 
     @staticmethod
-    def _load_json(path: Path) -> dict[str, Any]:
-        loaded = json.loads(path.read_text(encoding="utf-8"))
-        if not isinstance(loaded, dict):
-            raise TypeError(f"expected JSON object: {path}")
-        if set(loaded) != {"version", "budgets"}:
-            unexpected = ", ".join(sorted(set(loaded) - {"version", "budgets"}))
-            missing = ", ".join(sorted({"version", "budgets"} - set(loaded)))
-            detail = unexpected or f"missing {missing}"
-            raise ValueError(f"unsupported skills policy fields ({detail}): {path}")
+    def _load_policy(path: Path) -> dict[str, object]:
+        if path.is_symlink() or not path.is_file():
+            raise ValueError(f"skills policy must be a physical file: {path}")
+        loaded = _mapping(json.loads(path.read_text(encoding="utf-8")), str(path))
+        _exact_fields(loaded, frozenset({"version", "budgets"}), str(path))
         if loaded["version"] != 2:
             raise ValueError(f"skills policy version must be 2: {path}")
-        budgets = loaded.get("budgets")
-        if not isinstance(budgets, dict):
-            raise TypeError(f"expected budgets object: {path}")
-        required = {
-            "router_tokens",
-            "frozen_tokens",
-            "on_demand_tokens",
-            "max_lines",
-        }
-        if set(budgets) != required:
-            unexpected = ", ".join(sorted(set(budgets) - required))
-            missing = ", ".join(sorted(required - set(budgets)))
-            detail = unexpected or f"missing {missing}"
-            raise ValueError(f"unsupported skill budget fields ({detail}): {path}")
-        for key in sorted(required):
-            value = budgets.get(key)
-            if not isinstance(value, int) or isinstance(value, bool) or value <= 0:
+        budgets = _mapping(loaded["budgets"], f"{path}: budgets")
+        _exact_fields(budgets, _BUDGET_FIELDS, f"{path}: budgets")
+        for key in sorted(_BUDGET_FIELDS):
+            value = budgets[key]
+            if type(value) is not int or value <= 0:
                 raise TypeError(f"budgets.{key} must be a positive integer: {path}")
         return loaded
-
-    @staticmethod
-    def _relative(root: Path, path: Path) -> str:
-        return path.relative_to(root).as_posix()
 
     @staticmethod
     def _frontmatter(path: Path) -> dict[str, object]:
         text = path.read_text(encoding="utf-8")
         if not text.startswith("---\n"):
-            raise ValueError("missing YAML frontmatter")
+            raise ValueError(f"{path}: missing YAML frontmatter")
         marker = text.find("\n---\n", 4)
         if marker < 0:
-            raise ValueError("unterminated YAML frontmatter")
-        loaded = yaml.safe_load(text[4:marker])
-        if not isinstance(loaded, dict):
-            raise TypeError("frontmatter must be a mapping")
-        raw = cast(dict[object, object], loaded)
-        if not all(isinstance(key, str) for key in raw):
-            raise TypeError("frontmatter keys must be strings")
-        frontmatter = cast(dict[str, object], raw)
-        unknown = sorted(set(frontmatter) - _SKILL_FRONTMATTER_FIELDS)
+            raise ValueError(f"{path}: unterminated YAML frontmatter")
+        frontmatter = _mapping(yaml.safe_load(text[4:marker]), f"{path}: frontmatter")
+        unknown = frozenset(frontmatter) - _FRONTMATTER_FIELDS
         if unknown:
             raise ValueError(
-                "unsupported skill frontmatter fields: " + ", ".join(unknown)
+                f"{path}: unsupported skill frontmatter fields: "
+                + ", ".join(sorted(unknown))
             )
         for field in sorted(_OPTIONAL_STRING_FIELDS):
-            value = frontmatter.get(field)
-            if value is not None and (
-                not isinstance(value, str)
-                or not value.strip()
-                or value != value.strip()
-            ):
-                raise TypeError(f"{field} must be a non-empty trimmed string")
+            if field not in frontmatter:
+                continue
+            value = frontmatter[field]
+            if not isinstance(value, str) or not value or value != value.strip():
+                raise TypeError(f"{path}: {field} must be a non-empty trimmed string")
         return frontmatter
 
     @staticmethod
-    def _singleton(
-        tags: tuple[str, ...], prefix: str, allowed: frozenset[str]
-    ) -> tuple[str | None, list[tuple[str, str]]]:
+    def _one_tag(
+        path: Path, tags: tuple[str, ...], prefix: str, allowed: frozenset[str]
+    ) -> str:
         selected = tuple(tag for tag in tags if tag.startswith(f"{prefix}:"))
-        errors: list[tuple[str, str]] = []
         if len(selected) != 1:
-            errors.append(
-                (
-                    "tag-required",
-                    f"expected exactly one {prefix}:* tag; got {len(selected)}",
-                )
+            raise ValueError(
+                f"{path}: expected exactly one {prefix}:* tag; got {len(selected)}"
             )
-            return None, errors
         if selected[0] not in allowed:
-            errors.append(("tag-value", f"unsupported tag: {selected[0]}"))
-            return None, errors
-        return selected[0].split(":", 1)[1], errors
+            raise ValueError(f"{path}: unsupported tag: {selected[0]}")
+        return selected[0].split(":", 1)[1]
 
     @staticmethod
-    def _detector_error(tag: str) -> str | None:
+    def _validate_detector(path: Path, tag: str) -> None:
         parts = tag.split(":", 3)
         if len(parts) < 3:
-            return f"invalid detector tag: {tag}"
+            raise ValueError(f"{path}: invalid detector tag: {tag}")
         kind = parts[1]
         value = ":".join(parts[2:])
         if kind == "marker":
@@ -246,353 +212,168 @@ class Catalog:
                 or marker == PurePosixPath(".")
                 or ".." in marker.parts
             ):
-                return f"detector marker must remain inside a project: {tag}"
-            return None
+                raise ValueError(f"{path}: detector marker escapes project: {tag}")
+            return
         if kind == "dependency":
             if len(parts) != 4 or not parts[2] or not parts[3]:
-                return f"dependency detector requires ecosystem and name: {tag}"
-            return None
+                raise ValueError(
+                    f"{path}: dependency detector requires ecosystem and name: {tag}"
+                )
+            return
         if kind == "owned-extension":
             if "/" in value or not value.startswith(".") or value in {".", ".."}:
-                return f"invalid owned extension detector: {tag}"
-            return None
-        if kind in {"owned-glob", "opt-in", "selected-tag"} and value:
-            return None
-        return f"unsupported detector tag: {tag}"
+                raise ValueError(f"{path}: invalid owned extension detector: {tag}")
+            return
+        if kind not in {"owned-glob", "opt-in", "selected-tag"} or not value:
+            raise ValueError(f"{path}: unsupported detector tag: {tag}")
 
-    def _parse_record(
+    def _record(
         self, skill_file: Path, category: SkillCategory, slug: str
-    ) -> tuple[SkillRecord | None, list[CatalogFinding]]:
-        relative = self._relative(self.root, skill_file)
-        findings: list[CatalogFinding] = []
-        try:
-            frontmatter = self._frontmatter(skill_file)
-        except (OSError, UnicodeError, TypeError, ValueError, yaml.YAMLError) as error:
-            return None, [CatalogFinding(relative, "frontmatter", str(error))]
-
-        declared_name = frontmatter.get("name")
-        if not isinstance(declared_name, str) or _NAME.fullmatch(declared_name) is None:
-            findings.append(CatalogFinding(relative, "name", "invalid or missing name"))
-        elif declared_name != slug:
-            findings.append(
-                CatalogFinding(
-                    relative, "name-directory", f"{declared_name!r} != {slug!r}"
-                )
-            )
-
-        metadata = frontmatter.get("metadata")
-        if not isinstance(metadata, dict):
-            findings.append(
-                CatalogFinding(relative, "tag-metadata", "metadata must be a mapping")
-            )
-            return None, findings
-        raw_metadata = cast(dict[object, object], metadata)
-        raw_tags = raw_metadata.get("aihub.tags")
+    ) -> SkillRecord:
+        frontmatter = self._frontmatter(skill_file)
+        if "name" not in frontmatter:
+            raise ValueError(f"{skill_file}: name is required")
+        name = frontmatter["name"]
+        if not isinstance(name, str) or _NAME.fullmatch(name) is None:
+            raise ValueError(f"{skill_file}: invalid name")
+        if name != slug:
+            raise ValueError(f"{skill_file}: declared name {name!r} != {slug!r}")
+        if "metadata" not in frontmatter:
+            raise ValueError(f"{skill_file}: metadata is required")
+        metadata = _mapping(frontmatter["metadata"], f"{skill_file}: metadata")
+        if "aihub.tags" not in metadata:
+            raise ValueError(f"{skill_file}: metadata.aihub.tags is required")
+        raw_tags = metadata["aihub.tags"]
         if not isinstance(raw_tags, str):
-            findings.append(
-                CatalogFinding(
-                    relative,
-                    "tag-metadata",
-                    "metadata.aihub.tags must be a JSON-array string",
-                )
-            )
-            return None, findings
-        try:
-            decoded: object = json.loads(raw_tags)
-        except json.JSONDecodeError as error:
-            findings.append(
-                CatalogFinding(
-                    relative,
-                    "tag-json",
-                    f"metadata.aihub.tags is invalid JSON: {error.msg}",
-                )
-            )
-            return None, findings
+            raise TypeError(f"{skill_file}: metadata.aihub.tags must be a JSON string")
+        decoded = json.loads(raw_tags)
         if not isinstance(decoded, list) or not all(
             isinstance(item, str) for item in decoded
         ):
-            findings.append(
-                CatalogFinding(
-                    relative,
-                    "tag-type",
-                    "metadata.aihub.tags must encode an array of strings",
-                )
-            )
-            return None, findings
+            raise TypeError(f"{skill_file}: metadata.aihub.tags must encode strings")
         tags = tuple(cast(list[str], decoded))
         if len(tags) != len(set(tags)):
-            findings.append(
-                CatalogFinding(relative, "tag-duplicate", "tags must be unique")
-            )
+            raise ValueError(f"{skill_file}: tags must be unique")
         if tags != tuple(sorted(tags)):
-            findings.append(
-                CatalogFinding(relative, "tag-order", "tags must be sorted")
-            )
+            raise ValueError(f"{skill_file}: tags must be sorted")
         for tag in tags:
             if _TAG.fullmatch(tag) is None:
-                findings.append(
-                    CatalogFinding(relative, "tag-syntax", f"invalid tag: {tag}")
-                )
-                continue
-            namespace = tag.split(":", 1)[0]
-            if namespace not in _TAG_NAMESPACES:
-                findings.append(
-                    CatalogFinding(
-                        relative, "tag-namespace", f"unsupported tag namespace: {tag}"
-                    )
-                )
-        policy_tags = tuple(tag for tag in tags if tag.startswith("policy:"))
-        for tag in policy_tags:
-            if tag not in _POLICY_TAGS:
-                findings.append(
-                    CatalogFinding(relative, "tag-value", f"unsupported tag: {tag}")
-                )
+                raise ValueError(f"{skill_file}: invalid tag: {tag}")
+            if tag.split(":", 1)[0] not in _TAG_NAMESPACES:
+                raise ValueError(f"{skill_file}: unsupported tag namespace: {tag}")
+            if tag.startswith("policy:") and tag not in _POLICY_TAGS:
+                raise ValueError(f"{skill_file}: unsupported tag: {tag}")
 
-        usage, singleton_errors = self._singleton(tags, "usage", _USAGE_TAGS)
-        findings.extend(
-            CatalogFinding(relative, code, message)
-            for code, message in singleton_errors
-        )
-        updates, singleton_errors = self._singleton(tags, "updates", _UPDATES_TAGS)
-        findings.extend(
-            CatalogFinding(relative, code, message)
-            for code, message in singleton_errors
-        )
+        usage = self._one_tag(skill_file, tags, "usage", _USAGE_TAGS)
+        updates = self._one_tag(skill_file, tags, "updates", _UPDATES_TAGS)
         provenance_tags = tuple(tag for tag in tags if tag.startswith("provenance:"))
-        provenance: str | None = None
         if len(provenance_tags) != 1:
-            findings.append(
-                CatalogFinding(
-                    relative,
-                    "tag-required",
-                    "expected exactly one provenance:* tag; "
-                    f"got {len(provenance_tags)}",
-                )
+            raise ValueError(
+                f"{skill_file}: expected exactly one provenance:* tag; "
+                f"got {len(provenance_tags)}"
             )
-        else:
-            provenance = provenance_tags[0].split(":", 1)[1]
-
+        provenance = provenance_tags[0].split(":", 1)[1]
         if (usage == "frozen") != (updates == "forbidden"):
-            findings.append(
-                CatalogFinding(
-                    relative,
-                    "frozen-contract",
-                    "usage:frozen and updates:forbidden must be declared together",
-                )
+            raise ValueError(
+                f"{skill_file}: usage:frozen and updates:forbidden must coexist"
             )
 
-        route: str | None = None
-        activation: str | None = None
-        detectors = tuple(tag for tag in tags if tag.startswith("detect:"))
-        subject_tags = tuple(
-            tag for tag in tags if tag.startswith(f"{category.value}:")
-        )
-        subjects = tuple(tag.split(":", 1)[1] for tag in subject_tags)
         route_tags = tuple(tag for tag in tags if tag.startswith("route:"))
         activation_tags = tuple(tag for tag in tags if tag.startswith("activation:"))
+        detectors = tuple(tag for tag in tags if tag.startswith("detect:"))
+        subjects = tuple(
+            tag.split(":", 1)[1] for tag in tags if tag.startswith(f"{category.value}:")
+        )
+        route: str | None = None
+        activation: str | None = None
         if category.conditional:
-            if len(route_tags) != 1:
-                findings.append(
-                    CatalogFinding(
-                        relative,
-                        "route-required",
-                        f"expected exactly one route:* tag; got {len(route_tags)}",
-                    )
-                )
-            elif route_tags[0] not in _ROUTE_TAGS:
-                findings.append(
-                    CatalogFinding(
-                        relative, "tag-value", f"unsupported tag: {route_tags[0]}"
-                    )
-                )
-            else:
-                route = route_tags[0].split(":", 1)[1]
-            if len(activation_tags) != 1:
-                findings.append(
-                    CatalogFinding(
-                        relative,
-                        "activation-required",
-                        "expected exactly one activation:* tag; "
-                        f"got {len(activation_tags)}",
-                    )
-                )
-            elif activation_tags[0] not in _ACTIVATION_TAGS:
-                findings.append(
-                    CatalogFinding(
-                        relative,
-                        "tag-value",
-                        f"unsupported tag: {activation_tags[0]}",
-                    )
-                )
-            else:
-                activation = activation_tags[0].split(":", 1)[1]
+            route = self._one_tag(skill_file, tags, "route", _ROUTE_TAGS)
+            activation = self._one_tag(skill_file, tags, "activation", _ACTIVATION_TAGS)
             if not subjects:
-                findings.append(
-                    CatalogFinding(
-                        relative,
-                        "category-tag-required",
-                        f"{category.value} skills require {category.value}:*",
-                    )
+                raise ValueError(
+                    f"{skill_file}: {category.value}:* category tag is required"
                 )
-            requires_detection = activation in {"detected", "detected-or-opt-in"}
-            has_runtime_detector = any(
+            requires_runtime = activation in {"detected", "detected-or-opt-in"}
+            if requires_runtime and not any(
                 not tag.startswith("detect:opt-in:") for tag in detectors
-            )
-            if requires_detection and not has_runtime_detector:
-                findings.append(
-                    CatalogFinding(
-                        relative,
-                        "detector-required",
-                        f"activation:{activation} requires a non-opt-in detect:* tag",
-                    )
+            ):
+                raise ValueError(
+                    f"{skill_file}: activation:{activation} requires runtime detector"
                 )
             if activation in {"opt-in", "detected-or-opt-in"} and not any(
                 tag.startswith("detect:opt-in:") for tag in detectors
             ):
-                findings.append(
-                    CatalogFinding(
-                        relative,
-                        "detector-required",
-                        f"activation:{activation} requires detect:opt-in:*",
-                    )
+                raise ValueError(
+                    f"{skill_file}: activation:{activation} requires opt-in detector"
                 )
             for detector in detectors:
-                message = self._detector_error(detector)
-                if message is not None:
-                    findings.append(CatalogFinding(relative, "detector", message))
+                self._validate_detector(skill_file, detector)
         elif route_tags or activation_tags or detectors:
-            findings.append(
-                CatalogFinding(
-                    relative,
-                    "distribution-tag",
-                    f"{category.value} distribution is owned only by its path",
-                )
+            raise ValueError(
+                f"{skill_file}: {category.value} distribution is path-owned"
             )
 
-        if findings or usage is None or updates is None or provenance is None:
-            return None, findings
-        return (
-            SkillRecord(
-                name=slug,
-                category=category,
-                directory=skill_file.parent,
-                tags=tags,
-                usage=usage,
-                updates=updates,
-                provenance=provenance,
-                route=route,
-                activation=activation,
-                subjects=subjects,
-                detectors=detectors,
-            ),
-            [],
+        return SkillRecord(
+            slug,
+            category,
+            skill_file.parent,
+            tags,
+            usage,
+            updates,
+            provenance,
+            route,
+            activation,
+            subjects,
+            detectors,
         )
 
-    def _discover(
-        self,
-    ) -> tuple[tuple[Path, ...], tuple[SkillRecord, ...], tuple[CatalogFinding, ...]]:
+    def _discover(self) -> tuple[SkillRecord, ...]:
         skills_root = self.root / "skills"
-        if not skills_root.is_dir():
-            return (), (), ()
-        directories: list[Path] = []
+        if skills_root.is_symlink() or not skills_root.is_dir():
+            raise ValueError(f"skills root must be a physical directory: {skills_root}")
+        skill_files = tuple(sorted(skills_root.rglob("SKILL.md")))
+        if not skill_files:
+            raise ValueError(f"skill inventory is empty: {skills_root}")
         records: list[SkillRecord] = []
-        findings: list[CatalogFinding] = []
-        names: dict[str, Path] = {}
-        for skill_file in sorted(skills_root.rglob("SKILL.md")):
+        names: set[str] = set()
+        for skill_file in skill_files:
             relative = skill_file.relative_to(skills_root)
-            if len(relative.parts) != 3 or relative.name != "SKILL.md":
-                findings.append(
-                    CatalogFinding(
-                        self._relative(self.root, skill_file),
-                        "skill-path",
-                        "skill must be skills/<category>/<slug>/SKILL.md",
-                    )
+            if len(relative.parts) != 3:
+                raise ValueError(
+                    f"{skill_file}: skill path must be <category>/<slug>/SKILL.md"
                 )
-                continue
-            raw_category, slug, _filename = relative.parts
-            try:
-                category = SkillCategory(raw_category)
-            except ValueError:
-                findings.append(
-                    CatalogFinding(
-                        self._relative(self.root, skill_file),
-                        "skill-category",
-                        f"unsupported skill category: {raw_category}",
-                    )
+            raw_category, slug, filename = relative.parts
+            if filename != "SKILL.md" or skill_file.is_symlink():
+                raise ValueError(
+                    f"{skill_file}: skill source must be physical SKILL.md"
                 )
-                continue
-            directories.append(skill_file.parent)
-            record, record_findings = self._parse_record(skill_file, category, slug)
-            findings.extend(record_findings)
-            if record is None:
-                continue
-            first_path = names.get(record.name)
-            if first_path is not None:
-                findings.append(
-                    CatalogFinding(
-                        self._relative(self.root, skill_file),
-                        "duplicate",
-                        f"duplicate skill name: {record.name}",
-                    )
-                )
-                continue
-            names[record.name] = skill_file
+            category = SkillCategory(raw_category)
+            record = self._record(skill_file, category, slug)
+            if record.name in names:
+                raise ValueError(f"{skill_file}: duplicate skill name: {record.name}")
+            names.add(record.name)
             records.append(record)
-        return (
-            tuple(sorted(directories)),
-            tuple(
-                sorted(records, key=lambda record: (record.name, record.category.value))
-            ),
-            tuple(
-                sorted(
-                    findings,
-                    key=lambda finding: (
-                        finding.path,
-                        finding.code,
-                        finding.message,
-                    ),
-                )
-            ),
-        )
-
-    def contract_findings(self) -> tuple[CatalogFinding, ...]:
-        """Return all path and semantic metadata defects without mutation."""
-
-        return self._findings
-
-    def require_valid(self) -> None:
-        """Fail before a consumer publishes or mutates an invalid catalog."""
-
-        if self._findings:
-            first = self._findings[0]
-            raise ValueError(f"{first.path}: {first.code}: {first.message}")
+        return tuple(sorted(records, key=lambda record: record.name))
 
     def records(self) -> tuple[SkillRecord, ...]:
-        """Return the complete typed catalog after enforcing its contract."""
-
-        self.require_valid()
         return self._records
 
     def skill_dirs(self) -> tuple[Path, ...]:
-        """Return recursively discovered canonical bundle directories."""
-
         return self._directories
 
     def record(self, name: str) -> SkillRecord:
-        """Resolve exactly one validated skill by canonical name."""
-
-        self.require_valid()
         selected = tuple(record for record in self._records if record.name == name)
         if len(selected) != 1:
             raise KeyError(f"unknown canonical skill: {name}")
         return selected[0]
 
-    def _distributions(self, record: SkillRecord) -> tuple[str, ...]:
+    @staticmethod
+    def _distributions(record: SkillRecord) -> tuple[str, ...]:
         if record.updates == "forbidden":
             return ()
-        if record.category == SkillCategory.AGENT_WIDE:
+        if record.category is SkillCategory.AGENT_WIDE:
             return ("personal",)
-        if record.category == SkillCategory.PROJECT_WIDE:
+        if record.category is SkillCategory.PROJECT_WIDE:
             return ("project-generic",)
         route = "project" if record.route == "project" else "agent"
         return tuple(
@@ -602,54 +383,49 @@ class Catalog:
 
     def _policy(self, record: SkillRecord) -> SkillPolicy:
         budgets = cast(dict[str, int], self.config["budgets"])
-        if record.updates == "forbidden" or record.usage == "frozen":
+        if record.updates == "forbidden":
             max_tokens = budgets["frozen_tokens"]
         elif record.usage == "router":
             max_tokens = budgets["router_tokens"]
         else:
             max_tokens = budgets["on_demand_tokens"]
         return SkillPolicy(
-            name=record.name,
-            class_name=record.usage.replace("-", "_"),
-            provenance=record.provenance,
-            updates=record.updates,
-            max_tokens=max_tokens,
-            max_lines=budgets["max_lines"],
-            distributions=self._distributions(record),
-            category=record.category,
-            tags=record.tags,
+            record.name,
+            record.usage.replace("-", "_"),
+            record.provenance,
+            record.updates,
+            max_tokens,
+            budgets["max_lines"],
+            self._distributions(record),
+            record.category,
+            record.tags,
         )
 
     def policy(self, name: str) -> SkillPolicy:
         return self._policy(self.record(name))
 
     def policy_for(self, directory: Path) -> SkillPolicy:
-        """Resolve policy by physical source path without basename ambiguity."""
-
-        self.require_valid()
-        canonical = directory.resolve()
+        canonical = directory.resolve(strict=True)
         selected = tuple(
             record
             for record in self._records
-            if record.directory.resolve() == canonical
+            if record.directory.resolve(strict=True) == canonical
         )
         if len(selected) != 1:
             raise KeyError(f"unknown canonical skill directory: {directory}")
         return self._policy(selected[0])
 
     def names_for(self, distribution: str) -> frozenset[str]:
-        """Return the path/tag-derived, fail-closed selection for one surface."""
-
         return frozenset(
             record.name
-            for record in self.records()
+            for record in self._records
             if distribution in self._distributions(record)
         )
 
     @staticmethod
     def _detector_profile(records: list[SkillRecord]) -> dict[str, Any]:
         markers: set[str] = set()
-        dependencies: dict[str, set[str]] = defaultdict(set)
+        dependencies: dict[str, set[str]] = {}
         owned_extensions: set[str] = set()
         owned_globs: set[str] = set()
         opt_ins: set[str] = set()
@@ -658,18 +434,22 @@ class Catalog:
             for tag in record.detectors:
                 parts = tag.split(":", 3)
                 kind = parts[1]
+                value = ":".join(parts[2:])
                 if kind == "marker":
-                    markers.add(":".join(parts[2:]))
+                    markers.add(value)
                 elif kind == "dependency":
-                    dependencies[parts[2]].add(parts[3])
+                    ecosystem = parts[2]
+                    if ecosystem not in dependencies:
+                        dependencies[ecosystem] = set()
+                    dependencies[ecosystem].add(parts[3])
                 elif kind == "owned-extension":
-                    owned_extensions.add(":".join(parts[2:]))
+                    owned_extensions.add(value)
                 elif kind == "owned-glob":
-                    owned_globs.add(":".join(parts[2:]))
+                    owned_globs.add(value)
                 elif kind == "opt-in":
-                    opt_ins.add(":".join(parts[2:]))
+                    opt_ins.add(value)
                 elif kind == "selected-tag":
-                    selected_tags.add(":".join(parts[2:]))
+                    selected_tags.add(value)
         return {
             "markers": sorted(markers),
             "dependencies": {
@@ -684,28 +464,22 @@ class Catalog:
         }
 
     def conditional_project_profiles(self) -> dict[str, dict[str, Any]]:
-        """Derive category-qualified project capabilities from semantic tags."""
-
-        grouped: dict[str, list[SkillRecord]] = defaultdict(list)
-        for record in self.records():
+        grouped: dict[str, list[SkillRecord]] = {}
+        for record in self._records:
             if not record.category.conditional or record.route != "project":
                 continue
             for subject in record.subjects:
-                grouped[f"{record.category.value}:{subject}"].append(record)
+                capability = f"{record.category.value}:{subject}"
+                if capability not in grouped:
+                    grouped[capability] = []
+                grouped[capability].append(record)
         return {
             capability: self._detector_profile(records)
             for capability, records in sorted(grouped.items())
         }
 
-    def distribution_errors(self) -> tuple[str, ...]:
-        """Compatibility view over the typed semantic contract findings."""
-
-        return tuple(f"{finding.path}: {finding.message}" for finding in self._findings)
-
     @staticmethod
     def physical_tree_contract(directory: Path) -> str:
-        """Hash bytes, entry kinds, and permissions for one physical bundle."""
-
         digest = hashlib.sha256()
         root_metadata = directory.lstat()
         paths: tuple[Path, ...]
@@ -731,10 +505,8 @@ class Catalog:
                 raise ValueError(f"unsupported file type in physical bundle: {path}")
             relative = (
                 "."
-                if root_is_file
-                else (
-                    "." if path == directory else path.relative_to(directory).as_posix()
-                )
+                if root_is_file or path == directory
+                else path.relative_to(directory).as_posix()
             )
             digest.update(entry_type.encode())
             digest.update(b"\0")
@@ -749,8 +521,6 @@ class Catalog:
 
     @staticmethod
     def digest_tree(directory: Path) -> str:
-        """Return the deterministic content identity after physical validation."""
-
         Catalog.physical_tree_contract(directory)
         digest = hashlib.sha256()
         paths = (
@@ -772,7 +542,7 @@ class Catalog:
 
     def inventory(self) -> list[dict[str, Any]]:
         entries: list[dict[str, Any]] = []
-        for record in self.records():
+        for record in self._records:
             policy = self._policy(record)
             entries.append(
                 {
@@ -793,50 +563,33 @@ class Catalog:
         return entries
 
     def inventory_payload(self) -> dict[str, Any]:
-        """Return the single versioned document written to the inventory lock."""
-
         return {"version": _INVENTORY_VERSION, "skills": self.inventory()}
 
     def render_inventory(self) -> str:
-        """Render the canonical inventory lock deterministically."""
-
         return json.dumps(self.inventory_payload(), indent=2, sort_keys=True) + "\n"
 
-    def inventory_lock_findings(
-        self, *, required: bool = True
-    ) -> tuple[CatalogFinding, ...]:
-        """Compare the checked-in inventory lock without mutating it."""
+    def require_inventory_lock(self) -> None:
+        """Raise unless the checked-in lock exactly matches canonical discovery."""
 
         path = self.root / "skills.lock.json"
-        relative = path.relative_to(self.root).as_posix()
-        if not path.is_file():
-            if not required:
-                return ()
-            return (
-                CatalogFinding(
-                    relative,
-                    "inventory-lock-missing",
-                    "canonical skill inventory lock is missing",
-                ),
+        if path.is_symlink() or not path.is_file():
+            raise FileNotFoundError(
+                f"canonical skill inventory lock is missing: {path}"
             )
-        try:
-            current = path.read_text(encoding="utf-8")
-            loaded = json.loads(current)
-        except (OSError, UnicodeError, json.JSONDecodeError) as error:
-            return (
-                CatalogFinding(
-                    relative,
-                    "inventory-lock-invalid",
-                    f"canonical skill inventory lock is unreadable: {error}",
-                ),
+        current = path.read_text(encoding="utf-8")
+        loaded = json.loads(current)
+        expected_payload = self.inventory_payload()
+        expected_text = json.dumps(expected_payload, indent=2, sort_keys=True) + "\n"
+        if loaded != expected_payload or current != expected_text:
+            raise ValueError(
+                f"canonical skill inventory lock differs from discovery: {path}"
             )
-        expected = self.render_inventory()
-        if loaded != self.inventory_payload() or current != expected:
-            return (
-                CatalogFinding(
-                    relative,
-                    "inventory-lock-drift",
-                    "canonical skill inventory lock differs from discovery",
-                ),
-            )
-        return ()
+
+
+__all__ = (
+    "NON_PORTABLE_PROJECT_REFERENCE",
+    "Catalog",
+    "SkillCategory",
+    "SkillPolicy",
+    "SkillRecord",
+)
