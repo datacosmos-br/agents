@@ -2,12 +2,15 @@
 
 from __future__ import annotations
 
+import json
 import os
 import shutil
 import subprocess
 from collections.abc import Callable, Sequence
 from dataclasses import dataclass
+from importlib.metadata import distribution
 from pathlib import Path
+from urllib.parse import unquote, urlparse
 
 from .agent_profiles import AgentProfile, audit_agent_profiles
 from .catalog import Catalog
@@ -52,7 +55,28 @@ class RuntimeInventory:
 
 def repository_root() -> Path:
     """Return the physical source root that owns this installed runtime."""
-    return Path(__file__).resolve().parents[2]
+
+    direct_url_text = distribution("agents-governance").read_text("direct_url.json")
+    if direct_url_text is None:
+        raise ValueError("agents-governance installation has no direct_url.json")
+    direct_url = json.loads(direct_url_text)
+    directory_info = direct_url.get("dir_info")
+    if (
+        not isinstance(directory_info, dict)
+        or directory_info.get("editable") is not True
+    ):
+        raise ValueError(
+            "agents-governance must be installed from an editable source checkout"
+        )
+    parsed = urlparse(direct_url["url"])
+    if parsed.scheme != "file":
+        raise ValueError("agents-governance editable source must use a file URL")
+    root = Path(unquote(parsed.path)).resolve(strict=True)
+    if not (root / ".git").is_dir():
+        raise ValueError(
+            f"agents-governance source is not a physical Git checkout: {root}"
+        )
+    return root
 
 
 def _catalog(root: Path) -> Catalog:

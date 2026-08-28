@@ -1,0 +1,24 @@
+name: conflict-marker-check
+
+on:
+  pull_request:
+
+jobs:
+  conflict-markers:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check for merge conflict markers
+        run: |
+          if markers="$(git grep -n \
+            -e '^<<<<<<< ' -e '^=======$' -e '^>>>>>>> ')"; then
+            echo "::error::Merge conflict markers found in tracked files:"
+            echo "$markers"
+            exit 1
+          else
+            status=$?
+            if [ "$status" -ne 1 ]; then
+              exit "$status"
+            fi
+          fi
+          echo "No conflict markers found."
