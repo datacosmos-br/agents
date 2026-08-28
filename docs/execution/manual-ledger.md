@@ -13,23 +13,24 @@ verified on `dev`.
 - Branch: `feat/agents-skill-distribution`
 - Integration branch: `dev`
 - Tracker/orchestration runtime: suspended; do not invoke it
-- Current owner unit: Plan 2 documentation authority reconciled in the worktree;
-  central strict-policy baseline is next. The parallel skills plan is
-  independently owned and outside this lane.
+- Current owner unit: Plan 2 central strict-policy baseline implemented and
+  focused rule gates green in the worktree; keyring/runtime extermination is
+  next. The parallel skills plan is independently owned and outside this lane.
 
 ## Operator corrections
 
-### 2026-08-28 — Plan 1 starts without `POLICY_BASE_SHA`
+### 2026-08-28 — strict plans have no named policy-baseline SHA marker
 
-- Prohibited prior behavior: treating an operator-supplied `POLICY_BASE_SHA` as
-  a prerequisite for starting the skills strict-execution plan.
+- Prohibited prior behavior: treating an operator-supplied policy-baseline SHA
+  marker as a prerequisite for Plan 1 or requiring Plan 2 to publish it.
 - Required replacement: Plan 1 starts independently within its declared write
-  boundary and does not wait for an operator-supplied policy baseline SHA.
+  boundary, and Plan 2 creates the central policy rules without publishing a
+  named baseline artifact.
 - Authority: latest operator instruction in the active session.
-- Scope: Plan 1 and active documentation that declares its startup dependency;
-  this correction does not change Plan 2's runtime implementation scope.
-- Failure prevented: blocking the 76-skill review on a prerequisite the
-  operator did not request.
+- Scope: both strict-execution plans and active documentation that declares
+  their ordering or deliverables.
+- Failure prevented: blocking the 76-skill review or adding a runtime deliverable
+  the operator did not request.
 - Closure boundary: this correction changes plan authority only; it does not
   declare a skill, batch, or phase complete.
 
@@ -58,6 +59,7 @@ verified on `dev`.
 | `964b23e` | Replaced generic routers, removed the legacy lock, and regenerated the canonical inventory lock. |
 | `7663ce0` | Normalized all 62 agent profiles to semantic capabilities and added provider-specific adapters without capability fallbacks. |
 | `a4fc1fe` | Cut projection configuration and its active consumers over to the strict v4 contract. |
+| `c05805e` | Reconciled active documentation and accepted ADR-0004 for the optionless fail-loud runtime. |
 
 ## Latest validation evidence
 
@@ -92,9 +94,12 @@ verified on `dev`.
 | Projection v3 residue search | 0 | No v3 target keys, dual-read helpers, manifest-v2 wording, or Copilot-to-Claude adapter identity remain under `src`, `tests`, or `config`. |
 | `make static` after projection v4 consumer cutover | 0 | Ruff, format, Pyright, and Mypy passed with zero errors or warnings across 45 source files. |
 | Plan-first boundary inspection | 0 | Clean worktree at `a4fc1fe`; the first mutation created only the two standalone strict-execution plans. |
+| Strict-plan startup-prerequisite residue search | 0 | Both active Plan 1 surfaces contained no removed startup prerequisite. |
 | `git diff --check` after Plan 2 documentation reconciliation | 0 | Root instructions, README, master v7, ADRs, and security evidence contain no whitespace defects. |
 | Legacy CLI contradiction search outside historical ledger | 0 | No active documentation contains nested `agentsctl` runtime commands, CLI options, `APPLY=Y`, `PROJECT_ROOTS`, or `SCOPE` selectors. |
 | `make help` diagnostic before Make cutover | 0 | The current Make surface still advertises legacy option-bearing runtime routes; Make/CLI implementation remains intentionally red for the later Plan 2 owner unit. |
+| `make test PYTEST_ARGS='tests/test_rules.py tests/test_rule_adapters.py tests/test_delivery_contracts.py'` | 0 | 59 rule discovery, provider rendering, and delivery-contract tests passed after the eight strict central policies were added and the keyring rule removed. |
+| `git diff --check` after central strict-policy cutover | 0 | No whitespace defects in the policy unit. |
 
 ## Machine-local reconciliation
 

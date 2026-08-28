@@ -18,7 +18,7 @@ are attached to and re-raise the original cause.
 1. Commit these two standalone plans before any other mutation.
 2. Reconcile every active document with the strict contract and remove every
    contradictory instruction.
-3. Create one central rule for each policy and publish `POLICY_BASE_SHA`.
+3. Create one central rule for each policy.
 4. Exterminate keyring and refactor environment, storage/temp, security,
    atomic I/O, subprocess, cleanup, and rollback without touching the skills
    lane.

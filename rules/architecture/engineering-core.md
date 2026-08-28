@@ -19,11 +19,14 @@ For every implementation, use this order:
 7. Simplify once more, exercise real runtime behavior, run every native gate,
    and complete the approved landing cycle before changing phase.
 
-Hardcoded environment facts, silent failure, hidden failover, skipped phases,
-and success without decisive evidence are runtime-critical defects. Propagate
-errors to the owning CLI or user-facing boundary and correct their root cause.
+Hardcoded environment facts, caught or normalized failure, hidden failover,
+retry, operational defaults, compatibility, partial execution, keyring, and
+success without decisive evidence are runtime-critical defects. Exterminate
+them at their owner. The first exception escapes the owning CLI with its raw
+traceback and causal chain.
 
 Compose this sequence with [generalized ownership](generalized-abstraction.md),
+[strict execution](../runtime/strict-execution.md),
 [runtime evidence](../workflow/runtime-is-reality.md),
 [storage isolation](../storage.md),
 [security closure](../security/scanner-closure.md), and

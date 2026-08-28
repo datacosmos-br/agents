@@ -15,7 +15,8 @@ When a later explicitly authorized task operates the proxy:
   action;
 - treat authentication, quota, HTTP 402/429, missing model, timeout, and
   transport errors as red;
-- never reroute to another account/provider/model, degrade silently, fabricate
-  capacity, or use a cached success as current proof;
+- never catch or normalize those failures, retry, reroute to another
+  account/provider/model, degrade silently, fabricate capacity, or use a cached
+  success as current proof;
 - validate the exact selected model and real tool-using request after the owner
   change, then run native gates.

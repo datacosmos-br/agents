@@ -48,14 +48,17 @@ the owner or report the exact blocker.
 
 ## Errors and resources
 
-- Catch only exceptions the boundary can handle meaningfully; preserve the
-  original cause when translating.
-- Never swallow errors, invent success/default data, return ambiguous
-  sentinels, or convert structured failures into untyped strings.
+- CLI boundaries, validators, and orchestrators never catch workflow
+  exceptions or translate them. The original traceback and causal chain escape.
+- Catch only inside cleanup or rollback. Retain the original exception as the
+  one re-raised and attach every secondary cleanup/rollback failure to its
+  causal evidence.
+- Never aggregate independent validation defects, swallow errors, invent
+  success/default data, return ambiguous sentinels, or convert structured
+  failures into untyped strings.
 - Use context managers and structured concurrency for owned resources.
 - Cancellation and timeouts must stop only resources owned by the invocation.
-- Retries may repeat the same idempotent operation within a declared bound; they
-  never switch provider, model, database, or implementation.
+- Retry is prohibited. A failed operation terminates the invocation.
 
 ## Design and migration
 

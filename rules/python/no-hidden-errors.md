@@ -7,13 +7,15 @@ globs: "**/*.py"
 Never swallow, mask, demote, or invent a successful result for a failed
 operation.
 
-- Catch only the specific exceptions a boundary can handle meaningfully.
-- Preserve causes with `raise ... from exc` when translating.
-- Use the repository's declared result/error contract; generic Python guidance
-  does not invent a project-specific facade.
+- CLI boundaries, validators, and orchestrators do not catch or translate
+  workflow exceptions. Raw traceback and chained cause escape.
+- Catch only inside cleanup or rollback. Re-raise the original exception and
+  attach any secondary cleanup/rollback exception to its causal evidence.
+- Stop validation at the first defect; never aggregate independent errors.
 - Do not return `None`, an empty collection, or a default value to conceal an
   error.
-- Do not add compatibility accessors, aliases, dual behavior, retry-to-another
-  provider, or silent degradation.
+- Do not add compatibility accessors, aliases, dual behavior, retry, alternate
+  providers, operational defaults, manual exit translation, partial results, or
+  silent degradation.
 - Tests prove the material error, cancellation, timeout, and should-not-trigger
   behavior through the public surface.

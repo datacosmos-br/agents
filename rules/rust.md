@@ -8,9 +8,9 @@ Use the project's declared Rust toolchain, workspace structure, features, and
 canonical command facade. Never impose a repository-specific architecture on a
 generic Rust project.
 
-- Handle recoverable failure with explicit `Result`/`Option` semantics and
-  `?`; do not discard a `Result`, panic for ordinary input, or invent a
-  default success.
+- Propagate failure with explicit `Result`/`Option` semantics and `?`; do not
+  catch at CLI/orchestration boundaries, discard a `Result`, aggregate
+  independent validation defects, retry, or invent a default success.
 - Avoid `unwrap`/`expect` outside tests or proven invariants documented by
   project policy.
 - Keep ownership and lifetimes explicit where they clarify public contracts;
@@ -25,3 +25,6 @@ generic Rust project.
   or project state under `/tmp`.
 - Install Rust technology skills only when project-local markers prove Rust.
   FLEXT content remains absent unless independent FLEXT detection succeeds.
+- Catching is limited to cleanup/rollback that re-emits the original error and
+  attaches any secondary cleanup failure. Child exit, timeout, signal, and
+  incomplete publication remain native failures.
