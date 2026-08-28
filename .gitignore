@@ -9,6 +9,7 @@ agents.bkp/
 .agents.bkp/
 .archive/
 .test-tmp/
+/.pytest_cache/
 .cache/
 /$HOME/
 

@@ -211,7 +211,12 @@ def clean_generated(root: Path) -> tuple[Path, ...]:
             path for path in sorted(distribution.iterdir()) if path.name != ".gitignore"
         )
     candidates.extend(
-        (root / ".test-tmp", root / ".waza-cache", root / "results" / "latest")
+        (
+            root / ".pytest_cache",
+            root / ".test-tmp",
+            root / ".waza-cache",
+            root / "results" / "latest",
+        )
     )
     present: list[Path] = []
     for path in candidates:

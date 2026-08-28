@@ -10,15 +10,16 @@ metadata:
 
 Require `$ARGUMENTS` to name one or more explicit repository roots. Reject an
 empty, nonexistent, symlinked, or ambiguous root before scanning. Use each
-repository's `docs/security/*-triage.md` as the evidence report. Run
-`agentsctl security-triage $ARGUMENTS` before changing code, then use each
-project's canonical scanner commands to reproduce every finding.
+repository's `docs/security/*-triage.md` as the evidence report. Run the
+optionless `agentsctl secure` from each physical root before changing code; it
+owns that project's complete configured scanner workflow.
 
 For each finding, fix the owner source, regenerate derived files, update every
 consumer, record the decision and reproducible evidence in the same report, and
 rerun the exact scanner. Follow an active project tracker only when its runtime
-is authorized; otherwise update the repository-declared manual ledger. Every
-severity blocks closure.
+is selected, authorized, and available. During suspension, create no substitute
+tracker or ledger and preserve evidence only in separately authorized Git/PR/CI.
+Every severity blocks closure.
 A false-positive or compatibility classification requires prior operator
 discussion, a precise reproducible technical proof, and explicit authorization.
 Use the newest released scanner; never cap, downgrade, substitute, or suppress

@@ -18,6 +18,7 @@ def test_clean_generated_removes_only_declared_artifacts(tmp_path: Path) -> None
     latest = tmp_path / "results" / "latest"
     skill_pycache = tmp_path / "skills" / "review" / "__pycache__"
     runtime_pycache = tmp_path / "src" / "governance" / "__pycache__"
+    pytest_cache = tmp_path / ".pytest_cache"
     scratch = tmp_path / ".test-tmp"
     distribution = tmp_path / "dist"
     preserved = tmp_path / "results" / "baseline" / "results.json"
@@ -26,6 +27,7 @@ def test_clean_generated_removes_only_declared_artifacts(tmp_path: Path) -> None
         latest,
         skill_pycache,
         runtime_pycache,
+        pytest_cache,
         scratch,
         distribution,
         preserved.parent,
@@ -35,6 +37,7 @@ def test_clean_generated_removes_only_declared_artifacts(tmp_path: Path) -> None
     (latest / "results.json").write_text("{}", encoding="utf-8")
     (skill_pycache / "skill.pyc").write_bytes(b"pyc")
     (runtime_pycache / "runtime.pyc").write_bytes(b"pyc")
+    (pytest_cache / "README.md").write_text("cache", encoding="utf-8")
     (distribution / ".gitignore").write_text("*\n", encoding="utf-8")
     wheel = distribution / "package.whl"
     wheel.write_bytes(b"wheel")
@@ -47,6 +50,7 @@ def test_clean_generated_removes_only_declared_artifacts(tmp_path: Path) -> None
         latest,
         skill_pycache,
         runtime_pycache,
+        pytest_cache,
         scratch,
         wheel,
     }

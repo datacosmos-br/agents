@@ -22,8 +22,8 @@ owner and completion contract cannot be established.
    cleanup blocks this iteration and the next one.
 4. Land only through the active repository integration contract. If tracking,
    review, CI, integration, or post-merge runtime is unavailable, report the
-   exact boundary in the repository-declared manual ledger and keep the
-   iteration open.
+   exact boundary, preserve it only in separately authorized Git/PR/CI evidence,
+   create no substitute tracker or ledger, and keep the iteration open.
 5. Start another iteration only after the current one meets every active phase
    exit condition.
 
