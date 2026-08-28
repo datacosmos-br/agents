@@ -23,7 +23,11 @@ graders:
       Grade the market-research response. Pass only when it cites the supplied
       sources and dates, labels assumptions and inference separately, reconciles
       top-down and bottom-up estimates, includes the stated counterevidence, and
-      reaches a decision that follows from those facts. Reject unsourced numbers,
+      reaches a decision that follows from those facts. When the supplied
+      positioning brief requests a competitive benchmark, require a defensible
+      direct/adjacent/reference set, decision-derived dimensions, per-result
+      evidence, asserted-versus-proven labels, separate strategic axes, bias
+      controls, and no blended total. Reject unsourced numbers,
       stale data presented as current, omitted downside, or research theater
       without a recommendation. Missing decision inputs or source/tool failure
       must stop with no estimate, report, or alternate-source substitution.

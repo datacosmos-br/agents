@@ -15,6 +15,9 @@ the language, target project, or required behavior is missing or ambiguous.
    language rules, generators, consumers, and canonical validation commands.
 2. Search for an existing language owner or narrower rule before creating a new
    artifact. Extend that owner when it already represents the requested fact.
+   When the input comes from another rules corpus, classify each statement as a
+   mandatory invariant, conditional technology procedure, explicit command, or
+   generated projection before adoption; its old file/type is not authority.
 3. Define only behavior justified by the detected project toolchain and the
    request. Do not copy rules from another repository or impose framework,
    tracker, orchestration, or private-home conventions on a generic project.

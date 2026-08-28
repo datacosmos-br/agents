@@ -14,13 +14,15 @@ commands/
 ├── ghi-list.md
 ├── pr-list.md
 ├── ralph-loop.md
-└── security-triage.md
+├── security-triage.md
+└── synthesize-governance.md
 ```
 
-The target has seven flat commands: the existing `security-triage` command and
-six artifacts converted from misclassified skills. Canonical command names stay
-flat and preserve their public slugs. Category namespaces are not introduced in
-this cutover.
+The original cutover produced `security-triage` plus six artifacts converted
+from misclassified skills. ADR-0006 adds the explicit
+`synthesize-governance` workflow. Current commands are discovered from the flat
+canonical surface rather than a numeric registry; category namespaces are not
+introduced.
 
 `simplify` remains an inline skill. The deleted `commands/simplify.md` is not
 restored, and broken personal projections of that removed command must be

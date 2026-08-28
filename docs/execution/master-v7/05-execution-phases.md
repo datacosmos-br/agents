@@ -78,10 +78,9 @@ unknown or contradictory artifact fails loudly.
 8. Run skill and command semantic evals, token gates, contradiction search, and
    fixed-point checks.
 
-Exit: recursive discovery returns the 76 migrated skills plus the two explicitly
-authorized post-migration governance additions, for exactly 78 current skills,
-and seven commands from their canonical surfaces. Counts result from the map;
-no external addition is present.
+Exit: recursive discovery returns every current authorized canonical skill and
+command from its physical surface. The generated inventory agrees exactly with
+discovery; no hardcoded cardinality or external projection is an owner.
 
 ## Phase 3 — Agents, rules, and provider adapters
 

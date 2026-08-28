@@ -1,0 +1,11 @@
+id: brand-discovery-northstar-001
+name: Synthesize a stakeholder-backed positioning brief
+description: Preserve evidence and disagreement while producing a usable identity brief.
+tags: [brand, identity, interview, positioning, stakeholders, happy-path]
+inputs:
+  prompt: Use stakeholder-notes.md to synthesize the requested brand identity and positioning brief. Attribute raw evidence, keep the unresolved category disagreement visible for Ana, distinguish interview hypotheses from market facts, and define the separate downstream handoffs. Do not persist a file because no destination was requested.
+  files:
+  - path: stakeholder-notes.md
+expected:
+  output_contains: [Ana, Rui, operational clarity platform, maintenance task tracker, open decision, market-research, brand-voice]
+  output_not_contains: [brandbook saved, market validated]

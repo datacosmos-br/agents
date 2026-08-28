@@ -3,11 +3,13 @@ name: Assess a warehouse-software niche
 description: Turn competitor research and commercial evidence into a bounded market analysis.
 tags: [market-analysis, competitor-research, commercial-evidence, sizing, diligence, happy-path]
 inputs:
-  prompt: Use market-evidence.yaml for market analysis and competitor research.
-    Evaluate the commercial evidence and decide whether the warehouse-maintenance
-    product merits ten interviews; separate facts, estimates, inference, and
-    recommendation, reconcile sizing methods, flag stale evidence, and include counterevidence.
+  prompt: Use market-evidence.yaml for market analysis and a bounded competitive
+    benchmark. Decide whether the warehouse-maintenance product merits ten
+    interviews; separate facts, estimates, inference, and recommendation,
+    reconcile sizing methods, flag stale evidence, include counterevidence, and
+    use the supplied positioning brief to classify competitors and derive
+    evidence-backed dimensions without a blended total.
   files:
   - path: market-evidence.yaml
 expected:
-  output_contains: [Industry Census 2025, '$240M', stale, interviews]
+  output_contains: [Industry Census 2025, '$240M', stale, interviews, direct, adjacent, asserted, no blended total]

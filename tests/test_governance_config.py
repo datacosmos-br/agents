@@ -33,7 +33,8 @@ def test_repository_governance_resolves_every_guarantee_owner() -> None:
     audit_governance_config(root, config, catalog, commands, rules)
 
     assert config.version == 2
-    assert len(config.guarantees) == 47
+    assert "governance-artifact-composition" in config.guarantees
+    assert "legacy-source-adjudication" in config.guarantees
     assert "fix-forward-collaboration" in config.guarantees
     assert "operator-precedence" in config.guarantees
     assert "tracker-evidence" in config.guarantees

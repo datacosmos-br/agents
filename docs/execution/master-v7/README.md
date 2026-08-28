@@ -103,6 +103,7 @@ Architecture decisions:
 - [ADR-0003: Render provider-native physical projections](../../adr/ADR-0003-provider-native-physical-projections.md)
 - [ADR-0004: Enforce one optionless fail-loud runtime CLI](../../adr/ADR-0004-optionless-fail-loud-cli.md)
 - [ADR-0005: Compose governance and native lifecycle delivery](../../adr/ADR-0005-composed-governance-delivery.md)
+- [ADR-0006: Synthesize historical governance by behavior](../../adr/ADR-0006-semantic-governance-synthesis.md)
 
 ## Status vocabulary
 

@@ -112,3 +112,21 @@ def test_canonical_inventory_is_discovered_without_extinct_hook_rules() -> None:
     assert "complete the approved landing cycle" in " ".join(engineering_core.split())
     assert "security/prompt-defense" in specs
     assert not any(identity.startswith("hooks/") for identity in specs)
+
+
+def test_governance_artifact_composition_is_project_scoped() -> None:
+    root = Path(__file__).resolve().parents[1]
+    specs = {spec.identity: spec for spec in audit_rule_specs(root)}
+    rule = specs["architecture/governance-artifact-composition"]
+
+    assert rule.activation is RuleActivation.PATH_SCOPED
+    assert rule.distribution is RuleDistribution.PROJECT
+    assert {
+        "commands/*.md",
+        "config/governance.json",
+        "evals/**",
+        "rules/**/*.md",
+        "skills/**",
+        "skills.lock.json",
+    } == set(rule.globs)
+    assert "historical artifacts are evidence only" in rule.body

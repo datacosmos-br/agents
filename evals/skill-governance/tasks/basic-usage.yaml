@@ -3,12 +3,13 @@ name: Design one missing schema-diff skill
 description: Exercise skill authoring, bundle governance, and semantic evaluation.
 tags: [skill-authoring, bundle-governance, semantic-evaluation, happy-path]
 inputs:
-  prompt: Use capability-inventory.md for governed skill authoring. Prove the
-    capability is absent, design the minimal canonical bundle, and define its
-    three-role semantic evaluation plus the atomic 78-to-79 catalog, acceptance,
-    fixture, inventory, validation, and zero-residue migration.
+  prompt: Use capability-inventory.md to adjudicate the supplied historical
+    governance by behavior. Prove the recurring capability is absent, reject
+    copied command/provider structure, design the minimal canonical skill bundle,
+    and define its three-role semantic evaluation plus the atomic derived-catalog,
+    acceptance, fixture, inventory, validation, and zero-residue migration.
   files:
   - path: capability-inventory.md
 expected:
-  output_contains: [schema-diff, SKILL.md, references, three, '79', acceptance, atomic]
-  output_not_contains: [provisional skill, fallback router, partial eval]
+  output_contains: [schema-diff, read-only evidence, SKILL.md, references, three, derived, acceptance, atomic]
+  output_not_contains: [schema-diff command, copied provider, provisional skill, fallback router, partial eval]

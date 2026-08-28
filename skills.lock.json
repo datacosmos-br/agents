@@ -37,7 +37,7 @@
     {
       "category": "agent-wide",
       "class": "on_demand",
-      "digest": "913763f5de78885d62078d210804be7c044838eda2b8dbb33087931476fc41fa",
+      "digest": "8103ee27a84aedad447270de6304429603d815703ad878dd18750ac55ba8ff22",
       "distributions": [
         "personal"
       ],
@@ -298,6 +298,34 @@
         "tool:beads",
         "updates:manual",
         "usage:router"
+      ],
+      "updates": "manual"
+    },
+    {
+      "category": "agent-wide",
+      "class": "on_demand",
+      "digest": "7a9645f893c27c041c05a58e144197f84b2ac99fad3118183f53dfeee6a35487",
+      "distributions": [
+        "personal"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "brand-discovery",
+      "owner": "agents",
+      "path": "skills/agent-wide/brand-discovery",
+      "provenance": "agents-owned",
+      "tags": [
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "policy:zero-residue",
+        "provenance:agents-owned",
+        "role:discovery",
+        "updates:manual",
+        "usage:on-demand"
       ],
       "updates": "manual"
     },
@@ -754,7 +782,7 @@
     {
       "category": "project-wide",
       "class": "router",
-      "digest": "1103500e7bffcc6b267381b1783524b57688f9102dc30212bdebf67b22a28268",
+      "digest": "402d1fdb71718b55144f9ea27a7c2b0872dffae3d51b210da3922901970721b1",
       "distributions": [
         "project-generic"
       ],
@@ -1120,7 +1148,7 @@
     {
       "category": "agent-wide",
       "class": "on_demand",
-      "digest": "cb37def2f0535a671045e8f11abc52e8e22eedf6ed4edf555d3f9e4695f7e2ab",
+      "digest": "472421d152fad2bd56b1461c819282bf540b863b10fd167d06087beaf649ed5a",
       "distributions": [
         "personal"
       ],
@@ -1163,6 +1191,32 @@
         "policy:strict-execution",
         "provenance:agents-owned",
         "role:writing",
+        "updates:manual",
+        "usage:on-demand"
+      ],
+      "updates": "manual"
+    },
+    {
+      "category": "project-wide",
+      "class": "on_demand",
+      "digest": "1b50d4382b7e97381b620cf4934ac2c28f0c4db99bcccd3cf1f901a86dd51c0f",
+      "distributions": [
+        "project-generic"
+      ],
+      "max_lines": 500,
+      "max_tokens": 5000,
+      "name": "implementation-plan-review",
+      "owner": "agents",
+      "path": "skills/project-wide/implementation-plan-review",
+      "provenance": "agents-owned",
+      "tags": [
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:preflight-before-effects",
+        "policy:strict-execution",
+        "provenance:agents-owned",
+        "role:planning",
         "updates:manual",
         "usage:on-demand"
       ],
@@ -1286,7 +1340,7 @@
     {
       "category": "agent-wide",
       "class": "on_demand",
-      "digest": "c4e93740ef73f579164b5bae36b2f9d1a19e6a7f5661c9a74f6c723a88b42e7a",
+      "digest": "d1253b6e4420d451d97267e564bb08aff58f5e6305d815e0162e76a144a6145d",
       "distributions": [
         "personal"
       ],
@@ -1919,7 +1973,7 @@
     {
       "category": "agent-wide",
       "class": "on_demand",
-      "digest": "ed7819bc13f3469b4e6f16edb7b18a0110c8ae397f1b7699d7150e371005c7a8",
+      "digest": "988a9b290b9b3dbd0dcfe36394789df7ca3c9aae0dbf69d1b817f00910170fc5",
       "distributions": [
         "personal"
       ],
