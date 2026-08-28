@@ -9,6 +9,15 @@ correction:
   required_replacement: Prove the producer contract and correct the causal owner
   scope: Cross-boundary defect remediation
   incident: A generated facade was blamed before validating the receiving import
+authorized_destructive_effect:
+  source: /home/operator/.agents.legacy
+  destination: /home/operator/agents.legacy
+  disposition: exact same-filesystem rename
+  recovery: complete physical manifest at the destination
+observed_after_interruption:
+  source_present: true
+  destination_present: false
+  evidenced_competing_operator_intention: false
 owners:
   canonical: rules/architecture/engineering-core.md
   consumers:

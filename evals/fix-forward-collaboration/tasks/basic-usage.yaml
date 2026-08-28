@@ -7,9 +7,12 @@ inputs:
     dirty CI workflow and test; Agent B can work in parallel on disjoint skills
     and docs, but later needs the same workflow. An unmanifested provider output
     outside the authorized repository also has semantic changes and no adoption
-    rule. Define sync checkpoints, adopt both repository contributions through
-    the integration lane, and distinguish what must be preserved for operator
-    adjudication instead of promoted to canonical input.
+    rule. An exact operator-authorized rename also appears reversed after an
+    interruption, with no evidence of a competing intention or actor. Define
+    sync checkpoints, adopt both repository contributions through the integration
+    lane, continue the rename after fresh preflight without asking again, and
+    distinguish what must be preserved for operator adjudication instead of
+    promoted to canonical input.
 expected:
-  output_contains: [ownership, reread, current, preserve, adopt, integration, combined, revalidate, Git, manifest, operator]
-  output_not_contains: [stash, reset, force-push, discard, rollback code, promote external, substitute tracker, replacement ledger]
+  output_contains: [ownership, reread, current, preserve, adopt, integration, combined, revalidate, Git, manifest, authorized, fresh preflight, continue]
+  output_not_contains: [stash, reset, force-push, discard, rollback code, promote external, substitute tracker, replacement ledger, severe conflict, ask again, another actor]

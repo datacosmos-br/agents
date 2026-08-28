@@ -5,9 +5,10 @@ tags: [completion-evidence, runtime-verification, native-gates, happy-path]
 inputs:
   prompt: Evaluate gate-evidence.md as completion evidence. Check the native gates
     in causal order, distinguish their test results from runtime verification on
-    the optionless public surface, and state exactly what scope is proven green.
+    the optionless public surface, apply the final exit status to the whole
+    composite invocation, and state exactly what remains unverified.
   files:
   - path: gate-evidence.md
 expected:
-  output_contains: [431 passed, current discovered catalog, fixed point, agentsctl check, '.github/workflows/**', eval.yml, full commit SHA, make ci, NOT EXECUTED]
-  output_not_contains: [implementation complete, agentsctl projections, CHECK_GATES, FILE=]
+  output_contains: [431 passed, current discovered catalog, fixed point, agentsctl check, '.github/workflows/**', eval.yml, full commit SHA, make ci, NOT EXECUTED, exit 1, composite, not verified]
+  output_not_contains: [implementation complete, composite green, providers validated, agentsctl projections, CHECK_GATES, FILE=]

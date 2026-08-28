@@ -56,6 +56,13 @@ the same active phase, not an unchanged retry or a handoff. Ask for help only
 when the remaining condition is external or requires authority the active task
 does not grant.
 
+For a shell, Make recipe, script, or other composite command, the process's final
+exit status is the status of the entire invocation. Successful prefix output or
+individual substeps may be reported only as bounded observations; they never
+make the composite green after a later substep fails. Do not parse a placeholder
+value from a failed command substitution, continue to later proof, or replace a
+native Make owner with its underlying test runner.
+
 Directly invoking an external-token workflow makes it applicable. Missing or
 invalid credentials then remain its raw first failure; never convert that
 attempt into the preflight exclusion above.

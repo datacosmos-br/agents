@@ -32,7 +32,10 @@ graders:
       created by the failing invocation. A question is required only for two
       evidenced current intentions that cannot coexist under active authority;
       ordinary overlap, divergence, merge work, and red gates must continue
-      through reconciliation. Unmanifested provider outputs, generated
+      through reconciliation. An unexpected path or branch state proves neither
+      an actor nor an intention; when an exact operator authorization already
+      exists, require fresh preflight and continuation without asking again or
+      repeating an unchanged effect. Unmanifested provider outputs, generated
       destinations, external files, and ambiguous objects are preserved but are
       not repository contributions or canonical inputs; without an approved
       divergence-class rule they require operator adjudication before replacement.
