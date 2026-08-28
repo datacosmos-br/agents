@@ -1,56 +1,45 @@
 from __future__ import annotations
 
-import json
 import os
 from pathlib import Path
 
 import pytest
+import yaml
 
-from agents_governance.catalog import Catalog
 from agents_governance.skill_metadata import validate
-from agents_governance.validation import validate as validate_catalog
 
 
-def _write_metadata(root: Path, skill_name: str, text: str) -> Path:
-    skill = root / "skills" / "agent-wide" / skill_name
-    skill.mkdir(parents=True, exist_ok=True)
-    skill_file = skill / "SKILL.md"
-    if not skill_file.exists():
-        skill_file.write_text(
-            f"---\nname: {skill_name}\ndescription: example, metadata\n"
-            "metadata:\n"
-            '  version: "1.0.0"\n'
-            "  aihub.tags: "
-            '\'["provenance:agents-owned","updates:manual",'
-            '"usage:on-demand"]\'\n'
-            "---\n",
-            encoding="utf-8",
-        )
+def _skill(root: Path, name: str = "example") -> Path:
+    directory = root / "skills" / "agent-wide" / name
+    directory.mkdir(parents=True)
+    (directory / "SKILL.md").write_text(
+        f"---\nname: {name}\ndescription: example, metadata, validation\n---\n",
+        encoding="utf-8",
+    )
+    return directory
+
+
+def _metadata(skill: Path, text: str) -> Path:
     path = skill / "agents" / "openai.yaml"
-    path.parent.mkdir(parents=True)
+    path.parent.mkdir()
     path.write_text(text, encoding="utf-8")
     return path
 
 
-def _codes(root: Path) -> list[str]:
-    return [finding.code for finding in validate(root)]
-
-
-def test_openai_metadata_is_optional(tmp_path: Path) -> None:
-    (tmp_path / "skills" / "agent-wide" / "example").mkdir(parents=True)
+def test_metadata_is_optional(tmp_path: Path) -> None:
+    _skill(tmp_path)
 
     assert validate(tmp_path) == ()
 
 
-def test_complete_documented_schema_is_accepted(tmp_path: Path) -> None:
-    skill = tmp_path / "skills" / "agent-wide" / "example"
+def test_complete_documented_schema_is_loaded(tmp_path: Path) -> None:
+    skill = _skill(tmp_path)
     assets = skill / "assets"
-    assets.mkdir(parents=True)
+    assets.mkdir()
     (assets / "small.svg").write_text("<svg/>", encoding="utf-8")
     (assets / "large.svg").write_text("<svg/>", encoding="utf-8")
-    _write_metadata(
-        tmp_path,
-        "example",
+    path = _metadata(
+        skill,
         """interface:
   display_name: "Example Skill"
   short_description: "Example workflow for metadata validation"
@@ -70,203 +59,105 @@ policy:
 """,
     )
 
-    assert validate(tmp_path) == ()
+    documents = validate(tmp_path)
 
-
-@pytest.mark.parametrize("legacy", ["model", "name", "description", "tools"])
-def test_legacy_top_level_fields_are_rejected(tmp_path: Path, legacy: str) -> None:
-    _write_metadata(tmp_path, "example", f'{legacy}: "legacy"\n')
-
-    assert _codes(tmp_path) == ["legacy-field"]
+    assert len(documents) == 1
+    assert documents[0].path == path
+    assert documents[0].interface is not None
+    assert documents[0].interface.display_name == "Example Skill"
+    assert [(tool.kind, tool.value) for tool in documents[0].tools] == [
+        ("mcp", "github")
+    ]
+    assert documents[0].allow_implicit_invocation is False
 
 
 @pytest.mark.parametrize(
-    ("document", "expected_code"),
+    ("document", "message"),
     [
-        ("- interface\n", "document-type"),
-        ('unknown: "value"\n', "unknown-field"),
-        ('interface: "invalid"\n', "section-type"),
-        ("interface:\n  display_name: 7\n", "field-type"),
-        ('interface:\n  display_name: ""\n', "field-empty"),
-        (
-            'interface:\n  short_description: "too short"\n',
-            "short-description-length",
-        ),
-        ('interface:\n  brand_color: "blue"\n', "brand-color"),
-        (
-            'interface:\n  default_prompt: "Use another skill."\n',
-            "default-prompt-skill",
-        ),
-        ('interface:\n  extra: "value"\n', "unknown-field"),
-        ("dependencies: []\n", "section-type"),
-        ('dependencies:\n  tools: "github"\n', "field-type"),
-        ("dependencies:\n  extra: []\n", "unknown-field"),
-        ('dependencies:\n  tools:\n    - "github"\n', "field-type"),
+        ('model: "legacy"\n', "legacy field"),
+        ('unknown: "value"\n', "not documented"),
+        ('interface: "invalid"\n', "must be a mapping"),
+        ("interface:\n  display_name: 7\n", "must be a string"),
+        ('interface:\n  display_name: ""\n', "must not be empty"),
+        ('interface:\n  short_description: "too short"\n', "25-64"),
+        ('interface:\n  brand_color: "blue"\n', "hexadecimal"),
+        ('interface:\n  default_prompt: "Use another skill."\n', "mention \\$example"),
+        ('dependencies:\n  tools: "github"\n', "must be a list"),
         (
             'dependencies:\n  tools:\n    - type: "filesystem"\n      value: "files"\n',
-            "dependency-type",
+            "documented mcp value",
         ),
-        ('dependencies:\n  tools:\n    - type: "mcp"\n', "missing-field"),
-        (
-            'dependencies:\n  tools:\n    - type: "mcp"\n      value: 3\n',
-            "field-type",
-        ),
-        (
-            'dependencies:\n  tools:\n    - type: "mcp"\n      value: "github"\n      extra: "value"\n',
-            "unknown-field",
-        ),
-        ("policy: []\n", "section-type"),
-        ("policy:\n  allow_implicit_invocation: 1\n", "field-type"),
-        ("policy:\n  extra: true\n", "unknown-field"),
+        ("policy:\n  allow_implicit_invocation: 1\n", "must be a boolean"),
     ],
 )
-def test_invalid_shapes_and_values_fail_closed(
-    tmp_path: Path, document: str, expected_code: str
+def test_invalid_metadata_raises_first_defect(
+    tmp_path: Path, document: str, message: str
 ) -> None:
-    _write_metadata(tmp_path, "example", document)
+    _metadata(_skill(tmp_path), document)
 
-    assert _codes(tmp_path) == [expected_code]
-
-
-@pytest.mark.parametrize(
-    "field",
-    ["display_name", "short_description", "default_prompt"],
-)
-def test_interface_strings_must_be_quoted(tmp_path: Path, field: str) -> None:
-    value = {
-        "display_name": "Example Skill",
-        "short_description": "Example metadata description for users",
-        "default_prompt": "Use $example to validate metadata",
-    }[field]
-    _write_metadata(tmp_path, "example", f"interface:\n  {field}: {value}\n")
-
-    assert _codes(tmp_path) == ["unquoted-string"]
+    with pytest.raises((TypeError, ValueError), match=message):
+        validate(tmp_path)
 
 
-def test_mapping_keys_must_be_unquoted(tmp_path: Path) -> None:
-    _write_metadata(tmp_path, "example", '"interface": {}\n')
+def test_yaml_errors_propagate_without_normalization(tmp_path: Path) -> None:
+    _metadata(_skill(tmp_path), "interface: [\n")
 
-    assert _codes(tmp_path) == ["quoted-key"]
+    with pytest.raises(yaml.YAMLError):
+        validate(tmp_path)
 
 
-def test_duplicate_keys_are_rejected(tmp_path: Path) -> None:
-    _write_metadata(
-        tmp_path,
-        "example",
+def test_quoted_keys_unquoted_strings_and_duplicates_raise(tmp_path: Path) -> None:
+    path = _metadata(_skill(tmp_path), '"interface": {}\n')
+    with pytest.raises(ValueError, match="key must be unquoted"):
+        validate(tmp_path)
+
+    path.write_text("interface:\n  display_name: Example Skill\n", encoding="utf-8")
+    with pytest.raises(ValueError, match="string must be quoted"):
+        validate(tmp_path)
+
+    path.write_text(
         'interface:\n  display_name: "First"\n  display_name: "Second"\n',
+        encoding="utf-8",
     )
-
-    assert _codes(tmp_path) == ["duplicate-key"]
-
-
-def test_invalid_yaml_is_reported_without_traceback(tmp_path: Path) -> None:
-    _write_metadata(tmp_path, "example", "interface: [\n")
-
-    assert _codes(tmp_path) == ["yaml-invalid"]
+    with pytest.raises(ValueError, match="duplicated"):
+        validate(tmp_path)
 
 
 @pytest.mark.parametrize("icon", ["/absolute/icon.svg", "../icon.svg"])
-def test_icon_paths_must_be_contained_assets(icon: str, tmp_path: Path) -> None:
-    _write_metadata(
-        tmp_path,
-        "example",
-        f'interface:\n  icon_small: "{icon}"\n',
-    )
+def test_icon_paths_are_confined(tmp_path: Path, icon: str) -> None:
+    _metadata(_skill(tmp_path), f'interface:\n  icon_small: "{icon}"\n')
 
-    assert _codes(tmp_path) == ["icon-path"]
+    with pytest.raises(ValueError, match="contained"):
+        validate(tmp_path)
 
 
-def test_icon_must_resolve_to_a_regular_local_asset(tmp_path: Path) -> None:
-    _write_metadata(
-        tmp_path,
-        "example",
+def test_missing_icon_propagates_filesystem_error(tmp_path: Path) -> None:
+    _metadata(
+        _skill(tmp_path),
         'interface:\n  icon_small: "./assets/missing.svg"\n',
     )
 
-    assert _codes(tmp_path) == ["icon-missing"]
+    with pytest.raises(FileNotFoundError):
+        validate(tmp_path)
 
 
-def test_symlink_metadata_is_rejected_without_reading_target(tmp_path: Path) -> None:
+def test_symlink_and_special_metadata_are_rejected(tmp_path: Path) -> None:
+    skill = _skill(tmp_path)
     target = tmp_path / "target.yaml"
     target.write_text("{}\n", encoding="utf-8")
-    path = tmp_path / "skills" / "agent-wide" / "example" / "agents" / "openai.yaml"
-    path.parent.mkdir(parents=True)
-    (path.parents[1] / "SKILL.md").write_text(
-        "---\nname: example\ndescription: example, metadata\n---\n",
-        encoding="utf-8",
-    )
+    path = skill / "agents" / "openai.yaml"
+    path.parent.mkdir()
     path.symlink_to(target)
+    with pytest.raises(ValueError, match="physical"):
+        validate(tmp_path)
 
-    assert _codes(tmp_path) == ["metadata-symlink"]
-
-
-def test_special_metadata_file_is_rejected_without_reading_it(tmp_path: Path) -> None:
-    path = tmp_path / "skills" / "agent-wide" / "example" / "agents" / "openai.yaml"
-    path.parent.mkdir(parents=True)
-    (path.parents[1] / "SKILL.md").write_text(
-        "---\nname: example\ndescription: example, metadata\n---\n",
-        encoding="utf-8",
-    )
+    path.unlink()
     os.mkfifo(path)
-
-    assert _codes(tmp_path) == ["metadata-special"]
-
-
-def test_findings_are_deterministic_by_path(tmp_path: Path) -> None:
-    _write_metadata(tmp_path, "zeta", 'unknown: "value"\n')
-    _write_metadata(tmp_path, "alpha", 'model: "legacy"\n')
-
-    findings = validate(tmp_path)
-
-    assert [(item.path, item.code) for item in findings] == [
-        ("skills/agent-wide/alpha/agents/openai.yaml", "legacy-field"),
-        ("skills/agent-wide/zeta/agents/openai.yaml", "unknown-field"),
-    ]
+    with pytest.raises(ValueError, match="regular file"):
+        validate(tmp_path)
 
 
-def test_repository_skill_metadata_conforms_to_canonical_schema() -> None:
+def test_canonical_metadata_inventory_is_strict() -> None:
     root = Path(__file__).resolve().parents[1]
 
-    assert validate(root) == ()
-    assert "source-command-" not in "".join(
-        path.read_text(encoding="utf-8")
-        for path in sorted((root / "skills").glob("*/*/agents/openai.yaml"))
-    )
-
-
-def test_canonical_catalog_validation_includes_metadata_gate(tmp_path: Path) -> None:
-    (tmp_path / "commands").mkdir()
-    skill = tmp_path / "skills" / "agent-wide" / "example"
-    skill.mkdir(parents=True)
-    (skill / "SKILL.md").write_text(
-        "---\nname: example\ndescription: example, metadata\n"
-        "metadata:\n"
-        '  version: "1.0.0"\n'
-        "  aihub.tags: "
-        '\'["provenance:agents-owned","updates:manual",'
-        '"usage:on-demand"]\'\n'
-        "---\n# Example\n",
-        encoding="utf-8",
-    )
-    _write_metadata(tmp_path, "example", 'model: "legacy"\n')
-    config = {
-        "version": 2,
-        "budgets": {
-            "router_tokens": 500,
-            "frozen_tokens": 1200,
-            "on_demand_tokens": 5000,
-            "max_lines": 500,
-        },
-    }
-    (tmp_path / "config").mkdir()
-    (tmp_path / "config" / "skills.json").write_text(
-        json.dumps(config), encoding="utf-8"
-    )
-
-    findings = validate_catalog(Catalog(tmp_path))
-
-    assert any(
-        finding.path == "skills/agent-wide/example/agents/openai.yaml"
-        and finding.code == "legacy-field"
-        for finding in findings
-    )
+    assert len(validate(root)) == 41

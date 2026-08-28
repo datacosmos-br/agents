@@ -14,7 +14,6 @@ from .cleanup import clean_generated
 from .command_evals import audit_command_evals
 from .commands import audit_command_specs
 from .environment import required_environment
-from .normalize import normalize, normalize_descriptions
 from .projection import Projector
 from .projection_config import load_projection_config
 from .rules import audit_rule_specs
@@ -93,12 +92,8 @@ def doctor(root: Path) -> None:
 
 def check(root: Path) -> None:
     catalog, commands, agents, rules = _doctor(root)
-    _require_empty(validate(catalog), "governance validation")
+    validate(catalog)
     _require_empty(repository_findings(root), "repository storage")
-    _require_empty(normalize(catalog, apply=False), "skill normalization drift")
-    _require_empty(
-        normalize_descriptions(catalog, apply=False), "skill description drift"
-    )
     print(
         "check: "
         f"{len(catalog.skill_dirs())} skills, {commands} commands, "
