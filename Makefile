@@ -1,7 +1,7 @@
 # Development support and gate composition for the optionless agentsctl runtime.
 
 AGENTSCTL := uv run agentsctl
-PYTEST_BASETEMP := $(CURDIR)/.test-tmp/pytest
+PYTEST_SCRATCH := $(CURDIR)/.test-tmp
 
 ifneq ($(APPLY),)
 ifneq ($(APPLY),Y)
@@ -17,13 +17,19 @@ define BANNER
 	@if [ -z "$$NO_COLOR" ]; then printf '\033[1;36m▶\033[0m %s\n' "$(1)"; else printf '▶ %s\n' "$(1)"; fi
 endef
 
+define RUN_PYTEST
+	@mkdir -p $(PYTEST_SCRATCH)/pytest.$$PPID
+	@uv run pytest --basetemp $(PYTEST_SCRATCH)/pytest.$$PPID $(1)
+	@rmdir $(PYTEST_SCRATCH)/pytest.$$PPID
+endef
+
 help: ## show the complete development surface
 	@awk 'BEGIN{FS=":.*## "} /^## /{sub(/^## */,""); print ""; print} /^[a-z][a-z_-]*:.*## /{printf "  %-14s %s\n",$$1,$$2}' $(MAKEFILE_LIST)
 
 ## read-only development gates
 docs: ## validate documentation delivery contracts
 	$(call BANNER,docs · delivery contracts)
-	@uv run pytest --basetemp $(PYTEST_BASETEMP) tests/test_delivery_contracts.py
+	$(call RUN_PYTEST,tests/test_delivery_contracts.py)
 
 audit: ## inspect the complete canonical runtime inventory
 ifeq ($(APPLY),Y)
@@ -59,9 +65,7 @@ build: ## build source and wheel artifacts
 
 test: ## execute the complete Python test suite
 	$(call BANNER,test · pytest)
-	@mkdir -p $(PYTEST_BASETEMP)
-	@uv run pytest --basetemp $(PYTEST_BASETEMP) $(PYTEST_ARGS)
-	@rmdir $(PYTEST_BASETEMP)
+	$(call RUN_PYTEST,$(PYTEST_ARGS))
 
 spec: ## validate every canonical evaluation specification
 	$(call BANNER,spec · agentsctl evaluate)
