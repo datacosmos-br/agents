@@ -94,5 +94,14 @@ def test_agentsctl_is_the_only_packaged_console_script() -> None:
     assert scripts == 'agentsctl = "agents_governance.cli:main"'
 
 
+def test_keyring_maintenance_runtime_is_extinct() -> None:
+    assert not (ROOT / "src/agents_governance/retired_environment.py").exists()
+    runtime = (ROOT / "src/agents_governance/runtime.py").read_text(encoding="utf-8")
+    assert all(
+        term not in runtime
+        for term in ("env-keyring", "environment-d-loader", "RetiredEnvironment")
+    )
+
+
 def test_declared_verbs_are_unique() -> None:
     assert len(VERBS) == len(set(VERBS))
