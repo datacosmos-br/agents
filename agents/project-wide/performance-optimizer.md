@@ -1,7 +1,7 @@
 ---
 name: performance-optimizer
 description: Performance analysis and optimization specialist. Use PROACTIVELY for identifying bottlenecks, optimizing slow code, reducing bundle sizes, and improving runtime performance. Profiling, memory leaks, render optimization, and algorithmic improvements.
-tools: ["Read", "Write", "Edit", "Bash", "Grep", "Glob"]
+tools: ["filesystem:read", "filesystem:write", "shell:execute", "filesystem:grep", "filesystem:glob"]
 metadata:
   aihub.tags: '["activation:opt-in","mode:review","role:optimizer"]'
 ---

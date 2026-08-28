@@ -1,7 +1,7 @@
 ---
 name: code-simplifier
 description: Simplifies and refines code for clarity, consistency, and maintainability while preserving behavior. Focus on recently modified code unless instructed otherwise.
-tools: [Read, Write, Edit, Bash, Grep, Glob]
+tools: ["filesystem:read", "filesystem:write", "shell:execute", "filesystem:grep", "filesystem:glob"]
 metadata:
   aihub.tags: '["activation:opt-in","mode:execute","role:simplifier"]'
 ---

@@ -1,7 +1,7 @@
 ---
 name: type-design-analyzer
 description: Analyze type design for encapsulation, invariant expression, usefulness, and enforcement.
-tools: [Read, Grep, Glob]
+tools: ["filesystem:read", "filesystem:grep", "filesystem:glob"]
 metadata:
   aihub.tags: '["activation:opt-in","mode:review","role:analyzer"]'
 ---

@@ -1,7 +1,7 @@
 ---
 name: fastapi-reviewer
 description: Reviews FastAPI applications for async correctness, dependency injection, Pydantic schemas, security, OpenAPI quality, testing, and production readiness.
-tools: ["Read", "Grep", "Glob", "Bash"]
+tools: ["filesystem:read", "filesystem:grep", "filesystem:glob", "shell:execute"]
 metadata:
   aihub.tags: '["activation:detected","detect:dependency:fastapi","mode:review","role:reviewer"]'
 ---

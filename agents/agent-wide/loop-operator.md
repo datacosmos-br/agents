@@ -1,8 +1,7 @@
 ---
 name: loop-operator
 description: Operate autonomous agent loops, monitor progress, and intervene safely when loops stall.
-tools: ["Read", "Grep", "Glob", "Bash", "Edit"]
-color: orange
+tools: ["filesystem:read", "filesystem:grep", "filesystem:glob", "shell:execute", "filesystem:write"]
 metadata:
   aihub.tags: '["activation:always","mode:operate","role:delivery-operator"]'
 ---

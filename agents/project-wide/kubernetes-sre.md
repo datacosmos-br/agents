@@ -1,7 +1,6 @@
 ---
 name: kubernetes-sre
 description: "SRE-focused Kubernetes specialist prioritizing reliability, safe rollouts/rollbacks, security defaults, and operational verification for production-grade deployments"
-color: orange
 metadata:
   aihub.tags: '["activation:detected","detect:marker:kustomization.yaml","mode:operate","role:sre"]'
 ---

@@ -1,7 +1,7 @@
 ---
 name: system-architect
 description: Software architecture specialist for system design, scalability, and technical decision-making. Use PROACTIVELY when planning new features, refactoring large systems, or making architectural decisions.
-tools: ["Read", "Grep", "Glob"]
+tools: ["filesystem:read", "filesystem:grep", "filesystem:glob"]
 metadata:
   aihub.tags: '["activation:opt-in","mode:plan","role:architect"]'
 ---

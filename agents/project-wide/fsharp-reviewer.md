@@ -1,7 +1,7 @@
 ---
 name: fsharp-reviewer
 description: Expert F# code reviewer specializing in functional idioms, type safety, pattern matching, computation expressions, and performance. Use for all F# code changes. MUST BE USED for F# projects.
-tools: ["Read", "Grep", "Glob", "Bash"]
+tools: ["filesystem:read", "filesystem:grep", "filesystem:glob", "shell:execute"]
 metadata:
   aihub.tags: '["activation:detected","detect:extension:fs","mode:review","role:reviewer"]'
 ---

@@ -1,7 +1,7 @@
 ---
 name: csharp-reviewer
 description: Expert C# code reviewer specializing in .NET conventions, async patterns, security, nullable reference types, and performance. Use for all C# code changes. MUST BE USED for C# projects.
-tools: ["Read", "Grep", "Glob", "Bash"]
+tools: ["filesystem:read", "filesystem:grep", "filesystem:glob", "shell:execute"]
 metadata:
   aihub.tags: '["activation:detected","detect:extension:cs","mode:review","role:reviewer"]'
 ---

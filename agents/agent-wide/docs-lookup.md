@@ -1,7 +1,7 @@
 ---
 name: docs-lookup
 description: When the user asks how to use a library, framework, or API or needs up-to-date code examples, use Context7 MCP to fetch current documentation and return answers with examples. Invoke for docs/API/setup questions.
-tools: ["Read", "Grep", "mcp__context7__resolve-library-id", "mcp__context7__query-docs"]
+tools: ["filesystem:read", "filesystem:grep", "mcp:context7:resolve-library-id", "mcp:context7:query-docs"]
 metadata:
   aihub.tags: '["activation:always","mode:operate","role:researcher"]'
 ---

@@ -5,7 +5,14 @@ from pathlib import Path
 
 import pytest
 
-from agents_governance.agent_profiles import audit_agent_profiles
+from agents_governance.agent_profiles import (
+    AgentArtifact,
+    AgentContext,
+    AgentProvider,
+    UnsupportedAgent,
+    audit_agent_profiles,
+    render_agent,
+)
 from agents_governance.cli import main
 
 
@@ -403,3 +410,113 @@ def test_agentsctl_validate_reports_agent_profile_findings(
     assert main(["--root", str(tmp_path), "validate"]) == 1
     stderr = capsys.readouterr().err
     assert "agents/project-wide/reviewer.md: agent-profile-model:" in stderr
+
+
+@pytest.mark.parametrize(
+    ("extra", "code"),
+    [
+        ("color: cyan\n", "agent-profile-frontmatter"),
+        ("tools: [Read]\n", "agent-profile-tools"),
+        ("tools: [filesystem:unknown]\n", "agent-profile-tools"),
+    ],
+)
+def test_agent_profile_rejects_provider_specific_metadata(
+    tmp_path: Path, extra: str, code: str
+) -> None:
+    _write_profile(
+        tmp_path,
+        frontmatter=_valid_frontmatter("reviewer", extra=extra),
+    )
+
+    assert {finding.code for finding in audit_agent_profiles(tmp_path).findings} == {
+        code
+    }
+
+
+def test_supported_agent_adapters_preserve_canonical_capabilities(
+    tmp_path: Path,
+) -> None:
+    _write_profile(
+        tmp_path,
+        frontmatter=_valid_frontmatter(
+            "reviewer",
+            extra=(
+                "tools: [filesystem:read, filesystem:write, filesystem:grep, "
+                "filesystem:glob, shell:execute, web:fetch, web:search, "
+                "mcp:context7:query-docs]\n"
+            ),
+        ),
+    )
+    profile = audit_agent_profiles(tmp_path).profiles[0]
+
+    claude = render_agent(
+        profile,
+        AgentProvider.CLAUDE,
+        AgentContext.PROJECT,
+        prompt_defense="# Prompt defense\n",
+    )
+    gemini = render_agent(
+        profile,
+        AgentProvider.GEMINI,
+        AgentContext.PROJECT,
+        prompt_defense="# Prompt defense\n",
+    )
+    opencode = render_agent(
+        profile,
+        AgentProvider.OPENCODE,
+        AgentContext.PROJECT,
+        prompt_defense="# Prompt defense\n",
+    )
+
+    assert isinstance(claude, AgentArtifact)
+    assert claude.destination.as_posix() == ".claude/agents/reviewer.md"
+    assert "- Read\n" in claude.content
+    assert "- Edit\n" in claude.content
+    assert "- Write\n" in claude.content
+    assert "- mcp__context7__query-docs\n" in claude.content
+
+    assert isinstance(gemini, AgentArtifact)
+    assert gemini.destination.as_posix() == ".gemini/agents/reviewer.md"
+    assert "kind: local\n" in gemini.content
+    assert "- read_file\n" in gemini.content
+    assert "- replace\n" in gemini.content
+    assert "- write_file\n" in gemini.content
+    assert "- mcp_context7_query-docs\n" in gemini.content
+
+    assert isinstance(opencode, AgentArtifact)
+    assert opencode.destination.as_posix() == ".opencode/agents/reviewer.md"
+    assert "mode: subagent\n" in opencode.content
+    assert "permission:\n  '*': deny\n" in opencode.content
+    assert "  read: allow\n" in opencode.content
+    assert "  edit: allow\n" in opencode.content
+    assert "  context7_query-docs: allow\n" in opencode.content
+
+
+@pytest.mark.parametrize(
+    ("provider", "reason"),
+    [
+        (AgentProvider.CURSOR, "capability allowlist"),
+        (AgentProvider.CODEX, "capability allowlist"),
+        (AgentProvider.ANTIGRAVITY, "MCP tool identity"),
+    ],
+)
+def test_unrepresentable_agent_adapters_are_explicit(
+    tmp_path: Path, provider: AgentProvider, reason: str
+) -> None:
+    _write_profile(
+        tmp_path,
+        frontmatter=_valid_frontmatter(
+            "reviewer", extra="tools: [mcp:context7:query-docs]\n"
+        ),
+    )
+    profile = audit_agent_profiles(tmp_path).profiles[0]
+
+    rendered = render_agent(
+        profile,
+        provider,
+        AgentContext.PROJECT,
+        prompt_defense="# Prompt defense\n",
+    )
+
+    assert isinstance(rendered, UnsupportedAgent)
+    assert reason in rendered.reason

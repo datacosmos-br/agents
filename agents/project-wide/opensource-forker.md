@@ -1,7 +1,7 @@
 ---
 name: opensource-forker
 description: Prepare a physical open-source staging copy, remove secrets and private references, generate public configuration examples, and initialize publishable history.
-tools: ["Read", "Write", "Edit", "Bash", "Grep", "Glob"]
+tools: ["filesystem:read", "filesystem:write", "shell:execute", "filesystem:grep", "filesystem:glob"]
 metadata:
   aihub.tags: '["activation:opt-in","mode:execute","role:forker"]'
 ---

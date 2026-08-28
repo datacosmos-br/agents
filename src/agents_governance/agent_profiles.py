@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import re
+from collections.abc import Mapping
 from dataclasses import dataclass, field
 from enum import StrEnum
 from pathlib import Path, PurePosixPath
@@ -23,10 +24,22 @@ _MODES = frozenset(
 _RETIRED_SURFACES = frozenset({"dispatcher.md", "manifest.json"})
 _PROMPT_DEFENSE_RULE = "rules/security/prompt-defense.md"
 _INLINE_PROMPT_DEFENSE = "## Prompt Defense Baseline"
-_TOP_LEVEL_FIELDS = frozenset(
-    {"name", "description", "tools", "color", "metadata", "model"}
-)
+_TOP_LEVEL_FIELDS = frozenset({"name", "description", "tools", "metadata", "model"})
 _TOOL = re.compile(r"^[A-Za-z0-9_.:-]+$")
+_MCP_CAPABILITY = re.compile(
+    r"^mcp:(?P<server>[a-z0-9][a-z0-9-]*):(?P<tool>[A-Za-z0-9][A-Za-z0-9_.-]*)$"
+)
+_CANONICAL_CAPABILITIES = frozenset(
+    {
+        "filesystem:glob",
+        "filesystem:grep",
+        "filesystem:read",
+        "filesystem:write",
+        "shell:execute",
+        "web:fetch",
+        "web:search",
+    }
+)
 
 
 class AgentProvider(StrEnum):
@@ -66,7 +79,6 @@ class AgentProfile:
     tags: tuple[str, ...]
     rule_paths: tuple[str, ...]
     tools: tuple[str, ...]
-    color: str | None
     activation: str
     mode: str
     role: str
@@ -313,6 +325,16 @@ def _tools(raw: object) -> tuple[str, ...]:
         or len(values) != len(set(values))
     ):
         raise ValueError("tools must contain unique provider-neutral capability names")
+    unsupported = tuple(
+        value
+        for value in values
+        if value not in _CANONICAL_CAPABILITIES
+        and _MCP_CAPABILITY.fullmatch(value) is None
+    )
+    if unsupported:
+        raise ValueError(
+            "unsupported provider-neutral capabilities: " + ", ".join(unsupported)
+        )
     return values
 
 
@@ -475,16 +497,6 @@ def audit_agent_profiles(root: Path) -> AgentProfileAudit:
                 _finding(relative, "agent-profile-tools", str(error))
             )
             tools = ()
-        raw_color = metadata.get("color")
-        color = raw_color if isinstance(raw_color, str) and raw_color.strip() else None
-        if raw_color is not None and color is None:
-            profile_findings.append(
-                _finding(
-                    relative,
-                    "agent-profile-color",
-                    "color must be a non-empty string when declared",
-                )
-            )
         if _INLINE_PROMPT_DEFENSE in instructions:
             profile_findings.append(
                 _finding(
@@ -519,7 +531,6 @@ def audit_agent_profiles(root: Path) -> AgentProfileAudit:
                 tags=tags,
                 rule_paths=(_PROMPT_DEFENSE_RULE,),
                 tools=tools,
-                color=color,
                 activation=activation,
                 mode=mode,
                 role=role,
@@ -589,25 +600,50 @@ def _unsupported(
     )
 
 
+_CLAUDE_TOOLS = {
+    "filesystem:glob": ("Glob",),
+    "filesystem:grep": ("Grep",),
+    "filesystem:read": ("Read",),
+    "filesystem:write": ("Edit", "Write"),
+    "shell:execute": ("Bash",),
+    "web:fetch": ("WebFetch",),
+    "web:search": ("WebSearch",),
+}
 _COPILOT_TOOLS = {
-    "Bash": "execute",
-    "Edit": "edit",
-    "Glob": "search",
-    "Grep": "search",
-    "Read": "read",
-    "WebFetch": "web",
-    "WebSearch": "web",
-    "Write": "edit",
+    "filesystem:glob": ("search",),
+    "filesystem:grep": ("search",),
+    "filesystem:read": ("read",),
+    "filesystem:write": ("edit",),
+    "shell:execute": ("execute",),
+    "web:fetch": ("web",),
+    "web:search": ("web",),
 }
 _GEMINI_TOOLS = {
-    "Bash": "run_shell_command",
-    "Edit": "replace",
-    "Glob": "glob",
-    "Grep": "grep_search",
-    "Read": "read_file",
-    "WebFetch": "web_fetch",
-    "WebSearch": "google_web_search",
-    "Write": "write_file",
+    "filesystem:glob": ("glob",),
+    "filesystem:grep": ("grep_search",),
+    "filesystem:read": ("read_file",),
+    "filesystem:write": ("replace", "write_file"),
+    "shell:execute": ("run_shell_command",),
+    "web:fetch": ("web_fetch",),
+    "web:search": ("google_web_search",),
+}
+_OPENCODE_TOOLS = {
+    "filesystem:glob": ("glob",),
+    "filesystem:grep": ("grep",),
+    "filesystem:read": ("read",),
+    "filesystem:write": ("edit",),
+    "shell:execute": ("bash",),
+    "web:fetch": ("webfetch",),
+    "web:search": ("websearch",),
+}
+_ANTIGRAVITY_TOOLS = {
+    "filesystem:glob": ("find_by_name",),
+    "filesystem:grep": ("grep_search",),
+    "filesystem:read": ("view_file",),
+    "filesystem:write": ("replace_file_content", "write_to_file"),
+    "shell:execute": ("run_command",),
+    "web:fetch": ("read_url_content",),
+    "web:search": ("search_web",),
 }
 
 
@@ -615,18 +651,34 @@ def _mapped_tools(
     profile: AgentProfile,
     provider: AgentProvider,
     context: AgentContext,
-    mapping: dict[str, str],
+    mapping: Mapping[str, tuple[str, ...]],
+    *,
+    mcp_style: str | None,
 ) -> tuple[str, ...] | UnsupportedAgent:
-    unknown = tuple(tool for tool in profile.tools if tool not in mapping)
-    if unknown:
-        return _unsupported(
-            profile,
-            provider,
-            context,
-            f"{provider.value} cannot preserve canonical capabilities: "
-            f"{', '.join(unknown)}",
-        )
-    return tuple(dict.fromkeys(mapping[tool] for tool in profile.tools))
+    rendered: list[str] = []
+    for capability in profile.tools:
+        native = mapping.get(capability)
+        if native is not None:
+            rendered.extend(native)
+            continue
+        mcp = _MCP_CAPABILITY.fullmatch(capability)
+        if mcp is None:
+            return _unsupported(
+                profile,
+                provider,
+                context,
+                f"{provider.value} cannot preserve canonical capability: {capability}",
+            )
+        if mcp_style is None:
+            return _unsupported(
+                profile,
+                provider,
+                context,
+                f"{provider.value} MCP tool identity is not documented for agent "
+                "allowlists",
+            )
+        rendered.append(mcp_style.format(server=mcp["server"], tool=mcp["tool"]))
+    return tuple(dict.fromkeys(rendered))
 
 
 def render_agent(
@@ -652,44 +704,41 @@ def render_agent(
             profile,
             selected_provider,
             selected_context,
-            "Cursor has no documented custom-agent file adapter",
+            "Cursor custom agents have no documented capability allowlist",
         )
     if selected_provider is AgentProvider.CODEX:
         return _unsupported(
             profile,
             selected_provider,
             selected_context,
-            "Codex agent TOML has no native capability allowlist equivalent",
-        )
-    if selected_provider is AgentProvider.OPENCODE:
-        return _unsupported(
-            profile,
-            selected_provider,
-            selected_context,
-            "OpenCode permissions cannot preserve the canonical tool allowlist",
+            "Codex custom agents have no documented capability allowlist",
         )
 
     body = _body(profile, prompt_defense)
     if selected_provider is AgentProvider.CLAUDE:
+        mapped = _mapped_tools(
+            profile,
+            selected_provider,
+            selected_context,
+            _CLAUDE_TOOLS,
+            mcp_style="mcp__{server}__{tool}",
+        )
+        if isinstance(mapped, UnsupportedAgent):
+            return mapped
         metadata: dict[str, object] = {
             "name": profile.name,
             "description": profile.description,
         }
-        if profile.tools:
-            metadata["tools"] = list(profile.tools)
-        if profile.color is not None:
-            metadata["color"] = profile.color
+        if mapped:
+            metadata["tools"] = list(mapped)
         destination = PurePosixPath(".claude", "agents", f"{profile.name}.md")
     elif selected_provider is AgentProvider.COPILOT:
-        if profile.color is not None:
-            return _unsupported(
-                profile,
-                selected_provider,
-                selected_context,
-                "Copilot agent schema cannot preserve canonical color metadata",
-            )
         mapped = _mapped_tools(
-            profile, selected_provider, selected_context, _COPILOT_TOOLS
+            profile,
+            selected_provider,
+            selected_context,
+            _COPILOT_TOOLS,
+            mcp_style="{server}/{tool}",
         )
         if isinstance(mapped, UnsupportedAgent):
             return mapped
@@ -703,20 +752,53 @@ def render_agent(
             if selected_context is AgentContext.PERSONAL
             else PurePosixPath(".github", "agents", f"{profile.name}.md")
         )
-    else:
-        assert selected_provider in {
-            AgentProvider.GEMINI,
-            AgentProvider.ANTIGRAVITY,
-        }
-        if profile.color is not None:
-            return _unsupported(
-                profile,
-                selected_provider,
-                selected_context,
-                f"{selected_provider.value} cannot preserve canonical color metadata",
-            )
+    elif selected_provider is AgentProvider.GEMINI:
         mapped = _mapped_tools(
-            profile, selected_provider, selected_context, _GEMINI_TOOLS
+            profile,
+            selected_provider,
+            selected_context,
+            _GEMINI_TOOLS,
+            mcp_style="mcp_{server}_{tool}",
+        )
+        if isinstance(mapped, UnsupportedAgent):
+            return mapped
+        metadata = {
+            "name": profile.name,
+            "description": profile.description,
+            "kind": "local",
+            "tools": list(mapped),
+        }
+        destination = PurePosixPath(".gemini", "agents", f"{profile.name}.md")
+    elif selected_provider is AgentProvider.OPENCODE:
+        mapped = _mapped_tools(
+            profile,
+            selected_provider,
+            selected_context,
+            _OPENCODE_TOOLS,
+            mcp_style="{server}_{tool}",
+        )
+        if isinstance(mapped, UnsupportedAgent):
+            return mapped
+        permissions = {"*": "deny"}
+        permissions.update(dict.fromkeys(mapped, "allow"))
+        metadata = {
+            "description": profile.description,
+            "mode": "subagent",
+            "permission": permissions,
+        }
+        destination = (
+            PurePosixPath(".config", "opencode", "agents", f"{profile.name}.md")
+            if selected_context is AgentContext.PERSONAL
+            else PurePosixPath(".opencode", "agents", f"{profile.name}.md")
+        )
+    else:
+        assert selected_provider is AgentProvider.ANTIGRAVITY
+        mapped = _mapped_tools(
+            profile,
+            selected_provider,
+            selected_context,
+            _ANTIGRAVITY_TOOLS,
+            mcp_style=None,
         )
         if isinstance(mapped, UnsupportedAgent):
             return mapped
@@ -725,9 +807,7 @@ def render_agent(
             "description": profile.description,
             "tools": list(mapped),
         }
-        if selected_provider is AgentProvider.GEMINI:
-            destination = PurePosixPath(".gemini", "agents", f"{profile.name}.md")
-        elif selected_context is AgentContext.PERSONAL:
+        if selected_context is AgentContext.PERSONAL:
             destination = PurePosixPath(
                 ".gemini", "config", "agents", profile.name, "agent.md"
             )

@@ -1,8 +1,7 @@
 ---
 name: harness-optimizer
 description: Analyze and improve the local agent harness configuration for reliability, cost, and throughput.
-tools: ["Read", "Grep", "Glob", "Bash", "Edit"]
-color: teal
+tools: ["filesystem:read", "filesystem:grep", "filesystem:glob", "shell:execute", "filesystem:write"]
 metadata:
   aihub.tags: '["activation:always","mode:review","role:harness-optimizer"]'
 ---

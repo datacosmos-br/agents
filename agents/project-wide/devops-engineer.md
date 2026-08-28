@@ -1,8 +1,7 @@
 ---
 name: devops-engineer
 description: "DevOps specialist following the infinity loop principle (Plan → Code → Build → Test → Release → Deploy → Operate → Monitor) with focus on automation, collaboration, and continuous improvement"
-tools: Read, Write, Edit, Bash, Grep, Glob
-color: orange
+tools: ["filesystem:read", "filesystem:write", "shell:execute", "filesystem:grep", "filesystem:glob"]
 metadata:
   aihub.tags: '["activation:opt-in","mode:operate","role:engineer"]'
 ---

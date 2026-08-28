@@ -1,7 +1,7 @@
 ---
 name: harmonyos-build-resolver
 description: HarmonyOS build and implementation specialist for ArkTS, ArkUI, package validation, and compilation failures.
-tools: ["Read", "Write", "Edit", "Bash", "Grep", "Glob"]
+tools: ["filesystem:read", "filesystem:write", "shell:execute", "filesystem:grep", "filesystem:glob"]
 metadata:
   aihub.tags: '["activation:detected","detect:marker:module.json5","mode:debug","role:build-resolver"]'
 ---

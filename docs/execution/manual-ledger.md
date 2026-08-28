@@ -39,6 +39,7 @@ verified on `dev`.
 | `eaeab18` | Reconciled repository governance to this manual ledger during tracker suspension. |
 | `5389b9c` | Fixed static typing and persistent managed test scratch. |
 | `d849c6f` | Connected `agentsctl audit` to the catalog-owned inventory lock check/write contract. |
+| `964b23e` | Replaced generic routers, removed the legacy lock, and regenerated the canonical inventory lock. |
 
 ## Latest validation evidence
 
@@ -65,6 +66,10 @@ verified on `dev`.
 | `make static` | 0 | Ruff, format, Pyright, and Mypy passed with zero errors or warnings. |
 | `make test` | 0 | 431 passed; managed scratch was removed. |
 | `make temp` | 2 | Global audit remains red: shell fallback is 6.24 GB and 45 blocking `/tmp` residues remain; foreign/unknown state was preserved. |
+| Installed provider audit | 0 | Claude 2.1.246, Codex 0.149.1, Cursor 2026.07.23, Gemini 0.56.0, OpenCode 1.18.23, and Antigravity 1.1.22 resolve; Copilot is absent. |
+| `make test PYTEST_ARGS=tests/test_agent_profiles.py` | 0 | 43 passed; canonical capabilities and Claude/Gemini/OpenCode adapters are covered. |
+| `make static` after agent capability cutover | 0 | Ruff, format, Pyright, and Mypy passed with zero errors or warnings. |
+| `.venv/bin/agentsctl validate` | 0 | 76 skills and the strict agent-profile schema validated. |
 
 ## Machine-local reconciliation
 
