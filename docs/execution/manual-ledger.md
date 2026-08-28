@@ -13,17 +13,30 @@ verified on `dev`.
 - Branch: `feat/agents-skill-distribution`
 - Integration branch: `dev`
 - Tracker/orchestration runtime: suspended; do not invoke it
-- Current owner unit: Plan 1 skills strict-execution preflight, explicitly
-  requested by the operator in the existing checkout, is `BLOCKED` before the
-  first skill mutation. The catalog rejects the plan's mandatory `policy:*`
-  namespace, and the required optionless public runtime/gate surface is not yet
-  implemented; both owners are outside Plan 1's write boundary.
+- Current owner unit: Plan 1 strict review of all 76 canonical skills and their
+  Waza suites, starting with the `agent-wide` batch. The operator explicitly
+  removed the `POLICY_BASE_SHA` prerequisite and requires manual-ledger updates
+  for every material execution event.
 - Concurrent out-of-scope state: Plan 2 published the central strict-policy
   baseline and has removed the repository keyring/environment-loader code,
   entrypoints, tests, and Waza consumer graph in its worktree. Existing hook
   work remains preserved and excluded from both owners' current commits.
 
 ## Operator corrections
+
+### 2026-08-28 — Plan 1 runs without a SHA marker and records every event
+
+- Prohibited prior behavior: blocking Plan 1 on `POLICY_BASE_SHA` or treating
+  its owned-path list as permission to omit the suspended-runtime ledger.
+- Required replacement: execute the six Plan 1 batches without a SHA marker,
+  update this ledger after every material state change, and ask the operator
+  before resolving a genuine ambiguity.
+- Authority: latest explicit operator instruction in the active session.
+- Scope: Plan 1 execution in the existing checkout and branch.
+- Failure prevented: invented startup dependency, untracked execution, or an
+  agent-selected resolution of an ambiguous contract.
+- Closure boundary: ledger evidence does not make a skill, batch, or phase
+  `DONE`.
 
 ### 2026-08-28 — strict plans have no named policy-baseline SHA marker
 
@@ -108,14 +121,13 @@ verified on `dev`.
 | `make help` diagnostic before Make cutover | 0 | The current Make surface still advertises legacy option-bearing runtime routes; Make/CLI implementation remains intentionally red for the later Plan 2 owner unit. |
 | `make test PYTEST_ARGS='tests/test_rules.py tests/test_rule_adapters.py tests/test_delivery_contracts.py'` | 0 | 59 rule discovery, provider rendering, and delivery-contract tests passed after the eight strict central policies were added and the keyring rule removed. |
 | `git diff --check` after central strict-policy cutover | 0 | No whitespace defects in the policy unit. |
-| `make help` before Plan 1 skill mutation | 0 | The advertised focused gates still route through legacy option-bearing/private `agentsctl` commands owned by Plan 2. |
-| `.venv/bin/agentsctl help` | 2 | `help` is rejected; the installed facade exposes legacy commands instead of the required eight optionless verbs. |
-| Catalog policy-tag namespace inspection | 0 | `src/agents_governance/catalog.py` allows no `policy` namespace, so mandatory `policy:strict-execution` would fail canonical skill validation. |
-| Plan 1 policy-tag residue search | 0 | No strict policy tag is currently present under `skills/**` or skill evals; the command explicitly converted ripgrep's expected no-match status into successful inspection evidence. |
 | `make test PYTEST_ARGS=tests/test_required_environment.py` (RED) | 2 | Collection failed because the strict process-environment owner did not yet exist. |
 | `make test PYTEST_ARGS='tests/test_required_environment.py tests/test_waza_environment.py tests/test_waza_config.py'` (GREEN) | 0 | 27 direct-environment and Waza-owner tests passed after removing loaders and keyring consumers. |
 | `make static` after repository keyring extermination | 0 | Ruff, format, Pyright, and Mypy passed with zero errors or warnings across 44 source files. |
 | Repository keyring/runtime-loader residue gate | 0 | Removed console binaries are absent and no keyring, secret-tool, environment-loader, or Waza-keyring reference remains in active source, tests, config, Make, workflows, commands, agents, or tracked hooks. |
+| `make test PYTEST_ARGS=tests/test_catalog.py` (RED) | 1 | Five failures proved the catalog rejected the new strict-policy namespace. |
+| `make test PYTEST_ARGS=tests/test_catalog.py` (GREEN) | 0 | 27 catalog tests passed; only the nine declared strict policy tags are accepted, without requiring incomplete parallel skill batches. |
+| `rg` semantic pre-edit scan for `agent-introspection-debugging` | 0 | The first reviewed bundle still authorizes retry/backoff/transient-recovery language, a `partial` result, and references three absent skill owners; correction is required in the canonical bundle/eval. |
 
 ## Machine-local reconciliation
 
@@ -133,10 +145,9 @@ the repository-scoped temp audit now passes.
 
 ## Open boundary
 
-The increment remains open. Plan 1 cannot mutate its first skill until Plan 2
-adds the central `policy:*` vocabulary to the catalog and replaces the legacy
-runtime/gate calls with the required optionless public facade. Runtime strict
-extermination beyond the removed keyring/loader graph, projection v4 activation semantics, agent/rule evals, offline/live Waza,
+The increment remains open. Runtime strict extermination beyond the removed
+keyring/loader graph, projection v4 activation semantics, agent/rule evals,
+offline/live Waza,
 the complete native gate matrix, resolution of the global temp findings,
 integration merge, independent review, merge commit, post-merge validation, and
 tracker closure are not yet evidenced.

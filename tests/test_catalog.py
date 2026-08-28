@@ -17,6 +17,7 @@ _BUDGETS = {
     "max_lines": 500,
 }
 _BASE_TAGS = (
+    "policy:strict-execution",
     "provenance:agents-owned",
     "updates:manual",
     "usage:on-demand",
@@ -216,6 +217,15 @@ def test_conditional_profiles_are_derived_from_local_tags(tmp_path: Path) -> Non
         ((_BASE_TAGS[0], _BASE_TAGS[2]), "tag-required"),
         ((_BASE_TAGS[0], "updates:manual", "usage:unknown"), "tag-value"),
         ((_BASE_TAGS[0], "custom:value", *_BASE_TAGS[1:]), "tag-namespace"),
+        (
+            (
+                "policy:compatibility",
+                "provenance:agents-owned",
+                "updates:manual",
+                "usage:on-demand",
+            ),
+            "tag-value",
+        ),
     ],
 )
 def test_tag_contract_fails_closed(

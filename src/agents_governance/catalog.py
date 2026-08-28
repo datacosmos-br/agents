@@ -36,6 +36,7 @@ _TAG_NAMESPACES = frozenset(
         "framework",
         "lens",
         "mode",
+        "policy",
         "provenance",
         "role",
         "route",
@@ -53,6 +54,19 @@ _ACTIVATION_TAGS = frozenset(
         "activation:detected",
         "activation:detected-or-opt-in",
         "activation:opt-in",
+    }
+)
+_POLICY_TAGS = frozenset(
+    {
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:no-keyring",
+        "policy:preflight-before-effects",
+        "policy:required-environment",
+        "policy:strict-execution",
+        "policy:zero-residue",
     }
 )
 _SKILL_FRONTMATTER_FIELDS = frozenset(
@@ -326,6 +340,12 @@ class Catalog:
                     CatalogFinding(
                         relative, "tag-namespace", f"unsupported tag namespace: {tag}"
                     )
+                )
+        policy_tags = tuple(tag for tag in tags if tag.startswith("policy:"))
+        for tag in policy_tags:
+            if tag not in _POLICY_TAGS:
+                findings.append(
+                    CatalogFinding(relative, "tag-value", f"unsupported tag: {tag}")
                 )
 
         usage, singleton_errors = self._singleton(tags, "usage", _USAGE_TAGS)
