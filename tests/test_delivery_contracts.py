@@ -6,6 +6,34 @@ from pathlib import Path
 import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
+RUNTIME_VERBS = {
+    "help",
+    "doctor",
+    "check",
+    "sync",
+    "evaluate",
+    "secure",
+    "clean",
+    "live",
+}
+REQUIRED_MAKE_TARGETS = {
+    "help",
+    "docs",
+    "audit",
+    "check",
+    "static",
+    "shell",
+    "build",
+    "test",
+    "spec",
+    "coverage",
+    "providers",
+    "projection",
+    "ci",
+    "security",
+    "temp",
+    "validate-live",
+}
 
 
 def test_eval_workflow_covers_integration_push_and_pull_requests() -> None:
@@ -53,3 +81,20 @@ def test_removed_mcp_target_is_not_advertised() -> None:
         text = path.read_text(encoding="utf-8")
         assert "make mcp" not in text
         assert "MCP drift" not in text
+
+
+def test_make_is_development_support_for_the_optionless_runtime() -> None:
+    makefile = (ROOT / "Makefile").read_text(encoding="utf-8")
+    targets = set(re.findall(r"^([a-z][a-z-]*):", makefile, flags=re.MULTILINE))
+    invocations = re.findall(
+        r"^\s*@\$\(AGENTSCTL\)\s+([^\s]+)\s*$", makefile, re.MULTILINE
+    )
+
+    assert REQUIRED_MAKE_TARGETS <= targets
+    assert invocations
+    assert set(invocations) <= RUNTIME_VERBS
+    assert all("--" not in invocation for invocation in invocations)
+    assert "agents-security" not in makefile
+    assert "config/waza.mk" not in makefile
+    assert "?=" not in makefile
+    assert not (ROOT / "config" / "waza.mk").exists()

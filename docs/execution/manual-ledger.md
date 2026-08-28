@@ -24,6 +24,21 @@ verified on `dev`.
 
 ## Operator corrections
 
+### 2026-08-28 — Plan 1 accepts CLI cutovers and keeps editing skills
+
+- Prohibited prior behavior: stopping semantic skill review because a concurrent
+  CLI/Make cutover removed a formerly focused command, or invoking a private CLI
+  route to recreate that gate.
+- Required replacement: Plan 1 edits only canonical skill bundles and their
+  evals, never calls `agentsctl` directly, accepts the current optionless CLI,
+  and uses the Make targets advertised by `make help` at the batch boundary.
+- Authority: latest explicit operator instruction and approved revised plan.
+- Scope: all six Plan 1 batches in this checkout.
+- Failure prevented: cross-boundary runtime work, restoration of legacy CLI
+  grammar, or abandonment of the 74 unreviewed skills.
+- Closure boundary: a batch still requires green canonical Make gates before
+  its WIP commit and push.
+
 ### 2026-08-28 — Plan 1 runs without a SHA marker and records every event
 
 - Prohibited prior behavior: blocking Plan 1 on `POLICY_BASE_SHA` or treating
@@ -82,6 +97,7 @@ verified on `dev`.
 | `322d695` | Added the eight central strict-execution rules and removed the positive keyring rule. |
 | `2156471` | Exterminated repository keyring/loaders and established required process-environment ownership. |
 | `ffc59d6` | Restricted catalog policy tags to the nine declared strict-execution policies. |
+| `a0fe936` | Replaced the legacy/nested CLIs with the sole eight-verb optionless `agentsctl` facade. |
 
 ## Latest validation evidence
 
@@ -143,6 +159,13 @@ verified on `dev`.
 | `make static` after single-CLI cutover | 0 | Ruff, format, Pyright, and Mypy passed with zero errors or warnings across 45 source files. |
 | `make test PYTEST_ARGS='tests/test_cli.py tests/test_security.py tests/test_agent_profiles.py tests/test_commands.py tests/test_required_environment.py'` | 0 | 108 focused tests passed; the old CLI surface and the parallel `agents-security` entry point/tests are absent. |
 | `git diff --check` after single-CLI cutover | 0 | No whitespace defects in the Plan 2 CLI/runtime/security unit or preserved concurrent work. |
+| `make help` after Make cutover | 0 | Exposed the required docs, audit, check, static, shell, build, test, spec, coverage, providers, projection, ci, security, temp, and validate-live development gates without selectors. |
+| `make docs` after Make cutover | 0 | Four delivery-contract tests passed, including the regression that permits only optionless public runtime verbs in Make. |
+| `make static` after Make cutover | 0 | Ruff, format, Pyright, and Mypy passed with zero errors or warnings across 45 source files. |
+| Active Make/config/CLI residue search | 1 | No option-bearing `agentsctl`, removed nested verb, `agents-security`, `config/waza.mk`, or Waza shell-wrapper invocation remains in Make, config, source, packaging, or workflows. |
+| Plan 1 critical completeness audit | 0 | Only 2/76 skills had `policy:strict-execution`: `agent-wide` 2/26, `project-wide` 0/22, `technology` 0/8, `framework` 0/3, `tool` 0/16, and `domain` 0/1; all 76 eval suites expose the three required task files. |
+| `make help` after optionless CLI cutover | 0 | The canonical development surface now exposes global `check` and `spec`; Plan 1 will not call `agentsctl` directly or recreate removed focused CLI syntax. |
+| Plan 1 repair of the first two `agent-wide` slugs | — | `agent-introspection-debugging` now references atomic effects and forbids preventive follow-up before current resolution; `anti-phase-skip` fail-closed now requires the first missing prerequisite, zero transition effects, and manual-ledger tracking during suspension. |
 
 ## Machine-local reconciliation
 
