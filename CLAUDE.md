@@ -2,7 +2,7 @@
 # AI Hub Inviolable Law — Strict Prelude
 
 1. Truth: never claim done/green/resolved without command, exit code, decisive output.
-2. Root cause: no bypass, fallback, shim, suppression, stub, hardcode, or old+new coexistence.
+2. Root cause: exterminate bypass, fallback, shim, suppression, stub, hardcode, catch-based normalization, retry, compatibility, partial execution, keyring, or old+new coexistence.
 3. Traceability first: use the canonical tracker when available. While its runtime is suspended, update `docs/execution/manual-ledger.md` before file writes or multi-step work; preserve evidence in the ledger and Git/PR/CI, and do not declare the phase DONE.
 4. Research first: inspect code, docs, canonical sources before acting; never invent APIs, flags, facts, or behavior.
 5. Owner first: use the project's declared facades/primitives; do not reimplement them locally.
@@ -23,8 +23,8 @@ Project-specific context for AI agents. The configured repository artifacts belo
 
 - **Inviolable law:** [`UNIVERSAL_CORE.md`](https://github.com/datacosmos-br/ai-hub/blob/dev/UNIVERSAL_CORE.md)
 - **Project execution law:** [`AGENTS.md`](https://github.com/datacosmos-br/ai-hub/blob/dev/AGENTS.md)
-- **Agent reading order:** `docs/guides/agent-guide.md`
-- **Governance controls:** `docs/GOVERNANCE.md`
+- **Agent reading order:** `docs/execution/master-v7/README.md`
+- **Governance controls:** `UNIVERSAL_CORE.md`, `AGENTS.md`, and `rules/`
 
 ## Developer Profile
 
@@ -81,7 +81,29 @@ When working inside a repository, load that repository's `AGENTS.md` and `CLAUDE
 - New workspace placement is defined declaratively by the Gas City city, rig, and Pack V2 configuration.
 - While runtime is suspended, creating or registering any workspace is prohibited.
 - Raw clones, manual worktrees, symlinks, cross-repository references, and loose checkouts are prohibited for project work.
-- `/tmp` is not a workspace, clone staging area, backup destination, build cache, or report store. Storage and scratch follow `rules/storage.md`; run `make temp` to audit structural violations.
+- `/tmp` is not a workspace, clone staging area, backup destination, build cache, or report store. Storage and scratch follow `rules/storage.md`; `agentsctl clean` owns runtime cleanup and validation.
+
+## Strict runtime protocol
+
+- `agentsctl` is the only runtime facade. Its complete public surface is
+  `help`, `doctor`, `check`, `sync`, `evaluate`, `secure`, `clean`, and `live`.
+- Every verb is optionless and accepts no positional arguments, modes, aliases,
+  or compatibility syntax. Make remains development support and gate
+  composition; it does not call private runtime functions.
+- Before the first effect, load and validate every input and prerequisite.
+  Missing, empty, conflicting, unexpanded, or invalid required environment
+  variables raise immediately.
+- The first exception ends execution with its raw traceback and causal chain.
+  CLI and orchestrators do not catch workflow failures. Validators stop at the
+  first defect and never aggregate independent errors.
+- Errors never become findings, warnings, skips, neutral values, empty results,
+  retries, fallbacks, alternate providers, operational defaults,
+  compatibility, partial execution, or manually chosen exit codes.
+- Only cleanup and rollback may catch. They attach any secondary failure and
+  re-raise the original cause. Child nonzero exit, timeout, signal, or
+  incomplete publication propagates unchanged.
+- Keyring code and integration are prohibited. Required credentials come only
+  from the current process environment and fail immediately when invalid.
 
 ## Issue Tracker
 

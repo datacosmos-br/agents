@@ -22,9 +22,10 @@ produce a false green:
 - agents/rules: prove delegation and mandatory-rule behavior;
 - projection: apply to isolated personal/project destinations and inspect the
   provider's live loader where available;
-- temp: run a real child tree and interrupt it;
-- credentials: login/interative shells, direct auto-exec, Mise, GitHub API, and
-  proxy without revealing values;
+- temp/storage: use `agentsctl check` and `agentsctl clean` against a real child
+  tree and interrupt it;
+- credentials: execute from Bash, Zsh, Fish, and a direct subprocess using only
+  the current process environment, without revealing values;
 - live model: exact `aihub-primary`, material grader, and explicit error paths.
 
 A runtime failure blocks the phase. Unit tests cannot override it.
@@ -50,12 +51,33 @@ The following never prove success:
 For a 300-second executor, behavior duration remains below it at 240 seconds.
 Authentication, HTTP 402/quota, executor, timeout, and grader errors stay red.
 
-## Native gate order
+## Runtime and development gate order
 
-Discover the actual Make surface with `make help`, then run the owner-approved
-equivalents of:
+The only runtime surface is:
 
 ```text
+agentsctl help
+agentsctl doctor
+agentsctl check
+agentsctl sync
+agentsctl evaluate
+agentsctl secure
+agentsctl clean
+agentsctl live
+```
+
+Every line accepts no additional token. Each verb validates its full contract
+before effects and aborts on its first exception. `agentsctl live` requires
+exact `aihub-primary` and a non-empty valid `CLIPROXY_API_KEY` in the current
+process environment; it never reads a credential store or selects another
+model.
+
+Make remains development support and gate composition. Its required surface is
+discovered with `make help` and covers:
+
+```text
+make docs
+make audit
 make check
 make static
 make shell
@@ -63,16 +85,19 @@ make build
 make test
 make spec
 make coverage
+make providers
+make projection
 make ci
 make security
-make sync
 make temp
 make validate-live
 ```
 
-Do not invent a missing target or mark it skipped. Correct Make/help/docs at the
-owner when the documented surface differs. Formatting or generation gates run
-in check mode first; a required rewrite is reviewed as an explicit source change.
+Make targets that exercise runtime call only public `agentsctl` verbs. They do
+not import or invoke private runtime functions. Do not invent a missing target
+or omit a required target. Correct Make/help/docs at the owner when the
+documented surface differs. Formatting or generation gates run in check mode
+first; a required rewrite is reviewed as an explicit source change.
 
 ## Focused acceptance matrix
 
@@ -85,7 +110,7 @@ in check mode first; a required rewrite is reviewed as an explicit source change
 | Agents/rules | Distribution paths and tags agree; universal rules compose once; no model declaration. |
 | Projection | Physical copies; ownership-safe cleanup; provider-native syntax; second apply changes nothing. |
 | Temp/storage | Concurrent isolation; owned group stops; live/dirty/database/symlink/unknown fixtures survive. |
-| Credentials | Two physical sources; aliases resolve in memory; no 401 and no secret output. |
+| Credentials | Process environment only; required values fail immediately; no keyring code, 401, or secret output. |
 | Security | Deterministic tracked manifest inventory; every applicable scanner exits zero. |
 | CI | PRs to `dev` and all governance source paths execute required native stages. |
 | Live Waza | Exact `aihub-primary`; all catalog scenarios material; any service/model failure is red. |
@@ -105,6 +130,9 @@ generated outputs, and supported destinations for:
 - ECC/SkillShare synchronization or current external-import instructions;
 - fallback, shim, dual-read/write, alternate model, skip, suppression, and old
   `~/.agents` source lookups after cutover.
+- exception catches outside cleanup/rollback, aggregate validators, manual exit
+  translation, retry loops, operational defaults, partial publication, and any
+  keyring source or consumer.
 
 Any active opposite blocks integration.
 

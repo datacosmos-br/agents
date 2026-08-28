@@ -33,6 +33,8 @@ must not convert that source into a canonical skill.
 
 ## Command contract
 
+- Canonical provider commands under `commands/` are authored prompt/workflow
+  artifacts. They are distinct from the deterministic `agentsctl` runtime CLI.
 - A command runs only after explicit invocation by its public name.
 - Its picker description is short; its body may contain a complete workflow,
   argument contract, examples, validations, and output schema.
@@ -43,6 +45,20 @@ must not convert that source into a canonical skill.
   before effects.
 - Commands remain flat at the canonical source. Namespaces are provider
   projection details only when they preserve the approved public slug.
+
+## Runtime CLI contract
+
+`agentsctl` is the sole deterministic runtime entry point. Its complete public
+grammar is exactly one required verb from `help`, `doctor`, `check`, `sync`,
+`evaluate`, `secure`, `clean`, or `live`. No verb accepts an option, positional
+argument, mode, format selector, compatibility alias, or private function path.
+
+Each verb loads its typed SSOT and validates every required environment value,
+source, destination, provider capability, child-process prerequisite, and
+publication condition before its first effect. The first exception escapes with
+raw traceback and causal chain. The CLI and its orchestrators do not catch or
+normalize workflow failures. Make may compose development gates by calling this
+public facade; it cannot duplicate runtime behavior.
 
 ## Rule and agent contracts
 
@@ -67,7 +83,7 @@ declare only provider capabilities, output roots, schemas, and policy budgets.
 Generated indexes and locks are disposable outputs. `skills.lock.json` is the
 sole skill inventory lock; it contains source digests, rejects manual edits, and
 converges on the second unchanged generation. Generated outputs never become
-fallback discovery sources.
+discovery sources.
 
 ## Type correction rule
 

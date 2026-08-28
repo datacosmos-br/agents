@@ -17,6 +17,19 @@ No phase may begin while its predecessor has an unresolved contract, red scoped
 runtime, red required gate, or unintegrated owner change. External import is not
 part of this graph's implementation increment.
 
+## Current strict-cutover order
+
+The remaining work is split into two independent plans with disjoint write
+scopes. Plan 1 owns only `skills/**` and skill evals. Plan 2 owns documentation,
+central rules, runtime source, CLI, non-skill tests/evals, Make, CI, projection,
+agents, and commands. Neither plan edits the other's files.
+
+Plan 2 records both plans first, reconciles all active documentation second, and
+lands the strict central-policy baseline third. Plan 1 starts independently
+within its declared write boundary. Plan 2 continues the runtime cutover; the
+two result SHAs meet only in a reviewed integration commit after both plans have
+passed their own gates.
+
 ## Phase 0 — Documentation authority
 
 1. Replace master v6 with this single master v7 package.
@@ -93,8 +106,9 @@ Resolve the accepted review defects at their owners:
 
 1. CI runs for PRs targeting `dev` and for code, tests, Make, config, governance,
    workflow, and generator changes.
-2. `agentsctl temp run` owns a process group and terminates that group on
-   SIGINT/SIGTERM without touching external processes.
+2. The optionless `agentsctl check` runtime owns each child process group and
+   propagates nonzero exit, timeout, or signal unchanged while terminating only
+   its attributable group.
 3. Skill and command policies use compatible BPE token counting, with separate
    budgets.
 4. Normalization refuses every artifact whose update policy is `forbidden`.
@@ -106,11 +120,15 @@ Complete the related root contracts:
 
 - per-run scratch plus exclusive `TMPDIR`, `GOTMPDIR`, and `GOCACHE`;
 - shared `GOMODCACHE` and XDG reusable caches/state;
-- GC dry-run by default and fail-closed preservation rules;
+- `agentsctl clean` validates the complete removal set before its first effect
+  and either publishes the complete result or raises;
 - Bash, Zsh, Fish, and subprocess equivalence;
-- two canonical physical secrets with memory-only aliases;
+- direct process-environment credentials with immediate missing, empty,
+  conflicting, unexpanded, or invalid-value failure;
 - deterministic manifest inventory and all applicable security scanners;
-- no skip, suppression, fallback, hardcode, omitted project, or accepted risk.
+- total keyring code and integration removal;
+- no catch-based normalization, retry, fallback, hardcode, omitted project,
+  operational default, compatibility, partial execution, or accepted risk.
 
 Exit: representative runtime precedes and passes the complete native gates;
 every accepted defect has a regression test and global same-class search.

@@ -70,9 +70,11 @@ ownership conflicts.
 
 ### A4 — Runtime foundations
 
-Fix all accepted review findings, complete storage/keyring/security contracts,
-and validate real CLI/process/shell/projection behavior before complete gates.
-Do not use a live model to make offline/unit/integration gates pass.
+Fix all accepted review defects, exterminate keyring and its complete consumer
+graph, require credentials directly from the process environment, and complete
+storage/security contracts. Validate the optionless fail-loud
+CLI/process/shell/projection runtime before complete gates. Do not use a live
+model to make offline/unit/integration gates pass.
 
 ### A5 — Projection, model, and landing
 
@@ -83,8 +85,9 @@ approved future increment and is prohibited here.
 
 ## Required repository gates
 
-Discover the current surface with `make help`. The complete accepted gate set is
-listed in [Validation and landing](../06-validation-and-landing.md). At minimum,
+The complete accepted gate set is listed in
+[Validation and landing](../06-validation-and-landing.md). Runtime evidence uses
+the public `agentsctl` verbs; Make composes development gates only. At minimum,
 the final evidence covers:
 
 - document links and contradictions;
@@ -98,7 +101,7 @@ the final evidence covers:
 - CI trigger/path coverage;
 - exact-model live Waza after offline gates;
 - post-merge runtime on `dev`;
-- old-root absence and consumer health after cutover.
+- absence of current-increment superseded owners and consumer health.
 
 ## Session boundary
 

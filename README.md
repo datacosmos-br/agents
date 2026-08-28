@@ -14,7 +14,8 @@ no legacy package, command, rule, projection, or synchronization surface remains
 - `config/skills.json`: skill BPE and line-budget policy; recursive paths and
   frontmatter own classification and distribution.
 - `config/projections.json`: personal destinations and project-relative copy paths.
-- `src/agents_governance/`: validation, normalization, discovery, and copying.
+- `src/agents_governance/`: strict validation, discovery, orchestration, and
+  provider-native projection behind the sole `agentsctl` runtime facade.
 - `.waza.yaml` and `evals/`: Waza gates and behavioral evaluation.
 
 When an explicitly authorized projection is applied, tool homes and project
@@ -57,28 +58,36 @@ state while Gas City, Gas Town, Beads, and Dolt are suspended. It records work
 but cannot satisfy tracker closure.
 
 Storage placement and bounded scratch are owned by [`rules/storage.md`](rules/storage.md).
-Managed build/test commands use unique repository-local scratch; shells retain
-only a small state-owned fallback. Every projection remains an independent
+Every workflow validates its entire input, environment, child-process, and
+publication contract before its first effect. A missing, empty, conflicting,
+unexpanded, or invalid required variable raises immediately. There is no
+fallback scratch, credential store, compatibility path, retry, partial
+execution, or alternate provider. Every projection remains an independent
 physical copy.
 
-## Canonical gates
+## Runtime CLI
 
 ```bash
-make audit
-make check
-make test
-make temp
-make discover-projects PROJECT_ROOTS="<repo-a> <repo-b>"
-make sync SCOPE=personal
-make sync SCOPE=projects PROJECT_ROOTS="<repo-a> <repo-b>"
-make spec
-make gate
+agentsctl help
+agentsctl doctor
+agentsctl check
+agentsctl sync
+agentsctl evaluate
+agentsctl secure
+agentsctl clean
+agentsctl live
 ```
 
-`APPLY=Y` is required for mutating audit, projection, normalization, description,
-or cleanup targets. Project discovery and projection accept only explicit,
-repeatable `--project-root` values; the global `--root` option selects the
-governance source and is never a project selector. A phase is `DONE` only after
-its approved PR is merged into the configured integration branch and its
-canonical tracker item is closed with evidence. Tracker runtime is suspended,
-so no phase can currently be called `DONE`.
+These are optionless single verbs. They accept no flags, positional arguments,
+mode selectors, JSON switches, or compatibility aliases. Each verb loads and
+validates every prerequisite it needs before its first effect. The first
+exception terminates execution with its raw traceback and causal chain. The CLI
+never catches a workflow failure or converts it into a finding, warning, skip,
+neutral value, empty result, or manually selected exit code.
+
+Make remains the repository's development and gate-composition surface. It does
+not implement a second runtime API and never invokes private Python functions
+directly. A phase is `DONE` only after its approved PR is merged into the
+configured integration branch and its canonical tracker item is closed with
+evidence. Tracker runtime is suspended, so no phase can currently be called
+`DONE`.

@@ -2,7 +2,7 @@
 # AI Hub Inviolable Law — Strict Prelude
 
 1. Truth: never claim done/green/resolved without command, exit code, decisive output.
-2. Root cause: no bypass, fallback, shim, suppression, stub, hardcode, or old+new coexistence.
+2. Root cause: exterminate bypass, fallback, shim, suppression, stub, hardcode, catch-based normalization, retry, compatibility, partial execution, keyring, or old+new coexistence.
 3. Traceability first: use the canonical tracker when available. While its runtime is suspended, update `docs/execution/manual-ledger.md` before file writes or multi-step work; preserve evidence in the ledger and Git/PR/CI, and do not declare the phase DONE.
 4. Research first: inspect code, docs, canonical sources before acting; never invent APIs, flags, facts, or behavior.
 5. Owner first: use the project's declared facades/primitives; do not reimplement them locally.
@@ -24,12 +24,11 @@
 
 ## Navigation Map
 
-- **Getting started:** `docs/guides/getting-started.md`
-- **Architecture:** `docs/guides/architecture.md`
-- **Configuration:** `docs/guides/configuration.md`
-- **Operations:** `docs/operations.md`
-- **Agent guide:** `docs/guides/agent-guide.md`
+- **Repository overview:** `README.md`
+- **Active execution package:** `docs/execution/master-v7/README.md`
+- **Manual execution ledger:** `docs/execution/manual-ledger.md`
 - **Decision records:** `docs/adr/README.md`
+- **Security evidence:** `docs/security/security-triage.md`
 - **Skills index:** `skills/README.md`
 
 <!-- AIHUB-AGENTS-SCOPE-LOCAL-BEGIN -->
@@ -44,7 +43,29 @@ Gas City configuration owns orchestration identity and dispatch; the repository 
 - New workspace placement is defined declaratively by the Gas City city, rig, and Pack V2 configuration.
 - While runtime is suspended, creating or registering any workspace is prohibited.
 - Raw clones, manual worktrees, symlinks, cross-repository references, and loose checkouts are prohibited for project work.
-- `/tmp` is not a workspace, clone staging area, backup destination, build cache, or report store. Storage and scratch follow `rules/storage.md`; run `make temp` to audit structural violations.
+- `/tmp` is not a workspace, clone staging area, backup destination, build cache, or report store. Storage and scratch follow `rules/storage.md`; `agentsctl clean` owns runtime cleanup and validation.
+
+## Strict runtime protocol
+
+- `agentsctl` is the only runtime facade. Its complete public surface is
+  `help`, `doctor`, `check`, `sync`, `evaluate`, `secure`, `clean`, and `live`.
+- Every verb is optionless and accepts no positional arguments, modes, aliases,
+  or compatibility syntax. Make remains development support and gate
+  composition; it does not call private runtime functions.
+- Before the first effect, load and validate every input and prerequisite.
+  Missing, empty, conflicting, unexpanded, or invalid required environment
+  variables raise immediately.
+- The first exception ends execution with its raw traceback and causal chain.
+  CLI and orchestrators do not catch workflow failures. Validators stop at the
+  first defect and never aggregate independent errors.
+- Errors never become findings, warnings, skips, neutral values, empty results,
+  retries, fallbacks, alternate providers, operational defaults,
+  compatibility, partial execution, or manually chosen exit codes.
+- Only cleanup and rollback may catch. They attach any secondary failure and
+  re-raise the original cause. Child nonzero exit, timeout, signal, or
+  incomplete publication propagates unchanged.
+- Keyring code and integration are prohibited. Required credentials come only
+  from the current process environment and fail immediately when invalid.
 
 ## Sprint closure
 
@@ -60,7 +81,7 @@ Universal law owns closure. Local delta only:
 - Stop landing at `dev`; promote to `main` only when the operator explicitly asks.
 - Finish PRs, tracker items, worktrees, branches, and CI/lint/test failures through the integration lane.
 - During multi-lane work, continuously fast-forward absorb `origin/dev` so landed features stay integrated.
-- Never dismiss errors or warnings as pre-existing or cosmetic; always fix at root cause wherever they live before declaring done.
+- Never dismiss any violation as pre-existing or cosmetic; always fix it at its root cause before declaring done.
 - Leave no optional work behind: absorb, correct, and validate through the canonical execution path before closing a tracker item.
 - Fix generated config at config/SSOT or overlays, never by hand-editing generated projections.
 - Regenerate generated config via the project generator; doctor/inspect/compare generated config before restarting and watching logs.
@@ -77,7 +98,7 @@ Universal law owns closure. Local delta only:
 - ai-hub Beads/Dolt is the shared user database on the primary checkout (`config.AiHub.paths.ai_hub`), not a per-worktree private DB.
 - Related multi-repo set for shared doc/policy work is declared in configuration.
 - Gas City configuration owns orchestration identity; ai-hub owns living runtime registration for tools, CRG, LSP/observer state, and maintenance daemons.
-- Rules, managed hooks, and product hook inventory are SSOT under `config/`; foreign agent hooks are warnings like foreign MCPs; managed product hooks stay disabled at the product and route through one socket executor per event type.
+- Rules, managed hooks, and product hook inventory are SSOT under `config/`; an unattributable foreign agent hook or MCP is a blocking ownership violation; managed product hooks stay disabled at the product and route through one socket executor per event type.
 - Every declared workspace must reconstruct dependencies locally; cross-repository dependency links are prohibited.
 - CI runs the complete `make ci` owner. `check`, `static`, and `test` remain
   separate blocking stages; setting `CI=Y` never authorizes omitting them.
@@ -137,7 +158,8 @@ This protocol applies when ending a Beads implementation workflow. It is subordi
    git status
 
    # Team-maintainer opt-in only, unless current instructions forbid it:
-   git pull --rebase
+   git fetch origin
+   git merge --no-ff origin/<integration>
    git push
    git status
    ```

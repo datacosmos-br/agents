@@ -1,5 +1,9 @@
 # Command contract
 
+This contract governs provider-authored commands under `commands/`. It does not
+expand the deterministic runtime CLI: `agentsctl` remains limited to its eight
+optionless single verbs and never accepts provider-command arguments.
+
 ## Canonical layout
 
 ```text
@@ -96,7 +100,7 @@ reported unless its ownership manifest proves this repository created it.
 - A command that invokes external tools verifies availability and auth before
   mutation; missing auth remains red.
 - A command reports causal runtime failure. It never returns success because it
-  produced non-empty text or because a step was skipped.
+  produced non-empty text or because a required step did not run.
 
 ## Command evaluation
 

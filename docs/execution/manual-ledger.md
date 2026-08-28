@@ -13,9 +13,25 @@ verified on `dev`.
 - Branch: `feat/agents-skill-distribution`
 - Integration branch: `dev`
 - Tracker/orchestration runtime: suspended; do not invoke it
-- Current owner unit: runtime strict-extermination plan 2; the parallel skills plan is independently owned and outside this lane
+- Current owner unit: Plan 2 documentation authority reconciled in the worktree;
+  central strict-policy baseline is next. The parallel skills plan is
+  independently owned and outside this lane.
 
 ## Operator corrections
+
+### 2026-08-28 — Plan 1 starts without `POLICY_BASE_SHA`
+
+- Prohibited prior behavior: treating an operator-supplied `POLICY_BASE_SHA` as
+  a prerequisite for starting the skills strict-execution plan.
+- Required replacement: Plan 1 starts independently within its declared write
+  boundary and does not wait for an operator-supplied policy baseline SHA.
+- Authority: latest operator instruction in the active session.
+- Scope: Plan 1 and active documentation that declares its startup dependency;
+  this correction does not change Plan 2's runtime implementation scope.
+- Failure prevented: blocking the 76-skill review on a prerequisite the
+  operator did not request.
+- Closure boundary: this correction changes plan authority only; it does not
+  declare a skill, batch, or phase complete.
 
 ### 2026-08-28 — manual tracking during suspension
 
@@ -76,6 +92,9 @@ verified on `dev`.
 | Projection v3 residue search | 0 | No v3 target keys, dual-read helpers, manifest-v2 wording, or Copilot-to-Claude adapter identity remain under `src`, `tests`, or `config`. |
 | `make static` after projection v4 consumer cutover | 0 | Ruff, format, Pyright, and Mypy passed with zero errors or warnings across 45 source files. |
 | Plan-first boundary inspection | 0 | Clean worktree at `a4fc1fe`; the first mutation created only the two standalone strict-execution plans. |
+| `git diff --check` after Plan 2 documentation reconciliation | 0 | Root instructions, README, master v7, ADRs, and security evidence contain no whitespace defects. |
+| Legacy CLI contradiction search outside historical ledger | 0 | No active documentation contains nested `agentsctl` runtime commands, CLI options, `APPLY=Y`, `PROJECT_ROOTS`, or `SCOPE` selectors. |
+| `make help` diagnostic before Make cutover | 0 | The current Make surface still advertises legacy option-bearing runtime routes; Make/CLI implementation remains intentionally red for the later Plan 2 owner unit. |
 
 ## Machine-local reconciliation
 
@@ -93,7 +112,7 @@ the repository-scoped temp audit now passes.
 
 ## Open boundary
 
-The increment remains open. Documentation and central-policy authority, runtime strict extermination, projection v4 activation semantics, agent/rule evals, offline/live Waza,
+The increment remains open. Central-policy authority, runtime strict extermination, projection v4 activation semantics, agent/rule evals, offline/live Waza,
 the complete native gate matrix, resolution of the global temp findings,
 integration merge, independent review, merge commit, post-merge validation, and
 tracker closure are not yet evidenced.

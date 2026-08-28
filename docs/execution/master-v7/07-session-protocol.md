@@ -9,7 +9,8 @@
    capabilities, dirty state, and active processes without invoking suspended
    runtimes or Git unless separately authorized.
 4. Identify the current phase and verify every predecessor exit condition.
-5. Run `make help` before selecting native targets.
+5. Use only the documented optionless `agentsctl` runtime verbs; run `make help`
+   only to discover development and gate-composition targets.
 6. Build one search-first evidence packet: canonical owner, affected consumers,
    runtime surface, current tests, provider formats, and native gates.
 7. Update the manual execution ledger with the first bounded owner change and
@@ -24,7 +25,7 @@ For each cohesive owner change:
 3. check SOLID boundaries where architecture changes;
 4. implement through the owner and simplify inline;
 5. use DRY only for proven semantic duplication, then recheck YAGNI/SSOT/SOLID;
-6. run representative runtime;
+6. run the representative public `agentsctl` verb with no options;
 7. run focused tests and contradiction search;
 8. run broader gates required at the phase boundary.
 
@@ -58,8 +59,9 @@ unresolved authority or external condition
 next safe action
 ```
 
-Do not propose an alternate tracker, model, server, provider type, fallback,
-suppression, fake projection, or destructive cleanup.
+Do not propose an alternate tracker, model, server, provider type, retry,
+fallback, suppression, compatibility route, fake projection, keyring, error
+normalization, or destructive cleanup.
 
 ## Phase handoff
 

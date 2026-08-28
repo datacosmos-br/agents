@@ -27,6 +27,13 @@ formats; reading a source does not authorize importing its artifacts.
 - Projections are independent physical copies in provider-native formats. No
   symlink, cross-repository content reference, path dependency, or fallback
   owner is allowed.
+- Agent runtime has one public facade: the optionless `agentsctl` verbs `help`,
+  `doctor`, `check`, `sync`, `evaluate`, `secure`, `clean`, and `live`. Make is
+  development support and gate composition, never a second runtime API.
+- All workflows use strict fail-loud execution. The first exception and causal
+  chain escape unchanged; complete preflight precedes effects; validators stop
+  at the first defect; keyring, retries, fallbacks, operational defaults,
+  compatibility, partial execution, and error normalization are prohibited.
 - No import starts before the existing inventory has completed the migration,
   projection, evaluation, review, and landing cycle.
 
@@ -73,13 +80,16 @@ be smuggled into this checkout-only increment.
 6. [Execution phases](05-execution-phases.md)
 7. [Validation and landing](06-validation-and-landing.md)
 8. [Session protocol](07-session-protocol.md)
-9. [Agents repository runbook](repositories/agents.md)
+9. [Plan 1: skills strict execution](08-skills-strict-execution-plan.md)
+10. [Plan 2: runtime extermination](09-runtime-extermination-plan.md)
+11. [Agents repository runbook](repositories/agents.md)
 
 Architecture decisions:
 
 - [ADR-0001: Preserve artifact-type boundaries](../../adr/ADR-0001-artifact-type-boundaries.md)
 - [ADR-0002: Derive skill distribution from paths and tags](../../adr/ADR-0002-skill-distribution-paths-and-tags.md)
 - [ADR-0003: Render provider-native physical projections](../../adr/ADR-0003-provider-native-physical-projections.md)
+- [ADR-0004: Enforce one optionless fail-loud runtime CLI](../../adr/ADR-0004-optionless-fail-loud-cli.md)
 
 ## Status vocabulary
 

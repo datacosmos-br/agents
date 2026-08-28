@@ -146,8 +146,10 @@ Canonical references:
 | `commands` | Only `route:agent` and provider support | Only `route:project` and provider support |
 | `rules` | Provider-composed personal baseline | Provider-composed project baseline |
 
-An unsupported combination is reported as `UNSUPPORTED`, never silently
-skipped and never rendered as a different artifact type.
+An unsupported combination is a declarative non-target in the capability
+matrix. If configuration selects it, full preflight raises before any write; it
+is never omitted from an authorized request or rendered as another artifact
+type.
 
 ## Physical projection law
 
@@ -155,9 +157,8 @@ skipped and never rendered as a different artifact type.
 - Destinations contain independent physical files. No symlink, bind mount,
   cross-repository include, absolute source path, or runtime source lookup is
   allowed.
-- Copy uses reflink when supported and falls back only to a normal physical copy
-  on the same authorized destination contract; semantic content remains
-  identical.
+- Configuration selects exactly one supported physical copy strategy before
+  effects. Failure of that strategy raises; no second strategy is attempted.
 - Every managed output records source type, slug, digest, adapter version, and
   destination in an ownership manifest generated from discovery.
 - Apply removes a stale output only when the prior manifest proves ownership.

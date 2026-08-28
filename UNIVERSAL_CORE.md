@@ -22,6 +22,23 @@ Read the same typed SSOT production reads, or round-trip generator↔consumer.
 A test that breaks on a legitimate config change is a **test defect**.
 Goldens = structure only. Literals only for immutable external protocols.
 
+## P0 — Strict execution protocol
+
+Every project applies the strict execution policies carried by the canonical
+skills and rules: fail loud, no fallback, preflight before effects, required
+environment, atomic effects, causal subprocess propagation, no keyring, and
+zero residue. Exterminate every opposing implementation and instruction; do not
+grandfather existing violations.
+
+The first exception ends the workflow with its raw traceback and chained cause.
+CLI and orchestration code must not catch it. Validators stop at the first
+defect. Errors never become findings, warnings, skips, neutral results, empty
+collections, hand-selected exit codes, retries, alternate providers, operational
+defaults, compatibility behavior, or partial execution. The only permitted
+catch is cleanup or rollback; it must attach any secondary failure and re-raise
+the original cause. A child nonzero exit, timeout, signal, or incomplete
+publication propagates without normalization.
+
 ## Laws
 
 1. **Truth with evidence.** Claims need command, cwd, exit, decisive output, scope.
@@ -83,8 +100,10 @@ Goldens = structure only. Literals only for immutable external protocols.
     inverts the SSOT and encodes a fabricated contract.
 16. **Config/generators/managed binaries.** config/settings/templates are SSOT;
     managed install paths own binaries. No product-local duplicate routes.
-17. **Canonical command surface.** Build/check/test/gen/release/deploy only via
-    project Make or documented CLI. See `make-check`. Broken verb → fix at owner.
+17. **Canonical command surface.** Agent runtime functions execute only through
+    the project's single optionless CLI facade. Project Make remains development
+    support and gate composition, invokes that public facade when runtime is
+    needed, and never becomes a second runtime API. Broken verb → fix at owner.
 18. **Serialized locks.** Honor project locks (package managers, Helm, etc.); no fan-out.
 19. **No hidden code.** `examples/`, `scripts/`, `tests/` share `src/` gates.
 20. **Cooperate on concurrent WIP.** Adopt useful hunks; never blame concurrency.
@@ -151,10 +170,9 @@ Goldens = structure only. Literals only for immutable external protocols.
    nothing, integrate everything useful.
 2. **Lane ownership.** Work only inside the existing authorized checkout, never on the
    integration base; keep the base pulled current. Use and prefer MCP tools,
-   skills and the canonical Make verbs for everything; large-scale refactors
-   always run through `make mod`/ast-grep search-and-replace, never manual
-   file-by-file edits. Hooks detect raw-command bypasses of these surfaces
-   and warn. Changes are atomic: the
+   skills, the sole project runtime CLI, and canonical Make development gates.
+   Large-scale refactors use the repository's declared structural owner.
+   Bypasses are blocking violations. Changes are atomic: the
    offender is removed completely and every consumer is rewired immediately,
    driven by ruff/pyrefly failures. Integrate only via PR with strict
    pre-commit/pre-push; resolve every PR review comment before merging —
@@ -202,10 +220,12 @@ Goldens = structure only. Literals only for immutable external protocols.
     execution ledger and Git. After integration and fresh runtime
     validation, stop at the configured integration branch. Promotion beyond it
     requires an explicit operator request and is never autonomous.
-12. **Makefile UX is the law.** Discover the repository's declared Make surface
-    with `make help` and follow its owner/generator contract. Never invent a
-    target, hand-edit a generated Make surface, or introduce a parallel command
-    path. Runtime is tested first; tests confirm that runtime afterward.
+12. **CLI UX is the runtime law.** The repository exposes one documented CLI
+    whose public verbs are optionless and complete. Make is development support
+    and gate composition only; it may call the public CLI but cannot duplicate
+    or bypass runtime functions. Never invent a flag, target, compatibility
+    command, hidden mode, or parallel execution path. Runtime is tested first;
+    tests confirm that runtime afterward.
 
 ## Delete policy
 

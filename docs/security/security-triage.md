@@ -8,6 +8,11 @@ fase: enquanto o tracker canônico estiver suspenso, nenhuma fase pode ser
 declarada DONE. Durante a suspensão, o estado permanece no ledger manual
 canônico do repositório.
 
+Os *findings* abaixo são detecções de domínio produzidas por scanners, não
+normalizações de falhas de execução. Um scanner nonzero, timeout, sinal ou
+publicação incompleta encerra `agentsctl secure` com a exceção e causa brutas;
+nenhum desses erros pode virar um finding, warning, skip ou resultado neutro.
+
 ## Findings
 
 ### 1 · HIGH · GitHub Actions checkout mutable

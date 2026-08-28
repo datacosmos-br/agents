@@ -16,10 +16,11 @@ suspended runtimes.
 - The six accepted review corrections: CI path coverage, owned process-group
   termination, BPE token counting, forbidden-update preservation, MCP drift
   failure, and unknown projection-target rejection.
-- Existing storage, credential, CI, security, and model-owner work needed for a
-  complete repository landing.
-- Final owner relocation from `~/.agents` to `~/agents` only after all active
-  processes have left the old checkout and every earlier phase is integrated.
+- Existing storage, direct-environment credential, CI, security, and model-owner
+  work needed for a complete repository landing.
+- Complete removal of keyring code, integration, documentation, entry points,
+  loaders, and tests. Existing external keyring values are outside scope and
+  remain uninspected and untouched.
 
 ## Excluded
 
@@ -32,6 +33,8 @@ suspended runtimes.
   suspended. Use the repository manual ledger for execution state.
 - Promotion beyond the configured integration branch, package publication,
   release, tag, or unrelated credential changes.
+- Physical owner relocation from `~/.agents` to `~/agents`; it is a separately
+  approved future increment.
 
 ## Authority and precedence
 
@@ -53,6 +56,9 @@ active instruction in the same change; do not retain both as alternatives.
   operations use `cp --archive --reflink=auto` where supported.
 - Never remove a live process, valid lock, dirty Git tree, database, symlink, or
   unknown content.
+- No workflow retries or substitutes a failed copy strategy. If the one
+  selected operation cannot satisfy the destination contract, it raises before
+  publication completes.
 - Do not rebase, force-push, destructively reset, globally stash, or edit the
   integration branch directly.
 
@@ -80,5 +86,7 @@ Stop the affected phase and report exact evidence when:
 - safe absorption of concurrent work cannot be proven;
 - an implementation requires a public interface not approved in this package.
 
-Do not translate a stop condition into a fallback, fake skill, alternate model,
-suppression, weakened gate, or partial success claim.
+The first defect raises immediately with its raw traceback and causal chain.
+Do not translate a stop condition into a finding, warning, skip, empty result,
+manual exit code, retry, fallback, fake skill, alternate model, suppression,
+weakened gate, compatibility path, or partial success claim.
