@@ -84,6 +84,24 @@ def test_eval_workflow_materializes_derived_shell_storage() -> None:
     assert 'install -d -m 700 "$HOME/tmp"' in commands
 
 
+def test_eval_workflow_is_the_single_native_ci_owner() -> None:
+    workflow_root = ROOT / ".github" / "workflows"
+    workflow_paths = tuple(sorted(workflow_root.glob("*.yml")))
+
+    assert [path.name for path in workflow_paths] == ["eval.yml"]
+    source = workflow_paths[0].read_text(encoding="utf-8")
+    workflow = yaml.load(source, Loader=yaml.BaseLoader)
+    steps = workflow["jobs"]["eval"]["steps"]
+    actions = tuple(step["uses"] for step in steps if "uses" in step)
+    commands = tuple(step["run"] for step in steps if "run" in step)
+
+    assert actions
+    assert all(re.fullmatch(r"[^@\s]+@[0-9a-f]{40}", action) for action in actions)
+    assert sum("make ci" in command.splitlines() for command in commands) == 1
+    assert "|| true" not in source
+    assert "conflict-marker" not in source
+
+
 def test_makefile_exposes_no_cross_repository_mcp_target() -> None:
     makefile = (ROOT / "Makefile").read_text(encoding="utf-8")
 

@@ -6,9 +6,10 @@ inputs:
   prompt: Review deletion-inventory.md and define one atomic obsolete-code
     extermination cutover. Separate safe deletion of the superseded tracked owner
     from artifact retirement through its declared command, preserve unknown work,
-    and state the recovery evidence required afterward.
+    and define the complete pre-effect manifest and physical quarantine protocol
+    for the massive provider tree. State the recovery evidence required afterward.
   files:
   - path: deletion-inventory.md
 expected:
-  output_contains: [make clean, operator-draft.md, src/api.py, src/replacement.py, Git, atomic, zero residue]
-  output_not_contains: [compatibility alias, rollback copy, retry, partial deletion]
+  output_contains: [make clean, operator-draft.md, src/api.py, src/replacement.py, Git, relative path, literal target, metadata, '.venv', '0700', same filesystem, no dereference, atomic, zero residue]
+  output_not_contains: [symlink quarantine, copy virtual environment, compatibility alias, rollback copy, retry, partial deletion]

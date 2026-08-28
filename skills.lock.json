@@ -1589,7 +1589,7 @@
     {
       "category": "tool",
       "class": "on_demand",
-      "digest": "a1d0ba49de0924b3c3e0101279821ccce8a585abda741a24f0f0cdf4b6591068",
+      "digest": "a71fd459db0eae6386277ccf3c20895231ca75b315a0d39531a17e26c3000661",
       "distributions": [
         "personal",
         "agent-capability:tool:github"
@@ -1831,7 +1831,7 @@
     {
       "category": "agent-wide",
       "class": "on_demand",
-      "digest": "dcdf21315ef795f57493fdcbf65ea752713e410c9eac9efa8a61ccc415cbcf32",
+      "digest": "3f1616bbe99079f0e363a7d1381678218e1c291d7f6fc259f54dd4a5f6802e37",
       "distributions": [
         "personal"
       ],
@@ -2217,7 +2217,7 @@
     {
       "category": "agent-wide",
       "class": "router",
-      "digest": "aea962534d7d7eff5730488be31a584d1fb7da8db2421609b922cf3874c6090f",
+      "digest": "f5c81732daa7671f6d0f2320c0b536918195238d4561f95518616c0704ae4a3e",
       "distributions": [
         "personal"
       ],
