@@ -41,22 +41,58 @@ must not create a dual-tracking period.
    and continue without asking again unless the effect expands beyond its approved
    targets, disposition, recovery, or blast radius. State alone proves no actor,
    process, or competing intention.
-3. Change canonical owners and every affected consumer as one atomic cutover,
+3. Recover the decision before citing it. Quote an approval only from the
+   operator's own recorded words in a durable record — the client's session
+   history, the change record, or the approved plan. A bare approval token
+   approves exactly the content of the proposal it answered at that moment and
+   nothing derived afterward; an observed count, candidate set, or analysis
+   result is never an approval of its dispositions. Reconstruct the supersession
+   chain so a superseded contract is not revived by a quotable older sentence.
+   Anything unrecoverable is reported unproven and never completed by inference:
+   attributing an approval the operator did not give is a governance defect of
+   the same class as a fabricated gate result.
+4. Change canonical owners and every affected consumer as one atomic cutover,
    not projections. When the incident exposes an agent decision failure, update
    the owning skill procedure and one of its three semantic regression roles in
    the same cutover. Regenerate managed consumers through their owner. Preserve
    decision history by superseding it explicitly.
-4. Remove every opposing active instruction in scope. Do not retain compatibility
+5. Remove every opposing active instruction in scope. Do not retain compatibility
    notes, soften absolute language, leave old and new behavior coexisting, or
    preserve symptom-side accommodation of a defective receiver.
-5. Run owner-native document, skill, projection, and runtime gates. The first
+6. Run owner-native document, skill, projection, and runtime gates. The first
    causal failure stops that invocation. Correct its owner and rerun every
    invalidated gate in the same reconciliation; never repeat unchanged,
    substitute a gate, publish partial evidence, or hand the red state off. Then
    repeat the contradiction search and require zero active opposites.
-6. When tracking is suspended, create no replacement state store and preserve
+7. When tracking is suspended, create no replacement state store and preserve
    command, working directory, exit code, decisive output, unresolved boundary,
    and next action only in separately authorized canonical Git/PR/CI evidence.
+
+## Give the correction a durable, generic form
+
+Classify what the correction is about before writing it anywhere.
+
+- **Operational state** — activation, suspension, endpoint, port, branch,
+  version, path, count, or any value an owner may legitimately change. The
+  durable fix names the authority that declares it and the preflight that reads
+  it. Never restate the current value as always-on guidance: guidance that
+  freezes a mutable value contradicts its own owner the moment the owner moves,
+  and every consumer then inherits a false premise.
+- **Invariant behavior** — what must always or never happen regardless of state.
+  State it absolutely, once, at one owner, and reference that owner elsewhere.
+
+Write it for the general case the operator actually works in, never for the one
+incident: a rule that only fits the reporting scope is a hardcode. When the
+correction came from a specific project, restate it in the vocabulary of the
+declared primitives so every scope inherits it identically.
+
+## Prove zero active opposites
+
+Search the semantic and textual opposites of the replacement across rules,
+skills, commands, documents, evaluations, generated projections, and the
+active work. For a corrected operational state, that search includes the frozen
+form of the old value in every artifact that asserts it, not only the artifact
+the operator named. Any surviving opposite blocks landing.
 
 At each checkpoint, compare new operator corrections with changes since the prior
 checkpoint. An unreconciled correction pauses the affected feature work until

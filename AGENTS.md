@@ -44,7 +44,7 @@
 
 ## Change lifecycle
 
-Gas City configuration owns orchestration identity and dispatch; the repository owns Git, native gates, PR review, and landing. The canonical static contract is `rules/gascity.md`. Gas City runtime is currently suspended, so no orchestration command may be invoked or inferred. Work in the existing checkout and stop at the configured integration branch unless the operator explicitly asks to promote.
+Gas City configuration owns orchestration identity and dispatch; the repository owns Git, native gates, PR review, and landing. The canonical contract is `rules/gascity.md`, which owns how a city's activation state is resolved: read it from that city's own authority at preflight and invoke no orchestration command outside the scope that authority has explicitly activated. Work in the existing checkout and stop at the configured integration branch unless the operator explicitly asks to promote.
 
 ## Clone and temporary-filesystem law
 
