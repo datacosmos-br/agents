@@ -1,6 +1,4 @@
-# Content Engine procedure
-
-# Content Engine
+# Content Engine — Procedure
 
 Build platform-native content without flattening the author's real voice into platform slop.
 
@@ -25,6 +23,7 @@ Build platform-native content without flattening the author's real voice into pl
 Before drafting, validate the complete source set, requested destinations,
 audience, claims, and any required voice evidence. A missing required input
 blocks the campaign; do not draft a reduced substitute. Sources may include:
+
 - published articles
 - notes or internal memos
 - product demos
@@ -54,6 +53,7 @@ writing in a generic replacement voice.
 ## Hard Bans
 
 Delete and rewrite any of these:
+
 - "In today's rapidly evolving landscape"
 - "game-changer", "revolutionary", "cutting-edge"
 - "here's why this matters" unless it is followed immediately by something concrete
@@ -108,6 +108,7 @@ Delete and rewrite any of these:
 ## Deliverables
 
 When asked for a campaign, return:
+
 - a short voice profile if voice matching matters
 - the core angle
 - platform-native drafts
@@ -117,6 +118,7 @@ When asked for a campaign, return:
 ## Quality Gate
 
 Before delivering:
+
 - every draft sounds like the intended author, not the platform stereotype
 - every draft contains a real claim, proof point, or concrete observation
 - no generic hype language remains

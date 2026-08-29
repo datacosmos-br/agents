@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import ast
 import os
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -108,7 +109,14 @@ def test_resource_root_resolves_bundled_data() -> None:
 
 
 def test_provenance_resolves_version_and_source() -> None:
-    assert provenance.version() == "0.2.0"
+    version_match = re.search(
+        r'^version = "([^"]+)"$',
+        (ROOT / "pyproject.toml").read_text(encoding="utf-8"),
+        flags=re.MULTILINE,
+    )
+    assert version_match is not None
+    manifest_version = version_match.group(1)
+    assert provenance.version() == manifest_version
     assert provenance.source_url() is not None
 
 
