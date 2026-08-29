@@ -41,6 +41,18 @@ replaced. No Markdown status table, database, issue list, spreadsheet, or local
 file may act as a substitute tracker or ledger. This plan specifies work; it
 does not store rollout state.
 
+On 2026-08-28 the operator confirmed their Datacosmos affiliation, identified
+in that authorization as `marlonc-costa-dc`, and expressly authorized this
+increment to clone and store the scoped Datacosmos repositories, inspect and
+semantically transform their complete skill content, publish the reusable
+derived behavior in `agents`, and distribute the governed result to the 51
+consumers. This authorization is limited to `cosmos-docgen`, `cosmos-main`,
+their members declared by the fetched umbrellas, and the central/family landing
+described here. It does not authorize unrelated Datacosmos repositories,
+wholesale republication of confidential source text, or a broader license
+grant. The PR records source SHA and semantic disposition without copying the
+source corpus into a tracker or evidence archive.
+
 The operator has fixed these decisions:
 
 - create four dedicated recursive root clones under

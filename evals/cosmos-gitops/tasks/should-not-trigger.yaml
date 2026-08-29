@@ -1,0 +1,10 @@
+id: cosmos-gitops-should-not-trigger-001
+name: Leave generic application logic outside GitOps
+description: Application code without selected Cosmos GitOps scope is not a rollout.
+tags: [anti-trigger, cosmos-gitops, negative-test]
+inputs:
+  prompt: Refactor an in-memory string parser. The project has no cosmos-gitops
+    selected tag and the task touches no chart, manifest, Argo CD, secret,
+    environment, submodule, or cluster.
+expected:
+  output_not_contains: [dc-dese, dc-prod, dc-control, Helm render, Argo CD, GitOps promotion]

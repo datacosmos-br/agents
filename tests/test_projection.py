@@ -2,10 +2,12 @@ from __future__ import annotations
 
 import inspect
 import json
+import subprocess
 from pathlib import Path
 from typing import Any
 
 import pytest
+import yaml
 
 from agents_governance.agent_profiles import audit_agent_profiles
 from agents_governance.catalog import Catalog
@@ -35,6 +37,7 @@ def _skill(
         "usage:on-demand",
     ),
     body: str = "# Test\n\nCanonical project guidance.\n",
+    evaluation: bool = True,
 ) -> Path:
     directory = root / "skills" / category / name
     directory.mkdir(parents=True)
@@ -42,14 +45,80 @@ def _skill(
     (directory / "SKILL.md").write_text(
         "---\n"
         f"name: {name}\n"
-        "description: project guidance\n"
+        "description: project guidance, validation, workflow\n"
         "metadata:\n"
         f"  aihub.tags: '{encoded}'\n"
         "---\n\n"
         f"{body}",
         encoding="utf-8",
     )
+    if evaluation:
+        _skill_eval(root, name, category)
     return directory
+
+
+def _skill_eval(root: Path, name: str, category: str) -> None:
+    directory = root / "evals" / name
+    tasks = directory / "tasks"
+    tasks.mkdir(parents=True)
+    (directory / "eval.yaml").write_text(
+        yaml.safe_dump(
+            {
+                "name": f"{name}-eval",
+                "skill": name,
+                "config": {
+                    "trials_per_task": 1,
+                    "model": "aihub-primary",
+                    "timeout_seconds": 60,
+                    "parallel": False,
+                    "max_attempts": 0,
+                    "fail_fast": True,
+                    "executor": "copilot-sdk",
+                    "required_skills": [name],
+                    "skill_directories": [f"../../skills/{category}/{name}"],
+                },
+                "graders": [
+                    {
+                        "type": "prompt",
+                        "name": f"{name}-contract",
+                        "config": {"prompt": f"Grade the {name} material result."},
+                    },
+                    {
+                        "type": "behavior",
+                        "name": "bounded",
+                        "config": {"max_duration_ms": 50_000},
+                    },
+                ],
+                "tasks": ["tasks/*.yaml"],
+            },
+            sort_keys=False,
+        ),
+        encoding="utf-8",
+    )
+    scenarios = {
+        "basic-usage.yaml": {
+            "id": f"{name}-happy-001",
+            "inputs": {"prompt": f"Produce the material {name} result."},
+            "expected": {"output_contains": [f"{name} material result"]},
+        },
+        "edge-case.yaml": {
+            "id": f"{name}-fail-closed-001",
+            "inputs": {"prompt": ""},
+            "expected": {
+                "output_contains": [f"blocked {name}"],
+                "output_not_contains": [f"published invalid {name}"],
+            },
+        },
+        "should-not-trigger.yaml": {
+            "id": f"{name}-should-not-trigger-001",
+            "inputs": {"prompt": f"Perform an adjacent operation unrelated to {name}."},
+            "expected": {"output_not_contains": [f"activated {name}"]},
+        },
+    }
+    for filename, payload in scenarios.items():
+        (tasks / filename).write_text(
+            yaml.safe_dump(payload, sort_keys=False), encoding="utf-8"
+        )
 
 
 def _config(root: Path, supported: dict[tuple[str, str], str]) -> None:
@@ -69,6 +138,15 @@ def _config(root: Path, supported: dict[tuple[str, str], str]) -> None:
         ),
         encoding="utf-8",
     )
+    for category in (
+        "agent-wide",
+        "project-wide",
+        "technology",
+        "framework",
+        "tool",
+        "domain",
+    ):
+        (root / "skills" / category).mkdir(parents=True, exist_ok=True)
     providers: dict[str, object] = {}
     for provider in _PROVIDERS:
         contexts: dict[str, object] = {}
@@ -137,7 +215,12 @@ def _source(
     return root, Projector(Catalog(root), load_projection_config(root), (), (), ())
 
 
-def _project(tmp_path: Path, *, authorized: bool = True) -> Path:
+def _project(
+    tmp_path: Path,
+    *,
+    authorized: bool = True,
+    selected_tags: tuple[str, ...] = (),
+) -> Path:
     project = tmp_path / "project"
     project.mkdir()
     (project / ".git").mkdir()
@@ -150,7 +233,7 @@ def _project(tmp_path: Path, *, authorized: bool = True) -> Path:
                     "version": 1,
                     "agents": [],
                     "opt_ins": [],
-                    "selected_tags": [],
+                    "selected_tags": list(selected_tags),
                 }
             ),
             encoding="utf-8",
@@ -180,6 +263,26 @@ def _agent_source(root: Path) -> None:
 
 def _manifest(root: Path) -> dict[str, object]:
     return json.loads((root / Projector.MANIFEST).read_text(encoding="utf-8"))
+
+
+def _git(repository: Path, *arguments: str) -> str:
+    return subprocess.run(
+        ("git", "-C", str(repository), *arguments),
+        check=True,
+        text=True,
+        stdout=subprocess.PIPE,
+    ).stdout.strip()
+
+
+def _git_repository(path: Path) -> Path:
+    path.mkdir()
+    _git(path, "init", "--initial-branch=develop")
+    _git(path, "config", "user.name", "Projection Fixture")
+    _git(path, "config", "user.email", "projection@example.invalid")
+    (path / "README.md").write_text("fixture\n", encoding="utf-8")
+    _git(path, "add", "README.md")
+    _git(path, "commit", "-m", "fixture")
+    return path
 
 
 def test_apply_derives_nested_invocation_project_and_reaches_fixed_point(
@@ -217,12 +320,208 @@ def test_absent_project_authorization_is_a_non_target(
 ) -> None:
     _, projector = _source(tmp_path)
     project = _project(tmp_path, authorized=False)
+    malformed = project / "skills" / "project-wide" / "malformed"
+    malformed.mkdir(parents=True)
+    (malformed / "SKILL.md").write_text("not frontmatter\n", encoding="utf-8")
     monkeypatch.chdir(project)
 
     projector.apply()
     projector.check()
 
     assert not (project / ".agents").exists()
+
+
+def test_authorized_local_skill_composes_with_central_sources_and_reaches_fixed_point(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _, projector = _source(tmp_path)
+    project = _project(tmp_path)
+    local = _skill(
+        project,
+        "local-guidance",
+        tags=(
+            "provenance:project-owned",
+            "updates:manual",
+            "usage:on-demand",
+        ),
+    )
+    source_snapshot = Catalog.physical_tree_contract(local)
+    monkeypatch.chdir(project)
+
+    projector.apply()
+    target = project / ".agents" / "skills"
+    first = Catalog.physical_tree_contract(target)
+    manifest_mtime = (target / Projector.MANIFEST).stat().st_mtime_ns
+    projector.apply()
+
+    assert (target / "project-guidance" / "SKILL.md").is_file()
+    assert (target / "local-guidance" / "SKILL.md").is_file()
+    managed = _manifest(target)["managed"]
+    assert isinstance(managed, dict)
+    assert managed["project-guidance"]["origin"] == "agents:skills"
+    assert managed["local-guidance"]["origin"] == "project:skills"
+    assert Catalog.physical_tree_contract(target) == first
+    assert (target / Projector.MANIFEST).stat().st_mtime_ns == manifest_mtime
+    assert Catalog.physical_tree_contract(local) == source_snapshot
+
+
+def test_selected_flext_and_cosmos_tags_activate_only_their_central_skills(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    root = tmp_path / "source"
+    root.mkdir()
+    _skill(root, "project-guidance")
+    _skill(
+        root,
+        "flext-development",
+        category="framework",
+        tags=(
+            "activation:detected",
+            "detect:selected-tag:flext",
+            "framework:flext",
+            "provenance:agents-owned",
+            "route:project",
+            "updates:manual",
+            "usage:on-demand",
+        ),
+    )
+    _skill(
+        root,
+        "cosmos-gitops",
+        category="domain",
+        tags=(
+            "activation:detected",
+            "detect:selected-tag:cosmos-gitops",
+            "domain:cosmos-gitops",
+            "provenance:agents-owned",
+            "route:project",
+            "updates:manual",
+            "usage:on-demand",
+        ),
+    )
+    _config(root, {("codex", "skills"): ".agents/skills"})
+    projector = Projector(Catalog(root), load_projection_config(root), (), (), ())
+    project = _project(tmp_path, selected_tags=("flext",))
+    monkeypatch.chdir(project)
+
+    projector.apply()
+    target = project / ".agents" / "skills"
+    assert (target / "flext-development" / "SKILL.md").is_file()
+    assert not (target / "cosmos-gitops").exists()
+
+    selection = project / ".agents" / "projection.json"
+    selection.write_text(
+        json.dumps(
+            {
+                "version": 1,
+                "agents": [],
+                "opt_ins": [],
+                "selected_tags": ["cosmos-gitops"],
+            }
+        ),
+        encoding="utf-8",
+    )
+    projector.apply()
+    first = Catalog.physical_tree_contract(target)
+    projector.apply()
+
+    assert not (target / "flext-development").exists()
+    assert (target / "cosmos-gitops" / "SKILL.md").is_file()
+    assert Catalog.physical_tree_contract(target) == first
+
+
+@pytest.mark.parametrize(
+    ("name", "tags", "evaluation", "message"),
+    [
+        (
+            "wrong-owner",
+            ("provenance:agents-owned", "updates:manual", "usage:on-demand"),
+            True,
+            "provenance:project-owned",
+        ),
+        (
+            "missing-eval",
+            ("provenance:project-owned", "updates:manual", "usage:on-demand"),
+            False,
+            "eval",
+        ),
+        (
+            "project-guidance",
+            ("provenance:project-owned", "updates:manual", "usage:on-demand"),
+            True,
+            "central/local skill name collision",
+        ),
+    ],
+)
+def test_invalid_local_skill_fails_before_any_publication(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    name: str,
+    tags: tuple[str, ...],
+    evaluation: bool,
+    message: str,
+) -> None:
+    _, projector = _source(tmp_path)
+    project = _project(tmp_path)
+    _skill(project, name, tags=tags, evaluation=evaluation)
+    monkeypatch.chdir(project)
+
+    with pytest.raises((FileNotFoundError, ValueError), match=message):
+        projector.apply()
+
+    assert not (project / ".agents" / "skills").exists()
+
+
+def test_local_skill_symlink_fails_before_any_publication(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _, projector = _source(tmp_path)
+    project = _project(tmp_path)
+    local = _skill(
+        project,
+        "local-symlink",
+        tags=(
+            "provenance:project-owned",
+            "updates:manual",
+            "usage:on-demand",
+        ),
+    )
+    external = project / "external.md"
+    external.write_text("external\n", encoding="utf-8")
+    references = local / "references"
+    references.mkdir()
+    (references / "external.md").symlink_to(external)
+    monkeypatch.chdir(project)
+
+    with pytest.raises(ValueError, match="symlink forbidden"):
+        projector.apply()
+
+    assert not (project / ".agents" / "skills").exists()
+
+
+def test_local_skill_cross_bundle_reference_fails_before_any_publication(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _, projector = _source(tmp_path)
+    project = _project(tmp_path)
+    local = _skill(
+        project,
+        "local-reference",
+        tags=(
+            "provenance:project-owned",
+            "updates:manual",
+            "usage:on-demand",
+        ),
+        body="# Local\n\nRead [foreign](../../foreign.md).\n",
+    )
+    foreign = local.parents[1] / "foreign.md"
+    foreign.write_text("foreign\n", encoding="utf-8")
+    monkeypatch.chdir(project)
+
+    with pytest.raises(ValueError, match="is not in the subpath"):
+        projector.apply()
+
+    assert not (project / ".agents" / "skills").exists()
 
 
 def test_personal_projection_includes_agent_routed_capabilities(
@@ -802,14 +1101,79 @@ def test_projector_public_operations_are_optionless() -> None:
     assert tuple(inspect.signature(Projector.check).parameters) == ("self",)
 
 
-def test_worktree_git_file_is_rejected_without_git_subprocess(
+def test_contained_git_submodule_is_a_physical_project(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _, projector = _source(tmp_path)
+    member_source = _git_repository(tmp_path / "member-source")
+    umbrella = _git_repository(tmp_path / "umbrella")
+    _git(
+        umbrella,
+        "-c",
+        "protocol.file.allow=always",
+        "submodule",
+        "add",
+        str(member_source),
+        "member",
+    )
+    _git(umbrella, "commit", "-am", "add member")
+    member = umbrella / "member"
+    nested = member / "src"
+    nested.mkdir()
+    monkeypatch.chdir(nested)
+
+    assert projector.project_root() == member.resolve(strict=True)
+
+
+def test_git_worktree_is_rejected(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _, projector = _source(tmp_path)
+    repository = _git_repository(tmp_path / "repository")
+    worktree = tmp_path / "worktree"
+    _git(repository, "worktree", "add", "--detach", str(worktree))
+    monkeypatch.chdir(worktree)
+
+    with pytest.raises(ValueError, match="Git worktree is forbidden"):
+        projector.apply()
+
+
+def test_external_git_directory_is_rejected(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _, projector = _source(tmp_path)
+    external = _git_repository(tmp_path / "external")
+    project = tmp_path / "project"
+    project.mkdir()
+    (project / ".git").write_text(f"gitdir: {external / '.git'}\n", encoding="utf-8")
+    monkeypatch.chdir(project)
+
+    with pytest.raises(ValueError, match="external Git directory is forbidden"):
+        projector.apply()
+
+
+def test_malformed_git_file_propagates_git_failure(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     _, projector = _source(tmp_path)
     project = tmp_path / "project"
     project.mkdir()
-    (project / ".git").write_text("gitdir: elsewhere", encoding="utf-8")
+    (project / ".git").write_text("gitdir: missing\n", encoding="utf-8")
     monkeypatch.chdir(project)
 
-    with pytest.raises(ValueError, match="physical .git directory"):
+    with pytest.raises(subprocess.CalledProcessError):
+        projector.apply()
+
+
+def test_git_metadata_symlink_is_rejected(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _, projector = _source(tmp_path)
+    external = _git_repository(tmp_path / "external")
+    project = tmp_path / "project"
+    project.mkdir()
+    (project / ".git").symlink_to(external / ".git", target_is_directory=True)
+    monkeypatch.chdir(project)
+
+    with pytest.raises(ValueError, match="Git metadata symlink forbidden"):
         projector.apply()

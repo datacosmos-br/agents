@@ -305,6 +305,64 @@ def test_duplicate_names_across_categories_are_rejected(tmp_path: Path) -> None:
         Catalog(tmp_path)
 
 
+def test_project_catalog_allows_an_authorized_project_without_local_skills(
+    tmp_path: Path,
+) -> None:
+    central = tmp_path / "central"
+    central.mkdir()
+    _write_config(central)
+    _write_skill(central, "agent-wide", "example")
+    project = tmp_path / "project"
+    project.mkdir()
+
+    catalog = Catalog.project(project, Catalog(central))
+
+    assert catalog.records() == ()
+    assert catalog.owner == "project"
+    assert catalog.project_local is True
+
+
+@pytest.mark.parametrize(
+    ("category", "tags", "message"),
+    [
+        (
+            "agent-wide",
+            ("provenance:project-owned", "updates:manual", "usage:on-demand"),
+            "project-local agent-wide skill is forbidden",
+        ),
+        (
+            "tool",
+            (
+                "activation:opt-in",
+                "detect:opt-in:local-tool",
+                "provenance:project-owned",
+                "route:agent",
+                "tool:local-tool",
+                "updates:manual",
+                "usage:on-demand",
+            ),
+            "requires route:project",
+        ),
+    ],
+)
+def test_project_catalog_rejects_personal_distribution(
+    tmp_path: Path,
+    category: str,
+    tags: tuple[str, ...],
+    message: str,
+) -> None:
+    central = tmp_path / "central"
+    central.mkdir()
+    _write_config(central)
+    _write_skill(central, "agent-wide", "example")
+    project = tmp_path / "project"
+    project.mkdir()
+    _write_skill(project, category, "local-tool", tags=tags)
+
+    with pytest.raises(ValueError, match=message):
+        Catalog.project(project, Catalog(central))
+
+
 def test_noncanonical_skill_path_is_rejected(tmp_path: Path) -> None:
     _write_config(tmp_path)
     flat = tmp_path / "skills" / "example"

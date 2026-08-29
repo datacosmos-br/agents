@@ -8,6 +8,7 @@ import os
 import re
 import shutil
 import stat
+import subprocess
 import tempfile
 import tomllib
 from dataclasses import dataclass
@@ -23,7 +24,12 @@ from .agent_profiles import (
     AgentProvider,
     render_agent,
 )
-from .catalog import NON_PORTABLE_PROJECT_REFERENCE, Catalog
+from .catalog import (
+    NON_PORTABLE_PROJECT_REFERENCE,
+    Catalog,
+    SkillCategory,
+    SkillRecord,
+)
 from .cleanup import (
     PreparedPublication,
     Publication,
@@ -54,6 +60,7 @@ from .projection_config import (
 )
 from .rule_adapters import RuleContext, RuleProvider, render_rule
 from .rules import RuleDistribution, RuleSpec
+from .validation import validate_skill_catalogs
 
 _DIGEST = re.compile(r"[0-9a-f]{64}\Z")
 _MARKDOWN_LINK = re.compile(r"!?\[[^\]\n]*\]\(([^)\n]+)\)")
@@ -279,11 +286,69 @@ def _physical_project(cwd: Path) -> Path:
         if git.is_symlink():
             raise ValueError(f"Git metadata symlink forbidden: {git}")
         if git.exists():
-            if not git.is_dir() or not stat.S_ISDIR(git.lstat().st_mode):
-                raise ValueError(
-                    f"project must own a physical .git directory: {candidate}"
-                )
             project = candidate.resolve(strict=True)
+            metadata = git.lstat()
+            if stat.S_ISDIR(metadata.st_mode):
+                pass
+            elif stat.S_ISREG(metadata.st_mode):
+                git_directory = Path(
+                    subprocess.run(
+                        (
+                            "git",
+                            "-C",
+                            str(project),
+                            "rev-parse",
+                            "--absolute-git-dir",
+                        ),
+                        check=True,
+                        text=True,
+                        stdout=subprocess.PIPE,
+                    ).stdout.strip()
+                ).resolve(strict=True)
+                raw_superproject = subprocess.run(
+                    (
+                        "git",
+                        "-C",
+                        str(project),
+                        "rev-parse",
+                        "--show-superproject-working-tree",
+                    ),
+                    check=True,
+                    text=True,
+                    stdout=subprocess.PIPE,
+                ).stdout.strip()
+                if not raw_superproject:
+                    if "worktrees" in git_directory.parts:
+                        raise ValueError(f"Git worktree is forbidden: {project}")
+                    raise ValueError(
+                        f"external Git directory is forbidden: {git_directory}"
+                    )
+                superproject = Path(raw_superproject).resolve(strict=True)
+                project.relative_to(superproject)
+                umbrella: Path | None = None
+                for ancestor in (superproject, *superproject.parents):
+                    root_git = ancestor / ".git"
+                    if root_git.is_symlink():
+                        raise ValueError(f"Git metadata symlink forbidden: {root_git}")
+                    if root_git.is_dir() and stat.S_ISDIR(root_git.lstat().st_mode):
+                        umbrella = ancestor.resolve(strict=True)
+                        break
+                if umbrella is None:
+                    raise ValueError(
+                        f"submodule umbrella has no physical .git directory: {project}"
+                    )
+                project.relative_to(umbrella)
+                modules = (umbrella / ".git" / "modules").resolve(strict=True)
+                if _symlink_component(git_directory) is not None:
+                    raise ValueError(
+                        f"submodule Git directory traverses symlink: {git_directory}"
+                    )
+                if git_directory != modules and modules not in git_directory.parents:
+                    raise ValueError(
+                        f"submodule Git directory escapes umbrella: {git_directory}"
+                    )
+            else:
+                raise ValueError(f"unsupported Git metadata type: {git}")
             if project == Path("/tmp") or Path("/tmp") in project.parents:
                 raise ValueError(f"repositories under /tmp are prohibited: {project}")
             return project
@@ -609,21 +674,22 @@ class Projector:
         project: Path,
         selection: ProjectionSelection,
         dependencies: set[str],
+        records: tuple[SkillRecord, ...],
     ) -> dict[str, tuple[str, ...]]:
-        records = tuple(
+        conditional = tuple(
             record
-            for record in self.catalog.records()
+            for record in records
             if record.category.conditional and record.route == "project"
         )
         known_opt_ins = {
             detector.split(":", 2)[2]
-            for record in records
+            for record in conditional
             for detector in record.detectors
             if detector.startswith("detect:opt-in:")
         }
         known_tags = {
             detector.split(":", 2)[2]
-            for record in records
+            for record in conditional
             for detector in record.detectors
             if detector.startswith("detect:selected-tag:")
         }
@@ -634,7 +700,7 @@ class Projector:
         if unknown_tags:
             raise ValueError(f"unknown selected tag: {min(unknown_tags)}")
         activated: dict[str, tuple[str, ...]] = {}
-        for record in records:
+        for record in conditional:
             evidence: set[str] = set()
             for detector in record.detectors:
                 kind, value = detector.split(":", 2)[1:]
@@ -651,23 +717,28 @@ class Projector:
         return activated
 
     def _skill_sources(
-        self, selected: dict[str, tuple[str, ...]]
+        self,
+        records: tuple[SkillRecord, ...],
+        selected: dict[str, tuple[str, ...]],
+        local_names: frozenset[str],
     ) -> tuple[ProjectionSource, ...]:
         activated: dict[str, set[str]] = {
-            name: {"project-generic"}
-            for name in self.catalog.names_for("project-generic")
+            record.name: {"project-generic"}
+            for record in records
+            if record.category is SkillCategory.PROJECT_WIDE
         }
         for name, evidence in selected.items():
             activated[name] = set(evidence)
         sources: list[ProjectionSource] = []
+        by_name = {record.name: record for record in records}
         for name in sorted(activated):
-            record = self.catalog.record(name)
+            record = by_name[name]
             _validate_source_portability(record.directory)
             sources.append(
                 ProjectionSource(
                     name,
                     record.directory,
-                    "agents:skills",
+                    "project:skills" if name in local_names else "agents:skills",
                     self.catalog.digest_tree(record.directory),
                     self.catalog.physical_tree_contract(record.directory),
                     "skill",
@@ -746,12 +817,33 @@ class Projector:
     def _plans(self, authorization: ProjectAuthorization) -> tuple[ProjectionPlan, ...]:
         project = authorization.project
         project_selection = self._selection(authorization)
+        local_catalog = (
+            Catalog.project(project, self.catalog)
+            if project_selection is not None
+            else None
+        )
+        validate_skill_catalogs(self.catalog, local_catalog)
+        local_records = local_catalog.records() if local_catalog is not None else ()
+        project_records = tuple(
+            record
+            for record in (*self.catalog.records(), *local_records)
+            if record.category is SkillCategory.PROJECT_WIDE
+            or (record.category.conditional and record.route == "project")
+        )
+        local_skill_names = frozenset(record.name for record in local_records)
         dependencies = (
             self._dependencies(project) if project_selection is not None else set()
         )
         project_skills = (
             self._skill_sources(
-                self._activated_skills(project, project_selection, dependencies)
+                project_records,
+                self._activated_skills(
+                    project,
+                    project_selection,
+                    dependencies,
+                    project_records,
+                ),
+                local_skill_names,
             )
             if project_selection is not None
             else ()

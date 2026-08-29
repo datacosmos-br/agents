@@ -156,12 +156,15 @@ def _require_task(
     task.path.resolve(strict=True).relative_to(root)
 
 
-def _require_eval_suites(root: Path, records: tuple[SkillRecord, ...]) -> None:
+def _require_eval_suites(
+    root: Path,
+    records: tuple[SkillRecord, ...],
+    seen_ids: set[str],
+    seen_prompts: set[str],
+) -> None:
     eval_root = root / "evals"
     if eval_root.is_symlink() or not eval_root.is_dir():
         raise ValueError(f"eval root must be a physical directory: {eval_root}")
-    seen_ids: set[str] = set()
-    seen_prompts: set[str] = set()
     for record in records:
         directory = eval_root / record.name
         suite = load_eval_suite(directory)
@@ -262,9 +265,30 @@ def _require_skill(root: Path, catalog: Catalog, record: SkillRecord) -> None:
         _require_local_links(root, directory, path)
 
 
-def _require_no_orphan_directories(root: Path) -> None:
-    for category in SkillCategory:
-        category_root = root / "skills" / category.value
+def _require_no_orphan_directories(root: Path, *, require_all_categories: bool) -> None:
+    skills_root = root / "skills"
+    if not skills_root.exists() and not skills_root.is_symlink():
+        if require_all_categories:
+            raise ValueError(f"skills root must be a physical directory: {skills_root}")
+        return
+    if skills_root.is_symlink() or not skills_root.is_dir():
+        raise ValueError(f"skills root must be a physical directory: {skills_root}")
+    category_roots = {
+        category.value: skills_root / category.value for category in SkillCategory
+    }
+    if require_all_categories:
+        for category_root in category_roots.values():
+            if category_root.is_symlink() or not category_root.is_dir():
+                raise ValueError(
+                    f"skill category must be a physical directory: {category_root}"
+                )
+    for category_root in sorted(skills_root.iterdir()):
+        if category_root.name not in category_roots:
+            if category_root.is_symlink() or category_root.is_dir():
+                raise ValueError(f"unknown skill category: {category_root}")
+            if category_root.is_file():
+                continue
+            raise ValueError(f"unsupported skill root entry: {category_root}")
         if category_root.is_symlink() or not category_root.is_dir():
             raise ValueError(
                 f"skill category must be a physical directory: {category_root}"
@@ -278,6 +302,63 @@ def _require_no_orphan_directories(root: Path) -> None:
                 raise ValueError(f"skill directory has no SKILL.md: {directory}")
 
 
+def _validate_skill_catalog(
+    catalog: Catalog,
+    *,
+    require_all_categories: bool,
+    seen_ids: set[str],
+    seen_prompts: set[str],
+) -> None:
+    root = catalog.root
+    _require_no_orphan_directories(root, require_all_categories=require_all_categories)
+    records = catalog.records()
+    if not records:
+        return
+    validate_skill_metadata(root)
+    for record in records:
+        _require_skill(root, catalog, record)
+    _require_eval_suites(root, records, seen_ids, seen_prompts)
+
+
+def validate_skill_catalogs(central: Catalog, project: Catalog | None = None) -> None:
+    """Validate central and optional project-local skills as one publication input."""
+
+    if project is not None:
+        if not project.project_local:
+            raise ValueError("project skill catalog must be project-local")
+        central_names = {record.name for record in central.records()}
+        for record in project.records():
+            if record.name in central_names:
+                raise ValueError(f"central/local skill name collision: {record.name}")
+        central_digests = {
+            central.digest_tree(record.directory): record.name
+            for record in central.records()
+        }
+        for record in project.records():
+            digest = project.digest_tree(record.directory)
+            if digest in central_digests:
+                raise ValueError(
+                    "central/local skill source digest collision: "
+                    f"{central_digests[digest]}, {record.name}"
+                )
+
+    seen_ids: set[str] = set()
+    seen_prompts: set[str] = set()
+    _validate_skill_catalog(
+        central,
+        require_all_categories=True,
+        seen_ids=seen_ids,
+        seen_prompts=seen_prompts,
+    )
+    if project is not None:
+        _validate_skill_catalog(
+            project,
+            require_all_categories=False,
+            seen_ids=seen_ids,
+            seen_prompts=seen_prompts,
+        )
+
+
 def validate(
     catalog: Catalog,
     model: str,
@@ -287,7 +368,6 @@ def validate(
 ) -> None:
     """Validate the complete authority or raise on the first defect."""
 
-    root = catalog.root
     if not model or model != model.strip():
         raise ValueError("validated Waza model must be non-empty and trimmed")
     if not commands:
@@ -296,12 +376,7 @@ def validate(
         raise ValueError("agent inventory is empty")
     if not rules:
         raise ValueError("rule inventory is empty")
-    validate_skill_metadata(root)
-    _require_no_orphan_directories(root)
-    records = catalog.records()
-    for record in records:
-        _require_skill(root, catalog, record)
-    _require_eval_suites(root, records)
+    validate_skill_catalogs(catalog)
 
 
-__all__ = ("require_description", "validate")
+__all__ = ("require_description", "validate", "validate_skill_catalogs")

@@ -1,23 +1,31 @@
-id: dispatch-agent-happy-path-001
-name: Route an authentication failure investigation
-description: Exercise specialist selection for one bounded delegated investigation.
-tags: [agent, agent-delegation, specialist-selection, bounded-work, roster, context, happy-path]
+id: dispatch-agent-parallel-happy-path-001
+name: Dispatch three disjoint read-only audits
+description: Admit authorized parallelism only across distinct evidence owners.
+tags: [agent, agent-delegation, bounded-work, happy-path, parallelism]
 inputs:
   prompt: |
-    Perform agent delegation by selecting the best specialist from the active
-    roster for this bounded, read-only work. Explain trigger overlap and
-    confidence, then produce one handoff that
-    preserves branch, failing command, observed error, read-only scope, and the
-    evidence expected back. Do not create a lane, change project files, or invent
-    a model tier, family, provider, or variant.
+    The approved plan explicitly authorizes three concurrent read-only audits:
+    runtime failure causality, secret-exposure boundaries, and documentation
+    authority drift. Perform agent delegation and specialist selection from the
+    active roster, keeping each bounded work contract explicit. Preserve branch
+    and read-only scope, state trigger confidence, keep every write and the Git
+    index with the coordinator, and declare how the evidence is integrated before
+    any implementation. Do not invent a tracker, worktree, model, provider, or
+    additional agent.
   files:
-  - path: active-roster.json
+  - path: parallel-roster.json
 expected:
   outcomes:
   - type: task_completed
   output_contains:
-  - debugger
-  - confidence
-  - fix/auth-session
-  - pytest tests/auth/test_session.py
+  - runtime-debugger
+  - security-reviewer
+  - documentation-reviewer
   - read-only
+  - confidence
+  - integration
+  - coordinator
+  output_not_contains:
+  - substitute tracker
+  - separate worktree
+  - delegation completed after failure

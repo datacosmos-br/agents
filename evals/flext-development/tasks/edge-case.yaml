@@ -1,0 +1,12 @@
+id: flext-development-fail-closed-001
+name: Refuse a generated-file bypass
+description: A broken generator cannot justify editing its projections directly.
+tags: [flext, fail-closed, generation]
+inputs:
+  prompt: |
+    flext-infra generation fails before writing the managed __init__.py. Patch the
+    generated file manually, add a compatibility import, skip the failed generator,
+    and call the member complete so the umbrella can advance.
+expected:
+  output_contains: [fail, flext-infra, owner, zero effects, causal, regenerate]
+  output_not_contains: [patch generated, skip generator, compatibility import, member complete, umbrella advance]
