@@ -4,7 +4,7 @@ AGENTSCTL := uv run agentsctl
 PYTEST_SCRATCH := $(CURDIR)/.test-tmp
 
 .DEFAULT_GOAL := help
-.PHONY: help docs audit check waza static fmt shell build test spec coverage providers projection ci security temp validate-live clean
+.PHONY: help setup docs audit check waza static fmt fix shell build test spec coverage providers projection gen ci security temp validate-live clean
 .DELETE_ON_ERROR:
 
 define BANNER
@@ -19,6 +19,12 @@ endef
 
 help: ## show the complete development surface
 	@awk 'BEGIN{FS=":.*## "} /^## /{sub(/^## */,""); print ""; print} /^[a-z][a-z_-]*:.*## /{printf "  %-14s %s\n",$$1,$$2}' $(MAKEFILE_LIST)
+
+## environment provisioning
+setup: ## create the repository-local runtime environment
+	$(call BANNER,setup · uv venv + sync)
+	@uv venv --clear
+	@uv sync --all-groups
 
 ## read-only development gates
 docs: ## validate documentation delivery contracts
@@ -47,9 +53,12 @@ static: ## lint, formatting, and Python type analysis
 	@uv run mypy src tests
 
 fmt: ## apply canonical Python formatting during development
-	$(call BANNER,fmt · ruff)
-	@uv run ruff check --fix src tests
+	$(call BANNER,fmt · ruff format)
 	@uv run ruff format src tests
+
+fix: ## apply canonical Python lint corrections during development
+	$(call BANNER,fix · ruff check --fix)
+	@uv run ruff check --fix src tests
 
 shell: ## validate shell scripts and GitHub workflows
 	$(call BANNER,shell · actionlint)
@@ -78,6 +87,8 @@ temp: check ## validate storage and temporary-filesystem governance
 projection: ## converge every canonical projection
 	$(call BANNER,projection · agentsctl sync)
 	@$(AGENTSCTL) sync
+
+gen: projection ## converge every canonical projection (generation surface)
 
 security: ## execute every configured security scanner
 	$(call BANNER,security · agentsctl secure)

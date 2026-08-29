@@ -110,10 +110,13 @@ Make remains development support and gate composition. Its declared surface is
 discovered with `make help` and covers:
 
 ```text
+make setup
 make docs
 make audit
 make check
 make static
+make fmt
+make fix
 make shell
 make build
 make test
@@ -121,6 +124,7 @@ make spec
 make coverage
 make providers
 make projection
+make gen
 make ci
 make security
 make temp
@@ -162,8 +166,8 @@ generated outputs, and supported destinations for:
 - silent empty target success;
 - symlink/cross-repository references;
 - ECC/SkillShare synchronization or current external-import instructions;
-- fallback, shim, dual-read/write, alternate model, skip, suppression, and old
-  `~/.agents` source lookups after cutover.
+- fallback, shim, dual-read/write, alternate model, skip, suppression, and
+  predecessor-path source lookups after cutover.
 - exception catches outside cleanup/rollback, aggregate validators, manual exit
   translation, retry loops, undeclared or error-triggered defaults, partial
   publication, and any keyring source or consumer. Canonical calculated defaults

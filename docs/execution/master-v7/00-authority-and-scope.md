@@ -38,8 +38,8 @@ suspended runtimes.
   separately authorized Git/PR/CI surfaces.
 - Promotion beyond the configured integration branch, package publication,
   release, tag, or unrelated credential changes.
-- Physical owner relocation from `~/.agents` to `~/agents`; it is a separately
-  approved future increment.
+- Relocation of any physical owner beyond the workspace contract already
+  declared by the operator; `~/agents` is the current canonical root.
 
 ## Authority and precedence
 

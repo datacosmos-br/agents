@@ -75,10 +75,9 @@ commits, pull requests, reviews, required checks, and CI after Git execution is
 separately authorized.
 
 While tracker closure is unavailable, a merged and post-merge-verified phase is
-`LANDED_VERIFIED`, not `DONE`. The physical source move from `~/.agents` to
-`~/agents`, provider-home installation, imports outside the exact approved
-successor, and service/timer installation remain separate increments; they
-cannot be smuggled into either cutover.
+`LANDED_VERIFIED`, not `DONE`. Provider-home installation, imports outside the
+exact approved successor, and service/timer installation remain separate
+increments; they cannot be smuggled into either cutover.
 
 ## Reading order
 

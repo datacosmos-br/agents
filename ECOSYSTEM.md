@@ -16,8 +16,8 @@ no universal principle duplicated in project docs.
 
 ## The 3-Layer Context Architecture
 
-1. **L1 — Universal law** (`~/.agents`): principles and role protocols only.
-2. **L2 — Role skills** (`~/.agents/skills/`): how each role works, waza
+1. **L1 — Universal law** (`~/agents`): principles and role protocols only.
+2. **L2 — Role skills** (`~/agents/skills/`): how each role works, waza
    ≤500 tokens, detail in `references/` ≤1000.
 3. **L3 — Workspace context** (in each workspace): how the project works —
    root `AGENTS.md`, coding standard, ADRs, project skill, ecosystem entry
