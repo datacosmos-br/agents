@@ -15,5 +15,7 @@ The complete preservation, fix-forward, and severe-conflict contract is owned by
   actor's valid change.
 - Never overwrite or stash uncommitted WIP. Preserve durable evidence in the next
   canonical commit/PR/CI artifact.
-- Tracker runtime is suspended. Invoke no tracker command, create no substitute
-  tracker or ledger, and keep phase closure unavailable.
+- Resolve the tracker mode from the repository's own instructions, as
+  [tracker traceability](../workflow/beads-traceability.md) requires; while it is
+  explicitly suspended, invoke no tracker command, create no substitute tracker
+  or ledger, and keep phase closure unavailable.
