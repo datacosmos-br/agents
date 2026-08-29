@@ -70,7 +70,7 @@ jobs:
           status=0
           markers=$(git grep -l -e '^<<<<<<< ' -e '^>>>>>>> ' -- . ':(exclude).venv' ':(exclude)dist') || status=$?
           if [ "$status" -gt 1 ]; then
-            echo "::error::conflict-marker search failed with status $status"
+            echo "::error::merge-marker search failed with status $status"
             exit "$status"
           fi
           if [ -n "$markers" ]; then
