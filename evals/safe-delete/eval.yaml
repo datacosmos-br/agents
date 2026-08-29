@@ -28,7 +28,10 @@ graders:
       quarantine fixture, require a complete physical manifest before effects,
       relative paths, literal symlink targets and metadata, `.venv` exclusion,
       same-filesystem mode-0700 quarantine, non-dereferencing unlink, process/lock
-      adjudication, and atomic top-level moves. Reject broad globs, raw recursive
+      adjudication, exclusive serialization, and atomic top-level namespace
+      isolation before internal reclamation. Require the response to identify the
+      top-level rename as the publication commit point and reject any claim that
+      sequential unlinks form an atomic batch. Reject broad globs, raw recursive
       deletion, symlink quarantine, copied virtual environments, stash/reset,
       rollback copies, shims, dual readers, or deletion based on filename assumptions.
 - type: behavior

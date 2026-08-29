@@ -41,6 +41,12 @@ and before commit, push, review resolution, merge, or handoff:
 6. publish one current checkpoint with owner, evidence, first red result, and
    next action.
 
+When a path, branch, worktree, or remote changes unexpectedly, treat the new
+state as input to the next preflight. Do not attribute it to another actor or
+classify it as intent without evidence. If the operator already authorized the
+exact effect, preserve that authorization and continue after revalidation; do
+not ask again or repeat the unchanged effect.
+
 The integration lane owns the combined runtime, gates, review, landing, and
 post-merge proof. Agent-local green never advances the phase cursor. Only two
 evidenced current intentions that cannot coexist under active authority stop
