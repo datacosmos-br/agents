@@ -7,6 +7,10 @@ metadata:
 
 # Fix-forward collaboration
 
+When adopting an overlapping lane's PR work, inventory its unresolved review
+threads and failing checks first with
+`skills/tool/pr-sheriff/scripts/pr_triage.py` (pr-sheriff), and answer them
+from the combined tree rather than from either lane's stale view.
 Activate when work overlaps another agent or lane, integration has advanced, or
 a rollback, stash, reset, revert, rebase, force-push, or whole-file replacement
 is proposed.
