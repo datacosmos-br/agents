@@ -1143,9 +1143,7 @@ def test_borrowed_contained_submodule_git_directory_is_rejected(
     _git(umbrella, "commit", "-am", "add member")
     borrowed = umbrella / "borrowed"
     borrowed.mkdir()
-    (borrowed / ".git").write_text(
-        "gitdir: ../.git/modules/member\n", encoding="utf-8"
-    )
+    (borrowed / ".git").write_text("gitdir: ../.git/modules/member\n", encoding="utf-8")
     monkeypatch.chdir(borrowed)
 
     with pytest.raises(ValueError, match="external Git directory is forbidden"):
