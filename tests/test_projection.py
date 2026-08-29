@@ -1125,6 +1125,33 @@ def test_contained_git_submodule_is_a_physical_project(
     assert projector.project_root() == member.resolve(strict=True)
 
 
+def test_borrowed_contained_submodule_git_directory_is_rejected(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _, projector = _source(tmp_path)
+    member_source = _git_repository(tmp_path / "member-source")
+    umbrella = _git_repository(tmp_path / "umbrella")
+    _git(
+        umbrella,
+        "-c",
+        "protocol.file.allow=always",
+        "submodule",
+        "add",
+        str(member_source),
+        "member",
+    )
+    _git(umbrella, "commit", "-am", "add member")
+    borrowed = umbrella / "borrowed"
+    borrowed.mkdir()
+    (borrowed / ".git").write_text(
+        "gitdir: ../.git/modules/member\n", encoding="utf-8"
+    )
+    monkeypatch.chdir(borrowed)
+
+    with pytest.raises(ValueError, match="external Git directory is forbidden"):
+        projector.project_root()
+
+
 def test_git_worktree_is_rejected(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
