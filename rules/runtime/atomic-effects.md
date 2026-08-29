@@ -4,10 +4,13 @@ description: Complete publication or attributable rollback with no partial succe
 
 # Effects publish atomically
 
-Build and validate the complete change set before mutation. Stage outputs on the
-destination filesystem, validate staged bytes and ownership, and expose the new
-state through the workflow's single declared atomic commit point. Success means
-every required effect and publication completed; partial success is failure.
+Validate the complete change before mutation, stage on the destination
+filesystem, and expose it through one atomic commit point. Partial success fails.
+
+For mass retirement, hold serialization through postcondition and atomically
+isolate each root before internal reclamation. The rename is the commit point;
+sequential unlinks are cleanup, not an atomic batch. Cleanup failure remains red,
+preserves its manifest, and requires causal correction plus fresh preflight.
 
 Rollback may remove or restore only effects attributable to the current
 invocation and only from already validated recovery data. Rollback failure is

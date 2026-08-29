@@ -57,4 +57,20 @@ testes; `temp.py` cria o owner e os subdiretórios com modo `0700`; Semgrep
 **Evidência**: em `/home/marlonsc/.agents`, Gitleaks 8.30.1 retornou código 0 e
 `no leaks found`; Snyk 1.1306.4 testou 16 dependências com código 0, zero issues
 e zero vulnerable paths. Ambos foram executados pelo alvo owner `make security`;
-o commit candidato exige uma nova execução integral.
+o commit candidato exige uma nova execução integral. No ciclo de 2026-08-28, a
+API do Dependabot identificou 34 alertas abertos nos manifests versionados das
+fixtures. O owner foi corrigido para `@modelcontextprotocol/sdk` 1.30.0 e Next.js
+16.3.2, ambos fora do cooldown mínimo de sete dias; instalações físicas
+isoladas e `npm audit --audit-level=low` retornaram código 0 e zero
+vulnerabilidades para os dois conjuntos. A automação `.github/dependabot.yml`
+agora cobre `uv`, as duas fixtures npm e GitHub Actions com cooldown de sete
+dias, e o contrato offline valida essa cobertura.
+
+`SNYK_TOKEN` não existe no ambiente do processo atual. Portanto, Snyk está `NOT
+EXECUTED` neste commit e não fornece evidência verde. Uma invocação indevida de
+`make security` depois de a ausência já estar provada retornou código 2 com
+`ValueError: required environment variable is missing or empty: SNYK_TOKEN`;
+essa falha é registrada como incidente, não como execução válida do scanner. O
+comando `security-triage`, as skills `security-review` e `sprint-closure` e suas
+regressões foram corrigidos para proibir nova seleção nessa condição e impedir
+fechamento enquanto findings independentes permanecerem abertos.

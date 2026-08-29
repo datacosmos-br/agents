@@ -7,9 +7,12 @@ inputs:
     extermination cutover. Separate safe deletion of the superseded tracked owner
     from artifact retirement through its declared command, preserve unknown work,
     and define the complete pre-effect manifest and physical quarantine protocol
-    for the massive provider tree. State the recovery evidence required afterward.
+    for the massive provider tree. Identify the exclusive lock, atomic namespace
+    isolation commit point, and later manifest-backed reclamation without calling
+    sequential unlinks an atomic batch. State the recovery evidence required
+    afterward.
   files:
   - path: deletion-inventory.md
 expected:
-  output_contains: [make clean, operator-draft.md, src/api.py, src/replacement.py, Git, relative path, literal target, metadata, '.venv', '0700', same filesystem, no dereference, atomic, zero residue]
-  output_not_contains: [symlink quarantine, copy virtual environment, compatibility alias, rollback copy, retry, partial deletion]
+  output_contains: [make clean, operator-draft.md, src/api.py, src/replacement.py, Git, relative path, literal target, metadata, '.venv', '0700', same filesystem, exclusive lock, isolate, commit point, reclamation, no dereference, zero residue]
+  output_not_contains: [symlink quarantine, copy virtual environment, compatibility alias, rollback copy, retry, partial deletion, atomic unlink batch]

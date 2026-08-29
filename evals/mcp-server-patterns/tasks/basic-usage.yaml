@@ -14,4 +14,4 @@ inputs:
   - path: package.json
   - path: server.ts
 expected:
-  output_contains: ['1.17.0', Zod, causal failure, Streamable HTTP]
+  output_contains: ['1.30.0', Zod, causal failure, Streamable HTTP]

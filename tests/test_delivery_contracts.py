@@ -44,6 +44,7 @@ def test_eval_workflow_covers_integration_push_and_pull_requests() -> None:
     events = workflow["on"]
     required_paths = {
         ".agents/**",
+        ".github/dependabot.yml",
         ".github/workflows/**",
         ".mise.toml",
         ".waza.yaml",
@@ -70,6 +71,26 @@ def test_eval_workflow_covers_integration_push_and_pull_requests() -> None:
     assert set(events["pull_request"]["branches"]) == {"dev", "main"}
     assert required_paths <= set(events["push"]["paths"])
     assert required_paths <= set(events["pull_request"]["paths"])
+
+
+def test_dependabot_covers_every_dependency_surface_with_seven_day_cooldown() -> None:
+    configuration = yaml.safe_load(
+        (ROOT / ".github" / "dependabot.yml").read_text(encoding="utf-8")
+    )
+    updates = configuration["updates"]
+    expected_surfaces = {
+        ("uv", "/"),
+        ("npm", "/evals/mcp-server-patterns/fixtures"),
+        ("npm", "/evals/nextjs-turbopack/fixtures"),
+        ("github-actions", "/"),
+    }
+
+    assert configuration["version"] == 2
+    assert {
+        (update["package-ecosystem"], update["directory"]) for update in updates
+    } == expected_surfaces
+    assert all(update["schedule"] == {"interval": "weekly"} for update in updates)
+    assert all(update["cooldown"]["default-days"] >= 7 for update in updates)
 
 
 def test_eval_workflow_materializes_derived_shell_storage() -> None:

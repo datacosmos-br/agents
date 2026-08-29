@@ -29,7 +29,10 @@ graders:
       integration evidence. Every actionable open row must be corrected and
       revalidated inside the same increment before another increment begins.
       Accept an external-token workflow as NOT EXECUTED without calling it green
-      or blocking closure; once invoked, require its raw failure to block.
+      or blocking closure; once invoked, require its raw failure to block. The
+      exclusion applies only to that workflow: independently observed alerts or
+      findings remain blocking, and a response may not declare completion while
+      listing them as pending.
 - type: behavior
   name: bounded_execution
   config: {max_duration_ms: 240000}

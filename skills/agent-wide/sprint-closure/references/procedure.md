@@ -7,7 +7,9 @@ surface, applicable native gates, generated owners, review and landing state,
 tracker mode, and every touched producer and consumer before changing closure
 state. Classify external-token workflows before invocation. If a token is
 absent, record the workflow as `NOT EXECUTED`; it supplies no green evidence but
-does not block the remaining closure contract.
+does not block the remaining closure contract. That exclusion never applies to
+an independently observed alert or finding: every actionable item remains open
+until its owner is corrected and the available authoritative evidence is clean.
 
 Missing, stale, conflicting, or inaccessible evidence stops at the first causal
 defect. Do not run a substitute command, infer a tracker endpoint, accept a
@@ -48,6 +50,8 @@ Require every row to be empty:
 - compatibility shims, aliases, wrappers, fallbacks, or dual readers;
 - consumers and tests still using the superseded contract;
 - deferred cleanup notes, follow-up deletion tasks, or partial publications;
+- independently observed security alerts or findings, even when a separate
+  token-gated scanner is `NOT EXECUTED`;
 - open increment workspace, review, or tracker item.
 
 Inspect structurally where available and review every match. A valid remaining

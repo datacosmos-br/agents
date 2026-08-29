@@ -4,30 +4,26 @@ description: Preserve concurrent work and integrate every compatible contributio
 
 # Adopt the current state and collaborate by fix-forward
 
-Treat every pre-existing, dirty, staged, committed, or concurrently arriving
-change in the authorized repository as owned input, regardless of provenance or
-age. Re-read a shared file before editing, attribute the intent of overlapping
-hunks, and preserve every compatible contribution. The integration lane
-continuously adopts compatible landed work from other lanes so the combined
-result, not an isolated lane snapshot, is the delivery target. “Mine”, “theirs”,
-“legacy”, and “pre-existing” never exempt a current defect from fix-forward.
+Treat every current authorized-repository change as owned input regardless of
+provenance or age. Re-read shared files, attribute overlapping intent, preserve
+compatible contributions, and adopt them through the integration lane. The
+combined result is the target; provenance never exempts a defect from fix-forward.
 
-Authorized repository work is not the same as an unmanifested provider output,
-generated destination, external file, or ownership-ambiguous object. Preserve
-such an object, but never promote it to canonical input merely because it exists.
-Before any mass adoption or replacement, apply the divergent-object adjudication
-in [preflight before effects](../runtime/preflight-before-effects.md).
+Preserve unmanifested provider output, generated destinations, external files,
+and ambiguous objects without promoting them to canonical input. Bulk adoption
+or replacement requires [divergent-object adjudication](../runtime/preflight-before-effects.md).
 
-Never stash, reset, restore, revert, rebase, force-push, roll back code or
-history, or replace a shared file to remove work. Correct defects forward at
-their canonical owner. Transaction rollback may undo only effects created by
-the failing invocation; it never discards adopted current content.
+Never stash, reset, restore, revert, rebase, force-push, roll back code/history,
+or replace shared files to remove work. Fix the canonical owner forward.
+Transaction rollback may undo only its failing invocation's effects.
 
 A severe conflict exists only when two current intentions require incompatible
 behavior or when preserving both would violate a higher authority. Stop before
 the conflicting effect, present both intentions and their evidence, and ask the
 operator one precise question. Ordinary overlap, divergence, a red gate, or
 integration work is not severe: reconcile, validate, and continue forward.
+Unexpected state requires fresh preflight; it proves no actor or intention and
+never authorizes an unchanged retry.
 
 Compose this invariant with [shared-file coordination](multiagent-edit-breadcrumb.md),
 [operator precedence](operator-precedence.md),

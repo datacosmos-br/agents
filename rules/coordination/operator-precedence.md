@@ -9,5 +9,7 @@ While orchestration and tracker runtimes are suspended, do not invoke them.
 Create no substitute tracker or ledger, preserve implementation evidence only
 in separately authorized Git/PR/CI, and leave phase closure open.
 
-When authority genuinely conflicts or an action is destructive, ask one precise
-question first. Otherwise continue. Never guess on ambiguity.
+Exact operator authorization naming targets, disposition, recovery, and
+validation survives interruption, divergence, and red gates; re-preflight and
+continue. Ask only when the effect expands beyond it or two evidenced current
+intentions conflict. State alone proves no intention, actor, or process.
