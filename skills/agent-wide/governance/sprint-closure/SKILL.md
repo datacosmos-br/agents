@@ -14,6 +14,11 @@ post-merge proof, and tracker contract all hold. During tracker suspension,
 create no substitute tracker or ledger, preserve evidence only in separately
 authorized Git/PR/CI, and keep the increment open.
 
+Review and check closure is part of the increment: locate unresolved review
+threads and failing checks with
+`skills/tool/pr-sheriff/scripts/pr_triage.py` (pr-sheriff), answer each with
+runtime evidence, and land before claiming closure.
+
 External-token validations excluded before invocation are recorded as `NOT
 EXECUTED` and do not block closure; they are never represented as green. Once
 invoked, their raw credential or runtime failure blocks closure normally. This
