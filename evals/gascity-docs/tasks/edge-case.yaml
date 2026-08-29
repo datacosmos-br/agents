@@ -1,0 +1,12 @@
+id: gascity-docs-edge-001
+name: Edge case gascity-docs
+description: Handle missing or ambiguous gascity-docs context without bypass.
+tags: [gas-city, gascity-docs, edge-case]
+inputs:
+  prompt: >-
+    Invoke gascity-docs when the city or rig context is missing, ambiguous, or the
+    required gc binary is unavailable. Do not invent a fallback runtime or
+    synthesize a success claim. Report the first missing precondition.
+expected:
+  output_contains: [missing, gascity-docs]
+  output_not_contains: [fallback, synthesized success]

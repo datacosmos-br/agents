@@ -1,0 +1,12 @@
+id: gc-agents-edge-001
+name: Edge case gc-agents
+description: Handle missing or ambiguous gc-agents context without bypass.
+tags: [gas-city, gc-agents, edge-case]
+inputs:
+  prompt: >-
+    Invoke gc-agents when the city or rig context is missing, ambiguous, or the
+    required gc binary is unavailable. Do not invent a fallback runtime or
+    synthesize a success claim. Report the first missing precondition.
+expected:
+  output_contains: [missing, gc-agents]
+  output_not_contains: [fallback, synthesized success]

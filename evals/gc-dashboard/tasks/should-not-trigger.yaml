@@ -1,0 +1,11 @@
+id: gc-dashboard-negative-001
+name: Should not trigger gc-dashboard
+description: Do not force gc-dashboard onto unrelated work.
+tags: [gas-city, gc-dashboard, anti-trigger]
+inputs:
+  prompt: >-
+    Write a short product announcement for a new feature. Do not use gc dashboard
+    or Gas City orchestration in the response; the requested output is prose,
+    not an agent workflow.
+expected:
+  output_not_contains: [gc dashboard, Gas City]

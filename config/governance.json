@@ -72,6 +72,7 @@
     "context-lifecycle": ["rule:coordination/session-governance", "skill:context-canary", "skill:strategic-compact"],
     "execution-traceability": ["rule:git/gitflow-branch-pr", "rule:workflow/beads-traceability"],
     "cli-usability": ["rule:workflow/canonical-commands"],
-    "safe-deletion": ["rule:runtime/zero-residue", "skill:safe-delete"]
+    "safe-deletion": ["rule:runtime/zero-residue", "skill:safe-delete"],
+    "gas-city-operations": ["skill:gascity-docs", "skill:gc-agents", "skill:gc-city", "skill:gc-dashboard", "skill:gc-dispatch", "skill:gc-mail", "skill:gc-rigs", "skill:gc-work"]
   }
 }

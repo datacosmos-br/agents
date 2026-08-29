@@ -39,6 +39,7 @@ _EXPECTED_GUARANTEES = frozenset(
         "execution-traceability",
         "finish-through-closure",
         "fix-forward-collaboration",
+        "gas-city-operations",
         "generated-boundaries",
         "governance-artifact-composition",
         "history-evidence",
