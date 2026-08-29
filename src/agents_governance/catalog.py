@@ -550,23 +550,6 @@ class Catalog:
     def render_inventory(self) -> str:
         return json.dumps(self.inventory_payload(), indent=2, sort_keys=True) + "\n"
 
-    def require_inventory_lock(self) -> None:
-        """Raise unless the checked-in lock exactly matches canonical discovery."""
-
-        path = self.root / "skills.lock.json"
-        if path.is_symlink() or not path.is_file():
-            raise FileNotFoundError(
-                f"canonical skill inventory lock is missing: {path}"
-            )
-        current = path.read_text(encoding="utf-8")
-        loaded = json.loads(current)
-        expected_payload = self.inventory_payload()
-        expected_text = json.dumps(expected_payload, indent=2, sort_keys=True) + "\n"
-        if loaded != expected_payload or current != expected_text:
-            raise ValueError(
-                f"canonical skill inventory lock differs from discovery: {path}"
-            )
-
 
 __all__ = (
     "NON_PORTABLE_PROJECT_REFERENCE",

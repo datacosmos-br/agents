@@ -13,6 +13,9 @@ agents.bkp/
 .cache/
 /$HOME/
 
+# Generated skill inventory lock — superseded by provenance-backed discovery.
+/skills.lock.json
+
 # Existing checkout runtime/ephemeral state only; symlink adoption is prohibited.
 # (gt town-level mayor/refinery/witness live in ~/gt, NOT here, so not ignored here):
 /.beads/
@@ -25,3 +28,6 @@ agents.bkp/
 *.db
 .beads-credential-key
 .beads/proxieddb/
+.gqlout.json
+.poolside/
+.poolside/

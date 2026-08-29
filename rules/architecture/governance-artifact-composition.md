@@ -6,7 +6,6 @@ globs:
   - "evals/**"
   - "rules/**/*.md"
   - "skills/**"
-  - "skills.lock.json"
 metadata:
   aihub.tags: '["route:project"]'
 ---

@@ -127,6 +127,5 @@ def test_governance_artifact_composition_is_project_scoped() -> None:
         "evals/**",
         "rules/**/*.md",
         "skills/**",
-        "skills.lock.json",
     } == set(rule.globs)
     assert "historical artifacts are evidence only" in rule.body
