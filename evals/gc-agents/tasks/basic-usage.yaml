@@ -1,0 +1,12 @@
+id: gc-agents-happy-001
+name: Happy path gc-agents
+description: Exercise canonical gc agents workflow.
+tags: [gas-city, gc-agents, happy-path]
+inputs:
+  prompt: >-
+    Demonstrate the canonical gc-agents workflow using gc agents against the
+    current project. Preflight the city/rig context, run the primary command
+    via the project's declared facade, and report exact command, cwd, exit
+    code, and decisive output without bypass or fallback.
+expected:
+  output_contains: [gc, agents]

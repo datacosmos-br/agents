@@ -1,0 +1,12 @@
+id: gc-dashboard-happy-001
+name: Happy path gc-dashboard
+description: Exercise canonical gc dashboard workflow.
+tags: [gas-city, gc-dashboard, happy-path]
+inputs:
+  prompt: >-
+    Demonstrate the canonical gc-dashboard workflow using gc dashboard against the
+    current project. Preflight the city/rig context, run the primary command
+    via the project's declared facade, and report exact command, cwd, exit
+    code, and decisive output without bypass or fallback.
+expected:
+  output_contains: [gc, dashboard]

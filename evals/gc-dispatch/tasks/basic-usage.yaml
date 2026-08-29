@@ -1,0 +1,12 @@
+id: gc-dispatch-happy-001
+name: Happy path gc-dispatch
+description: Exercise canonical gc sling workflow.
+tags: [gas-city, gc-dispatch, happy-path]
+inputs:
+  prompt: >-
+    Demonstrate the canonical gc-dispatch workflow using gc sling against the
+    current project. Preflight the city/rig context, run the primary command
+    via the project's declared facade, and report exact command, cwd, exit
+    code, and decisive output without bypass or fallback.
+expected:
+  output_contains: [gc, sling]

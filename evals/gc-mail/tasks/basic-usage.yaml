@@ -1,0 +1,12 @@
+id: gc-mail-happy-001
+name: Happy path gc-mail
+description: Exercise canonical gc mail workflow.
+tags: [gas-city, gc-mail, happy-path]
+inputs:
+  prompt: >-
+    Demonstrate the canonical gc-mail workflow using gc mail against the
+    current project. Preflight the city/rig context, run the primary command
+    via the project's declared facade, and report exact command, cwd, exit
+    code, and decisive output without bypass or fallback.
+expected:
+  output_contains: [gc, mail]

@@ -1,0 +1,12 @@
+id: gc-city-edge-001
+name: Edge case gc-city
+description: Handle missing or ambiguous gc-city context without bypass.
+tags: [gas-city, gc-city, edge-case]
+inputs:
+  prompt: >-
+    Invoke gc-city when the city or rig context is missing, ambiguous, or the
+    required gc binary is unavailable. Do not invent a fallback runtime or
+    synthesize a success claim. Report the first missing precondition.
+expected:
+  output_contains: [missing, gc-city]
+  output_not_contains: [fallback, synthesized success]
