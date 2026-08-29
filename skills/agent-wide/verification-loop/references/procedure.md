@@ -71,6 +71,17 @@ Generated effects must stage on the destination filesystem, verify completely,
 and publish atomically. Cleanup may attach a secondary failure only while
 re-raising the original cause. Leave no generated or temporary residue.
 
+## A shrinking failure count is not evidence of a correct fix
+
+When a change is supposed to make a whole class pass and the class only gets
+smaller, that is evidence the change does not do what it claims — not evidence
+of a second, independent cause. Prove the mechanism on an input where it
+matters before accepting the remainder as a new problem: a normalization that
+is meant to make two representations equal must be shown to produce the same
+result from both, on a case where they actually differ. A gate that turns green
+because the affected inputs were too small to expose the mechanism proves
+nothing about it.
+
 ## Report
 
 For every attempted stage record the exact command, working directory, exit

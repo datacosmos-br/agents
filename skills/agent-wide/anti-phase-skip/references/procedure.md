@@ -53,7 +53,9 @@ Complete these steps in order, repeating invalidated evidence after every edit:
 6. Commit the exact phase scope, push normally, and open or update a PR against
    the configured integration branch. Resolve every review thread and required
    check, obtain the required independent approval, and merge through the
-   approved merge strategy. Each red check or actionable review finding starts
+   approved merge strategy. An operator statement that no independent reviewer
+   exists, together with an explicit administrative-merge authorization,
+   replaces that approval row and nothing else. Each red check or actionable review finding starts
    another owner-correction, publish, and invalidated-gate cycle inside this same
    phase; it never terminates the phase or authorizes another task.
 7. Update the integration checkout to the merged SHA. Run the real public runtime
@@ -81,7 +83,9 @@ An ordinary gate failure is not an external blocker: stop that invocation, fix
 its root cause at the owner, and rerun from the invalidated stage. If an
 authorized external dependency or independent approval remains unavailable only
 after every technical action is exhausted, keep the phase active, report the
-exact evidence, and request the required owner/operator action. Do not switch
+exact evidence, and request the required owner/operator action. The operator may
+resolve that request by authorizing an administrative merge; record the approval
+as operator-authorized and continue with every other gate intact. Do not switch
 tasks unless the operator explicitly pauses or reorders the phase.
 
 When the canonical tracker is explicitly suspended, do not invoke it or create

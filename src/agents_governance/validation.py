@@ -147,6 +147,8 @@ def _require_task(
             raise ValueError(f"{task.path}: fixture must be a regular file: {raw_path}")
     if fixture_root.exists():
         for fixture in sorted(fixture_root.rglob("*")):
+            if "__pycache__" in fixture.parts:
+                continue
             if fixture.is_symlink():
                 raise ValueError(f"fixture must be physical: {fixture}")
             if fixture.is_file() and _GENERIC_HELLO.search(

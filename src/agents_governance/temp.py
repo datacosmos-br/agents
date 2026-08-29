@@ -68,11 +68,6 @@ def _configured_path(raw: object, config_dir: Path, context: str) -> Path:
 def _repository(path: Path) -> None:
     if not path.is_dir():
         raise ValueError(f"registered repository must be a physical directory: {path}")
-    git = path / ".git"
-    if not git.is_dir() or git.is_symlink():
-        raise ValueError(
-            f"registered repository must own a physical .git directory: {path}"
-        )
     if _inside(path, SYSTEM_TEMP):
         raise ValueError(f"repositories under /tmp are prohibited: {path}")
 

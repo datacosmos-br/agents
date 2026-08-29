@@ -51,6 +51,7 @@ shell: ## validate shell scripts and GitHub workflows
 
 build: ## build source and wheel artifacts
 	$(call BANNER,build · sdist + wheel)
+	@find config skills rules commands agents workflows docs -name __pycache__ -type d -exec rm -rf {} +
 	@uv build
 
 test: ## execute the complete Python test suite
