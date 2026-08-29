@@ -9,4 +9,4 @@ inputs:
     via the project's declared facade, and report exact command, cwd, exit
     code, and decisive output without bypass or fallback.
 expected:
-  output_contains: [gc, dashboard]
+  output_contains: [dashboard, API server, web UI, realtime monitoring, gc]
