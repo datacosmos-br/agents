@@ -12,7 +12,7 @@ config:
   executor: copilot-sdk
   model: aihub-primary
   skill_directories:
-  - ../../skills/agent-wide/anti-phase-skip
+  - ../../skills/agent-wide/governance/anti-phase-skip
   required_skills:
   - anti-phase-skip
 graders:

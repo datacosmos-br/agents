@@ -12,7 +12,7 @@ config:
   executor: copilot-sdk
   model: aihub-primary
   skill_directories:
-  - ../../skills/agent-wide/safe-delete
+  - ../../skills/agent-wide/deletion/safe-delete
   required_skills:
   - safe-delete
 graders:

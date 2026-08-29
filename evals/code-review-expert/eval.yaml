@@ -12,7 +12,7 @@ config:
   executor: copilot-sdk
   model: aihub-primary
   skill_directories:
-  - ../../skills/project-wide/code-review-expert
+  - ../../skills/project-wide/refactoring/code-review-expert
   required_skills:
   - code-review-expert
 graders:

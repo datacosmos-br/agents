@@ -519,7 +519,7 @@ Resolver o conflito arquitetural entre **System A** (ai-hub `ssot-relink`
 
 O `~/agents` já tem duas skills de auto-learning determinístico:
 
-**1. `operator-correction-learning`** (`skills/agent-wide/operator-correction-learning/SKILL.md`):
+**1. `operator-correction-learning`** (`skills/agent-wide/governance/operator-correction-learning/SKILL.md`):
 - Personal, `updates:manual`, `usage:router`
 - Carrega ALL 7 policy tags (atomic-effects, causal-subprocess, fail-loud,
   no-fallback, preflight-before-effects, strict-execution, zero-residue)
@@ -528,7 +528,7 @@ O `~/agents` já tem duas skills de auto-learning determinístico:
   projections), remove semantic opposites, add regression scenario, repeat
   contradiction search, keep suspended runtime untouched
 
-**2. `doc-drift`** (`skills/project-wide/doc-drift/SKILL.md`):
+**2. `doc-drift`** (`skills/project-wide/documentation/doc-drift/SKILL.md`):
 - Project-wide, `updates:manual`, `usage:on-demand`
 - Audita documentation vs code/config/upstream source
 - `evals/doc-drift/eval.yaml`: grader força agente a: compare claims with

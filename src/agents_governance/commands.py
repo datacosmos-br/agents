@@ -310,8 +310,14 @@ def audit_command_specs(
         if path.is_symlink() or not stat.S_ISREG(metadata.st_mode):
             raise ValueError(f"command must be a physical regular file: {path}")
         rel = path.relative_to(command_root)
-        if not _SLUG.fullmatch(rel.parent.name) or path.suffix != ".md" or _SLUG.fullmatch(path.stem) is None:
-            raise ValueError(f"command must use commands/<category>/<slug>.md layout: {path}")
+        if (
+            not _SLUG.fullmatch(rel.parent.name)
+            or path.suffix != ".md"
+            or _SLUG.fullmatch(path.stem) is None
+        ):
+            raise ValueError(
+                f"command must use commands/<category>/<slug>.md layout: {path}"
+            )
         spec = _load_command(path)
         if spec.name in collisions:
             raise ValueError(

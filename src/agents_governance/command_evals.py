@@ -202,13 +202,19 @@ def audit_command_evals(
     by_name = {command.name: command for command in commands}
     if len(by_name) != len(commands):
         raise ValueError("command input contains duplicate names")
-    entries = tuple(sorted(eval_root.iterdir(), key=lambda item: item.name))
-    if {entry.name for entry in entries} != set(by_name):
+    entries = tuple(sorted(eval_root.rglob("eval.yaml"), key=lambda item: item.name))
+    by_dir = {}
+    for path in entries:
+        command_name = path.parent.name
+        by_dir[command_name] = path
+    if set(by_dir.keys()) != set(by_name.keys()):
         raise ValueError(
             "command eval directories must exactly equal command inventory"
         )
     specs: list[CommandEvalSpec] = []
-    for directory in entries:
+    for command_name in sorted(by_dir.keys()):
+        path = by_dir[command_name]
+        directory = path.parent
         metadata = directory.lstat()
         if directory.is_symlink() or not stat.S_ISDIR(metadata.st_mode):
             raise ValueError(f"command eval suite must be physical: {directory}")
@@ -217,10 +223,10 @@ def audit_command_evals(
             raise ValueError(
                 f"command eval suite must contain only eval.yaml: {directory}"
             )
-        path = files[0]
-        if path.is_symlink() or not path.is_file():
-            raise ValueError(f"command eval source must be physical: {path}")
-        specs.append(_load_spec(path, by_name[directory.name]))
+        eval_path = files[0]
+        if eval_path.is_symlink() or not eval_path.is_file():
+            raise ValueError(f"command eval source must be physical: {eval_path}")
+        specs.append(_load_spec(eval_path, by_name[command_name]))
     return tuple(specs)
 
 

@@ -238,7 +238,7 @@ Every resulting central or local bundle is judged as a new current skill. Its
 historical acceptance does not grandfather it. The review starts from the
 [engineering core](../../../rules/architecture/engineering-core.md),
 [strict execution](../../../rules/runtime/strict-execution.md), and
-[skill-governance](../../../skills/agent-wide/skill-governance/SKILL.md) owners,
+[skill-governance](../../../skills/agent-wide/governance/skill-governance/SKILL.md) owners,
 then applies their current YAGNI, SSOT, SOLID-at-the-changed-boundary, DRY,
 simplification, fail-loud, no-fallback, atomic-effects, causal-subprocess,
 required-environment, anti-hardcode, security, safe-deletion, zero-residue,

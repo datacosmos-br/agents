@@ -181,9 +181,7 @@ def test_external_token_workflows_are_not_offline_landing_gates() -> None:
         ROOT
         / "skills"
         / "agent-wide"
-        / "verification-loop"
-        / "references"
-        / "procedure.md",
+        / "verification" / "verification-loop" / "references" / "procedure.md",
         ROOT / "docs" / "execution" / "master-v7" / "06-validation-and-landing.md",
     )
     for path in contracts:

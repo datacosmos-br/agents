@@ -12,7 +12,7 @@ config:
   executor: copilot-sdk
   model: aihub-primary
   skill_directories:
-  - ../../skills/project-wide/eval-harness
+  - ../../skills/project-wide/testing/eval-harness
   required_skills:
   - eval-harness
 metrics:

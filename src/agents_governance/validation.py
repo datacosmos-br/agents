@@ -170,7 +170,7 @@ def _require_eval_suites(
     for record in records:
         directory = eval_root / record.name
         suite = load_eval_suite(directory)
-        expected_directory = f"../../skills/{record.category.value}/{record.name}"
+        expected_directory = f"../../{record.directory.relative_to(root)}"
         if (
             suite.skill != record.name
             or suite.required_skills != (record.name,)
@@ -295,13 +295,14 @@ def _require_no_orphan_directories(root: Path, *, require_all_categories: bool) 
             raise ValueError(
                 f"skill category must be a physical directory: {category_root}"
             )
-        for directory in sorted(category_root.iterdir()):
+        for directory in sorted(category_root.rglob("*")):
             if not directory.is_dir() or directory.is_symlink():
-                raise ValueError(
-                    f"skill entry must be a physical directory: {directory}"
-                )
-            if not (directory / "SKILL.md").is_file():
-                raise ValueError(f"skill directory has no SKILL.md: {directory}")
+                continue
+            if (directory / "SKILL.md").is_file():
+                continue
+            if any(directory.iterdir()):
+                continue
+            raise ValueError(f"orphan directory has no SKILL.md: {directory}")
 
 
 def _validate_skill_catalog(
