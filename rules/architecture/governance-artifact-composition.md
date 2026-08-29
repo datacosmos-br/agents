@@ -1,7 +1,7 @@
 ---
 description: Editing canonical governance rules, skills, commands, evaluations, or their ownership map.
 globs:
-  - "commands/*.md"
+  - "commands/**/*.md"
   - "config/governance.json"
   - "evals/**"
   - "rules/**/*.md"

@@ -12,7 +12,7 @@ config:
   executor: copilot-sdk
   model: aihub-primary
   skill_directories:
-  - ../../skills/agent-wide/deep-research
+  - ../../skills/agent-wide/personal/deep-research
   required_skills:
   - deep-research
 metrics:

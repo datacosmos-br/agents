@@ -12,7 +12,7 @@ config:
   executor: copilot-sdk
   model: aihub-primary
   skill_directories:
-  - ../../skills/project-wide/simplify
+  - ../../skills/project-wide/refactoring/simplify
   required_skills:
   - simplify
 graders:

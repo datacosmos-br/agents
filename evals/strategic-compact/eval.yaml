@@ -12,7 +12,7 @@ config:
   executor: copilot-sdk
   model: aihub-primary
   skill_directories:
-  - ../../skills/agent-wide/strategic-compact
+  - ../../skills/agent-wide/planning/strategic-compact
   required_skills:
   - strategic-compact
 graders:

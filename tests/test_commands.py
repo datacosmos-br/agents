@@ -28,9 +28,10 @@ def _write_command(
     argument_hint: str | None = "<service and approved target>",
     tags: str = PROJECT_TAGS,
     body: str = "# Deploy service\n\nUse $ARGUMENTS as the approved target.\n",
+    subdir: str = "implementation",
 ) -> Path:
-    commands = root / "commands"
-    commands.mkdir(exist_ok=True)
+    commands = root / "commands" / subdir
+    commands.mkdir(parents=True, exist_ok=True)
     hint = f"argument-hint: {argument_hint!r}\n" if argument_hint is not None else ""
     path = commands / f"{name}.md"
     path.write_text(
@@ -108,8 +109,9 @@ def test_schema_stops_on_the_first_defect(
 def test_discovery_rejects_the_first_noncanonical_entry(tmp_path: Path) -> None:
     commands = tmp_path / "commands"
     commands.mkdir()
-    (commands / "nested").mkdir()
-    (commands / "registry.json").write_text("{}\n", encoding="utf-8")
+    impl = commands / "implementation"
+    impl.mkdir()
+    (impl / "broken-link.md").symlink_to("/nonexistent")
 
     with pytest.raises(ValueError, match="physical regular file"):
         audit_command_specs(tmp_path)
@@ -220,5 +222,5 @@ def test_all_canonical_commands_validate_without_registry() -> None:
     specs = audit_command_specs(root)
 
     assert {command.name for command in specs} == {
-        path.stem for path in (root / "commands").glob("*.md")
+        path.stem for path in (root / "commands").rglob("*.md")
     }

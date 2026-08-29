@@ -12,7 +12,7 @@ config:
   executor: copilot-sdk
   model: aihub-primary
   skill_directories:
-  - ../../skills/project-wide/extermination-mode
+  - ../../skills/project-wide/security/extermination-mode
   required_skills:
   - extermination-mode
 graders:

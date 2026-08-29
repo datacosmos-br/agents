@@ -375,11 +375,14 @@ class Catalog:
         names: set[str] = set()
         for skill_file in skill_files:
             relative = skill_file.relative_to(skills_root)
-            if len(relative.parts) != 3:
+            if len(relative.parts) not in (3, 4):
                 raise ValueError(
-                    f"{skill_file}: skill path must be <category>/<slug>/SKILL.md"
+                    f"{skill_file}: skill path must be <category>/<slug>/SKILL.md or <category>/<subcategory>/<slug>/SKILL.md"
                 )
-            raw_category, slug, filename = relative.parts
+            if len(relative.parts) == 3:
+                raw_category, slug, filename = relative.parts
+            else:
+                raw_category, _subcategory, slug, filename = relative.parts
             if filename != "SKILL.md" or skill_file.is_symlink():
                 raise ValueError(
                     f"{skill_file}: skill source must be physical SKILL.md"

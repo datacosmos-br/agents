@@ -12,7 +12,7 @@ config:
   executor: copilot-sdk
   model: aihub-primary
   skill_directories:
-  - ../../skills/agent-wide/investor-materials
+  - ../../skills/agent-wide/personal/investor-materials
   required_skills:
   - investor-materials
 graders:

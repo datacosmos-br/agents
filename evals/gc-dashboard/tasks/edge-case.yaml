@@ -1,0 +1,12 @@
+id: gc-dashboard-edge-001
+name: Edge case gc-dashboard
+description: Handle missing or ambiguous gc-dashboard context without bypass.
+tags: [gas-city, gc-dashboard, edge-case]
+inputs:
+  prompt: >-
+    Invoke gc-dashboard when the city or rig context is missing, ambiguous, or the
+    required gc binary is unavailable. Do not invent a fallback runtime or
+    synthesize a success claim. Report the first missing precondition.
+expected:
+  output_contains: [missing, gc-dashboard]
+  output_not_contains: [fallback, synthesized success]

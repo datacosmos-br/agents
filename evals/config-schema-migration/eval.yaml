@@ -12,7 +12,7 @@ config:
   executor: copilot-sdk
   model: aihub-primary
   skill_directories:
-  - ../../skills/project-wide/config-schema-migration
+  - ../../skills/project-wide/configuration/config-schema-migration
   required_skills:
   - config-schema-migration
 graders:

@@ -1,6 +1,6 @@
-# `~/.agents` — canonical agent governance
+# `~/agents` — canonical agent governance
 
-`~/.agents` is the sole owner of universal skills, rules, commands, agent
+`~/agents` is the sole owner of universal skills, rules, commands, agent
 profiles, validation, and projection policy. AI Hub may configure or invoke this
 authority; it does not regenerate or compete with it. Legacy third-party skill
 sources are retired: useful generic capabilities are agents-owned skills, and
@@ -49,7 +49,7 @@ The invocation project's physical Git root receives only:
 5. detected or explicitly selected project-wide agents on supported provider
    surfaces.
 
-Orchestrator, tracker, AI Hub, `~/.agents`, operator workflow, and repository-local
+Orchestrator, tracker, AI Hub, `~/agents`, operator workflow, and repository-local
 development contracts are private and must never enter generic project
 projections. External skill sources, including FLEXT, are outside this
 increment.
@@ -62,7 +62,7 @@ Install the facade from that physical checkout so the executable and catalog
 share the same authority:
 
 ```bash
-cd ~/.agents
+cd ~/agents
 uv tool install --force --editable .
 ```
 

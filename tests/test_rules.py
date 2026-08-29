@@ -122,7 +122,7 @@ def test_governance_artifact_composition_is_project_scoped() -> None:
     assert rule.activation is RuleActivation.PATH_SCOPED
     assert rule.distribution is RuleDistribution.PROJECT
     assert {
-        "commands/*.md",
+        "commands/**/*.md",
         "config/governance.json",
         "evals/**",
         "rules/**/*.md",

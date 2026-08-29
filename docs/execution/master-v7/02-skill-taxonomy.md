@@ -82,7 +82,7 @@ aliases.
 ### Convert to commands
 
 These six artifacts expose explicit command invocation, argument, scaffold, or
-terminal-output behavior and move to `commands/<slug>.md`:
+terminal-output behavior and move to `commands/<category>/<slug>.md`:
 
 - `add-language-rules`
 - `database-migration`

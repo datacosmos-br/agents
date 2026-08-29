@@ -18,3 +18,15 @@ Do not load a missing value from a file, shell profile, keyring, service,
 alternate name, inherited compatibility alias, prompt, or error-triggered default.
 Do not silently trim, coerce, repair, or substitute it. Never print secret
 values, derived fingerprints, or full environments in failure evidence.
+
+## One credential, one variable, every consumer
+
+A credential that authenticates one external service is read from a single
+variable shared by every project and every tool that needs it. A tool-scoped
+alias of the same credential is a prohibited compatibility alias, even when the
+tool documents it: the tool is configured to read the shared variable instead.
+
+The consequence of an absent credential is the tool's own declared failure, not
+a degraded mode. A tool that silently continues unauthenticated — with a lower
+quota, reduced verification, or unsigned artifacts — is failing quietly; require
+the variable at its boundary so the workflow stops instead.

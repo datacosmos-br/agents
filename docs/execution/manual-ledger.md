@@ -9,7 +9,7 @@ suspended.
 ## Active increment
 
 - State: `IN_PROGRESS`
-- Repository: `/home/marlonsc/.agents`
+- Repository: `~/.agents`
 - Branch: `feat/agents-skill-distribution`
 - Integration branch: `dev`
 - Tracker/orchestration runtime: suspended; do not invoke it
@@ -167,7 +167,7 @@ suspended.
 | `make static` | 1 | Ruff/format passed; Pyright reported 12 errors in `keyring.py`; Mypy did not run. |
 | `make static` after typed keyring cutover | 0 | Ruff, format, Pyright, and Mypy passed with zero errors or warnings. |
 | `make test` | 1 | 429 passed; only `skills.lock.json: inventory-lock-drift` failed. |
-| `environment-d-loader validate` plus Bash/Zsh/Fish `env` | 0 | Storage owner materialized `/home/marlonsc/tmp` and `/home/marlonsc/.cache/cargo` consistently. |
+| `environment-d-loader validate` plus Bash/Zsh/Fish `env` | 0 | Storage owner materialized `~/tmp` and `~/.cache/cargo` consistently. |
 | Focused keyring/environment/temp/CLI tests | 0 | 100 passed in managed `.test-tmp` scratch. |
 | `make test PYTEST_ARGS=tests/test_cli.py` | 0 | 17 passed, including canonical audit check/write/drift behavior. |
 | `make audit` | 1 | Canonical `inventory-lock-drift`; write intentionally deferred until the last skill edit. |
@@ -241,7 +241,7 @@ suspended.
 | Plan 1 pre-edit audit: final six `agent-wide` bundles | — | `skill-governance`, `strategic-compact`, and `summarization` need explicit strict ownership and stronger zero-effect eval assertions; `sprint-closure` and `verification-loop` embed stale option-bearing CLI and private owner names; `video-editing` embeds a fixed multi-provider/model pipeline, alternate services, manual finalization, and partial intermediate effects. |
 | Plan 1 review: final six `agent-wide` bundles | — | Added strict owners and material/zero-effect/non-trigger assertions to skill governance, compaction, and summarization; rewrote closure and verification around current owner-discovered commands and optionless `agentsctl check`, first-causal-failure propagation, atomic closure, and zero residue; replaced the fixed video provider/model ladder with one fully preflighted selected toolchain, immutable sources, causal subprocesses, verified atomic publication, environment-only credentials, and zero intermediate residue. |
 | Plan 1 `agent-wide` residue audit | 0 | All 26 routers carry `policy:strict-execution`; no active option-bearing or removed `agentsctl` command remains. Two non-failure phrases containing `skip`/`catch` were still ambiguous, so they were replaced with explicit no-preview and detection wording before gates. Prohibitive mentions of `/tmp`, keyring, fallback, retries, warnings, skips, partial effects, profiles, and aliases remain only where the strict contract rejects them or fixtures exercise them. |
-| `make check` after the complete `agent-wide` review (RED) | 2 | The optionless Make owner invoked `agentsctl check` and stopped before skill validation with `ValueError: canonical skill inventory lock differs from discovery: /home/marlonsc/.agents/skills.lock.json`. Plan 1 prohibits regenerating or editing `skills.lock.json`; no later gate, commit, push, or next-batch edit was attempted. |
+| `make check` after the complete `agent-wide` review (RED) | 2 | The optionless Make owner invoked `agentsctl check` and stopped before skill validation with `ValueError: canonical skill inventory lock differs from discovery: ~/.agents/skills.lock.json`. Plan 1 prohibits regenerating or editing `skills.lock.json`; no later gate, commit, push, or next-batch edit was attempted. |
 | Operator authorization to regenerate `skills.lock.json` | — | The operator explicitly designated this lane as owner of the generated lock. Current `make audit` is read-only and no mutating lock command exists; regeneration will therefore compose the canonical `Catalog.render_inventory()` owner with the canonical destination-local `atomic_write_text()` publication primitive, without editing runtime or CLI. |
 | Canonical `skills.lock.json` regeneration | 0 | `Catalog.render_inventory()` was published with `atomic_write_text()`; resulting SHA-256 is `2124f5e36735491f02957f8479f6380f37dcf25c551fe4a8f439dffe49e0f365`. No runtime, CLI, schema, or Make source was edited. |
 | Canonical inventory fixed point | 0 | A second owner generation produced the identical SHA-256 `2124f5e36735491f02957f8479f6380f37dcf25c551fe4a8f439dffe49e0f365`; the lock converged without a second-byte change. |
@@ -282,7 +282,7 @@ suspended.
 | `video-editing` eval schema correction | — | Converted the material prompt to a folded YAML scalar so its colon is data, not mapping syntax; the task identity, inputs, requested artifact, and assertions are unchanged. |
 | Direct `agent-wide` Waza spec pass 17 (GREEN) | 0 | All 26 slugs covered 1/1 discovery requirements with their canonical eval suites. The loop parsed every suite and stopped nowhere; no semantic-coverage gap remains in the batch. |
 | Canonical Python validator observation during concurrent runtime cutover | 1 | `validate(Catalog(root))` did not reach skill validation because concurrent `agent_profiles` now returns a tuple while `validation.py` still dereferences `.findings`, raising `AttributeError`. Per operator correction, this runtime integration defect is evidence for the other lane, not a skill blocker; no runtime source was edited. |
-| `waza check skills/agent-wide/article-writing --format json` compatibility observation | 0 | Waza confirmed valid frontmatter, allowed fields, matching directory/name, links, and external eval discovery. Its submission-mode `ready:false` advisories require a 150-character prose description and an eval `metrics` field, contradicting the repository owners (12–96-character keyword descriptions and current local eval schema), so those generic advisories were not applied. |
+| `waza check skills/agent-wide/personal/article-writing --format json` compatibility observation | 0 | Waza confirmed valid frontmatter, allowed fields, matching directory/name, links, and external eval discovery. Its submission-mode `ready:false` advisories require a 150-character prose description and an eval `metrics` field, contradicting the repository owners (12–96-character keyword descriptions and current local eval schema), so those generic advisories were not applied. |
 | Direct catalog contract for `agent-wide` | 0 | `Catalog` parsed exactly 26 `agent-wide` records, every record carries `policy:strict-execution`, and `require_inventory_lock()` confirmed byte-exact canonical inventory without invoking Make or `agentsctl`. |
 | Scoped `git diff --check` for the `agent-wide` batch | 0 | No whitespace errors across `skills/agent-wide/**`, the 26 matching eval suites, authorized `skills.lock.json`, and the manual ledger; concurrent runtime/project-wide paths were excluded from the claim. |
 | Plan 1 transition to `project-wide` review | — | Skill-owned evidence for all 26 `agent-wide` bundles is green, but no batch commit/push is claimed because the active environment currently forbids Git operations. Review proceeds without a DONE declaration. Existing dirty `project-wide` paths will be treated as concurrent work: inspect and preserve them, never overwrite or attribute them without evidence. |
@@ -635,7 +635,7 @@ while unavailable. No phase is `DONE`.
   bypass the complete pipeline. The workflow and delivery-contract regression
   must add that exact source path to both events.
 - A read-only comparison resolved the severe projection conflict. The unmanaged
-  `/home/marlonsc/.claude/agents/chief-of-staff.md` differs from canonical
+  `~/.claude/agents/chief-of-staff.md` differs from canonical
   `agents/agent-wide/chief-of-staff.md`: it is Claude-specific, selects `opus`,
   hardcodes `SOUL.md`, and asserts unproved hook/rule guarantees, while the
   canonical source is provider-neutral and fail-closed. No file was changed.

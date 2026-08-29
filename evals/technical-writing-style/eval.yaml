@@ -12,7 +12,7 @@ config:
   executor: copilot-sdk
   model: aihub-primary
   skill_directories:
-  - ../../skills/project-wide/technical-writing-style
+  - ../../skills/project-wide/documentation/technical-writing-style
   required_skills:
   - technical-writing-style
 graders:

@@ -21,7 +21,7 @@ tokens:
       "docs/references/*.md": 15000
       "docs/prompts/*.md": 10000
       "docs/architecture/*.md": 10000
-      "skills/agent-wide/frontend-slides/STYLE_PRESETS.md": 3000
+      "skills/agent-wide/personal/frontend-slides/STYLE_PRESETS.md": 3000
       # Per-class SKILL.md budgets are derived by agentsctl from local tags;
       # config/skills.json owns numeric ceilings only. Waza remains the
       # independent 5k/15k file-ceiling gate.
@@ -29,3 +29,5 @@ tokens:
 
 paths:
   skills: skills
+  rules: rules
+  commands: commands

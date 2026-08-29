@@ -62,7 +62,7 @@ flowchart LR
 | Source models | Separate specs and discovery rules | Governance source | Provider files remain projections |
 | Validation | Type-specific schema, budget, eval, and safety gates | Validation/Waza owners | Native project gates remain required |
 | Projection | Typed adapter dispatch | Projection owner | Foreign destination content remains foreign |
-| Commands | Flat explicit source and independent size policy | `commands/` | Skill discovery remains skill-only |
+| Commands | Category-scoped explicit source and independent size policy | `commands/<category>/<slug>.md` | Skill discovery remains skill-only |
 
 ## Consequences
 

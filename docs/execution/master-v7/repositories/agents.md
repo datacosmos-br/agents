@@ -4,10 +4,9 @@
 
 | Field | Value |
 |---|---|
-| Predecessor source | Existing `/home/marlonsc/.agents` checkout, preserved after publication |
-| Governed successor source | Dedicated physical `agents` clone under `${HOME}/workspaces/agents-skill-sync` |
+| Canonical source | `~/agents`, the physical owner declared by the operator workspace contract |
+| Retired sources | The predecessor dotted checkout and every dedicated skill-sync clone; neither may be resolved by a consumer |
 | Integration branch | `dev` |
-| Future canonical source | `/home/marlonsc/agents` after final physical cutover |
 | Accepted migration baseline | 85 flat skills, one canonical command, flat agents |
 | Current work-lane inventory | Strictly discovered skills, commands, agents, rules, and their owned evaluations; counts are runtime output |
 | Remaining target | Complete provider/runtime proof and full landing cycle |
@@ -80,9 +79,9 @@ use a live model to make offline/unit/integration gates pass.
 Prove personal and isolated-project fixed points and run complete offline gates.
 When its external token is present and the workflow is selected, use exact
 `aihub-primary` for the live gate; otherwise record it as `NOT EXECUTED`, never
-green. Complete authorized review and merge-commit landing. The physical move
-to `~/agents` belongs to a separately approved future increment and is
-prohibited here.
+green. Complete authorized review and merge-commit landing. The physical owner is
+`~/agents`; retiring the predecessor path is part of this increment's zero-residue
+closure, not a later one.
 
 ## Required repository gates
 

@@ -12,7 +12,7 @@ config:
   executor: copilot-sdk
   model: aihub-primary
   skill_directories:
-  - ../../skills/project-wide/documentation-criteria
+  - ../../skills/project-wide/documentation/documentation-criteria
   required_skills:
   - documentation-criteria
 metrics:

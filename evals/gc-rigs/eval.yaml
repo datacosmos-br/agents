@@ -1,0 +1,31 @@
+name: gc-rigs-eval
+description: Managing Gas City rigs.
+skill: gc-rigs
+schemaVersion: '1.0'
+version: '1.0'
+config:
+  trials_per_task: 1
+  timeout_seconds: 300
+  parallel: false
+  max_attempts: 0
+  fail_fast: true
+  executor: copilot-sdk
+  model: aihub-primary
+  skill_directories:
+  - ../../skills/domain/gascity/gc-rigs
+  required_skills:
+  - gc-rigs
+graders:
+- type: prompt
+  name: gc-rigs-contract
+  config:
+    prompt: |-
+      Grade the gc-rigs response. Pass only when it uses gc rigs through the
+      canonical project facade, preserves strict execution, preflight, and
+      evidence contracts from the skill, and routes work through the declared
+      owner. Reject bypass, fallback, hardcode, or unobserved success.
+- type: behavior
+  name: bounded_execution
+  config: {max_duration_ms: 240000}
+tasks:
+- tasks/*.yaml

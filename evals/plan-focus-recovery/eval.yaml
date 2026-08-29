@@ -12,7 +12,7 @@ config:
   executor: copilot-sdk
   model: aihub-primary
   skill_directories:
-  - ../../skills/agent-wide/plan-focus-recovery
+  - ../../skills/agent-wide/planning/plan-focus-recovery
   required_skills:
   - plan-focus-recovery
 graders:
