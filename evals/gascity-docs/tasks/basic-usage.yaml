@@ -9,4 +9,4 @@ inputs:
     via the project's declared facade, and report exact command, cwd, exit
     code, and decisive output without bypass or fallback.
 expected:
-  output_contains: [gascity, docs]
+  output_contains: [project docs, writing conventions, IA structure, verification gates, gascity, docs]
