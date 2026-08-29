@@ -1569,7 +1569,7 @@
     {
       "category": "agent-wide",
       "class": "router",
-      "digest": "40430d864a642d44a2a7e96a809dc6981f593a1e8dcdb0bb41e883daa70ec010",
+      "digest": "1e1b042d4fcc4d7955dc6f9e8dfe18a2cf86ae59feeffb508f0f0d236c636de2",
       "distributions": [
         "personal"
       ],
