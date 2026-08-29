@@ -12,7 +12,7 @@ config:
   executor: copilot-sdk
   model: aihub-primary
   skill_directories:
-  - ../../skills/agent-wide/skill-governance
+  - ../../skills/agent-wide/governance/skill-governance
   required_skills:
   - skill-governance
 graders:

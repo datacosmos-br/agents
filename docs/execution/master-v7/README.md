@@ -20,7 +20,7 @@ formats; reading a source does not authorize importing its artifacts.
   those contracts.
 - Skills use distribution-first directories:
   `agent-wide`, `project-wide`, `technology`, `framework`, `tool`, and `domain`.
-- Commands remain explicitly invoked commands under flat `commands/<slug>.md`.
+- Commands are explicitly invoked commands under `commands/<category>/<slug>.md`.
   Their bodies may be substantially larger than skill routers and procedures.
 - Paths own distribution and primary grouping. Local tags describe orthogonal
   semantics. No hand-maintained catalog may enumerate artifact identity,
@@ -75,10 +75,9 @@ commits, pull requests, reviews, required checks, and CI after Git execution is
 separately authorized.
 
 While tracker closure is unavailable, a merged and post-merge-verified phase is
-`LANDED_VERIFIED`, not `DONE`. The physical source move from `~/.agents` to
-`~/agents`, provider-home installation, imports outside the exact approved
-successor, and service/timer installation remain separate increments; they
-cannot be smuggled into either cutover.
+`LANDED_VERIFIED`, not `DONE`. Provider-home installation, imports outside the
+exact approved successor, and service/timer installation remain separate
+increments; they cannot be smuggled into either cutover.
 
 ## Reading order
 

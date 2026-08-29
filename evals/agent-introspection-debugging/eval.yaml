@@ -12,7 +12,7 @@ config:
   executor: copilot-sdk
   model: aihub-primary
   skill_directories:
-  - ../../skills/agent-wide/agent-introspection-debugging
+  - ../../skills/agent-wide/personal/agent-introspection-debugging
   required_skills:
   - agent-introspection-debugging
 graders:

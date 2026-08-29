@@ -6,7 +6,7 @@
 |---|---|---|---|---|
 | Rule | Always or path scoped | Non-negotiable constraint | `rules/` and universal instruction owners | Rule composition and contradiction gates |
 | Skill | Model-selected or automatically applicable capability | Small router plus local procedure, references, scripts, and assets | `skills/<group>/<slug>/SKILL.md` | Skill schema, semantic Waza scenarios, BPE budgets |
-| Command | Explicit user invocation by name | Parameterized workflow or prompt; may be long | `commands/<slug>.md` | Command schema, argument renderer, provider adapter, runtime eval |
+| Command | Explicit user invocation by name | Parameterized workflow or prompt; may be long | `commands/<category>/<slug>.md` | Command schema, argument renderer, provider adapter, runtime eval |
 | Agent | Explicit or delegated executor | Persona, tool boundary, capabilities, routing policy | `agents/<distribution>/<slug>.md` | Agent schema, capability and delegation evals |
 | Hook | Declared event | Bounded deterministic reaction | Hook/config owner | Event, timeout, idempotence, and failure-propagation tests |
 | CLI/script | Explicit deterministic execution | Typed I/O and side effects | Source/config owner | Unit, integration, runtime, static, and security gates |

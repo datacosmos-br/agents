@@ -12,7 +12,7 @@ config:
   executor: copilot-sdk
   model: aihub-primary
   skill_directories:
-  - ../../skills/agent-wide/market-research
+  - ../../skills/agent-wide/personal/market-research
   required_skills:
   - market-research
 graders:

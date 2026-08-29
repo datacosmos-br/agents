@@ -12,7 +12,7 @@ config:
   executor: copilot-sdk
   model: aihub-primary
   skill_directories:
-  - ../../skills/project-wide/solid
+  - ../../skills/project-wide/architecture/solid
   required_skills:
   - solid
 graders:

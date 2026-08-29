@@ -12,7 +12,7 @@ config:
   executor: copilot-sdk
   model: aihub-primary
   skill_directories:
-  - ../../skills/agent-wide/brand-voice
+  - ../../skills/agent-wide/personal/brand-voice
   required_skills:
   - brand-voice
 graders:

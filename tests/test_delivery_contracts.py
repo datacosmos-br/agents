@@ -18,6 +18,9 @@ RUNTIME_VERBS = {
 }
 REQUIRED_MAKE_TARGETS = {
     "help",
+    "setup",
+    "fix",
+    "gen",
     "docs",
     "audit",
     "check",
@@ -178,6 +181,7 @@ def test_external_token_workflows_are_not_offline_landing_gates() -> None:
         ROOT
         / "skills"
         / "agent-wide"
+        / "verification"
         / "verification-loop"
         / "references"
         / "procedure.md",

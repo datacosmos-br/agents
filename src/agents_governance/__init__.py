@@ -1,3 +1,3 @@
-"""Governance automation owned by the universal ~/.agents repository."""
+"""Governance automation owned by the universal ~/agents repository."""
 
-__version__ = "0.2.0"
+__version__ = "0.2.1"

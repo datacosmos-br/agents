@@ -12,7 +12,7 @@ config:
   executor: copilot-sdk
   model: aihub-primary
   skill_directories:
-  - ../../skills/agent-wide/make-check
+  - ../../skills/agent-wide/personal/make-check
   required_skills:
   - make-check
 graders:

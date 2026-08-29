@@ -182,6 +182,22 @@ def _skill_suites(root: Path) -> tuple[EvalSuiteSpec, ...]:
     return tuple(load_eval_suite(directory) for directory in eval_directories)
 
 
+def _waza_token_audit(root: Path, executable: str) -> None:
+    """Run Waza token-ceiling checks across skills, rules, and commands."""
+
+    for label, path in (
+        ("skills", root / "skills"),
+        ("rules", root / "rules"),
+        ("commands", root / "commands"),
+    ):
+        print(f"waza tokens · {label} ({path})")
+        subprocess.run(
+            (executable, "tokens", "check", str(path), "--strict", "--no-update-check"),
+            cwd=root,
+            check=True,
+        )
+
+
 def evaluate(root: Path) -> None:
     inventory = _inventory(root)
     projection = load_projection_config(root)
@@ -195,12 +211,10 @@ def evaluate(root: Path) -> None:
         inventory.rules,
     )
     suites = _skill_suites(root)
-    commands: list[tuple[str, ...]] = [
-        (executable, "tokens", "check", str(root / "skills"), "--strict")
-    ]
+    _waza_token_audit(root, executable)
     for suite in suites:
         skill = inventory.catalog.record(suite.skill).directory
-        commands.append(
+        subprocess.run(
             (
                 executable,
                 "spec",
@@ -210,12 +224,13 @@ def evaluate(root: Path) -> None:
                 "--eval",
                 str(suite.path),
                 "--fail",
-            )
+            ),
+            cwd=root,
+            check=True,
         )
-    for command in commands:
-        subprocess.run(command, cwd=root, check=True)
     print(
-        f"evaluate: {len(suites)} skill specifications and {native.commands} command, "
+        f"evaluate: Waza token ceilings checked for skills, rules, and commands; "
+        f"{len(suites)} skill specifications and {native.commands} command, "
         f"{native.agents} agent, and {native.rules} rule artifacts verified offline"
     )
 

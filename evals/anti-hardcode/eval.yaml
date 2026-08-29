@@ -12,7 +12,7 @@ config:
   executor: copilot-sdk
   model: aihub-primary
   skill_directories:
-  - ../../skills/project-wide/anti-hardcode
+  - ../../skills/project-wide/configuration/anti-hardcode
   required_skills:
   - anti-hardcode
 graders:
