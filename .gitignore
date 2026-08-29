@@ -25,3 +25,4 @@ agents.bkp/
 *.db
 .beads-credential-key
 .beads/proxieddb/
+.gqlout.json
