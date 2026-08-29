@@ -9,17 +9,10 @@ Complete and validate that inventory before the first write. A missing owner,
 consumer, authority fact, evidence surface, or required gate stops the workflow
 without changing any owner, consumer, or ledger entry.
 
-Determine tracker mode from the active repository instructions before any
-tracker action:
-
-- **Available:** use only the declared canonical tracker owner. Verify identity
-  through its documented interface before recording or querying evidence. Never
-  select an endpoint, database, prefix, or substitute from inference.
-- **Explicitly suspended:** do not invoke the tracker or its runtime and do not
-  create an alternate database, tracker, or ledger. Preserve validation evidence
-  only in separately authorized canonical Git commit, PR, review, check, and CI
-  surfaces. Canonical tracker state remains unresolved, so do not claim tracker
-  closure or phase completion.
+Resolve the tracker mode from the active repository instructions before any
+tracker action, exactly as the tracker-traceability rule defines it; that rule
+owns the available and explicitly-suspended contracts and this procedure never
+restates them.
 
 When canonical tracking is explicitly restored, reconcile the landed Git/PR
 history through its owner and verify the resulting tracker state. Restoration
@@ -63,7 +56,10 @@ must not create a dual-tracking period.
    causal failure stops that invocation. Correct its owner and rerun every
    invalidated gate in the same reconciliation; never repeat unchanged,
    substitute a gate, publish partial evidence, or hand the red state off. Then
-   repeat the contradiction search and require zero active opposites.
+   repeat the contradiction search and require zero active opposites. For a
+   corrected operational state that search covers the frozen form of the old
+   value in every artifact that asserts it, not only the artifact the operator
+   named.
 7. When tracking is suspended, create no replacement state store and preserve
    command, working directory, exit code, decisive output, unresolved boundary,
    and next action only in separately authorized canonical Git/PR/CI evidence.
@@ -84,15 +80,15 @@ Classify what the correction is about before writing it anywhere.
 Write it for the general case the operator actually works in, never for the one
 incident: a rule that only fits the reporting scope is a hardcode. When the
 correction came from a specific project, restate it in the vocabulary of the
-declared primitives so every scope inherits it identically.
+declared primitives so every scope inherits it identically, and never import
+that project's own vocabulary into a rule other scopes must obey.
 
-## Prove zero active opposites
+Separate what the selected release actually does from what the operator wants
+done. State release behaviour only where the release enforces it; state the rest
+as operator discipline and say so, especially when the release permits the
+opposite.
 
-Search the semantic and textual opposites of the replacement across rules,
-skills, commands, documents, evaluations, generated projections, and the
-active work. For a corrected operational state, that search includes the frozen
-form of the old value in every artifact that asserts it, not only the artifact
-the operator named. Any surviving opposite blocks landing.
+## Checkpoint cadence
 
 At each checkpoint, compare new operator corrections with changes since the prior
 checkpoint. An unreconciled correction pauses the affected feature work until

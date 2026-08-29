@@ -94,7 +94,7 @@
     {
       "category": "agent-wide",
       "class": "router",
-      "digest": "9a2fa8c10c2d3db92f1860f7b05766dd15e12c03d7b4506f3d1310849eaad79d",
+      "digest": "5db59dd97e3305476b7e61ac707441bf8e8c39423dca3c37634df8c9afe56154",
       "distributions": [
         "personal"
       ],
@@ -1569,7 +1569,7 @@
     {
       "category": "agent-wide",
       "class": "router",
-      "digest": "1e1b042d4fcc4d7955dc6f9e8dfe18a2cf86ae59feeffb508f0f0d236c636de2",
+      "digest": "433ff39356d64603ab9c57e78c85c6b79bb5bdc8da3cf959d093071e49410cb1",
       "distributions": [
         "personal"
       ],

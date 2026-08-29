@@ -35,6 +35,6 @@ are labeled; project projection is limited to generic, detected-technology, and
 conditional FLEXT content; closure language requires both merged integration PR
 and canonical tracker closure.
 
-Tracker runtime is suspended. Create no substitute tracker or ledger, preserve
+While tracker runtime is suspended, create no substitute tracker or ledger, preserve
 documentation evidence only in separately authorized Git/PR/CI, and leave phase
 closure open.
