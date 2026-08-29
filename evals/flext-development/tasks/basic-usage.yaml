@@ -1,0 +1,16 @@
+id: flext-development-happy-path-001
+name: Change a generated FLEXT facade through its owner
+description: Route an architecture change through config, generator, and member-first landing.
+tags: [flext, facade, generation, happy-path]
+inputs:
+  prompt: |
+    This authorized repository selects the flext tag for FLEXT framework and
+    fleet development. Add a typed public service across one member and its
+    umbrella while preserving facade architecture and generated ownership. The
+    package root and managed project sections are generated, flext-infra owns the
+    generator, and the runtime dependency is flext-core. Explain the owner-correct
+    change, c/t/p/m/u and typed-data boundaries, member-before-gitlink order, real
+    public probe, fixed point, and native Make gates.
+expected:
+  output_contains: [flext-infra, flext-core, c, t, p, m, u, generated, member, gitlink, fixed point, Make, runtime]
+  output_not_contains: [hand-edit, fallback, compatibility alias, personal home, reverse runtime import]

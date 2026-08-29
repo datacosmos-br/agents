@@ -4,13 +4,14 @@
 
 | Field | Value |
 |---|---|
-| Working source | Existing `/home/marlonsc/.agents` checkout |
+| Predecessor source | Existing `/home/marlonsc/.agents` checkout, preserved after publication |
+| Governed successor source | Dedicated physical `agents` clone under `${HOME}/workspaces/agents-skill-sync` |
 | Integration branch | `dev` |
 | Future canonical source | `/home/marlonsc/agents` after final physical cutover |
 | Accepted migration baseline | 85 flat skills, one canonical command, flat agents |
 | Current work-lane inventory | Strictly discovered skills, commands, agents, rules, and their owned evaluations; counts are runtime output |
 | Remaining target | Complete provider/runtime proof and full landing cycle |
-| External imports | Prohibited |
+| External imports | Only the scope and semantic protocol authorized by the governed project-skill distribution successor |
 | Tracker/orchestration runtime | Suspended; no invocation or substitute |
 | Maximum attainable state during suspension | `LANDED_VERIFIED` |
 
@@ -24,7 +25,9 @@ Make this repository the single physical owner of personal/project agent
 capabilities, reusable project skills, explicit commands, composed rules,
 provider-native adapters, semantic Waza evaluation, and deterministic physical
 projections. Complete the current inventory before any foreign source is
-considered.
+considered. The predecessor inventory must be integrated and green on `main`
+before the approved successor analyzes foreign source. No other import is
+authorized.
 
 ## Open defects
 

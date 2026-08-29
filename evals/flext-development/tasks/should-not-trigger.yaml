@@ -1,0 +1,9 @@
+id: flext-development-should-not-trigger-001
+name: Leave unrelated Python code outside FLEXT
+description: Generic Python without FLEXT evidence must not activate framework law.
+tags: [anti-trigger, flext, negative-test]
+inputs:
+  prompt: Explain how to sort a standalone Python list. The repository has no
+    flext selection, dependency, manifest marker, generated facade, or fleet.
+expected:
+  output_not_contains: [c -> t -> p -> m -> u, flext-infra, fleet gitlink, FLEXT activation]

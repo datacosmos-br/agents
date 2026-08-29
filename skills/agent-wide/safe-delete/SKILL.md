@@ -46,7 +46,8 @@ rollback sequence.
 
 ## Massive-object and quarantine adjudication
 
-Before any effect on a large or recursively populated target, write a physical
+Before any effect on a large or recursively populated target, acquire its
+declared exclusive ownership or serialization primitive and write a physical
 manifest on the approved destination filesystem. Record the exact root identity,
 relative path, file type, mode, ownership, size, timestamps, literal symlink
 target, canonical owner classification, repository state, and live process/lock
@@ -57,11 +58,15 @@ special file stops before the first move.
 
 The approved quarantine must be a physical same-filesystem directory with mode
 `0700`; no path component, manifest, or destination may be a symlink. Create and
-validate the complete manifest before unlinking a source symlink. Then unlink
-only that link without dereferencing its recorded literal target. Move each
-approved top-level object by exact atomic rename and verify the active source is
-absent, the physical quarantine and manifest are complete, and every preserved
-or excluded object remains untouched.
+validate the complete manifest before mutation. Isolate each approved top-level
+object from the active namespace by exact atomic rename before reclaiming any
+internal entry. That rename is the publication commit point. Only inside the
+isolated quarantine may reclamation unlink an exact recorded symlink without
+dereferencing its literal target. A series of link removals is cleanup, never an
+atomic batch. Interruption preserves the manifest-backed quarantine, leaves the
+workflow failed, and requires a fresh preflight after correcting the cause.
+Verify the active source is absent, the physical quarantine and manifest are
+complete, and every preserved or excluded object remains untouched.
 
 ## Rules
 

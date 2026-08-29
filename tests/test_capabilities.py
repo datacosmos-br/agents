@@ -100,9 +100,17 @@ def test_sync_selects_projection_without_live_or_security(
         events.append("publication")
         publish(publications)
 
+    def record_lock(_destination: Path, _text: str) -> None:
+        events.append("lock")
+
     monkeypatch.setattr(runtime, "_catalog", lambda root: Catalog(root))
     inventory = runtime._inventory(ROOT)
-    monkeypatch.setattr(runtime, "_inventory", lambda _root: inventory)
+    monkeypatch.setattr(runtime, "Catalog", lambda _root: inventory.catalog)
+    monkeypatch.setattr(
+        runtime,
+        "_inventory_from_catalog",
+        lambda _root, _catalog: inventory,
+    )
     monkeypatch.setattr(
         runtime,
         "require_model_projection",
@@ -114,6 +122,7 @@ def test_sync_selects_projection_without_live_or_security(
         lambda _roots: _unexpected("security scanner"),
     )
     monkeypatch.setattr(runtime, "load_project_authorization", record_authorization)
+    monkeypatch.setattr(runtime, "text_publication", record_lock)
     monkeypatch.setattr(runtime, "run_atomic_publications", record_publication)
     home = tmp_path / "home"
     project = tmp_path / "project"
@@ -134,7 +143,7 @@ def test_sync_selects_projection_without_live_or_security(
 
     assert (home / ".codex" / "hooks.json").is_file()
     assert (project / ".codex" / "hooks.json").is_file()
-    assert events == ["authorization", "publication"]
+    assert events == ["authorization", "lock", "publication"]
     assert capsys.readouterr().out == (
         f"sync: personal and project projections converged at {project}\n"
     )
@@ -146,7 +155,13 @@ def test_sync_reuses_one_project_authorization_snapshot(
 ) -> None:
     monkeypatch.setattr(runtime, "_catalog", lambda root: Catalog(root))
     inventory = runtime._inventory(ROOT)
-    monkeypatch.setattr(runtime, "_inventory", lambda _root: inventory)
+    monkeypatch.setattr(runtime, "Catalog", lambda _root: inventory.catalog)
+    monkeypatch.setattr(
+        runtime,
+        "_inventory_from_catalog",
+        lambda _root, _catalog: inventory,
+    )
+    monkeypatch.setattr(runtime, "text_publication", lambda _path, _text: None)
     home = tmp_path / "home"
     project = tmp_path / "project"
     home.mkdir()
@@ -183,7 +198,13 @@ def test_sync_reports_an_unselected_project_as_a_non_target(
 ) -> None:
     monkeypatch.setattr(runtime, "_catalog", lambda root: Catalog(root))
     inventory = runtime._inventory(ROOT)
-    monkeypatch.setattr(runtime, "_inventory", lambda _root: inventory)
+    monkeypatch.setattr(runtime, "Catalog", lambda _root: inventory.catalog)
+    monkeypatch.setattr(
+        runtime,
+        "_inventory_from_catalog",
+        lambda _root, _catalog: inventory,
+    )
+    monkeypatch.setattr(runtime, "text_publication", lambda _path, _text: None)
     home = tmp_path / "home"
     project = tmp_path / "project"
     home.mkdir()

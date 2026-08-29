@@ -550,6 +550,41 @@
       "updates": "manual"
     },
     {
+      "category": "domain",
+      "class": "router",
+      "digest": "1b3b30a66235992133094dfb0c2dffca768a50e88d4e71a2bfceba6c4d6e2cea",
+      "distributions": [
+        "project-capability:domain:cosmos-gitops"
+      ],
+      "max_lines": 500,
+      "max_tokens": 500,
+      "name": "cosmos-gitops",
+      "owner": "agents",
+      "path": "skills/domain/cosmos-gitops",
+      "provenance": "agents-owned",
+      "tags": [
+        "activation:detected",
+        "detect:selected-tag:cosmos-gitops",
+        "domain:cosmos-gitops",
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:no-keyring",
+        "policy:preflight-before-effects",
+        "policy:required-environment",
+        "policy:strict-execution",
+        "policy:zero-residue",
+        "provenance:agents-owned",
+        "route:project",
+        "tool:argocd",
+        "tool:helm",
+        "updates:manual",
+        "usage:router"
+      ],
+      "updates": "manual"
+    },
+    {
       "category": "technology",
       "class": "router",
       "digest": "fe1abb626446f7fb5c8c326ce96120d3786f8d3658807101d811b5926f168cd1",
@@ -665,7 +700,7 @@
     {
       "category": "agent-wide",
       "class": "on_demand",
-      "digest": "b432a027f1431fdd5f5e0baa9f29639c90757239a1a73072a7dbab0d3cd899da",
+      "digest": "958c2b26e596c7568b41a76e668878a41767bf2072624fad93ae8cddb606efb5",
       "distributions": [
         "personal"
       ],
@@ -961,7 +996,7 @@
     {
       "category": "agent-wide",
       "class": "router",
-      "digest": "d08ba67b4b234d7ec2a3cd3b7ecb6f5f322e3645f74cf413af474ea3013850d7",
+      "digest": "9d1c3bb6a27f0c9e7cb009a46e80da52dbe2c31ec12e3b8ad0a98c1bb79dfa9d",
       "distributions": [
         "personal"
       ],
@@ -981,6 +1016,41 @@
         "policy:zero-residue",
         "provenance:agents-owned",
         "role:governance",
+        "updates:manual",
+        "usage:router"
+      ],
+      "updates": "manual"
+    },
+    {
+      "category": "framework",
+      "class": "router",
+      "digest": "4b8fd834ee1f6792091f9e78e3488117c6c919d449f5532bab60c1166be54122",
+      "distributions": [
+        "project-capability:framework:flext"
+      ],
+      "max_lines": 500,
+      "max_tokens": 500,
+      "name": "flext-development",
+      "owner": "agents",
+      "path": "skills/framework/flext-development",
+      "provenance": "agents-owned",
+      "tags": [
+        "activation:detected",
+        "detect:dependency:python:flext-core",
+        "detect:selected-tag:flext",
+        "framework:flext",
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:no-keyring",
+        "policy:preflight-before-effects",
+        "policy:required-environment",
+        "policy:strict-execution",
+        "policy:zero-residue",
+        "provenance:agents-owned",
+        "route:project",
+        "technology:python",
         "updates:manual",
         "usage:router"
       ],
@@ -1499,7 +1569,7 @@
     {
       "category": "agent-wide",
       "class": "router",
-      "digest": "1a16f32499f8f32f6454b768e947cc5e375e9928628c3af4947c30462c9dca88",
+      "digest": "40430d864a642d44a2a7e96a809dc6981f593a1e8dcdb0bb41e883daa70ec010",
       "distributions": [
         "personal"
       ],
@@ -1831,7 +1901,7 @@
     {
       "category": "agent-wide",
       "class": "on_demand",
-      "digest": "3f1616bbe99079f0e363a7d1381678218e1c291d7f6fc259f54dd4a5f6802e37",
+      "digest": "c04dad37d1d7bd5352ce75167b68dcf1f4014d239305dda1cd9799a1ef9af2d0",
       "distributions": [
         "personal"
       ],
@@ -1916,7 +1986,7 @@
     {
       "category": "project-wide",
       "class": "on_demand",
-      "digest": "cf1983815e4b81fbd530ffb44e1d47ced6c048921b1b43d7b40b6e94efae09ea",
+      "digest": "91d28d5841249b493d3e71bc78ded32182c25f8058e7607c39261a404a0c190c",
       "distributions": [
         "project-generic"
       ],
@@ -2028,7 +2098,7 @@
     {
       "category": "agent-wide",
       "class": "router",
-      "digest": "c2e9c9e16a393d465ed2f64db6068857a170df912778de1e10225feeffa64562",
+      "digest": "557e648d3a1fb5cd37e2650b987b68779a82f8c6ef48df1445e72e0fd821c9fe",
       "distributions": [
         "personal"
       ],
@@ -2217,7 +2287,7 @@
     {
       "category": "agent-wide",
       "class": "router",
-      "digest": "f5c81732daa7671f6d0f2320c0b536918195238d4561f95518616c0704ae4a3e",
+      "digest": "549f2fa3777c4d88526526a089baeb5a6bd78fc882b3ff05c6ebcf0051013cba",
       "distributions": [
         "personal"
       ],

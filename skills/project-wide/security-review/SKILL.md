@@ -14,11 +14,15 @@ dependencies, containers, persistence, network boundaries, or scanner output.
 
 1. Resolve project governance, security-triage owner, exact target, current
    scanner configuration, non-derivable external process inputs, runtime path,
-   and native security gate before any edit or scan side effect. Owner-calculated
-   defaults require no environment variable, setting, parameter, or argument.
-   Missing or invalid required credentials raise immediately; credentials come
-   only from the current process environment. Keyring, `secret-tool`, profiles,
-   aliases, and credential/provider alternatives are prohibited.
+   native security gate, and external-token applicability before any edit or
+   scan side effect. Owner-calculated defaults require no environment variable,
+   setting, parameter, or argument. When a required token is absent before
+   selection, do not invoke the dormant workflow; record it as `NOT EXECUTED`
+   without a green claim, and keep independently observed findings blocking.
+   After direct invocation selects the workflow, a missing or invalid required
+   credential raises immediately. Credentials come only from the current
+   process environment. Keyring, `secret-tool`, profiles, aliases, and
+   credential/provider alternatives are prohibited.
 2. Reproduce the named defect through the declared owner. Preserve the first
    scanner, child-process, timeout, signal, or runtime failure and its causal
    chain; never convert it to a finding summary, warning, skip, retry, or success.

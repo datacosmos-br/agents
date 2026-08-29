@@ -13,6 +13,7 @@ from pathlib import Path
 from urllib.parse import unquote, urlparse
 
 from .agent_profiles import AgentProfile, audit_agent_profiles
+from .atomic_io import text_publication
 from .catalog import Catalog
 from .cleanup import clean_generated, run_atomic_publications
 from .command_evals import audit_command_evals
@@ -89,6 +90,12 @@ def _inventory(root: Path) -> RuntimeInventory:
     """Load only the native governance inventory shared by its consumers."""
 
     catalog = _catalog(root)
+    return _inventory_from_catalog(root, catalog)
+
+
+def _inventory_from_catalog(root: Path, catalog: Catalog) -> RuntimeInventory:
+    """Load validated inventory from one already-discovered catalog snapshot."""
+
     require_repository_storage(root)
     commands = audit_command_specs(
         root, (directory.name for directory in catalog.skill_dirs())
@@ -159,7 +166,8 @@ def check(root: Path) -> None:
 
 
 def sync(root: Path) -> None:
-    inventory = _inventory(root)
+    catalog = Catalog(root)
+    inventory = _inventory_from_catalog(root, catalog)
     projection = load_projection_config(root)
     projector = Projector(
         inventory.catalog,
@@ -176,8 +184,10 @@ def sync(root: Path) -> None:
         inventory.commands,
         inventory.rules,
     )
+    lock = text_publication(root / "skills.lock.json", catalog.render_inventory())
     run_atomic_publications(
         (
+            *((lock,) if lock is not None else ()),
             *projector.publications(authorization),
             *hooks.publications(authorization),
         )

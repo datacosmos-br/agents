@@ -36,7 +36,11 @@ must not create a dual-tracking period.
    to change than the causal owner.
 2. Resolve precedence. A newer operator rule replaces conflicting lower or older
    guidance. Two current operator rules that materially conflict require one
-   precise question before mutation.
+   precise question before mutation. A prior exact operator authorization remains
+   authoritative across interruption, state divergence, and red gates. Re-preflight
+   and continue without asking again unless the effect expands beyond its approved
+   targets, disposition, recovery, or blast radius. State alone proves no actor,
+   process, or competing intention.
 3. Change canonical owners and every affected consumer as one atomic cutover,
    not projections. When the incident exposes an agent decision failure, update
    the owning skill procedure and one of its three semantic regression roles in

@@ -39,7 +39,9 @@ formats; reading a source does not authorize importing its artifacts.
   normalization are prohibited. Canonical calculated defaults remain at one
   typed owner and are omitted from consumers.
 - No import starts before the existing inventory has completed the migration,
-  projection, evaluation, review, and landing cycle.
+  projection, evaluation, review, and landing cycle. The separately approved
+  governed project-skill distribution plan is the only successor authorized
+  after that prerequisite is proved on `main`.
 
 ## Current baseline and target
 
@@ -66,15 +68,17 @@ unclassified artifact; never coerce one into a category to preserve a count.
 Beads, Dolt, Gas Town, and Gas City are explicitly suspended. Do not invoke,
 inspect, start, migrate, select an endpoint for, or depend on those runtimes.
 Create no alternate database, tracker, ledger, workspace, city, rig, Pack,
-clone, or worktree. Preserve validation evidence in authorized Git
+clone, or worktree, except for the four exact physical root clones expressly
+authorized by the governed project-skill distribution successor. Preserve
+validation evidence in authorized Git
 commits, pull requests, reviews, required checks, and CI after Git execution is
 separately authorized.
 
 While tracker closure is unavailable, a merged and post-merge-verified phase is
 `LANDED_VERIFIED`, not `DONE`. The physical source move from `~/.agents` to
-`~/agents`, provider-home installation, external imports, and service/timer
-installation are separate increments after this repository cutover; they cannot
-be smuggled into this checkout-only increment.
+`~/agents`, provider-home installation, imports outside the exact approved
+successor, and service/timer installation remain separate increments; they
+cannot be smuggled into either cutover.
 
 ## Reading order
 

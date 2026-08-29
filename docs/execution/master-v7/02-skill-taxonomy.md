@@ -31,6 +31,21 @@ The remaining groups are conditional semantic families:
 Each skill has one canonical directory. A skill that touches several subjects
 uses multiple tags; it is never copied into several groups.
 
+## Authorized project-local sources
+
+The central tree is the only owner of reusable behavior. After a physical
+project authorizes projection with `.agents/projection.json` v1, that same
+project may own private bundles under `skills/<category>/<slug>/SKILL.md`.
+Local bundles follow the identical schema, budget, portability, resource, and
+three-family Waza contracts and use `provenance:project-owned`.
+
+Local `project-wide` bundles are unconditional inside their authorized project;
+conditional local bundles require `route:project` and normal detector evidence.
+Local `agent-wide`, `route:agent`, cross-repository references, central/local
+name or digest collisions, and a second consumer are invalid. The first
+additional consumer promotes the behavior to the central catalog and removes
+the local identity atomically.
+
 ## Migration and current catalog map
 
 The migration started from 85 flat skills and reached the following retained
@@ -108,7 +123,7 @@ Allowed axes:
 |---|---:|---|
 | `usage` | exactly one | `usage:router`, `usage:on-demand`, `usage:frozen` |
 | `updates` | exactly one | `updates:manual`, `updates:forbidden` |
-| `provenance` | exactly one | `provenance:agents-owned`, `provenance:vendor` |
+| `provenance` | exactly one | `provenance:agents-owned`, `provenance:project-owned`, `provenance:vendor` |
 | `route` | exactly one for conditional groups; absent from wide groups | `route:agent`, `route:project` |
 | `activation` | exactly one for conditional groups; absent from wide groups | `activation:detected`, `activation:detected-or-opt-in`, `activation:opt-in` |
 | detector | required by conditional activation | `detect:marker:go.mod`, `detect:dependency:npm:react`, `detect:owned-extension:.py`, `detect:owned-glob:src/**`, `detect:opt-in:scope-code-navigation`, `detect:selected-tag:tool:mcp` |

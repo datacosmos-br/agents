@@ -21,6 +21,13 @@ owns it until a material checkpoint; the next actor rereads and adopts that
 checkpoint before editing. Ownership coordinates writes but never makes current
 content disposable.
 
+Parallel writers require an explicit material benefit, separate canonical owners,
+disjoint writable paths, complete acceptance evidence, and a declared integration
+dependency. Keep the Git index, generated families, atomic migrations, releases,
+environments, clusters, and every other shared mutable owner serialized. Distinct
+read-only questions may proceed concurrently. The dispatch contract owns worker
+selection and handoff; this procedure owns adoption and combined integration.
+
 ## Sync cycle
 
 At start, before each shared-file edit, after each material publication or gate,
@@ -33,6 +40,12 @@ and before commit, push, review resolution, merge, or handoff:
 5. rerun every gate invalidated by the combined state; and
 6. publish one current checkpoint with owner, evidence, first red result, and
    next action.
+
+When a path, branch, worktree, or remote changes unexpectedly, treat the new
+state as input to the next preflight. Do not attribute it to another actor or
+classify it as intent without evidence. If the operator already authorized the
+exact effect, preserve that authorization and continue after revalidation; do
+not ask again or repeat the unchanged effect.
 
 The integration lane owns the combined runtime, gates, review, landing, and
 post-merge proof. Agent-local green never advances the phase cursor. Only two

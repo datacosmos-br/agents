@@ -27,13 +27,28 @@ adopting it, rejects collisions, symlinks, and modified managed content, and
 must reach a fixed point on the second unchanged run.
 
 The public apply is `agentsctl sync`. It accepts no option and derives the
-invocation directory's nearest physical `.git/` ancestor and the current
-process home. Invoking the verb selects personal projection. A physical
-project-owned `.agents/projection.json` additionally authorizes and selects
-tracked project projection; absence produces zero project output. The owner
-plans every selected surface before publication, stages on each destination
-filesystem, publishes all selected targets as one transaction, and rolls back
-only effects created by that failed invocation.
+invocation directory's physical Git identity and the current process home.
+Invoking the verb selects personal projection. A physical project-owned
+`.agents/projection.json` additionally authorizes tracked project projection
+and same-project local skill discovery; absence produces zero project output
+and loads no local source. The owner validates central and local catalogs and
+their evaluations completely, composes sources only in memory, plans every
+selected surface, stages on each destination filesystem, and publishes all
+selected targets as one transaction. Failure rolls back only effects created by
+that invocation and re-raises the first cause.
+
+A root clone owns a physical `.git/` directory. A Git-native submodule may use a
+gitfile only when Git proves its superproject and its resolved gitdir is
+physically contained under that same umbrella clone's `.git/modules/`
+hierarchy. Worktree gitfiles, symlinks, malformed gitfiles, external gitdirs,
+path escapes, and cross-root references remain invalid. Authorization, local
+source, cwd, and every project destination must be contained in the selected
+member worktree.
+
+Generated manifests preserve source truth: central bundles use
+`agents:skills`; authorized local bundles use `project:skills`. The origin is
+not inferred from a destination path, and a projection never becomes canonical
+input.
 
 ### Principles
 
@@ -44,6 +59,8 @@ only effects created by that failed invocation.
 3. Cleanup is ownership-proven and fail-closed.
 4. Semantic equivalence matters; byte equality across incompatible provider
    formats does not.
+5. One invocation publishes every selected personal and project surface; local
+   discovery cannot create a partial provider result.
 
 ## Options considered
 
@@ -71,6 +88,8 @@ flowchart LR
 | Cleanup | Manifest-proven managed outputs only | Projection subsystem | Foreign/unknown files remain preserved |
 | Validation | Syntax, capability, runtime canary, fixed point | Adapter and Waza gates | Provider outages remain red external evidence |
 | Authorization | Physical project selection file | Project owner | Installation, remote, or forge access grants no write authority |
+| Local sources | In-memory composition after complete validation | Catalog/projection owners | Central and project trees remain independent owners |
+| Git identity | Physical root or contained native submodule | Projection owner plus Git evidence | Worktrees and external gitdirs remain forbidden |
 
 ## Consequences
 
@@ -80,6 +99,8 @@ flowchart LR
 - **Risk:** A stale ownership manifest could delete the wrong file; digest,
   source-type, destination, local-modification, symlink, and unknown-content
   checks must all pass before removal.
+- **Risk:** Treating every gitfile as a submodule would admit worktrees or
+  external storage; Git identity and containment are blocking preflight.
 
 ## State of implementation
 
@@ -89,3 +110,4 @@ flowchart LR
 | Typed adapters and ownership manifest | Implemented on work lane | Schema v5, project/context/surface/provider/selection ownership, source/physical digests, and activation evidence |
 | Full projection fixed point | Not evidenced | Master v7 Phase 5 |
 | Physical root cutover | Future increment | Explicitly excluded from the current repository cutover |
+| Local composition and contained submodules | Accepted for governed distribution | This ADR and successor plan; implementation and runtime proof remain required |

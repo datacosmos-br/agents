@@ -1,6 +1,6 @@
 # Gate evidence
 
-- Environment: `uv run python -c "import agents_governance"`, exit 0.
+- Environment: `agentsctl doctor`, exit 0, editable runtime identity validated.
 - Repository check: `make check`, exit 0, zero warnings.
 - Static analysis: `make static`, exit 0, zero errors.
 - Tests: `make test`, exit 0, 431 passed.
@@ -14,3 +14,6 @@
 - External-token gates: `SNYK_TOKEN` and `CLIPROXY_API_KEY` are absent, so
   `make security` and `make validate-live` are `NOT EXECUTED` under the
   operator-authorized applicability rule. Neither workflow is claimed green.
+- Final quarantine/provider composite: provider matrix and `agentsctl check`
+  printed successful substep output, then the required destination inspection
+  failed because the expected path was absent. The composite process exited 1.

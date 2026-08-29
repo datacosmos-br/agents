@@ -96,6 +96,14 @@ def test_agentsctl_is_the_only_packaged_console_script() -> None:
     assert scripts == 'agentsctl = "agents_governance.cli:main"'
 
 
+def test_makefile_never_imports_private_agent_runtime() -> None:
+    makefile = (ROOT / "Makefile").read_text(encoding="utf-8")
+
+    assert "from agents_governance" not in makefile
+    assert "uv run python -c" not in makefile
+    assert "APPLY" not in makefile
+
+
 def test_installed_runtime_resolves_the_physical_source_checkout() -> None:
     assert runtime.repository_root() == ROOT
 

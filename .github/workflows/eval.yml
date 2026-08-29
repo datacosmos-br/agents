@@ -5,6 +5,7 @@ on:
     branches: [dev]
     paths:
       - '.agents/**'
+      - '.github/dependabot.yml'
       - '.github/workflows/**'
       - 'evals/**'
       - 'skills/**'
@@ -29,6 +30,7 @@ on:
     branches: [dev, main]
     paths:
       - '.agents/**'
+      - '.github/dependabot.yml'
       - '.github/workflows/**'
       - 'evals/**'
       - 'skills/**'
