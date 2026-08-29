@@ -85,7 +85,15 @@ _TEXT_SUFFIXES = frozenset(
         ".yml",
     }
 )
-_SELECTION_FIELDS = frozenset({"agents", "opt_ins", "selected_tags", "version"})
+_SELECTION_FIELDS_V1 = frozenset({"agents", "opt_ins", "selected_tags", "version"})
+_SELECTION_FIELDS_V2 = frozenset(
+    {"agents", "opt_ins", "selected_tags", "version", "detection_rules"}
+)
+# Detection rule condition types for v2 declarative rules
+_DETECTION_CONDITION_TYPES = frozenset(
+    {"path_exists", "path_missing", "file_contains", "file_not_contains"}
+)
+_DETECTION_WHEN_OPERATORS = frozenset({"all", "any", "none"})
 _MANIFEST_FIELDS = frozenset(
     {
         "context",
@@ -478,6 +486,127 @@ class Projector:
         return _physical_project(Path.cwd())
 
     @staticmethod
+    def _detect_condition_holds(project: Path, condition: dict[str, object]) -> bool:
+        raw_type = condition.get("type")
+        if not isinstance(raw_type, str) or raw_type not in _DETECTION_CONDITION_TYPES:
+            raise ValueError(f"unknown detection condition type: {raw_type}")
+        pattern = condition.get("pattern", "")
+        if not isinstance(pattern, str) or not pattern:
+            raise ValueError("detection condition pattern must be a non-empty string")
+        if ".." in PurePosixPath(pattern).parts:
+            raise ValueError(f"detection pattern escapes project: {pattern}")
+        paths_value = condition.get("paths")
+        # For path_exists / path_missing, paths key is not used; pattern is the glob.
+        # For file_contains, paths is list of globs to search inside.
+        if raw_type in {"file_contains", "file_not_contains"}:
+            if paths_value is None:
+                paths = ["**"]
+            elif (
+                not isinstance(paths_value, list)
+                or not paths_value
+                or not all(isinstance(p, str) and p for p in paths_value)
+            ):
+                raise ValueError(
+                    "file_contains paths must be a non-empty array of strings"
+                )
+            else:
+                paths = cast(list[str], paths_value)
+            # Collect files matching paths globs
+            matched_files: set[Path] = set()
+            for glob_pat in paths:
+                if ".." in PurePosixPath(glob_pat).parts:
+                    raise ValueError(f"detection paths escapes project: {glob_pat}")
+                for found in project.glob(glob_pat):
+                    if found.is_file() and not found.is_symlink():
+                        # Ensure inside project
+                        try:
+                            found.resolve(strict=True).relative_to(
+                                project.resolve(strict=True)
+                            )
+                        except ValueError:
+                            continue
+                        matched_files.add(found)
+            found = any(
+                pattern in p.read_text(encoding="utf-8", errors="ignore")
+                for p in matched_files
+            )
+            return found if raw_type == "file_contains" else not found
+        # path_exists / path_missing: pattern is glob relative to project
+        has_match = any(not p.is_symlink() for p in project.glob(pattern))
+        # Also check direct path via glob fallback: project.glob may not match hidden; try rglob for simple names
+        if not has_match and "/" not in pattern and "*" not in pattern:
+            has_match = (project / pattern).exists() and not (
+                project / pattern
+            ).is_symlink()
+        return has_match if raw_type == "path_exists" else not has_match
+
+    @staticmethod
+    def _detect_active_tags(project: Path, rules: object, label: str) -> set[str]:
+        if not isinstance(rules, list):
+            raise TypeError(f"{label} detection_rules must be an array")
+        active: set[str] = set()
+        for idx, raw_rule in enumerate(rules):
+            rule_label = f"{label} detection_rules[{idx}]"
+            rule = _mapping(raw_rule, rule_label)
+            rule_id = rule.get("id")
+            if (
+                not isinstance(rule_id, str)
+                or not rule_id
+                or rule_id.strip() != rule_id
+            ):
+                raise ValueError(f"{rule_label} id must be a non-empty trimmed string")
+            if not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", rule_id):
+                raise ValueError(f"{rule_label} id must match [a-z0-9]+(-[a-z0-9]+)*")
+            when = rule.get("when")
+            if not isinstance(when, dict):
+                raise TypeError(f"{rule_label} when must be an object")
+            if frozenset(when) not in (
+                frozenset({"all"}),
+                frozenset({"any"}),
+                frozenset({"none"}),
+            ):
+                raise ValueError(
+                    f"{rule_label} when must be exactly one of all/any/none"
+                )
+            op = next(iter(when))
+            raw_conds = when[op]
+            if not isinstance(raw_conds, list) or not raw_conds:
+                raise TypeError(f"{rule_label} when.{op} must be a non-empty array")
+            conds = [
+                _mapping(c, f"{rule_label} when.{op}[{i}]")
+                for i, c in enumerate(raw_conds)
+            ]
+            # Validate each condition shape before evaluation
+            for c in conds:
+                if "type" not in c:
+                    raise ValueError(f"{rule_label} condition missing type")
+            # Evaluate
+            results = [Projector._detect_condition_holds(project, c) for c in conds]
+            triggered = (
+                all(results)
+                if op == "all"
+                else any(results)
+                if op == "any"
+                else not any(results)
+            )
+            if not triggered:
+                continue
+            raw_tags = rule.get("activate_tags")
+            if (
+                not isinstance(raw_tags, list)
+                or not raw_tags
+                or not all(isinstance(t, str) and t for t in raw_tags)
+            ):
+                raise TypeError(
+                    f"{rule_label} activate_tags must be a non-empty array of strings"
+                )
+            for tag in cast(list[str], raw_tags):
+                if not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", tag):
+                    raise ValueError(f"{rule_label} activate_tags tag invalid: {tag}")
+                active.add(tag)
+        return active
+
+    @staticmethod
     def _selection(
         authorization: ProjectAuthorization,
     ) -> ProjectionSelection | None:
@@ -485,13 +614,39 @@ class Projector:
             return None
         path = authorization.path
         payload = _mapping(json.loads(authorization.payload), str(path))
-        _exact(payload, _SELECTION_FIELDS, str(path))
-        if payload["version"] != 1:
-            raise ValueError(f"projection selection version must equal 1: {path}")
+        version = payload.get("version")
+        if version not in (1, 2):
+            raise ValueError(f"projection selection version must be 1 or 2: {path}")
+        if version == 1:
+            _exact(payload, _SELECTION_FIELDS_V1, str(path))
+            selected_tags = _strings(payload["selected_tags"], f"{path}: selected_tags")
+            return ProjectionSelection(
+                _strings(payload["agents"], f"{path}: agents"),
+                _strings(payload["opt_ins"], f"{path}: opt_ins"),
+                selected_tags,
+            )
+        # version 2: allow detection_rules
+        allowed = (
+            _SELECTION_FIELDS_V2
+            if "detection_rules" in payload
+            else _SELECTION_FIELDS_V1
+        )
+        _exact(payload, allowed, str(path))
+        agents = _strings(payload["agents"], f"{path}: agents")
+        opt_ins = _strings(payload["opt_ins"], f"{path}: opt_ins")
+        selected_tags = set(
+            _strings(payload["selected_tags"], f"{path}: selected_tags")
+        )
+        if "detection_rules" in payload:
+            rules = payload["detection_rules"]
+            rule_tags = Projector._detect_active_tags(
+                authorization.project, rules, str(path)
+            )
+            selected_tags.update(rule_tags)
         return ProjectionSelection(
-            _strings(payload["agents"], f"{path}: agents"),
-            _strings(payload["opt_ins"], f"{path}: opt_ins"),
-            _strings(payload["selected_tags"], f"{path}: selected_tags"),
+            agents,
+            opt_ins,
+            tuple(sorted(selected_tags)),
         )
 
     @staticmethod
