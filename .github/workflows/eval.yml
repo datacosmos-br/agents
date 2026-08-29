@@ -67,8 +67,12 @@ jobs:
         run: install -d -m 700 "$HOME/tmp"
       - name: Reject committed merge-conflict markers
         run: |
-          tracked=$(git ls-files | grep -vE '(^|/)(\.venv|target|dist|\.cache|_vendor)/')
-          markers=$(printf '%s\n' "$tracked" | xargs -r git grep -l -e '^<<<<<<< ' -e '^>>>>>>> ' --)
+          status=0
+          markers=$(git grep -l -e '^<<<<<<< ' -e '^>>>>>>> ' -- . ':(exclude).venv' ':(exclude)dist') || status=$?
+          if [ "$status" -gt 1 ]; then
+            echo "::error::conflict-marker search failed with status $status"
+            exit "$status"
+          fi
           if [ -n "$markers" ]; then
             echo "::error::Merge conflict markers found in tracked files:"
             printf '%s\n' "$markers"
