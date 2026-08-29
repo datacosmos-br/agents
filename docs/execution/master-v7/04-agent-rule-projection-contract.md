@@ -225,12 +225,11 @@ projects no FLEXT-owned skill. A later approved import must adopt physical
 content into the declared owner/destination contract without symlinks,
 cross-repository references, or a second synchronizing writer.
 
-## Future root cutover
+## Root cutover
 
-`~/.agents` remains the active checkout throughout this increment. A separate
-future increment may move the owner physically to `~/agents` only after the
-current work is integrated and no process has an open file or current working
-directory under it.
+`~/agents` is the active checkout and the canonical physical owner. The
+predecessor path is retired: no consumer may resolve the owner through it, and
+no process may hold an open file or current working directory under it.
 
 The cutover rewires every supported consumer and removes the old path. It does
 not leave a compatibility symlink, path alias, cross-repository reference,

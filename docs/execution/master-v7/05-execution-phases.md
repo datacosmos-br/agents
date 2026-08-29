@@ -158,13 +158,13 @@ fixed point, and no current-increment branch/projection residue remains. State
 is `LANDED_VERIFIED` while tracker closure is suspended. The physical source
 root remains unchanged in this increment.
 
-## Future physical-root increment
+## Physical-root cutover
 
-In a separately approved window with no live user of the old checkout, move the
-source owner from `~/.agents` to `~/agents`, rewire every consumer, remove the
-old path without a symlink or dual read, and complete a fresh runtime, review,
-landing, and post-merge validation cycle. None of those mutations are authorized
-by the current increment.
+The source owner is `~/agents`. Completing the cutover means rewiring every
+consumer, removing the predecessor path without a symlink or dual read, and
+running a fresh runtime, review, landing, and post-merge validation cycle. Until
+the predecessor path is gone, treat any consumer still resolving through it as
+an open defect of this increment.
 
 ## Future external-import increment
 

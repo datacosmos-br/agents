@@ -114,7 +114,7 @@ def test_invalid_profile_raises_first_defect(
 
 @pytest.mark.parametrize(
     "reference",
-    ["Beads", "GasCity", "~/.agents/rules/python.md", "/home/operator/project"],
+    ["Beads", "GasCity", "~/agents/rules/python.md", "/home/operator/project"],
 )
 def test_project_profiles_reject_nonportable_references(
     tmp_path: Path, reference: str

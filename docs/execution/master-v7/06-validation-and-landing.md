@@ -166,8 +166,8 @@ generated outputs, and supported destinations for:
 - silent empty target success;
 - symlink/cross-repository references;
 - ECC/SkillShare synchronization or current external-import instructions;
-- fallback, shim, dual-read/write, alternate model, skip, suppression, and old
-  `~/.agents` source lookups after cutover.
+- fallback, shim, dual-read/write, alternate model, skip, suppression, and
+  predecessor-path source lookups after cutover.
 - exception catches outside cleanup/rollback, aggregate validators, manual exit
   translation, retry loops, undeclared or error-triggered defaults, partial
   publication, and any keyring source or consumer. Canonical calculated defaults
