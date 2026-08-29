@@ -1,7 +1,7 @@
 # Governance interconnection analysis — TODO
 
 > Status: `PLANNED` (plan mode — no source modifications)
-> Plan file: `/home/marlonsc/.local/state/poolside/plans/governance-interconnection-gaps-plan-47e5a9b.md`
+> Plan file: `~/.local/state/poolside/plans/governance-interconnection-gaps-plan-47e5a9b.md`
 
 ## Resumo
 
@@ -634,7 +634,7 @@ Esta regra deve ser adicionada a `rules/architecture/engineering-core.md` §"Typ
 
 ## Alinhamento com outros planos existentes
 
-Análise dos 14 planos em `/home/marlonsc/.local/state/poolside/plans/` para
+Análise dos 14 planos em `~/.local/state/poolside/plans/` para
 identificar alinhamentos, conflitos, e oportunidades de coordenação.
 
 ### Planos diretamente alinhados (mesmo repositório: `~/agents`)

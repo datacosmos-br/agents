@@ -4,7 +4,7 @@
 
 | Field | Value |
 |---|---|
-| Canonical source | `/home/marlonsc/agents`, the physical owner declared by the operator workspace contract |
+| Canonical source | `~/agents`, the physical owner declared by the operator workspace contract |
 | Retired sources | The predecessor dotted checkout and every dedicated skill-sync clone; neither may be resolved by a consumer |
 | Integration branch | `dev` |
 | Accepted migration baseline | 85 flat skills, one canonical command, flat agents |
