@@ -18,6 +18,9 @@ RUNTIME_VERBS = {
 }
 REQUIRED_MAKE_TARGETS = {
     "help",
+    "setup",
+    "fix",
+    "gen",
     "docs",
     "audit",
     "check",

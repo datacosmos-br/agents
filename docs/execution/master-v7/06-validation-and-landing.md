@@ -110,10 +110,13 @@ Make remains development support and gate composition. Its declared surface is
 discovered with `make help` and covers:
 
 ```text
+make setup
 make docs
 make audit
 make check
 make static
+make fmt
+make fix
 make shell
 make build
 make test
@@ -121,6 +124,7 @@ make spec
 make coverage
 make providers
 make projection
+make gen
 make ci
 make security
 make temp
