@@ -61,7 +61,6 @@ def test_eval_workflow_covers_integration_push_and_pull_requests() -> None:
         "pyproject.toml",
         "rules/**",
         "skills/**",
-        "skills.lock.json",
         "src/**",
         "tests/**",
         "uv.lock",

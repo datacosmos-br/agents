@@ -23,7 +23,6 @@ on:
       - 'AGENTS.md'
       - 'CLAUDE.md'
       - 'README.md'
-      - 'skills.lock.json'
       - 'pyproject.toml'
       - 'uv.lock'
   pull_request:
@@ -48,7 +47,6 @@ on:
       - 'AGENTS.md'
       - 'CLAUDE.md'
       - 'README.md'
-      - 'skills.lock.json'
       - 'pyproject.toml'
       - 'uv.lock'
 

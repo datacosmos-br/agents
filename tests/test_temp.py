@@ -10,7 +10,6 @@ from agents_governance.temp import require_repository_storage
 
 def _repository(path: Path) -> Path:
     path.mkdir()
-    (path / ".git").mkdir()
     return path
 
 
@@ -87,12 +86,31 @@ def test_repository_under_system_temp_is_rejected(
         require_repository_storage(repository)
 
 
-def test_registered_repository_must_be_physical_git_root(tmp_path: Path) -> None:
+def test_registered_repository_without_storage_config_is_rejected(
+    tmp_path: Path,
+) -> None:
     repository = tmp_path / "repository"
     repository.mkdir()
 
-    with pytest.raises(ValueError, match="physical .git"):
+    with pytest.raises((ValueError, FileNotFoundError)):
         require_repository_storage(repository)
+
+
+def test_registered_repository_without_git_is_accepted(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    home = tmp_path / "home"
+    home.mkdir()
+    (home / "tmp").mkdir()
+    system_temp = tmp_path / "system-temp"
+    system_temp.mkdir()
+    monkeypatch.setenv("HOME", str(home))
+    monkeypatch.setattr(temp_module, "SYSTEM_TEMP", system_temp)
+    repository = tmp_path / "repository"
+    repository.mkdir()
+    _manifest(repository, "${CONFIG_DIR}/..")
+
+    assert require_repository_storage(repository).repositories == (repository,)
 
 
 def test_repository_storage_rejects_unregistered_root_and_first_residue(
