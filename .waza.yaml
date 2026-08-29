@@ -29,3 +29,5 @@ tokens:
 
 paths:
   skills: skills
+  rules: rules
+  commands: commands

@@ -20,7 +20,7 @@ formats; reading a source does not authorize importing its artifacts.
   those contracts.
 - Skills use distribution-first directories:
   `agent-wide`, `project-wide`, `technology`, `framework`, `tool`, and `domain`.
-- Commands remain explicitly invoked commands under flat `commands/<slug>.md`.
+- Commands are explicitly invoked commands under `commands/<category>/<slug>.md`.
   Their bodies may be substantially larger than skill routers and procedures.
 - Paths own distribution and primary grouping. Local tags describe orthogonal
   semantics. No hand-maintained catalog may enumerate artifact identity,

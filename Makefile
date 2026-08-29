@@ -4,7 +4,7 @@ AGENTSCTL := uv run agentsctl
 PYTEST_SCRATCH := $(CURDIR)/.test-tmp
 
 .DEFAULT_GOAL := help
-.PHONY: help docs audit check static fmt shell build test spec coverage providers projection ci security temp validate-live clean
+.PHONY: help docs audit check waza static fmt shell build test spec coverage providers projection ci security temp validate-live clean
 .DELETE_ON_ERROR:
 
 define BANNER
@@ -32,6 +32,12 @@ audit: ## inspect the complete canonical runtime inventory
 check: ## execute the complete offline governance validation
 	$(call BANNER,check · agentsctl check)
 	@$(AGENTSCTL) check
+
+waza: ## enforce Waza token ceilings across skills, rules, and commands
+	$(call BANNER,waza · token ceilings)
+	@waza tokens check $(CURDIR)/skills --strict --no-update-check
+	@waza tokens check $(CURDIR)/rules --strict --no-update-check
+	@waza tokens check $(CURDIR)/commands --strict --no-update-check
 
 static: ## lint, formatting, and Python type analysis
 	$(call BANNER,static · ruff + pyright + mypy)

@@ -8,21 +8,24 @@ optionless single verbs and never accepts provider-command arguments.
 
 ```text
 commands/
-├── add-language-rules.md
-├── database-migration.md
-├── feature-development.md
-├── ghi-list.md
-├── pr-list.md
-├── ralph-loop.md
-├── security-triage.md
-└── synthesize-governance.md
+├── implementation/
+│   ├── add-language-rules.md
+│   ├── database-migration.md
+│   ├── feature-development.md
+│   └── ralph-loop.md
+├── inspection/
+│   ├── ghi-list.md
+│   └── pr-list.md
+├── security/
+│   └── security-triage.md
+└── governance/
+    └── synthesize-governance.md
 ```
 
 The original cutover produced `security-triage` plus six artifacts converted
 from misclassified skills. ADR-0006 adds the explicit
-`synthesize-governance` workflow. Current commands are discovered from the flat
-canonical surface rather than a numeric registry; category namespaces are not
-introduced.
+`synthesize-governance` workflow. Current commands are discovered from the
+canonical surface with category namespaces under `commands/<category>/<slug>.md`.
 
 `simplify` remains an inline skill. The deleted `commands/simplify.md` is not
 restored, and broken personal projections of that removed command must be

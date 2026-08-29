@@ -15,7 +15,7 @@ ausentes, com propostas de melhoria para execução futura.
 
 - **Rules**: 39 arquivos em `rules/` (14 subdirectories + 5 root-level)
 - **Skills**: 82 bundles em `skills/` (6 categories: agent-wide, project-wide, technology, framework, tool, domain)
-- **Commands**: 8 flat files em `commands/`
+- **Commands**: 8 files in `commands/` organized by category (implementation, inspection, security, governance)
 - **Guarantees**: 49 mappings em `config/governance.json`
 - **Bootstrap**: 8 rules, 9 skills
 - **Policy tags**: 9 `policy:*` tags correspondendo a `runtime/*` rules
