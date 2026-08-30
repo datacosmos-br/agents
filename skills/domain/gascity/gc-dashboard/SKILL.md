@@ -7,9 +7,15 @@ metadata:
 ---
 ## Verification (mandatory)
 
-Before acting on any bead, run the four-source cross-check in
-`rules/coordination/beads-verification.md` (project law) and attach the
-evidence it requires.
+Before acting on any bead, run the four-source cross-check defined in
+`rules/coordination/beads-verification.md` (project law): the registered state
+records, git history, measured reality, and the intent of the most recent
+code. Declare the check and attach evidence — command, working directory,
+exit code, decisive output — before closing. A bead whose premise the
+current code retired is closed obsolete with evidence, never executed as
+written.
+
+
 
 # Dashboard
 
