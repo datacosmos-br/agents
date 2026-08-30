@@ -13,6 +13,8 @@ from typing import Any, cast
 
 import yaml
 
+from .approvals import APPROVAL_NAMESPACES, resolve_approval_tags
+
 NON_PORTABLE_PROJECT_REFERENCE = re.compile(
     r"(?:"
     r"~[/\\]"
@@ -27,23 +29,26 @@ NON_PORTABLE_PROJECT_REFERENCE = re.compile(
 
 _NAME = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*\Z")
 _TAG = re.compile(r"[a-z][a-z0-9-]*(?::[^\s,\[\]\"']+)+\Z")
-_TAG_NAMESPACES = frozenset(
-    {
-        "activation",
-        "detect",
-        "domain",
-        "framework",
-        "lens",
-        "mode",
-        "policy",
-        "provenance",
-        "role",
-        "route",
-        "technology",
-        "tool",
-        "updates",
-        "usage",
-    }
+_TAG_NAMESPACES = (
+    frozenset(
+        {
+            "activation",
+            "detect",
+            "domain",
+            "framework",
+            "lens",
+            "mode",
+            "policy",
+            "provenance",
+            "role",
+            "route",
+            "technology",
+            "tool",
+            "updates",
+            "usage",
+        }
+    )
+    | APPROVAL_NAMESPACES
 )
 _USAGE_TAGS = frozenset({"usage:frozen", "usage:on-demand", "usage:router"})
 _UPDATES_TAGS = frozenset({"updates:forbidden", "updates:manual"})
@@ -147,6 +152,8 @@ class Catalog:
         self.project_local = False
         self._records = self._discover(require_inventory=True)
         self._directories = tuple(record.directory for record in self._records)
+        for record in self._records:
+            resolve_approval_tags(self.root, record.tags, record.directory / "SKILL.md")
 
     @classmethod
     def project(cls, root: Path, authority: Catalog) -> Catalog:
@@ -160,6 +167,9 @@ class Catalog:
         catalog._records = catalog._discover(require_inventory=False)
         catalog._directories = tuple(record.directory for record in catalog._records)
         for record in catalog._records:
+            resolve_approval_tags(
+                authority.root, record.tags, record.directory / "SKILL.md"
+            )
             if record.provenance != "project-owned":
                 raise ValueError(
                     f"{record.directory / 'SKILL.md'}: project-local skill requires "
