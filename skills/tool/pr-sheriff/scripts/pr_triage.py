@@ -147,6 +147,12 @@ def cmd_sweep(repositories: list[str], bases: set[str]) -> list[dict[str, Any]]:
             if pr["base"]["ref"] not in bases:
                 continue
             owner, _, name = repository.partition("/")
+            # The list endpoint never carries mergeability: GitHub computes it
+            # lazily and returns it only from the single-pull endpoint, which
+            # is what cmd_locate already reads.
+            detail = json.loads(
+                _gh("api", f"repos/{repository}/pulls/{pr['number']}")
+            )
             checks = _checks(owner, name, pr["head"]["sha"])
             threads = review_threads(owner, name, pr["number"])
             queue.append(
@@ -158,7 +164,7 @@ def cmd_sweep(repositories: list[str], bases: set[str]) -> list[dict[str, Any]]:
                     "head_branch": pr["head"]["ref"],
                     "head_oid": pr["head"]["sha"],
                     "draft": pr["draft"],
-                    "mergeable": pr["mergeable_state"],
+                    "mergeable": detail["mergeable"],
                     "failing_checks": sum(
                         1 for c in checks if c["conclusion"] == "failure"
                     ),
