@@ -21,6 +21,11 @@ The complete preservation, fix-forward, and severe-conflict contract is owned by
   your commit onto their branch with no conflict and no warning. Recover by
   attributable cherry-pick onto the intended branch and tell the other actor;
   never rewrite either branch to remove the misplaced commit.
+- An uncommitted edit in a shared working tree is not private state. Another
+  actor's checkout can discard it with no conflict, no warning, and no trace in
+  any log — the file simply reads as it did before. Commit at every material
+  checkpoint rather than holding work in the tree, and when an edit is gone,
+  re-preflight and reapply: absence proves no actor and no intent.
 - Resolve the tracker mode from the repository's own instructions before any
   tracker action; while that authority declares suspension, invoke no tracker
   command, create no substitute tracker or ledger, and keep phase closure

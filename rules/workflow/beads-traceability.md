@@ -34,3 +34,18 @@ migration, import, export, or audit whose target store the operator declared.
 That workflow writes only through its declared owner, at its declared endpoint,
 within its stated authorization, and never becomes a substitute tracker for the
 work that performs it.
+
+## Provenance is written, never inferred on read
+
+A tool that writes records and later reads them back sees three populations it
+must never conflate: what it imported from a source, what it authored itself to
+satisfy its own contract, and what something else created directly in the
+destination. They are indistinguishable by shape — a record the tool authored
+has no source and can never carry source provenance, which is exactly what a
+record whose provenance was lost looks like.
+
+Write the class as a typed attribute at creation, and classify on read by that
+attribute alone. Never infer it from a missing field, a title, a timestamp, or
+a count, and never accept a claimed class without proving the marker is one the
+writer could have produced. A record whose class cannot be established is a
+failure, not a default.
