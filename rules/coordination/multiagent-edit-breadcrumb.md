@@ -15,6 +15,12 @@ The complete preservation, fix-forward, and severe-conflict contract is owned by
   actor's valid change.
 - Never overwrite or stash uncommitted WIP. Preserve durable evidence in the next
   canonical commit/PR/CI artifact.
+- The checkout's current branch is shared state too. When another actor may hold
+  the same working tree, re-read the branch immediately before committing and
+  verify the commit landed on the intended ref: a concurrent switch relocates
+  your commit onto their branch with no conflict and no warning. Recover by
+  attributable cherry-pick onto the intended branch and tell the other actor;
+  never rewrite either branch to remove the misplaced commit.
 - Resolve the tracker mode from the repository's own instructions before any
   tracker action; while that authority declares suspension, invoke no tracker
   command, create no substitute tracker or ledger, and keep phase closure
