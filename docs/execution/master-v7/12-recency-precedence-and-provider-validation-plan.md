@@ -1,6 +1,8 @@
 # Recency precedence and provider validation plan
 
-- **Status:** Approved; executing in short PR cycles, one etapa per cycle
+- **Status:** Approved and executed — etapas 1–3 merged (PRs #55, #57, #59);
+  etapa 4 in review (PR #63, stacked); etapas 5–7 recorded on the stacked
+  validation branch; operator reviews and merges each cycle
 - **Operator decision:** 2026-08-30 — recency-based precedence must be
   machine-resolvable, `docs/` owns rule approvals and dates, and recent
   executions from codex, claude, opencode, poolside, and omo validate the rules
