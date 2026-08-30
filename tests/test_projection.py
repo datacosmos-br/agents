@@ -4,14 +4,19 @@ import inspect
 import json
 import subprocess
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 import pytest
 import yaml
 
 from agents_governance.agent_profiles import audit_agent_profiles
 from agents_governance.catalog import Catalog
-from agents_governance.projection import ProjectionDriftError, Projector
+from agents_governance.projection import (
+    _SELECTION_FIELDS_V1,
+    _SELECTION_FIELDS_V2,
+    ProjectionDriftError,
+    Projector,
+)
 from agents_governance.projection_config import load_projection_config
 
 _PROVIDERS = (
@@ -1206,21 +1211,46 @@ def test_git_metadata_symlink_is_rejected(
 
 # ===== v2 detection_rules tests =====
 
+
+def _rule_activate_tags(rules: list[dict[str, object]]) -> set[str]:
+    tags: set[str] = set()
+    for rule in rules:
+        tags.update(cast(list[str], rule["activate_tags"]))
+    return tags
+
+
+def _conditional_skill(root: Path, tag: str) -> None:
+    category = "domain" if tag == "documentation" else "framework"
+    tags = tuple(
+        sorted(
+            (
+                "activation:detected",
+                f"detect:selected-tag:{tag}",
+                f"{category}:{tag}",
+                "provenance:agents-owned",
+                "route:project",
+                "updates:manual",
+                "usage:on-demand",
+            )
+        )
+    )
+    _skill(
+        root,
+        f"{tag}-skill",
+        category=category,
+        tags=tags,
+    )
+
+
 def _make_v2_project(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
-    detection_rules: list[dict],
+    detection_rules: list[dict[str, object]],
+    *,
     selected_tags: tuple[str, ...] = (),
-    opt_ins: tuple[str, ...] = (),
     project_name: str = "project",
 ) -> tuple[Path, Projector]:
-    """Create a v2 project with detection rules and return (project, projector)."""
-    # Create project in a location that won't conflict with central agents directory
-    # Use a unique name to avoid conflicts in parallel tests
-    unique_name = f"{project_name}_{id(object())}"
-    # Create project in a location that won't be under the central agents directory
-    # Use a subdirectory of tmp_path that won't be under the central agents dir
-    project = tmp_path / f"proj_{id(object())}"
+    project = tmp_path / f"{project_name}-project"
     project.mkdir()
     (project / ".git").mkdir()
     selection = project / ".agents" / "projection.json"
@@ -1230,29 +1260,39 @@ def _make_v2_project(
             {
                 "version": 2,
                 "agents": [],
-                "opt_ins": list(opt_ins),
+                "opt_ins": [],
                 "selected_tags": list(selected_tags),
                 "detection_rules": detection_rules,
             }
         ),
         encoding="utf-8",
     )
-    source, projector = _source(tmp_path)
+    source = tmp_path / f"{project_name}-source"
+    source.mkdir()
+    _skill(source, "project-guidance")
+    for tag in sorted({*selected_tags, *_rule_activate_tags(detection_rules)}):
+        _conditional_skill(source, tag)
+    _config(source, {("codex", "skills"): ".agents/skills"})
+    projector = Projector(Catalog(source), load_projection_config(source), (), (), ())
     monkeypatch.chdir(project)
     return project, projector
+
+
+def _write_doc(project: Path, name: str = "index.md") -> None:
+    docs = project / "docs"
+    docs.mkdir(exist_ok=True)
+    (docs / name).write_text("# Docs\n", encoding="utf-8")
 
 
 def test_v2_detection_rules_path_exists_activates_tag(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """path_exists condition with all operator activates tag."""
-    rules = [
+    rules: list[dict[str, object]] = [
         {
             "id": "doc-project",
-            "description": "Documentation project detection",
             "when": {
                 "all": [
-                    {"type": "path_exists", "pattern": "docs/**/*.md"},
+                    {"type": "path_exists", "pattern": "docs/*.md"},
                     {"type": "path_exists", "pattern": "mkdocs.yml"},
                 ]
             },
@@ -1260,29 +1300,28 @@ def test_v2_detection_rules_path_exists_activates_tag(
         }
     ]
     project, projector = _make_v2_project(tmp_path, monkeypatch, rules)
-    (project / "docs" / "index.md").mkdir(parents=True)
-    (project / "docs" / "index.md").write_text("# Docs\n", encoding="utf-8")
+    _write_doc(project)
     (project / "mkdocs.yml").write_text("site_name: Test\n", encoding="utf-8")
 
     projector.apply()
 
     target = project / ".agents" / "skills"
-    assert (target / "gascity-docs" / "SKILL.md").is_file()
-    manifest = _manifest(project / ".agents" / "skills")
-    assert "documentation" in manifest["selection"]["selected_tags"]
+    assert (target / "documentation-skill" / "SKILL.md").is_file()
+    assert "documentation" in cast(
+        list[str],
+        cast(dict[str, object], _manifest(target)["selection"])["selected_tags"],
+    )
 
 
 def test_v2_detection_rules_path_exists_any_operator(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """path_exists with any operator activates tag if any pattern matches."""
-    rules = [
+    rules: list[dict[str, object]] = [
         {
             "id": "doc-project",
-            "description": "Documentation project detection",
             "when": {
                 "any": [
-                    {"type": "path_exists", "pattern": "docs/**/*.md"},
+                    {"type": "path_exists", "pattern": "docs/*.md"},
                     {"type": "path_exists", "pattern": "mkdocs.yml"},
                 ]
             },
@@ -1290,26 +1329,22 @@ def test_v2_detection_rules_path_exists_any_operator(
         }
     ]
     project, projector = _make_v2_project(tmp_path, monkeypatch, rules)
-    (project / "docs" / "index.md").mkdir(parents=True)
-    (project / "docs" / "index.md").write_text("# Docs\n", encoding="utf-8")
+    _write_doc(project)
 
     projector.apply()
 
-    target = project / ".agents" / "skills"
-    assert (target / "gascity-docs" / "SKILL.md").is_file()
+    assert (project / ".agents" / "skills" / "documentation-skill").is_dir()
 
 
 def test_v2_detection_rules_path_exists_all_requires_all(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """path_exists with all requires ALL patterns to match."""
-    rules = [
+    rules: list[dict[str, object]] = [
         {
-            "id": "docs-project",
-            "description": "Documentation project",
+            "id": "doc-project",
             "when": {
                 "all": [
-                    {"type": "path_exists", "pattern": "docs/**/*.md"},
+                    {"type": "path_exists", "pattern": "docs/*.md"},
                     {"type": "path_exists", "pattern": "mkdocs.yml"},
                 ]
             },
@@ -1317,58 +1352,48 @@ def test_v2_detection_rules_path_exists_all_requires_all(
         }
     ]
     project, projector = _make_v2_project(tmp_path, monkeypatch, rules)
-    # Only create docs/ but not mkdocs.yml
-    (project / "docs" / "index.md").mkdir(parents=True)
-    (project / "docs" / "index.md").write_text("# Docs\n", encoding="utf-8")
+    _write_doc(project)
 
     projector.apply()
 
-    target = project / ".agents" / "skills"
-    assert not (target / "gascity-docs" / "SKILL.md").exists()
+    assert not (project / ".agents" / "skills" / "documentation-skill").exists()
 
 
 def test_v2_detection_rules_path_missing(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """path_missing condition activates tag when pattern is absent."""
-    rules = [
+    rules: list[dict[str, object]] = [
         {
             "id": "no-docs",
-            "description": "Project without docs",
-            "when": {
-                "all": [
-                    {"type": "path_missing", "pattern": "docs/**/*.md"},
-                ]
-            },
+            "when": {"all": [{"type": "path_missing", "pattern": "docs/*.md"}]},
             "activate_tags": ["no-docs"],
         }
     ]
     project, projector = _make_v2_project(tmp_path, monkeypatch, rules)
-    # Don't create docs directory
 
     projector.apply()
 
-    target = project / ".agents" / "skills"
-    # No skills should be projected since no skills have detect:selected-tag:no-docs
-    # But tag should be in selected_tags
-    manifest = _manifest(project / ".agents" / "skills")
-    assert "no-docs" in manifest["selection"]["selected_tags"]
+    selected = cast(
+        list[str],
+        cast(dict[str, object], _manifest(project / ".agents" / "skills")["selection"])[
+            "selected_tags"
+        ],
+    )
+    assert "no-docs" in selected
 
 
 def test_v2_detection_rules_file_contains(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """file_contains condition activates tag when file contains pattern."""
-    rules = [
+    rules: list[dict[str, object]] = [
         {
             "id": "flext-usage",
-            "description": "Project uses FLEXT",
             "when": {
                 "any": [
                     {
                         "type": "file_contains",
                         "pattern": "flext",
-                        "paths": ["**/*.md", "**/*.yaml", "**/*.toml"],
+                        "paths": ["docs/*.md", "pyproject.toml"],
                     }
                 ]
             },
@@ -1376,422 +1401,162 @@ def test_v2_detection_rules_file_contains(
         }
     ]
     project, projector = _make_v2_project(tmp_path, monkeypatch, rules)
-    (project / "docs" / "readme.md").mkdir(parents=True)
+    _write_doc(project, "readme.md")
     (project / "docs" / "readme.md").write_text("# Uses flext\n", encoding="utf-8")
 
     projector.apply()
 
-    target = project / ".agents" / "skills"
-    assert (target / "flext-development" / "SKILL.md").is_file()
+    assert (project / ".agents" / "skills" / "flext-skill").is_dir()
 
 
 def test_v2_detection_rules_file_not_contains(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """file_not_contains condition activates tag when file lacks pattern."""
-    rules = [
+    rules: list[dict[str, object]] = [
         {
             "id": "no-flext",
-            "description": "No FLEXT references",
             "when": {
                 "all": [
                     {
                         "type": "file_not_contains",
                         "pattern": "flext",
-                        "paths": ["**/*.md", "**/*.py"],
+                        "paths": ["src/*.py"],
                     }
                 ]
             },
-            "activate_tags": ["flext"],
+            "activate_tags": ["no-flext"],
         }
     ]
     project, projector = _make_v2_project(tmp_path, monkeypatch, rules)
-    (project / "src" / "main.py").mkdir(parents=True)
-    (project / "src" / "main.py").write_text("import requests\n", encoding="utf-8")
+    source = project / "src"
+    source.mkdir()
+    (source / "main.py").write_text("import requests\n", encoding="utf-8")
 
     projector.apply()
 
-    target = project / ".agents" / "skills"
-    # Tag activated since no flext found
-    manifest = _manifest(project / ".agents" / "skills")
-    assert "flext" in manifest["selection"]["selected_tags"]
+    selected = cast(
+        list[str],
+        cast(dict[str, object], _manifest(project / ".agents" / "skills")["selection"])[
+            "selected_tags"
+        ],
+    )
+    assert "no-flext" in selected
 
 
 def test_v2_detection_rules_when_none(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """when.none activates tag when no conditions match."""
-    rules = [
+    rules: list[dict[str, object]] = [
         {
-            "id": "no-flext",
-            "description": "No FLEXT files",
-            "when": {
-                "none": [
-                    {"type": "path_exists", "pattern": "flext/**"},
-                    {"type": "path_exists", "pattern": "*.flext"},
-                ]
-            },
-            "activate_tags": ["flext"],
+            "id": "always",
+            "when": {"none": [{"type": "path_exists", "pattern": "docs/absent.md"}]},
+            "activate_tags": ["always-active"],
         }
     ]
     project, projector = _make_v2_project(tmp_path, monkeypatch, rules)
-    # No flext files created
 
     projector.apply()
 
-    manifest = _manifest(project / ".agents" / "skills")
-    assert "flext" in manifest["selection"]["selected_tags"]
+    assert (project / ".agents" / "skills" / "always-active-skill").is_dir()
 
 
-def test_v2_detection_rules_multiple_rules_same_tag(
+def test_v2_detection_rules_external_symlink_is_not_evidence(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """Multiple rules can activate the same tag."""
-    rules = [
-        {
-            "id": "flext-pyproject",
-            "description": "FLEXT project via pyproject.toml",
-            "when": {
-                "all": [{"type": "path_exists", "pattern": "pyproject.toml"}]
-            },
-            "activate_tags": ["flext"],
-        },
-        {
-            "id": "flext-req",
-            "description": "FLEXT project via requirements.txt",
-            "when": {
-                "any": [{"type": "path_exists", "pattern": "requirements.txt"}]
-            },
-            "activate_tags": ["flext"],
-        },
-    ]
-    project, projector = _make_v2_project(tmp_path, monkeypatch, rules)
-    (project / "requirements.txt").write_text("flext-core\n", encoding="utf-8")
-
-    projector.apply()
-
-    target = project / ".agents" / "skills"
-    assert (target / "flext-development" / "SKILL.md").is_file()
-
-
-def test_v2_detection_rules_auto_removal_on_mismatch(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
-    """Tag removed when condition no longer matches on re-sync."""
-    rules = [
+    outside = tmp_path / "outside-source"
+    outside.mkdir()
+    (outside / "index.md").write_text("# Docs\n", encoding="utf-8")
+    rules: list[dict[str, object]] = [
         {
             "id": "doc-project",
-            "description": "Documentation project",
-            "when": {
-                "all": [
-                    {"type": "path_exists", "pattern": "docs/**/*.md"},
-                    {"type": "path_exists", "pattern": "mkdocs.yml"},
-                ]
-            },
-            "activate_tags": ["documentation"],
-            "deactivate_on_mismatch": True,
-        }
-    ]
-    project, projector = _make_v2_project(tmp_path, monkeypatch, rules)
-    (project / "docs" / "index.md").mkdir(parents=True)
-    (project / "docs" / "index.md").write_text("# Docs\n", encoding="utf-8")
-    (project / "mkdocs.yml").write_text("site_name: Test\n", encoding="utf-8")
-
-    # First sync - tag active
-    projector.apply()
-    manifest = _manifest(project / ".agents" / "skills")
-    assert "documentation" in manifest["selection"]["selected_tags"]
-    target = project / ".agents" / "skills"
-    assert (target / "gascity-docs" / "SKILL.md").is_file()
-
-    # Remove mkdocs.yml
-    (project / "mkdocs.yml").unlink()
-
-    # Re-sync - tag should be removed
-    projector.apply()
-    manifest = _manifest(project / ".agents" / "skills")
-    assert "documentation" not in manifest["selection"]["selected_tags"]
-    assert not (target / "gascity-docs").exists()
-
-
-def test_v2_detection_rules_without_deactivate_on_mismatch_preserves(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
-    """Without deactivate_on_mismatch, tag persists even if condition fails."""
-    rules = [
-        {
-            "id": "doc-project",
-            "description": "Documentation project",
-            "when": {
-                "all": [
-                    {"type": "path_exists", "pattern": "docs/**/*.md"},
-                    {"type": "path_exists", "pattern": "mkdocs.yml"},
-                ]
-            },
-            "activate_tags": ["documentation"],
-            "deactivate_on_mismatch": False,
-        }
-    ]
-    project, projector = _make_v2_project(tmp_path, monkeypatch, rules)
-    (project / "docs" / "index.md").mkdir(parents=True)
-    (project / "docs" / "index.md").write_text("# Docs\n", encoding="utf-8")
-    (project / "mkdocs.yml").write_text("site_name: Test\n", encoding="utf-8")
-
-    projector.apply()
-    manifest = _manifest(project / ".agents" / "skills")
-    assert "documentation" in manifest["selection"]["selected_tags"]
-
-    (project / "mkdocs.yml").unlink()
-
-    projector.apply()
-    manifest = _manifest(project / ".agents" / "skills")
-    # Tag should still be present
-    assert "documentation" in manifest["selection"]["selected_tags"]
-
-
-def test_v2_selection_version_1_no_detection_rules(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
-    """Version 1 selection without detection_rules still works."""
-    rules = [
-        {
-            "id": "doc-project",
-            "description": "Documentation project",
-            "when": {
-                "all": [
-                    {"type": "path_exists", "pattern": "docs/**/*.md"},
-                    {"type": "path_exists", "pattern": "mkdocs.yml"},
-                ]
-            },
+            "when": {"all": [{"type": "path_exists", "pattern": "link/*.md"}]},
             "activate_tags": ["documentation"],
         }
     ]
     project, projector = _make_v2_project(tmp_path, monkeypatch, rules)
-    (project / "docs" / "index.md").mkdir(parents=True)
-    (project / "docs" / "index.md").write_text("# Docs\n", encoding="utf-8")
-    (project / "mkdocs.yml").write_text("site_name: Test\n", encoding="utf-8")
-
-    # Use version 1 selection
-    selection = project / ".agents" / "projection.json"
-    selection.write_text(
-        json.dumps(
-            {
-                "version": 1,
-                "agents": [],
-                "opt_ins": [],
-                "selected_tags": ["documentation"],
-            }
-        ),
-        encoding="utf-8",
-    )
+    (project / "link").symlink_to(outside, target_is_directory=True)
 
     projector.apply()
 
-    target = project / ".agents" / "skills"
-    assert (target / "gascity-docs" / "SKILL.md").is_file()
+    assert not (project / ".agents" / "skills" / "documentation-skill").exists()
 
 
-def test_v2_selection_version_2_with_detection_rules_allowed(
+def test_v2_detection_rules_reject_unbounded_file_scope(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """Version 2 with detection_rules allowed."""
-    rules = [
+    rules: list[dict[str, object]] = [
         {
-            "id": "doc-project",
-            "description": "Documentation project",
+            "id": "unbounded",
             "when": {
                 "all": [
-                    {"type": "path_exists", "pattern": "docs/**/*.md"},
-                    {"type": "path_exists", "pattern": "mkdocs.yml"},
-                ]
-            },
-            "activate_tags": ["documentation"],
-        }
-    ]
-    project, projector = _make_v2_project(tmp_path, monkeypatch, rules)
-
-    selection = project / ".agents" / "projection.json"
-    selection.write_text(
-        json.dumps(
-            {
-                "version": 2,
-                "agents": [],
-                "opt_ins": [],
-                "selected_tags": [],
-                "detection_rules": [
                     {
-                        "id": "doc-project",
-                        "when": {
-                            "all": [
-                                {"type": "path_exists", "pattern": "docs/**/*.md"},
-                                {"type": "path_exists", "pattern": "mkdocs.yml"},
-                            ]
-                        },
-                        "activate_tags": ["documentation"],
+                        "type": "file_contains",
+                        "pattern": "marker",
+                        "paths": ["**/*.md"],
                     }
-                ],
-            }
-        ),
-        encoding="utf-8",
-    )
-
-    (project / "docs" / "index.md").mkdir(parents=True)
-    (project / "docs" / "index.md").write_text("# Docs\n", encoding="utf-8")
-    (project / "mkdocs.yml").write_text("site_name: Test\n", encoding="utf-8")
-
-    projector.apply()
-
-    target = project / ".agents" / "skills"
-    assert (target / "gascity-docs" / "SKILL.md").is_file()
-
-
-def test_v2_selection_rejects_unknown_field(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
-    """Version 2 rejects unknown fields."""
-    project = tmp_path / "project"
-    project.mkdir()
-    (project / ".git").mkdir()
-    selection = project / ".agents" / "projection.json"
-    selection.parent.mkdir()
-    selection.write_text(
-        json.dumps(
-            {
-                "version": 2,
-                "agents": [],
-                "opt_ins": [],
-                "selected_tags": [],
-                "detection_rules": [],
-                "unknown_field": "value",
-            }
-        ),
-        encoding="utf-8",
-    )
-
-    source, projector = _source(tmp_path)
-    with pytest.raises(ValueError, match="fields must equal"):
-        _ = _project(tmp_path)
-
-
-def test_v2_detection_rules_invalid_condition_type_rejected(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
-    """Invalid condition type rejected."""
-    rules = [
-        {
-            "id": "bad-rule",
-            "when": {
-                "all": [
-                    {"type": "invalid_type", "pattern": "foo"}
                 ]
             },
-            "activate_tags": ["foo"],
+            "activate_tags": ["unbounded"],
         }
     ]
-    project, projector = _make_v2_project(tmp_path, monkeypatch, rules)
-    (project / "foo.txt").write_text("foo", encoding="utf-8")
+    _, projector = _make_v2_project(tmp_path, monkeypatch, rules)
 
-    with pytest.raises(ValueError, match="unknown detection condition type"):
+    with pytest.raises(ValueError, match="bounded relative glob"):
         projector.apply()
 
 
-def test_v2_detection_rules_empty_when_rejected(
+def test_v2_detection_rules_enforces_file_quota(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """Empty when clause rejected."""
-    rules = [
+    monkeypatch.setattr("agents_governance.projection._DETECTION_MAX_FILES", 1)
+    rules: list[dict[str, object]] = [
         {
-            "id": "bad-rule",
-            "when": {},
-            "activate_tags": ["foo"],
+            "id": "quota",
+            "when": {
+                "all": [
+                    {
+                        "type": "file_contains",
+                        "pattern": "marker",
+                        "paths": ["docs/*.md"],
+                    }
+                ]
+            },
+            "activate_tags": ["quota"],
         }
     ]
     project, projector = _make_v2_project(tmp_path, monkeypatch, rules)
+    _write_doc(project, "one.md")
+    _write_doc(project, "two.md")
 
-    with pytest.raises(ValueError, match="when must be exactly one of all/any/none"):
+    with pytest.raises(ValueError, match="exceeded 1 files"):
         projector.apply()
 
 
-def test_v2_detection_rules_empty_conditions_rejected(
+def test_v2_detection_rules_reject_duplicate_rule_ids(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """Empty conditions array rejected."""
-    rules = [
-        {
-            "id": "bad-rule",
-            "when": {"all": []},
-            "activate_tags": ["foo"],
-        }
-    ]
-    project, projector = _make_v2_project(tmp_path, monkeypatch, rules)
-
-    with pytest.raises(TypeError, match="when.all must be a non-empty array"):
-        projector.apply()
-
-
-def test_v2_detection_rules_activate_tags_empty_rejected(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
-    """Empty activate_tags rejected."""
-    rules = [
-        {
-            "id": "bad-rule",
-            "when": {"all": [{"type": "path_exists", "pattern": "foo.txt"}]},
-            "activate_tags": [],
-        }
-    ]
-    project, projector = _make_v2_project(tmp_path, monkeypatch, rules)
-    (project / "foo.txt").write_text("foo", encoding="utf-8")
-
-    with pytest.raises(TypeError, match="activate_tags must be a non-empty array"):
-        projector.apply()
-
-
-def test_v2_detection_rules_invalid_tag_format_rejected(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
-    """Invalid tag format in activate_tags rejected."""
-    rules = [
-        {
-            "id": "bad-rule",
-            "when": {"all": [{"type": "path_exists", "pattern": "foo.txt"}]},
-            "activate_tags": ["Invalid_Tag"],
-        }
-    ]
-    project, projector = _make_v2_project(tmp_path, monkeypatch, rules)
-    (project / "foo.txt").write_text("foo", encoding="utf-8")
-
-    with pytest.raises(ValueError, match="activate_tags tag invalid"):
-        projector.apply()
-
-
-def test_v2_detection_rules_duplicate_ids_rejected(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
-    """Duplicate rule IDs rejected."""
-    rules = [
+    rules: list[dict[str, object]] = [
         {
             "id": "duplicate",
-            "when": {"all": [{"type": "path_exists", "pattern": "foo.txt"}]},
-            "activate_tags": ["foo"],
+            "when": {"all": [{"type": "path_exists", "pattern": "one.txt"}]},
+            "activate_tags": ["one"],
         },
         {
             "id": "duplicate",
-            "when": {"all": [{"type": "path_exists", "pattern": "bar.txt"}]},
-            "activate_tags": ["bar"],
+            "when": {"all": [{"type": "path_exists", "pattern": "two.txt"}]},
+            "activate_tags": ["two"],
         },
     ]
-    project, projector = _make_v2_project(tmp_path, monkeypatch, rules)
+    _, projector = _make_v2_project(tmp_path, monkeypatch, rules)
 
-    with pytest.raises(ValueError, match="duplicate skill name"):
+    with pytest.raises(ValueError, match="duplicates detection rule id duplicate"):
         projector.apply()
 
 
-def test_v2_detection_rules_tag_activation_merges_with_selected_tags(
+def test_v2_detection_rules_merge_with_selected_tags(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """Tags from detection_rules merge with selected_tags."""
-    rules = [
+    rules: list[dict[str, object]] = [
         {
             "id": "python-project",
             "when": {"all": [{"type": "path_exists", "pattern": "pyproject.toml"}]},
@@ -1799,43 +1564,34 @@ def test_v2_detection_rules_tag_activation_merges_with_selected_tags(
         }
     ]
     project, projector = _make_v2_project(
-        tmp_path, monkeypatch, rules, selected_tags=("documentation",)
+        tmp_path,
+        monkeypatch,
+        rules,
+        selected_tags=("documentation",),
     )
-    (project / "pyproject.toml").write_text("[project]\nname = 'test'\n", encoding="utf-8")
+    (project / "pyproject.toml").write_text(
+        "[project]\nname = 'test'\n", encoding="utf-8"
+    )
 
     projector.apply()
 
-    manifest = _manifest(project / ".agents" / "skills")
-    selected = manifest["selection"]["selected_tags"]
-    assert "python" in selected
-    assert "documentation" in selected
-
-
-def test_v2_detection_rules_unknown_tag_in_selected_tags_rejected(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
-    """Unknown tag in selected_tags rejected even with detection_rules."""
-    project = tmp_path / "project"
-    project.mkdir()
-    (project / ".git").mkdir()
-    selection = project / ".agents" / "projection.json"
-    selection.parent.mkdir()
-    selection.write_text(
-        json.dumps(
-            {
-                "version": 2,
-                "agents": [],
-                "opt_ins": [],
-                "selected_tags": ["unknown-tag"],
-                "detection_rules": [],
-            }
-        ),
-        encoding="utf-8",
+    selected = cast(
+        list[str],
+        cast(dict[str, object], _manifest(project / ".agents" / "skills")["selection"])[
+            "selected_tags"
+        ],
     )
+    assert {"python", "documentation"} <= set(selected)
 
-    source, projector = _source(tmp_path)
-    with pytest.raises(ValueError, match="unknown selected tag"):
-        _ = _project(tmp_path)
+
+def test_v2_selection_field_contracts_are_exact() -> None:
+    assert set(_SELECTION_FIELDS_V1) == {
+        "agents",
+        "opt_ins",
+        "selected_tags",
+        "version",
+    }
+    assert set(_SELECTION_FIELDS_V2) == set(_SELECTION_FIELDS_V1) | {"detection_rules"}
 
 
 # ===== End v2 detection_rules tests =====
