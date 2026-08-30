@@ -108,7 +108,9 @@ def test_source_repository_does_not_select_or_contain_project_projection() -> No
 def test_additive_orchestration_contract_separates_selection_from_installation() -> (
     None
 ):
-    gascity = (ROOT / "rules" / "gascity.md").read_text(encoding="utf-8")
+    gascity = (ROOT / "rules" / "coordination" / "gascity.md").read_text(
+        encoding="utf-8"
+    )
     beads = (ROOT / "rules" / "workflow" / "beads-traceability.md").read_text(
         encoding="utf-8"
     )
