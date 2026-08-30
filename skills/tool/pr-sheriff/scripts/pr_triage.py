@@ -132,7 +132,7 @@ def cmd_locate(repository: str, number: int) -> dict[str, Any]:
         "head_oid": head_oid,
         "mergeable": pr["mergeable"],
         "failing_checks": [c for c in checks if c["conclusion"] == "failure"],
-        "pending_checks": [c for c in checks if c["status"] not in {"COMPLETED"}],
+        "pending_checks": [c for c in checks if c["status"] != "completed"],
         "unresolved_threads": unresolved,
         "resolved_thread_count": len(threads) - len(unresolved),
     }
@@ -150,9 +150,7 @@ def cmd_sweep(repositories: list[str], bases: set[str]) -> list[dict[str, Any]]:
             # The list endpoint never carries mergeability: GitHub computes it
             # lazily and returns it only from the single-pull endpoint, which
             # is what cmd_locate already reads.
-            detail = json.loads(
-                _gh("api", f"repos/{repository}/pulls/{pr['number']}")
-            )
+            detail = json.loads(_gh("api", f"repos/{repository}/pulls/{pr['number']}"))
             checks = _checks(owner, name, pr["head"]["sha"])
             threads = review_threads(owner, name, pr["number"])
             queue.append(
@@ -169,11 +167,9 @@ def cmd_sweep(repositories: list[str], bases: set[str]) -> list[dict[str, Any]]:
                         1 for c in checks if c["conclusion"] == "failure"
                     ),
                     "pending_checks": sum(
-                        1 for c in checks if c["status"] not in {"COMPLETED"}
+                        1 for c in checks if c["status"] != "completed"
                     ),
-                    "unresolved_threads": sum(
-                        1 for t in threads if not t["resolved"]
-                    ),
+                    "unresolved_threads": sum(1 for t in threads if not t["resolved"]),
                 }
             )
     return queue
@@ -241,9 +237,7 @@ def main() -> None:
     if arguments.command == "locate":
         result: Any = cmd_locate(arguments.repository, arguments.number)
     elif arguments.command == "sweep":
-        result = cmd_sweep(
-            arguments.repositories, set(arguments.base.split(","))
-        )
+        result = cmd_sweep(arguments.repositories, set(arguments.base.split(",")))
     elif arguments.command == "reply":
         result = cmd_reply(arguments.thread_id, _body_text(arguments))
     elif arguments.command == "resolve":
