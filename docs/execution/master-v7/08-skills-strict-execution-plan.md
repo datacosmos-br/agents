@@ -43,6 +43,6 @@ gate. For every batch, run a semantic residue search and `git diff --check`,
 then publish one WIP commit containing only owned paths.
 
 Do not regenerate the inventory lock, fetch, merge, open or update a PR, rebase,
-squash, force-push, reset, stash, or invoke Beads, Dolt, Gas City, or Gas Town.
+squash, force-push, reset, stash, or invoke Beads, Dolt, or Gas City.
 The final handoff consists only of the six pushed SHAs, reviewed slugs, command
 evidence, and exact blockers. No skill or phase is declared `DONE`.

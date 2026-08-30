@@ -33,7 +33,7 @@ suspended runtimes.
   `agentsctl sync` is reusable project infrastructure and applies only to the
   current process home and physical Git project from which the operator invokes
   it.
-- Beads, Dolt, Gas City, Gas Town, and alternate tracker runtimes while they are
+- Beads, Dolt, Gas City, and alternate tracker runtimes while they are
   suspended. Create no substitute tracker or ledger; preserve evidence only in
   separately authorized Git/PR/CI surfaces.
 - Promotion beyond the configured integration branch, package publication,

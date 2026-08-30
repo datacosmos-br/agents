@@ -70,7 +70,7 @@ flowchart LR
   tests pass.
 - Re-read every shared owner immediately before editing and preserve all
   compatible concurrent changes by fix-forward.
-- Do not run Git, Beads, Dolt, Gas Town, or Gas City while their active
+- Do not run Git, Beads, Dolt, or Gas City while their active
   authority remains suspended.
 
 **Exit condition:** distributed owners are usable and no successor edit

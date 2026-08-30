@@ -65,7 +65,7 @@ unclassified artifact; never coerce one into a category to preserve a count.
 
 ## Runtime state
 
-Beads, Dolt, Gas Town, and Gas City are explicitly suspended. Do not invoke,
+Beads, Dolt, and Gas City are explicitly suspended. Do not invoke,
 inspect, start, migrate, select an endpoint for, or depend on those runtimes.
 Create no alternate database, tracker, ledger, workspace, city, rig, Pack,
 clone, or worktree, except for the four exact physical root clones expressly
