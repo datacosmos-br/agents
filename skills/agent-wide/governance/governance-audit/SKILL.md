@@ -12,7 +12,7 @@ projection owner, and runtime state before auditing. You detect, document, and
 recommend; the declared owner enacts, merges, and closes. During tracker
 suspension, inspect only supplied static snapshots and repository files.
 
-Read the [audit recipes](references/audit-recipes.md) for the single classification
+Read the `audit recipes` (skill file) for the single classification
 and severity contract. Inspect content, ownership, dependencies, live work, and
 source/projection bytes; timestamps alone do not establish staleness.
 

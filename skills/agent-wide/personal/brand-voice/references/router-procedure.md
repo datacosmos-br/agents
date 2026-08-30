@@ -45,7 +45,7 @@ Do not use generic platform exemplars as source material.
 
 ## Output Contract
 
-Produce a reusable `VOICE PROFILE` block that downstream skills can consume directly. Use the schema in [references/voice-profile-schema.md](../references/voice-profile-schema.md).
+Produce a reusable `VOICE PROFILE` block that downstream skills can consume directly. Use the schema in `references/voice-profile-schema.md` (skill file).
 
 Keep the profile structured and short enough to reuse in session context. The point is not literary criticism. The point is operational reuse.
 

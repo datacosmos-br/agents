@@ -9,5 +9,5 @@ metadata:
 # Agent Management
 
 Agents are the workers in a Gas City workspace. Each runs in its own session (tmux pane, container, etc). Follow the complete
-[router procedure](references/router-procedure.md) and preserve its owners,
+`router procedure` (skill file) and preserve its owners,
 evidence contracts, failure propagation, and required output standard.

@@ -12,7 +12,7 @@ Dependencies: python3 stdlib and the `gh` CLI already authenticated by
 the operator's shell. Never extracts or relocates credentials.
 
 Subcommands:
-  locate <owner/repo> <pr>            full PR triage inventory (JSON)
+  locate <owner/repo> <pr>            full blocking-check inventory (JSON)
   sweep <owner/repo>... --base B,...  integration-lane PR queue (JSON)
   reply <thread-id> --body-file F     answer one review thread
   resolve <thread-id>                 resolve one review thread
@@ -27,6 +27,8 @@ import subprocess
 import sys
 from typing import Any
 
+_PASSING_CONCLUSIONS = frozenset({"success", "neutral", "skipped"})
+
 
 def _gh(*arguments: str, input_text: str | None = None) -> str:
     """Run gh in the operator's shell; propagate failure unchanged."""
@@ -35,6 +37,7 @@ def _gh(*arguments: str, input_text: str | None = None) -> str:
         input=input_text,
         capture_output=True,
         text=True,
+        check=False,
     )
     if completed.returncode != 0:
         sys.stderr.write(completed.stderr)
@@ -51,6 +54,13 @@ def _graphql(query: str, **variables: Any) -> dict[str, Any]:
     if body.get("errors"):
         raise SystemExit(f"graphql errors: {json.dumps(body['errors'])}")
     return body["data"]
+
+
+def _gh_paginated(path: str, query: str) -> list[dict[str, Any]]:
+    """Return every JSON object emitted by a paginated GitHub REST query."""
+
+    raw = _gh("api", "--paginate", path, "-q", query)
+    return [json.loads(line) for line in raw.splitlines() if line.strip()]
 
 
 REVIEW_THREADS_QUERY = """
@@ -101,55 +111,94 @@ def review_threads(owner: str, name: str, number: int) -> list[dict[str, Any]]:
 
 
 def _checks(owner: str, name: str, ref: str) -> list[dict[str, Any]]:
-    raw = _gh(
-        "api",
-        f"repos/{owner}/{name}/commits/{ref}/check-runs",
-        "-q",
+    return _gh_paginated(
+        f"repos/{owner}/{name}/commits/{ref}/check-runs?per_page=100",
         ".check_runs[] | {name:.name,status:.status,conclusion:.conclusion}",
     )
-    return [json.loads(line) for line in raw.splitlines() if line.strip()]
-
-
-# A check that finished without running is not a failure: GitHub reports a
-# skipped or neutral job as a completed conclusion, and a required check may
-# legitimately be either.
-_PASSING_CONCLUSIONS = {"success", "neutral", "skipped"}
 
 
 def checks_verdict(checks: list[dict[str, Any]]) -> str:
-    """Report what the check set actually proves.
+    """Report what the check set actually proves."""
 
-    An empty rollup is `not_determined`, never `passed`. Zero failing and zero
-    pending is what "every check succeeded" and "no check exists yet" both look
-    like to a counter, and reading the second as the first merges code no CI
-    ever saw. Only a non-empty set in which every entry both finished and
-    finished well is `passed`.
-    """
     if not checks:
         return "not_determined"
-    if any(check["conclusion"] == "failure" for check in checks):
+    if _blocking_checks(checks):
         return "failing"
-    if any(check["status"] != "COMPLETED" for check in checks):
+    if _pending_checks(checks):
         return "pending"
-    if all(
-        (check["conclusion"] or "").lower() in _PASSING_CONCLUSIONS
+    return "passed"
+
+
+def _blocking_checks(checks: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    return [
+        check
         for check in checks
-    ):
-        return "passed"
-    return "failing"
+        if check["status"] == "COMPLETED"
+        and str(check["conclusion"]).casefold() not in _PASSING_CONCLUSIONS
+    ]
+
+
+def _pending_checks(checks: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    return [check for check in checks if check["status"] != "COMPLETED"]
+
+
+def _check_counts(checks: list[dict[str, Any]]) -> tuple[int, int]:
+    return len(_blocking_checks(checks)), len(_pending_checks(checks))
+
+
+def _mergeability(detail: dict[str, Any]) -> str:
+    value = detail.get("mergeable")
+    if value is True:
+        return "mergeable"
+    if value is False:
+        return "conflicting"
+    return "unknown"
+
+
+def _pull_detail(repository: str, number: int) -> dict[str, Any]:
+    return json.loads(_gh("api", f"repos/{repository}/pulls/{number}"))
+
+
+def _open_pulls(repository: str) -> list[dict[str, Any]]:
+    return _gh_paginated(
+        f"repos/{repository}/pulls?state=open&per_page=100",
+        ".[]",
+    )
+
+
+def _detailed_queue_entry(repository: str, pr: dict[str, Any]) -> dict[str, Any]:
+    owner, _, name = repository.partition("/")
+    # The list endpoint never carries mergeability: GitHub computes it
+    # lazily and returns it only from the single-pull endpoint.
+    detail = _pull_detail(repository, pr["number"])
+    checks = _checks(owner, name, pr["head"]["sha"])
+    threads = review_threads(owner, name, pr["number"])
+    blocking_count, pending_count = _check_counts(checks)
+    return {
+        "repository": repository,
+        "pr": pr["number"],
+        "title": pr["title"],
+        "base": pr["base"]["ref"],
+        "head_branch": pr["head"]["ref"],
+        "head_oid": pr["head"]["sha"],
+        "draft": pr["draft"],
+        "mergeability": _mergeability(detail),
+        "mergeable_state": detail.get("mergeable_state"),
+        "checks_verdict": checks_verdict(checks),
+        "check_count": len(checks),
+        "blocking_check_count": blocking_count,
+        "pending_check_count": pending_count,
+        "unresolved_threads": sum(1 for thread in threads if not thread["resolved"]),
+    }
 
 
 def cmd_locate(repository: str, number: int) -> dict[str, Any]:
     owner, _, name = repository.partition("/")
-    raw = _gh(
-        "api",
-        f"repos/{repository}/pulls/{number}",
-    )
-    pr = json.loads(raw)
+    pr = _pull_detail(repository, number)
     head_oid = pr["head"]["sha"]
     checks = _checks(owner, name, head_oid)
     threads = review_threads(owner, name, number)
-    unresolved = [t for t in threads if not t["resolved"]]
+    unresolved = [thread for thread in threads if not thread["resolved"]]
     return {
         "repository": repository,
         "pr": number,
@@ -159,11 +208,12 @@ def cmd_locate(repository: str, number: int) -> dict[str, Any]:
         "base": pr["base"]["ref"],
         "head_branch": pr["head"]["ref"],
         "head_oid": head_oid,
-        "mergeable": pr["mergeable"],
+        "mergeability": _mergeability(pr),
+        "mergeable_state": pr.get("mergeable_state"),
         "checks_verdict": checks_verdict(checks),
         "check_count": len(checks),
-        "failing_checks": [c for c in checks if c["conclusion"] == "failure"],
-        "pending_checks": [c for c in checks if c["status"] != "completed"],
+        "blocking_checks": _blocking_checks(checks),
+        "pending_checks": _pending_checks(checks),
         "unresolved_threads": unresolved,
         "resolved_thread_count": len(threads) - len(unresolved),
     }
@@ -172,39 +222,9 @@ def cmd_locate(repository: str, number: int) -> dict[str, Any]:
 def cmd_sweep(repositories: list[str], bases: set[str]) -> list[dict[str, Any]]:
     queue: list[dict[str, Any]] = []
     for repository in repositories:
-        raw = _gh("api", f"repos/{repository}/pulls?state=open&per_page=100")
-        pulls = json.loads(raw)
-        for pr in pulls:
-            if pr["base"]["ref"] not in bases:
-                continue
-            owner, _, name = repository.partition("/")
-            # The list endpoint never carries mergeability: GitHub computes it
-            # lazily and returns it only from the single-pull endpoint, which
-            # is what cmd_locate already reads.
-            detail = json.loads(_gh("api", f"repos/{repository}/pulls/{pr['number']}"))
-            checks = _checks(owner, name, pr["head"]["sha"])
-            threads = review_threads(owner, name, pr["number"])
-            queue.append(
-                {
-                    "repository": repository,
-                    "pr": pr["number"],
-                    "title": pr["title"],
-                    "base": pr["base"]["ref"],
-                    "head_branch": pr["head"]["ref"],
-                    "head_oid": pr["head"]["sha"],
-                    "draft": pr["draft"],
-                    "mergeable": detail["mergeable"],
-                    "checks_verdict": checks_verdict(checks),
-                    "check_count": len(checks),
-                    "failing_checks": sum(
-                        1 for c in checks if c["conclusion"] == "failure"
-                    ),
-                    "pending_checks": sum(
-                        1 for c in checks if c["status"] != "completed"
-                    ),
-                    "unresolved_threads": sum(1 for t in threads if not t["resolved"]),
-                }
-            )
+        for pr in _open_pulls(repository):
+            if pr["base"]["ref"] in bases:
+                queue.append(_detailed_queue_entry(repository, pr))
     return queue
 
 

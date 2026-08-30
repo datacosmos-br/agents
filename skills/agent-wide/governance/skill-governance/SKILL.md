@@ -10,6 +10,6 @@ metadata:
 # Skill Governance
 
 Activate when creating, changing, classifying, evaluating, or removing a skill
-bundle. Read the [complete procedure](references/procedure.md), search the active
+bundle. Read the `complete procedure` (skill file), search the active
 catalog first, and create a new identity only for a distinct recurring
 capability. Do not use this workflow for commands, agents, or rules.

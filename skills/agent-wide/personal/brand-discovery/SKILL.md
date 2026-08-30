@@ -11,7 +11,7 @@ Activate when a brand needs an evidence-backed identity or positioning brief
 elicited from founders or stakeholders. Do not activate merely to imitate an
 existing writing style; `brand-voice` owns corpus-derived voice profiles.
 
-Read the [interview and synthesis procedure](references/procedure.md). Preserve
+Read the `interview and synthesis procedure` (skill file). Preserve
 participants' language as attributed evidence, separate it from synthesis, and
 surface contradictions instead of averaging them away.
 

@@ -7,7 +7,7 @@ metadata:
 
 # JVM Development
 
-Read [the procedure](references/procedure.md) for Java, Kotlin, Gradle, Maven, or
+Read `the procedure` (skill file) for Java, Kotlin, Gradle, Maven, or
 mixed JVM work.
 
 The repository owns language levels, plugins, dependency resolution, formatting,

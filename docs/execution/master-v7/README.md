@@ -81,32 +81,32 @@ increments; they cannot be smuggled into either cutover.
 
 ## Reading order
 
-1. [Authority and scope](00-authority-and-scope.md)
-2. [Artifact contracts](01-artifact-contracts.md)
-3. [Skill taxonomy and migration map](02-skill-taxonomy.md)
-4. [Command contract](03-command-contract.md)
-5. [Agent, rule, and projection contracts](04-agent-rule-projection-contract.md)
-6. [Execution phases](05-execution-phases.md)
-7. [Validation and landing](06-validation-and-landing.md)
-8. [Session protocol](07-session-protocol.md)
-9. [Plan 1: skills strict execution](08-skills-strict-execution-plan.md)
-10. [Plan 2: runtime extermination](09-runtime-extermination-plan.md)
-11. [Additive capability composition](10-additive-capability-composition-plan.md)
-12. [Agents repository runbook](repositories/agents.md)
+1. `Authority and scope` (doc file)
+2. `Artifact contracts` (doc file)
+3. `Skill taxonomy and migration map` (doc file)
+4. `Command contract` (doc file)
+5. `Agent, rule, and projection contracts` (doc file)
+6. `Execution phases` (doc file)
+7. `Validation and landing` (doc file)
+8. `Session protocol` (doc file)
+9. `Plan 1: skills strict execution` (doc file)
+10. `Plan 2: runtime extermination` (doc file)
+11. `Additive capability composition` (doc file)
+12. `Agents repository runbook` (doc file)
 
 Approved successor increment, gated on this package being integrated and
 revalidated on `main`:
 
-13. [Governed project skill distribution](11-governed-project-skill-distribution-plan.md)
+13. `Governed project skill distribution` (doc file)
 
 Architecture decisions:
 
-- [ADR-0001: Preserve artifact-type boundaries](../../adr/ADR-0001-artifact-type-boundaries.md)
-- [ADR-0002: Derive skill distribution from paths and tags](../../adr/ADR-0002-skill-distribution-paths-and-tags.md)
-- [ADR-0003: Render provider-native physical projections](../../adr/ADR-0003-provider-native-physical-projections.md)
-- [ADR-0004: Enforce one optionless fail-loud runtime CLI](../../adr/ADR-0004-optionless-fail-loud-cli.md)
-- [ADR-0005: Compose governance and native lifecycle delivery](../../adr/ADR-0005-composed-governance-delivery.md)
-- [ADR-0006: Synthesize historical governance by behavior](../../adr/ADR-0006-semantic-governance-synthesis.md)
+- `ADR-0001: Preserve artifact-type boundaries` (doc file)
+- `ADR-0002: Derive skill distribution from paths and tags` (doc file)
+- `ADR-0003: Render provider-native physical projections` (doc file)
+- `ADR-0004: Enforce one optionless fail-loud runtime CLI` (doc file)
+- `ADR-0005: Compose governance and native lifecycle delivery` (doc file)
+- `ADR-0006: Synthesize historical governance by behavior` (doc file)
 
 ## Status vocabulary
 

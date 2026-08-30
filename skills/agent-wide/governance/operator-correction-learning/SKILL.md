@@ -11,7 +11,7 @@ Activate immediately after an operator corrects behavior and again at phase
 boundaries. A correction is high-authority evidence for its stated scope, not
 permission to infer broader preferences.
 
-Read [the reconciliation procedure](references/reconciliation.md). It owns
+Read `the reconciliation procedure` (skill file). It owns
 decision recovery, the operational-state versus invariant classification,
 contradiction removal, evidence, and restoration transfer.
 

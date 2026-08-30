@@ -16,7 +16,7 @@ An environment variable, setting, parameter, or argument that only repeats a
 canonical calculated default has no independent requirement and is removed.
 
 Consume the `search-first` evidence packet, apply the
-[necessity procedure](references/procedure.md), and pass only the surviving
+`necessity procedure` (skill file), and pass only the surviving
 concept set to `ssot`. YAGNI decides existence, not authority or design.
 
 Do not delete a real public contract, rare current consumer, security control,

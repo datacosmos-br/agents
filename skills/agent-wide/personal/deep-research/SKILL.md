@@ -7,6 +7,4 @@ metadata:
 
 # Deep Research
 
-Produce thorough, cited research reports from multiple web sources using firecrawl and exa MCP tools. Follow the complete [router procedure](references/router-procedure.md) and preserve its owners, evidence contracts, failure propagation, and required output standard. Follow the complete [router procedure](references/router-procedure.md) and preserve its owners, evidence contracts, failure propagation, and required output standard. Follow the complete
-[router procedure](references/router-procedure.md) and preserve its owners,
-evidence contracts, failure propagation, and required output standard.
+Produce thorough, cited research reports from multiple web sources using firecrawl and exa MCP tools. Follow the complete [router procedure](references/router-procedure.md) and preserve its owners, evidence contracts, failure propagation, and required output standard.

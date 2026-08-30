@@ -37,7 +37,7 @@ When a term is settled, use the left column; never the right (except literal exc
 | a **formula** is the *how* (a method over a convoy of beads) | "a formula is the work" | Beads are the work; the formula is the method. Never conflate. |
 | **Events are fired** so humans/agents can observe | "events observe" | Events are the outbound notification, not an active observer. |
 
-When you rename a concept across the corpus, see [references/terminology.md](../references/terminology.md) for the prose-vs-literal discipline (rename the concept in prose; preserve literal program output, JSON fields, config keys, and generated files).
+When you rename a concept across the corpus, see `references/terminology.md` (skill file) for the prose-vs-literal discipline (rename the concept in prose; preserve literal program output, JSON fields, config keys, and generated files).
 
 ## 3. Content stance
 
@@ -69,7 +69,7 @@ Most bloat is information stored in the wrong medium. Move it to a cheaper carri
 
 **Write for the reader, not about the edit.** No meta-commentary, no asides that only make sense relative to text you removed.
 
-When you're running a deliberate **simplification pass** over a page or a whole section, follow [references/simplification.md](../references/simplification.md): the per-page loop (measure → convert/delete → verify), and the two guardrails — a **loss-check** and a **fact-check**.
+When you're running a deliberate **simplification pass** over a page or a whole section, follow `references/simplification.md` (skill file): the per-page loop (measure → convert/delete → verify), and the two guardrails — a **loss-check** and a **fact-check**.
 
 ## 6. Emphasis and formatting
 
@@ -91,7 +91,7 @@ Never hand-edit a generated file. To change wording in generated reference docs,
 
 ## 9. Verify before you call it done
 
-Run the gates in [references/verification.md](../references/verification.md). Durable repo gates typically include nav↔file consistency, local markdown link checks, diagram re-rendering, and generated-doc freshness. Beyond the gates: every TOML/YAML fence must parse, every internal link and anchor must resolve, no page is orphaned from the nav, and no body H1 was introduced.
+Run the gates in `references/verification.md` (skill file). Durable repo gates typically include nav↔file consistency, local markdown link checks, diagram re-rendering, and generated-doc freshness. Beyond the gates: every TOML/YAML fence must parse, every internal link and anchor must resolve, no page is orphaned from the nav, and no body H1 was introduced.
 
 When you **move or remove a page**: add a redirect from the old path, rewrite inbound links, and update any nav/IA references.
 

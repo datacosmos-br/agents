@@ -20,7 +20,7 @@ parameters, arguments, fixtures, and projections. Only a current non-derivable
 external value or a supported override is explicit.
 
 Consume the current concept set from `yagni` and read the
-[authority procedure](references/procedure.md). Return one authority map for
+`authority procedure` (skill file). Return one authority map for
 implementation, `solid`, and `dry`; `search-first` owns the global route.
 
 Missing ownership, precedence, generator, consumer, or runtime evidence blocks

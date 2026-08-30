@@ -17,7 +17,7 @@ Resolve the tool layer and its one canonical owner before any effect. Host
 tools, project fleet tools, project-specific tools, and development
 dependencies have different owners and generators; a host decision never
 becomes a project pin by proximity or convenience. Follow the
-[ownership procedure](references/procedure.md) for the exact routing and
+`ownership procedure` (skill file) for the exact routing and
 runtime proof.
 
 Never write a generated tool surface by hand or add an undeclared PATH entry,

@@ -14,4 +14,4 @@ current process environment. Missing or invalid credentials raise immediately.
 Existing operating-system keyring values are external user state: do not
 inspect, enumerate, migrate, mutate, or delete them.
 
-See also: [strict-execution.md](strict-execution.md) — aggregate parent policy.
+See also: `strict-execution.md` (rule file) — aggregate parent policy.

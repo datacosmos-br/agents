@@ -14,4 +14,4 @@ management operations:
   `git reflog` only when authorized, never by replacing the adopted current state.
 - Commit often so the combined work survives a lane or process failure.
 
-See also: [operator-precedence.md](../coordination/operator-precedence.md) — integration authority.
+See also: `operator-precedence.md` (rule file) — integration authority.
