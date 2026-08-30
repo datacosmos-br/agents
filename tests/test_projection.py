@@ -18,6 +18,7 @@ from agents_governance.projection import (
     Projector,
 )
 from agents_governance.projection_config import load_projection_config
+from agents_governance.rules import audit_rule_specs
 
 _PROVIDERS = (
     "claude",
@@ -655,7 +656,7 @@ def test_divergent_unmanifested_agent_requires_adjudication_before_publication(
         load_projection_config(root),
         (),
         audit_agent_profiles(root),
-        (),
+        audit_rule_specs(root),
     )
     project = _project(tmp_path)
     selection = project / ".agents" / "projection.json"
@@ -965,7 +966,7 @@ def test_project_selection_projects_copilot_agent_with_native_identity(
         load_projection_config(root),
         (),
         audit_agent_profiles(root),
-        (),
+        audit_rule_specs(root),
     )
     project = _project(tmp_path)
     selection = project / ".agents" / "projection.json"

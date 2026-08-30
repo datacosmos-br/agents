@@ -22,7 +22,7 @@ from .projection_config import (
     RuleLayout,
 )
 from .rule_adapters import RuleContext, render_rule
-from .rules import RuleDistribution, RuleSpec
+from .rules import RuleDistribution, RuleSpec, prompt_defense_body
 
 
 @dataclass(frozen=True)
@@ -81,20 +81,7 @@ def evaluate_native(
 ) -> NativeEvalResult:
     """Render every supported command, agent, and rule twice or raise."""
 
-    prompt_defense_path = root / "rules" / "security" / "prompt-defense.md"
-    if prompt_defense_path.is_symlink() or not prompt_defense_path.is_file():
-        raise ValueError(
-            f"prompt-defense owner must be a physical file: {prompt_defense_path}"
-        )
-    raw_defense = prompt_defense_path.read_text(encoding="utf-8")
-    if raw_defense.startswith("---\n"):
-        end = raw_defense.find("\n---\n", 4)
-        if end != -1:
-            prompt_defense = raw_defense[end + 5 :].lstrip()
-        else:
-            prompt_defense = raw_defense
-    else:
-        prompt_defense = raw_defense
+    prompt_defense = prompt_defense_body(rules)
     counter = waza_bpe_counter(root)
     counts = {surface: 0 for surface in ProjectionSurface}
     for cell in config.cells.values():

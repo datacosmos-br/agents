@@ -59,7 +59,7 @@ from .projection_config import (
     RuleLayout,
 )
 from .rule_adapters import RuleContext, RuleProvider, render_rule
-from .rules import RuleDistribution, RuleSpec
+from .rules import RuleDistribution, RuleSpec, prompt_defense_body
 from .validation import validate_skill_catalogs
 
 _DIGEST = re.compile(r"[0-9a-f]{64}\Z")
@@ -1185,21 +1185,7 @@ class Projector:
                             )
                     elif surface is ProjectionSurface.AGENTS:
                         if prompt_defense is None:
-                            raw_defense = (
-                                self.catalog.root
-                                / "rules"
-                                / "security"
-                                / "prompt-defense.md"
-                            ).read_text(encoding="utf-8")
-                            # Strip frontmatter (---\n...\n---\n\n) to get body only
-                            if raw_defense.startswith("---\n"):
-                                end = raw_defense.find("\n---\n", 4)
-                                if end != -1:
-                                    prompt_defense = raw_defense[end + 5 :].lstrip()
-                                else:
-                                    prompt_defense = raw_defense
-                            else:
-                                prompt_defense = raw_defense
+                            prompt_defense = prompt_defense_body(self.rules)
                         agent_context = AgentContext(context.value)
                         for agent_profile in self.agents:
                             if agent_profile.name not in selected_agents:

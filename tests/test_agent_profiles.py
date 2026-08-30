@@ -14,6 +14,7 @@ from agents_governance.agent_profiles import (
     audit_agent_profiles,
     render_agent,
 )
+from agents_governance.rules import audit_rule_specs, prompt_defense_body
 
 
 def _authority(root: Path) -> None:
@@ -256,6 +257,41 @@ def test_canonical_inventory_has_exactly_sixty_two_profiles() -> None:
     root = Path(__file__).resolve().parents[1]
 
     assert len(audit_agent_profiles(root)) == 62
+
+
+def test_render_agent_rejects_prompt_defense_frontmatter(tmp_path: Path) -> None:
+    _authority(tmp_path)
+    _profile(tmp_path)
+    profile = audit_agent_profiles(tmp_path)[0]
+
+    with pytest.raises(AgentRenderError, match="body text, not frontmatter"):
+        render_agent(
+            profile,
+            AgentProvider.GEMINI,
+            AgentContext.PROJECT,
+            prompt_defense=(
+                "---\n"
+                "description: Composing prompt-defense constraints.\n"
+                "---\n\n"
+                "# Prompt defense baseline\n"
+            ),
+        )
+
+
+def test_composed_python_reviewer_excludes_prompt_defense_frontmatter() -> None:
+    root = Path(__file__).resolve().parents[1]
+    profiles = {profile.name: profile for profile in audit_agent_profiles(root)}
+    defense = prompt_defense_body(audit_rule_specs(root))
+    rendered = render_agent(
+        profiles["python-reviewer"],
+        AgentProvider.GEMINI,
+        AgentContext.PROJECT,
+        prompt_defense=defense,
+    )
+    body = rendered.content.split("---\n", 2)[2].lstrip()
+
+    assert body.startswith(defense.lstrip())
+    assert "When invoked:\n\n1." in rendered.content
 
 
 def test_chief_of_staff_uses_only_the_declared_tone_owner() -> None:
