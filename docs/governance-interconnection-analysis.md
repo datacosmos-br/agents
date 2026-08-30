@@ -552,7 +552,7 @@ identificar alinhamentos, conflitos, e oportunidades de coordenação.
    `rules/python/config-settings-ssot.md` em vez de `rules/python.md`.
 
 2. **`skills-cohesion-gastown` vs. Gas City guarantee coverage**: O plano
-   gastown propõe limpeza de skills/docs. Meu plano propõe adicionar Gas City
+   o plano de coesão propõe limpeza de skills/docs. Meu plano propõe adicionar Gas City
    skills ao guarantee map. Ambas as mudanças no `~/agents` devem ser
    coordenadas no mesmo cutover para evitar fixed-point divergence.
 
