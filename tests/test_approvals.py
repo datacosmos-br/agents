@@ -1,0 +1,344 @@
+from __future__ import annotations
+
+import json
+from datetime import UTC, datetime, timedelta
+from pathlib import Path
+
+import pytest
+
+from agents_governance.approvals import (
+    resolve_approval_tags,
+    resolve_reference,
+    validate_decision_tag,
+    validate_effective_tag,
+    validate_supersedes_tag,
+)
+from agents_governance.catalog import Catalog
+from agents_governance.commands import audit_command_specs
+from agents_governance.rules import audit_rule_specs
+
+_BUDGETS = {
+    "router_tokens": 500,
+    "frozen_tokens": 1200,
+    "on_demand_tokens": 5000,
+    "max_lines": 500,
+}
+
+
+def _docs(root: Path) -> None:
+    adr = root / "docs" / "adr"
+    adr.mkdir(parents=True, exist_ok=True)
+    (adr / "ADR-0001-demo.md").write_text("# ADR-0001\n", encoding="utf-8")
+    plans = root / "docs" / "execution" / "master-v7"
+    plans.mkdir(parents=True, exist_ok=True)
+    (plans / "11-distribution.md").write_text("# 11\n", encoding="utf-8")
+
+
+def _future() -> str:
+    stamp = datetime.now(tz=UTC).date() + timedelta(days=1)
+    return stamp.isoformat()
+
+
+def test_effective_tag_accepts_a_real_past_date() -> None:
+    validate_effective_tag("effective:2026-08-30")
+
+
+@pytest.mark.parametrize(
+    "tag",
+    [
+        "effective:2026-08-3",
+        "effective:26-08-30",
+        "effective:2026/08/30",
+        "effective:2026-08-30T00:00:00",
+        "effective:yesterday",
+    ],
+)
+def test_effective_tag_rejects_malformed_dates(tag: str) -> None:
+    with pytest.raises(ValueError, match="malformed effective tag"):
+        validate_effective_tag(tag)
+
+
+def test_effective_tag_lets_the_raw_calendar_error_escape() -> None:
+    with pytest.raises(ValueError):
+        validate_effective_tag("effective:2026-02-30")
+
+
+def test_effective_tag_rejects_future_dates() -> None:
+    with pytest.raises(ValueError, match="effective date is in the future"):
+        validate_effective_tag(f"effective:{_future()}")
+
+
+@pytest.mark.parametrize(
+    "tag,reference",
+    [
+        ("decision:ADR-0001", "ADR-0001"),
+        ("decision:plan-11", "plan-11"),
+        ("decision:plan-11-inc3", "plan-11-inc3"),
+    ],
+)
+def test_decision_tag_returns_its_reference(tag: str, reference: str) -> None:
+    assert validate_decision_tag(tag) == reference
+
+
+@pytest.mark.parametrize(
+    "tag",
+    ["decision:adr-0001", "decision:ADR-123", "decision:plan-1", "decision:plan-123"],
+)
+def test_decision_tag_rejects_unsupported_references(tag: str) -> None:
+    with pytest.raises(ValueError, match="unsupported approval reference"):
+        validate_decision_tag(tag)
+
+
+def test_supersedes_tag_shares_the_reference_grammar() -> None:
+    assert validate_supersedes_tag("supersedes:plan-11") == "plan-11"
+    with pytest.raises(ValueError, match="unsupported approval reference"):
+        validate_supersedes_tag("supersedes:skill:caveman")
+
+
+def test_reference_resolves_to_exactly_one_document(tmp_path: Path) -> None:
+    _docs(tmp_path)
+    assert resolve_reference(tmp_path, "ADR-0001").name == "ADR-0001-demo.md"
+    assert resolve_reference(tmp_path, "plan-11").name == "11-distribution.md"
+    assert resolve_reference(tmp_path, "plan-11-inc9").name == "11-distribution.md"
+
+
+def test_unresolvable_reference_fails_loud(tmp_path: Path) -> None:
+    _docs(tmp_path)
+    with pytest.raises(ValueError, match="exactly one document"):
+        resolve_reference(tmp_path, "ADR-0002")
+    with pytest.raises(ValueError, match="exactly one document"):
+        resolve_reference(tmp_path, "plan-12")
+
+
+def test_mixed_approval_tags_validate_together(tmp_path: Path) -> None:
+    _docs(tmp_path)
+    resolve_approval_tags(
+        tmp_path,
+        (
+            "decision:ADR-0001",
+            "effective:2026-08-30",
+            "supersedes:plan-11",
+        ),
+        Path("SKILL.md"),
+    )
+    with pytest.raises(ValueError, match="exactly one document"):
+        resolve_approval_tags(tmp_path, ("decision:plan-12",), Path("SKILL.md"))
+
+
+def _rule(
+    root: Path, relative: str, tags: tuple[str, ...], *, with_docs: bool = True
+) -> Path:
+    if with_docs:
+        _docs(root)
+    path = root / "rules" / relative
+    path.parent.mkdir(parents=True, exist_ok=True)
+    encoded = json.dumps(tags, separators=(",", ":"))
+    path.write_text(
+        "---\n"
+        "description: One typed rule.\n"
+        "metadata:\n"
+        f"  aihub.tags: '{encoded}'\n"
+        "---\n\n# Rule\n",
+        encoding="utf-8",
+    )
+    return path
+
+
+def test_rules_accept_fully_resolved_approval_tags(tmp_path: Path) -> None:
+    _rule(
+        tmp_path,
+        "coordination/approval.md",
+        (
+            "decision:ADR-0001",
+            "effective:2026-08-30",
+            "route:project",
+            "supersedes:plan-11",
+        ),
+    )
+
+    rules = audit_rule_specs(tmp_path)
+
+    assert [rule.identity for rule in rules] == ["coordination/approval"]
+
+
+def test_rules_reject_dangling_approval_references(tmp_path: Path) -> None:
+    _rule(tmp_path, "dangling.md", ("decision:ADR-0009", "route:personal"))
+
+    with pytest.raises(ValueError, match="exactly one document"):
+        audit_rule_specs(tmp_path)
+
+
+def test_rules_reject_non_approval_extra_tags(tmp_path: Path) -> None:
+    _rule(
+        tmp_path,
+        "extra.md",
+        ("domain:gas-city", "effective:2026-08-30", "route:personal"),
+    )
+
+    with pytest.raises(ValueError, match="route and approval tags"):
+        audit_rule_specs(tmp_path)
+
+
+def test_rules_still_require_exactly_one_route_tag(tmp_path: Path) -> None:
+    _rule(tmp_path, "routed.md", ("decision:ADR-0001", "effective:2026-08-30"))
+
+    with pytest.raises(ValueError, match="exactly one supported route tag"):
+        audit_rule_specs(tmp_path)
+
+
+def _command(root: Path, tags: tuple[str, ...], *, with_docs: bool = True) -> Path:
+    if with_docs:
+        _docs(root)
+    path = root / "commands" / "governance" / "demo-command.md"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    encoded = json.dumps(tags, separators=(",", ":"))
+    path.write_text(
+        "---\n"
+        "name: demo-command\n"
+        "description: Demonstrates approval tags.\n"
+        "metadata:\n"
+        f"  aihub.tags: '{encoded}'\n"
+        "---\n\n# Demo command\n",
+        encoding="utf-8",
+    )
+    return path
+
+
+def test_commands_accept_fully_resolved_approval_tags(tmp_path: Path) -> None:
+    _command(
+        tmp_path,
+        (
+            "decision:ADR-0001",
+            "intent:inspection",
+            "risk:read",
+            "route:project",
+        ),
+    )
+
+    commands = audit_command_specs(tmp_path)
+
+    assert [command.name for command in commands] == ["demo-command"]
+
+
+def test_commands_reject_dangling_approval_references(tmp_path: Path) -> None:
+    _command(
+        tmp_path,
+        (
+            "decision:plan-12",
+            "intent:inspection",
+            "risk:read",
+            "route:project",
+        ),
+    )
+
+    with pytest.raises(ValueError, match="exactly one document"):
+        audit_command_specs(tmp_path)
+
+
+def _skill(root: Path, category: str, name: str, tags: tuple[str, ...]) -> Path:
+    directory = root / "skills" / category / name
+    directory.mkdir(parents=True, exist_ok=True)
+    encoded = json.dumps(tags, separators=(",", ":"))
+    (directory / "SKILL.md").write_text(
+        "---\n"
+        f"name: {name}\n"
+        f"description: {name}, approval validation\n"
+        "metadata:\n"
+        f"  aihub.tags: '{encoded}'\n"
+        "---\n"
+        f"# {name}\n",
+        encoding="utf-8",
+    )
+    return directory
+
+
+def _config(root: Path) -> None:
+    (root / "config").mkdir(exist_ok=True)
+    (root / "config" / "skills.json").write_text(
+        json.dumps({"version": 2, "budgets": _BUDGETS}), encoding="utf-8"
+    )
+
+
+def test_catalog_resolves_approval_tags_against_its_root(tmp_path: Path) -> None:
+    _config(tmp_path)
+    _docs(tmp_path)
+    _skill(
+        tmp_path,
+        "agent-wide",
+        "approved",
+        (
+            "decision:ADR-0001",
+            "policy:strict-execution",
+            "provenance:agents-owned",
+            "updates:manual",
+            "usage:on-demand",
+        ),
+    )
+
+    catalog = Catalog(tmp_path)
+
+    assert tuple(record["name"] for record in catalog.inventory()) == ("approved",)
+
+
+def test_catalog_rejects_dangling_approval_tags(tmp_path: Path) -> None:
+    _config(tmp_path)
+    _docs(tmp_path)
+    _skill(
+        tmp_path,
+        "agent-wide",
+        "dangling",
+        (
+            "decision:ADR-0009",
+            "policy:strict-execution",
+            "provenance:agents-owned",
+            "updates:manual",
+            "usage:on-demand",
+        ),
+    )
+
+    with pytest.raises(ValueError, match="exactly one document"):
+        Catalog(tmp_path)
+
+
+def test_project_skills_resolve_approvals_against_central_authority(
+    tmp_path: Path,
+) -> None:
+    authority_root = tmp_path / "authority"
+    project_root = tmp_path / "project"
+    authority_root.mkdir()
+    project_root.mkdir()
+    _config(authority_root)
+    _docs(authority_root)
+    _skill(
+        authority_root,
+        "agent-wide",
+        "central",
+        (
+            "policy:strict-execution",
+            "provenance:agents-owned",
+            "updates:manual",
+            "usage:on-demand",
+        ),
+    )
+    _skill(
+        project_root,
+        "tool",
+        "local-approved",
+        (
+            "activation:opt-in",
+            "decision:ADR-0001",
+            "detect:opt-in:local-approved",
+            "provenance:project-owned",
+            "route:project",
+            "tool:approvals",
+            "updates:manual",
+            "usage:on-demand",
+        ),
+    )
+
+    authority = Catalog(authority_root)
+    catalog = Catalog.project(project_root, authority)
+
+    assert tuple(record["name"] for record in catalog.inventory()) == (
+        "local-approved",
+    )
