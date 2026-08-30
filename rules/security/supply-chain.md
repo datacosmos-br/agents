@@ -1,5 +1,7 @@
 ---
 description: Dependency automation, lockfiles, containers, and external-input interpreters.
+metadata:
+  aihub.tags: '["decision:plan-00","effective:2026-08-27","route:both"]'
 ---
 
 # Supply-chain changes remain intentionally delayed and least privileged

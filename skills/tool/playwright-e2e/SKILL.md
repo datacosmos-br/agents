@@ -2,7 +2,7 @@
 name: playwright-e2e
 description: 'playwright, end-to-end testing, browser fixtures'
 metadata:
-  aihub.tags: '["activation:detected","detect:dependency:npm:@playwright/test","detect:dependency:npm:playwright","policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:no-keyring","policy:preflight-before-effects","policy:required-environment","policy:strict-execution","policy:zero-residue","provenance:agents-owned","route:project","tool:playwright","updates:manual","usage:on-demand"]'
+  aihub.tags: '["activation:detected","decision:plan-00","detect:dependency:npm:@playwright/test","detect:dependency:npm:playwright","effective:2026-08-28","policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:no-keyring","policy:preflight-before-effects","policy:required-environment","policy:strict-execution","policy:zero-residue","provenance:agents-owned","route:project","tool:playwright","updates:manual","usage:on-demand"]'
 ---
 
 # Playwright E2E

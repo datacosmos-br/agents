@@ -2,7 +2,7 @@
 name: caveman
 description: 'operator communication, concise reporting, evidence first'
 metadata:
-  aihub.tags: '["policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","provenance:agents-owned","role:communication","updates:manual","usage:on-demand"]'
+  aihub.tags: '["decision:plan-00","effective:2026-08-29","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","provenance:agents-owned","role:communication","updates:manual","usage:on-demand"]'
 ---
 
 # Caveman

@@ -1,3 +1,9 @@
+---
+description: Test observable runtime behavior
+metadata:
+  aihub.tags: '["decision:plan-00","effective:2026-08-30","route:both"]'
+---
+
 # Test observable runtime behavior
 
 Tests validate what the public module does. Do not mock, assert private methods,

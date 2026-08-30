@@ -1,3 +1,9 @@
+---
+description: Storage and scratch law
+metadata:
+  aihub.tags: '["decision:plan-00","effective:2026-08-28","route:both"]'
+---
+
 # Storage and scratch law
 
 This file owns universal storage placement. Project and skill documents point

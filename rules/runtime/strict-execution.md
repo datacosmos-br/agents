@@ -1,5 +1,7 @@
 ---
 description: Mandatory fail-loud execution protocol for every project workflow.
+metadata:
+  aihub.tags: '["decision:ADR-0004","effective:2026-08-29","route:both"]'
 ---
 
 # Strict execution is universal and non-optional

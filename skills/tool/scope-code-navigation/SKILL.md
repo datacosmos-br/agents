@@ -2,7 +2,7 @@
 name: scope-code-navigation
 description: 'code navigation, reference tracing, scope cli'
 metadata:
-  aihub.tags: '["activation:opt-in","detect:opt-in:scope-code-navigation","policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","policy:zero-residue","provenance:agents-owned","route:project","tool:scope-code-navigation","updates:manual","usage:on-demand"]'
+  aihub.tags: '["activation:opt-in","decision:plan-00","detect:opt-in:scope-code-navigation","effective:2026-08-28","policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","policy:zero-residue","provenance:agents-owned","route:project","tool:scope-code-navigation","updates:manual","usage:on-demand"]'
 ---
 
 # Scope Code Navigation

@@ -2,7 +2,7 @@
 name: documentation-criteria
 description: 'documentation criteria, artifact selection, evidence requirements'
 metadata:
-  aihub.tags: '["policy:atomic-effects","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","policy:zero-residue","provenance:agents-owned","role:documentation","updates:manual","usage:on-demand"]'
+  aihub.tags: '["decision:plan-00","effective:2026-08-29","policy:atomic-effects","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","policy:zero-residue","provenance:agents-owned","role:documentation","updates:manual","usage:on-demand"]'
 ---
 
 # Documentation Criteria

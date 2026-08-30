@@ -5,6 +5,7 @@ from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 import pytest
+import yaml
 
 from agents_governance.approvals import (
     resolve_approval_tags,
@@ -131,7 +132,39 @@ def test_mixed_approval_tags_validate_together(tmp_path: Path) -> None:
         Path("SKILL.md"),
     )
     with pytest.raises(ValueError, match="exactly one document"):
-        resolve_approval_tags(tmp_path, ("decision:plan-12",), Path("SKILL.md"))
+        resolve_approval_tags(
+            tmp_path,
+            ("decision:plan-12", "effective:2026-08-30"),
+            Path("SKILL.md"),
+        )
+
+
+@pytest.mark.parametrize(
+    "tags,kind",
+    [
+        (("effective:2026-08-30",), "decision"),
+        (("decision:ADR-0001",), "effective"),
+        (
+            ("decision:ADR-0001", "decision:plan-11", "effective:2026-08-30"),
+            "decision",
+        ),
+        (
+            (
+                "decision:ADR-0001",
+                "effective:2026-08-29",
+                "effective:2026-08-30",
+            ),
+            "effective",
+        ),
+    ],
+)
+def test_approval_tags_require_exactly_one_decision_and_effective(
+    tmp_path: Path, tags: tuple[str, ...], kind: str
+) -> None:
+    _docs(tmp_path)
+
+    with pytest.raises(ValueError, match=rf"exactly one {kind}: tag"):
+        resolve_approval_tags(tmp_path, tags, Path("SKILL.md"))
 
 
 def _rule(
@@ -171,7 +204,11 @@ def test_rules_accept_fully_resolved_approval_tags(tmp_path: Path) -> None:
 
 
 def test_rules_reject_dangling_approval_references(tmp_path: Path) -> None:
-    _rule(tmp_path, "dangling.md", ("decision:ADR-0009", "route:personal"))
+    _rule(
+        tmp_path,
+        "dangling.md",
+        ("decision:ADR-0009", "effective:2026-08-30", "route:personal"),
+    )
 
     with pytest.raises(ValueError, match="exactly one document"):
         audit_rule_specs(tmp_path)
@@ -218,6 +255,7 @@ def test_commands_accept_fully_resolved_approval_tags(tmp_path: Path) -> None:
         tmp_path,
         (
             "decision:ADR-0001",
+            "effective:2026-08-30",
             "intent:inspection",
             "risk:read",
             "route:project",
@@ -234,6 +272,7 @@ def test_commands_reject_dangling_approval_references(tmp_path: Path) -> None:
         tmp_path,
         (
             "decision:plan-12",
+            "effective:2026-08-30",
             "intent:inspection",
             "risk:read",
             "route:project",
@@ -277,6 +316,7 @@ def test_catalog_resolves_approval_tags_against_its_root(tmp_path: Path) -> None
         "approved",
         (
             "decision:ADR-0001",
+            "effective:2026-08-30",
             "policy:strict-execution",
             "provenance:agents-owned",
             "updates:manual",
@@ -298,6 +338,7 @@ def test_catalog_rejects_dangling_approval_tags(tmp_path: Path) -> None:
         "dangling",
         (
             "decision:ADR-0009",
+            "effective:2026-08-30",
             "policy:strict-execution",
             "provenance:agents-owned",
             "updates:manual",
@@ -323,6 +364,8 @@ def test_project_skills_resolve_approvals_against_central_authority(
         "agent-wide",
         "central",
         (
+            "decision:ADR-0001",
+            "effective:2026-08-30",
             "policy:strict-execution",
             "provenance:agents-owned",
             "updates:manual",
@@ -337,6 +380,7 @@ def test_project_skills_resolve_approvals_against_central_authority(
             "activation:opt-in",
             "decision:ADR-0001",
             "detect:opt-in:local-approved",
+            "effective:2026-08-30",
             "provenance:project-owned",
             "route:project",
             "tool:approvals",
@@ -437,3 +481,31 @@ def test_untagged_command_projection_has_no_approval_note(tmp_path: Path) -> Non
     artifact = render_command(spec, "claude", token_budget=_budget())
 
     assert "aihub.approval" not in artifact.content
+
+
+REPOSITORY = Path(__file__).resolve().parents[1]
+
+
+def _canonical_tags(path: Path) -> tuple[str, ...]:
+    text = path.read_text(encoding="utf-8")
+    assert text.startswith("---\n"), f"missing frontmatter: {path}"
+    frontmatter = yaml.safe_load(text[4 : text.find("\n---\n", 4)])
+    raw = frontmatter["metadata"]["aihub.tags"]
+    return tuple(json.loads(raw))
+
+
+def test_real_inventory_carries_resolvable_approval_tags() -> None:
+    targets = sorted(
+        [p for p in (REPOSITORY / "rules").rglob("*.md") if p.is_file()]
+        + [p for p in (REPOSITORY / "skills").rglob("SKILL.md") if p.is_file()]
+        + [p for p in (REPOSITORY / "commands").rglob("*.md") if p.is_file()]
+    )
+    assert len(targets) >= 100
+
+    for path in targets:
+        tags = _canonical_tags(path)
+        decisions = [tag for tag in tags if tag.startswith("decision:")]
+        effective = [tag for tag in tags if tag.startswith("effective:")]
+        assert len(decisions) == 1, f"{path}: exactly one decision: tag required"
+        assert len(effective) == 1, f"{path}: exactly one effective: tag required"
+        resolve_approval_tags(REPOSITORY, tags, path)

@@ -1,5 +1,7 @@
 ---
 description: Atomic cutover and extermination of every superseded contract.
+metadata:
+  aihub.tags: '["decision:ADR-0004","effective:2026-08-30","route:both"]'
 ---
 
 # A cutover leaves zero active residue

@@ -3,7 +3,7 @@ name: pr-list
 description: List GitHub pull requests with review, check, and merge state preserved.
 argument-hint: "<repository and optional gh pr list filters>"
 metadata:
-  aihub.tags: '["intent:inspection","risk:external","route:agent"]'
+  aihub.tags: '["decision:plan-00","effective:2026-08-29","intent:inspection","risk:external","route:agent"]'
 ---
 
 # GitHub pull request list

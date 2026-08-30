@@ -1,5 +1,8 @@
 ---
 globs: "**/*.py"
+description: Read configuration through the project's typed owner
+metadata:
+  aihub.tags: '["decision:plan-00","effective:2026-08-28","route:both"]'
 ---
 
 # Read configuration through the project's typed owner

@@ -2,7 +2,7 @@
 name: beads-worker
 description: 'beads execution, scoped work, tracker workflow'
 metadata:
-  aihub.tags: '["activation:opt-in","detect:opt-in:beads-worker","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:no-keyring","policy:preflight-before-effects","policy:required-environment","policy:strict-execution","policy:zero-residue","provenance:agents-owned","route:agent","tool:beads","updates:manual","usage:router"]'
+  aihub.tags: '["activation:opt-in","decision:plan-00","detect:opt-in:beads-worker","effective:2026-08-29","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:no-keyring","policy:preflight-before-effects","policy:required-environment","policy:strict-execution","policy:zero-residue","provenance:agents-owned","route:agent","tool:beads","updates:manual","usage:router"]'
 ---
 
 # Beads Worker

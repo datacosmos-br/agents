@@ -2,7 +2,7 @@
 name: nextjs-turbopack
 description: 'next.js, turbopack, frontend performance'
 metadata:
-  aihub.tags: '["activation:detected","detect:dependency:npm:next","framework:nextjs","policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","policy:zero-residue","provenance:agents-owned","route:project","tool:turbopack","updates:manual","usage:on-demand"]'
+  aihub.tags: '["activation:detected","decision:plan-00","detect:dependency:npm:next","effective:2026-08-28","framework:nextjs","policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","policy:zero-residue","provenance:agents-owned","route:project","tool:turbopack","updates:manual","usage:on-demand"]'
 ---
 
 # Next.js and Turbopack

@@ -1,3 +1,9 @@
+---
+description: Bead verification is critical and mandatory
+metadata:
+  aihub.tags: '["decision:ADR-0007","effective:2026-08-30","route:both"]'
+---
+
 # Bead verification is critical and mandatory
 
 Every bead — at creation, at every update, and before close — declares and

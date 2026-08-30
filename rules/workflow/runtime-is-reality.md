@@ -1,5 +1,7 @@
 ---
 description: Verifying a change or claiming work done. Load when writing or fixing tests, running QA, or deciding whether a task is complete.
+metadata:
+  aihub.tags: '["decision:plan-00","effective:2026-08-28","route:both"]'
 ---
 
 # Reality is the running system; tests are checks, not the SSOT

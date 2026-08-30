@@ -8,6 +8,7 @@ from typing import Any, cast
 
 import pytest
 import yaml
+from conftest import approved, seed_approval_docs
 
 from agents_governance.agent_profiles import audit_agent_profiles
 from agents_governance.catalog import Catalog
@@ -32,6 +33,13 @@ _PROVIDERS = (
 _SURFACES = ("skills", "commands", "agents", "rules", "hooks")
 
 
+def _encode(tags: tuple[str, ...]) -> str:
+    return json.dumps(list(approved(tags)), separators=(",", ":"))
+
+
+_defense_tags = _encode(("route:both",))
+
+
 def _skill(
     root: Path,
     name: str,
@@ -45,9 +53,10 @@ def _skill(
     body: str = "# Test\n\nCanonical project guidance.\n",
     evaluation: bool = True,
 ) -> Path:
+    seed_approval_docs(root)
     directory = root / "skills" / category / name
     directory.mkdir(parents=True)
-    encoded = json.dumps(list(tags), separators=(",", ":"))
+    encoded = json.dumps(list(approved(tags)), separators=(",", ":"))
     (directory / "SKILL.md").write_text(
         "---\n"
         f"name: {name}\n"
@@ -264,7 +273,15 @@ def _agent_source(root: Path) -> None:
     )
     defense = root / "rules" / "security" / "prompt-defense.md"
     defense.parent.mkdir(parents=True)
-    defense.write_text("# Prompt defense\n", encoding="utf-8")
+    defense.write_text(
+        "---\n"
+        "description: Prompt defense baseline.\n"
+        "metadata:\n"
+        f"  aihub.tags: '{_defense_tags}'\n"
+        "---\n\n"
+        "# Prompt defense\n",
+        encoding="utf-8",
+    )
 
 
 def _manifest(root: Path) -> dict[str, object]:

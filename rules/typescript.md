@@ -1,5 +1,8 @@
 ---
 globs: ["*.ts", "*.tsx", "**/*.ts", "**/*.tsx", "tsconfig.json"]
+description: TypeScript rules
+metadata:
+  aihub.tags: '["decision:plan-00","effective:2026-08-28","route:both"]'
 ---
 
 # TypeScript rules

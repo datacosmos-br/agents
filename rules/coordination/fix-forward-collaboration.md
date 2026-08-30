@@ -1,5 +1,7 @@
 ---
 description: Preserve concurrent work and integrate every compatible contribution forward.
+metadata:
+  aihub.tags: '["decision:plan-00","effective:2026-08-29","route:both"]'
 ---
 
 # Adopt the current state and collaborate by fix-forward

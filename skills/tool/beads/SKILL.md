@@ -2,7 +2,7 @@
 name: beads
 description: 'beads, issue tracking, task workflow'
 metadata:
-  aihub.tags: '["activation:opt-in","detect:opt-in:beads","policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:no-keyring","policy:preflight-before-effects","policy:required-environment","policy:strict-execution","policy:zero-residue","provenance:agents-owned","route:agent","tool:beads","updates:manual","usage:router"]'
+  aihub.tags: '["activation:opt-in","decision:plan-00","detect:opt-in:beads","effective:2026-08-29","policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:no-keyring","policy:preflight-before-effects","policy:required-environment","policy:strict-execution","policy:zero-residue","provenance:agents-owned","route:agent","tool:beads","updates:manual","usage:router"]'
 ---
 
 # Beads
@@ -11,8 +11,7 @@ Activate only when the repository selects Beads and the request concerns its
 durable tracker. The active repository contract owns lifecycle and closure.
 
 Resolve Available versus Explicitly suspended from the active repository
-contract. Never infer availability from an installed binary, reachable port, or
-old instruction.
+contract; never infer availability from a binary, port, or old instruction.
 
 ## Available
 

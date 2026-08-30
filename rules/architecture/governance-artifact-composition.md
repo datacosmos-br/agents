@@ -7,7 +7,7 @@ globs:
   - "rules/**/*.md"
   - "skills/**"
 metadata:
-  aihub.tags: '["route:project"]'
+  aihub.tags: '["decision:ADR-0005","effective:2026-08-29","route:project"]'
 ---
 
 # Compose governance through one owner per behavior

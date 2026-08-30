@@ -1,3 +1,9 @@
+---
+description: Generalize from real consumers
+metadata:
+  aihub.tags: '["decision:plan-00","effective:2026-08-25","route:both"]'
+---
+
 # Generalize from real consumers
 
 Search existing owners first. Extend one generalized reusable owner or type and

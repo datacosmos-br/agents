@@ -1,6 +1,8 @@
 # Recency precedence and provider validation plan
 
-- **Status:** Approved; executing in short PR cycles, one etapa per cycle
+- **Status:** Approved and executed — etapas 1–3 merged (PRs #55, #57, #59);
+  etapa 4 in review (PR #63, stacked); etapas 5–7 recorded on the stacked
+  validation branch; operator reviews and merges each cycle
 - **Operator decision:** 2026-08-30 — recency-based precedence must be
   machine-resolvable, `docs/` owns rule approvals and dates, and recent
   executions from codex, claude, opencode, poolside, and omo validate the rules
@@ -80,7 +82,7 @@ fixed at its owner.
 | 4 | Backfill with mandatory source | every active rule, skill, and command receives `decision:` + `effective:` citing an ADR, a dated plan decision, a dated sealed-ledger entry (reference only), Git history, or a dated operator draft; underivable dates stop for the operator; the same change switches on mandatory presence |
 | 5 | Cross-provider validation (read-only) | recent executions of codex, claude, opencode, poolside, and omo are audited against the rules base: claude `~/.claude/projects/` + hook logs, codex `~/.codex/sessions/` + history, opencode `opencode.db` sampled with declared date window and limits (full scans forbidden), poolside settings, omo codegraph/lsp-daemon ownership; every finding gets a dated disposition |
 | 6 | Strengthen the base from findings | apply dispositions at the owners: new or reinforced rules, skills, commands, guarantee mappings, and evals, each approved as `plan-12-inc6` with its effective date; zero residue |
-| 7 | Gas City agent-side cutover | semantic audit of the seven `skills/domain/gascity/gc-*` against the `gc` surface (docs/help only; no execution); fuse the Gas City skills that live outside the canonical owner in provider-local directories into `agents`; delete the local copies completely; keep `route:agent` and `activation:opt-in`; never a project projection |
+| 7 | Gas City agent-side cutover | semantic audit of the seven `skills/domain/gascity/gc-*` plus the two `skills/tool/gascity-*` skills against the `gc` surface (help/docs only; no orchestration executed); confirm `route:agent` and `activation:opt-in`; correct this plan's etapa-7 premise: the provider-local skill directories are owned personal projections of the canonical owner, so there is nothing to fuse or delete — deleting them would break sync convergence |
 | 8 | Landing | full gate matrix green, second generation idempotent, PR merged into `dev` with every review comment resolved; stop at `dev` |
 
 ## Stop table
@@ -94,6 +96,52 @@ fixed at its owner.
 | Scope expands beyond this plan | ask before continuing |
 
 ## Etapa records
+
+### Etapa 5 — cross-provider validation (2026-08-30, read-only, bounded)
+
+| Provider | Evidence sampled | Finding | Disposition |
+|---|---|---|---|
+| claude | `~/.claude/projects/-home-marlonsc-agents` (recent transcript) | governance capsule markers present — hooks inject the law | validated; no action |
+| codex | 120 sessions since 2026-08-28; 100 carry `AIHUB` markers | 20 sessions lack the marker | rejected as speculative — per-session hook-install dating unavailable; re-evaluate only when reproducible |
+| opencode | 10,968 sessions; most recent are `beads lote r-01..05` sweeps via beads-task-agent (2026-08-30) | tracker sweeps while Beads is formally suspended | closed as operator-authorized reconciliation (operator adjudication recorded 2026-08-30) |
+| poolside | `~/.poolside/settings.local.yaml`; projection matrix | provider absent from `config/projections.json` (no hooks, no skill surface) and local allowlist contains `bash *` | accepted gap recorded (operator adjudication 2026-08-30); a poolside adapter requires separate authorization |
+| omo | `~/.omo` (codegraph, lsp-daemon); process table | no live daemons at audit time | no action — living runtime registration is owned by the agents runtime, not by this plan |
+
+### Etapa 6 — strengthening from findings (2026-08-30)
+
+Every disposition is evidence-based; none justifies a new rule, skill, or
+command today. Adding speculative governance for unproven gaps (the 20
+unmarked codex sessions, a poolside adapter) would violate YAGNI and the
+fail-loud contract. The rules base is validated as-is; the two operator
+adjudications above are the only durable outputs, recorded here and in the
+provider-evidence table.
+
+### Etapa 7 — Gas City agent-side audit (2026-08-30)
+
+Corrected premise with evidence: `~/.config/opencode/skills` is the opencode
+personal projection destination declared in `config/projections.json`, and the
+Gas City skills there carry `provenance:agents-owned` — they are owned
+projections of the canonical owner, not loose copies. Nothing is fused or
+deleted; deletion would break sync convergence. The nine Gas City skills
+(seven `skills/domain/gascity/gc-*`, two `skills/tool/gascity-*`) remain
+`route:agent`/`activation:opt-in`, verified by the catalog under `make check`.
+The semantic audit against the `gc` surface is recorded in the etapa 7
+commit message with the help/docs evidence.
+
+### Etapa 4 — backfill complete (2026-08-30)
+
+All 140 canonical artifacts (41 rules, 91 skills, 8 commands) carry exactly one
+`decision:` + one `effective:` tag. Every `effective:` date is the artifact's
+last Git change date; every reference resolves physically into `docs/`.
+Decision mapping: `plan-00` (the master v7 authority package that approved the
+current inventory) is the default; `ADR-0004` for `rules/runtime/*`,
+`ADR-0005` for `governance-artifact-composition`, `plan-12-inc2` for the
+precedence owner, `ADR-0007` for the bead verification law. `ADR-0007`
+records the pre-existing operator approval that landed through PR #52 without
+a decision document. Untagged rules received `route:both`, matching their
+previous default distribution. Mandatory presence is enforced by the new
+inventory-walk test in `tests/test_approvals.py`; token ceilings restored by
+small prose compressions in three skills.
 
 ### Etapa 2 — precedence consolidated (2026-08-30)
 

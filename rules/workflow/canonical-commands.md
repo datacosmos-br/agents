@@ -1,3 +1,9 @@
+---
+description: Run agent functions only through the optionless CLI
+metadata:
+  aihub.tags: '["decision:plan-00","effective:2026-08-28","route:both"]'
+---
+
 # Run agent functions only through the optionless CLI
 
 `agentsctl` is the sole agent-runtime facade: `help`, `doctor`, `check`, `sync`,

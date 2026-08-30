@@ -1,5 +1,7 @@
 ---
 description: Raw exception propagation and first-defect validation.
+metadata:
+  aihub.tags: '["decision:ADR-0004","effective:2026-08-29","route:both"]'
 ---
 
 # Fail loud on the first defect

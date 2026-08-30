@@ -3,7 +3,7 @@ name: gc-city
 description: 'gas city lifecycle, city init, start stop, supervisor status'
 allowed-tools: Bash(gc *)
 metadata:
-  aihub.tags: '["activation:opt-in", "detect:opt-in:gc-city", "domain:gas-city", "policy:atomic-effects", "policy:causal-subprocess", "policy:fail-loud", "policy:no-fallback", "policy:preflight-before-effects", "policy:strict-execution", "provenance:agents-owned", "route:agent", "technology:gas-city", "updates:manual", "usage:on-demand"]'
+  aihub.tags: '["activation:opt-in","decision:plan-00","detect:opt-in:gc-city","domain:gas-city","effective:2026-08-30","policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","provenance:agents-owned","route:agent","technology:gas-city","updates:manual","usage:on-demand"]'
 ---
 ## Verification (mandatory)
 
@@ -62,7 +62,7 @@ gc doctor                              # Health checks
 
 ```
 gc events                              # Tail the event log
-gc event emit <type> [data]            # Emit a custom event
+gc event emit <type> [data]            # Emit event
 ```
 
 ## Dashboard

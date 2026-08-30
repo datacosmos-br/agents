@@ -1,5 +1,8 @@
 ---
 globs: ["*.rs", "**/*.rs", "Cargo.toml"]
+description: Rust rules
+metadata:
+  aihub.tags: '["decision:plan-00","effective:2026-08-28","route:both"]'
 ---
 
 # Rust rules

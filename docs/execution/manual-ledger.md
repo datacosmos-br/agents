@@ -47,7 +47,7 @@ suspended.
 - Scope: universal fix-forward law, destructive-Git guard, integration-lane and
   same-repository collaboration, the new canonical collaboration skill, and the
   deletion, phase, closure, delegation, parallel-pane, and Gas City consumers.
-- Runtime state: Beads, Dolt, and Gas City remain suspended and must
+- Runtime state: Beads, Dolt, gascity, and Gas City remain suspended and must
   not be invoked or replaced; this ledger is the only execution-state owner.
 - Closure boundary: the protection requires canonical skill/eval validation,
   contradiction search, inventory-lock fixed point, native gates, review, landing
@@ -119,7 +119,7 @@ suspended.
 ### 2026-08-28 — manual tracking during suspension
 
 - Prohibited prior behavior: leaving execution state only in the active session
-  and Git/PR/CI while Beads, Gas City, and Dolt are suspended.
+  and Git/PR/CI while Beads, gascity, Gas City, and Dolt are suspended.
 - Required replacement: update this manual ledger after every material state
   change without invoking or replacing the suspended runtimes.
 - Authority: latest operator instruction in the active session.
@@ -369,7 +369,7 @@ suspended.
 | Canonical inventory publication after transversal fixes | 0 | Authorized SSOT publication after the `human-writing-style` and `make-check` root-cause fixes used `Catalog.render_inventory()` and `atomic_write_text()` only. Result: 65,280 bytes, SHA-256 `63bede7005239fa7fd396e4bb92c6c8170f37f712b3b29a5518e1f414f25536b`. Current catalog also contains clean concurrent `plan-focus-recovery`; the projection includes it without this lane editing that bundle. |
 | Final original-76 direct execution gate | 0 | Final post-fix run passed direct Waza specs 76/76, ordered strict records 76/76, exactly 228 task roles, and token validation across all six category roots. Portability scan and full scoped `git diff --check` passed. `Catalog` currently has 77 records only because clean concurrent `plan-focus-recovery` is outside the original set; the target remains the exact 76 discovered by this plan. Second inventory render is byte-identical: 65,280 bytes, SHA-256 `63bede7005239fa7fd396e4bb92c6c8170f37f712b3b29a5518e1f414f25536b`. |
 | Integration-lane handoff boundary | — | Read-only Git evidence: branch `feat/agents-skill-distribution`; local `dev...HEAD` divergence is 0 behind/38 ahead. This lane performed no commit, push, fetch, merge, rebase, stash, worktree, or force operation. Therefore the six requested per-batch Git SHAs do not exist and are the only remaining plan-delivery blocker under the active no-Git-mutation constraint. The implementation is integration-ready but the phase is explicitly not DONE. |
-| Operator-requested full closure audit for skill lane | — | Operator requires the plan to reach the real DONE boundary and confirms another agent owns scripts/runtime implementation on the same base; this lane remains strictly limited to skills, their evals, the authorized catalog projection, and the manual ledger. `skill-governance`, `verification-loop`, and `sprint-closure` were reread. Fresh closure audit will reconcile the current Plan 08, all skill/eval requirements, PR→`dev` landing evidence, merged-SHA runtime proof, and zero residue. No Git operation is authorized in this context, and Beads/Gas City/Dolt runtime remains suspended; those missing external owner states keep the phase open rather than authorizing substitutes. |
+| Operator-requested full closure audit for skill lane | — | Operator requires the plan to reach the real DONE boundary and confirms another agent owns scripts/runtime implementation on the same base; this lane remains strictly limited to skills, their evals, the authorized catalog projection, and the manual ledger. `skill-governance`, `verification-loop`, and `sprint-closure` were reread. Fresh closure audit will reconcile the current Plan 08, all skill/eval requirements, PR→`dev` landing evidence, merged-SHA runtime proof, and zero residue. No Git operation is authorized in this context, and Beads/Gas City/gascity/Dolt runtime remains suspended; those missing external owner states keep the phase open rather than authorizing substitutes. |
 | Fresh closure validation and stale-lock root cause | 1 | Direct Waza specs passed 76/76, category token validation passed, and portability/suppression scans passed. `Catalog.render_inventory()` then differed from the published lock: current lock SHA-256 `63bede7005239fa7fd396e4bb92c6c8170f37f712b3b29a5518e1f414f25536b`, current render SHA-256 `d7856756852c721707d8777e4f0cc757dbc033cf6bd8a655c1e486de73d4eb0d`. Structured projection comparison isolated the only changed record as concurrent `dispatch-agent`. Its bundle/evals were reread integrally; no script/runtime path is implicated. The skill-side correction must add atomic/zero-residue ownership for native handoff and remove duplicated router/example prose before projection publication. |
 | Concurrent `dispatch-agent` reconciliation and reduction | 0 | A concurrent write added `policy:atomic-effects` between read and edit; it was preserved. The bundle was compacted from 47 to 31 lines (-16, 34%), `policy:zero-residue` was added for native handoff cleanup, and copied numbered workflow/example prose was removed. Capability, direct-answer non-activation, active-roster selection, runtime-owned model choice, native causal failure, and project-owner boundary remain. Direct Waza spec passed 1/1, token gate passed 1/1, and `Catalog` reports 11 ordered tags including atomic/strict/zero-residue. |
 | Canonical inventory publication after closure reconciliation | 0 | Authorized SSOT publication used `Catalog.render_inventory()` plus `atomic_write_text()` after the only stale record was reconciled. Result: 65,311 bytes, SHA-256 `c3d55e0ad4b24db84e70fdb97902c0bb60ea5e1050047ae9e86d0c0296f8c67a`. No Make, `agentsctl`, external runtime, Git, tracker, or orchestration operation was invoked. |
@@ -473,7 +473,7 @@ while unavailable. No phase is `DONE`.
   rollback distinction based on prior authorship. Every current change is owned
   input and must be corrected forward through its repository owner.
 - Complete inspection of the active personal `crew-commit` skill found obsolete
-  requirements for the retired runtime, `git rebase`, and `git reset`. Repository history
+  requirements for gascity, `git rebase`, and `git reset`. Repository history
   proves that `skills/crew-commit/SKILL.md` was deleted at the Gas City migration
   commit `b8e0d1f`; the current projection contract places Codex personal skills
   under `~/.agents/skills`, so `~/.codex/skills/crew-commit` is an orphaned
@@ -482,7 +482,7 @@ while unavailable. No phase is `DONE`.
   from author-based protection to unconditional current-state adoption, validates
   the existing fix-forward rule/skill/eval bundle, and removes the orphan only
   after its absent source and zero current consumer are proven. No Beads, Dolt,
-  the retired runtime, Gas City, rollback, reset, rebase, stash, revert, force-push, or
+  gascity, Gas City, rollback, reset, rebase, stash, revert, force-push, or
   alternate tracker is authorized.
 - Result: the rule, router, grader and happy-path fixture now adopt the complete
   current authorized-worktree state regardless of provenance or age. The exact
@@ -666,7 +666,7 @@ while unavailable. No phase is `DONE`.
 ## 2026-08-28 — manual-ledger authority and suspended-hook extermination
 
 - The latest operator correction makes the repository-declared manual ledger
-  mandatory while Beads, Gas City, and Dolt are suspended. It remains
+  mandatory while Beads, gascity, Gas City, and Dolt are suspended. It remains
   evidence only: it neither replaces the selected canonical tracker nor closes
   a phase. Conflicting rules and skill procedures are corrected at their owners;
   no second ledger or tracker is introduced.

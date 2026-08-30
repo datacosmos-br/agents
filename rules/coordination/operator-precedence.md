@@ -1,3 +1,9 @@
+---
+description: Authority order and recency precedence
+metadata:
+  aihub.tags: '["decision:plan-12-inc2","effective:2026-08-30","route:both"]'
+---
+
 # Authority order and recency precedence
 
 Authority order: operator request > declared orchestration contract > canonical

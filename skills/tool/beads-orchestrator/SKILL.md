@@ -2,7 +2,7 @@
 name: beads-orchestrator
 description: 'beads orchestration, dependency governance, tracker ownership'
 metadata:
-  aihub.tags: '["activation:opt-in","detect:opt-in:beads-orchestration","policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:no-keyring","policy:preflight-before-effects","policy:required-environment","policy:strict-execution","policy:zero-residue","provenance:agents-owned","route:agent","tool:beads","updates:manual","usage:router"]'
+  aihub.tags: '["activation:opt-in","decision:plan-00","detect:opt-in:beads-orchestration","effective:2026-08-29","policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:no-keyring","policy:preflight-before-effects","policy:required-environment","policy:strict-execution","policy:zero-residue","provenance:agents-owned","route:agent","tool:beads","updates:manual","usage:router"]'
 ---
 
 # Beads Orchestrator
