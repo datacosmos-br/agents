@@ -14,7 +14,12 @@ from typing import cast
 import yaml
 from yaml.nodes import MappingNode, Node, SequenceNode
 
-from .approvals import APPROVAL_NAMESPACES, core_tags, resolve_approval_tags
+from .approvals import (
+    APPROVAL_NAMESPACES,
+    approval_tags,
+    core_tags,
+    resolve_approval_tags,
+)
 from .tokens import bpe_content
 
 _SLUG = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*\Z")
@@ -337,6 +342,13 @@ def audit_command_specs(
     return tuple(commands)
 
 
+def _approval_note(spec: CommandSpec) -> str:
+    approval = approval_tags(spec.tags)
+    if not approval:
+        return ""
+    return "\n\n<!-- aihub.approval: " + "; ".join(approval) + " -->"
+
+
 def _quoted(value: str) -> str:
     return json.dumps(value, ensure_ascii=False)
 
@@ -346,12 +358,18 @@ def _claude_markdown(spec: CommandSpec) -> str:
     if spec.argument_hint is not None:
         header.append(f"argument-hint: {_quoted(spec.argument_hint)}")
     header.extend(("disable-model-invocation: true", "---", ""))
-    return "\n".join((*header, spec.body))
+    return "\n".join((*header, spec.body + _approval_note(spec)))
 
 
 def _opencode_markdown(spec: CommandSpec) -> str:
     return "\n".join(
-        ("---", f"description: {_quoted(spec.description)}", "---", "", spec.body)
+        (
+            "---",
+            f"description: {_quoted(spec.description)}",
+            "---",
+            "",
+            spec.body + _approval_note(spec),
+        )
     )
 
 
@@ -406,7 +424,7 @@ def render_command(
         content = _claude_markdown(spec)
         destination = PurePosixPath(".claude", "commands", f"{spec.name}.md")
     elif selected is CommandProvider.GEMINI:
-        prompt = spec.body.replace(_ARGUMENTS, "{{args}}")
+        prompt = spec.body.replace(_ARGUMENTS, "{{args}}") + _approval_note(spec)
         content = (
             f"description = {_quoted(spec.description)}\nprompt = {_quoted(prompt)}\n"
         )
@@ -415,7 +433,7 @@ def render_command(
         content = _opencode_markdown(spec)
         destination = PurePosixPath(f"{spec.name}.md")
     else:
-        content = spec.body
+        content = spec.body + _approval_note(spec)
         destination = PurePosixPath(".cursor", "commands", f"{spec.name}.md")
     measured = token_budget.measure(content)
     if token_budget.max_tokens is not None and measured > token_budget.max_tokens:

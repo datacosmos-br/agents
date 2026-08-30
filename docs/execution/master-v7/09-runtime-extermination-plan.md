@@ -83,5 +83,5 @@ When Git is authorized, publish a WIP commit after every coherent unit. While
 tracking is suspended, create no substitute tracker or ledger. Integrate `origin/dev` only with
 `git merge --no-ff`, revalidate the integrated SHA, and land by independently
 approved merge commit. Never rebase, squash, force-push, destructively reset, or
-stash. Beads, Dolt, Gas City, and Gas Town remain suspended. The maximum state is
+stash. Beads, Dolt, and Gas City remain suspended. The maximum state is
 `LANDED_VERIFIED`, never `DONE`.

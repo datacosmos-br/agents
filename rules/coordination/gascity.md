@@ -75,7 +75,7 @@ so state the intent explicitly wherever it applies:
 
 ## Prohibitions
 
-- No active Gas Town command, role hierarchy, compatibility pack, or fallback.
+- No active former-runtime command, role hierarchy, compatibility pack, or fallback.
 - No mechanical old/new command translation or compatibility command.
 - No Pack V1, implicit import, generated-file edit, symlink, or cross-repo path.
 - Once selected and active, validate the whole declared city, rig, Pack,

@@ -76,7 +76,7 @@ rig, Pack V2, agent, formula, run, and session primitives. Its runtime is
 currently suspended, so only existing checkouts are execution surfaces; loose
 clones and manual worktrees remain prohibited.
 
-While Gas City, Gas Town, Beads, and Dolt are suspended, create no substitute
+While Gas City, Beads, and Dolt are suspended, create no substitute
 tracker or ledger. Preserve evidence only in separately authorized Git commits,
 pull requests, reviews, checks, and CI; tracker closure remains unresolved.
 

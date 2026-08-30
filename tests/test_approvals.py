@@ -14,8 +14,17 @@ from agents_governance.approvals import (
     validate_supersedes_tag,
 )
 from agents_governance.catalog import Catalog
-from agents_governance.commands import audit_command_specs
-from agents_governance.rules import audit_rule_specs
+from agents_governance.commands import (
+    CommandIntent,
+    CommandRisk,
+    CommandRoute,
+    CommandSpec,
+    CommandTokenBudget,
+    audit_command_specs,
+    render_command,
+)
+from agents_governance.rule_adapters import RuleContext, RuleProvider, render_rule
+from agents_governance.rules import RuleActivation, audit_rule_specs
 
 _BUDGETS = {
     "router_tokens": 500,
@@ -342,3 +351,89 @@ def test_project_skills_resolve_approvals_against_central_authority(
     assert tuple(record["name"] for record in catalog.inventory()) == (
         "local-approved",
     )
+
+
+def _tagged_rule_spec(tmp_path: Path, tags: tuple[str, ...]):
+    _docs(tmp_path)
+    path = tmp_path / "rules" / "tagged.md"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text("# Tagged\n", encoding="utf-8")
+    return __import__("agents_governance").rules.RuleSpec(
+        path,
+        "tagged",
+        "One tagged rule.",
+        RuleActivation.ALWAYS,
+        (),
+        (),
+        "# Tagged\n",
+        tags,
+    )
+
+
+def test_rule_projection_carries_the_approval_note(tmp_path: Path) -> None:
+    spec = _tagged_rule_spec(
+        tmp_path,
+        ("decision:ADR-0001", "effective:2026-08-30", "route:personal"),
+    )
+
+    content = render_rule(spec, RuleProvider.CLAUDE, RuleContext.PERSONAL).content
+
+    assert "<!-- aihub.approval: decision:ADR-0001; effective:2026-08-30 -->" in content
+    assert (
+        render_rule(spec, RuleProvider.CLAUDE, RuleContext.PERSONAL).content == content
+    )
+
+
+def test_untagged_rule_projection_has_no_approval_note(tmp_path: Path) -> None:
+    spec = _tagged_rule_spec(tmp_path, ("route:personal",))
+
+    content = render_rule(spec, RuleProvider.CLAUDE, RuleContext.PERSONAL).content
+
+    assert "aihub.approval" not in content
+
+
+def _command_spec(tmp_path: Path, tags: tuple[str, ...]) -> CommandSpec:
+    return CommandSpec(
+        tmp_path / "commands" / "governance" / "demo-command.md",
+        "demo-command",
+        "Demonstrates approval tags.",
+        None,
+        tags,
+        CommandRoute.PROJECT,
+        (CommandIntent.INSPECTION,),
+        CommandRisk.READ,
+        "# Demo command\n",
+    )
+
+
+def _budget() -> CommandTokenBudget:
+    return CommandTokenBudget(max_tokens=None, counter=lambda content: len(content))
+
+
+def test_command_projection_carries_the_approval_note(tmp_path: Path) -> None:
+    spec = _command_spec(
+        tmp_path,
+        (
+            "decision:ADR-0001",
+            "intent:inspection",
+            "risk:read",
+            "route:project",
+        ),
+    )
+
+    artifact = render_command(spec, "claude", token_budget=_budget())
+
+    assert "<!-- aihub.approval: decision:ADR-0001 -->" in artifact.content
+    again = render_command(spec, "claude", token_budget=_budget())
+    assert again.content == artifact.content
+
+
+def test_untagged_command_projection_has_no_approval_note(tmp_path: Path) -> None:
+    spec = _command_spec(
+        tmp_path,
+        ("intent:inspection", "risk:read", "route:project"),
+    )
+
+    artifact = render_command(spec, "claude", token_budget=_budget())
+
+    assert "aihub.approval" not in artifact.content
