@@ -35,7 +35,7 @@ plan authorizes the later FLEXT and Cosmos import/distribution increment only
 after the complete central predecessor is reachable from, running on, and green
 at the then-current `origin/main` SHA.
 
-The new authority does not authorize Gas City, Gas Town, Beads, or Dolt. Those
+The new authority does not authorize Gas City, Beads, or Dolt. Those
 runtimes remain suspended and must not be invoked, inspected, started, or
 replaced. No Markdown status table, database, issue list, spreadsheet, or local
 file may act as a substitute tracker or ledger. This plan specifies work; it
@@ -80,7 +80,7 @@ The operator has fixed these decisions:
 | Increment authority | Master v7 excludes external imports from its current cutover, while the newer operator instruction authorizes a gated successor | `00-authority-and-scope.md` exclusion plus this plan's operator decision | Keep the exclusion scoped to the predecessor and link this separately gated successor; do not make both active concurrently | P1 |
 | Catalog ownership | Current discovery owns only central `skills/<group>/<slug>/SKILL.md` bundles | `Catalog` and `skills/README.md` | Extend the same typed discovery contract to authorized project-local sources without adding a second registry | P1 |
 | Physical repository identity | Runtime accepts a physical `.git/` root, a contained native submodule gitfile, and a Git worktree outside `/tmp`; it rejects `/tmp`, symlinks, malformed gitfiles, and external gitdirs | `Projector.project_root()` and tests | Keep that classification; do not create extra clones or worktrees for this increment | P1 |
-| Tracker state | Beads, Dolt, Gas City, and Gas Town are suspended | `AGENTS.md` and master v7 runtime state | Use only authorized Git/PR/review/check/CI evidence and never report `DONE` | P0 if invoked |
+| Tracker state | Beads, Dolt, and Gas City are suspended | `AGENTS.md` and master v7 runtime state | Use only authorized Git/PR/review/check/CI evidence and never report `DONE` | P0 if invoked |
 | CLI/schema stability | Runtime owns eight optionless verbs; authorization is v1 or v2 | ADR-0004 and `projection.py` | Add no verb, option, positional argument, or mode; v2 adds only `detection_rules` behind the existing `sync` owner | P1 |
 
 The P1 findings are implementation prerequisites, not permission for a partial

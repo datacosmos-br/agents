@@ -527,7 +527,7 @@ identificar alinhamentos, conflitos, e oportunidades de coordenação.
 | Plano | Workspace | Relevância para governança | Ponto de alinhamento |
 |---|---|---|---|
 | `flext-strict-c-t-p-m-u-hARMONIZATION` | `~/agents` | Harmonia de código Python na `src/agents_governance/`. Referencia `rules/python.md` como fonte de law | ✅ **Conflito potencial**: Ambos propõem reorg do root-level rule anomaly (`python.md` ↔ `gascity.md`). O plano flext deve usar `rules/python/config-settings-ssot.md` após reorganização. |
-| `skills-cohesion-gastown` | `~/agents` | Limpeza de skills/docs/AGENTS.md de Gas Town. Referencia `skills/beads/SKILL.md` e contexto `rules/gascity.md` | ✅ **Complementar**: Propõe limpeza de skills; meu plano propõe guarantee coverage para as skills gascity-* e gascity rule. Deve ser feito no mesmo cutover. |
+| `skills-cohesion-gastown` | `~/agents` | Limpeza de skills/docs/AGENTS.md de Gas City. Referencia `skills/beads/SKILL.md` e contexto `rules/gascity.md` | ✅ **Complementar**: Propõe limpeza de skills; meu plano propõe guarantee coverage para as skills gascity-* e gascity rule. Deve ser feito no mesmo cutover. |
 
 ### Planos indiretamente relacionados (outros workspaces, referenciam `~/agents`)
 
@@ -606,10 +606,10 @@ interconexão de governança deve se coordenar.
 | 5 | `ai-hub-generator-refactor` | `~/ai-hub` | Merge resilience motor + pure package | ✅ Integrated (Phase 3) | **Bead claim/close**: usar `bd claim` antes de editar skills em `~/agents`; `bd close` após validação. |
 | 6 | `integrated-stabilization-plan` | multi-repo | Master coordination | ✅ Active | **Phase 4** = este plano. Implementar Steps 1-10 em `precoce/` modules. Coordenar fases. |
 | 7 | `workspace-consolidation-integrated-plan` | multi-repo | Workspace paths | ✅ Done | `~/` paths consolidados. `~/agents` é `~/agents`. |
-| 8 | `gt-up-vm-explosion` | `~/gastown` | Daemon pressure gating | ✅ Code fixes proposed | **Step 11**: capability-selection rule (Phase 1). O bug de `isAgentSession` confirma necessidade do capability-selection rule. Gas Town runtime SUSPENSO — não executar, apenas planejar. |
-| 9 | `recover-fix-gt-bd-doctor-issues` | `~/gastown` | Fix gt/bd doctors | ❌ Cancelled | N/A — GT suspensa. |
+| 8 | `gt-up-vm-explosion` | `~/gt` | Daemon pressure gating | ✅ Code fixes proposed | **Step 11**: capability-selection rule (Phase 1). O bug de `isAgentSession` confirma necessidade do capability-selection rule. Gas City runtime SUSPENSO — não executar, apenas planejar. |
+| 9 | `recover-fix-gt-bd-doctor-issues` | `~/gt` | Fix gt/bd doctors | ❌ Cancelled | N/A — GT suspensa. |
 | 10 | `skills-cohesion-gastown` | `~/agents` | Remove non-canonical bead/gt/dolt refs | ✅ Complete (2 edits) | **Step 7**: gascity rule move. AGENTS.md já foi limpo. Mas `CLAUDE.md` do `~/agents` ainda referencia "local Dolt DB" — precisa verificar se foi corrigido. |
-| 11 | `assume-sweep-dedicated-agent` | `~/gastown` | Bead sweep do Mayor | ✅ Executed (persistido) | Cross-plan tracking via beads. O epic `agents` foi criado em `hq` db. |
+| 11 | `assume-sweep-dedicated-agent` | `~/gt` | Bead sweep do Mayor | ✅ Executed (persistido) | Cross-plan tracking via beads. O epic `agents` foi criado em `hq` db. |
 | 12 | `connect-poolside-openai-api` | `~/.ccs` | CLIProxy model routing | ⚠️ In progress | **Coordenação cliproxy-mgmt**: o `projections.json` define quais providers recebem skills. CLIProxy é um provider — precisa garantir que skills de routing/model são propagadas via `agentsctl sync` para o diretório do CLIProxy. |
 | 13 | `build-idempotent-incremental-publish` | `~/cosmos-docgen` | Build idempotency | ✅ Complete | N/A — cosmos-docgen, não governance. |
 | 14 | `datacosmos-padronizacao-layouts` | `~/cosmos-docgen` | UX standardization | ⚠️ Pending | N/A — dcdoc, não governance. |
@@ -630,7 +630,7 @@ interconexão de governança deve se coordenar.
 
 3. **Orquestração Gas City suspensa**:
    - AGENTS.md do `~/agents` declara: "Gas City runtime is currently suspended"
-   - `integrated-stabilization` confirma: "Gas Town runtime is SUSPENSO"
+   - `integrated-stabilization` confirma: "Gas City runtime is SUSPENSO"
    - **Implicação**: Steps 6-7 (mover `gascity` rule, mapear Gas City skills) devem ser feitos como mudanças estáticas/documentais — não requerem execução de `gt`/`bd` comandos
    - **Coordenação**: O `skills-cohesion-gastown` plano completou a limpeza de referências não-canônicas. O `gascity` rule move deve ser parte do mesmo cutover AGENTS.md + CLAUDE.md.
 
