@@ -22,6 +22,10 @@ agents.bkp/
 /.beads.gate.lock
 /crew/
 /polecats/
+# Provider runtime projections written by the gas city pack runtime (skill
+# symlinks + ownership manifests into machine-local ~/.gc cache), never source:
+/.claude/
+/.codex/
 
 # Beads / Dolt files (added by bd init)
 .dolt/

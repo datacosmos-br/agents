@@ -334,40 +334,6 @@ def _discard_owned_tree(path: Path) -> None:
     path.rmdir()
 
 
-_SYMLINK_CAPABILITY: bool | None = None
-
-
-def _require_symlink_capability() -> None:
-    """Prove symlink creation is possible on this machine or fail loud."""
-
-    global _SYMLINK_CAPABILITY
-    if _SYMLINK_CAPABILITY is not None:
-        if not _SYMLINK_CAPABILITY:
-            raise OSError(
-                "managed symlinks require symlink capability: enable Developer "
-                "Mode (Windows) or run on a filesystem that supports symlinks; "
-                "alternatively declare the projection surface as layout: copied"
-            )
-        return
-    import tempfile as _tempfile
-
-    probe = Path(_tempfile.mkdtemp(prefix=".agents-link-probe.")) / "probe"
-    try:
-        probe.symlink_to("target")
-        _SYMLINK_CAPABILITY = True
-    except OSError as failure:
-        _SYMLINK_CAPABILITY = False
-        raise OSError(
-            "managed symlinks require symlink capability: enable Developer "
-            "Mode (Windows) or run on a filesystem that supports symlinks; "
-            "alternatively declare the projection surface as layout: copied"
-        ) from failure
-    finally:
-        import shutil as _shutil
-
-        _shutil.rmtree(probe.parent, ignore_errors=False)
-
-
 def _physical_project(cwd: Path) -> Path:
     current = _absolute(cwd)
     if _symlink_component(current) is not None or not current.is_dir():
@@ -1639,9 +1605,7 @@ class Projector:
         def build() -> _StagedTarget:
             if plan.root.exists():
                 shutil.copytree(plan.root, candidate, symlinks=True)
-                if _tree_snapshot(
-                    candidate, state.sanctioned_links
-                ) != state.snapshot:
+                if _tree_snapshot(candidate, state.sanctioned_links) != state.snapshot:
                     raise RuntimeError(f"projection staging copy differs: {plan.root}")
             else:
                 candidate.mkdir()
@@ -1653,13 +1617,13 @@ class Projector:
             for source in plan.sources:
                 destination = candidate / source.name
                 if source.link_target is not None:
-                    if destination.is_symlink() and os.readlink(
-                        destination
-                    ) == source.link_target:
+                    if (
+                        destination.is_symlink()
+                        and os.readlink(destination) == source.link_target
+                    ):
                         continue
                     if destination.exists() or destination.is_symlink():
                         _discard_owned_tree(destination)
-                    _require_symlink_capability()
                     os.symlink(source.link_target, destination)
                     continue
                 if (
