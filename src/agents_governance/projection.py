@@ -1185,12 +1185,21 @@ class Projector:
                             )
                     elif surface is ProjectionSurface.AGENTS:
                         if prompt_defense is None:
-                            prompt_defense = (
+                            raw_defense = (
                                 self.catalog.root
                                 / "rules"
                                 / "security"
                                 / "prompt-defense.md"
                             ).read_text(encoding="utf-8")
+                            # Strip frontmatter (---\n...\n---\n\n) to get body only
+                            if raw_defense.startswith("---\n"):
+                                end = raw_defense.find("\n---\n", 4)
+                                if end != -1:
+                                    prompt_defense = raw_defense[end + 5 :].lstrip()
+                                else:
+                                    prompt_defense = raw_defense
+                            else:
+                                prompt_defense = raw_defense
                         agent_context = AgentContext(context.value)
                         for agent_profile in self.agents:
                             if agent_profile.name not in selected_agents:

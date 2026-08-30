@@ -86,7 +86,15 @@ def evaluate_native(
         raise ValueError(
             f"prompt-defense owner must be a physical file: {prompt_defense_path}"
         )
-    prompt_defense = prompt_defense_path.read_text(encoding="utf-8")
+    raw_defense = prompt_defense_path.read_text(encoding="utf-8")
+    if raw_defense.startswith("---\n"):
+        end = raw_defense.find("\n---\n", 4)
+        if end != -1:
+            prompt_defense = raw_defense[end + 5 :].lstrip()
+        else:
+            prompt_defense = raw_defense
+    else:
+        prompt_defense = raw_defense
     counter = waza_bpe_counter(root)
     counts = {surface: 0 for surface in ProjectionSurface}
     for cell in config.cells.values():
