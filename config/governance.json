@@ -5,7 +5,8 @@
       "architecture/engineering-core",
       "coordination/operator-precedence",
       "ethics/professional-integrity",
-      "runtime/strict-execution"
+      "runtime/strict-execution",
+      "coordination/beads-verification"
     ],
     "skills": [
       "caveman",
@@ -253,6 +254,9 @@
     "tracker-evidence": [
       "document:AGENTS.md",
       "rule:workflow/beads-traceability"
+    ],
+    "bead-verification": [
+      "rule:coordination/beads-verification"
     ]
   }
 }
