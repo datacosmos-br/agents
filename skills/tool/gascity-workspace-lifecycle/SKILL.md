@@ -1,9 +1,20 @@
----
+--
 name: gascity-workspace-lifecycle
 description: 'gas city, workspace lifecycle, runtime orchestration'
 metadata:
   aihub.tags: '["activation:opt-in","detect:opt-in:gascity","policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:no-keyring","policy:preflight-before-effects","policy:required-environment","policy:strict-execution","policy:zero-residue","provenance:agents-owned","route:agent","tool:gascity","updates:manual","usage:on-demand"]'
 ---
+## Verification (mandatory)
+
+Before acting on any bead, run the four-source cross-check defined in
+`rules/coordination/beads-verification.md` (project law): registered manual
+ledgers, git history, measured reality, and the intent of the most recent
+code. Declare the check and attach evidence — command, working directory,
+exit code, decisive output — before closing. A bead whose premise the
+current code retired is closed obsolete with evidence, never executed as
+written.
+
+
 
 # Gas City Workspace Lifecycle
 
