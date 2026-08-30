@@ -183,8 +183,16 @@ absent by construction.
 Optional activation is project-owned at `.agents/projection.json`. If present,
 the v1 object has exactly `version`, sorted unique `opt_ins`, sorted unique
 `selected_tags`, and sorted unique `agents`. Unknown values raise before any
-effect. The same physical file authorizes tracked project projection; if absent,
-the project is a non-target and no detector or project surface is loaded. The
+effect. A v2 object adds an optional `detection_rules` array: each rule has an
+`id` (`[a-z0-9-]+`), a `when` object holding exactly one of `all`/`any`/`none`
+over filesystem conditions (`path_exists`, `path_missing`, `file_contains`,
+`file_not_contains` with `pattern`, plus `paths` for file-content scopes), and
+`activate_tags` matching the same tag grammar as skills. Satisfied rules merge
+their tags into `selected_tags`, activating `detect:selected-tag:` skills
+declaratively with no code. The source repository itself is never a projection
+target and therefore carries no selection file. The same physical file
+authorizes tracked project projection; if absent, the project is a non-target
+and no detector or project surface is loaded. The
 generated v5 manifest records portable project identity (`.`), project-relative
 destination, context, surface, providers, selection, source type, slug,
 activation evidence, logical digest, physical digest, and adapter version.

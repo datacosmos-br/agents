@@ -1,8 +1,8 @@
 # Governed project skill distribution plan
 
-- **Status:** Approved; predecessor-gated
+- **Status:** Approved; predecessor landed on `origin/main`; consumer distribution remains open
 - **Operator decision:** 2026-08-28 multi-repository skill synchronization and semantic-fusion correction
-- **Observed central base:** `origin/main` at `4995bb4eb131d35c05ef50de950be8aa6e569afd`; execution must fetch and re-prove the then-current SHA
+- **Observed central base:** fetch and re-prove the then-current `origin/main` SHA; predecessor runtime (authorization v2, worktrees outside `/tmp`) already landed via PRs #40–#43
 - **Design authority:** `ADR-0002` (doc file), `ADR-0003` (doc file), `ADR-0004` (doc file), this plan, and the Phase 1 decision updates
 - **Owner:** `agents` governance catalog and runtime
 - **Work item:** canonical tracker suspended; no substitute tracker or ledger; Git, PR, review, checks, and CI are the only execution evidence
@@ -55,9 +55,10 @@ source corpus into a tracker or evidence archive.
 
 The operator has fixed these decisions:
 
-- execute in the operator's declared workspace roots — one physical root per
-  repository directly under the home directory — and create no additional clone,
-  worktree, bind mount, or alternate checkout for this increment;
+- execute in the operator's declared physical checkouts — one Git repository
+  per path directly under the home directory — and create no additional clone,
+  worktree, bind mount, or alternate checkout for this increment; a checkout
+  with `.gitmodules` is a workspace, a checkout without it is standalone;
 - preserve every existing checkout, including dirty content in retired
   orchestration and provenance trees, and adopt it by fix-forward instead of
   discarding it;
@@ -65,10 +66,11 @@ The operator has fixed these decisions:
 - retain only `dcdoc-thin-code` as a local skill in `cosmos-docgen`, and only
   `cosmos-command-development` and `cosmos-main-standards` as local skills in
   `cosmos-main`, subject to the semantic/type audit below;
-- keep `.agents/projection.json` at schema v1 and keep the exact eight
-  optionless `agentsctl` verbs;
-- land the central owner through `dev` and then `main` before touching a
-  consumer; and
+- keep the exact eight optionless `agentsctl` verbs; project authorization is
+  v1 or v2, and v2 may declare `detection_rules`;
+- the central predecessor already runs on `origin/main`; this increment does
+  not promote `agents` to `main` again; pin consumer `agentsctl` to that SHA;
+  remaining central doc/ADR reconciliation lands on `agents` `dev`; and
 - process each family's members before its umbrella, using merge commits only.
 
 ## Governance preflight audit
@@ -77,9 +79,9 @@ The operator has fixed these decisions:
 |---|---|---|---|---|
 | Increment authority | Master v7 excludes external imports from its current cutover, while the newer operator instruction authorizes a gated successor | `00-authority-and-scope.md` exclusion plus this plan's operator decision | Keep the exclusion scoped to the predecessor and link this separately gated successor; do not make both active concurrently | P1 |
 | Catalog ownership | Current discovery owns only central `skills/<group>/<slug>/SKILL.md` bundles | `Catalog` and `skills/README.md` | Extend the same typed discovery contract to authorized project-local sources without adding a second registry | P1 |
-| Physical repository identity | Current projection rejects every `.git` file, while Git-native submodules normally use gitfiles | `Projector.project_root()` contract and the 48-member scope | Distinguish a contained Git-native submodule from a worktree or external gitdir before enabling member sync; retain fail-closed rejection for worktrees and external paths | P1 |
+| Physical repository identity | Runtime accepts a physical `.git/` root, a contained native submodule gitfile, and a Git worktree outside `/tmp`; it rejects `/tmp`, symlinks, malformed gitfiles, and external gitdirs | `Projector.project_root()` and tests | Keep that classification; do not create extra clones or worktrees for this increment | P1 |
 | Tracker state | Beads, Dolt, Gas City, and Gas Town are suspended | `AGENTS.md` and master v7 runtime state | Use only authorized Git/PR/review/check/CI evidence and never report `DONE` | P0 if invoked |
-| CLI/schema stability | Runtime owns eight optionless verbs and project authorization schema v1 | ADR-0004 and `projection.py` | Add behavior behind existing typed owners; add no verb, option, positional argument, mode, or schema version | P1 |
+| CLI/schema stability | Runtime owns eight optionless verbs; authorization is v1 or v2 | ADR-0004 and `projection.py` | Add no verb, option, positional argument, or mode; v2 adds only `detection_rules` behind the existing `sync` owner | P1 |
 
 The P1 findings are implementation prerequisites, not permission for a partial
 projection. The P0 condition remains dormant by never invoking the suspended
@@ -90,12 +92,13 @@ runtimes.
 | Family | Members first | Umbrella | Integration lane | Required `selected_tags` | Allowed local skills |
 |---|---:|---|---|---|---|
 | Central | — | `agents` | feature → `dev` → `main` | empty; `agents` and `opt_ins` also empty | none outside the central catalog |
-| FLEXT | 31 | `flext` | `0.12.0-dev` | `["flext"]` in all 32 repositories | none |
+| FLEXT | 31 | `flext` | `0.12.0-dev` | tag `flext` via `selected_tags` or v2 `detection_rules`; canary proves which form is sufficient | none |
 | Cosmos Docgen | 5 | `cosmos-docgen` | `dev` | empty | `dcdoc-thin-code` only |
 | Cosmos Main | 12 | `cosmos-main` | `develop` | `["cosmos-gitops"]` only in `cosmos-main` and the `cosmos-gitops` member; empty elsewhere | `cosmos-command-development` and `cosmos-main-standards` only |
 
-All authorization files use version 1 with sorted, unique `agents`, `opt_ins`,
-and `selected_tags`. Beads selection stays empty everywhere. A local skill is
+All authorization files use version 1 or 2 with sorted, unique `agents`,
+`opt_ins`, and `selected_tags`. Version 2 may add `detection_rules`. Beads
+selection stays empty everywhere. A local skill is
 not selected merely by a central tag: it is discovered from its authorized
 physical project source and follows the same path/category, detector, schema,
 and evaluation rules as a central bundle. Conditional local skills may activate
@@ -347,14 +350,16 @@ classify Git identity before effects:
 - a member may use a canonical submodule gitfile only when Git proves its
   superproject and resolved gitdir is contained inside that same dedicated
   umbrella clone's `.git/modules/` hierarchy;
-- a worktree gitfile, symlink, malformed gitfile, external gitdir, path escape,
-  cross-root reference, or unresolved superproject remains forbidden; and
+- a Git worktree outside `/tmp` is a valid project root;
+- a worktree or repository under `/tmp`, a symlink, malformed gitfile, external
+  gitdir, path escape, cross-root reference, or unresolved superproject remains
+  forbidden; and
 - project authorization, source, generated destination, and cwd must all be
-  physically contained in the member worktree.
+  physically contained in that project root.
 
 This distinction is documented in ADR-0003 and proven with root-clone,
-submodule, worktree, symlink, escape, and external-gitdir tests before any
-consumer sync. Git's internal submodule storage is not permission for one of the
+submodule, worktree-outside-`/tmp`, `/tmp`, symlink, escape, and
+external-gitdir tests before any consumer sync. Git's internal submodule storage is not permission for one of the
 four root clones to depend on another root clone.
 
 ### Atomic publication
@@ -362,7 +367,7 @@ four root clones to depend on another root clone.
 One `agentsctl sync`, invoked from the physical repository directory with a
 per-command isolated `HOME`, preflights and publishes all supported personal and
 project surfaces in one transaction. The isolated home is persistent under the
-dedicated workspace root, never a provider's real home, and never exported to
+dedicated physical checkout, never a provider's real home, and never exported to
 the shell session. `gh` invocations run separately with the operator's normal
 home and authentication context.
 
@@ -375,7 +380,7 @@ first-sync snapshot.
 
 ## Workspace preflight
 
-Resolve each workspace root from the operator's declared workspace contract, and
+Resolve each declared physical checkout from the operator's declared workspace contract, and
 prove the resolved path is physical, is not a symlink, is not `/` or `${HOME}`,
 is not a retired orchestration or provenance tree, owns a real `.git` directory,
 and carries no unattributed object. Stop for operator adjudication when a root
@@ -388,13 +393,12 @@ default branches, `.gitmodules`, member URLs, paths, lane names, and the derived
 
 In the central root:
 
-1. fetch `origin/dev` and `origin/main` and prove `origin/main` contains the
-   concurrent predecessor changes and green landing evidence;
-2. create `feat/project-skill-distribution` from `origin/dev`;
-3. merge `origin/main` with `git merge --no-ff`;
-4. preserve and reconcile every compatible upstream change; and
-5. publish the plan checkpoint as the first coherent WIP commit before any
-   runtime implementation handoff.
+1. fetch `origin/dev` and `origin/main` and prove `origin/main` already contains
+   the predecessor runtime (authorization v2, worktrees outside `/tmp`);
+2. land remaining plan/ADR reconciliation on `dev` from `origin/dev`;
+3. do not promote `agents` to `main` for this increment;
+4. pin consumer `agentsctl` to the proved `origin/main` SHA; and
+5. preserve and reconcile every compatible upstream change by fix-forward.
 
 The central root is the authorized owner for this plan publication. No dirty
 byte is copied between roots; every root consumes only reachable remote commits
@@ -404,12 +408,10 @@ plus the changes its own landing cycle produces.
 
 ```mermaid
 flowchart TD
-    P[Publish and verify this plan] --> B[Prove central predecessor on origin/main]
-    B --> D[Rules, docs, and ADR contract]
-    D --> C[Central semantic fusion and local-source runtime]
-    C --> DEV[Merge and verify agents dev]
-    DEV --> MAIN[Merge and verify agents main]
-    MAIN --> PIN[Pin isolated agentsctl runtime to main SHA]
+    P[Publish and verify this plan] --> B[Predecessor already on origin/main]
+    B --> D[Reconcile rules, docs, and ADRs to runtime]
+    D --> DEV[Land remaining agents docs on dev]
+    DEV --> PIN[Pin isolated agentsctl runtime to origin/main SHA]
     PIN --> F[FLEXT: 31 members then root]
     PIN --> G[cosmos-docgen: 5 members then root]
     PIN --> M[cosmos-main: 12 members then root]
@@ -464,7 +466,8 @@ Before code or skill edits:
    and local bundle contracts, selected-tag vocabulary, and collision behavior;
 3. extend ADR-0003 with composed local/central sources, Git-native submodule
    identity, destination containment, atomic publication, and fixed point;
-4. confirm ADR-0004 remains schema v1 and exactly eight optionless verbs;
+4. confirm ADR-0004 remains exactly eight optionless verbs; authorization is
+   v1 or v2;
 5. update rules only for genuinely universal mandatory behavior extracted from
    incoming sources; do not pre-copy source prose into law; and
 6. define review and eval acceptance before implementation.
@@ -499,8 +502,8 @@ bundle relies on a proposed but undecided contract.
 2. Validate central and local catalogs completely before destination planning.
 3. Reject identity/content/semantic collisions and every forbidden physical or
    schema condition before effects.
-4. Implement contained submodule identity without accepting worktrees or
-   external gitdirs.
+4. Implement contained submodule identity; accept Git worktrees outside `/tmp`;
+   reject `/tmp` and external gitdirs.
 5. Compose central and local projection sources transactionally and record
    truthful origin in deterministic manifests.
 6. Prove foreign preservation, rollback, no partial publication, and a
@@ -526,25 +529,21 @@ active residue.
 
 ### `dev` to `main`
 
-1. Open the `dev` → `main` PR only after post-merge `dev` proof.
-2. Repeat review and all required CI; merge with a merge commit.
-3. Update the clone to the exact integrated `main` SHA.
-4. Repeat complete runtime, fixed point, applicable offline gates, and remote
-   reachability proof on that SHA.
-
-Only then install or pin the isolated editable `agentsctl` runtime to that exact
-main checkout. Consumers must prove the invoked executable imports from and
-reports behavior matching the integrated main SHA. No consumer repository may
+The predecessor runtime already landed on `origin/main`. This increment does not
+open another `agents` `dev` → `main` PR. Remaining central doc/ADR
+reconciliation lands on `dev`. Pin the isolated editable `agentsctl` runtime to
+the proved `origin/main` SHA. Consumers must prove the invoked executable
+imports from and reports behavior matching that SHA. No consumer repository may
 commit a path dependency on the central clone; the editable runtime is an
 isolated execution tool, not a cross-repository source owner.
 
-**Exit condition:** central `main` is clean, remotely reachable, green, and
-post-merge verified. All 51 consumer worktrees remain untouched until this
-condition holds.
+**Exit condition:** `origin/main` predecessor SHA is proved; remaining plan
+reconciliation is on `agents` `dev`; consumers may start.
 
 ## Phase 4 — Prepare the three consumer families in parallel
 
-After central main proof, the three families may proceed concurrently because
+After the predecessor SHA is proved and remaining docs land on `dev`, the three
+families may proceed concurrently because
 their write scopes are disjoint. Within each family, members precede the
 umbrella.
 
@@ -651,8 +650,8 @@ review finding, branch conflict, unavailable token, or missing technical proof.
 - compact routers with bundle-local relative references;
 - happy-path, fail-closed, and should-not-trigger Waza families for every skill;
 - source/eval absence and malformed-suite rejection before effects;
-- root clone versus contained submodule versus forbidden worktree/external
-  gitdir classification;
+- root clone versus contained submodule versus worktree-outside-`/tmp` versus
+  forbidden `/tmp`/external gitdir classification;
 - no symlink, special file, user-home path, cross-root path, or external source;
 - deterministic combined manifests with truthful central/local origin;
 - atomic cross-provider publication, foreign preservation, rollback, and fixed
@@ -665,7 +664,7 @@ review finding, branch conflict, unavailable token, or missing technical proof.
 ### Per-repository contract
 
 - repository law, CI, Make, and manifests read before effects;
-- authorization v1 and exact selection matrix;
+- authorization v1 or v2 and exact selection matrix;
 - all local sources semantically adjudicated;
 - first `sync` complete and second `sync` produces zero additional diff;
 - representative real projected behavior;
@@ -689,7 +688,7 @@ result. Official CI with its own secrets must run and pass normally.
 | Level | Planned path | Material behavior |
 |---|---|---|
 | Unit | Catalog/tag/project-source tests | Local and central bundles use one schema; invalid path/tag/provenance/eval fails before effects |
-| Unit | Git identity tests | Root clone and contained submodule pass; worktree, symlink, malformed, escaped, and external gitdir fail |
+| Unit | Git identity tests | Root clone, contained submodule, and worktree outside `/tmp` pass; `/tmp`, symlink, malformed, escaped, and external gitdir fail |
 | Integration | Isolated physical root and submodule fixtures | Authorization loads local sources once and composes deterministic central/local manifests |
 | Integration | Projection transaction | All providers publish atomically, foreign content survives, first failure preserves prior state, second sync is unchanged |
 | Semantic | Waza suites for every changed/new/local skill | Happy result, first-cause zero-effect failure, and adjacent non-activation |
@@ -718,7 +717,7 @@ After the central owner, all 48 members, and all three umbrellas are integrated:
    unpushed, unreachable, or open-PR work;
 9. remove only those proven-empty execution residues through the safe-deletion
    owner; and
-10. recheck that every declared workspace root remains intact and clean at its
+10. recheck that every declared physical checkout remains intact and clean at its
     integration branch.
 
 Deletion is prohibited if any reachability, cleanliness, ownership, path, PR,

@@ -29,7 +29,7 @@ categories, destinations, or activation.
 
 Reusable sources remain owned only by `agents/skills/`. A physical project may
 add a private source under its own `skills/<category>/<slug>/SKILL.md` only after
-that same repository's physical `.agents/projection.json` v1 authorizes project
+that same repository's physical `.agents/projection.json` v1 or v2 authorizes project
 projection. Absence of authorization means the local tree is not loaded. The
 central and local trees are independently writable owners and are composed only
 in the immutable publication plan; no merged catalog or copied intermediate

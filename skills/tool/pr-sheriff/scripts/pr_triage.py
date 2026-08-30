@@ -133,13 +133,17 @@ def _blocking_checks(checks: list[dict[str, Any]]) -> list[dict[str, Any]]:
     return [
         check
         for check in checks
-        if check["status"] == "COMPLETED"
+        if str(check["status"]).casefold() == "completed"
         and str(check["conclusion"]).casefold() not in _PASSING_CONCLUSIONS
     ]
 
 
 def _pending_checks(checks: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    return [check for check in checks if check["status"] != "COMPLETED"]
+    return [
+        check
+        for check in checks
+        if str(check["status"]).casefold() != "completed"
+    ]
 
 
 def _check_counts(checks: list[dict[str, Any]]) -> tuple[int, int]:
