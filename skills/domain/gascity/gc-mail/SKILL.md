@@ -1,4 +1,4 @@
---
+---
 name: gc-mail
 description: 'gas city mail, inter-agent messaging, bead threads, inbox'
 allowed-tools: Bash(gc *)
@@ -7,15 +7,9 @@ metadata:
 ---
 ## Verification (mandatory)
 
-Before acting on any bead, run the four-source cross-check defined in
-`rules/coordination/beads-verification.md` (project law): registered manual
-ledgers, git history, measured reality, and the intent of the most recent
-code. Declare the check and attach evidence — command, working directory,
-exit code, decisive output — before closing. A bead whose premise the
-current code retired is closed obsolete with evidence, never executed as
-written.
-
-
+Before acting on any bead, run the four-source cross-check in
+`rules/coordination/beads-verification.md` (project law) and attach the
+evidence it requires.
 
 # Messaging (Mail)
 
@@ -43,11 +37,11 @@ gc mail thread <id>                    # Show full conversation thread
 ## Managing
 
 ```
-gc mail archive <id>                   # IRRECOVERABLE: deletes the underlying bead, despite the name
+gc mail archive <id>                   # IRRECOVERABLE bead delete
 gc mail mark-read <id>                 # Mark as read without displaying
 gc mail mark-unread <id>              # Mark as unread
-gc mail delete <id>                    # IRRECOVERABLE: alias for archive; deletes the underlying bead
+gc mail delete <id>                    # alias for archive
 gc mail check                          # Check for new mail (used in hooks)
 ```
 
-`archive` and `delete` are the same operation under two names — both delete the message's underlying bead outright; neither files it away for later reading. There is no reversible "put this away" path. Prefer `mark-read` when you want a message out of the unread count without destroying it.
+`archive` and `delete` are the same operation under two names — both irreversibly delete the message's underlying bead; there is no reversible storage path. Prefer `mark-read` to remove a message from the unread count without destroying it.
