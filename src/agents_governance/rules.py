@@ -15,6 +15,8 @@ from urllib.parse import unquote, urlsplit
 import yaml
 from yaml.nodes import MappingNode, Node, SequenceNode
 
+from .approvals import APPROVAL_NAMESPACES, resolve_approval_tags
+
 _SLUG = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*\Z")
 _LINK = re.compile(r"!?\[[^\]\n]*\]\(([^)\n]+)\)")
 _SCHEME = re.compile(r"[A-Za-z][A-Za-z0-9+.-]*:")
@@ -216,8 +218,15 @@ def _metadata(
         tags = tuple(cast(list[str], decoded))
         if len(tags) != len(set(tags)) or tags != tuple(sorted(tags)):
             raise ValueError(f"{path}: rule tags must be unique and sorted")
-        if len(tags) != 1 or tags[0] not in _ROUTES:
+        routes = tuple(tag for tag in tags if tag.startswith("route:"))
+        if len(routes) != 1 or routes[0] not in _ROUTES:
             raise ValueError(f"{path}: rule requires exactly one supported route tag")
+        if any(
+            not tag.startswith("route:")
+            and tag.split(":", 1)[0] not in APPROVAL_NAMESPACES
+            for tag in tags
+        ):
+            raise ValueError(f"{path}: rule tags support only route and approval tags")
     return description, globs, tags
 
 
@@ -309,6 +318,7 @@ def audit_rule_specs(root: Path) -> tuple[RuleSpec, ...]:
         identities.add(folded)
         raw, body = _split_source(path)
         description, globs, tags = _metadata(path, raw)
+        resolve_approval_tags(repository, tags, path)
         references = _references(repository, rules, path, body)
         normalized_body = body.strip()
         if normalized_body in bodies:
