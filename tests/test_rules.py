@@ -10,6 +10,7 @@ from agents_governance.rules import (
     RuleActivation,
     RuleDistribution,
     audit_rule_specs,
+    prompt_defense_body,
 )
 
 
@@ -111,7 +112,17 @@ def test_canonical_inventory_is_discovered_without_extinct_hook_rules() -> None:
     assert "The first exception escapes" in engineering_core
     assert "complete the approved landing cycle" in " ".join(engineering_core.split())
     assert "security/prompt-defense" in specs
+    assert (
+        prompt_defense_body(tuple(specs.values()))
+        == specs["security/prompt-defense"].body
+    )
+    assert not specs["security/prompt-defense"].body.lstrip().startswith("---")
     assert not any(identity.startswith("hooks/") for identity in specs)
+
+
+def test_prompt_defense_body_requires_the_rule_owner() -> None:
+    with pytest.raises(ValueError, match="prompt-defense owner is missing"):
+        prompt_defense_body(())
 
 
 def test_governance_artifact_composition_is_project_scoped() -> None:

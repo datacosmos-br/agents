@@ -21,6 +21,7 @@ _SCHEME = re.compile(r"[A-Za-z][A-Za-z0-9+.-]*:")
 _FRONTMATTER_FIELDS = frozenset({"description", "globs", "metadata"})
 _METADATA_FIELDS = frozenset({"aihub.tags"})
 _ROUTES = frozenset({"route:both", "route:personal", "route:project"})
+_PROMPT_DEFENSE_IDENTITY = "security/prompt-defense"
 
 
 class RuleActivation(StrEnum):
@@ -328,9 +329,21 @@ def audit_rule_specs(root: Path) -> tuple[RuleSpec, ...]:
     return tuple(sorted(specs, key=lambda spec: spec.identity))
 
 
+def prompt_defense_body(rules: tuple[RuleSpec, ...]) -> str:
+    """Return the prompt-defense rule body or raise on the first contract defect."""
+
+    for rule in rules:
+        if rule.identity == _PROMPT_DEFENSE_IDENTITY:
+            if not rule.body.strip():
+                raise ValueError("prompt-defense composition source is empty")
+            return rule.body
+    raise ValueError("prompt-defense owner is missing from the rule inventory")
+
+
 __all__ = (
     "RuleActivation",
     "RuleDistribution",
     "RuleSpec",
     "audit_rule_specs",
+    "prompt_defense_body",
 )
