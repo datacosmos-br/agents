@@ -334,6 +334,21 @@ def _discard_owned_tree(path: Path) -> None:
     path.rmdir()
 
 
+def _linked_worktree_owns(git_directory: Path, git_file: Path) -> bool:
+    """Prove the administrative directory back-references this exact .git file.
+
+    A linked worktree's administrative directory always carries a ``gitdir``
+    file naming the worktree's own ``.git`` file. That back-reference is the
+    physical ownership proof; a borrowed or external Git directory has none.
+    """
+
+    back_pointer = git_directory / "gitdir"
+    if not back_pointer.is_file():
+        return False
+    referenced = Path(back_pointer.read_text(encoding="utf-8").strip())
+    return referenced.resolve() == git_file.resolve()
+
+
 def _physical_project(cwd: Path) -> Path:
     current = _absolute(cwd)
     if _symlink_component(current) is not None or not current.is_dir():
@@ -375,7 +390,7 @@ def _physical_project(cwd: Path) -> Path:
                     stdout=subprocess.PIPE,
                 ).stdout.strip()
                 if not raw_superproject:
-                    if "worktrees" in git_directory.parts:
+                    if _linked_worktree_owns(git_directory, git):
                         if project == Path("/tmp") or Path("/tmp") in project.parents:
                             raise ValueError(
                                 f"repositories under /tmp are prohibited: {project}"

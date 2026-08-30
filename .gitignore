@@ -10,6 +10,8 @@ agents.bkp/
 .archive/
 .test-tmp/
 /.pytest_cache/
+# Gas City creates rig-scoped worktrees at <rig-root>/worktrees/<id>.
+/worktrees/
 /.pytest-scratch/
 .cache/
 /$HOME/
