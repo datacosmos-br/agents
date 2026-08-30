@@ -106,7 +106,9 @@
     ],
     "gas-city-operations": [
       "rule:coordination/gascity",
+      "skill:gascity-change-lifecycle",
       "skill:gascity-docs",
+      "skill:gascity-workspace-lifecycle",
       "skill:gc-agents",
       "skill:gc-city",
       "skill:gc-dashboard",
