@@ -89,7 +89,7 @@ flowchart LR
 | Validation | Syntax, capability, runtime canary, fixed point | Adapter and Waza gates | Provider outages remain red external evidence |
 | Authorization | Physical project selection file | Project owner | Installation, remote, or forge access grants no write authority |
 | Local sources | In-memory composition after complete validation | Catalog/projection owners | Central and project trees remain independent owners |
-| Git identity | Physical root or contained native submodule | Projection owner plus Git evidence | Worktrees and external gitdirs remain forbidden |
+| Git identity | Physical root, contained native submodule, or Git worktree outside `/tmp` | Projection owner plus Git evidence | `/tmp` repositories and external gitdirs remain forbidden |
 
 ## Consequences
 
