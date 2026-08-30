@@ -11,10 +11,11 @@ Activate only for an explicit semantic graph or ownership decision by the
 designated tracker orchestrator. Implementation of an assigned slice belongs to
 the worker role.
 
-During tracker suspension, inspect supplied evidence only and produce a
+Resolve Available versus Explicitly suspended from the active repository
+contract. During suspension, inspect supplied evidence only and produce a
 read-only convergence plan. Never invoke or replace the tracker.
 
-After explicit restoration:
+When available:
 
 1. Read the current graph revision, objectives, acceptance evidence,
    dependencies, claims, integration state, and actor authority.
@@ -26,6 +27,10 @@ After explicit restoration:
    verify the resulting graph. Never hand-edit storage or use alternate routing,
    commands, providers, credentials, retries, partial re-parenting, or inferred
    closure.
+
+A reconciliation of records created during suspension follows the same
+revision, identity, atomicity, and verification rules. Historical text is input;
+only the canonical tracker is output.
 
 The first graph, authority, runtime, or persistence failure propagates unchanged
 and leaves the prior graph authoritative. Remove partial local artifacts before

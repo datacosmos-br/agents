@@ -114,6 +114,13 @@ The composed governance owners define closure. Local delta only:
 
 ## Learned Workspace Facts
 
+- This checkout keeps its Beads identity and `agents` database in local
+  `.beads/metadata.json`, while `.envrc` inherits the single managed Dolt
+  endpoint published by Gas City in
+  `$HOME/gc/.gc/runtime/packs/dolt/dolt-state.json`. Do not set `BEADS_DIR` to
+  `$HOME/gc/.beads` for this project: that selects Gas City's root identity and
+  `hq`, not this project's `agents` ledger. Preflight `bd context --json`,
+  `bd ping --json`, and a stdin dry run before imports.
 - ai-hub Beads/Dolt is the shared user database on the primary checkout (`config.AiHub.paths.ai_hub`), not a per-worktree private DB.
 - Related multi-repo set for shared doc/policy work is declared in configuration.
 - Gas City configuration owns orchestration identity; ai-hub owns living runtime registration for tools, CRG, LSP/observer state, and maintenance daemons.
