@@ -1,5 +1,7 @@
 ---
 description: Composing prompt-defense constraints into every supported agent profile projection.
+metadata:
+  aihub.tags: '["decision:plan-00","effective:2026-08-29","route:both"]'
 ---
 
 # Prompt defense baseline

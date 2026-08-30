@@ -1,5 +1,8 @@
 ---
 globs: ["*.py", "**/*.py", "pyproject.toml"]
+description: Python rules
+metadata:
+  aihub.tags: '["decision:plan-00","effective:2026-08-28","route:both"]'
 ---
 
 # Python rules

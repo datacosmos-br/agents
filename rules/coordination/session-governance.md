@@ -1,5 +1,7 @@
 ---
 description: Rehydrate governance at session, prompt, compaction, and subagent boundaries.
+metadata:
+  aihub.tags: '["decision:plan-00","effective:2026-08-29","route:both"]'
 ---
 
 # Rehydrate governance at every agent context boundary

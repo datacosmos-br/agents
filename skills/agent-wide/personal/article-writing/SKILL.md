@@ -2,7 +2,7 @@
 name: article-writing
 description: 'technical articles, source synthesis, long-form writing'
 metadata:
-  aihub.tags: '["policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","provenance:agents-owned","role:writing","updates:manual","usage:on-demand"]'
+  aihub.tags: '["decision:plan-00","effective:2026-08-29","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","provenance:agents-owned","role:writing","updates:manual","usage:on-demand"]'
 ---
 
 # Article Writing

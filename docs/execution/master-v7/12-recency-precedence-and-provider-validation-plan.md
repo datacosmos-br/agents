@@ -95,6 +95,21 @@ fixed at its owner.
 
 ## Etapa records
 
+### Etapa 4 — backfill complete (2026-08-30)
+
+All 140 canonical artifacts (41 rules, 91 skills, 8 commands) carry exactly one
+`decision:` + one `effective:` tag. Every `effective:` date is the artifact's
+last Git change date; every reference resolves physically into `docs/`.
+Decision mapping: `plan-00` (the master v7 authority package that approved the
+current inventory) is the default; `ADR-0004` for `rules/runtime/*`,
+`ADR-0005` for `governance-artifact-composition`, `plan-12-inc2` for the
+precedence owner, `ADR-0007` for the bead verification law. `ADR-0007`
+records the pre-existing operator approval that landed through PR #52 without
+a decision document. Untagged rules received `route:both`, matching their
+previous default distribution. Mandatory presence is enforced by the new
+inventory-walk test in `tests/test_approvals.py`; token ceilings restored by
+small prose compressions in three skills.
+
 ### Etapa 2 — precedence consolidated (2026-08-30)
 
 `rules/coordination/operator-precedence.md` now owns the complete order and

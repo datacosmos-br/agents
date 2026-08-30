@@ -1,7 +1,7 @@
 ---
 description: Publishing work — creating a branch, commit, push, or opening a PR. Load when the user asks to commit, push, land, publish, open a pull request, or before any git push.
 metadata:
-  aihub.tags: '["route:personal"]'
+  aihub.tags: '["decision:plan-00","effective:2026-08-29","route:personal"]'
 ---
 
 # Branch and PR — integration by merge commit

@@ -2,7 +2,7 @@
 name: gascity-docs
 description: 'project docs, writing conventions, ia structure, verification gates'
 metadata:
-  aihub.tags: '["activation:opt-in", "detect:opt-in:gascity-docs", "detect:selected-tag:documentation", "domain:gas-city", "policy:atomic-effects", "policy:causal-subprocess", "policy:fail-loud", "policy:no-fallback", "policy:preflight-before-effects", "policy:strict-execution", "provenance:agents-owned", "route:agent", "technology:gas-city", "updates:manual", "usage:on-demand"]'
+  aihub.tags: '["activation:opt-in","decision:plan-00","detect:opt-in:gascity-docs","detect:selected-tag:documentation","domain:gas-city","effective:2026-08-29","policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","provenance:agents-owned","route:agent","technology:gas-city","updates:manual","usage:on-demand"]'
 ---
 
 # Project Documentation

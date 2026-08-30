@@ -3,7 +3,7 @@ name: simplify
 description: 'inline simplification, readable code, behavior preservation'
 license: MIT
 metadata:
-  aihub.tags: '["policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","policy:zero-residue","provenance:agents-owned","role:refactoring","updates:manual","usage:router"]'
+  aihub.tags: '["decision:plan-00","effective:2026-08-29","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","policy:zero-residue","provenance:agents-owned","role:refactoring","updates:manual","usage:router"]'
   version: 2.1.0
 ---
 

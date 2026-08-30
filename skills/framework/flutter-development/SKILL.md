@@ -2,7 +2,7 @@
 name: flutter-development
 description: 'flutter, dart applications, sdk development'
 metadata:
-  aihub.tags: '["activation:detected","detect:dependency:dart:sdk:flutter","framework:flutter","policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","policy:zero-residue","provenance:agents-owned","route:project","technology:dart","updates:manual","usage:router"]'
+  aihub.tags: '["activation:detected","decision:plan-00","detect:dependency:dart:sdk:flutter","effective:2026-08-29","framework:flutter","policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","policy:zero-residue","provenance:agents-owned","route:project","technology:dart","updates:manual","usage:router"]'
 ---
 
 # Flutter Development

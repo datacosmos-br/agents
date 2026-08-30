@@ -1,5 +1,7 @@
 ---
 description: Editing configuration, generated surfaces, or hardcoding a value. Load when changing config, settings, templates, tool homes, systemd units, or goldens.
+metadata:
+  aihub.tags: '["decision:plan-00","effective:2026-08-28","route:both"]'
 ---
 
 # Edit canonical sources, regenerate projections, prove idempotence

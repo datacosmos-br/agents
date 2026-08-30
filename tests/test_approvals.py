@@ -5,6 +5,7 @@ from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 import pytest
+import yaml
 
 from agents_governance.approvals import (
     resolve_approval_tags,
@@ -437,3 +438,31 @@ def test_untagged_command_projection_has_no_approval_note(tmp_path: Path) -> Non
     artifact = render_command(spec, "claude", token_budget=_budget())
 
     assert "aihub.approval" not in artifact.content
+
+
+REPOSITORY = Path(__file__).resolve().parents[1]
+
+
+def _canonical_tags(path: Path) -> tuple[str, ...]:
+    text = path.read_text(encoding="utf-8")
+    assert text.startswith("---\n"), f"missing frontmatter: {path}"
+    frontmatter = yaml.safe_load(text[4 : text.find("\n---\n", 4)])
+    raw = frontmatter["metadata"]["aihub.tags"]
+    return tuple(json.loads(raw))
+
+
+def test_real_inventory_carries_resolvable_approval_tags() -> None:
+    targets = sorted(
+        [p for p in (REPOSITORY / "rules").rglob("*.md") if p.is_file()]
+        + [p for p in (REPOSITORY / "skills").rglob("SKILL.md") if p.is_file()]
+        + [p for p in (REPOSITORY / "commands").rglob("*.md") if p.is_file()]
+    )
+    assert len(targets) >= 100
+
+    for path in targets:
+        tags = _canonical_tags(path)
+        decisions = [tag for tag in tags if tag.startswith("decision:")]
+        effective = [tag for tag in tags if tag.startswith("effective:")]
+        assert len(decisions) == 1, f"{path}: exactly one decision: tag required"
+        assert len(effective) == 1, f"{path}: exactly one effective: tag required"
+        resolve_approval_tags(REPOSITORY, tags, path)

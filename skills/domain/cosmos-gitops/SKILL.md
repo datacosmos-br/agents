@@ -2,7 +2,7 @@
 name: cosmos-gitops
 description: 'cosmos gitops, helm delivery, argocd reconciliation, environment promotion'
 metadata:
-  aihub.tags: '["activation:detected","detect:selected-tag:cosmos-gitops","domain:cosmos-gitops","policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:no-keyring","policy:preflight-before-effects","policy:required-environment","policy:strict-execution","policy:zero-residue","provenance:agents-owned","route:project","tool:argocd","tool:helm","updates:manual","usage:router"]'
+  aihub.tags: '["activation:detected","decision:plan-00","detect:selected-tag:cosmos-gitops","domain:cosmos-gitops","effective:2026-08-29","policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:no-keyring","policy:preflight-before-effects","policy:required-environment","policy:strict-execution","policy:zero-residue","provenance:agents-owned","route:project","tool:argocd","tool:helm","updates:manual","usage:router"]'
 ---
 
 # Cosmos GitOps

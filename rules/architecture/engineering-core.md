@@ -1,5 +1,7 @@
 ---
 description: Apply the mandatory engineering decision and delivery sequence.
+metadata:
+  aihub.tags: '["decision:plan-00","effective:2026-08-29","route:both"]'
 ---
 
 # Engineering core

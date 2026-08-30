@@ -3,7 +3,7 @@ name: make-check
 description: 'native gates, project validation, command discovery'
 license: MIT
 metadata:
-  aihub.tags: '["policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","provenance:agents-owned","role:verification","updates:manual","usage:router"]'
+  aihub.tags: '["decision:plan-00","effective:2026-08-29","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","provenance:agents-owned","role:verification","updates:manual","usage:router"]'
   version: 2.0.0
 ---
 

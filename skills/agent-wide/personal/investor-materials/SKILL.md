@@ -2,7 +2,7 @@
 name: investor-materials
 description: 'fundraising decks, investor memos, capital narratives'
 metadata:
-  aihub.tags: '["domain:fundraising","policy:atomic-effects","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","provenance:agents-owned","role:writing","updates:manual","usage:on-demand"]'
+  aihub.tags: '["decision:plan-00","domain:fundraising","effective:2026-08-29","policy:atomic-effects","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","provenance:agents-owned","role:writing","updates:manual","usage:on-demand"]'
 ---
 
 # Investor Materials
