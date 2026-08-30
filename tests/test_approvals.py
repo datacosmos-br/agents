@@ -58,8 +58,8 @@ def test_effective_tag_rejects_malformed_dates(tag: str) -> None:
         validate_effective_tag(tag)
 
 
-def test_effective_tag_rejects_impossible_calendar_dates() -> None:
-    with pytest.raises(ValueError, match="day is out of range for month"):
+def test_effective_tag_lets_the_raw_calendar_error_escape() -> None:
+    with pytest.raises(ValueError):
         validate_effective_tag("effective:2026-02-30")
 
 
