@@ -20,6 +20,6 @@ The bead is the hypothesis; reality is the proof. Closing without the
 four-source declaration plus evidence is a violation, never a shortcut.
 Divergence between bead and reality is fixed in the bead — never in reality.
 
-Orchestration, tracker, and worker surfaces that declare this rule must carry
-it in their own law and prompt files. A surface that does not carry it is a
-defect.
+Orchestration surfaces that must carry this rule: the city `AGENTS.md`,
+the tracker prime override (what the tracker prints at session start), and
+every city skill. A surface that does not carry it is a defect.
