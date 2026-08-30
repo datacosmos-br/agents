@@ -1,4 +1,4 @@
---
+---
 name: gc-city
 description: 'gas city lifecycle, city init, start stop, supervisor status'
 allowed-tools: Bash(gc *)
@@ -7,39 +7,33 @@ metadata:
 ---
 ## Verification (mandatory)
 
-Before acting on any bead, run the four-source cross-check defined in
-`rules/coordination/beads-verification.md` (project law): registered manual
-ledgers, git history, measured reality, and the intent of the most recent
-code. Declare the check and attach evidence — command, working directory,
-exit code, decisive output — before closing. A bead whose premise the
-current code retired is closed obsolete with evidence, never executed as
-written.
-
-
+Before acting on any bead, run the four-source cross-check in
+`rules/coordination/beads-verification.md` and attach the evidence it
+requires.
 
 # City Lifecycle
 
-A city is a directory containing `city.toml` and `.gc/` runtime state.
+A city is a directory with `city.toml` and `.gc/` runtime state.
 
 ## Initialization
 
 ```
-gc init                                # Initialize city in current directory
-gc init <path>                         # Initialize city at path
+gc init                                # Initialize here
+gc init <path>                         # Initialize at path
 ```
 
-## Starting and stopping
+## Start and stop
 
 ```
-gc start                               # Start city under the supervisor
-gc start <path>                        # Start city at path under the supervisor
-gc supervisor run                      # Run the supervisor in the foreground
+gc start                               # Start the city
+gc start <path>                        # Start at path
+gc supervisor run                      # Foreground supervisor
 gc start --dry-run                     # Preview what would start
-gc stop                                # Stop the current city
+gc stop                                # Stop the city
 gc restart                             # Stop then start
 ```
 
-`gc init` and `gc start` register the city with the machine supervisor, ensure it is running, and trigger an immediate reconcile. Interactive sessions are created separately with `gc session new <template>`.
+`gc init` and `gc start` register the city with the supervisor, ensure it is running, and reconcile immediately. Interactive sessions: `gc session new <template>`.
 
 ## Status
 
@@ -52,7 +46,7 @@ gc rig status <name>                   # Rig status
 ## Suspending
 
 ```
-gc suspend                             # Suspend entire city
+gc suspend                             # Suspend the city
 gc resume                              # Resume suspended city
 ```
 
@@ -60,8 +54,8 @@ gc resume                              # Resume suspended city
 
 ```
 gc config show                         # Show resolved configuration
-gc config explain                      # Show config layering and provenance
-gc doctor                              # Run health checks
+gc config explain                      # Show config provenance
+gc doctor                              # Health checks
 ```
 
 ## Events
@@ -73,11 +67,11 @@ gc event emit <type> [data]            # Emit a custom event
 
 ## Dashboard
 
-See the gc-dashboard skill for full dashboard reference.
+Full reference: the gc-dashboard skill.
 
 ## Packs
 
-Packs extend Gas City with additional commands, prompts, formulas, and doctor checks. Pack commands appear as top-level `gc <pack> <command>` subcommands.
+Packs add `gc <pack> <command>` subcommands, prompts, formulas, and doctor checks.
 
 ```
 gc pack list                           # List installed packs
