@@ -20,6 +20,7 @@ _EXPECTED_GUARANTEES = frozenset(
     {
         "active-intent",
         "atomic-effects",
+        "bead-verification",
         "canonical-command-surface",
         "causal-subprocess",
         "complete-cutover",

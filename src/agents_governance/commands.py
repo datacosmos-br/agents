@@ -14,6 +14,7 @@ from typing import cast
 import yaml
 from yaml.nodes import MappingNode, Node, SequenceNode
 
+from .approvals import APPROVAL_NAMESPACES, core_tags, resolve_approval_tags
 from .tokens import bpe_content
 
 _SLUG = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*\Z")
@@ -170,7 +171,7 @@ def _validate_spec(spec: CommandSpec) -> None:
     }
     if len(spec.tags) != len(set(spec.tags)) or tuple(sorted(spec.tags)) != spec.tags:
         raise ValueError("command tags must be unique and sorted")
-    if set(spec.tags) != expected:
+    if set(core_tags(spec.tags)) != expected:
         raise ValueError(
             "command tags must contain only typed route, intent, and risk values"
         )
@@ -229,8 +230,14 @@ def _tags(
     tags = tuple(cast(list[str], decoded))
     if len(tags) != len(set(tags)) or tags != tuple(sorted(tags)):
         raise ValueError(f"{path}: command tags must be unique and sorted")
-    if any(not tag.startswith(("route:", "intent:", "risk:")) for tag in tags):
-        raise ValueError(f"{path}: command tags support only route, intent, and risk")
+    if any(
+        not tag.startswith(("route:", "intent:", "risk:"))
+        and tag.split(":", 1)[0] not in APPROVAL_NAMESPACES
+        for tag in tags
+    ):
+        raise ValueError(
+            f"{path}: command tags support only route, intent, risk, and approval"
+        )
     route_values = tuple(
         tag.removeprefix("route:") for tag in tags if tag.startswith("route:")
     )
@@ -319,6 +326,7 @@ def audit_command_specs(
                 f"command must use commands/<category>/<slug>.md layout: {path}"
             )
         spec = _load_command(path)
+        resolve_approval_tags(root, spec.tags, path)
         if spec.name in collisions:
             raise ValueError(
                 f"{path}: command slug collides with canonical skill: {spec.name}"
