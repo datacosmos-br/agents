@@ -8,8 +8,7 @@ metadata:
 ## Verification (mandatory)
 
 Before acting on any bead, run the four-source cross-check in
-`rules/coordination/beads-verification.md` and attach the evidence it
-requires.
+`rules/coordination/beads-verification.md` and attach its evidence.
 
 # City Lifecycle
 
@@ -18,22 +17,20 @@ A city is a directory with `city.toml` and `.gc/` runtime state.
 ## Initialization
 
 ```
-gc init                                # Initialize here
-gc init <path>                         # Initialize at path
+gc init [path]                         # Initialize here or at path
 ```
 
 ## Start and stop
 
 ```
-gc start                               # Start the city
-gc start <path>                        # Start at path
+gc start [path]                        # Start the city (here or at path)
 gc supervisor run                      # Foreground supervisor
 gc start --dry-run                     # Preview what would start
 gc stop                                # Stop the city
 gc restart                             # Stop then start
 ```
 
-`gc init` and `gc start` register the city with the supervisor, ensure it is running, and reconcile immediately. Interactive sessions: `gc session new <template>`.
+`gc init` and `gc start` register the city with the supervisor and reconcile immediately. Interactive sessions: `gc session new <template>`. One supervisor hosts one reconciliation runtime per city, lock-enforced. Tick timing and `[daemon]` keys: `references/reconciliation-timing.md` (skill file).
 
 ## Status
 
@@ -50,30 +47,17 @@ gc suspend                             # Suspend the city
 gc resume                              # Resume suspended city
 ```
 
-## Configuration
+## Configuration and events
 
 ```
 gc config show                         # Show resolved configuration
 gc config explain                      # Show config provenance
 gc doctor                              # Health checks
-```
-
-## Events
-
-```
 gc events                              # Tail the event log
 gc event emit <type> [data]            # Emit event
 ```
 
-## Dashboard
+## Dashboard and packs
 
-Full reference: the gc-dashboard skill.
-
-## Packs
-
-Packs add `gc <pack> <command>` subcommands, prompts, formulas, and doctor checks.
-
-```
-gc pack list                           # List installed packs
-gc pack fetch                          # Fetch remote packs
-```
+Dashboard: the gc-dashboard skill. Packs add `gc <pack> <command>` subcommands,
+prompts, formulas, and doctor checks — `gc pack list`, `gc pack fetch`.

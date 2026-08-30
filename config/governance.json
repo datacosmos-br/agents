@@ -105,6 +105,7 @@
       "skill:fix-forward-collaboration"
     ],
     "gas-city-operations": [
+      "command:gc-session-triage",
       "rule:coordination/gascity",
       "skill:gascity-change-lifecycle",
       "skill:gascity-docs",
