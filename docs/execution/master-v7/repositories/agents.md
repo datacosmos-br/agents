@@ -86,7 +86,7 @@ closure, not a later one.
 ## Required repository gates
 
 The complete accepted gate set is listed in
-[Validation and landing](../06-validation-and-landing.md). Runtime evidence uses
+`Validation and landing` (doc file). Runtime evidence uses
 the public `agentsctl` verbs; Make composes development gates only. At minimum,
 the final evidence covers:
 
@@ -108,5 +108,5 @@ the final evidence covers:
 Do not operate another repository, destination home, Git branch, PR, or runtime
 without the authority required by the current phase. Foreign provider files are
 read-only evidence until the ownership manifest proves this repository created
-them. A new session follows [Session protocol](../07-session-protocol.md) and
+them. A new session follows `Session protocol` (doc file) and
 derives current state rather than copying stale command output into this runbook.

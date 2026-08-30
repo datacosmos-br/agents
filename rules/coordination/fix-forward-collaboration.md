@@ -11,7 +11,7 @@ combined result is the target; provenance never exempts a defect from fix-forwar
 
 Preserve unmanifested provider output, generated destinations, external files,
 and ambiguous objects without promoting them to canonical input. Bulk adoption
-or replacement requires [divergent-object adjudication](../runtime/preflight-before-effects.md).
+or replacement requires `divergent-object adjudication` (rule file).
 
 Never stash, reset, restore, revert, rebase, force-push, roll back code/history,
 or replace shared files to remove work. Fix the canonical owner forward.
@@ -25,7 +25,7 @@ integration work is not severe: reconcile, validate, and continue forward.
 Unexpected state requires fresh preflight; it proves no actor or intention and
 never authorizes an unchanged retry.
 
-Compose this invariant with [shared-file coordination](multiagent-edit-breadcrumb.md),
-[operator precedence](operator-precedence.md),
-[plan adoption](plan-topic-monopoly.md), and
-[the destructive Git guard](../git/destructive-git-guard.md).
+Compose this invariant with `shared-file coordination` (rule file),
+`operator precedence` (rule file),
+`plan adoption` (rule file), and
+`the destructive Git guard` (rule file).

@@ -9,5 +9,5 @@ metadata:
 # Dispatching Work
 
 `gc sling` routes work to session configs. **Multi-session configs are valid targets** — sling to the config and any eligible session can claim the work. You do NOT need to find or create an individual session first. Follow the complete
-[router procedure](references/router-procedure.md) and preserve its owners,
+`router procedure` (skill file) and preserve its owners,
 evidence contracts, failure propagation, and required output standard.

@@ -7,6 +7,4 @@ metadata:
 
 # Security Review
 
-Activate for credentials, authentication, authorization, untrusted input, dependencies, containers, persistence, network boundaries, or scanner output. Follow the complete [router procedure](references/router-procedure.md) and preserve its owners, evidence contracts, failure propagation, and required output standard. Follow the complete [router procedure](references/router-procedure.md) and preserve its owners, evidence contracts, failure propagation, and required output standard. Follow the complete
-[router procedure](references/router-procedure.md) and preserve its owners,
-evidence contracts, failure propagation, and required output standard.
+Activate for credentials, authentication, authorization, untrusted input, dependencies, containers, persistence, network boundaries, or scanner output. Follow the complete [router procedure](references/router-procedure.md) and preserve its owners, evidence contracts, failure propagation, and required output standard.

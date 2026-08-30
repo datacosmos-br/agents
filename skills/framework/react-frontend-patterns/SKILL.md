@@ -9,6 +9,6 @@ metadata:
 
 Activate only in a React project for component boundaries, state ownership,
 rendering behavior, accessibility, routing, or client performance. Read the
-[complete procedure](references/procedure.md). General TypeScript work belongs
+`complete procedure` (skill file). General TypeScript work belongs
 to `typescript-development`; non-React frontend work does not activate this
 bundle.

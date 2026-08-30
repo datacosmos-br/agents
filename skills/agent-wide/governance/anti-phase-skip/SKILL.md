@@ -14,7 +14,7 @@ claims, unmerged behavior, stale validation, open tracker state, abandoned WIP,
 and runtime failures that green unit tests cannot expose.
 
 Activate before changing tasks, advancing a plan phase, handing off, or claiming
-completion. Read the [complete procedure](references/procedure.md).
+completion. Read the `complete procedure` (skill file).
 
 A phase cannot be DONE until implementation, real runtime, applicable native gates,
 integration update, commit, push, approved and merged PR, post-merge runtime,

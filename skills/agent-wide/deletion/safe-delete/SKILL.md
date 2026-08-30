@@ -9,6 +9,4 @@ metadata:
 
 # Safe Delete
 
-Delete only exact, owned targets with an explicit recovery contract. This skill also applies when an approved cutover supersedes tracked code: the replacement, consumer rewire, and deletion are one atomic change, never a compatibility or rollback sequence. Follow the complete [router procedure](references/router-procedure.md) and preserve its owners, evidence contracts, failure propagation, and required output standard. Follow the complete [router procedure](references/router-procedure.md) and preserve its owners, evidence contracts, failure propagation, and required output standard. Follow the complete
-[router procedure](references/router-procedure.md) and preserve its owners,
-evidence contracts, failure propagation, and required output standard.
+Delete only exact, owned targets with an explicit recovery contract. This skill also applies when an approved cutover supersedes tracked code: the replacement, consumer rewire, and deletion are one atomic change, never a compatibility or rollback sequence. Follow the complete [router procedure](references/router-procedure.md) and preserve its owners, evidence contracts, failure propagation, and required output standard.

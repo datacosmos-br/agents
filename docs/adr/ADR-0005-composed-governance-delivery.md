@@ -88,13 +88,13 @@ to an adjacent event. An observational hook never becomes an injection claim.
 - [Codex hook schemas](https://github.com/openai/codex/blob/main/codex-rs/hooks/src/schema.rs)
 - [Cursor hooks](https://cursor.com/docs/hooks)
 - [GitHub Copilot hooks reference](https://docs.github.com/en/copilot/reference/hooks-reference)
-- [Gemini CLI hook reference](https://github.com/google-gemini/gemini-cli/blob/main/docs/hooks/reference.md)
+- `Gemini CLI hook reference` (doc file)
 - [OpenCode plugins](https://opencode.ai/docs/plugins/)
 - [Antigravity hooks](https://antigravity.google/docs/hooks)
 - [Antigravity rules](https://antigravity.google/docs/rules-workflows)
-- [Gas City README and prerequisites](https://github.com/gastownhall/gascity/blob/main/README.md)
+- `Gas City README and prerequisites` (doc file)
 - [Gas City Pack V2 release contract](https://github.com/gastownhall/gascity/releases)
-- [Gas City bead lifecycle and `gc hook`](https://github.com/gastownhall/gascity/blob/main/engdocs/architecture/life-of-a-bead.md)
+- `Gas City bead lifecycle and `gc hook`` (doc file)
 - [Beads project and workflow](https://github.com/gastownhall/beads)
 
 ## Consequences

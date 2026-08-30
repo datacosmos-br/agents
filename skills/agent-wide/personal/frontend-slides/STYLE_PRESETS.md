@@ -34,7 +34,7 @@ Never scroll inside a slide.
 
 ## Mandatory Base CSS
 
-Use the canonical viewport-fitting rules in [BASE_CSS.md](references/BASE_CSS.md).
+Use the canonical viewport-fitting rules in `BASE_CSS.md` (skill file).
 
 ## Viewport Checklist
 

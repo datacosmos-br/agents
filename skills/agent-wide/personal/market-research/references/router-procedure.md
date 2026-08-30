@@ -44,7 +44,7 @@ Collect:
 - strengths, weaknesses, and positioning gaps
 
 For a decision-grade competitive benchmark, read the
-[competitive analysis procedure](../references/competitive-analysis.md). It owns
+`competitive analysis procedure` (skill file). It owns
 scoping, evidence-calibrated scoring, bias controls, and report assembly. Use a
 confirmed positioning brief from `brand-discovery` when the decision depends on
 the client's intended position; do not invent one.

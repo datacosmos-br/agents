@@ -92,7 +92,7 @@ terminal-output behavior and move to `commands/<category>/<slug>.md`:
 - `ralph-loop`
 
 The migration preserves useful workflow content but rewrites it against the
-[command contract](03-command-contract.md). No same-name skill survives.
+`command contract` (doc file). No same-name skill survives.
 
 ### Remove as skills
 

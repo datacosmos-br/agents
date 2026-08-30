@@ -76,7 +76,7 @@ For full specifics, replacements, and per-item diagnostics, see the reference fi
 14. **Sentence-starter monotony** — Multiple sentences opening with "The [noun]..."? Vary the openers.
 
 If a check needs lexical guidance, consult
-[banned-words.md](../references/banned-words.md). Do not invent or load an absent
+`banned-words.md` (skill file). Do not invent or load an absent
 reference.
 
 ---
@@ -99,5 +99,5 @@ reference.
 
 ## Further reference
 
-Read [banned-words.md](../references/banned-words.md) when editing or when the
+Read `banned-words.md` (skill file) when editing or when the
 self-check flags a vocabulary cluster. It is the bundle's only lexical reference.

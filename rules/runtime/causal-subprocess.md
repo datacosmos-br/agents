@@ -16,4 +16,4 @@ commands, or success based on partial output. Cleanup may terminate only the
 process group created and owned by this invocation; the original child failure
 remains the exception re-raised.
 
-See also: [strict-execution.md](strict-execution.md) — aggregate parent policy.
+See also: `strict-execution.md` (rule file) — aggregate parent policy.

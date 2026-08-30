@@ -9,7 +9,7 @@ the active collaboration channel before editing; do not add coordination-only
 comments to product code or documentation.
 
 The complete preservation, fix-forward, and severe-conflict contract is owned by
-[fix-forward collaboration](fix-forward-collaboration.md).
+`fix-forward collaboration` (rule file).
 
 - Re-read a mutable file right before editing; converge, never revert another
   actor's valid change.

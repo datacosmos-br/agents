@@ -7,6 +7,4 @@ metadata:
 
 # Video Editing
 
-Activate for cutting, assembling, processing, or delivering edits from existing source footage. Do not activate for prompt-only video generation. Follow the complete [router procedure](references/router-procedure.md) and preserve its owners, evidence contracts, failure propagation, and required output standard. Follow the complete [router procedure](references/router-procedure.md) and preserve its owners, evidence contracts, failure propagation, and required output standard. Follow the complete
-[router procedure](references/router-procedure.md) and preserve its owners,
-evidence contracts, failure propagation, and required output standard.
+Activate for cutting, assembling, processing, or delivering edits from existing source footage. Do not activate for prompt-only video generation. Follow the complete [router procedure](references/router-procedure.md) and preserve its owners, evidence contracts, failure propagation, and required output standard.

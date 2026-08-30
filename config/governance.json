@@ -3,13 +3,9 @@
   "bootstrap": {
     "rules": [
       "architecture/engineering-core",
-      "coordination/fix-forward-collaboration",
       "coordination/operator-precedence",
-      "coordination/session-governance",
       "ethics/professional-integrity",
-      "runtime/strict-execution",
-      "workflow/canonical-commands",
-      "workflow/runtime-is-reality"
+      "runtime/strict-execution"
     ],
     "skills": [
       "caveman",

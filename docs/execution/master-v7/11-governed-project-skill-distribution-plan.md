@@ -3,7 +3,7 @@
 - **Status:** Approved; predecessor-gated
 - **Operator decision:** 2026-08-28 multi-repository skill synchronization and semantic-fusion correction
 - **Observed central base:** `origin/main` at `4995bb4eb131d35c05ef50de950be8aa6e569afd`; execution must fetch and re-prove the then-current SHA
-- **Design authority:** [ADR-0002](../../adr/ADR-0002-skill-distribution-paths-and-tags.md), [ADR-0003](../../adr/ADR-0003-provider-native-physical-projections.md), [ADR-0004](../../adr/ADR-0004-optionless-fail-loud-cli.md), this plan, and the Phase 1 decision updates
+- **Design authority:** `ADR-0002` (doc file), `ADR-0003` (doc file), `ADR-0004` (doc file), this plan, and the Phase 1 decision updates
 - **Owner:** `agents` governance catalog and runtime
 - **Work item:** canonical tracker suspended; no substitute tracker or ledger; Git, PR, review, checks, and CI are the only execution evidence
 
@@ -236,9 +236,9 @@ alias, or moving unreviewed prose into `references/` is a failed fusion.
 
 Every resulting central or local bundle is judged as a new current skill. Its
 historical acceptance does not grandfather it. The review starts from the
-[engineering core](../../../rules/architecture/engineering-core.md),
-[strict execution](../../../rules/runtime/strict-execution.md), and
-[skill-governance](../../../skills/agent-wide/governance/skill-governance/SKILL.md) owners,
+`engineering core` (doc file),
+`strict execution` (doc file), and
+`skill-governance` (doc file) owners,
 then applies their current YAGNI, SSOT, SOLID-at-the-changed-boundary, DRY,
 simplification, fail-loud, no-fallback, atomic-effects, causal-subprocess,
 required-environment, anti-hardcode, security, safe-deletion, zero-residue,

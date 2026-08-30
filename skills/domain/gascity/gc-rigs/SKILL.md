@@ -9,5 +9,5 @@ metadata:
 # Rig Management
 
 A rig is a project directory registered with the city. Agents can be scoped to rigs via the `dir` field. Follow the complete
-[router procedure](references/router-procedure.md) and preserve its owners,
+`router procedure` (skill file) and preserve its owners,
 evidence contracts, failure propagation, and required output standard.

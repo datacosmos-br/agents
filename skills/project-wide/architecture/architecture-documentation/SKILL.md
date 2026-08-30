@@ -7,7 +7,7 @@ metadata:
 
 # Architecture Documentation
 
-Read [the evidence procedure](references/procedure.md) before documenting system
+Read `the evidence procedure` (skill file) before documenting system
 structure, ownership, data flow, runtime topology, or an architectural decision.
 
 Use maintained code, configuration, schemas, and runtime observations as the

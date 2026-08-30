@@ -21,7 +21,7 @@ evidence. Multiple agents are valid only when the operator or plan authorizes
 concurrency and each lane has a measurable benefit, a different canonical owner,
 disjoint writable paths, complete acceptance evidence, and a declared integration
 dependency. Serialize shared mutable resources and one atomic cutover. Read the
-[dispatch procedure](references/procedure.md) before a multi-agent effect.
+`dispatch procedure` (skill file) before a multi-agent effect.
 
 Model, tier, family, variant, and provider remain owned by the active runtime;
 never use a bundled or cached roster, general fallback, alias, substitute lane,
