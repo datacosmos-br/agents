@@ -7,9 +7,9 @@ metadata:
 ---
 ## Verification (mandatory)
 
-Before acting on any bead, run the four-source cross-check owned by
-`rules/coordination/beads-verification.md` (project law) and attach evidence —
-command, working directory, exit code, decisive output — before closing.
+Run the four-source cross-check owned by
+`rules/coordination/beads-verification.md` (project law); attach command,
+working directory, exit code and decisive output before closing.
 
 
 
