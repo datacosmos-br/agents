@@ -1,6 +1,6 @@
-# Gastown pack formulas
+# Legacy pack formulas
 
-These require the gastown pack. They extend the built-in
+These require the legacy pack. They extend the built-in
 `mol-polecat-base`.
 
 **mol-polecat-work** — Feature-branch variant. Creates a worktree and
@@ -53,7 +53,7 @@ gc sling <coordinator-agent> -f mol-idea-to-plan --var problem="..." --var revie
 Persists the full report to bead notes, mails the coordinator, closes the bead,
 and drains the session. Usually not slung by hand.
 
-### Gastown pack formulas (patrol loops)
+### Legacy pack formulas (patrol loops)
 
 Patrol formulas are auto-poured by agent startup prompts — you typically
 don't sling these manually:
