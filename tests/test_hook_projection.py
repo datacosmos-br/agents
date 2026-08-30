@@ -5,6 +5,7 @@ import shlex
 import stat
 import subprocess
 from pathlib import Path
+from typing import cast
 
 import pytest
 
@@ -338,6 +339,9 @@ def _projector_without_codex_prompt(root: Path) -> HookProjector:
         ProjectionSurface.HOOKS,
     )
     cell = base.config.cells[key]
+    source_events = cell.events
+    if source_events is None:
+        raise AssertionError("projection cell declares no events")
     events = {
         name: (
             dataclasses.replace(
@@ -346,7 +350,7 @@ def _projector_without_codex_prompt(root: Path) -> HookProjector:
             if name == "prompt_submit"
             else event
         )
-        for name, event in cell.events.items()
+        for name, event in source_events.items()
     }
     mutated = dataclasses.replace(cell, events=MappingProxyType(events))
     cells = dict(base.config.cells)
@@ -381,7 +385,7 @@ def test_retired_hook_event_script_is_removed_and_foreign_survives(
     manifest = _json(project / ".codex" / ".hooks.json.agents-governance.json")
     assert all(
         "userpromptsubmit" not in key
-        for key in manifest["managed"]  # type: ignore[operator]
+        for key in cast("dict[str, object]", manifest["managed"])
     )
     retired_projector.check(project)
 
@@ -407,3 +411,36 @@ def test_modified_retired_artifact_fails_loud_and_preserves_state(
         retired_projector.apply(project)
 
     assert "# tampered" in retired.read_text()
+
+
+def test_config_path_change_retires_artifacts_managed_at_the_old_location(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    root = Path(__file__).resolve().parents[1]
+    home = tmp_path / "home"
+    project = tmp_path / "project"
+    home.mkdir()
+    project.mkdir()
+    _authorize(project)
+    monkeypatch.setenv("HOME", str(home))
+    projector = _projector(root)
+    projector.apply(project)
+    manifest_path = project / ".codex" / ".hooks.json.agents-governance.json"
+    manifest = _json(manifest_path)
+    canonical = ".codex/aihub-hooks/codex-userpromptsubmit.py"
+    relocated = ".codex/aihub-hooks/old-location-codex-userpromptsubmit.py"
+    managed = dict(cast("dict[str, object]", manifest["managed"]))
+    managed[relocated] = managed.pop(canonical)
+    manifest["managed"] = managed
+    manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+    hooks_dir = project / ".codex" / "aihub-hooks"
+    (hooks_dir / Path(canonical).name).rename(hooks_dir / Path(relocated).name)
+
+    projector.apply(project)
+
+    assert not (hooks_dir / Path(relocated).name).exists()
+    assert (hooks_dir / Path(canonical).name).is_file()
+    converged = _json(manifest_path)
+    assert canonical in converged["managed"]  # type: ignore[operator]
+    assert relocated not in converged["managed"]  # type: ignore[operator]
+    projector.check(project)
