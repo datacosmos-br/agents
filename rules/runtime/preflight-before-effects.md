@@ -38,3 +38,5 @@ ownership and provenance evidence, normalized semantic delta, affected consumers
 and blast radius, proposed disposition, destructive effects, recovery contract,
 and fixed-point validation plan. Do not overwrite, delete, quarantine, back up,
 stash, roll back, or silently promote it to a source while that decision is open.
+
+See also: [strict-execution.md](strict-execution.md) — aggregate parent policy.

@@ -13,3 +13,5 @@ Required credentials come only from validated variables already present in the
 current process environment. Missing or invalid credentials raise immediately.
 Existing operating-system keyring values are external user state: do not
 inspect, enumerate, migrate, mutate, or delete them.
+
+See also: [strict-execution.md](strict-execution.md) — aggregate parent policy.

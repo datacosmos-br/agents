@@ -30,3 +30,5 @@ The consequence of an absent credential is the tool's own declared failure, not
 a degraded mode. A tool that silently continues unauthenticated — with a lower
 quota, reduced verification, or unsigned artifacts — is failing quietly; require
 the variable at its boundary so the workflow stops instead.
+
+See also: [strict-execution.md](strict-execution.md) — aggregate parent policy.
