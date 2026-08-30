@@ -110,6 +110,35 @@ def _checks(owner: str, name: str, ref: str) -> list[dict[str, Any]]:
     return [json.loads(line) for line in raw.splitlines() if line.strip()]
 
 
+# A check that finished without running is not a failure: GitHub reports a
+# skipped or neutral job as a completed conclusion, and a required check may
+# legitimately be either.
+_PASSING_CONCLUSIONS = {"success", "neutral", "skipped"}
+
+
+def checks_verdict(checks: list[dict[str, Any]]) -> str:
+    """Report what the check set actually proves.
+
+    An empty rollup is `not_determined`, never `passed`. Zero failing and zero
+    pending is what "every check succeeded" and "no check exists yet" both look
+    like to a counter, and reading the second as the first merges code no CI
+    ever saw. Only a non-empty set in which every entry both finished and
+    finished well is `passed`.
+    """
+    if not checks:
+        return "not_determined"
+    if any(check["conclusion"] == "failure" for check in checks):
+        return "failing"
+    if any(check["status"] != "COMPLETED" for check in checks):
+        return "pending"
+    if all(
+        (check["conclusion"] or "").lower() in _PASSING_CONCLUSIONS
+        for check in checks
+    ):
+        return "passed"
+    return "failing"
+
+
 def cmd_locate(repository: str, number: int) -> dict[str, Any]:
     owner, _, name = repository.partition("/")
     raw = _gh(
@@ -131,6 +160,8 @@ def cmd_locate(repository: str, number: int) -> dict[str, Any]:
         "head_branch": pr["head"]["ref"],
         "head_oid": head_oid,
         "mergeable": pr["mergeable"],
+        "checks_verdict": checks_verdict(checks),
+        "check_count": len(checks),
         "failing_checks": [c for c in checks if c["conclusion"] == "failure"],
         "pending_checks": [c for c in checks if c["status"] not in {"COMPLETED"}],
         "unresolved_threads": unresolved,
@@ -165,6 +196,8 @@ def cmd_sweep(repositories: list[str], bases: set[str]) -> list[dict[str, Any]]:
                     "head_oid": pr["head"]["sha"],
                     "draft": pr["draft"],
                     "mergeable": detail["mergeable"],
+                    "checks_verdict": checks_verdict(checks),
+                    "check_count": len(checks),
                     "failing_checks": sum(
                         1 for c in checks if c["conclusion"] == "failure"
                     ),
