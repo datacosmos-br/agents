@@ -18,7 +18,6 @@ agents.bkp/
 
 # Existing checkout runtime/ephemeral state only; symlink adoption is prohibited.
 # (gt town-level mayor/refinery/witness live in ~/gt, NOT here, so not ignored here):
-/.beads/
 /.beads.gate.lock
 /crew/
 /polecats/
@@ -31,3 +30,7 @@ agents.bkp/
 .gqlout.json
 .poolside/
 .poolside/
+
+# Gas City
+.beads/*
+!.beads/identity.toml

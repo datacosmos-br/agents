@@ -15,7 +15,7 @@
 8. Divergence: FF push rejected → integrate by cooperation: `git merge --no-ff` the integration base into your lane, resolve conflicts, revalidate, land. Never rebase or force-push an authorized change or integration branch; adopt all current worktree state and fix it forward.
 9. Escalation: impossible rule → exact error. Rule conflict → present both with numbers. Unclear → one targeted question. Never guess.
 10. Precedence: NEWEST > OLDEST. USER REQUEST > BEADS > ADRs > SKILLs > DOCS > default. Adjust lower/older to higher/newer. Doubt → ASK USER FIRST.
-11. Workspace placement: follow the declared Gas City city/rig/Pack V2 contract in `rules/gascity.md`. While its runtime is suspended, operate only in the existing checkout and create no clone, worktree, city, rig, agent, formula, run, or session. Staging and backups stay on the destination filesystem, never `/tmp`.
+11. Workspace placement: follow the declared Gas City city/rig/Pack V2 contract in `rules/coordination/gascity.md`. While its runtime is suspended, operate only in the existing checkout and create no clone, worktree, city, rig, agent, formula, run, or session. Staging and backups stay on the destination filesystem, never `/tmp`.
 12. Phase closure: keep the phase active through check repair, review resolution,
     independent approval, merge into the configured integration branch, and
     post-merge proof. Only then, with its Bead closed with evidence, is it DONE.
@@ -48,7 +48,7 @@
 
 ## Change lifecycle
 
-Gas City configuration owns orchestration identity and dispatch; the repository owns Git, native gates, PR review, and landing. The canonical contract is `rules/gascity.md`, which owns how a city's activation state is resolved: read it from that city's own authority at preflight and invoke no orchestration command outside the scope that authority has explicitly activated. Work in the existing checkout and stop at the configured integration branch unless the operator explicitly asks to promote.
+Gas City configuration owns orchestration identity and dispatch; the repository owns Git, native gates, PR review, and landing. The canonical contract is `rules/coordination/gascity.md`, which owns how a city's activation state is resolved: read it from that city's own authority at preflight and invoke no orchestration command outside the scope that authority has explicitly activated. Work in the existing checkout and stop at the configured integration branch unless the operator explicitly asks to promote.
 
 ## Clone and temporary-filesystem law
 
