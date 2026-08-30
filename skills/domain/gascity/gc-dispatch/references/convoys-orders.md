@@ -16,7 +16,7 @@ gc convoy autoclose <id>                              # Internal: invoked by bd'
 ```
 
 Migration note:
-- Existing epic beads are no longer first-class containers. Migrate open epics to convoys before relying on convoy-only tooling such as `gc convoy target`, `gc sling <convoy>`, or the Gastown refinery convoy flow.
+- Existing epic beads are no longer first-class containers. Migrate open epics to convoys before relying on convoy-only tooling such as `gc convoy target`, `gc sling <convoy>`, or the legacy refinery convoy flow.
 
 ## Orders
 
