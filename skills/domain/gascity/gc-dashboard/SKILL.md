@@ -1,4 +1,4 @@
---
+---
 name: gc-dashboard
 description: 'gas city dashboard, api server, web ui, realtime monitoring'
 allowed-tools: Bash(gc *)

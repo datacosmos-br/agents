@@ -1,4 +1,4 @@
---
+---
 name: gc-mail
 description: 'gas city mail, inter-agent messaging, bead threads, inbox'
 allowed-tools: Bash(gc *)

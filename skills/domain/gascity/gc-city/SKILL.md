@@ -1,4 +1,4 @@
---
+---
 name: gc-city
 description: 'gas city lifecycle, city init, start stop, supervisor status'
 allowed-tools: Bash(gc *)
