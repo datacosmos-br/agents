@@ -37,17 +37,17 @@
 
 ## Lock ownership inside a workspace
 
-A workspace is a Git repository that contains `.gitmodules`. A standalone
-project is a Git repository that does not. There is no third project type.
+The repository topology — workspace when `.gitmodules` is present,
+standalone otherwise — is owned solely by `flext-infra`; no skill re-derives
+it. Inside a workspace, a submodule checkout does not own its own lock while
+the umbrella is present: resolution follows the umbrella lock, and locking from
+inside a submodule updates the umbrella lock, not the submodule's. That is the
+owner's correct behaviour, not a defect, and no flag suppresses it.
 
-While the workspace checkout is present, resolution is the workspace's: locking
-from a nested path updates the workspace lock, not a nested project's lock.
-That is the owner's correct behaviour, not a defect, and no flag suppresses it.
-
-A nested project's own lock is resolved only in its standalone checkout, which
-is what CI builds. Never conclude that an upgrade verb is broken because a
-nested pin did not move: prove which lock the run wrote before treating the pin
-as stale, and prove the installed revision before treating a generated artifact
+A submodule's own lock is therefore resolved only in its standalone checkout,
+which is what CI builds. Never conclude that an upgrade verb is broken because
+a pin did not move: prove which lock the run wrote before treating the pin as
+stale, and prove the installed revision before treating a generated artifact
 as its output.
 
 Never place a manual copy in a user bin directory, invent a tool alias, reuse

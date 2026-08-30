@@ -57,6 +57,29 @@ class HookPlan:
     boundary: Path
     config: Path
     desired: dict[Path, tuple[str, int]]
+    removals: tuple[HookRemoval, ...] = ()
+
+
+@dataclass(frozen=True)
+class HookRemoval:
+    """One previously-managed hook artifact that no longer has a planned owner."""
+
+    path: Path
+    digest: str
+    mode: str
+
+    def verify(self) -> None:
+        if self.path.is_symlink() or not self.path.is_file():
+            raise ValueError(
+                f"retired managed hook artifact is missing or non-physical: {self.path}"
+            )
+        actual = hashlib.sha256(self.path.read_bytes()).hexdigest()
+        actual_mode = f"{stat.S_IMODE(self.path.lstat().st_mode):04o}"
+        if actual != self.digest or actual_mode != self.mode:
+            raise ValueError(f"retired managed hook artifact was modified: {self.path}")
+
+    def retire(self) -> None:
+        self.path.unlink()
 
 
 @dataclass(frozen=True)
@@ -448,6 +471,7 @@ def _validate_previous(
     provider: AgentProvider,
     context: ProjectionContext,
     current: dict[str, object] | None,
+    planned: Mapping[Path, tuple[str, int]] | None = None,
 ) -> None:
     if manifest is None:
         return
@@ -459,8 +483,11 @@ def _validate_previous(
     for field, expected in identity.items():
         if manifest[field] != expected:
             raise ValueError(f"hook manifest authority differs at {config}: {field}")
+    planned_paths: Mapping[Path, tuple[str, int]] = planned or {}
     for relative, raw in _mapping(manifest["managed"], "hook managed files").items():
         path = _destination(boundary, relative, ProjectionContext.PROJECT)
+        if path not in planned_paths:
+            continue
         if path.is_symlink() or not path.is_file():
             raise ValueError(
                 f"managed hook artifact is missing or non-physical: {path}"
@@ -471,7 +498,13 @@ def _validate_previous(
         if actual_digest != entry["digest"] or actual_mode != entry["mode"]:
             raise ValueError(f"managed hook artifact was modified: {path}")
     entries = _mapping(manifest["entries"], "hook managed entries")
-    if entries:
+    hook_dir = config.parent / "aihub-hooks"
+    retained_events = {
+        event
+        for event, artifacts in _retained_event_artifacts(planned_paths).items()
+        if any(artifact.parent == hook_dir for artifact in artifacts)
+    }
+    if entries and retained_events:
         if current is None:
             raise ValueError(f"managed hook config is missing: {config}")
         if (
@@ -479,14 +512,37 @@ def _validate_previous(
             and context is ProjectionContext.PROJECT
         ):
             for key, managed_entry in entries.items():
+                if key not in retained_events and key != "aihub-governance":
+                    continue
                 if current.get(key) != managed_entry:
                     raise ValueError(f"managed hook entry was modified: {config}:{key}")
             return
         hooks = _mapping(current.get("hooks", {}), f"{config}: hooks")
         for event, managed_entry in entries.items():
+            if event not in retained_events:
+                continue
             existing = hooks.get(event)
             if not isinstance(existing, list) or existing.count(managed_entry) != 1:
                 raise ValueError(f"managed hook entry was modified: {config}:{event}")
+
+
+def _retained_event_artifacts(
+    planned: Mapping[Path, tuple[str, int]],
+) -> dict[str, tuple[Path, ...]]:
+    """Map logical hook events to their planned script artifacts."""
+
+    grouped: dict[str, list[Path]] = {}
+    for path in planned:
+        if path.parent.name != "aihub-hooks":
+            continue
+        token = path.name.split("-")
+        if len(token) > 1:
+            event = token[-1]
+            if event in grouped:
+                grouped[event].append(path)
+            else:
+                grouped[event] = [path]
+    return {event: tuple(paths) for event, paths in sorted(grouped.items())}
 
 
 def _render_json(value: object) -> str:
@@ -585,6 +641,10 @@ class HookProjector:
         )
         events = _event_names(cell.events)
         if provider is AgentProvider.OPENCODE:
+            desired: dict[Path, tuple[str, int]] = {
+                config: (_opencode_plugin(capsule), default_config_mode)
+            }
+            exact = dict(desired)
             _validate_previous(
                 previous_manifest,
                 boundary=boundary,
@@ -592,12 +652,8 @@ class HookProjector:
                 provider=provider,
                 context=context,
                 current=None,
+                planned=desired,
             )
-            desired: dict[Path, tuple[str, int]] = {
-                config: (_opencode_plugin(capsule), default_config_mode)
-            }
-            exact = dict(desired)
-            _reject_unowned_exact(previous_manifest, exact)
             entries: dict[str, object] = {}
         else:
             script_root = config.parent / "aihub-hooks"
@@ -634,6 +690,7 @@ class HookProjector:
                 provider=provider,
                 context=context,
                 current=current,
+                planned=desired,
             )
             if provider in {
                 AgentProvider.CLAUDE,
@@ -705,7 +762,25 @@ class HookProjector:
             },
         }
         desired[manifest_path] = (_render_json(manifest_payload), 0o644)
-        return HookPlan(provider, context, boundary, config, desired)
+        removals: tuple[HookRemoval, ...] = ()
+        if previous_manifest is not None:
+            retired: list[HookRemoval] = []
+            for relative, raw in _mapping(
+                previous_manifest["managed"], "hook managed files"
+            ).items():
+                path = _destination(boundary, relative, ProjectionContext.PROJECT)
+                if path in desired or path == manifest_path:
+                    continue
+                entry = _mapping(raw, f"retired hook artifact {relative}")
+                retired.append(
+                    HookRemoval(
+                        path,
+                        cast(str, entry["digest"]),
+                        cast(str, entry["mode"]),
+                    )
+                )
+            removals = tuple(sorted(retired, key=lambda item: str(item.path)))
+        return HookPlan(provider, context, boundary, config, desired, removals)
 
     def _plans(self, authorization: ProjectAuthorization) -> tuple[HookPlan, ...]:
         home = _physical_boundary(Path.home(), "personal home")
@@ -878,6 +953,11 @@ class HookProjector:
 
     def check(self, project: Path) -> None:
         authorization = load_project_authorization(project)
+        for plan in self._plans(authorization):
+            for removal in plan.removals:
+                raise HookProjectionDriftError(
+                    f"retired managed hook artifact remains: {removal.path}"
+                )
         for state in self._states(authorization):
             if state.drift:
                 raise HookProjectionDriftError(
@@ -892,16 +972,51 @@ class HookProjector:
             lambda: self._cleanup(staged),
         )
 
+    def _retirement_publications(
+        self, authorization: ProjectAuthorization
+    ) -> tuple[Publication, ...]:
+        """Verify-then-delete every managed hook artifact that left the plan."""
+
+        removals: list[HookRemoval] = []
+        for plan in self._plans(authorization):
+            removals.extend(plan.removals)
+        publications: list[Publication] = []
+        for removal in removals:
+            removal.verify()
+
+            def prepare(r: HookRemoval = removal) -> PreparedPublication:
+                r.verify()
+                backup = r.path.read_bytes()
+                backup_mode = stat.S_IMODE(r.path.lstat().st_mode)
+
+                def publish() -> None:
+                    r.verify()
+                    r.retire()
+
+                def rollback() -> None:
+                    r.path.write_bytes(backup)
+                    r.path.chmod(backup_mode)
+
+                def cleanup() -> None:
+                    return None
+
+                return PreparedPublication(publish, rollback, cleanup)
+
+            publications.append(Publication(prepare))
+        return tuple(publications)
+
     def publications(
         self, authorization: ProjectAuthorization
     ) -> tuple[Publication, ...]:
         """Preflight and defer every changed provider-hook publication."""
 
-        return tuple(
+        retirements = self._retirement_publications(authorization)
+        updates = tuple(
             Publication(partial(self._prepare_publication, state))
             for state in self._states(authorization)
             if state.drift
         )
+        return (*retirements, *updates)
 
     def apply(self, project: Path) -> None:
         authorization = load_project_authorization(project)
