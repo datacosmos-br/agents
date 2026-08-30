@@ -5,6 +5,7 @@ import os
 from pathlib import Path
 
 import pytest
+from conftest import approved, seed_approval_docs
 
 from agents_governance.catalog import Catalog, SkillCategory
 
@@ -39,9 +40,10 @@ def _write_skill(
     declared_name: str | None = None,
     tags: tuple[str, ...] = _BASE_TAGS,
 ) -> Path:
+    seed_approval_docs(root)
     directory = root / "skills" / category / name
     directory.mkdir(parents=True)
-    encoded_tags = json.dumps(tags, separators=(",", ":"))
+    encoded_tags = json.dumps(list(approved(tags)), separators=(",", ":"))
     (directory / "SKILL.md").write_text(
         "---\n"
         f"name: {declared_name or name}\n"
@@ -77,7 +79,7 @@ def test_inventory_is_recursive_deterministic_and_typed(tmp_path: Path) -> None:
             "max_tokens": 5000,
             "max_lines": 500,
             "distributions": ["personal"],
-            "tags": list(_BASE_TAGS),
+            "tags": list(approved(_BASE_TAGS)),
             "path": "skills/agent-wide/example",
             "digest": Catalog.digest_tree(directory),
         }

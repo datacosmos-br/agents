@@ -62,7 +62,7 @@ only-include = [
 ]
 
 [tool.pytest.ini_options]
-addopts = "-q"
+addopts = "-q --basetemp=.pytest-scratch"
 testpaths = ["tests"]
 tmp_path_retention_policy = "none"
 

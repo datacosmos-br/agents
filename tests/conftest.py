@@ -98,3 +98,29 @@ def tmp_path(
     owned_identity = _identity(owned.stat(follow_symlinks=False))
     yield owned
     _remove_owned_directory(owned, owned_identity)
+
+
+APPROVAL_DECISION = "decision:ADR-0001"
+APPROVAL_EFFECTIVE = "effective:2026-08-29"
+APPROVAL_TAGS: tuple[str, ...] = (APPROVAL_DECISION, APPROVAL_EFFECTIVE)
+
+
+def seed_approval_docs(root: Path) -> None:
+    """Publish the physical docs/ approvals every canonical tag resolves to."""
+
+    adr = root / "docs" / "adr"
+    adr.mkdir(parents=True, exist_ok=True)
+    (adr / "ADR-0001-fixture.md").write_text("# ADR-0001\n", encoding="utf-8")
+    plans = root / "docs" / "execution" / "master-v7"
+    plans.mkdir(parents=True, exist_ok=True)
+    (plans / "11-fixture.md").write_text("# plan-11\n", encoding="utf-8")
+
+
+def approved(tags: tuple[str, ...]) -> tuple[str, ...]:
+    """Return tags carrying exactly one decision and one effective approval."""
+
+    kept = tuple(tag for tag in tags if not tag.startswith(("decision:", "effective:")))
+    merged = APPROVAL_TAGS + kept
+    if list(kept) != sorted(kept):
+        return merged
+    return tuple(sorted(merged))

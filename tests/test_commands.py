@@ -1,10 +1,17 @@
 from __future__ import annotations
 
+import json
 import tomllib
 from dataclasses import replace
 from pathlib import Path, PurePosixPath
 
 import pytest
+from conftest import (
+    APPROVAL_DECISION,
+    APPROVAL_EFFECTIVE,
+    approved,
+    seed_approval_docs,
+)
 
 from agents_governance.commands import (
     CommandArtifact,
@@ -16,8 +23,13 @@ from agents_governance.commands import (
     waza_bpe_counter,
 )
 
-PROJECT_TAGS = '["intent:implementation","risk:write","route:project"]'
-AGENT_TAGS = '["intent:inspection","risk:external","route:agent"]'
+
+def _encode(tags: tuple[str, ...]) -> str:
+    return json.dumps(list(approved(tags)), separators=(",", ":"))
+
+
+PROJECT_TAGS = _encode(("intent:implementation", "risk:write", "route:project"))
+AGENT_TAGS = _encode(("intent:inspection", "risk:external", "route:agent"))
 
 
 def _write_command(
@@ -30,6 +42,7 @@ def _write_command(
     body: str = "# Deploy service\n\nUse $ARGUMENTS as the approved target.\n",
     subdir: str = "implementation",
 ) -> Path:
+    seed_approval_docs(root)
     commands = root / "commands" / subdir
     commands.mkdir(parents=True, exist_ok=True)
     hint = f"argument-hint: {argument_hint!r}\n" if argument_hint is not None else ""
@@ -147,8 +160,10 @@ def test_supported_adapters_render_complete_provider_owned_artifacts(
     assert artifact.manual_only
     assert artifact.tokens == len(artifact.content)
     if provider is CommandProvider.GEMINI:
-        assert tomllib.loads(artifact.content)["prompt"].endswith(
-            "{{args}} as the approved target.\n"
+        prompt = tomllib.loads(artifact.content)["prompt"]
+        assert "{{args}} as the approved target.\n" in prompt
+        assert prompt.rstrip().endswith(
+            f"<!-- aihub.approval: {APPROVAL_DECISION}; {APPROVAL_EFFECTIVE} -->"
         )
     else:
         assert spec.body in artifact.content
