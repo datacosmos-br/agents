@@ -345,7 +345,11 @@ def _physical_project(cwd: Path) -> Path:
                 ).stdout.strip()
                 if not raw_superproject:
                     if "worktrees" in git_directory.parts:
-                        raise ValueError(f"Git worktree is forbidden: {project}")
+                        if project == Path("/tmp") or Path("/tmp") in project.parents:
+                            raise ValueError(
+                                f"repositories under /tmp are prohibited: {project}"
+                            )
+                        return project
                     raise ValueError(
                         f"external Git directory is forbidden: {git_directory}"
                     )
