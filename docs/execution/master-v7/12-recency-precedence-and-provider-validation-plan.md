@@ -93,6 +93,34 @@ fixed at its owner.
 | Any red gate | fix at the owner; never route around |
 | Scope expands beyond this plan | ask before continuing |
 
+## Etapa records
+
+### Etapa 2 — precedence consolidated (2026-08-30)
+
+`rules/coordination/operator-precedence.md` now owns the complete order and
+recency mechanics: authority levels, higher `effective:` wins inside a level,
+`supersedes:` resolves chains, superseded artifacts are evidence-only. The
+AGENTS.md prelude keeps its one-line boot pointer; plan-scoped authority
+statements (master-v7 `00-authority-and-scope.md`, session protocol, session
+governance) are applications, not competing orders — verified, unchanged.
+
+Dispositions for `docs/governance-interconnection-analysis.md` Priorities
+1–10, each proved against the current inventory rather than the stale
+snapshot:
+
+| Priority | Disposition | Proof |
+|---|---|---|
+| 1 runtime-rule guarantees | Implemented before this plan | all 7 guarantees present in `config/governance.json` |
+| 2 command guarantees | Implemented before this plan | all 7 guarantees present in `config/governance.json` |
+| 3 redundant guarantees | Implemented before this plan | zero occurrences of the 5 redundant names |
+| 4 four more bootstrap skills | Rejected | the active skill plans own the always-on composition; guarantees plus the router already select them on demand; the older proposal is superseded |
+| 5 route tags on untagged rules | Adopted in etapa 4 | 37 of 41 rules are untagged; tags land with the mandatory approval backfill in one change |
+| 6 rule cross-references | Adopted in etapa 6 | rule-strengthening scope, one objective per etapa |
+| 7 categorize the gascity rule | Implemented before this plan | `rules/gascity.md` no longer exists; owner is `rules/coordination/gascity.md` |
+| 8 Gas City skills guarantee | Adopted now | `gas-city-operations` gained `skill:gascity-change-lifecycle` and `skill:gascity-workspace-lifecycle` |
+| 9 orphan documents | Implemented before this plan | both guarantees present in `config/governance.json` |
+| 10 guarantee coverage test | Implemented before this plan | `governance_config.py` requires exact coverage; red on the PR #52 miss proved it live |
+
 ## Definition of done
 
 1. Every active rule, skill, and command carries resolvable `decision:` +
