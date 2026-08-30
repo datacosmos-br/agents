@@ -74,6 +74,12 @@ def resolve_reference(root: Path, reference: str) -> Path:
 def resolve_approval_tags(root: Path, tags: tuple[str, ...], source: Path) -> None:
     """Validate format and resolution of every approval tag or raise loud."""
 
+    for kind in ("decision", "effective"):
+        matching = tuple(tag for tag in tags if tag.startswith(f"{kind}:"))
+        if len(matching) != 1:
+            raise ValueError(
+                f"{source}: requires exactly one {kind}: tag; got {len(matching)}"
+            )
     for tag in tags:
         if tag.startswith("effective:"):
             validate_effective_tag(tag)
