@@ -318,3 +318,92 @@ def test_modified_managed_hook_and_instruction_region_are_rejected(
     )
     with pytest.raises(ValueError, match="instruction capsule was modified"):
         projector.apply(project)
+
+
+def _projector_without_codex_prompt(root: Path) -> HookProjector:
+    import dataclasses
+    from types import MappingProxyType
+
+    from agents_governance.agent_profiles import AgentProvider
+    from agents_governance.projection_config import (
+        ProjectionContext,
+        ProjectionStatus,
+        ProjectionSurface,
+    )
+
+    base = _projector(root)
+    key = (
+        AgentProvider.CODEX,
+        ProjectionContext.PROJECT,
+        ProjectionSurface.HOOKS,
+    )
+    cell = base.config.cells[key]
+    events = {
+        name: (
+            dataclasses.replace(
+                event, status=ProjectionStatus.UNSUPPORTED, native=(), coverage=None
+            )
+            if name == "prompt_submit"
+            else event
+        )
+        for name, event in cell.events.items()
+    }
+    mutated = dataclasses.replace(cell, events=MappingProxyType(events))
+    cells = dict(base.config.cells)
+    cells[key] = mutated
+    config = dataclasses.replace(base.config, cells=MappingProxyType(cells))
+    return HookProjector(base.governance, config, base.commands, base.rules)
+
+
+def test_retired_hook_event_script_is_removed_and_foreign_survives(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    root = Path(__file__).resolve().parents[1]
+    home = tmp_path / "home"
+    project = tmp_path / "project"
+    home.mkdir()
+    project.mkdir()
+    _authorize(project)
+    monkeypatch.setenv("HOME", str(home))
+    projector = _projector(root)
+    projector.apply(project)
+    hooks_dir = project / ".codex" / "aihub-hooks"
+    retired = hooks_dir / "codex-userpromptsubmit.py"
+    assert retired.is_file()
+    foreign = hooks_dir / "foreign-tool.py"
+    foreign.write_text("# foreign authored\n", encoding="utf-8")
+
+    retired_projector = _projector_without_codex_prompt(root)
+    retired_projector.apply(project)
+
+    assert not retired.exists()
+    assert foreign.is_file()
+    manifest = _json(project / ".codex" / ".hooks.json.agents-governance.json")
+    assert all(
+        "userpromptsubmit" not in key
+        for key in manifest["managed"]  # type: ignore[operator]
+    )
+    retired_projector.check(project)
+
+
+def test_modified_retired_artifact_fails_loud_and_preserves_state(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    root = Path(__file__).resolve().parents[1]
+    home = tmp_path / "home"
+    project = tmp_path / "project"
+    home.mkdir()
+    project.mkdir()
+    _authorize(project)
+    monkeypatch.setenv("HOME", str(home))
+    projector = _projector(root)
+    projector.apply(project)
+    retired = project / ".codex" / "aihub-hooks" / "codex-userpromptsubmit.py"
+
+    retired_projector = _projector_without_codex_prompt(root)
+    retired.write_text(retired.read_text() + "# tampered\n", encoding="utf-8")
+
+    with pytest.raises(ValueError, match="retired managed hook artifact was modified"):
+        retired_projector.apply(project)
+
+    assert "# tampered" in retired.read_text()
