@@ -1,4 +1,3 @@
---
 name: gc-rigs
 description: 'gas city rigs, rig registration, bead scoping, suspend resume'
 allowed-tools: Bash(gc *)

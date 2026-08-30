@@ -1,4 +1,3 @@
---
 name: gc-agents
 description: 'gas city agents, session management, pool lifecycle, runtime drain'
 allowed-tools: Bash(gc *)

@@ -1,4 +1,3 @@
---
 name: gc-dispatch
 description: 'gas city dispatch, sling routing, formula workflow, convoy orders'
 allowed-tools: Bash(gc *)

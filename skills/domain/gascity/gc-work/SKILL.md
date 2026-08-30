@@ -1,4 +1,3 @@
---
 name: gc-work
 description: 'gas city work, bead lifecycle, claim close, hook ready'
 allowed-tools: Bash(gc *)
