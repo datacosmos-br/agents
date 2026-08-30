@@ -531,17 +531,18 @@ def _retained_event_artifacts(
 ) -> dict[str, tuple[Path, ...]]:
     """Map logical hook events to their planned script artifacts."""
 
-    events: dict[str, tuple[Path, ...]] = {}
+    grouped: dict[str, list[Path]] = {}
     for path in planned:
         if path.parent.name != "aihub-hooks":
             continue
-        stem = path.name
-        for separator in ("-",):
-            token = stem.split(separator)
-            if len(token) > 1:
-                events.setdefault(token[-1], ())
-                events[token[-1]] = (*events[token[-1]], path)
-    return events
+        token = path.name.split("-")
+        if len(token) > 1:
+            event = token[-1]
+            if event in grouped:
+                grouped[event].append(path)
+            else:
+                grouped[event] = [path]
+    return {event: tuple(paths) for event, paths in sorted(grouped.items())}
 
 
 def _render_json(value: object) -> str:
