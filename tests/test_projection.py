@@ -1202,3 +1202,640 @@ def test_git_metadata_symlink_is_rejected(
 
     with pytest.raises(ValueError, match="Git metadata symlink forbidden"):
         projector.apply()
+
+
+# ===== v2 detection_rules tests =====
+
+def _make_v2_project(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    detection_rules: list[dict],
+    selected_tags: tuple[str, ...] = (),
+    opt_ins: tuple[str, ...] = (),
+    project_name: str = "project",
+) -> tuple[Path, Projector]:
+    """Create a v2 project with detection rules and return (project, projector)."""
+    # Create project in a location that won't conflict with central agents directory
+    # Use a unique name to avoid conflicts in parallel tests
+    unique_name = f"{project_name}_{id(object())}"
+    # Create project in a location that won't be under the central agents directory
+    # Use a subdirectory of tmp_path that won't be under the central agents dir
+    project = tmp_path / f"proj_{id(object())}"
+    project.mkdir()
+    (project / ".git").mkdir()
+    selection = project / ".agents" / "projection.json"
+    selection.parent.mkdir()
+    selection.write_text(
+        json.dumps(
+            {
+                "version": 2,
+                "agents": [],
+                "opt_ins": list(opt_ins),
+                "selected_tags": list(selected_tags),
+                "detection_rules": detection_rules,
+            }
+        ),
+        encoding="utf-8",
+    )
+    source, projector = _source(tmp_path)
+    monkeypatch.chdir(project)
+    return project, projector
+
+
+def test_v2_detection_rules_path_exists_activates_tag(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """path_exists condition with all operator activates tag."""
+    rules = [
+        {
+            "id": "doc-project",
+            "description": "Documentation project detection",
+            "when": {
+                "all": [
+                    {"type": "path_exists", "pattern": "docs/**/*.md"},
+                    {"type": "path_exists", "pattern": "mkdocs.yml"},
+                ]
+            },
+            "activate_tags": ["documentation"],
+        }
+    ]
+    project, projector = _make_v2_project(tmp_path, monkeypatch, rules)
+    (project / "docs" / "index.md").mkdir(parents=True)
+    (project / "docs" / "index.md").write_text("# Docs\n", encoding="utf-8")
+    (project / "mkdocs.yml").write_text("site_name: Test\n", encoding="utf-8")
+
+    projector.apply()
+
+    target = project / ".agents" / "skills"
+    assert (target / "gascity-docs" / "SKILL.md").is_file()
+    manifest = _manifest(project / ".agents" / "skills")
+    assert "documentation" in manifest["selection"]["selected_tags"]
+
+
+def test_v2_detection_rules_path_exists_any_operator(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """path_exists with any operator activates tag if any pattern matches."""
+    rules = [
+        {
+            "id": "doc-project",
+            "description": "Documentation project detection",
+            "when": {
+                "any": [
+                    {"type": "path_exists", "pattern": "docs/**/*.md"},
+                    {"type": "path_exists", "pattern": "mkdocs.yml"},
+                ]
+            },
+            "activate_tags": ["documentation"],
+        }
+    ]
+    project, projector = _make_v2_project(tmp_path, monkeypatch, rules)
+    (project / "docs" / "index.md").mkdir(parents=True)
+    (project / "docs" / "index.md").write_text("# Docs\n", encoding="utf-8")
+
+    projector.apply()
+
+    target = project / ".agents" / "skills"
+    assert (target / "gascity-docs" / "SKILL.md").is_file()
+
+
+def test_v2_detection_rules_path_exists_all_requires_all(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """path_exists with all requires ALL patterns to match."""
+    rules = [
+        {
+            "id": "docs-project",
+            "description": "Documentation project",
+            "when": {
+                "all": [
+                    {"type": "path_exists", "pattern": "docs/**/*.md"},
+                    {"type": "path_exists", "pattern": "mkdocs.yml"},
+                ]
+            },
+            "activate_tags": ["documentation"],
+        }
+    ]
+    project, projector = _make_v2_project(tmp_path, monkeypatch, rules)
+    # Only create docs/ but not mkdocs.yml
+    (project / "docs" / "index.md").mkdir(parents=True)
+    (project / "docs" / "index.md").write_text("# Docs\n", encoding="utf-8")
+
+    projector.apply()
+
+    target = project / ".agents" / "skills"
+    assert not (target / "gascity-docs" / "SKILL.md").exists()
+
+
+def test_v2_detection_rules_path_missing(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """path_missing condition activates tag when pattern is absent."""
+    rules = [
+        {
+            "id": "no-docs",
+            "description": "Project without docs",
+            "when": {
+                "all": [
+                    {"type": "path_missing", "pattern": "docs/**/*.md"},
+                ]
+            },
+            "activate_tags": ["no-docs"],
+        }
+    ]
+    project, projector = _make_v2_project(tmp_path, monkeypatch, rules)
+    # Don't create docs directory
+
+    projector.apply()
+
+    target = project / ".agents" / "skills"
+    # No skills should be projected since no skills have detect:selected-tag:no-docs
+    # But tag should be in selected_tags
+    manifest = _manifest(project / ".agents" / "skills")
+    assert "no-docs" in manifest["selection"]["selected_tags"]
+
+
+def test_v2_detection_rules_file_contains(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """file_contains condition activates tag when file contains pattern."""
+    rules = [
+        {
+            "id": "flext-usage",
+            "description": "Project uses FLEXT",
+            "when": {
+                "any": [
+                    {
+                        "type": "file_contains",
+                        "pattern": "flext",
+                        "paths": ["**/*.md", "**/*.yaml", "**/*.toml"],
+                    }
+                ]
+            },
+            "activate_tags": ["flext"],
+        }
+    ]
+    project, projector = _make_v2_project(tmp_path, monkeypatch, rules)
+    (project / "docs" / "readme.md").mkdir(parents=True)
+    (project / "docs" / "readme.md").write_text("# Uses flext\n", encoding="utf-8")
+
+    projector.apply()
+
+    target = project / ".agents" / "skills"
+    assert (target / "flext-development" / "SKILL.md").is_file()
+
+
+def test_v2_detection_rules_file_not_contains(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """file_not_contains condition activates tag when file lacks pattern."""
+    rules = [
+        {
+            "id": "no-flext",
+            "description": "No FLEXT references",
+            "when": {
+                "all": [
+                    {
+                        "type": "file_not_contains",
+                        "pattern": "flext",
+                        "paths": ["**/*.md", "**/*.py"],
+                    }
+                ]
+            },
+            "activate_tags": ["flext"],
+        }
+    ]
+    project, projector = _make_v2_project(tmp_path, monkeypatch, rules)
+    (project / "src" / "main.py").mkdir(parents=True)
+    (project / "src" / "main.py").write_text("import requests\n", encoding="utf-8")
+
+    projector.apply()
+
+    target = project / ".agents" / "skills"
+    # Tag activated since no flext found
+    manifest = _manifest(project / ".agents" / "skills")
+    assert "flext" in manifest["selection"]["selected_tags"]
+
+
+def test_v2_detection_rules_when_none(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """when.none activates tag when no conditions match."""
+    rules = [
+        {
+            "id": "no-flext",
+            "description": "No FLEXT files",
+            "when": {
+                "none": [
+                    {"type": "path_exists", "pattern": "flext/**"},
+                    {"type": "path_exists", "pattern": "*.flext"},
+                ]
+            },
+            "activate_tags": ["flext"],
+        }
+    ]
+    project, projector = _make_v2_project(tmp_path, monkeypatch, rules)
+    # No flext files created
+
+    projector.apply()
+
+    manifest = _manifest(project / ".agents" / "skills")
+    assert "flext" in manifest["selection"]["selected_tags"]
+
+
+def test_v2_detection_rules_multiple_rules_same_tag(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Multiple rules can activate the same tag."""
+    rules = [
+        {
+            "id": "flext-pyproject",
+            "description": "FLEXT project via pyproject.toml",
+            "when": {
+                "all": [{"type": "path_exists", "pattern": "pyproject.toml"}]
+            },
+            "activate_tags": ["flext"],
+        },
+        {
+            "id": "flext-req",
+            "description": "FLEXT project via requirements.txt",
+            "when": {
+                "any": [{"type": "path_exists", "pattern": "requirements.txt"}]
+            },
+            "activate_tags": ["flext"],
+        },
+    ]
+    project, projector = _make_v2_project(tmp_path, monkeypatch, rules)
+    (project / "requirements.txt").write_text("flext-core\n", encoding="utf-8")
+
+    projector.apply()
+
+    target = project / ".agents" / "skills"
+    assert (target / "flext-development" / "SKILL.md").is_file()
+
+
+def test_v2_detection_rules_auto_removal_on_mismatch(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Tag removed when condition no longer matches on re-sync."""
+    rules = [
+        {
+            "id": "doc-project",
+            "description": "Documentation project",
+            "when": {
+                "all": [
+                    {"type": "path_exists", "pattern": "docs/**/*.md"},
+                    {"type": "path_exists", "pattern": "mkdocs.yml"},
+                ]
+            },
+            "activate_tags": ["documentation"],
+            "deactivate_on_mismatch": True,
+        }
+    ]
+    project, projector = _make_v2_project(tmp_path, monkeypatch, rules)
+    (project / "docs" / "index.md").mkdir(parents=True)
+    (project / "docs" / "index.md").write_text("# Docs\n", encoding="utf-8")
+    (project / "mkdocs.yml").write_text("site_name: Test\n", encoding="utf-8")
+
+    # First sync - tag active
+    projector.apply()
+    manifest = _manifest(project / ".agents" / "skills")
+    assert "documentation" in manifest["selection"]["selected_tags"]
+    target = project / ".agents" / "skills"
+    assert (target / "gascity-docs" / "SKILL.md").is_file()
+
+    # Remove mkdocs.yml
+    (project / "mkdocs.yml").unlink()
+
+    # Re-sync - tag should be removed
+    projector.apply()
+    manifest = _manifest(project / ".agents" / "skills")
+    assert "documentation" not in manifest["selection"]["selected_tags"]
+    assert not (target / "gascity-docs").exists()
+
+
+def test_v2_detection_rules_without_deactivate_on_mismatch_preserves(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Without deactivate_on_mismatch, tag persists even if condition fails."""
+    rules = [
+        {
+            "id": "doc-project",
+            "description": "Documentation project",
+            "when": {
+                "all": [
+                    {"type": "path_exists", "pattern": "docs/**/*.md"},
+                    {"type": "path_exists", "pattern": "mkdocs.yml"},
+                ]
+            },
+            "activate_tags": ["documentation"],
+            "deactivate_on_mismatch": False,
+        }
+    ]
+    project, projector = _make_v2_project(tmp_path, monkeypatch, rules)
+    (project / "docs" / "index.md").mkdir(parents=True)
+    (project / "docs" / "index.md").write_text("# Docs\n", encoding="utf-8")
+    (project / "mkdocs.yml").write_text("site_name: Test\n", encoding="utf-8")
+
+    projector.apply()
+    manifest = _manifest(project / ".agents" / "skills")
+    assert "documentation" in manifest["selection"]["selected_tags"]
+
+    (project / "mkdocs.yml").unlink()
+
+    projector.apply()
+    manifest = _manifest(project / ".agents" / "skills")
+    # Tag should still be present
+    assert "documentation" in manifest["selection"]["selected_tags"]
+
+
+def test_v2_selection_version_1_no_detection_rules(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Version 1 selection without detection_rules still works."""
+    rules = [
+        {
+            "id": "doc-project",
+            "description": "Documentation project",
+            "when": {
+                "all": [
+                    {"type": "path_exists", "pattern": "docs/**/*.md"},
+                    {"type": "path_exists", "pattern": "mkdocs.yml"},
+                ]
+            },
+            "activate_tags": ["documentation"],
+        }
+    ]
+    project, projector = _make_v2_project(tmp_path, monkeypatch, rules)
+    (project / "docs" / "index.md").mkdir(parents=True)
+    (project / "docs" / "index.md").write_text("# Docs\n", encoding="utf-8")
+    (project / "mkdocs.yml").write_text("site_name: Test\n", encoding="utf-8")
+
+    # Use version 1 selection
+    selection = project / ".agents" / "projection.json"
+    selection.write_text(
+        json.dumps(
+            {
+                "version": 1,
+                "agents": [],
+                "opt_ins": [],
+                "selected_tags": ["documentation"],
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    projector.apply()
+
+    target = project / ".agents" / "skills"
+    assert (target / "gascity-docs" / "SKILL.md").is_file()
+
+
+def test_v2_selection_version_2_with_detection_rules_allowed(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Version 2 with detection_rules allowed."""
+    rules = [
+        {
+            "id": "doc-project",
+            "description": "Documentation project",
+            "when": {
+                "all": [
+                    {"type": "path_exists", "pattern": "docs/**/*.md"},
+                    {"type": "path_exists", "pattern": "mkdocs.yml"},
+                ]
+            },
+            "activate_tags": ["documentation"],
+        }
+    ]
+    project, projector = _make_v2_project(tmp_path, monkeypatch, rules)
+
+    selection = project / ".agents" / "projection.json"
+    selection.write_text(
+        json.dumps(
+            {
+                "version": 2,
+                "agents": [],
+                "opt_ins": [],
+                "selected_tags": [],
+                "detection_rules": [
+                    {
+                        "id": "doc-project",
+                        "when": {
+                            "all": [
+                                {"type": "path_exists", "pattern": "docs/**/*.md"},
+                                {"type": "path_exists", "pattern": "mkdocs.yml"},
+                            ]
+                        },
+                        "activate_tags": ["documentation"],
+                    }
+                ],
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    (project / "docs" / "index.md").mkdir(parents=True)
+    (project / "docs" / "index.md").write_text("# Docs\n", encoding="utf-8")
+    (project / "mkdocs.yml").write_text("site_name: Test\n", encoding="utf-8")
+
+    projector.apply()
+
+    target = project / ".agents" / "skills"
+    assert (target / "gascity-docs" / "SKILL.md").is_file()
+
+
+def test_v2_selection_rejects_unknown_field(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Version 2 rejects unknown fields."""
+    project = tmp_path / "project"
+    project.mkdir()
+    (project / ".git").mkdir()
+    selection = project / ".agents" / "projection.json"
+    selection.parent.mkdir()
+    selection.write_text(
+        json.dumps(
+            {
+                "version": 2,
+                "agents": [],
+                "opt_ins": [],
+                "selected_tags": [],
+                "detection_rules": [],
+                "unknown_field": "value",
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    source, projector = _source(tmp_path)
+    with pytest.raises(ValueError, match="fields must equal"):
+        _ = _project(tmp_path)
+
+
+def test_v2_detection_rules_invalid_condition_type_rejected(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Invalid condition type rejected."""
+    rules = [
+        {
+            "id": "bad-rule",
+            "when": {
+                "all": [
+                    {"type": "invalid_type", "pattern": "foo"}
+                ]
+            },
+            "activate_tags": ["foo"],
+        }
+    ]
+    project, projector = _make_v2_project(tmp_path, monkeypatch, rules)
+    (project / "foo.txt").write_text("foo", encoding="utf-8")
+
+    with pytest.raises(ValueError, match="unknown detection condition type"):
+        projector.apply()
+
+
+def test_v2_detection_rules_empty_when_rejected(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Empty when clause rejected."""
+    rules = [
+        {
+            "id": "bad-rule",
+            "when": {},
+            "activate_tags": ["foo"],
+        }
+    ]
+    project, projector = _make_v2_project(tmp_path, monkeypatch, rules)
+
+    with pytest.raises(ValueError, match="when must be exactly one of all/any/none"):
+        projector.apply()
+
+
+def test_v2_detection_rules_empty_conditions_rejected(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Empty conditions array rejected."""
+    rules = [
+        {
+            "id": "bad-rule",
+            "when": {"all": []},
+            "activate_tags": ["foo"],
+        }
+    ]
+    project, projector = _make_v2_project(tmp_path, monkeypatch, rules)
+
+    with pytest.raises(TypeError, match="when.all must be a non-empty array"):
+        projector.apply()
+
+
+def test_v2_detection_rules_activate_tags_empty_rejected(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Empty activate_tags rejected."""
+    rules = [
+        {
+            "id": "bad-rule",
+            "when": {"all": [{"type": "path_exists", "pattern": "foo.txt"}]},
+            "activate_tags": [],
+        }
+    ]
+    project, projector = _make_v2_project(tmp_path, monkeypatch, rules)
+    (project / "foo.txt").write_text("foo", encoding="utf-8")
+
+    with pytest.raises(TypeError, match="activate_tags must be a non-empty array"):
+        projector.apply()
+
+
+def test_v2_detection_rules_invalid_tag_format_rejected(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Invalid tag format in activate_tags rejected."""
+    rules = [
+        {
+            "id": "bad-rule",
+            "when": {"all": [{"type": "path_exists", "pattern": "foo.txt"}]},
+            "activate_tags": ["Invalid_Tag"],
+        }
+    ]
+    project, projector = _make_v2_project(tmp_path, monkeypatch, rules)
+    (project / "foo.txt").write_text("foo", encoding="utf-8")
+
+    with pytest.raises(ValueError, match="activate_tags tag invalid"):
+        projector.apply()
+
+
+def test_v2_detection_rules_duplicate_ids_rejected(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Duplicate rule IDs rejected."""
+    rules = [
+        {
+            "id": "duplicate",
+            "when": {"all": [{"type": "path_exists", "pattern": "foo.txt"}]},
+            "activate_tags": ["foo"],
+        },
+        {
+            "id": "duplicate",
+            "when": {"all": [{"type": "path_exists", "pattern": "bar.txt"}]},
+            "activate_tags": ["bar"],
+        },
+    ]
+    project, projector = _make_v2_project(tmp_path, monkeypatch, rules)
+
+    with pytest.raises(ValueError, match="duplicate skill name"):
+        projector.apply()
+
+
+def test_v2_detection_rules_tag_activation_merges_with_selected_tags(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Tags from detection_rules merge with selected_tags."""
+    rules = [
+        {
+            "id": "python-project",
+            "when": {"all": [{"type": "path_exists", "pattern": "pyproject.toml"}]},
+            "activate_tags": ["python"],
+        }
+    ]
+    project, projector = _make_v2_project(
+        tmp_path, monkeypatch, rules, selected_tags=("documentation",)
+    )
+    (project / "pyproject.toml").write_text("[project]\nname = 'test'\n", encoding="utf-8")
+
+    projector.apply()
+
+    manifest = _manifest(project / ".agents" / "skills")
+    selected = manifest["selection"]["selected_tags"]
+    assert "python" in selected
+    assert "documentation" in selected
+
+
+def test_v2_detection_rules_unknown_tag_in_selected_tags_rejected(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Unknown tag in selected_tags rejected even with detection_rules."""
+    project = tmp_path / "project"
+    project.mkdir()
+    (project / ".git").mkdir()
+    selection = project / ".agents" / "projection.json"
+    selection.parent.mkdir()
+    selection.write_text(
+        json.dumps(
+            {
+                "version": 2,
+                "agents": [],
+                "opt_ins": [],
+                "selected_tags": ["unknown-tag"],
+                "detection_rules": [],
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    source, projector = _source(tmp_path)
+    with pytest.raises(ValueError, match="unknown selected tag"):
+        _ = _project(tmp_path)
+
+
+# ===== End v2 detection_rules tests =====
