@@ -85,15 +85,7 @@ _TEXT_SUFFIXES = frozenset(
         ".yml",
     }
 )
-_SELECTION_FIELDS_V1 = frozenset({"agents", "opt_ins", "selected_tags", "version"})
-_SELECTION_FIELDS_V2 = frozenset(
-    {"agents", "opt_ins", "selected_tags", "version", "detection_rules"}
-)
-# Detection rule condition types for v2 declarative rules
-_DETECTION_CONDITION_TYPES = frozenset(
-    {"path_exists", "path_missing", "file_contains", "file_not_contains"}
-)
-_DETECTION_WHEN_OPERATORS = frozenset({"all", "any", "none"})
+_SELECTION_FIELDS = frozenset({"agents", "opt_ins", "selected_tags", "version"})
 _MANIFEST_FIELDS = frozenset(
     {
         "context",
@@ -601,7 +593,7 @@ class Projector:
                     f"{rule_label} activate_tags must be a non-empty array of strings"
                 )
             for tag in cast(list[str], raw_tags):
-                if not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", tag):
+                if not re.fullmatch(r"[a-z0-9]+(?:[-:][a-z0-9]+)*", tag):
                     raise ValueError(f"{rule_label} activate_tags tag invalid: {tag}")
                 active.add(tag)
         return active
@@ -614,39 +606,13 @@ class Projector:
             return None
         path = authorization.path
         payload = _mapping(json.loads(authorization.payload), str(path))
-        version = payload.get("version")
-        if version not in (1, 2):
-            raise ValueError(f"projection selection version must be 1 or 2: {path}")
-        if version == 1:
-            _exact(payload, _SELECTION_FIELDS_V1, str(path))
-            selected_tags = _strings(payload["selected_tags"], f"{path}: selected_tags")
-            return ProjectionSelection(
-                _strings(payload["agents"], f"{path}: agents"),
-                _strings(payload["opt_ins"], f"{path}: opt_ins"),
-                selected_tags,
-            )
-        # version 2: allow detection_rules
-        allowed = (
-            _SELECTION_FIELDS_V2
-            if "detection_rules" in payload
-            else _SELECTION_FIELDS_V1
-        )
-        _exact(payload, allowed, str(path))
-        agents = _strings(payload["agents"], f"{path}: agents")
-        opt_ins = _strings(payload["opt_ins"], f"{path}: opt_ins")
-        selected_tags = set(
-            _strings(payload["selected_tags"], f"{path}: selected_tags")
-        )
-        if "detection_rules" in payload:
-            rules = payload["detection_rules"]
-            rule_tags = Projector._detect_active_tags(
-                authorization.project, rules, str(path)
-            )
-            selected_tags.update(rule_tags)
+        _exact(payload, _SELECTION_FIELDS, str(path))
+        if payload["version"] != 1:
+            raise ValueError(f"projection selection version must equal 1: {path}")
         return ProjectionSelection(
-            agents,
-            opt_ins,
-            tuple(sorted(selected_tags)),
+            _strings(payload["agents"], f"{path}: agents"),
+            _strings(payload["opt_ins"], f"{path}: opt_ins"),
+            _strings(payload["selected_tags"], f"{path}: selected_tags"),
         )
 
     @staticmethod
