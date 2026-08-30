@@ -367,7 +367,7 @@ four root clones to depend on another root clone.
 One `agentsctl sync`, invoked from the physical repository directory with a
 per-command isolated `HOME`, preflights and publishes all supported personal and
 project surfaces in one transaction. The isolated home is persistent under the
-dedicated workspace root, never a provider's real home, and never exported to
+dedicated physical checkout, never a provider's real home, and never exported to
 the shell session. `gh` invocations run separately with the operator's normal
 home and authentication context.
 
@@ -380,7 +380,7 @@ first-sync snapshot.
 
 ## Workspace preflight
 
-Resolve each workspace root from the operator's declared workspace contract, and
+Resolve each declared physical checkout from the operator's declared workspace contract, and
 prove the resolved path is physical, is not a symlink, is not `/` or `${HOME}`,
 is not a retired orchestration or provenance tree, owns a real `.git` directory,
 and carries no unattributed object. Stop for operator adjudication when a root
@@ -717,7 +717,7 @@ After the central owner, all 48 members, and all three umbrellas are integrated:
    unpushed, unreachable, or open-PR work;
 9. remove only those proven-empty execution residues through the safe-deletion
    owner; and
-10. recheck that every declared workspace root remains intact and clean at its
+10. recheck that every declared physical checkout remains intact and clean at its
     integration branch.
 
 Deletion is prohibited if any reachability, cleanliness, ownership, path, PR,

@@ -96,7 +96,7 @@ The composed governance owners define closure. Local delta only:
 - Stop landing at `dev`; promote to `main` only when the operator explicitly asks.
 - Finish PRs, tracker items, worktrees, branches, and CI/lint/test failures through the integration lane.
 - During multi-lane work, continuously fast-forward absorb `origin/dev` so landed features stay integrated.
-- Never dismiss any violation as pre-existing or cosmetic; always fix it at its root cause before declaring done.
+- Never dismiss any violation as pre-existing or cosmetic; always fix it at its root cause before declaring done. Production ships only complete versions: `rules/workflow/production-readiness.md` owns adopting every defect in the blast radius, including pre-existing ones.
 - Leave no optional work behind: absorb, correct, and validate through the canonical execution path before closing a tracker item.
 - Fix generated config at config/SSOT or overlays, never by hand-editing generated projections.
 - Regenerate generated config via the project generator; doctor/inspect/compare generated config before restarting and watching logs.

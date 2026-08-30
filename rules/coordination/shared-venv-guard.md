@@ -20,3 +20,5 @@ checkout reconstructs its own physical environment.
   workspace.
 - Missing or stale environment state is red. Repair it through the repository's
   canonical setup surface only when that mutation is authorized.
+
+See also: `strict-execution.md` (rule file) — aggregate parent policy.
