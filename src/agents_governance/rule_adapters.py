@@ -11,6 +11,7 @@ from typing import Never
 
 import yaml
 
+from .approvals import approval_tags
 from .rules import RuleActivation, RuleSpec
 
 _ALL_PATHS_GLOB = "**"
@@ -69,6 +70,15 @@ def _frontmatter(metadata: dict[str, object], body: str) -> str:
         sort_keys=False,
     ).removesuffix("\n")
     return f"---\n{dumped}\n---\n\n{body}"
+
+
+def _approval_note(tags: tuple[str, ...]) -> str:
+    """Append the dated approval provenance as one provider-neutral comment."""
+
+    approval = approval_tags(tags)
+    if not approval:
+        return ""
+    return "\n\n<!-- aihub.approval: " + "; ".join(approval) + " -->"
 
 
 def _artifact(
@@ -135,7 +145,7 @@ def _claude(
     spec: RuleSpec, provider: RuleProvider, context: RuleContext
 ) -> RuleArtifact:
     destination = PurePosixPath(".claude", "rules", _physical_name(spec, ".md"))
-    body = _render_body(spec, ".md")
+    body = _render_body(spec, ".md") + _approval_note(spec.tags)
     content = (
         _frontmatter({"paths": list(spec.globs)}, body)
         if spec.activation is RuleActivation.PATH_SCOPED
@@ -164,7 +174,7 @@ def _cursor(
         provider,
         context,
         PurePosixPath(".cursor", "rules", _physical_name(spec, ".mdc")),
-        _frontmatter(metadata, _render_body(spec, ".mdc")),
+        _frontmatter(metadata, _render_body(spec, ".mdc") + _approval_note(spec.tags)),
     )
 
 
@@ -187,7 +197,10 @@ def _copilot(
         provider,
         context,
         base / _physical_name(spec, ".instructions.md"),
-        _frontmatter({"applyTo": apply_to}, _render_body(spec, ".instructions.md")),
+        _frontmatter(
+            {"applyTo": apply_to},
+            _render_body(spec, ".instructions.md") + _approval_note(spec.tags),
+        ),
     )
 
 

@@ -89,8 +89,15 @@ def core_tags(tags: tuple[str, ...]) -> tuple[str, ...]:
     return tuple(tag for tag in tags if not tag.startswith(_APPROVAL_PREFIXES))
 
 
+def approval_tags(tags: tuple[str, ...]) -> tuple[str, ...]:
+    """Return the approval-namespaced tags, order preserved."""
+
+    return tuple(tag for tag in tags if tag.startswith(_APPROVAL_PREFIXES))
+
+
 __all__ = (
     "APPROVAL_NAMESPACES",
+    "approval_tags",
     "core_tags",
     "resolve_approval_tags",
     "resolve_reference",
