@@ -73,6 +73,25 @@ so state the intent explicitly wherever it applies:
   Preserve evidence only in separately authorized Git/PR/CI surfaces.
 - Static Gas City skills are personal governance and never project projections.
 
+## Runtime projections into a registered rig
+
+A registered rig's checkout is also a projection destination. The pack runtime
+writes skill symlinks and an ownership manifest into that rig's provider trees
+whenever it runs, unprompted and without the operator asking. Their presence on
+disk is runtime state, never operator intent and never source.
+
+The boundary is therefore what Git carries, not what exists on disk:
+
+- Every project-scope destination declared by the projection configuration is
+  excluded from source control, and a guard derives that list from the
+  configuration rather than repeating it by hand.
+- A projection artifact that is tracked, staged, or offered as untracked source
+  is a defect, at its owner.
+- A guard must never assert that a projection destination is absent from disk.
+  That assertion makes a clean checkout go red when an unrelated daemon runs,
+  which is a false failure, and deleting the directory to regain green is a
+  symptom fix the runtime silently undoes.
+
 ## Prohibitions
 
 - No active former-runtime command, role hierarchy, compatibility pack, or fallback.
