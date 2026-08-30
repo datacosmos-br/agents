@@ -17,4 +17,7 @@ Activate after behavior changes and before any pass, resolution, readiness, or
 completion claim. Read the `complete procedure` (skill file), prove
 the smallest real runtime first, and then run the repository-owned gates for the
 affected scope. Later edits invalidate earlier evidence where their scopes
-overlap.
+overlap. Production readiness adopts every defect in the blast
+radius, including pre-existing ones; read
+`rules/workflow/production-readiness.md` (rule file) before any completion
+claim over a red or unresolved base.

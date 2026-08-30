@@ -178,6 +178,11 @@
     "preflight-before-effects": [
       "rule:runtime/preflight-before-effects"
     ],
+    "production-readiness": [
+      "rule:workflow/production-readiness",
+      "skill:sprint-closure",
+      "skill:verification-loop"
+    ],
     "professional-integrity": [
       "rule:ethics/professional-integrity"
     ],

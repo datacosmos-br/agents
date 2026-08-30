@@ -58,6 +58,7 @@ _EXPECTED_GUARANTEES = frozenset(
         "operator-precedence",
         "owner-reuse",
         "preflight-before-effects",
+        "production-readiness",
         "professional-integrity",
         "project-law",
         "pull-request-transparency",
