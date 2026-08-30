@@ -134,3 +134,50 @@ def test_active_governance_contract_has_no_monolith_residue() -> None:
     for path in active:
         body = path.read_text(encoding="utf-8")
         assert not any(term in body for term in forbidden), path.relative_to(root)
+
+
+def test_governance_map_covers_commands_and_keeps_owner_sets_distinct() -> None:
+    """Commands are fully guaranteed; no guarantee shares a single-owner set;
+    every bootstrap rule/skill appears in at least one guarantee."""
+
+    root = Path(__file__).resolve().parents[1]
+    config = load_governance_config(root)
+    _catalog, commands, _rules = _inventory(root)
+
+    mapped: set[str] = set()
+    for owners in config.guarantees.values():
+        for owner in owners:
+            kind, identity = owner.split(":", 1)
+            if kind in ("rule", "skill", "command"):
+                mapped.add(owner)
+
+    command_ids = {f"command:{command.name}" for command in commands}
+    unmapped_commands = command_ids - mapped
+    assert not unmapped_commands, (
+        f"commands absent from guarantee map: {sorted(unmapped_commands)}"
+    )
+
+    single_owner_sets: dict[tuple[str, ...], str] = {}
+    for guarantee, owners in sorted(config.guarantees.items()):
+        if len(owners) != 1:
+            continue
+        key = tuple(owners)
+        previous = single_owner_sets.setdefault(key, guarantee)
+        assert previous == guarantee, (
+            f"guarantees {previous} and {guarantee} share single-owner set {key}"
+        )
+
+    guaranteed_rules = {
+        identity.split(":", 1)[1] for identity in mapped if identity.startswith("rule:")
+    }
+    guaranteed_skills = {
+        identity.split(":", 1)[1]
+        for identity in mapped
+        if identity.startswith("skill:")
+    }
+    for identity in config.bootstrap_rules:
+        assert identity in guaranteed_rules, (
+            f"bootstrap rule not guaranteed: {identity}"
+        )
+    for name in config.bootstrap_skills:
+        assert name in guaranteed_skills, f"bootstrap skill not guaranteed: {name}"

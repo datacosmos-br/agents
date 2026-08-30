@@ -1,0 +1,134 @@
+{
+  "version": 2,
+  "agents": [],
+  "opt_ins": [],
+  "selected_tags": [],
+  "detection_rules": [
+    {
+      "id": "runtime-policies-universal",
+      "when": {
+        "all": [
+          {
+            "type": "path_exists",
+            "pattern": "config/governance.json"
+          }
+        ]
+      },
+      "activate_tags": [
+        "policy:atomic-effects",
+        "policy:causal-subprocess",
+        "policy:fail-loud",
+        "policy:no-fallback",
+        "policy:no-keyring",
+        "policy:preflight-before-effects",
+        "policy:required-environment",
+        "policy:strict-execution",
+        "policy:zero-residue"
+      ]
+    },
+    {
+      "id": "route-python",
+      "when": {
+        "any": [
+          {
+            "type": "path_exists",
+            "pattern": "pyproject.toml"
+          },
+          {
+            "type": "path_exists",
+            "pattern": "requirements.txt"
+          },
+          {
+            "type": "path_exists",
+            "pattern": "setup.py"
+          }
+        ]
+      },
+      "activate_tags": ["route:python"]
+    },
+    {
+      "id": "route-node",
+      "when": {
+        "all": [
+          {
+            "type": "path_exists",
+            "pattern": "package.json"
+          }
+        ]
+      },
+      "activate_tags": ["route:node"]
+    },
+    {
+      "id": "route-go",
+      "when": {
+        "all": [
+          {
+            "type": "path_exists",
+            "pattern": "go.mod"
+          }
+        ]
+      },
+      "activate_tags": ["route:go"]
+    },
+    {
+      "id": "route-rust",
+      "when": {
+        "all": [
+          {
+            "type": "path_exists",
+            "pattern": "Cargo.toml"
+          }
+        ]
+      },
+      "activate_tags": ["route:rust"]
+    },
+    {
+      "id": "route-typescript",
+      "when": {
+        "any": [
+          {
+            "type": "path_exists",
+            "pattern": "tsconfig.json"
+          },
+          {
+            "type": "path_exists",
+            "pattern": "tsconfig.base.json"
+          }
+        ]
+      },
+      "activate_tags": ["route:typescript"]
+    },
+    {
+      "id": "route-docker",
+      "when": {
+        "any": [
+          {
+            "type": "path_exists",
+            "pattern": "Dockerfile"
+          },
+          {
+            "type": "path_exists",
+            "pattern": "docker-compose.yml"
+          }
+        ]
+      },
+      "activate_tags": ["route:docker"]
+    },
+    {
+      "id": "route-gascity",
+      "when": {
+        "any": [
+          {
+            "type": "path_exists",
+            "pattern": "rules/gascity.md"
+          },
+          {
+            "type": "path_exists",
+            "pattern": "rules/coordination/gascity.md"
+          }
+        ]
+      },
+      "activate_tags": ["route:gascity"]
+    }
+  ]
+}

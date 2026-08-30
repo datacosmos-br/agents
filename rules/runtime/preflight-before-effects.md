@@ -57,3 +57,5 @@ disagree about what the conclusion is, and that is an operator adjudication:
 fail with both payloads and the key. Never take the first, the last, the
 newest, or the merge — a rule that silently picks makes the disagreement
 invisible exactly when it matters.
+
+See also: `strict-execution.md` (rule file) — aggregate parent policy.
