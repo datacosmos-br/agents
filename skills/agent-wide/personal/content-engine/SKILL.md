@@ -11,4 +11,4 @@ Build platform-native content without flattening the author's real voice into pl
 
 Use for X posts/threads, LinkedIn posts, short-form video, YouTube explainers, and repurposing articles, podcasts, demos, docs, or notes into public content. `brand-voice` is the canonical voice layer; run it first when voice consistency matters.
 
-Read the complete source-first workflow, platform adaptation rules, repurposing flow, and quality gate in [references/procedure.md](references/procedure.md).
+Read the complete source-first workflow, platform adaptation rules, repurposing flow, and quality gate in `references/procedure.md` (skill file).

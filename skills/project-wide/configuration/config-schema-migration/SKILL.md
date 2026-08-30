@@ -7,7 +7,7 @@ metadata:
 
 # Configuration Schema Migration
 
-Read [the complete procedure](references/procedure.md) before changing a
+Read `the complete procedure` (skill file) before changing a
 configuration schema, serialized representation, environment mapping, loader,
 validator, or generated configuration contract.
 

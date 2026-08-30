@@ -9,5 +9,5 @@ metadata:
 # Dashboard
 
 The dashboard is a web UI compiled into the `gc` binary for monitoring convoys, agents, mail, rigs, sessions, and events in real time. Follow the complete
-[router procedure](references/router-procedure.md) and preserve its owners,
+`router procedure` (skill file) and preserve its owners,
 evidence contracts, failure propagation, and required output standard.

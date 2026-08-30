@@ -1,7 +1,11 @@
-# Governance interconnection analysis — TODO
+# Governance interconnection analysis
 
-> Status: `PLANNED` (plan mode — no source modifications)
-> Plan file: `~/.local/state/poolside/plans/governance-interconnection-gaps-plan-47e5a9b.md`
+> Status: `ANALYSIS` (findings + proposed improvements; not all executed)
+> Scope: `~/agents` repository only. Priorities 11–12 describe `~/ai-hub`
+> behavior and are out of scope here — tracked on the `~/ai-hub` side.
+> Counts below are physical-discovery facts as of the last update; re-derive
+> with `find skills -name SKILL.md`, `find rules -name '*.md'`,
+> `find commands -name '*.md'` before acting.
 
 ## Resumo
 
@@ -14,9 +18,9 @@ ausentes, com propostas de melhoria para execução futura.
 ## Escopo de análise
 
 - **Rules**: 39 arquivos em `rules/` (14 subdirectories + 5 root-level)
-- **Skills**: 82 bundles em `skills/` (6 categories: agent-wide, project-wide, technology, framework, tool, domain)
+- **Skills**: 91 bundles em `skills/` (6 categories: agent-wide, project-wide, technology, framework, tool, domain)
 - **Commands**: 8 files in `commands/` organized by category (implementation, inspection, security, governance)
-- **Guarantees**: 49 mappings em `config/governance.json`
+- **Guarantees**: 50 mappings em `config/governance.json` (verifique com `_EXPECTED_GUARANTEES`)
 - **Bootstrap**: 8 rules, 9 skills
 - **Policy tags**: 9 `policy:*` tags correspondendo a `runtime/*` rules
 
@@ -470,122 +474,6 @@ Extender `tests/test_governance_config.py` com teste que assegura:
 2. Nenhum par de garantias compartilha o mesmo single-owner set
 3. Todo bootstrap skill/rule aparece em pelo menos uma guarantee
 
-### Prioridade 11: Diretizar e automatizar a propagação de skills via `agentsctl sync`
-
-Resolver o conflito arquitetural entre **System A** (ai-hub `ssot-relink`
-`agent_skills()`) e **System B** (`agentsctl sync`). As mudanças:
-
-**a) Remover `agent_skills()` de `adopt_home`**:
-- O `agent_skills()` em `~/ai-hub/src/ai_hub/services/_ssot_relink_parts/driver.py:~110`
-  projeta diretamente de `~/ai-hub/skills/` para `<agent_home>/skills/`.
-- Deve ser **removido** — apenas `project_hub_skills()` deve sincronizar para
-  `~/agents/skills/` (canonical catalog). A projeção para provider directories
-  é exclusividade de `agentsctl sync`.
-
-**b) Adicionar `canonical_skill` field a `config/skills.yaml`**:
-- Cada `SkillEntry` ganha `canonical_skill: <name>` mapeando para o nome
-  canônico em `~/agents/skills/<category>/<slug>/`.
-- Skills sem equivalente need ser criadas em `~/agents/skills/` com o nome
-  canônico como identity.
-
-**c) Trigger automático no `ai-hub-watch` daemon**:
-- `config/services.yaml` → `ai-hub-watch.service` deve observar
-  `~/agents/skills/` + `~/agents/config/governance.json` e disparar
-  `agentsctl sync` (com `cwd` → `~/agents`) após mudanças.
-- Constraint: `agentsctl sync` usa `Path.cwd()` — o daemon deve `cd` antes
-  de invocar.
-
-**d) cliproxy-mgmt coordination**:
-- O CLIProxy (CCS) não é provider em `projections.json`. Skills de routing
-  (como `flext-rules`) são `project-wide` scope e propagadas via `agentsctl sync`
-  para `.claude/skills/` no projeto CCS. Config do CLIProxy (`openai-compatibility`
-  section) é gerenciado por ai-hub `generate-configs`, não por `agentsctl sync`.
-
-**e) Fork coordination**:
-- PRs para `~/agents` vão para `marlon-costa-dc/agents:dev`.
-- `marlon-costa-dc/agents` não tem upstream: não existe sync cross-fork aqui.
-  Onde um fork real existir, o sync é `git merge --no-ff` do seu upstream
-  declarado, sem force-push (per AGENTS.md clause 8).
-
-**Coordenação com planos**:
-- `ai-hub-puro-dev-beads` / `ai-hub-generator-refactor`: mudanças A+B+C no repo `~/ai-hub`
-- `flext-strict`: mudança B no `SkillEntry` model precisa sincronizada com `m.py`
-- `connect-poolside-openai-api`: coordenação D no diretório CLIProxy
-- `gt-up-vm-explosion`: `agentsctl sync` trigger não afeta Gas Town (suspended)
-- `gt-up-vm-explosion`: `agentsctl sync` trigger não afeta Gas Town (suspended)
-- `workspace-consolidation`: verificado — paths já consolidados
-
-### Prioridade 12: Auto-learning loop contínuo — instrumentar `agentsctl` via ai-hub
-
-O `~/agents` já tem duas skills de auto-learning determinístico:
-
-**1. `operator-correction-learning`** (`skills/agent-wide/governance/operator-correction-learning/SKILL.md`):
-- Personal, `updates:manual`, `usage:router`
-- Carrega ALL 7 policy tags (atomic-effects, causal-subprocess, fail-loud,
-  no-fallback, preflight-before-effects, strict-execution, zero-residue)
-- `evals/operator-correction-learning/eval.yaml`: grader força agente a:
-  find causal owner, prove producer contract, update canonical owners (not
-  projections), remove semantic opposites, add regression scenario, repeat
-  contradiction search, keep suspended runtime untouched
-
-**2. `doc-drift`** (`skills/project-wide/documentation/doc-drift/SKILL.md`):
-- Project-wide, `updates:manual`, `usage:on-demand`
-- Audita documentation vs code/config/upstream source
-- `evals/doc-drift/eval.yaml`: grader força agente a: compare claims with
-  canonical owner, identify extinct contracts, propose corrections, never
-  invoke suspended runtime, zero residue
-
-**Gaps:**
-- Ambas têm `updates:manual` — NÃO são gatilhadas automaticamente no gate
-  `agentsctl check`/`agentsctl sync`
-- Nenhum feedback automático: eval failures → rule/skill/command improvements
-- `doc-drift` não valida **plan document ↔ code alignment** (o plano de
-  governança pode divergir do código)
-- `agentsctl` não é instrumentado pelo ai-hub (não há systemd service que
-  dispare sync após mudanças)
-
-**Propostas:**
-- **a)** Gatilhar `operator-correction-learning` + `doc-drift` como **pre-gate**
-  do `agentsctl check` — evals devem rodar antes de sync convergir
-- **b)** Adicionar validação de **plan ↔ code alignment** ao `doc-drift` eval:
-  comparar claim do plano (`governance-interconnection-gaps-plan.md`) com
-  canonical owners (`config/governance.json`, `rules/`, `skills/`)
-- **c)** Instrumentar `agentsctl` via ai-hub systemd:
-  `ai-hub-watch.service` observa `~/agents/skills/`, `rules/`, `config/` e
-  dispara `cd ~/agents && agentsctl check && agentsctl sync` após mudanças
-  - `agentsctl` é instalado em `~/.local/bin/agentsctl` (symlink → uv-managed venv)
-  - Constraint: `agentsctl sync` usa `Path.cwd()` — daemon deve `cd` antes
-- **d)** Adicionar meta-rule "continuous alignment" a `rules/architecture/engineering-core.md`:
-  > *The plan document, skills/rules/commands, and execution must never diverge.
-  > After each step, if the plan doesn't match the code, update the plan first.
-  > If the code doesn't match the plan, fix the code. `doc-drift` audits
-  > plan↔code alignment at every phase boundary. Fixed point must converge.*
-
-**Coordenação com planos:**
-- `flext-strict`: o `doc-drift` plan↔code check exige modelos Pydantic para
-  validar estrutura de `governance.json` — sincronizar com migração `m.py`
-- `aihub-ajuste-execution-rev2`: o systemd trigger integra com o
-  `ai-hub-watch` incremental CRG existente
-- `gt-up-vm-explosion`: o `operator-correction-learning` fixture já trata
-  `mode: explicitly_suspended` — o capability-selection rule (Step 11) deve
-  vir como um cenário OCL novo
-- `connect-poolside-openai-api`: plan↔code check deve validar que CLIProxy
-  config não vaza para `~/agents` skills
-
-### Rule: Continuous Alignment (meta-rule)
-
-Esta regra deve ser adicionada a `rules/architecture/engineering-core.md` §"Type correction rule":
-
-> **Continuous alignment**: The plan document, the skills/rules/commands, and
-> the execution must never diverge. At each fixed-point check:
-> 1. `doc-drift` compares plan claims with canonical owners
-> 2. `operator-correction-learning` reconciles corrections into canonical owners
-> 3. `agentsctl check` converges the runtime projection
-> 4. `agentsctl sync` projects to provider directories
-> If plan ≠ code, update the plan first. If code ≠ plan, fix the code.
-> If both are wrong, find the root cause in the canonical owner and correct it there.
-> Only then, with zero residue and converged fixed point, is the phase DONE.
-
 ## Conformidade com regras existentes
 
 - `rules/architecture/governance-artifact-composition.md` §"Type correction rule":
@@ -628,9 +516,6 @@ Esta regra deve ser adicionada a `rules/architecture/engineering-core.md` §"Typ
 | 8 | **Prioridade 5**: Route-tag frontmatter | Normalizar após repositionamento |
 | 9 | **Prioridade 9**: Documentos órfãos → guarantees | |
 | 10 | **Prioridade 10**: Tests de cobertura | Validar tudo no final |
-| 11 | **Prioridade 11**: Diretorizar + automatizar skill propagation | Resolver conflito ssot_relink vs agentsctl sync; coordenar cliproxy-mgmt, fork management, trigger automático |
-| 12 | **Prioridade 12**: Auto-learning loop contínuo | Gatilhar `operator-correction-learning` + `doc-drift` como pre-gate; plan↔code alignment; instrumentar `agentsctl` via ai-hub systemd |
-| 13 | **Rule: Continuous Alignment** | Meta-rule: plan↔code+execution never diverge; `doc-drift` + `operator-correction-learning` validam em cada phase boundary |
 
 ## Alinhamento com outros planos existentes
 
@@ -719,7 +604,7 @@ interconexão de governança deve se coordenar.
 | 3 | `ai-hub-puro-dev-beads` | `~/ai-hub` | Pure package refactor | ✅ Merged (per integrated-stabilization) | **Step 7-8**: Gas City guarantee. O `ssot_relink` projeta skills para `~/agents/skills/` — precisa validar que as skills projetadas resolvem guarantees. |
 | 4 | `aihub-ajuste-execution-rev2` | `~/ai-hub` | Execution fix (SyntaxError, model routing) | ✅ Completed root-cause fixes | **Step 1**: runtime rules → guarantees. A crítica "types without wiring" paralela ao gap de orphaned guarantees. |
 | 5 | `ai-hub-generator-refactor` | `~/ai-hub` | Merge resilience motor + pure package | ✅ Integrated (Phase 3) | **Bead claim/close**: usar `bd claim` antes de editar skills em `~/agents`; `bd close` após validação. |
-| 6 | `integrated-stabilization-plan` | multi-repo | Master coordination | ✅ Active | **Phase 4** = este plano. Implementar Steps 1-11 em `precoce/` modules. Coordenar fases. |
+| 6 | `integrated-stabilization-plan` | multi-repo | Master coordination | ✅ Active | **Phase 4** = este plano. Implementar Steps 1-10 em `precoce/` modules. Coordenar fases. |
 | 7 | `workspace-consolidation-integrated-plan` | multi-repo | Workspace paths | ✅ Done | `~/` paths consolidados. `~/agents` é `~/agents`. |
 | 8 | `gt-up-vm-explosion` | `~/gastown` | Daemon pressure gating | ✅ Code fixes proposed | **Step 11**: capability-selection rule (Phase 1). O bug de `isAgentSession` confirma necessidade do capability-selection rule. Gas Town runtime SUSPENSO — não executar, apenas planejar. |
 | 9 | `recover-fix-gt-bd-doctor-issues` | `~/gastown` | Fix gt/bd doctors | ❌ Cancelled | N/A — GT suspensa. |
@@ -756,21 +641,16 @@ interconexão de governança deve se coordenar.
 
 5. **Bead claim + branch finalization**:
    - `ai-hub-generator-refactor` e `assume-sweep-dedicated-agent` usam `bd claim`/`bd close` para gestão de trabalho
-   - **Coordenação**: Antes de implementar Steps 1-11, claimar um bead no `~/agents` repo. Após cada step + validação (`agentsctl check` green), atualizar o bead. Ao final, `bd close` com evidence.
+    - **Coordenação**: Antes de implementar Steps 1-10, claimar um bead no `~/agents` repo. Após cada step + validação (`agentsctl check` green), atualizar o bead. Ao final, `bd close` com evidence.
 
 6. **Fork management**:
    - `workspace-consolidation` lista 9 workspaces com remotes: `marlon-costa-dc/*`, `datacosmos-br/*`, `flext-sh/*`
    - O `~/agents` repo é `marlon-costa-dc/agents` e não é fork (`.parent` = null)
-   - **Coordenação**: PRs para `~/agents` vão para `marlon-costa-dc/agents` → `main`. Não para `datacosmos-br/`.
+    - **Coordenação**: PRs para `~/agents` vão para `marlon-costa-dc/agents` → `main`. Não para `datacosmos-br/`.
 
-#### Propostas de melhoria adicionais (coordenadas com outros planos)
-
-| Proposta | Passo do plano | Integra com |
-|---|---|---|
-| Unificar `ssot_relink.agent_skills()` em `agentsctl sync` | **Step 13** (nova) | `ai-hub-puro-dev-beads`, `ai-hub-generator-refactor` |
-| Adicionar `canonical_skill` field em `config/skills.yaml` | **Step 13** (nova) | `flext-strict` (Pydantic model change) |
-| Trigger automático `agentsctl sync` no `ai-hub-watch` daemon | **Step 13** (nova) | `aihub-ajuste-execution-rev2` (model pipeline daemon) |
-| Projeção direta de skills para `~/.ccs/skills/` | **Step 13** (nova) | `connect-poolside-openai-api` |
-| Bead claim/close antes/depois de cada step | **Step 14** (nova) | `ai-hub-generator-refactor`, `assume-sweep-dedicated-agent` |
-| Gas City orchestration: capability-selection rule | **Step 11** (existente) | `gt-up-vm-explosion` |
-| Path remediation: `~/ai-hub` → `~/ai-hub` | Verificado | `workspace-consolidation` |
+> **Escopo**: Os itens de coordenação cross-repo que dependem de `~/ai-hub`
+> (`ssot_relink`, `canonical_skill` em `config/skills.yaml`, triggers no
+> `ai-hub-watch` daemon, projeção `~/.ccs`) foram removidos deste documento
+> por pertencerem ao repositório `~/ai-hub`, não a `~/agents`. Acompanhe-os no
+> lado `~/ai-hub`. Os Steps 1–10 acima cobrem todo o trabalho in-scope de
+> `~/agents`.

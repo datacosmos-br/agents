@@ -39,7 +39,6 @@ def test_repository_governance_resolves_every_guarantee_owner() -> None:
     assert "operator-precedence" in config.guarantees
     assert "tracker-evidence" in config.guarantees
     assert "architecture/engineering-core" in config.bootstrap_rules
-    assert "coordination/fix-forward-collaboration" in config.bootstrap_rules
     assert "workflow/beads-traceability" not in config.bootstrap_rules
     assert "fix-forward-collaboration" in config.bootstrap_skills
 

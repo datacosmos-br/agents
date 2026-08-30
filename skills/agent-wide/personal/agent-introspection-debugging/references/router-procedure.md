@@ -75,7 +75,7 @@ Diagnosis questions:
 - what is the smallest reversible action that would validate the diagnosis?
 
 For runaway shell, interpreter, loader, or agent processes, read the
-[process-forensics procedure](../references/process-forensics.md) before containment.
+`process-forensics procedure` (skill file) before containment.
 It owns producer attribution, persistence discovery, and narrow process/file
 boundaries.
 

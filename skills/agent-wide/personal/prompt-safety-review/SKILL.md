@@ -7,6 +7,4 @@ metadata:
 
 # Prompt Safety Review
 
-Activate for a requested security, injection, privacy, or governed-execution review of a prompt. Do not activate for a copy edit whose approved semantics must remain unchanged. Follow the complete [router procedure](references/router-procedure.md) and preserve its owners, evidence contracts, failure propagation, and required output standard. Follow the complete [router procedure](references/router-procedure.md) and preserve its owners, evidence contracts, failure propagation, and required output standard. Follow the complete
-[router procedure](references/router-procedure.md) and preserve its owners,
-evidence contracts, failure propagation, and required output standard.
+Activate for a requested security, injection, privacy, or governed-execution review of a prompt. Do not activate for a copy edit whose approved semantics must remain unchanged. Follow the complete `router procedure` (project file) and preserve its owners, evidence contracts, failure propagation, and required output standard.

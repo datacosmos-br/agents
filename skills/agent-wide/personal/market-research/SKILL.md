@@ -7,6 +7,4 @@ metadata:
 
 # Market Research
 
-Produce research that supports decisions, not research theater. Follow the complete [router procedure](references/router-procedure.md) and preserve its owners, evidence contracts, failure propagation, and required output standard. Follow the complete [router procedure](references/router-procedure.md) and preserve its owners, evidence contracts, failure propagation, and required output standard. Follow the complete
-[router procedure](references/router-procedure.md) and preserve its owners,
-evidence contracts, failure propagation, and required output standard.
+Produce research that supports decisions, not research theater. Follow the complete `router procedure` (project file) and preserve its owners, evidence contracts, failure propagation, and required output standard.

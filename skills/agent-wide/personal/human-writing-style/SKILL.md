@@ -7,6 +7,4 @@ metadata:
 
 # Human Writing Style
 
-Make every piece of generated text read like it was written by a real person, not a language model. This skill encodes the patterns that betray AI authorship and provides concrete rules for avoiding them. Follow the complete [router procedure](references/router-procedure.md) and preserve its owners, evidence contracts, failure propagation, and required output standard. Follow the complete [router procedure](references/router-procedure.md) and preserve its owners, evidence contracts, failure propagation, and required output standard. Follow the complete
-[router procedure](references/router-procedure.md) and preserve its owners,
-evidence contracts, failure propagation, and required output standard.
+Make every piece of generated text read like it was written by a real person, not a language model. This skill encodes the patterns that betray AI authorship and provides concrete rules for avoiding them. Follow the complete `router procedure` (project file) and preserve its owners, evidence contracts, failure propagation, and required output standard.

@@ -10,7 +10,7 @@ metadata:
 
 Compress supplied material without changing facts, attribution, uncertainty, or
 decision context. Select the audience-specific structure from
-[approach templates](references/approach-templates.md).
+`approach templates` (skill file).
 
 ## Contract
 

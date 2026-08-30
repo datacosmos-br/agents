@@ -4,14 +4,19 @@ import inspect
 import json
 import subprocess
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 import pytest
 import yaml
 
 from agents_governance.agent_profiles import audit_agent_profiles
 from agents_governance.catalog import Catalog
-from agents_governance.projection import ProjectionDriftError, Projector
+from agents_governance.projection import (
+    _SELECTION_FIELDS_V1,
+    _SELECTION_FIELDS_V2,
+    ProjectionDriftError,
+    Projector,
+)
 from agents_governance.projection_config import load_projection_config
 
 _PROVIDERS = (
@@ -1202,3 +1207,391 @@ def test_git_metadata_symlink_is_rejected(
 
     with pytest.raises(ValueError, match="Git metadata symlink forbidden"):
         projector.apply()
+
+
+# ===== v2 detection_rules tests =====
+
+
+def _rule_activate_tags(rules: list[dict[str, object]]) -> set[str]:
+    tags: set[str] = set()
+    for rule in rules:
+        tags.update(cast(list[str], rule["activate_tags"]))
+    return tags
+
+
+def _conditional_skill(root: Path, tag: str) -> None:
+    category = "domain" if tag == "documentation" else "framework"
+    tags = tuple(
+        sorted(
+            (
+                "activation:detected",
+                f"detect:selected-tag:{tag}",
+                f"{category}:{tag}",
+                "provenance:agents-owned",
+                "route:project",
+                "updates:manual",
+                "usage:on-demand",
+            )
+        )
+    )
+    _skill(
+        root,
+        f"{tag}-skill",
+        category=category,
+        tags=tags,
+    )
+
+
+def _make_v2_project(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    detection_rules: list[dict[str, object]],
+    *,
+    selected_tags: tuple[str, ...] = (),
+    project_name: str = "project",
+) -> tuple[Path, Projector]:
+    project = tmp_path / f"{project_name}-project"
+    project.mkdir()
+    (project / ".git").mkdir()
+    selection = project / ".agents" / "projection.json"
+    selection.parent.mkdir()
+    selection.write_text(
+        json.dumps(
+            {
+                "version": 2,
+                "agents": [],
+                "opt_ins": [],
+                "selected_tags": list(selected_tags),
+                "detection_rules": detection_rules,
+            }
+        ),
+        encoding="utf-8",
+    )
+    source = tmp_path / f"{project_name}-source"
+    source.mkdir()
+    _skill(source, "project-guidance")
+    for tag in sorted({*selected_tags, *_rule_activate_tags(detection_rules)}):
+        _conditional_skill(source, tag)
+    _config(source, {("codex", "skills"): ".agents/skills"})
+    projector = Projector(Catalog(source), load_projection_config(source), (), (), ())
+    monkeypatch.chdir(project)
+    return project, projector
+
+
+def _write_doc(project: Path, name: str = "index.md") -> None:
+    docs = project / "docs"
+    docs.mkdir(exist_ok=True)
+    (docs / name).write_text("# Docs\n", encoding="utf-8")
+
+
+def test_v2_detection_rules_path_exists_activates_tag(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    rules: list[dict[str, object]] = [
+        {
+            "id": "doc-project",
+            "when": {
+                "all": [
+                    {"type": "path_exists", "pattern": "docs/*.md"},
+                    {"type": "path_exists", "pattern": "mkdocs.yml"},
+                ]
+            },
+            "activate_tags": ["documentation"],
+        }
+    ]
+    project, projector = _make_v2_project(tmp_path, monkeypatch, rules)
+    _write_doc(project)
+    (project / "mkdocs.yml").write_text("site_name: Test\n", encoding="utf-8")
+
+    projector.apply()
+
+    target = project / ".agents" / "skills"
+    assert (target / "documentation-skill" / "SKILL.md").is_file()
+    assert "documentation" in cast(
+        list[str],
+        cast(dict[str, object], _manifest(target)["selection"])["selected_tags"],
+    )
+
+
+def test_v2_detection_rules_path_exists_any_operator(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    rules: list[dict[str, object]] = [
+        {
+            "id": "doc-project",
+            "when": {
+                "any": [
+                    {"type": "path_exists", "pattern": "docs/*.md"},
+                    {"type": "path_exists", "pattern": "mkdocs.yml"},
+                ]
+            },
+            "activate_tags": ["documentation"],
+        }
+    ]
+    project, projector = _make_v2_project(tmp_path, monkeypatch, rules)
+    _write_doc(project)
+
+    projector.apply()
+
+    assert (project / ".agents" / "skills" / "documentation-skill").is_dir()
+
+
+def test_v2_detection_rules_path_exists_all_requires_all(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    rules: list[dict[str, object]] = [
+        {
+            "id": "doc-project",
+            "when": {
+                "all": [
+                    {"type": "path_exists", "pattern": "docs/*.md"},
+                    {"type": "path_exists", "pattern": "mkdocs.yml"},
+                ]
+            },
+            "activate_tags": ["documentation"],
+        }
+    ]
+    project, projector = _make_v2_project(tmp_path, monkeypatch, rules)
+    _write_doc(project)
+
+    projector.apply()
+
+    assert not (project / ".agents" / "skills" / "documentation-skill").exists()
+
+
+def test_v2_detection_rules_path_missing(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    rules: list[dict[str, object]] = [
+        {
+            "id": "no-docs",
+            "when": {"all": [{"type": "path_missing", "pattern": "docs/*.md"}]},
+            "activate_tags": ["no-docs"],
+        }
+    ]
+    project, projector = _make_v2_project(tmp_path, monkeypatch, rules)
+
+    projector.apply()
+
+    selected = cast(
+        list[str],
+        cast(dict[str, object], _manifest(project / ".agents" / "skills")["selection"])[
+            "selected_tags"
+        ],
+    )
+    assert "no-docs" in selected
+
+
+def test_v2_detection_rules_file_contains(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    rules: list[dict[str, object]] = [
+        {
+            "id": "flext-usage",
+            "when": {
+                "any": [
+                    {
+                        "type": "file_contains",
+                        "pattern": "flext",
+                        "paths": ["docs/*.md", "pyproject.toml"],
+                    }
+                ]
+            },
+            "activate_tags": ["flext"],
+        }
+    ]
+    project, projector = _make_v2_project(tmp_path, monkeypatch, rules)
+    _write_doc(project, "readme.md")
+    (project / "docs" / "readme.md").write_text("# Uses flext\n", encoding="utf-8")
+
+    projector.apply()
+
+    assert (project / ".agents" / "skills" / "flext-skill").is_dir()
+
+
+def test_v2_detection_rules_file_not_contains(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    rules: list[dict[str, object]] = [
+        {
+            "id": "no-flext",
+            "when": {
+                "all": [
+                    {
+                        "type": "file_not_contains",
+                        "pattern": "flext",
+                        "paths": ["src/*.py"],
+                    }
+                ]
+            },
+            "activate_tags": ["no-flext"],
+        }
+    ]
+    project, projector = _make_v2_project(tmp_path, monkeypatch, rules)
+    source = project / "src"
+    source.mkdir()
+    (source / "main.py").write_text("import requests\n", encoding="utf-8")
+
+    projector.apply()
+
+    selected = cast(
+        list[str],
+        cast(dict[str, object], _manifest(project / ".agents" / "skills")["selection"])[
+            "selected_tags"
+        ],
+    )
+    assert "no-flext" in selected
+
+
+def test_v2_detection_rules_when_none(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    rules: list[dict[str, object]] = [
+        {
+            "id": "always",
+            "when": {"none": [{"type": "path_exists", "pattern": "docs/absent.md"}]},
+            "activate_tags": ["always-active"],
+        }
+    ]
+    project, projector = _make_v2_project(tmp_path, monkeypatch, rules)
+
+    projector.apply()
+
+    assert (project / ".agents" / "skills" / "always-active-skill").is_dir()
+
+
+def test_v2_detection_rules_external_symlink_is_not_evidence(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    outside = tmp_path / "outside-source"
+    outside.mkdir()
+    (outside / "index.md").write_text("# Docs\n", encoding="utf-8")
+    rules: list[dict[str, object]] = [
+        {
+            "id": "doc-project",
+            "when": {"all": [{"type": "path_exists", "pattern": "link/*.md"}]},
+            "activate_tags": ["documentation"],
+        }
+    ]
+    project, projector = _make_v2_project(tmp_path, monkeypatch, rules)
+    (project / "link").symlink_to(outside, target_is_directory=True)
+
+    projector.apply()
+
+    assert not (project / ".agents" / "skills" / "documentation-skill").exists()
+
+
+def test_v2_detection_rules_reject_unbounded_file_scope(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    rules: list[dict[str, object]] = [
+        {
+            "id": "unbounded",
+            "when": {
+                "all": [
+                    {
+                        "type": "file_contains",
+                        "pattern": "marker",
+                        "paths": ["**/*.md"],
+                    }
+                ]
+            },
+            "activate_tags": ["unbounded"],
+        }
+    ]
+    _, projector = _make_v2_project(tmp_path, monkeypatch, rules)
+
+    with pytest.raises(ValueError, match="bounded relative glob"):
+        projector.apply()
+
+
+def test_v2_detection_rules_enforces_file_quota(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr("agents_governance.projection._DETECTION_MAX_FILES", 1)
+    rules: list[dict[str, object]] = [
+        {
+            "id": "quota",
+            "when": {
+                "all": [
+                    {
+                        "type": "file_contains",
+                        "pattern": "marker",
+                        "paths": ["docs/*.md"],
+                    }
+                ]
+            },
+            "activate_tags": ["quota"],
+        }
+    ]
+    project, projector = _make_v2_project(tmp_path, monkeypatch, rules)
+    _write_doc(project, "one.md")
+    _write_doc(project, "two.md")
+
+    with pytest.raises(ValueError, match="exceeded 1 files"):
+        projector.apply()
+
+
+def test_v2_detection_rules_reject_duplicate_rule_ids(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    rules: list[dict[str, object]] = [
+        {
+            "id": "duplicate",
+            "when": {"all": [{"type": "path_exists", "pattern": "one.txt"}]},
+            "activate_tags": ["one"],
+        },
+        {
+            "id": "duplicate",
+            "when": {"all": [{"type": "path_exists", "pattern": "two.txt"}]},
+            "activate_tags": ["two"],
+        },
+    ]
+    _, projector = _make_v2_project(tmp_path, monkeypatch, rules)
+
+    with pytest.raises(ValueError, match="duplicates detection rule id duplicate"):
+        projector.apply()
+
+
+def test_v2_detection_rules_merge_with_selected_tags(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    rules: list[dict[str, object]] = [
+        {
+            "id": "python-project",
+            "when": {"all": [{"type": "path_exists", "pattern": "pyproject.toml"}]},
+            "activate_tags": ["python"],
+        }
+    ]
+    project, projector = _make_v2_project(
+        tmp_path,
+        monkeypatch,
+        rules,
+        selected_tags=("documentation",),
+    )
+    (project / "pyproject.toml").write_text(
+        "[project]\nname = 'test'\n", encoding="utf-8"
+    )
+
+    projector.apply()
+
+    selected = cast(
+        list[str],
+        cast(dict[str, object], _manifest(project / ".agents" / "skills")["selection"])[
+            "selected_tags"
+        ],
+    )
+    assert {"python", "documentation"} <= set(selected)
+
+
+def test_v2_selection_field_contracts_are_exact() -> None:
+    assert set(_SELECTION_FIELDS_V1) == {
+        "agents",
+        "opt_ins",
+        "selected_tags",
+        "version",
+    }
+    assert set(_SELECTION_FIELDS_V2) == set(_SELECTION_FIELDS_V1) | {"detection_rules"}
+
+
+# ===== End v2 detection_rules tests =====

@@ -4,15 +4,28 @@ Use [scripts/pr_triage.py](../scripts/pr_triage.py) for the mechanical loop; the
 judgment stays here.
 
 ```sh
-# inventory: head/base, mergeable, failing/pending checks, unresolved threads
+# inventory: head/base, mergeability, checks_verdict, blocking/pending checks,
+# unresolved threads.
+# checks_verdict is the field to read: an empty check set reports
+# not_determined, never passed, so a PR whose CI has not started yet cannot be
+# mistaken for one whose CI succeeded.
 python3 skills/tool/pr-sheriff/scripts/pr_triage.py locate <owner/repo> <pr>
 
-# integration-lane queue across repositories
-python3 skills/tool/pr-sheriff/scripts/pr_triage.py sweep <owner/repo>... --base dev,develop,0.12.0-dev
+# integration-lane queue across repositories; read each repository's declared
+# integration branch from its own law — a branch name written here would be
+# wrong for the next repository swept
+python3 skills/tool/pr-sheriff/scripts/pr_triage.py sweep <owner/repo>... --base <declared-integration-branch>...
 
 # answer one thread with the evidence file, then resolve it
 python3 skills/tool/pr-sheriff/scripts/pr_triage.py settle <thread-id> --body-file evidence.md
 ```
+
+REST inventories are paginated completely. A completed check is blocking when
+its conclusion is anything other than `success`, `neutral`, or `skipped`;
+therefore cancelled, timed-out, stale, `action_required`, and startup failures
+cannot disappear from the inventory. A check whose status is not `COMPLETED`
+remains pending. `mergeability` is explicitly `mergeable`, `conflicting`, or
+`unknown`; GitHub's pending `null` is never coerced to `false`.
 
 Triage decision rules, each applied per finding before any reply:
 

@@ -20,7 +20,7 @@ nenhum desses erros pode virar um finding, warning, skip ou resultado neutro.
 
 **Decisão**: corrigido no owner do workflow e revalidado no SHA publicado
 
-**Evidência**: em `~/.agents`, Semgrep 1.174.0 executado pelo alvo
+**Evidência**: em `~/agents`, Semgrep 1.174.0 executado pelo alvo
 `make security` retornou código 0, 607 regras, 1001 alvos e zero findings; o
 inventário `rg '^\s*-?\s*uses:' .github/workflows` mostra `actions/checkout`
 fixado por SHA completo.
@@ -29,7 +29,7 @@ fixado por SHA completo.
 
 **Decisão**: corrigido no owner do workflow e revalidado no SHA publicado
 
-**Evidência**: em `~/.agents`, Semgrep 1.174.0 executado pelo alvo
+**Evidência**: em `~/agents`, Semgrep 1.174.0 executado pelo alvo
 `make security` retornou código 0, 607 regras, 1001 alvos e zero findings; o
 inventário `rg '^\s*-?\s*uses:' .github/workflows` mostra `astral-sh/setup-uv`
 fixado por SHA completo.
@@ -38,7 +38,7 @@ fixado por SHA completo.
 
 **Decisão**: corrigido por remoção do consumidor e revalidado no SHA publicado
 
-**Evidência**: em `~/.agents`, Semgrep 1.174.0 executado pelo alvo
+**Evidência**: em `~/agents`, Semgrep 1.174.0 executado pelo alvo
 `make security` retornou código 0, 607 regras, 1001 alvos e zero findings; o
 inventário completo de `uses:` em `.github/workflows` não contém
 `actions/upload-artifact` e contém somente referências por SHA completo.

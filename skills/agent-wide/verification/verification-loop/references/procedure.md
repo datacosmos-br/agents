@@ -82,6 +82,25 @@ result from both, on a case where they actually differ. A gate that turns green
 because the affected inputs were too small to expose the mechanism proves
 nothing about it.
 
+## An empty check set is not a green CI
+
+A check rollup that lists nothing is undetermined, not passing. The two states
+are structurally identical to any filter that counts failures: zero failing and
+zero pending is what both "every check passed" and "no check has been created
+yet" look like. Reading the second as the first merges unreviewed code, and the
+mistake is invisible afterwards because the checks arrive and pass a minute
+later.
+
+Require an affirmative token per check before calling CI green: a non-empty
+check set in which every entry reports both that it finished and that it
+finished successfully. Anything else — an empty set, a check still running, a
+check whose conclusion the API has not written yet — is red for the purpose of
+merging, and the wait continues.
+
+Re-read the head commit of the branch on every poll. A push during the wait
+retargets CI at a new commit, and checks that passed against the previous one
+say nothing about what is about to merge.
+
 ## Report
 
 For every attempted stage record the exact command, working directory, exit
