@@ -1155,7 +1155,7 @@ def test_borrowed_contained_submodule_git_directory_is_rejected(
         projector.project_root()
 
 
-def test_git_worktree_is_rejected(
+def test_git_worktree_is_a_valid_project_root(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     _, projector = _source(tmp_path)
@@ -1163,9 +1163,14 @@ def test_git_worktree_is_rejected(
     worktree = tmp_path / "worktree"
     _git(repository, "worktree", "add", "--detach", str(worktree))
     monkeypatch.chdir(worktree)
+    resolved = worktree.resolve(strict=True)
 
-    with pytest.raises(ValueError, match="Git worktree is forbidden"):
-        projector.apply()
+    if resolved == Path("/tmp") or Path("/tmp") in resolved.parents:
+        with pytest.raises(ValueError, match="repositories under /tmp are prohibited"):
+            projector.project_root()
+        return
+
+    assert projector.project_root() == resolved
 
 
 def test_external_git_directory_is_rejected(
