@@ -3,6 +3,7 @@
   "bootstrap": {
     "rules": [
       "architecture/engineering-core",
+      "coordination/beads-verification",
       "coordination/operator-precedence",
       "ethics/professional-integrity",
       "runtime/strict-execution",
