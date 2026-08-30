@@ -37,17 +37,18 @@
 
 ## Lock ownership inside a workspace
 
-A member of a declared workspace does not own its own lock while the umbrella is
-present. The workspace root's member list makes every resolution a workspace
-resolution, so locking from inside a member updates the root lock, not the
-member's. That is the owner's correct behaviour, not a defect, and no flag
-suppresses it.
+A workspace is a Git repository that contains `.gitmodules`. A standalone
+project is a Git repository that does not. There is no third project type.
 
-A member's own lock is therefore resolved only where the umbrella is absent —
-its standalone checkout, which is what CI builds. Never conclude that an upgrade
-verb is broken because a member pin did not move: prove which lock the run wrote
-before treating the pin as stale, and prove the installed revision before
-treating a generated artifact as its output.
+While the workspace checkout is present, resolution is the workspace's: locking
+from a nested path updates the workspace lock, not a nested project's lock.
+That is the owner's correct behaviour, not a defect, and no flag suppresses it.
+
+A nested project's own lock is resolved only in its standalone checkout, which
+is what CI builds. Never conclude that an upgrade verb is broken because a
+nested pin did not move: prove which lock the run wrote before treating the pin
+as stale, and prove the installed revision before treating a generated artifact
+as its output.
 
 Never place a manual copy in a user bin directory, invent a tool alias, reuse
 another repository's checkout, or resolve a missing credential from a file or

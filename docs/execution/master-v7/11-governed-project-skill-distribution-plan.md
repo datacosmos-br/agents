@@ -55,9 +55,10 @@ source corpus into a tracker or evidence archive.
 
 The operator has fixed these decisions:
 
-- execute in the operator's declared workspace roots — one physical root per
-  repository directly under the home directory — and create no additional clone,
-  worktree, bind mount, or alternate checkout for this increment;
+- execute in the operator's declared physical checkouts — one Git repository
+  per path directly under the home directory — and create no additional clone,
+  worktree, bind mount, or alternate checkout for this increment; a checkout
+  with `.gitmodules` is a workspace, a checkout without it is standalone;
 - preserve every existing checkout, including dirty content in retired
   orchestration and provenance trees, and adopt it by fix-forward instead of
   discarding it;
