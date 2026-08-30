@@ -1205,6 +1205,27 @@ def test_external_git_directory_is_rejected(
         projector.apply()
 
 
+def test_external_git_directory_under_a_worktrees_directory_is_rejected(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A borrowed Git directory stays forbidden inside a `worktrees/` layout.
+
+    Gas City places rig-scoped worktrees at `<rig-root>/worktrees/<id>`, so a
+    path-component name check would silently accept every borrowed Git
+    directory living under one.
+    """
+
+    _, projector = _source(tmp_path)
+    external = _git_repository(tmp_path / "external")
+    project = tmp_path / "worktrees" / "borrowed"
+    project.mkdir(parents=True)
+    (project / ".git").write_text(f"gitdir: {external / '.git'}\n", encoding="utf-8")
+    monkeypatch.chdir(project)
+
+    with pytest.raises(ValueError, match="external Git directory is forbidden"):
+        projector.apply()
+
+
 def test_malformed_git_file_propagates_git_failure(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
