@@ -7,8 +7,8 @@
 | Canonical source | `~/agents`, the physical owner declared by the operator workspace contract |
 | Retired sources | The predecessor dotted checkout and every dedicated skill-sync clone; neither may be resolved by a consumer |
 | Integration branch | `dev` |
-| Accepted migration baseline | 85 flat skills, one canonical command, flat agents |
-| Current work-lane inventory | Strictly discovered skills, commands, agents, rules, and their owned evaluations; counts are runtime output |
+| Accepted migration baseline | 85 flat skills, one canonical command, flat agents (historical start of the v7 migration; not the current count) |
+| Current work-lane inventory | Strictly discovered skills, commands, agents, rules, and their owned evaluations; current physical discovery is 91 skill bundles / 39 rules / 8 commands (re-derive, do not trust this snapshot) |
 | Remaining target | Complete provider/runtime proof and full landing cycle |
 | External imports | Only the scope and semantic protocol authorized by the governed project-skill distribution successor |
 | Tracker/orchestration runtime | Suspended; no invocation or substitute |
