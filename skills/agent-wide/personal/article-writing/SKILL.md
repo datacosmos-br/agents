@@ -7,6 +7,4 @@ metadata:
 
 # Article Writing
 
-Write long-form content that sounds like an actual person with a point of view, not an LLM smoothing itself into paste. Follow the complete [router procedure](references/procedure.md) and preserve its owners, evidence contracts, failure propagation, and required output standard. Follow the complete
-[router procedure](references/procedure.md) and preserve its owners,
-evidence contracts, failure propagation, and required output standard.
+Write long-form content that sounds like an actual person with a point of view, not an LLM smoothing itself into paste. Follow the complete [router procedure](references/procedure.md) and preserve its owners, evidence contracts, failure propagation, and required output standard.
