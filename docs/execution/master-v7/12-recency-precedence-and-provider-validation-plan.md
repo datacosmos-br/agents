@@ -1,8 +1,8 @@
 # Recency precedence and provider validation plan
 
-- **Status:** Approved and executed — etapas 1–3 merged (PRs #55, #57, #59);
-  etapa 4 in review (PR #63, stacked); etapas 5–7 recorded on the stacked
-  validation branch; operator reviews and merges each cycle
+- **Status:** Approved and executed — etapas 1–8 merged (PRs #55, #57, #59,
+  #63, #64, #65); closure of the machine-resolvable precedence gap continues
+  in plan 13, which this document records but does not own
 - **Operator decision:** 2026-08-30 — recency-based precedence must be
   machine-resolvable, `docs/` owns rule approvals and dates, and recent
   executions from codex, claude, opencode, poolside, and omo validate the rules
@@ -81,7 +81,7 @@ fixed at its owner.
 | 3 | Projection of temporal metadata | rules/commands adapters propagate approval tags into provider projections; second generation is idempotent |
 | 4 | Backfill with mandatory source | every active rule, skill, and command receives `decision:` + `effective:` citing an ADR, a dated plan decision, a dated sealed-ledger entry (reference only), Git history, or a dated operator draft; underivable dates stop for the operator; the same change switches on mandatory presence |
 | 5 | Cross-provider validation (read-only) | recent executions of codex, claude, opencode, poolside, and omo are audited against the rules base: claude `~/.claude/projects/` + hook logs, codex `~/.codex/sessions/` + history, opencode `opencode.db` sampled with declared date window and limits (full scans forbidden), poolside settings, omo codegraph/lsp-daemon ownership; every finding gets a dated disposition |
-| 6 | Strengthen the base from findings | apply dispositions at the owners: new or reinforced rules, skills, commands, guarantee mappings, and evals, each approved as `plan-12-inc6` with its effective date; zero residue |
+| 6 | Strengthen the base from findings | apply dispositions at the owners: new or reinforced rules, skills, commands, guarantee mappings, and evals, each approved as `plan-12` with its effective date; zero residue |
 | 7 | Gas City agent-side cutover | semantic audit of the seven `skills/domain/gascity/gc-*` plus the two `skills/tool/gascity-*` skills against the `gc` surface (help/docs only; no orchestration executed); confirm `route:agent` and `activation:opt-in`; correct this plan's etapa-7 premise: the provider-local skill directories are owned personal projections of the canonical owner, so there is nothing to fuse or delete — deleting them would break sync convergence |
 | 8 | Landing | full gate matrix green, second generation idempotent, PR merged into `dev` with every review comment resolved; stop at `dev` |
 
@@ -135,7 +135,7 @@ All 140 canonical artifacts (41 rules, 91 skills, 8 commands) carry exactly one
 last Git change date; every reference resolves physically into `docs/`.
 Decision mapping: `plan-00` (the master v7 authority package that approved the
 current inventory) is the default; `ADR-0004` for `rules/runtime/*`,
-`ADR-0005` for `governance-artifact-composition`, `plan-12-inc2` for the
+`ADR-0005` for `governance-artifact-composition`, `plan-12` for the
 precedence owner, `ADR-0007` for the bead verification law. `ADR-0007`
 records the pre-existing operator approval that landed through PR #52 without
 a decision document. Untagged rules received `route:both`, matching their
@@ -163,11 +163,34 @@ snapshot:
 | 3 redundant guarantees | Implemented before this plan | zero occurrences of the 5 redundant names |
 | 4 four more bootstrap skills | Rejected | the active skill plans own the always-on composition; guarantees plus the router already select them on demand; the older proposal is superseded |
 | 5 route tags on untagged rules | Adopted in etapa 4 | 37 of 41 rules are untagged; tags land with the mandatory approval backfill in one change |
-| 6 rule cross-references | Adopted in etapa 6 | rule-strengthening scope, one objective per etapa |
+| 6 rule cross-references | Rejected with evidence | markdown links in rules become dead links in every projection: the projection flattens `rules/runtime/fail-loud.md` into `runtime--fail-loud.md`, so `[strict-execution.md](strict-execution.md)` resolves to nothing there. `f20165a` had already reverted them for this reason; the `(rule file)` annotation is the surviving convention |
 | 7 categorize the gascity rule | Implemented before this plan | `rules/gascity.md` no longer exists; owner is `rules/coordination/gascity.md` |
 | 8 Gas City skills guarantee | Adopted now | `gas-city-operations` gained `skill:gascity-change-lifecycle` and `skill:gascity-workspace-lifecycle` |
 | 9 orphan documents | Implemented before this plan | both guarantees present in `config/governance.json` |
 | 10 guarantee coverage test | Implemented before this plan | `governance_config.py` requires exact coverage; red on the PR #52 miss proved it live |
+
+### Etapa 8 — closure and the gap this plan did not close (2026-08-30)
+
+Etapas 1–7 landed the approval authority, the single precedence prose owner,
+the provenance in rule and command projections, and the mandatory inventory
+backfill. Two conditions are recorded here rather than left implicit.
+
+**`decision:plan-00` is umbrella scope authorization, not per-artifact
+approval.** 128 of the 140 tagged artifacts carry it, pointing at
+`00-authority-and-scope.md`. The backfill satisfied the format of the contract,
+not its semantics. Precedence therefore must never key on `decision:`:
+superseding `plan-00` would supersede 128 artifacts at once. Re-attributing
+those 128 to specific decisions is deliberately out of scope — most rules do
+trace to the inventory reorganization — and is recorded as an accepted
+condition, never silently.
+
+**The operator decision was not met by this plan.** "Recency-based precedence
+must be machine-resolvable" required a runtime that orders artifacts. Etapas
+1–4 delivered validation and rendering; nothing consumed either. The cause is
+grammatical: the precedence rule says the newer artifact is "the one that
+declares `supersedes:` over the older" — artifact level — while
+`_SUPERSEDES_TAG` accepted only document references. Plan 13 owns the closure
+and carries the evidence.
 
 ## Definition of done
 
@@ -176,5 +199,8 @@ snapshot:
 2. One precedence prose owner; `grep` proves zero copies.
 3. Projections regenerated; second generation identical.
 4. Provider findings table complete — five providers, 100% dispositions.
-5. Zero Gas City skills outside the canonical owner.
+5. Every Gas City skill reaches its provider destinations as an owned
+   projection of the canonical owner — the etapa 7 corrected premise, not
+   deletion of the provider-local directories, which would break sync
+   convergence.
 6. `make ci` green; PR merged into `dev`; full evidence recorded.

@@ -16,6 +16,7 @@ from pathlib import Path
 from typing import cast
 
 from .agent_profiles import AgentProvider
+from .approvals import approval_note
 from .cleanup import (
     PreparedPublication,
     Publication,
@@ -166,7 +167,8 @@ def _capsule(
                 "",
                 f"## Rule `{identity}`",
                 "",
-                _MARKDOWN_LINK.sub(r"\1", by_identity[identity].body.strip()),
+                _MARKDOWN_LINK.sub(r"\1", by_identity[identity].body.strip())
+                + approval_note(by_identity[identity].tags),
             )
         )
     sections.extend(("", "## Capability indexes", ""))
