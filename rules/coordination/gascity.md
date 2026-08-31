@@ -16,15 +16,18 @@ Activation is operational state owned by the city under work — its repository
 law and its own runtime state — not a constant restated here. Resolve it at
 preflight for that exact city before any effect:
 
-- while its authority declares suspension, only static configuration review is
+- when its authority declares the city operating, its declared scope is
+  executable under every strict-execution policy, and dispatch, observation, and
+  closure run through the city's own command surface;
+- when its authority declares suspension, only static configuration review is
   authorized and the repository boundary below applies;
-- when its authority records an explicit operator lift, exactly the named scope
-  becomes executable under every strict-execution policy, and everything outside
-  that scope stays suspended.
+- a scope the city's authority does not declare stays unauthorized in either
+  case.
 
-Never infer a lift from installation, an available binary, a running process,
-another city, or a previous session. Never freeze the current value of this
-state into always-on guidance; name the owner that declares it.
+Never infer the state from installation, an available binary, a running process,
+another city, or a previous session — read it from that city's own authority.
+Never freeze the current value of this state into always-on guidance; name the
+owner that declares it.
 
 ## Configuration
 
@@ -62,6 +65,22 @@ so state the intent explicitly wherever it applies:
 - Pin an external or rig-local endpoint only through the declared rig endpoint
   owner; city configuration exposes a second, unenforced route to the same
   state.
+
+## Dispatch while the city is operating
+
+Work reaches an agent through the city's own surface: create the item in the
+target rig's store, route it to a configured agent with the declared formula, and
+observe through the city's status, session, and convoy surfaces. The formula owns
+workspace placement, branch creation, and teardown.
+
+Creating a worktree, branch, or clone by hand for registered-project work bypasses
+the review handoff and the durable branch metadata a recycled session resumes
+from. It is authorized only by an explicit operator exception recorded on the
+tracker item.
+
+Repository Git, native gates, PR review, and merge-commit landing remain local
+responsibilities. Stop at the rig's declared integration lane; promotion beyond
+it requires an explicit operator request.
 
 ## Repository boundary while suspended
 
