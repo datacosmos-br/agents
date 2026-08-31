@@ -69,16 +69,17 @@ so state the intent explicitly wherever it applies:
 ## Dispatch while the city is operating
 
 Work reaches an agent through the city's own surface: create the item in the
-target rig's store, route it to a configured agent with the declared formula, and
-observe through the city's status, session, and convoy surfaces. The formula owns
-workspace placement, branch creation, and teardown.
+target rig's store, route it to a configured agent, and observe through the
+city's status, session, and convoy surfaces.
 
-Creating a worktree, branch, or clone by hand for registered-project work bypasses
-the review handoff and the durable branch metadata a recycled session resumes
-from. It is authorized only by an explicit operator exception recorded on the
-tracker item.
+Routing places the session in the rig's own checkout. Gas City is a router, not
+a lane owner: it does not create the branch or the worktree, and it does not own
+a merge queue. Resolve roles and formulas from the city (`gc agent list`,
+`gc formula list`) instead of naming them from memory; a name that no longer
+resolves is drift, not a typo.
 
-Repository Git, native gates, PR review, and merge-commit landing remain local
+Branch creation, worktree layout when a lane needs one, repository Git, native
+gates, PR review, and merge-commit landing remain local
 responsibilities. Stop at the rig's declared integration lane; promotion beyond
 it requires an explicit operator request.
 
