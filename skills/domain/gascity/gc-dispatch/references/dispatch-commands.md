@@ -66,7 +66,34 @@ bead, use `--on` (below). A formula that references `{{convoy_id}}` or contains
 a drain step cannot be launched bare with `-f`; route it onto a bead with `--on`
 so a target convoy is created.
 
-## Formula-on-bead dispatch (`--on`, formula runs against an existing bead)
+**Formula-on-bead dispatch (`--on`, formula runs against an existing bead)**
+
+Flags that matter on every sling (verify with `gc sling --help`):
+
+| Flag | Effect |
+|------|--------|
+| `-n, --dry-run` | show what would be routed without executing — preflight a dispatch |
+| `--force` | suppress warnings, allow cross-rig routing and v2 workflow replacement |
+| `--merge direct\|mr\|local` | merge strategy stamped on the auto-convoy |
+| `--var key=value` | formula variable substitution (repeatable) |
+| `--no-convoy` | suppress the ordinary routing auto-convoy (not the v2 input convoy) |
+| `--owned` | mark the auto-convoy as owned (manual lifecycle, closed by `gc convoy land`) |
+| `--no-formula` | route the raw bead even when a default formula applies |
+| `--reassign` | clear any human assignee before routing (human→pool handoff) |
+| `--title`, `--stdin` | wisp root title / read bead text from stdin |
+| `--scope-kind/--scope-ref` | logical workflow scope for v2 launches |
+
+## Who advances a v2 workflow
+
+A v2 workflow is **orchestrator-driven, not agent-driven**. The control
+dispatcher (the `core.control-dispatcher` session) executes every **control
+bead** — check, retry, fan-out, tally, drain, scope-check, workflow-finalize:
+it evaluates budgets, expands fan-outs, scatters drains, and finalizes the
+workflow. **Agents execute only plain step beads** — independently routable
+work claimed through the hook. If workflow steps sit open, check the
+dispatcher session before nudging workers; if it is stopped, nothing advances
+the graph no matter how many agents are alive. (`docs/reference/specs/
+formula-spec-v2.md` sec 0.2.)
 
 ```
 gc sling <agent> <bead-id> --on <formula>  # Attach a formula to an existing bead
