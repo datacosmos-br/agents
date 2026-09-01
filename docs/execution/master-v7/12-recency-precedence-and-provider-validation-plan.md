@@ -35,12 +35,12 @@ operator request.
 
 ## Approval authority
 
-`docs/` is the only approval authority. One reference grammar serves both
-`decision:` and `supersedes:` tags:
+`docs/` is the only approval authority. Approval lineage uses one document
+reference grammar:
 
 - `ADR-<NNNN>` resolves to exactly one `docs/adr/ADR-<NNNN>-*.md`;
-- `plan-<NN>` or `plan-<NN>-inc<N>` resolves to exactly one
-  `docs/execution/master-v7/<NN>-*.md`; the `-inc` suffix is plan-internal.
+- `plan-<NN>` resolves to exactly one
+  `docs/execution/master-v7/<NN>-*.md`.
 
 Tag formats (all fail loud on malformed, impossible, future-dated, or
 unresolvable values):
@@ -48,8 +48,11 @@ unresolvable values):
 - `effective:YYYY-MM-DD` — the date the orientation became valid; never in the
   future;
 - `decision:<reference>` — the dated approval this artifact operates under;
-- `supersedes:<reference>` — a superseded artifact, evidence-only, never
-  reactivated.
+- `supersedes:<reference>` records approval lineage; or
+  `supersedes:<kind>:<path>` names a retired `rule`, `skill`, or `command`.
+  Artifact identities must be absent from the active inventory and resolve
+  through repository Git history; a typo, invented identity, or old/new
+  coexistence fails loud.
 
 The sealed historical record under `docs/execution/` is referenced only; it is
 never edited or appended to. Typed runtime

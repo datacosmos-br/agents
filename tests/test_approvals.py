@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import subprocess
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
@@ -575,7 +576,28 @@ def test_real_inventory_carries_resolvable_approval_tags() -> None:
         resolve_approval_tags(REPOSITORY, tags, path)
 
 
-def test_precedence_requires_a_superseded_artifact_to_be_retired() -> None:
+def _commit_retired_rule(root: Path, relative: str) -> None:
+    path = root / "rules" / relative
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text("# Retired rule\n", encoding="utf-8")
+    subprocess.run(("git", "init", str(root)), check=True, capture_output=True)
+    subprocess.run(("git", "-C", str(root), "config", "user.name", "Test"), check=True)
+    subprocess.run(
+        ("git", "-C", str(root), "config", "user.email", "test@example.invalid"),
+        check=True,
+    )
+    subprocess.run(("git", "-C", str(root), "add", str(path)), check=True)
+    subprocess.run(
+        ("git", "-C", str(root), "commit", "-m", "add retired rule"),
+        check=True,
+        capture_output=True,
+    )
+    path.unlink()
+
+
+def test_precedence_requires_a_superseded_artifact_to_be_retired(
+    tmp_path: Path,
+) -> None:
     """Old and new coexisting is the residue the recency law forbids."""
 
     replacement = ApprovedArtifact(
@@ -589,33 +611,51 @@ def test_precedence_requires_a_superseded_artifact_to_be_retired() -> None:
         Path("rules/runtime/older.md"),
     )
 
-    audit_precedence((replacement,))
+    _commit_retired_rule(tmp_path, "runtime/older.md")
+    audit_precedence(tmp_path, (replacement,))
 
     with pytest.raises(ValueError, match="still active"):
-        audit_precedence((replacement, superseded))
+        audit_precedence(tmp_path, (replacement, superseded))
 
 
-def test_precedence_ignores_document_lineage_supersession() -> None:
+def test_precedence_rejects_a_dangling_artifact_identity(tmp_path: Path) -> None:
+    _commit_retired_rule(tmp_path, "runtime/another-rule.md")
+    replacement = ApprovedArtifact(
+        "rule:runtime/no-fallback",
+        (
+            "decision:ADR-0001",
+            "effective:2026-08-30",
+            "supersedes:rule:runtime/fail-loudd",
+        ),
+        Path("rules/runtime/no-fallback.md"),
+    )
+
+    with pytest.raises(ValueError, match="does not resolve through Git history"):
+        audit_precedence(tmp_path, (replacement,))
+
+
+def test_precedence_ignores_document_lineage_supersession(tmp_path: Path) -> None:
     """A supersedes tag naming an approval document orders no artifact."""
 
     audit_precedence(
+        tmp_path,
         (
             ApprovedArtifact(
                 "skill:caveman",
                 ("decision:ADR-0001", "effective:2026-08-30", "supersedes:plan-11"),
                 Path("skills/caveman/SKILL.md"),
             ),
-        )
+        ),
     )
 
 
-def test_precedence_rejects_a_duplicate_artifact_identity() -> None:
+def test_precedence_rejects_a_duplicate_artifact_identity(tmp_path: Path) -> None:
     duplicated = ApprovedArtifact(
         "rule:runtime/fail-loud", (), Path("rules/runtime/fail-loud.md")
     )
 
     with pytest.raises(ValueError, match="duplicate artifact identity"):
-        audit_precedence((duplicated, duplicated))
+        audit_precedence(tmp_path, (duplicated, duplicated))
 
 
 def test_approval_note_renders_only_the_approval_namespaces() -> None:

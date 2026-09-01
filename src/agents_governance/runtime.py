@@ -77,7 +77,7 @@ def _inventory_from_catalog(root: Path, catalog: Catalog) -> RuntimeInventory:
     rules = audit_rule_specs(root)
     governance = load_governance_config(root)
     audit_governance_config(root, governance, catalog, commands, rules)
-    audit_precedence(_approved_artifacts(catalog, commands, rules))
+    audit_precedence(root, _approved_artifacts(catalog, commands, rules))
     return RuntimeInventory(catalog, governance, commands, agents, rules)
 
 

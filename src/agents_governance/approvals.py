@@ -21,6 +21,7 @@ A malformed, impossible, future-dated, or unresolvable reference fails loud.
 from __future__ import annotations
 
 import re
+import subprocess
 from dataclasses import dataclass
 from datetime import UTC, date, datetime
 from pathlib import Path
@@ -147,7 +148,43 @@ class ApprovedArtifact:
     source: Path
 
 
-def audit_precedence(artifacts: tuple[ApprovedArtifact, ...]) -> None:
+def _history_pathspec(identity: str) -> str:
+    kind, name = identity.split(":", 1)
+    if kind == "rule":
+        return f"rules/{name}.md"
+    if kind == "skill":
+        return f":(glob)skills/**/{name}/SKILL.md"
+    if kind == "command":
+        return f":(glob)commands/**/{name}.md"
+    raise ValueError(f"unsupported artifact identity: {identity!r}")
+
+
+def _require_historical_identity(root: Path, identity: str, source: Path) -> None:
+    result = subprocess.run(
+        (
+            "git",
+            "-C",
+            str(root),
+            "log",
+            "--all",
+            "--format=%H",
+            "-n",
+            "1",
+            "--",
+            _history_pathspec(identity),
+        ),
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    if not result.stdout.strip():
+        raise ValueError(
+            f"{source}: supersedes {identity!r}, which does not resolve through "
+            "Git history"
+        )
+
+
+def audit_precedence(root: Path, artifacts: tuple[ApprovedArtifact, ...]) -> None:
     """Require every superseded artifact to be retired from the active inventory.
 
     An artifact that declares ``supersedes:<kind>:<path>`` asserts it replaced
@@ -177,6 +214,7 @@ def audit_precedence(artifacts: tuple[ApprovedArtifact, ...]) -> None:
                     f"{artifact.source}: supersedes {identity!r}, which is still "
                     f"active at {superseded.source}; retire it in this change"
                 )
+            _require_historical_identity(root, identity, artifact.source)
 
 
 def core_tags(tags: tuple[str, ...]) -> tuple[str, ...]:
