@@ -106,8 +106,9 @@ when it is the typed transition from WIP to Review. Use the normal verification 
 PR to Review, require Actions and independent approval, and merge the exact head
 by merge commit. Then revalidate the integration merge SHA locally and start the
 next unit from it. If integration advanced before landing, absorb it into the
-change branch with a `[WIP] [skip ci]` `--no-ff` merge, revalidate, publish it
-without duplicate verification hooks, and update the tracker head first.
+change branch with a `[WIP]` `--no-ff` merge, revalidate, publish it through the
+typed WIP path, and update the tracker head first. Never use `[skip ci]`,
+`[ci skip]`, or `--no-verify`.
 
 When the canonical tracker is selected, make its work item and the GitHub PR one
 state machine: each WIP checkpoint records branch, exact head OID, Draft/WIP
@@ -116,9 +117,11 @@ Promotion fails closed if tracker and GitHub disagree. Landing records the merge
 SHA and post-merge proof in the same item before closure; never create a second
 ledger for this relationship.
 
-When local gates replace identical managed CI work, require a signed attestation
-owned by the project workflow and bound to exact repository, commit SHA, bead,
-commands, toolchain, and results. The tracker and PR reference that immutable
+When local gates replace identical managed CI work, the canonical pipeline
+automatically derives and publishes a signed attestation owned by the project
+workflow and bound to exact repository, commit SHA, bead, commands, toolchain,
+and results. Agents never hand-author its JSON or invoke a second attestation
+step. The tracker and PR reference that immutable
 proof. CI verifies signer and exact predicate coverage before omitting a gate;
 invalid or incomplete proof never becomes green evidence. Do not call a local
 signature a GitHub Artifact Attestation when it lacks GitHub Actions OIDC, and

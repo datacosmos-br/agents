@@ -44,19 +44,23 @@ orchestration is suspended it is prohibited.
   same item; close it only when GitHub, Git history, measured runtime, and current
   integrated code agree.
 - If integration advanced or diverged, merge `origin/<integration>` into the
-  change branch with `--no-ff` and a subject starting `[WIP] [skip ci]`, resolve
+  change branch with `--no-ff` and a subject starting `[WIP]`, resolve
   by preserving valid concurrent work, and revalidate. After that clean combined
-  round, push the merge with verification hooks disabled and update the tracker
-  head evidence before continuing. Never rebase or force-push an authorized
-  branch.
+  round, push through the repository-owned typed WIP path and update the tracker
+  head evidence before continuing. `[skip ci]`, `[ci skip]`, `--no-verify`,
+  rebase, and force-push are prohibited.
 - WIP publication uses the locally green matrix recorded in the canonical
   tracker; absence of remote Actions is recorded as `NOT SELECTED`, never as a
   green remote check. Only the non-WIP promotion head may enter integration, and
   it retains the full reviewed-PR and remote-check contract.
 - For repositories governed by the managed project workflow, each locally green
-  check/test matrix publishes a repository-owned signed attestation bound to the
+  check/test matrix automatically publishes a repository-owned signed attestation
+  before its WIP checkpoint, bound to the
   exact commit SHA, repository identity, canonical bead, commands, toolchain,
-  and results. The bead and Draft PR reference the same immutable attestation.
+  and results. This is transparent to the agent: the canonical pipeline derives
+  the predicate, signs/publishes the tag, and records it in the Bead/PR without
+  requiring a hand-authored JSON document or a separate attestation command.
+  The bead and Draft PR reference the same immutable attestation.
   Review CI verifies signer, SHA, predicate, and complete gate coverage before
   omitting an attested gate; missing, stale, partial, foreign, or invalid proof
   fails closed or runs the uncovered gate as declared by the typed workflow.

@@ -80,6 +80,19 @@ def test_eval_workflow_covers_integration_push_and_pull_requests() -> None:
     assert "startsWith(github.event.head_commit.message, '[WIP]')" in job_condition
 
 
+def test_wip_policy_never_uses_generic_ci_bypass_markers() -> None:
+    """Typed WIP state, not generic CI skip syntax, owns checkpoint behavior."""
+    owners = (
+        ROOT / "rules/git/gitflow-branch-pr.md",
+        ROOT
+        / "skills/agent-wide/governance/operator-correction-learning/references/reconciliation.md",
+    )
+    for owner in owners:
+        text = owner.read_text(encoding="utf-8").lower()
+        assert "[wip] [skip ci]" not in text
+        assert "verification hooks disabled" not in text
+
+
 def test_dependabot_covers_every_dependency_surface_with_seven_day_cooldown() -> None:
     configuration = yaml.safe_load(
         (ROOT / ".github" / "dependabot.yml").read_text(encoding="utf-8")
