@@ -31,6 +31,25 @@ orchestration is suspended it is prohibited.
   `WIP` label. No validation is selected for Draft/WIP: local gates,
   attestations, GitHub Actions, CodeQL, Copilot review and review agents all
   remain dormant. WIP commits never merge into integration.
+- **Managed fork branches:** when the repository selects managed-fork policy,
+  its registered Gas City rig is the project-inventory authority. The fork's
+  upstream branch is mirrored exactly into its dedicated mirror branch only by
+  the configured automation identity. Humans, including repository admins,
+  cannot update, delete, or force-push that branch. The rig-declared integration
+  branch accepts changes only through a reviewed PR; no actor bypasses that PR
+  requirement.
+- **Control-plane Review transition:** a Draft may persist changes to
+  `.agents/**`, `.claude/**`, `.codex/**`, `.github/**`, any `AGENTS.md`,
+  `CLAUDE.md`, `GEMINI.md`, or `CODEOWNERS`, `rules/**`, `skills/**`,
+  `commands/**`, `.beads/**`, `.gc/**`, Make/Mise owners, or declared codegen,
+  governance, projection, and attestation manifests. It may enter Review only
+  when the actor performing the transition currently has repository `admin`
+  permission. The repository-owned guard reads only the base-branch workflow
+  and GitHub metadata, never checks out or executes PR-head content. It covers a
+  PR opened directly as Review as well as `ready_for_review`; an unauthorized
+  transition fails its required check, records the reason, and converts the PR
+  back to Draft. Any later head synchronization invalidates the exact-SHA
+  receipt and returns the PR to Draft before a new promotion decision.
 - **Transparent unbounded aggregation:** a maintained PR may aggregate any finite
   number `N >= 1` of coherent Draft PRs; no configured or implicit cardinality
   limit is permitted. Create it from current integration and merge every exact
@@ -40,8 +59,9 @@ orchestration is suspended it is prohibited.
   push, comments and closure. On the first successful aggregate push it comments
   every source Draft with the maintained PR and transferred SHA, then closes it.
   The maintained PR may be any PR kind and may remain Draft; no source count or
-  PR-kind limit is permitted. When it enters Review, run the complete local
-  matrix once on its exact aggregate head and publish its signed attestation.
+  PR-kind limit is permitted. When it enters Review, run one complete green
+  local validation round covering material tracked changes on its exact
+  aggregate head and publish its signed attestation.
   Create a Review promotion commit without `[WIP]`; an empty commit is permitted when
   it is the typed transition into Review. Commit and push normally,
   remove the `WIP` label, convert Draft to Review, require Actions, conversations,

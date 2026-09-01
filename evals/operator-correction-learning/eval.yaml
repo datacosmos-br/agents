@@ -44,7 +44,7 @@ graders:
       branch, PR, exact head, Draft/WIP state, gates, next action, merge SHA, and
       closure evidence to one canonical tracker item; fails closed on tracker /
       GitHub divergence and creates no parallel ledger; absorbs an advanced
-      integration lane into the change branch through a no-ff merge before
+      integration lane into the change branch through a `--no-ff` merge before
       landing; requires a signed repository-owned attestation bound to exact
       repository, clean commit SHA, bead, commands, toolchain, and results before
       CI omits identical managed work; requires CI to verify signer and exact

@@ -110,6 +110,20 @@ def test_draft_has_no_validation_and_review_aggregation_is_unbounded() -> None:
     assert "Do not roll back,\n  clean, retry, fall back, attest" in rule
 
 
+def test_managed_control_plane_requires_admin_at_review_transition() -> None:
+    """Draft persistence cannot bypass the admin-owned Review boundary."""
+    rule = (ROOT / "rules/git/gitflow-branch-pr.md").read_text(encoding="utf-8")
+    assert "registered Gas City rig is the project-inventory authority" in rule
+    assert "Humans, including repository admins,\n  cannot update" in rule
+    assert "integration\n  branch accepts changes only through a reviewed PR" in rule
+    assert "It may enter Review only\n  when the actor" in rule
+    assert "repository `admin`\n  permission" in rule
+    assert "never checks out or executes PR-head content" in rule
+    assert "opened directly as Review as well as `ready_for_review`" in rule
+    assert "converts the PR\n  back to Draft" in rule
+    assert "head synchronization invalidates the exact-SHA\n  receipt" in rule
+
+
 def test_dependabot_covers_every_dependency_surface_with_seven_day_cooldown() -> None:
     configuration = yaml.safe_load(
         (ROOT / ".github" / "dependabot.yml").read_text(encoding="utf-8")
