@@ -634,6 +634,63 @@ def test_precedence_rejects_a_dangling_artifact_identity(tmp_path: Path) -> None
         audit_precedence(tmp_path, (replacement,))
 
 
+def test_precedence_rejects_identity_only_on_an_unmerged_branch(
+    tmp_path: Path,
+) -> None:
+    root = tmp_path
+    subprocess.run(("git", "init", str(root)), check=True, capture_output=True)
+    subprocess.run(("git", "-C", str(root), "config", "user.name", "Test"), check=True)
+    subprocess.run(
+        ("git", "-C", str(root), "config", "user.email", "test@example.invalid"),
+        check=True,
+    )
+    readme = root / "README.md"
+    readme.write_text("# Main\n", encoding="utf-8")
+    subprocess.run(("git", "-C", str(root), "add", str(readme)), check=True)
+    subprocess.run(
+        ("git", "-C", str(root), "commit", "-m", "main baseline"),
+        check=True,
+        capture_output=True,
+    )
+    integrated_branch = subprocess.run(
+        ("git", "-C", str(root), "branch", "--show-current"),
+        check=True,
+        capture_output=True,
+        text=True,
+    ).stdout.strip()
+    subprocess.run(
+        ("git", "-C", str(root), "checkout", "-b", "abandoned"),
+        check=True,
+        capture_output=True,
+    )
+    abandoned = root / "rules" / "runtime" / "abandoned.md"
+    abandoned.parent.mkdir(parents=True)
+    abandoned.write_text("# Never integrated\n", encoding="utf-8")
+    subprocess.run(("git", "-C", str(root), "add", str(abandoned)), check=True)
+    subprocess.run(
+        ("git", "-C", str(root), "commit", "-m", "abandoned rule"),
+        check=True,
+        capture_output=True,
+    )
+    subprocess.run(
+        ("git", "-C", str(root), "checkout", integrated_branch),
+        check=True,
+        capture_output=True,
+    )
+    replacement = ApprovedArtifact(
+        "rule:runtime/no-fallback",
+        (
+            "decision:ADR-0001",
+            "effective:2026-08-30",
+            "supersedes:rule:runtime/abandoned",
+        ),
+        Path("rules/runtime/no-fallback.md"),
+    )
+
+    with pytest.raises(ValueError, match="does not resolve through Git history"):
+        audit_precedence(root, (replacement,))
+
+
 def test_precedence_ignores_document_lineage_supersession(tmp_path: Path) -> None:
     """A supersedes tag naming an approval document orders no artifact."""
 

@@ -50,9 +50,9 @@ unresolvable values):
 - `decision:<reference>` — the dated approval this artifact operates under;
 - `supersedes:<reference>` records approval lineage; or
   `supersedes:<kind>:<path>` names a retired `rule`, `skill`, or `command`.
-  Artifact identities must be absent from the active inventory and resolve
-  through repository Git history; a typo, invented identity, or old/new
-  coexistence fails loud.
+  Artifact identities must be absent from the active inventory and resolve in
+  the selected `HEAD` ancestry; a typo, invented identity, unmerged-branch-only
+  identity, or old/new coexistence fails loud.
 
 The sealed historical record under `docs/execution/` is referenced only; it is
 never edited or appended to. Typed runtime
