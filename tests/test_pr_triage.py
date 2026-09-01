@@ -49,6 +49,25 @@ def test_rest_inventory_uses_github_pagination(
     ]
 
 
+def test_gh_propagates_child_exit_code_and_stderr(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    module = _module(monkeypatch)
+    monkeypatch.setattr(
+        module.subprocess,
+        "run",
+        lambda *_args, **_kwargs: module.subprocess.CompletedProcess(
+            args=("gh", "api"), returncode=7, stdout="", stderr="provider failed\n"
+        ),
+    )
+
+    with pytest.raises(SystemExit) as raised:
+        module._gh("api", "repos/owner/repo")
+
+    assert raised.value.code == 7
+    assert capsys.readouterr().err == "provider failed\n"
+
+
 def test_terminal_non_success_conclusions_are_blocking(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
@@ -171,6 +190,8 @@ def test_landing_gate_reports_every_blocker(
 ) -> None:
     module = _module(monkeypatch)
     inventory = {
+        "base": "dev",
+        "head_oid": "head-sha",
         "state": "open",
         "draft": False,
         "mergeability": "mergeable",
@@ -179,7 +200,7 @@ def test_landing_gate_reports_every_blocker(
         "unresolved_threads": [{"thread_id": "thread-1"}],
     }
 
-    assert module.landing_blockers(inventory) == [
+    assert module.landing_blockers(inventory, "dev", "head-sha") == [
         "mergeable_state is unstable",
         "1 review thread(s) unresolved",
     ]
@@ -190,6 +211,8 @@ def test_landing_gate_accepts_only_clean_completed_inventory(
 ) -> None:
     module = _module(monkeypatch)
     inventory = {
+        "base": "dev",
+        "head_oid": "head-sha",
         "state": "open",
         "draft": False,
         "mergeability": "mergeable",
@@ -198,7 +221,28 @@ def test_landing_gate_accepts_only_clean_completed_inventory(
         "unresolved_threads": [],
     }
 
-    assert module.landing_blockers(inventory) == []
+    assert module.landing_blockers(inventory, "dev", "head-sha") == []
+
+
+def test_landing_gate_binds_authorized_base_and_head(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    module = _module(monkeypatch)
+    inventory = {
+        "base": "main",
+        "head_oid": "changed-head",
+        "state": "open",
+        "draft": False,
+        "mergeability": "mergeable",
+        "mergeable_state": "clean",
+        "checks_verdict": "passed",
+        "unresolved_threads": [],
+    }
+
+    assert module.landing_blockers(inventory, "dev", "authorized-head") == [
+        "base is main, expected authorized base dev",
+        "head_oid is changed-head, expected authorized head authorized-head",
+    ]
 
 
 def test_gate_command_exits_nonzero_after_printing_blockers(
@@ -206,6 +250,8 @@ def test_gate_command_exits_nonzero_after_printing_blockers(
 ) -> None:
     module = _module(monkeypatch)
     inventory = {
+        "base": "dev",
+        "head_oid": "head-sha",
         "state": "open",
         "draft": False,
         "mergeability": "mergeable",
@@ -214,7 +260,20 @@ def test_gate_command_exits_nonzero_after_printing_blockers(
         "unresolved_threads": [],
     }
     monkeypatch.setattr(module, "cmd_locate", lambda repository, number: inventory)
-    monkeypatch.setattr(sys, "argv", ["pr_triage.py", "gate", "owner/repo", "25"])
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "pr_triage.py",
+            "gate",
+            "owner/repo",
+            "25",
+            "--base",
+            "dev",
+            "--head",
+            "head-sha",
+        ],
+    )
 
     with pytest.raises(SystemExit) as raised:
         module.main()

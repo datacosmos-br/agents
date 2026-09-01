@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Locate, reply to, and resolve pull-request review comments via gh.
 
-Companion tooling for the pr-sheriff skill. Read-only subcommands
-(`locate`, `gate`, `sweep`) are preflight evidence; `reply`, `resolve`, and
-`settle` perform the single named GitHub effect and nothing else.
+Companion tooling for the pr-sheriff skill. `locate` and `sweep` are
+informational inventories; `gate` is the fail-closed landing preflight.
+`reply`, `resolve`, and `settle` perform the single named GitHub effect.
 
 Strict-execution contract: the first gh or GraphQL failure escapes with
 its stderr and a nonzero exit; there is no fallback, retry, credential
@@ -13,7 +13,7 @@ the operator's shell. Never extracts or relocates credentials.
 
 Subcommands:
   locate <owner/repo> <pr>            full blocking-check inventory (JSON)
-  gate <owner/repo> <pr>              same inventory; nonzero unless landable
+  gate <owner/repo> <pr> --base B --head OID  fail unless exactly landable
   sweep <owner/repo>... --base B,...  integration-lane PR queue (JSON)
   reply <thread-id> --body-file F     answer one review thread
   resolve <thread-id>                 resolve one review thread
@@ -42,9 +42,7 @@ def _gh(*arguments: str, input_text: str | None = None) -> str:
     )
     if completed.returncode != 0:
         sys.stderr.write(completed.stderr)
-        raise SystemExit(
-            f"gh {' '.join(arguments[:2])}... exited {completed.returncode}"
-        )
+        raise SystemExit(completed.returncode)
     return completed.stdout
 
 
@@ -224,10 +222,20 @@ def cmd_locate(repository: str, number: int) -> dict[str, Any]:
     }
 
 
-def landing_blockers(inventory: dict[str, Any]) -> list[str]:
+def landing_blockers(
+    inventory: dict[str, Any], expected_base: str, expected_head: str
+) -> list[str]:
     """Return every condition that prevents the inventoried PR from landing."""
 
     blockers: list[str] = []
+    if inventory["base"] != expected_base:
+        blockers.append(
+            f"base is {inventory['base']}, expected authorized base {expected_base}"
+        )
+    if inventory["head_oid"] != expected_head:
+        blockers.append(
+            f"head_oid is {inventory['head_oid']}, expected authorized head {expected_head}"
+        )
     if inventory["state"] != "open":
         blockers.append(f"state is {inventory['state']}, not open")
     if inventory["draft"]:
@@ -294,6 +302,8 @@ def main() -> None:
     gate = sub.add_parser("gate", help="fail unless the PR is ready to land")
     gate.add_argument("repository", help="owner/name")
     gate.add_argument("number", type=int)
+    gate.add_argument("--base", required=True, help="authorized integration branch")
+    gate.add_argument("--head", required=True, help="authorized PR head OID")
 
     sweep = sub.add_parser("sweep", help="integration-lane PR queue as JSON")
     sweep.add_argument("repositories", nargs="+", help="owner/name list")
@@ -322,7 +332,9 @@ def main() -> None:
         result: Any = cmd_locate(arguments.repository, arguments.number)
     elif arguments.command == "gate":
         result = cmd_locate(arguments.repository, arguments.number)
-        result["landing_blockers"] = landing_blockers(result)
+        result["landing_blockers"] = landing_blockers(
+            result, arguments.base, arguments.head
+        )
         result["landing_verdict"] = (
             "blocked" if result["landing_blockers"] else "passed"
         )

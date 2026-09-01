@@ -7,4 +7,4 @@ inputs:
   files:
   - path: pr-inventory.yaml
 expected:
-  output_contains: ['#14', ready, pr_triage.py gate, '#15', blocked, duplicate CI owner, self-referential, unpinned, '|| true', make ci, '#16', superseded]
+  output_contains: ['#14', ready, pr_triage.py gate, --base, --head, --match-head-commit, '#15', blocked, duplicate CI owner, self-referential, unpinned, '|| true', make ci, '#16', superseded]
