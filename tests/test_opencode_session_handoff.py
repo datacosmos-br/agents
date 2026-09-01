@@ -1,8 +1,9 @@
 from __future__ import annotations
 
 import importlib.util
-import sqlite3
+import json
 import stat
+import subprocess
 from pathlib import Path
 from types import ModuleType
 
@@ -22,59 +23,128 @@ def _module() -> ModuleType:
     return module
 
 
-def _database(root: Path) -> None:
-    with sqlite3.connect(root / "opencode.db") as database:
-        database.executescript(
-            """
-            CREATE TABLE session (
-                id TEXT, project_id TEXT, parent_id TEXT, directory TEXT,
-                title TEXT, version TEXT, agent TEXT, model TEXT,
-                time_created INTEGER, time_updated INTEGER
-            );
-            CREATE TABLE todo (
-                session_id TEXT, position INTEGER, status TEXT, priority TEXT,
-                content TEXT, time_created INTEGER, time_updated INTEGER
-            );
-            CREATE TABLE message (
-                id TEXT, session_id TEXT, time_created INTEGER,
-                time_updated INTEGER, data TEXT
-            );
-            CREATE TABLE part (
-                id TEXT, message_id TEXT, session_id TEXT, time_created INTEGER,
-                time_updated INTEGER, data TEXT
-            );
-            """
-        )
+def _snapshot() -> dict[str, object]:
+    return {
+        "schema_version": 1,
+        "session": [
+            {
+                "id": "ses_example",
+                "title": "Recovery",
+                "directory": "/workspace/project",
+                "agent": "build",
+                "model": "model",
+                "time_updated": 2,
+            }
+        ],
+        "todos": [{"position": 1, "content": "Phase B", "status": "pending"}],
+        "messages": [
+            {
+                "id": "msg_1",
+                "data": {"role": "assistant", "token": "raw-secret"},
+            }
+        ],
+        "parts": [
+            {
+                "id": "part_1",
+                "message_id": "msg_1",
+                "data": {"type": "text", "text": "Bearer visible-secret"},
+            }
+        ],
+    }
 
 
-def test_database_is_schema_allowlisted_and_query_only(tmp_path: Path) -> None:
+def test_snapshot_uses_allowlisted_opencode_db_queries(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     module = _module()
-    _database(tmp_path)
+    queries: list[str] = []
 
-    with module._database(tmp_path) as database:
-        assert database.execute("PRAGMA query_only").fetchone()[0] == 1
-        with pytest.raises(sqlite3.OperationalError, match="readonly"):
-            database.execute("INSERT INTO session (id) VALUES ('ses_write')")
+    def query(sql: str) -> list[dict[str, object]]:
+        queries.append(sql)
+        if sql.startswith("PRAGMA"):
+            table = sql.removeprefix("PRAGMA table_info(").removesuffix(")")
+            return [{"name": column} for column in module.TABLE_COLUMNS[table]]
+        if "FROM session" in sql:
+            return [{"id": "ses_example"}]
+        if "FROM todo" in sql:
+            return []
+        return [{"id": "row", "message_id": "msg_1", "data": '{"type":"text"}'}]
+
+    monkeypatch.setattr(module, "_query", query)
+
+    snapshot = module._snapshot("ses_example")
+
+    assert snapshot["session"] == [{"id": "ses_example"}]
+    assert any("FROM message WHERE session_id='ses_example'" in sql for sql in queries)
+    assert any("FROM part WHERE session_id='ses_example'" in sql for sql in queries)
+    assert all("credential" not in sql.lower() for sql in queries)
 
 
-def test_database_rejects_missing_allowlisted_column(tmp_path: Path) -> None:
+def test_schema_validation_fails_closed_on_missing_column(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     module = _module()
-    _database(tmp_path)
-    with sqlite3.connect(tmp_path / "opencode.db") as database:
-        database.execute("ALTER TABLE todo DROP COLUMN content")
+
+    def query(sql: str) -> list[dict[str, object]]:
+        table = sql.removeprefix("PRAGMA table_info(").removesuffix(")")
+        columns = set(module.TABLE_COLUMNS[table])
+        if table == "todo":
+            columns.remove("content")
+        return [{"name": column} for column in columns]
+
+    monkeypatch.setattr(module, "_query", query)
 
     with pytest.raises(ValueError, match="OpenCode todo schema is missing: content"):
-        module._database(tmp_path)
+        module._validate_schema()
 
 
-def test_private_write_and_handoff_redact_secrets(tmp_path: Path) -> None:
+def test_invalid_native_export_publishes_private_evidence_and_fails(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     module = _module()
-    target = tmp_path / "private" / "handoff.md"
-    module._atomic_private_write(target, "secret")
+    destination = tmp_path / "handoff"
+    monkeypatch.setattr(
+        module,
+        "_completed",
+        lambda *_args: subprocess.CompletedProcess(
+            args=("opencode", "export"),
+            returncode=0,
+            stdout='{"truncated":',
+            stderr="provider 401 token=visible-secret",
+        ),
+    )
+    monkeypatch.setattr(module, "_snapshot", lambda _session_id: _snapshot())
 
-    assert stat.S_IMODE(target.parent.stat().st_mode) == 0o700
-    assert stat.S_IMODE(target.stat().st_mode) == 0o600
-    assert module._redact({"token": "visible", "text": "Bearer abc123"}) == {
-        "token": "[REDACTED]",
-        "text": "Bearer [REDACTED]",
-    }
+    assert module._export("ses_example", destination) == 2
+
+    manifest = json.loads((destination / "manifest.json").read_text(encoding="utf-8"))
+    handoff = (destination / "handoff.sanitised.md").read_text(encoding="utf-8")
+    assert manifest["native_export"]["status"] == "invalid"
+    assert manifest["native_export"]["exit_code"] == 0
+    assert manifest["database_snapshot"]["messages"] == 1
+    assert "raw-secret" not in handoff
+    assert "visible-secret" not in handoff
+    assert "[REDACTED]" in handoff
+    assert stat.S_IMODE(destination.stat().st_mode) == 0o700
+    assert all(
+        stat.S_IMODE(path.stat().st_mode) == 0o600 for path in destination.iterdir()
+    )
+
+
+def test_valid_native_export_succeeds_and_existing_destination_fails(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    module = _module()
+    destination = tmp_path / "handoff"
+    monkeypatch.setattr(
+        module,
+        "_completed",
+        lambda *_args: subprocess.CompletedProcess(
+            args=("opencode", "export"), returncode=0, stdout="{}", stderr=""
+        ),
+    )
+    monkeypatch.setattr(module, "_snapshot", lambda _session_id: _snapshot())
+
+    assert module._export("ses_example", destination) == 0
+    with pytest.raises(FileExistsError, match="already exists"):
+        module._export("ses_example", destination)
