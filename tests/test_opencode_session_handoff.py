@@ -128,6 +128,28 @@ def test_valid_native_export_succeeds_and_existing_destination_fails(
         module._export("ses_example", destination)
 
 
+def test_symlinked_destination_parent_is_rejected_before_export(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    module = _module()
+    physical = tmp_path / "physical"
+    physical.mkdir()
+    linked = tmp_path / "linked"
+    linked.symlink_to(physical, target_is_directory=True)
+    called = False
+
+    def run(*_args: object, **_kwargs: Any) -> subprocess.CompletedProcess[bytes]:
+        nonlocal called
+        called = True
+        return subprocess.CompletedProcess(args=(), returncode=0)
+
+    monkeypatch.setattr(module.subprocess, "run", run)
+    destination = module._output_root("ses_example", linked / "handoff")
+    with pytest.raises(ValueError, match="parent must be physical"):
+        module._export("ses_example", destination)
+    assert not called
+
+
 def test_native_failure_is_published_and_propagated_without_database_access(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
@@ -152,7 +174,7 @@ def test_native_failure_is_published_and_propagated_without_database_access(
     ).read_bytes() == b"provider failed"
 
 
-def test_existing_output_parent_permissions_are_never_mutated(
+def test_existing_physical_output_parent_permissions_are_never_mutated(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     module = _module()
@@ -160,11 +182,13 @@ def test_existing_output_parent_permissions_are_never_mutated(
     parent.mkdir(mode=0o755)
     parent.chmod(0o755)
     _stub_native(monkeypatch, module, b"{}", b"")
+    monkeypatch.setattr(module, "_data_root", lambda: tmp_path)
+    monkeypatch.setattr(module, "_snapshot", lambda *_args: _snapshot())
 
-    with pytest.raises(PermissionError, match="private mode 0700"):
-        module._export("ses_example", parent / "handoff")
+    assert module._export("ses_example", parent / "handoff") == 0
 
     assert stat.S_IMODE(parent.stat().st_mode) == 0o755
+    assert stat.S_IMODE((parent / "handoff").stat().st_mode) == 0o700
 
 
 def test_cleanup_failure_is_attached_without_masking_primary(

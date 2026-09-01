@@ -233,20 +233,23 @@ def _handoff(snapshot: dict[str, Any], native_status: str) -> str:
 
 def _output_root(session_id: str, explicit: Path | None) -> Path:
     if explicit is not None:
-        return explicit.resolve()
+        return Path(os.path.abspath(explicit))
     return _data_root() / "exports" / session_id
 
 
-def _export(session_id: str, destination: Path) -> int:
+def _validate_destination(destination: Path) -> None:
     if destination.exists() or destination.is_symlink():
         raise FileExistsError(f"handoff destination already exists: {destination}")
-    destination.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
-    parent_mode = destination.parent.stat().st_mode & 0o777
-    if parent_mode != 0o700:
-        raise PermissionError(
-            f"handoff output parent must have private mode 0700: "
-            f"{destination.parent} has {parent_mode:04o}"
-        )
+    parent = destination.parent
+    if not parent.is_dir() or parent.is_symlink() or parent.resolve() != parent:
+        raise ValueError(f"handoff destination parent must be physical: {parent}")
+    for component in (parent, *parent.parents):
+        if component.is_symlink():
+            raise ValueError(f"handoff destination traverses symlink: {component}")
+
+
+def _export(session_id: str, destination: Path) -> int:
+    _validate_destination(destination)
     stage = Path(tempfile.mkdtemp(prefix=f".{session_id}.", dir=destination.parent))
     os.chmod(stage, 0o700)
     try:
