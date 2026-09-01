@@ -94,6 +94,17 @@ At each checkpoint, compare new operator corrections with changes since the prio
 checkpoint. An unreconciled correction pauses the affected feature work until
 owners and consumers agree.
 
+When a correction governs Git checkpoint cadence, elect the branch/PR rule as
+the invariant owner. Require each complete green local validation round that
+covers material tracked changes to be committed conventionally and pushed
+before more implementation, then land that persisted checkpoint through its PR
+as a merge commit into the integration lane and revalidate the exact merge SHA.
+Start the next implementation unit from that current integrated state. If the
+integration lane advanced before landing, absorb it into the change branch with
+a `--no-ff` merge and revalidate the combined state first. Do not infer an empty
+commit from a clean remote CI result: without a material change it would
+recursively trigger CI rather than preserve new evidence.
+
 At every skill exit, inspect the measured run for a reusable decision or
 procedure defect. When one exists, correct the narrowest canonical skill owner
 and one material semantic evaluation role in the same landing cycle; a

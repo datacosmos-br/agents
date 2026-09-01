@@ -31,7 +31,13 @@ graders:
       opposites; adds an owning-skill semantic regression when agent behavior
       caused the incident; performs an evidence-based skill-exit review without
       cosmetic or project-specific governance churn; repeats contradiction
-      search; and keeps canonical
+      search; elects the branch/PR rule for Git checkpoint cadence; requires a
+      conventional pushed checkpoint after every complete green local validation
+      round covering material tracked changes; lands that checkpoint through a
+      reviewed PR as a merge commit into integration; revalidates the exact merge
+      SHA and starts the next unit from current integration; absorbs an advanced
+      integration lane into the change branch through a no-ff merge before
+      landing; rejects empty commits after remote CI, rebase, and force-push; and keeps canonical
       tracker closure unavailable. A red correction gate must drive an owner fix
       and fresh validation in the same reconciliation, never a report-and-abandon
       handoff. Exact destructive authorization remains valid after interruption

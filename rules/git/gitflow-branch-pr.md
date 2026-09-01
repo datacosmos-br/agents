@@ -17,14 +17,21 @@ orchestration is suspended it is prohibited.
   guidance, assume one from another repository, or reuse the base of a sibling
   project.
 - One git root per PR; never mix two repositories in one commit or PR.
-- **Commit and push:** stage explicit scoped paths, commit, and push normally.
-  Let
-  pre-commit/pre-push/CI validate — do not re-run the full gate matrix by hand
-  before every commit; `verification-loop` owns manual RED→GREEN evidence and
-  CI owns the complete repeated matrix.
+- **Clean-round checkpoint:** after every complete applicable local validation
+  round that is green and covers material tracked changes, immediately stage
+  explicit scoped paths, create a conventional checkpoint commit, and push the
+  change branch. Open or update its PR, require remote gates and review, and
+  merge that persisted checkpoint into integration by merge commit before
+  starting the next implementation unit. Revalidate the exact integration merge
+  SHA, then start the next unit from that current integration state. A red or
+  incomplete round produces no green checkpoint. Never create an empty commit
+  merely because remote CI completed: that would recursively start another CI
+  round without a material state change. Pre-commit/pre-push/CI may repeat their
+  declared matrix; `verification-loop` owns the manual RED→GREEN evidence.
 - If integration advanced or diverged, merge `origin/<integration>` into the
   change branch with `--no-ff`, resolve by preserving valid concurrent work,
-  and revalidate. Never rebase or force-push an authorized branch.
+  and revalidate. After that clean combined round, checkpoint and push the merge
+  before continuing. Never rebase or force-push an authorized branch.
 - Open/update the PR against integration, resolve every conversation, obtain
   approval, require green checks, and merge by merge commit. Revalidate the
   exact merge SHA on integration.
