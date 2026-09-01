@@ -25,8 +25,7 @@ correct the narrowest canonical global owner, add a material evaluation, deploy
 its projections through the canonical lifecycle, and keep project-local text to
 selection and domain-specific constraints. After compaction, restore the active
 goal, evidence, scope, exclusions, accepted concurrent work, first red gate, and
-next action.
-Every subagent inherits the current authority, fix-forward contract, and a
+next action. Every subagent inherits authority, the fix-forward contract, and a
 bounded assignment; it may not discard, stash, roll back, or overwrite another
 actor's work.
 
