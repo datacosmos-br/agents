@@ -15,9 +15,10 @@ from agents_governance.governance_config import (
     audit_governance_config,
     load_governance_config,
 )
-from agents_governance.hook_projection import HookProjector
+from agents_governance.hook_projection import HookProjector, _capsule
 from agents_governance.projection_config import load_projection_config
 from agents_governance.rules import audit_rule_specs
+from agents_governance.runtime import _inventory
 
 
 def _projector(root: Path) -> HookProjector:
@@ -444,3 +445,22 @@ def test_config_path_change_retires_artifacts_managed_at_the_old_location(
     assert canonical in converged["managed"]  # type: ignore[operator]
     assert relocated not in converged["managed"]  # type: ignore[operator]
     projector.check(project)
+
+
+def test_capsule_carries_approval_provenance_for_every_bootstrap_rule() -> None:
+    """The per-turn delivery surface must let a reader order rules by recency.
+
+    The capsule is what reaches the model at session start and on every
+    prompt. Approval provenance written only into the on-disk projections
+    never arrives there, so recency stays unresolvable at the point of use.
+    """
+
+    root = Path(__file__).resolve().parent.parent
+    inventory = _inventory(root)
+    capsule = _capsule(inventory.governance, inventory.commands, inventory.rules)
+
+    assert capsule.count("<!-- aihub.approval: ") == len(
+        inventory.governance.bootstrap_rules
+    )
+    for identity in inventory.governance.bootstrap_rules:
+        assert f"## Rule `{identity}`" in capsule

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import subprocess
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
@@ -8,6 +9,9 @@ import pytest
 import yaml
 
 from agents_governance.approvals import (
+    ApprovedArtifact,
+    approval_note,
+    audit_precedence,
     resolve_approval_tags,
     resolve_reference,
     validate_decision_tag,
@@ -83,7 +87,6 @@ def test_effective_tag_rejects_future_dates() -> None:
     [
         ("decision:ADR-0001", "ADR-0001"),
         ("decision:plan-11", "plan-11"),
-        ("decision:plan-11-inc3", "plan-11-inc3"),
     ],
 )
 def test_decision_tag_returns_its_reference(tag: str, reference: str) -> None:
@@ -92,24 +95,48 @@ def test_decision_tag_returns_its_reference(tag: str, reference: str) -> None:
 
 @pytest.mark.parametrize(
     "tag",
-    ["decision:adr-0001", "decision:ADR-123", "decision:plan-1", "decision:plan-123"],
+    [
+        "decision:adr-0001",
+        "decision:ADR-123",
+        "decision:plan-1",
+        "decision:plan-123",
+        "decision:plan-11-inc3",
+    ],
 )
 def test_decision_tag_rejects_unsupported_references(tag: str) -> None:
     with pytest.raises(ValueError, match="unsupported approval reference"):
         validate_decision_tag(tag)
 
 
-def test_supersedes_tag_shares_the_reference_grammar() -> None:
+def test_supersedes_tag_accepts_lineage_and_artifact_identity() -> None:
     assert validate_supersedes_tag("supersedes:plan-11") == "plan-11"
+    assert validate_supersedes_tag("supersedes:skill:caveman") == "skill:caveman"
+    assert (
+        validate_supersedes_tag("supersedes:rule:runtime/fail-loud")
+        == "rule:runtime/fail-loud"
+    )
     with pytest.raises(ValueError, match="unsupported approval reference"):
-        validate_supersedes_tag("supersedes:skill:caveman")
+        validate_supersedes_tag("supersedes:agent:reviewer")
+
+
+@pytest.mark.parametrize(
+    "tag",
+    (
+        "supersedes:rule:runtime/Fail-Loud",
+        "supersedes:rule:runtime/fail_loud",
+        "supersedes:skill:code/review",
+        "supersedes:command:PR-list",
+    ),
+)
+def test_supersedes_tag_rejects_noncanonical_artifact_identities(tag: str) -> None:
+    with pytest.raises(ValueError, match="unsupported approval reference"):
+        validate_supersedes_tag(tag)
 
 
 def test_reference_resolves_to_exactly_one_document(tmp_path: Path) -> None:
     _docs(tmp_path)
     assert resolve_reference(tmp_path, "ADR-0001").name == "ADR-0001-demo.md"
     assert resolve_reference(tmp_path, "plan-11").name == "11-distribution.md"
-    assert resolve_reference(tmp_path, "plan-11-inc9").name == "11-distribution.md"
 
 
 def test_unresolvable_reference_fails_loud(tmp_path: Path) -> None:
@@ -350,9 +377,16 @@ def test_catalog_rejects_dangling_approval_tags(tmp_path: Path) -> None:
         Catalog(tmp_path)
 
 
-def test_project_skills_resolve_approvals_against_central_authority(
+def test_project_skills_resolve_approvals_against_their_own_docs(
     tmp_path: Path,
 ) -> None:
+    """Each owner approves its own artifacts in its own ``docs/``.
+
+    Resolving a project-local skill against the central authority's ``docs/``
+    would leave a downstream repository unable to approve its own skill: it
+    cannot add a document to ai-hub.
+    """
+
     authority_root = tmp_path / "authority"
     project_root = tmp_path / "project"
     authority_root.mkdir()
@@ -389,12 +423,57 @@ def test_project_skills_resolve_approvals_against_central_authority(
         ),
     )
 
+    _docs(project_root)
     authority = Catalog(authority_root)
     catalog = Catalog.project(project_root, authority)
 
     assert tuple(record["name"] for record in catalog.inventory()) == (
         "local-approved",
     )
+
+
+def test_project_skill_without_its_own_docs_fails_loud(tmp_path: Path) -> None:
+    """A project that never published its approval documents fails at its root."""
+
+    authority_root = tmp_path / "authority"
+    project_root = tmp_path / "project"
+    authority_root.mkdir()
+    project_root.mkdir()
+    _config(authority_root)
+    _docs(authority_root)
+    _skill(
+        authority_root,
+        "agent-wide",
+        "central",
+        (
+            "decision:ADR-0001",
+            "effective:2026-08-30",
+            "policy:strict-execution",
+            "provenance:agents-owned",
+            "updates:manual",
+            "usage:on-demand",
+        ),
+    )
+    _skill(
+        project_root,
+        "tool",
+        "local-unapproved",
+        (
+            "activation:opt-in",
+            "decision:ADR-0001",
+            "detect:opt-in:local-unapproved",
+            "effective:2026-08-30",
+            "provenance:project-owned",
+            "route:project",
+            "tool:approvals",
+            "updates:manual",
+            "usage:on-demand",
+        ),
+    )
+    authority = Catalog(authority_root)
+
+    with pytest.raises(ValueError, match="exactly one document"):
+        Catalog.project(project_root, authority)
 
 
 def _tagged_rule_spec(tmp_path: Path, tags: tuple[str, ...]):
@@ -509,3 +588,190 @@ def test_real_inventory_carries_resolvable_approval_tags() -> None:
         assert len(decisions) == 1, f"{path}: exactly one decision: tag required"
         assert len(effective) == 1, f"{path}: exactly one effective: tag required"
         resolve_approval_tags(REPOSITORY, tags, path)
+
+
+def _commit_retired_rule(root: Path, relative: str) -> None:
+    path = root / "rules" / relative
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text("# Retired rule\n", encoding="utf-8")
+    subprocess.run(("git", "init", str(root)), check=True, capture_output=True)
+    subprocess.run(("git", "-C", str(root), "config", "user.name", "Test"), check=True)
+    subprocess.run(
+        ("git", "-C", str(root), "config", "user.email", "test@example.invalid"),
+        check=True,
+    )
+    subprocess.run(("git", "-C", str(root), "add", str(path)), check=True)
+    subprocess.run(
+        ("git", "-C", str(root), "commit", "-m", "add retired rule"),
+        check=True,
+        capture_output=True,
+    )
+    path.unlink()
+
+
+def test_precedence_requires_a_superseded_artifact_to_be_retired(
+    tmp_path: Path,
+) -> None:
+    """Old and new coexisting is the residue the recency law forbids."""
+
+    replacement = ApprovedArtifact(
+        "rule:runtime/no-fallback",
+        ("decision:ADR-0001", "effective:2026-08-30", "supersedes:rule:runtime/older"),
+        Path("rules/runtime/no-fallback.md"),
+    )
+    superseded = ApprovedArtifact(
+        "rule:runtime/older",
+        ("decision:ADR-0001", "effective:2026-08-29"),
+        Path("rules/runtime/older.md"),
+    )
+
+    _commit_retired_rule(tmp_path, "runtime/older.md")
+    audit_precedence(tmp_path, (replacement,))
+
+    with pytest.raises(ValueError, match="still active"):
+        audit_precedence(tmp_path, (replacement, superseded))
+
+
+def test_precedence_rejects_a_dangling_artifact_identity(tmp_path: Path) -> None:
+    _commit_retired_rule(tmp_path, "runtime/another-rule.md")
+    replacement = ApprovedArtifact(
+        "rule:runtime/no-fallback",
+        (
+            "decision:ADR-0001",
+            "effective:2026-08-30",
+            "supersedes:rule:runtime/fail-loudd",
+        ),
+        Path("rules/runtime/no-fallback.md"),
+    )
+
+    with pytest.raises(ValueError, match="does not resolve through Git history"):
+        audit_precedence(tmp_path, (replacement,))
+
+
+def test_precedence_rejects_identity_only_on_an_unmerged_branch(
+    tmp_path: Path,
+) -> None:
+    root = tmp_path
+    subprocess.run(("git", "init", str(root)), check=True, capture_output=True)
+    subprocess.run(("git", "-C", str(root), "config", "user.name", "Test"), check=True)
+    subprocess.run(
+        ("git", "-C", str(root), "config", "user.email", "test@example.invalid"),
+        check=True,
+    )
+    readme = root / "README.md"
+    readme.write_text("# Main\n", encoding="utf-8")
+    subprocess.run(("git", "-C", str(root), "add", str(readme)), check=True)
+    subprocess.run(
+        ("git", "-C", str(root), "commit", "-m", "main baseline"),
+        check=True,
+        capture_output=True,
+    )
+    integrated_branch = subprocess.run(
+        ("git", "-C", str(root), "branch", "--show-current"),
+        check=True,
+        capture_output=True,
+        text=True,
+    ).stdout.strip()
+    subprocess.run(
+        ("git", "-C", str(root), "checkout", "-b", "abandoned"),
+        check=True,
+        capture_output=True,
+    )
+    abandoned = root / "rules" / "runtime" / "abandoned.md"
+    abandoned.parent.mkdir(parents=True)
+    abandoned.write_text("# Never integrated\n", encoding="utf-8")
+    subprocess.run(("git", "-C", str(root), "add", str(abandoned)), check=True)
+    subprocess.run(
+        ("git", "-C", str(root), "commit", "-m", "abandoned rule"),
+        check=True,
+        capture_output=True,
+    )
+    subprocess.run(
+        ("git", "-C", str(root), "checkout", integrated_branch),
+        check=True,
+        capture_output=True,
+    )
+    replacement = ApprovedArtifact(
+        "rule:runtime/no-fallback",
+        (
+            "decision:ADR-0001",
+            "effective:2026-08-30",
+            "supersedes:rule:runtime/abandoned",
+        ),
+        Path("rules/runtime/no-fallback.md"),
+    )
+
+    with pytest.raises(ValueError, match="does not resolve through Git history"):
+        audit_precedence(root, (replacement,))
+
+
+def test_precedence_fails_loud_when_required_history_is_shallow(
+    tmp_path: Path,
+) -> None:
+    source = tmp_path / "source"
+    source.mkdir()
+    _commit_retired_rule(source, "runtime/older.md")
+    subprocess.run(("git", "-C", str(source), "add", "--update"), check=True)
+    subprocess.run(
+        ("git", "-C", str(source), "commit", "-m", "retire old rule"),
+        check=True,
+        capture_output=True,
+    )
+    readme = source / "README.md"
+    readme.write_text("# Later commit\n", encoding="utf-8")
+    subprocess.run(("git", "-C", str(source), "add", str(readme)), check=True)
+    subprocess.run(
+        ("git", "-C", str(source), "commit", "-m", "later commit"),
+        check=True,
+        capture_output=True,
+    )
+    shallow = tmp_path / "shallow"
+    subprocess.run(
+        ("git", "clone", "--depth", "1", source.as_uri(), str(shallow)),
+        check=True,
+        capture_output=True,
+    )
+    replacement = ApprovedArtifact(
+        "rule:runtime/no-fallback",
+        (
+            "decision:ADR-0001",
+            "effective:2026-08-30",
+            "supersedes:rule:runtime/older",
+        ),
+        Path("rules/runtime/no-fallback.md"),
+    )
+
+    with pytest.raises(ValueError, match="does not resolve through Git history"):
+        audit_precedence(shallow, (replacement,))
+
+
+def test_precedence_ignores_document_lineage_supersession(tmp_path: Path) -> None:
+    """A supersedes tag naming an approval document orders no artifact."""
+
+    audit_precedence(
+        tmp_path,
+        (
+            ApprovedArtifact(
+                "skill:caveman",
+                ("decision:ADR-0001", "effective:2026-08-30", "supersedes:plan-11"),
+                Path("skills/caveman/SKILL.md"),
+            ),
+        ),
+    )
+
+
+def test_precedence_rejects_a_duplicate_artifact_identity(tmp_path: Path) -> None:
+    duplicated = ApprovedArtifact(
+        "rule:runtime/fail-loud", (), Path("rules/runtime/fail-loud.md")
+    )
+
+    with pytest.raises(ValueError, match="duplicate artifact identity"):
+        audit_precedence(tmp_path, (duplicated, duplicated))
+
+
+def test_approval_note_renders_only_the_approval_namespaces() -> None:
+    assert approval_note(()) == ""
+    assert approval_note(("route:both",)) == ""
+    assert approval_note(("decision:ADR-0001", "effective:2026-08-30")) == (
+        "\n\n<!-- aihub.approval: decision:ADR-0001; effective:2026-08-30 -->"
+    )

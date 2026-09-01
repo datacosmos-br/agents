@@ -168,7 +168,7 @@ class Catalog:
         catalog._directories = tuple(record.directory for record in catalog._records)
         for record in catalog._records:
             resolve_approval_tags(
-                authority.root, record.tags, record.directory / "SKILL.md"
+                catalog.root, record.tags, record.directory / "SKILL.md"
             )
             if record.provenance != "project-owned":
                 raise ValueError(
