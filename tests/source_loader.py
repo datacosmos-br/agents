@@ -14,6 +14,6 @@ def load_source_module(name: str, path: Path) -> ModuleType:
     module.__file__ = str(path)
     module.__package__ = ""
     exec(  # noqa: S102 -- test loader executes the explicitly selected source
-        compile(source, str(path), "exec"), module.__dict__
+        compile(source, str(path), "exec", dont_inherit=True), module.__dict__
     )
     return module
