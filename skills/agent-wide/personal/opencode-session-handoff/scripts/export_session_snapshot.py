@@ -12,7 +12,9 @@ import sqlite3
 import subprocess
 import tempfile
 from pathlib import Path
-from typing import Any
+from typing import Any, Never
+
+from agents_governance.cleanup import run_with_cleanup
 
 SESSION_ID = re.compile(r"^ses_[A-Za-z0-9]+$")
 SECRET_KEY = re.compile(
@@ -203,6 +205,10 @@ def _private_write(path: Path, content: bytes) -> None:
         os.fsync(stream.fileno())
 
 
+def _raise(error: BaseException) -> Never:
+    raise error
+
+
 def _handoff(snapshot: dict[str, Any], native_status: str) -> str:
     session = snapshot["session"][0]
     messages = snapshot["messages"][-50:]
@@ -360,11 +366,7 @@ def _export(session_id: str, destination: Path) -> int:
         )
         stage.replace(destination)
     except BaseException as primary:
-        try:
-            shutil.rmtree(stage)
-        except Exception as cleanup:  # noqa: BLE001 -- attach cleanup to primary
-            primary.add_note(f"handoff staging cleanup failed: {cleanup!r}")
-        raise
+        run_with_cleanup(lambda: _raise(primary), lambda: shutil.rmtree(stage))
 
     print(
         json.dumps(
