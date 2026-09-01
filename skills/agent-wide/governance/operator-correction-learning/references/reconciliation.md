@@ -88,6 +88,18 @@ done. State release behaviour only where the release enforces it; state the rest
 as operator discipline and say so, especially when the release permits the
 opposite.
 
+A conditional restriction never proves that its condition is currently true.
+Before applying a restriction whose trigger is mutable operational state, read
+that state from its current declared authority and preserve the decisive
+evidence. Attributing an unproven state to the operator or runtime — including
+declaring an active orchestrator suspended — is a maximum-severity integrity
+failure of the same class as fabricated gate evidence. Fail closed on the
+dependent decision, retract the false attribution, correct every dependent
+conclusion, and add a material semantic regression. Once the authority proves
+the trigger false, applying the conditional restriction is itself prohibited;
+continue through the authorized active owner without inventing a suspension,
+permission boundary, or substitute workflow.
+
 ## Checkpoint cadence
 
 At each checkpoint, compare new operator corrections with changes since the prior
