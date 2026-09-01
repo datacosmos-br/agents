@@ -2,19 +2,24 @@ from __future__ import annotations
 
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
+from unittest.mock import patch
 
-import pytest
 from source_loader import load_source_module
 
 
 def test_catalog_script_loading_does_not_inherit_caller_future_flags(
     tmp_path: Path,
 ) -> None:
-    source = tmp_path / "runtime_annotations.py"
-    source.write_text("value: MissingRuntimeType = 1\n", encoding="utf-8")
+    source = tmp_path / "catalog_script.py"
+    source.write_text("value = 1\n", encoding="utf-8")
+    compiler = compile
 
-    with pytest.raises(NameError, match="MissingRuntimeType"):
+    with patch("builtins.compile", wraps=compiler) as compile_mock:
         load_source_module("runtime_annotations", source)
+
+    compile_mock.assert_called_once_with(
+        b"value = 1\n", str(source), "exec", dont_inherit=True
+    )
 
 
 def test_catalog_script_loading_is_concurrent_and_residue_free() -> None:
