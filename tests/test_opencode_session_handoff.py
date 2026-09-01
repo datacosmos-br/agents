@@ -1,16 +1,15 @@
 from __future__ import annotations
 
-import importlib.util
 import json
 import sqlite3
 import stat
 import subprocess
-import sys
 from pathlib import Path
 from types import ModuleType
 from typing import Any
 
 import pytest
+from source_loader import load_source_module
 
 
 def _module() -> ModuleType:
@@ -18,16 +17,7 @@ def _module() -> ModuleType:
         Path(__file__).parents[1]
         / "skills/agent-wide/personal/opencode-session-handoff/scripts/export_session_snapshot.py"
     )
-    spec = importlib.util.spec_from_file_location("opencode_session_handoff", path)
-    assert spec is not None and spec.loader is not None
-    module = importlib.util.module_from_spec(spec)
-    previous = sys.dont_write_bytecode
-    sys.dont_write_bytecode = True
-    try:
-        spec.loader.exec_module(module)
-    finally:
-        sys.dont_write_bytecode = previous
-    return module
+    return load_source_module("opencode_session_handoff", path)
 
 
 def _database(root: Path) -> None:
