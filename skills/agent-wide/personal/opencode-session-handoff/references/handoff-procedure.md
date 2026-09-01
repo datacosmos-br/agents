@@ -24,14 +24,31 @@ Plugins may print warnings containing JSON before the session document. Do not
 assume the first `{` begins the export, and never discard a provider or
 credential error merely to make parsing succeed.
 
-For a large session, use OpenCode's database interface read-only to recover the
-cursor without loading the whole transcript:
+Write the native output and diagnostics to private files below OpenCode's
+reported data directory, validate the complete document, and retain an invalid
+or truncated result with an explicit `.invalid` name. A transport or tool-output
+capture limit does not prove that the native exporter truncated its file; always
+validate the file written directly by the command. Never publish these files
+or place them in a source checkout.
+
+After recording the native result, use the skill's snapshot script to produce a
+separate allowlisted database snapshot and sanitised handoff:
 
 ```bash
-opencode db "SELECT position, status, priority, content FROM todo WHERE session_id='<session-id>' ORDER BY position" --format json
-opencode db "SELECT time_created, id, json_extract(data,'$.role') AS role, json_extract(data,'$.mode') AS mode, json_extract(data,'$.finish') AS finish FROM message WHERE session_id='<session-id>' ORDER BY time_created DESC LIMIT 50" --format json
+python scripts/export_session_snapshot.py <session-id>
 ```
 
+The script resolves the data directory from `opencode debug paths`, opens its
+reported SQLite database with `mode=ro` and `query_only`, validates a strict
+table/column allowlist, and queries only session, todo, message cursor metadata,
+and part cursor metadata. It incorporates a validated native export when present, writes
+atomically with directory mode `0700` and file mode `0600`, and redacts secret
+keys and credential-shaped text from the Markdown handoff. The private JSON may
+contain raw tool output and remains sensitive. It is evidence recovery, never a
+fallback that changes the status of the native export.
+
+For a large session, use the generated private snapshot to recover the cursor
+without loading the whole transcript through a bounded command-output channel.
 Join `message` to `part` only for messages needed to recover the cursor. Inspect
 text, reasoning, tool input, tool output, and tool error. Never query credential
 tables or print environment secrets.

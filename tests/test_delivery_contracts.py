@@ -164,6 +164,7 @@ def test_make_is_development_support_for_the_optionless_runtime() -> None:
 def test_make_isolates_concurrent_pytest_invocations() -> None:
     makefile = (ROOT / "Makefile").read_text(encoding="utf-8")
 
+    assert "override export UV_PROJECT_ENVIRONMENT := $(CURDIR)/.venv" in makefile
     assert "PYTEST_SCRATCH := $(CURDIR)/.test-tmp" in makefile
     assert "--basetemp $(PYTEST_SCRATCH)/pytest.$$PPID" in makefile
     assert ".test-tmp/pytest\n" not in makefile

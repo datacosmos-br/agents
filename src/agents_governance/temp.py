@@ -68,8 +68,6 @@ def _configured_path(raw: object, config_dir: Path, context: str) -> Path:
 def _repository(path: Path) -> None:
     if not path.is_dir():
         raise ValueError(f"registered repository must be a physical directory: {path}")
-    if _inside(path, SYSTEM_TEMP):
-        raise ValueError(f"repositories under /tmp are prohibited: {path}")
 
 
 def _storage_manifest(repository: Path) -> StorageManifest:

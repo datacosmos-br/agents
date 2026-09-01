@@ -73,7 +73,7 @@ def test_manifest_rejects_first_schema_or_path_defect(
         require_repository_storage(repository)
 
 
-def test_repository_under_system_temp_is_rejected(
+def test_registered_repository_under_system_temp_is_accepted(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
     system_temp = tmp_path / "system-temp"
@@ -82,8 +82,12 @@ def test_repository_under_system_temp_is_rejected(
     _manifest(repository, "${CONFIG_DIR}/..")
     monkeypatch.setattr(temp_module, "SYSTEM_TEMP", system_temp)
 
-    with pytest.raises(ValueError, match="under /tmp"):
-        require_repository_storage(repository)
+    home = tmp_path / "home"
+    home.mkdir()
+    (home / "tmp").mkdir()
+    monkeypatch.setenv("HOME", str(home))
+
+    assert require_repository_storage(repository).repositories == (repository,)
 
 
 def test_registered_repository_without_storage_config_is_rejected(

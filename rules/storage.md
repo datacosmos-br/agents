@@ -16,13 +16,13 @@ canonical calculations are SSOT defaults, not fallback or required external
 inputs. Every resulting path is physical, canonical, and validated before the
 first effect.
 
-- `/tmp` is limited to small, bounded operating-system ephemera. Never place a
-  repository, worktree, virtual environment, persistent database, build cache,
-  checkpoint, backup, or report there.
+- `/tmp` may contain a physical repository or worktree. Never place a virtual
+  environment, persistent database, build cache, checkpoint, backup, or report
+  there.
 - `agentsctl doctor` and `agentsctl check` derive `config/storage.toml` from the
   checkout, load the entire manifest, calculate shell scratch once, and reject
-  the first schema, expansion, symlink, Git-root, `/tmp`, overlap, registration,
-  or repository-residue defect.
+  the first schema, expansion, symlink, Git-root, overlap, registration, or
+  repository-residue defect.
 - The manifest contains no runner, retention, report, warning, GC, cache, retry,
   or fallback configuration. Development subprocesses remain Make/tool owned and
   propagate nonzero exits, timeouts, and signals through their native process API.

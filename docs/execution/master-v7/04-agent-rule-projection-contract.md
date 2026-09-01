@@ -176,7 +176,7 @@ invocation applies every supported personal cell.
 
 The project target is the nearest ancestor of the invocation cwd that owns a
 physical `.git/` directory; the personal target is the current process home.
-Worktree `.git` files, symlinked metadata, repositories under `/tmp`, target
+Unowned worktree `.git` files, symlinked metadata, target
 arguments, environment overrides, and alternate personal modes are rejected or
 absent by construction.
 

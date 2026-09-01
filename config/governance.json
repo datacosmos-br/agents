@@ -61,6 +61,10 @@
     "correction-learning": [
       "skill:operator-correction-learning"
     ],
+    "cross-runtime-session-handoff": [
+      "rule:coordination/session-governance",
+      "skill:opencode-session-handoff"
+    ],
     "database-migration": [
       "command:database-migration",
       "rule:runtime/atomic-effects"
