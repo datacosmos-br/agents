@@ -26,7 +26,7 @@ from .cleanup import (
 )
 from .commands import CommandSpec
 from .governance_config import GovernanceConfig
-from .law_surface import LawSurface, PRELUDE_END, PRELUDE_START
+from .law_surface import PRELUDE_END, PRELUDE_START, LawSurface
 from .projection_authorization import (
     ProjectAuthorization,
     load_project_authorization,
@@ -835,7 +835,9 @@ class HookProjector:
                         destination,
                         {
                             destination: (
-                                _merge_instruction(destination, capsule, self.law_surface),
+                                _merge_instruction(
+                                    destination, capsule, self.law_surface
+                                ),
                                 0o644,
                             )
                         },
@@ -855,9 +857,7 @@ class HookProjector:
                 },
             )
             for context, boundary in (
-                ((ProjectionContext.PROJECT, repository),)
-                if project_authorized
-                else ()
+                ((ProjectionContext.PROJECT, repository),) if project_authorized else ()
             )
         )
         canonical_documents = (

@@ -16,7 +16,7 @@ from agents_governance.governance_config import (
     load_governance_config,
 )
 from agents_governance.hook_projection import HookProjector, _capsule
-from agents_governance.law_surface import LawSurface, PRELUDE_START
+from agents_governance.law_surface import PRELUDE_START, LawSurface
 from agents_governance.projection_config import load_projection_config
 from agents_governance.rules import audit_rule_specs
 from agents_governance.runtime import _inventory
@@ -92,11 +92,15 @@ def test_hook_projection_preserves_foreign_content_and_reaches_fixed_point(
 
     projector.apply(project)
 
-    assert (project / "AGENTS.md").read_text(encoding="utf-8").startswith(
-        PRELUDE_START + "\n"
+    assert (
+        (project / "AGENTS.md")
+        .read_text(encoding="utf-8")
+        .startswith(PRELUDE_START + "\n")
     )
-    assert (project / "CLAUDE.md").read_text(encoding="utf-8").startswith(
-        PRELUDE_START + "\n"
+    assert (
+        (project / "CLAUDE.md")
+        .read_text(encoding="utf-8")
+        .startswith(PRELUDE_START + "\n")
     )
     manifest = _json(project / ".agents" / "law-surface.json")
     assert manifest["owner"] == "agents-governance"
@@ -112,8 +116,10 @@ def test_hook_projection_preserves_foreign_content_and_reaches_fixed_point(
     assert any(
         group["hooks"][0].get("command") == "foreign" for group in session_groups
     )
-    assert agents.read_text().startswith("# Existing project law\n")
-    assert agents.read_text().count("AIHUB-GOVERNANCE-INSTRUCTIONS-BEGIN") == 1
+    rendered_agents = agents.read_text()
+    assert rendered_agents.startswith(PRELUDE_START + "\n")
+    assert "# Existing project law\n" in rendered_agents
+    assert rendered_agents.count("AIHUB-GOVERNANCE-INSTRUCTIONS-BEGIN") == 1
 
     copilot = _json(project / ".github" / "hooks" / "aihub-governance.json")
     copilot_handler = copilot["hooks"]["sessionStart"][0]  # type: ignore[index]

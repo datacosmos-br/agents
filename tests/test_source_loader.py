@@ -1,10 +1,45 @@
 from __future__ import annotations
 
+import ast
+import sys
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from unittest.mock import patch
 
 from source_loader import load_source_module
+
+SCRIPT_EXECUTABLE_ALLOWLISTS = {
+    "skills/agent-wide/personal/opencode-session-handoff/scripts/export_session_snapshot.py": {
+        "opencode"
+    },
+    "skills/tool/pr-sheriff/scripts/pr_triage.py": {"gh", "git"},
+}
+
+
+def test_projected_skill_scripts_are_stdlib_only_with_exact_allowlists() -> None:
+    root = Path(__file__).parents[1]
+    scripts = sorted(root.glob("skills/**/scripts/*.py"))
+    assert {str(path.relative_to(root)) for path in scripts} == set(
+        SCRIPT_EXECUTABLE_ALLOWLISTS
+    )
+    for script in scripts:
+        tree = ast.parse(script.read_text(encoding="utf-8"), filename=str(script))
+        imports = {
+            alias.name.partition(".")[0]
+            for node in ast.walk(tree)
+            if isinstance(node, ast.Import)
+            for alias in node.names
+        }
+        imports.update(
+            node.module.partition(".")[0]
+            for node in ast.walk(tree)
+            if isinstance(node, ast.ImportFrom) and node.module is not None
+        )
+        assert imports <= sys.stdlib_module_names
+        module = load_source_module(f"isolated_{script.stem}", script)
+        assert module.EXTERNAL_EXECUTABLES == frozenset(
+            SCRIPT_EXECUTABLE_ALLOWLISTS[str(script.relative_to(root))]
+        )
 
 
 def test_catalog_script_loading_does_not_inherit_caller_future_flags(

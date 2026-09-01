@@ -68,6 +68,91 @@ def test_gh_propagates_child_exit_code_and_stderr(
     assert capsys.readouterr().err == "provider failed\n"
 
 
+def test_public_repository_does_not_select_private_access_tools(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    module = _module(monkeypatch)
+    monkeypatch.setattr(
+        module,
+        "_gh",
+        lambda *_args, **_kwargs: json.dumps(
+            {"private": False, "permissions": {"push": True}}
+        ),
+    )
+    monkeypatch.setattr(
+        module,
+        "_external",
+        lambda *_args: pytest.fail("dormant private access capability was probed"),
+    )
+
+    result = module.managed_private_access("datacosmos-br/public", "push", None)
+
+    assert result["access_preflight"] == "not_selected"
+
+
+def test_managed_private_access_requires_account_alias_and_exact_permission(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    module = _module(monkeypatch)
+    monkeypatch.setattr(
+        module,
+        "_gh",
+        lambda *_args, **_kwargs: json.dumps(
+            {"private": True, "permissions": {"pull": True, "push": True}}
+        ),
+    )
+
+    with pytest.raises(ValueError, match="declared SSH host alias"):
+        module.managed_private_access(
+            "datacosmos-br/agents",
+            "push",
+            "git@github.com:datacosmos-br/agents.git",
+        )
+    with pytest.raises(PermissionError, match="admin"):
+        module.managed_private_access(
+            "datacosmos-br/agents",
+            "admin",
+            "git@github-dc:datacosmos-br/agents.git",
+        )
+
+
+def test_managed_private_access_proves_gh_and_exact_ssh_repository(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    module = _module(monkeypatch)
+    calls: list[tuple[str, ...]] = []
+    monkeypatch.setattr(
+        module,
+        "_gh",
+        lambda *_args, **_kwargs: json.dumps(
+            {"private": True, "permissions": {"push": True}}
+        ),
+    )
+
+    def record_external(*args: str) -> str:
+        calls.append(args)
+        return "proved"
+
+    monkeypatch.setattr(module, "_external", record_external)
+
+    result = module.managed_private_access(
+        "marlon-costa-dc/private", "push", "git@github-dc:marlon-costa-dc/private.git"
+    )
+
+    assert result == {
+        "repository": "marlon-costa-dc/private",
+        "private_managed": True,
+        "effect": "push",
+        "access_preflight": "passed",
+        "permission": "push",
+        "ssh_host_alias": "github-dc",
+    }
+    assert calls == [
+        ("gh", "auth", "status", "--active", "--hostname", "github.com"),
+        ("git", "ls-remote", "git@github-dc:marlon-costa-dc/private.git", "HEAD"),
+    ]
+
+
 def test_terminal_non_success_conclusions_are_blocking(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:

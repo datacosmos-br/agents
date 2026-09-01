@@ -15,9 +15,10 @@ runtime behavior invokes one public `agentsctl` verb; it never imports a private
 runtime function, reconstructs orchestration, or creates a second API.
 
 Ad hoc shell, inline Python, diagnostics, and test helpers used as operational
-substitutes never import or execute private agent runtime. Repository and GitHub
-work uses its declared `make`, `git`, and `gh` owner, never an executable
-lower-level substitute.
+substitutes never import or execute private agent runtime. Repository work uses
+its declared `make` and `git` owners. GitHub work uses `gh` only after the
+project selects that capability; no installed private command is a transitive
+runtime dependency or an executable lower-level substitute.
 
 A broken or out-of-pattern command is a defect to fix at its owner and rerun
 through the same surface. Bypasses are blocking violations, not warnings.
