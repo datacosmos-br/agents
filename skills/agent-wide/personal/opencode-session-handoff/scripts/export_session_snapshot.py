@@ -241,7 +241,12 @@ def _export(session_id: str, destination: Path) -> int:
     if destination.exists() or destination.is_symlink():
         raise FileExistsError(f"handoff destination already exists: {destination}")
     destination.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
-    os.chmod(destination.parent, 0o700)
+    parent_mode = destination.parent.stat().st_mode & 0o777
+    if parent_mode != 0o700:
+        raise PermissionError(
+            f"handoff output parent must have private mode 0700: "
+            f"{destination.parent} has {parent_mode:04o}"
+        )
     stage = Path(tempfile.mkdtemp(prefix=f".{session_id}.", dir=destination.parent))
     os.chmod(stage, 0o700)
     try:
@@ -285,6 +290,43 @@ def _export(session_id: str, destination: Path) -> int:
         if not stderr:
             stderr_path.unlink()
 
+        native_manifest = {
+            "command": ["opencode", "export", session_id],
+            "status": native_status,
+            "exit_code": native.returncode,
+            "stdout_file": native_name,
+            "stdout_sha256": _digest(stdout),
+            "stderr_file": ("native-export.stderr.private.log" if stderr else None),
+            "stderr_sha256": _digest(stderr) if stderr else None,
+            "validated_document": native_document is not None,
+        }
+        if native.returncode != 0:
+            _private_write(
+                stage / "manifest.json",
+                json.dumps(
+                    {
+                        "schema_version": 1,
+                        "session_id": session_id,
+                        "native_export": native_manifest,
+                        "database_snapshot": None,
+                        "sanitised_handoff": None,
+                    },
+                    indent=2,
+                    ensure_ascii=False,
+                ).encode()
+                + b"\n",
+            )
+            stage.replace(destination)
+            print(
+                json.dumps(
+                    {
+                        "destination": str(destination),
+                        "native_status": native_status,
+                    }
+                )
+            )
+            return native.returncode
+
         snapshot = _snapshot(session_id, _data_root())
         snapshot_bytes = (
             json.dumps(snapshot, indent=2, ensure_ascii=False).encode() + b"\n"
@@ -295,16 +337,7 @@ def _export(session_id: str, destination: Path) -> int:
         manifest = {
             "schema_version": 1,
             "session_id": session_id,
-            "native_export": {
-                "command": ["opencode", "export", session_id],
-                "status": native_status,
-                "exit_code": native.returncode,
-                "stdout_file": native_name,
-                "stdout_sha256": _digest(stdout),
-                "stderr_file": ("native-export.stderr.private.log" if stderr else None),
-                "stderr_sha256": _digest(stderr) if stderr else None,
-                "validated_document": native_document is not None,
-            },
+            "native_export": native_manifest,
             "database_snapshot": {
                 "source": "opencode.db?mode=ro",
                 "file": "database-snapshot.private.json",
@@ -323,8 +356,11 @@ def _export(session_id: str, destination: Path) -> int:
             json.dumps(manifest, indent=2, ensure_ascii=False).encode() + b"\n",
         )
         stage.replace(destination)
-    except BaseException:
-        shutil.rmtree(stage)
+    except BaseException as primary:
+        try:
+            shutil.rmtree(stage)
+        except Exception as cleanup:  # noqa: BLE001 -- attach cleanup to primary
+            primary.add_note(f"handoff staging cleanup failed: {cleanup!r}")
         raise
 
     print(

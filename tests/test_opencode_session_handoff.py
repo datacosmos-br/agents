@@ -80,12 +80,18 @@ def test_database_rejects_missing_allowlisted_column(tmp_path: Path) -> None:
 
 
 def _stub_native(
-    monkeypatch: pytest.MonkeyPatch, module: ModuleType, stdout: bytes, stderr: bytes
+    monkeypatch: pytest.MonkeyPatch,
+    module: ModuleType,
+    stdout: bytes,
+    stderr: bytes,
+    returncode: int = 0,
 ) -> None:
     def run(*_args: object, **kwargs: Any) -> subprocess.CompletedProcess[bytes]:
         kwargs["stdout"].write(stdout)
         kwargs["stderr"].write(stderr)
-        return subprocess.CompletedProcess(args=("opencode", "export"), returncode=0)
+        return subprocess.CompletedProcess(
+            args=("opencode", "export"), returncode=returncode
+        )
 
     monkeypatch.setattr(module.subprocess, "run", run)
 
@@ -120,3 +126,64 @@ def test_valid_native_export_succeeds_and_existing_destination_fails(
     assert module._export("ses_example", destination) == 0
     with pytest.raises(FileExistsError, match="already exists"):
         module._export("ses_example", destination)
+
+
+def test_native_failure_is_published_and_propagated_without_database_access(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    module = _module()
+    destination = tmp_path / "handoff"
+    _stub_native(monkeypatch, module, b"partial", b"provider failed", returncode=7)
+    monkeypatch.setattr(
+        module,
+        "_snapshot",
+        lambda *_args: pytest.fail("database must not replace the first failure"),
+    )
+
+    assert module._export("ses_example", destination) == 7
+    manifest = json.loads((destination / "manifest.json").read_text())
+    assert manifest["native_export"]["exit_code"] == 7
+    assert manifest["database_snapshot"] is None
+    assert (
+        destination / "native-export.invalid.private.log"
+    ).read_bytes() == b"partial"
+    assert (
+        destination / "native-export.stderr.private.log"
+    ).read_bytes() == b"provider failed"
+
+
+def test_existing_output_parent_permissions_are_never_mutated(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    module = _module()
+    parent = tmp_path / "foreign-parent"
+    parent.mkdir(mode=0o755)
+    parent.chmod(0o755)
+    _stub_native(monkeypatch, module, b"{}", b"")
+
+    with pytest.raises(PermissionError, match="private mode 0700"):
+        module._export("ses_example", parent / "handoff")
+
+    assert stat.S_IMODE(parent.stat().st_mode) == 0o755
+
+
+def test_cleanup_failure_is_attached_without_masking_primary(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    module = _module()
+    destination = tmp_path / "handoff"
+    _stub_native(monkeypatch, module, b"{}", b"")
+    monkeypatch.setattr(module, "_data_root", lambda: tmp_path)
+    monkeypatch.setattr(
+        module, "_snapshot", lambda *_args: (_ for _ in ()).throw(ValueError("primary"))
+    )
+    monkeypatch.setattr(
+        module.shutil,
+        "rmtree",
+        lambda *_args: (_ for _ in ()).throw(OSError("cleanup")),
+    )
+
+    with pytest.raises(ValueError, match="primary") as raised:
+        module._export("ses_example", destination)
+
+    assert any("cleanup" in note for note in raised.value.__notes__)
