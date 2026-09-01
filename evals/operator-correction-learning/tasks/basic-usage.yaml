@@ -3,7 +3,7 @@ name: Reconcile a wrong-side remediation correction
 description: Turn operator corrections into durable governance through authority reconciliation.
 tags: [operator-corrections, durable-governance, authority-reconciliation, precedence, contradiction, evidence, happy-path]
 inputs:
-  prompt: |-
+  prompt: >-
     Reconcile the operator correction in correction-state.yaml against its
     active authority, then make the replacement durable in governance owners and
     consumers. Treat the observed rename reversal as divergent state rather than
