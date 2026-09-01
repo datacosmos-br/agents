@@ -1,0 +1,36 @@
+name: opencode-session-handoff-eval
+description: OpenCode export reconstruction and evidence-bound Codex transfer.
+skill: opencode-session-handoff
+schemaVersion: '1.0'
+version: '1.0'
+config:
+  trials_per_task: 1
+  timeout_seconds: 300
+  parallel: false
+  max_attempts: 0
+  fail_fast: true
+  executor: copilot-sdk
+  model: aihub-primary
+  skill_directories:
+  - ../../skills/agent-wide/personal/opencode-session-handoff
+  required_skills:
+  - opencode-session-handoff
+graders:
+- type: prompt
+  name: opencode-session-handoff-contract
+  config:
+    prompt: |-
+      Grade the opencode-session-handoff response. Pass only when the response
+      reconstructs the OpenCode cursor from the
+      supplied export and current-state evidence, preserves the 401 as a failed
+      invocation, identifies the first unfinished plan step, distinguishes
+      transcript claims from current Git/runtime truth, and pauses before
+      execution because approval was requested. Reject provider/model switching,
+      credential disclosure, treating todos as completion proof, repeating
+      completed work, or mutating during the approval pause. When evidence is
+      missing, require a fail-closed request for the exact missing fact.
+- type: behavior
+  name: bounded_execution
+  config: {max_duration_ms: 240000}
+tasks:
+- tasks/*.yaml

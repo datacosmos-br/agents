@@ -1,0 +1,15 @@
+id: opencode-session-handoff-happy-001
+name: Reconstruct a noisy OpenCode export before Codex continuation
+description: Recover the real cursor and pause at the operator's approval boundary.
+tags: [opencode, session, export, cursor, reconstruction, codex, handoff, happy-path]
+inputs:
+  prompt: >-
+    Use session-export.log and current-state.log to reconstruct session
+    ses_example. I asked you to replan and wait for my approval before changing
+    anything. Preserve errors and show the exact next step.
+  files:
+  - path: session-export.log
+  - path: current-state.log
+expected:
+  output_contains: [ses_example, '401', Phase B, awaiting approval, git status]
+  output_not_contains: [switch provider, use another model, implementation complete, API key]
