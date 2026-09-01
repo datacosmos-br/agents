@@ -11,6 +11,15 @@ judgment stays here.
 # mistaken for one whose CI succeeded.
 python3 skills/tool/pr-sheriff/scripts/pr_triage.py locate <owner/repo> <pr>
 
+# mandatory immediately before an authorized landing effect: emits the same
+# inventory and exits nonzero unless every landing condition is satisfied
+python3 skills/tool/pr-sheriff/scripts/pr_triage.py gate <owner/repo> <pr> \
+  --base <declared-integration-branch> --head <authorized-head-oid>
+
+# bind the effect to the exact OID returned and checked by gate; a concurrent
+# push fails instead of landing unreviewed code
+gh pr merge <pr> --merge --match-head-commit <authorized-head-oid>
+
 # integration-lane queue across repositories; read each repository's declared
 # integration branch from its own law — a branch name written here would be
 # wrong for the next repository swept
@@ -26,6 +35,14 @@ therefore cancelled, timed-out, stale, `action_required`, and startup failures
 cannot disappear from the inventory. A check whose status is not `COMPLETED`
 remains pending. `mergeability` is explicitly `mergeable`, `conflicting`, or
 `unknown`; GitHub's pending `null` is never coerced to `false`.
+
+`locate` remains an informational inventory and exits zero after a successful
+query even when its JSON reports blockers. Never compose a landing effect after
+`locate`; compose it only after `gate`, whose exit status requires an open,
+non-draft, mergeable PR with clean merge state, passed checks, and zero
+unresolved threads. `gate` additionally requires the caller's declared base and
+authorized head OID. The following merge must use `--match-head-commit` with
+that same OID; temporal proximity alone does not close the push/merge race.
 
 Triage decision rules, each applied per finding before any reply:
 
