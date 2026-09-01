@@ -30,7 +30,10 @@ _EFFECTIVE_TAG = re.compile(r"effective:(\d{4})-(\d{2})-(\d{2})\Z")
 _DECISION_TAG = re.compile(r"decision:(.+)\Z")
 _SUPERSEDES_TAG = re.compile(r"supersedes:(.+)\Z")
 _APPROVAL_REFERENCE = re.compile(r"(?:ADR-\d{4}|plan-\d{2})\Z")
-_ARTIFACT_IDENTITY = re.compile(r"(?:rule|skill|command):[A-Za-z0-9][A-Za-z0-9._/-]*\Z")
+_SLUG = r"[a-z0-9]+(?:-[a-z0-9]+)*"
+_ARTIFACT_IDENTITY = re.compile(
+    rf"(?:rule:{_SLUG}(?:/{_SLUG})*|(?:skill|command):{_SLUG})\Z"
+)
 
 _ADR_DIRECTORY = Path("docs") / "adr"
 _PLAN_DIRECTORY = Path("docs") / "execution" / "master-v7"

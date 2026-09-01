@@ -119,6 +119,20 @@ def test_supersedes_tag_accepts_lineage_and_artifact_identity() -> None:
         validate_supersedes_tag("supersedes:agent:reviewer")
 
 
+@pytest.mark.parametrize(
+    "tag",
+    (
+        "supersedes:rule:runtime/Fail-Loud",
+        "supersedes:rule:runtime/fail_loud",
+        "supersedes:skill:code/review",
+        "supersedes:command:PR-list",
+    ),
+)
+def test_supersedes_tag_rejects_noncanonical_artifact_identities(tag: str) -> None:
+    with pytest.raises(ValueError, match="unsupported approval reference"):
+        validate_supersedes_tag(tag)
+
+
 def test_reference_resolves_to_exactly_one_document(tmp_path: Path) -> None:
     _docs(tmp_path)
     assert resolve_reference(tmp_path, "ADR-0001").name == "ADR-0001-demo.md"
@@ -689,6 +703,46 @@ def test_precedence_rejects_identity_only_on_an_unmerged_branch(
 
     with pytest.raises(ValueError, match="does not resolve through Git history"):
         audit_precedence(root, (replacement,))
+
+
+def test_precedence_fails_loud_when_required_history_is_shallow(
+    tmp_path: Path,
+) -> None:
+    source = tmp_path / "source"
+    source.mkdir()
+    _commit_retired_rule(source, "runtime/older.md")
+    subprocess.run(("git", "-C", str(source), "add", "--update"), check=True)
+    subprocess.run(
+        ("git", "-C", str(source), "commit", "-m", "retire old rule"),
+        check=True,
+        capture_output=True,
+    )
+    readme = source / "README.md"
+    readme.write_text("# Later commit\n", encoding="utf-8")
+    subprocess.run(("git", "-C", str(source), "add", str(readme)), check=True)
+    subprocess.run(
+        ("git", "-C", str(source), "commit", "-m", "later commit"),
+        check=True,
+        capture_output=True,
+    )
+    shallow = tmp_path / "shallow"
+    subprocess.run(
+        ("git", "clone", "--depth", "1", source.as_uri(), str(shallow)),
+        check=True,
+        capture_output=True,
+    )
+    replacement = ApprovedArtifact(
+        "rule:runtime/no-fallback",
+        (
+            "decision:ADR-0001",
+            "effective:2026-08-30",
+            "supersedes:rule:runtime/older",
+        ),
+        Path("rules/runtime/no-fallback.md"),
+    )
+
+    with pytest.raises(ValueError, match="does not resolve through Git history"):
+        audit_precedence(shallow, (replacement,))
 
 
 def test_precedence_ignores_document_lineage_supersession(tmp_path: Path) -> None:
