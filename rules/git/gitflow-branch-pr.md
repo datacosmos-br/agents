@@ -22,23 +22,33 @@ orchestration is suspended it is prohibited.
   state, local gate evidence, and next action in that item at every checkpoint.
   GitHub and tracker state must agree before publication, promotion, landing, or
   closure; divergence blocks the transition and is corrected at the state owner.
-- **Clean-round checkpoint:** after every complete applicable local validation
-  round that is green and covers material tracked changes, immediately stage
-  explicit scoped paths and create a commit whose subject starts `[WIP]`.
+- **Draft checkpoint:** stage explicit scoped paths and create a commit whose
+  subject starts `[WIP]` whenever a coherent collaboration increment must be
+  persisted.
   Commit and push it through the repository-owned WIP path, whose hooks recognize
   typed WIP state and exit before repeating the complete local matrix. Never use
   `--no-verify`. Open or update a Draft PR against integration and apply the
-  `WIP` label. GitHub Actions are not selected for a WIP checkpoint, and WIP
-  commits never merge into integration.
-- **Review promotion:** when the accumulated Draft PR is ready to land, rerun
-  the complete local matrix and create one promotion commit whose subject has
-  no `[WIP]` marker and represents the final material state. An empty promotion
-  commit is prohibited. Commit and push through the normal verification path,
+  `WIP` label. No validation is selected for Draft/WIP: local gates,
+  attestations, GitHub Actions, CodeQL, Copilot review and review agents all
+  remain dormant. WIP commits never merge into integration.
+- **Unbounded Review aggregation:** a promotion lane may aggregate any finite
+  number `N >= 1` of coherent Draft PRs; no configured or implicit cardinality
+  limit is permitted. Create it from current integration and merge every exact
+  Draft head with `--no-ff`. Record the complete ordered source PR, branch, head
+  OID and bead manifest. Source PRs remain Draft/WIP and never enter integration
+  directly. Open one non-Draft promotion PR, run the complete local matrix once
+  on its exact aggregate head, and automatically publish its signed attestation.
+  Create a promotion commit without `[WIP]`; an empty commit is permitted when
+  it is the typed transition into Review. Commit and push normally,
   remove the `WIP` label, convert Draft to Review, require Actions, conversations,
   and independent approval, then merge the exact head by merge commit. Revalidate
   the exact integration merge SHA locally and start the next unit from current
   integration. A red or incomplete round cannot produce either checkpoint or
   promotion.
+- The first failing promotion gate exits with its original status and preserves
+  the promotion lane at the exact aggregate cursor reached. Do not roll back,
+  clean, retry, fall back, attest, or advance Review state. The agent fixes
+  forward in that same lane and explicitly invokes promotion again.
 - Bind promotion to the branch, PR, and exact head recorded by the work item.
   After landing, record the integration merge SHA and post-merge evidence in the
   same item; close it only when GitHub, Git history, measured runtime, and current
@@ -49,18 +59,17 @@ orchestration is suspended it is prohibited.
   round, push through the repository-owned typed WIP path and update the tracker
   head evidence before continuing. `[skip ci]`, `[ci skip]`, `--no-verify`,
   rebase, and force-push are prohibited.
-- WIP publication uses the locally green matrix recorded in the canonical
-  tracker; absence of remote Actions is recorded as `NOT SELECTED`, never as a
-  green remote check. Only the non-WIP promotion head may enter integration, and
+- WIP publication records every validation and attestation as `NOT SELECTED`,
+  never as green. Only the non-WIP promotion head may enter integration, and
   it retains the full reviewed-PR and remote-check contract.
-- For repositories governed by the managed project workflow, each locally green
-  check/test matrix automatically publishes a repository-owned signed attestation
-  before its WIP checkpoint, bound to the
+- For repositories governed by the managed project workflow, the Review
+  promotion automatically runs the matrix and publishes one repository-owned
+  signed attestation, bound to the complete aggregate source manifest and the
   exact commit SHA, repository identity, canonical bead, commands, toolchain,
   and results. This is transparent to the agent: the canonical pipeline derives
   the predicate, signs/publishes the tag, and records it in the Bead/PR without
   requiring a hand-authored JSON document or a separate attestation command.
-  The bead and Draft PR reference the same immutable attestation.
+  The promotion bead and Review PR reference the same immutable attestation.
   Review CI verifies signer, SHA, predicate, and complete gate coverage before
   omitting an attested gate; missing, stale, partial, foreign, or invalid proof
   fails closed or runs the uncovered gate as declared by the typed workflow.

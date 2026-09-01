@@ -93,6 +93,20 @@ def test_wip_policy_never_uses_generic_ci_bypass_markers() -> None:
         assert "verification hooks disabled" not in text
 
 
+def test_draft_has_no_validation_and_review_aggregation_is_unbounded() -> None:
+    """Any number of Drafts aggregate into the single validated Review PR."""
+    rule = (ROOT / "rules/git/gitflow-branch-pr.md").read_text(encoding="utf-8")
+    assert "No validation is selected for Draft/WIP" in rule
+    assert "CodeQL, Copilot review and review agents all" in rule
+    assert "any finite\n  number `N >= 1`" in rule
+    assert "no configured or implicit cardinality\n  limit is permitted" in rule
+    assert "merge every exact\n  Draft head with `--no-ff`" in rule
+    assert "Open one non-Draft promotion PR" in rule
+    assert "validation and attestation as `NOT SELECTED`" in rule
+    assert "preserves\n  the promotion lane at the exact aggregate cursor" in rule
+    assert "Do not roll back,\n  clean, retry, fall back, attest" in rule
+
+
 def test_dependabot_covers_every_dependency_surface_with_seven_day_cooldown() -> None:
     configuration = yaml.safe_load(
         (ROOT / ".github" / "dependabot.yml").read_text(encoding="utf-8")
