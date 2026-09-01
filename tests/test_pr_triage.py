@@ -164,3 +164,62 @@ def test_sweep_uses_the_single_pull_mergeability_endpoint(
             "unresolved_threads": 0,
         }
     ]
+
+
+def test_landing_gate_reports_every_blocker(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    module = _module(monkeypatch)
+    inventory = {
+        "state": "open",
+        "draft": False,
+        "mergeability": "mergeable",
+        "mergeable_state": "unstable",
+        "checks_verdict": "passed",
+        "unresolved_threads": [{"thread_id": "thread-1"}],
+    }
+
+    assert module.landing_blockers(inventory) == [
+        "mergeable_state is unstable",
+        "1 review thread(s) unresolved",
+    ]
+
+
+def test_landing_gate_accepts_only_clean_completed_inventory(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    module = _module(monkeypatch)
+    inventory = {
+        "state": "open",
+        "draft": False,
+        "mergeability": "mergeable",
+        "mergeable_state": "clean",
+        "checks_verdict": "passed",
+        "unresolved_threads": [],
+    }
+
+    assert module.landing_blockers(inventory) == []
+
+
+def test_gate_command_exits_nonzero_after_printing_blockers(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    module = _module(monkeypatch)
+    inventory = {
+        "state": "open",
+        "draft": False,
+        "mergeability": "mergeable",
+        "mergeable_state": "clean",
+        "checks_verdict": "pending",
+        "unresolved_threads": [],
+    }
+    monkeypatch.setattr(module, "cmd_locate", lambda repository, number: inventory)
+    monkeypatch.setattr(sys, "argv", ["pr_triage.py", "gate", "owner/repo", "25"])
+
+    with pytest.raises(SystemExit) as raised:
+        module.main()
+
+    assert raised.value.code == 1
+    output = json.loads(capsys.readouterr().out)
+    assert output["landing_verdict"] == "blocked"
+    assert output["landing_blockers"] == ["checks_verdict is pending"]

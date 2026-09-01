@@ -3,8 +3,8 @@ name: Triage every configured PR
 description: Exercise pull-request review triage in the configured GitHub workflow.
 tags: [pull-request, triage, review, checks, threads, integration, happy-path]
 inputs:
-  prompt: Perform pull-request review triage for the GitHub workflow in pr-inventory.yaml for the one configured repository. Account for every PR and classify it from checks, reviews, threads, merge state, diff identity, and integration reachability. Recommend next actions only; Gas City and tracker runtime remain suspended, so do not invoke or propose them.
+  prompt: Perform pull-request review triage for the GitHub workflow in pr-inventory.yaml for the one configured repository. Account for every PR and classify it from checks, reviews, threads, merge state, diff identity, and integration reachability. State the exact fail-closed command that must run immediately before any later authorized landing. Recommend next actions only; Gas City and tracker runtime remain suspended, so do not invoke or propose them.
   files:
   - path: pr-inventory.yaml
 expected:
-  output_contains: ['#14', ready, '#15', blocked, duplicate CI owner, self-referential, unpinned, '|| true', make ci, '#16', superseded]
+  output_contains: ['#14', ready, pr_triage.py gate, '#15', blocked, duplicate CI owner, self-referential, unpinned, '|| true', make ci, '#16', superseded]
