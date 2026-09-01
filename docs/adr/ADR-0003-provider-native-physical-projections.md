@@ -40,8 +40,9 @@ that invocation and re-raises the first cause.
 A root clone owns a physical `.git/` directory. A Git-native submodule may use a
 gitfile only when Git proves its superproject and its resolved gitdir is
 physically contained under that same umbrella clone's `.git/modules/`
-hierarchy. Worktree gitfiles, symlinks, malformed gitfiles, external gitdirs,
-path escapes, and cross-root references remain invalid. Authorization, local
+hierarchy. Owned worktree gitfiles are valid, including in `/tmp`; symlinks,
+malformed gitfiles, external gitdirs, path escapes, and cross-root references
+remain invalid. Authorization, local
 source, cwd, and every project destination must be contained in the selected
 member worktree.
 
@@ -89,7 +90,7 @@ flowchart LR
 | Validation | Syntax, capability, runtime canary, fixed point | Adapter and Waza gates | Provider outages remain red external evidence |
 | Authorization | Physical project selection file | Project owner | Installation, remote, or forge access grants no write authority |
 | Local sources | In-memory composition after complete validation | Catalog/projection owners | Central and project trees remain independent owners |
-| Git identity | Physical root, contained native submodule, or Git worktree outside `/tmp` | Projection owner plus Git evidence | `/tmp` repositories and external gitdirs remain forbidden |
+| Git identity | Physical root, contained native submodule, or owned Git worktree, including in `/tmp` | Projection owner plus Git evidence | Symlinks, malformed gitfiles, and external gitdirs remain forbidden |
 
 ## Consequences
 

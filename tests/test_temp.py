@@ -90,15 +90,14 @@ def test_registered_repository_under_system_temp_is_accepted(
     assert require_repository_storage(repository).repositories == (repository,)
 
 
-def test_system_temp_itself_is_rejected_as_repository_root(
+def test_system_temp_itself_is_accepted_as_a_physical_repository_root(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
     system_temp = tmp_path / "system-temp"
     system_temp.mkdir()
     monkeypatch.setattr(temp_module, "SYSTEM_TEMP", system_temp)
 
-    with pytest.raises(ValueError, match="system temp itself"):
-        temp_module._repository(system_temp)
+    temp_module._repository(system_temp)
 
 
 def test_registered_repository_without_storage_config_is_rejected(

@@ -79,7 +79,7 @@ The operator has fixed these decisions:
 |---|---|---|---|---|
 | Increment authority | Master v7 excludes external imports from its current cutover, while the newer operator instruction authorizes a gated successor | `00-authority-and-scope.md` exclusion plus this plan's operator decision | Keep the exclusion scoped to the predecessor and link this separately gated successor; do not make both active concurrently | P1 |
 | Catalog ownership | Current discovery owns only central `skills/<group>/<slug>/SKILL.md` bundles | `Catalog` and `skills/README.md` | Extend the same typed discovery contract to authorized project-local sources without adding a second registry | P1 |
-| Physical repository identity | Runtime accepts a physical `.git/` root, a contained native submodule gitfile, and an owned Git worktree, including below `/tmp`; it rejects `/tmp` itself, symlinks, malformed gitfiles, and external gitdirs | `Projector.project_root()` and tests | Keep that classification; do not create extra clones or worktrees for this increment | P1 |
+| Physical repository identity | Runtime accepts every physical `.git/` root and owned Git worktree, including `/tmp` and descendants, plus contained native submodule gitfiles; it rejects symlinks, malformed gitfiles, and external gitdirs | `Projector.project_root()` and tests | Keep that classification; do not create extra clones or worktrees for this increment | P1 |
 | Tracker state | Beads, Dolt, and Gas City are suspended | `AGENTS.md` and master v7 runtime state | Use only authorized Git/PR/review/check/CI evidence and never report `DONE` | P0 if invoked |
 | CLI/schema stability | Runtime owns eight optionless verbs; authorization is v1 or v2 | ADR-0004 and `projection.py` | Add no verb, option, positional argument, or mode; v2 adds only `detection_rules` behind the existing `sync` owner | P1 |
 
@@ -350,15 +350,15 @@ classify Git identity before effects:
 - a member may use a canonical submodule gitfile only when Git proves its
   superproject and resolved gitdir is contained inside that same dedicated
   umbrella clone's `.git/modules/` hierarchy;
-- an owned physical Git worktree, including below `/tmp`, is a valid project root;
-- `/tmp` itself, a symlink, malformed gitfile, external
+- an owned physical Git repository or worktree, including `/tmp` and descendants, is a valid project root;
+- a symlink, malformed gitfile, external
   gitdir, path escape, cross-root reference, or unresolved superproject remains
   forbidden; and
 - project authorization, source, generated destination, and cwd must all be
   physically contained in that project root.
 
 This distinction is documented in ADR-0003 and proven with root-clone,
-submodule, owned worktree, exact-`/tmp`, symlink, escape, and
+submodule, owned worktree, `/tmp`, symlink, escape, and
 external-gitdir tests before any consumer sync. Git's internal submodule storage is not permission for one of the
 four root clones to depend on another root clone.
 
@@ -502,8 +502,8 @@ bundle relies on a proposed but undecided contract.
 2. Validate central and local catalogs completely before destination planning.
 3. Reject identity/content/semantic collisions and every forbidden physical or
    schema condition before effects.
-4. Implement contained submodule identity; accept owned physical Git worktrees,
-   including below `/tmp`; reject `/tmp` itself and external gitdirs.
+4. Implement contained submodule identity; accept owned physical Git repositories
+   and worktrees, including `/tmp` and descendants; reject external gitdirs.
 5. Compose central and local projection sources transactionally and record
    truthful origin in deterministic manifests.
 6. Prove foreign preservation, rollback, no partial publication, and a
@@ -650,8 +650,8 @@ review finding, branch conflict, unavailable token, or missing technical proof.
 - compact routers with bundle-local relative references;
 - happy-path, fail-closed, and should-not-trigger Waza families for every skill;
 - source/eval absence and malformed-suite rejection before effects;
-- root clone versus contained submodule versus owned worktree versus forbidden
-  exact-`/tmp`/external gitdir classification;
+- root clone versus contained submodule versus owned worktree, including `/tmp`,
+  versus forbidden external gitdir classification;
 - no symlink, special file, user-home path, cross-root path, or external source;
 - deterministic combined manifests with truthful central/local origin;
 - atomic cross-provider publication, foreign preservation, rollback, and fixed
@@ -688,7 +688,7 @@ result. Official CI with its own secrets must run and pass normally.
 | Level | Planned path | Material behavior |
 |---|---|---|
 | Unit | Catalog/tag/project-source tests | Local and central bundles use one schema; invalid path/tag/provenance/eval fails before effects |
-| Unit | Git identity tests | Root clone, contained submodule, and owned worktree below `/tmp` pass; `/tmp` itself, symlink, malformed, escaped, and external gitdir fail |
+| Unit | Git identity tests | Root clone, contained submodule, and owned repository/worktree in `/tmp` pass; symlink, malformed, escaped, and external gitdir fail |
 | Integration | Isolated physical root and submodule fixtures | Authorization loads local sources once and composes deterministic central/local manifests |
 | Integration | Projection transaction | All providers publish atomically, foreign content survives, first failure preserves prior state, second sync is unchanged |
 | Semantic | Waza suites for every changed/new/local skill | Happy result, first-cause zero-effect failure, and adjacent non-activation |

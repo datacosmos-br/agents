@@ -68,8 +68,6 @@ def _configured_path(raw: object, config_dir: Path, context: str) -> Path:
 def _repository(path: Path) -> None:
     if not path.is_dir():
         raise ValueError(f"registered repository must be a physical directory: {path}")
-    if path == SYSTEM_TEMP.resolve(strict=True):
-        raise ValueError("system temp itself cannot be a repository root")
 
 
 def _storage_manifest(repository: Path) -> StorageManifest:
