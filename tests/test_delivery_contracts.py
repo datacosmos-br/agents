@@ -101,7 +101,10 @@ def test_draft_has_no_validation_and_review_aggregation_is_unbounded() -> None:
     assert "any finite\n  number `N >= 1`" in rule
     assert "no configured or implicit cardinality\n  limit is permitted" in rule
     assert "merge every exact\n  Draft head with `--no-ff`" in rule
-    assert "Open one non-Draft promotion PR" in rule
+    assert "The agent declares only the maintained PR and source" in rule
+    assert "first successful aggregate push it comments" in rule
+    assert "then closes it" in rule
+    assert "may be any PR kind and may remain Draft" in rule
     assert "validation and attestation as `NOT SELECTED`" in rule
     assert "preserves\n  the promotion lane at the exact aggregate cursor" in rule
     assert "Do not roll back,\n  clean, retry, fall back, attest" in rule

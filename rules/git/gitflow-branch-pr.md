@@ -31,14 +31,18 @@ orchestration is suspended it is prohibited.
   `WIP` label. No validation is selected for Draft/WIP: local gates,
   attestations, GitHub Actions, CodeQL, Copilot review and review agents all
   remain dormant. WIP commits never merge into integration.
-- **Unbounded Review aggregation:** a promotion lane may aggregate any finite
+- **Transparent unbounded aggregation:** a maintained PR may aggregate any finite
   number `N >= 1` of coherent Draft PRs; no configured or implicit cardinality
   limit is permitted. Create it from current integration and merge every exact
   Draft head with `--no-ff`. Record the complete ordered source PR, branch, head
-  OID and bead manifest. Source PRs remain Draft/WIP and never enter integration
-  directly. Open one non-Draft promotion PR, run the complete local matrix once
-  on its exact aggregate head, and automatically publish its signed attestation.
-  Create a promotion commit without `[WIP]`; an empty commit is permitted when
+  OID and bead manifest. The agent declares only the maintained PR and source
+  PRs; repository automation owns discovery, merges, state, labels, evidence,
+  push, comments and closure. On the first successful aggregate push it comments
+  every source Draft with the maintained PR and transferred SHA, then closes it.
+  The maintained PR may be any PR kind and may remain Draft; no source count or
+  PR-kind limit is permitted. When it enters Review, run the complete local
+  matrix once on its exact aggregate head and publish its signed attestation.
+  Create a Review promotion commit without `[WIP]`; an empty commit is permitted when
   it is the typed transition into Review. Commit and push normally,
   remove the `WIP` label, convert Draft to Review, require Actions, conversations,
   and independent approval, then merge the exact head by merge commit. Revalidate

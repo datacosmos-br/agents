@@ -99,11 +99,13 @@ the invariant owner. Persist each coherent increment as an explicitly marked
 `[WIP]` checkpoint through repository-owned hooks without `--no-verify`. Keep
 its PR Draft and WIP-labelled; no local or external validation is selected,
 including attestations, Actions, CodeQL, Copilot and review agents. WIP heads
-never enter integration. Aggregate any finite number `N >= 1` of Draft heads
-into a promotion lane through ordered `--no-ff` merges; no configured or
-implicit cardinality limit is permitted. Record every source PR, branch, head
-OID and bead, open one non-WIP Review PR, run the complete local matrix once on
-the aggregate head and transparently publish its attestation. An empty
+never enter integration. The agent declares only one maintained PR and any
+finite number `N >= 1` of source Drafts. Automation discovers their state,
+records every PR/branch/head/bead, performs ordered `--no-ff` merges and the
+first push, comments the transfer on every source and closes it. The maintained
+PR may be any kind and may remain Draft; no count or kind limit is permitted.
+When it enters Review, run the complete local matrix once on the aggregate head
+and transparently publish its attestation. An empty
 promotion commit is permitted as the typed transition into Review. Require all
 external validation and independent approval only there, merge the exact head
 by merge commit, close source Drafts as aggregated, and revalidate integration.
