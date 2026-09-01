@@ -366,10 +366,6 @@ def _physical_project(cwd: Path) -> Path:
                 ).stdout.strip()
                 if not raw_superproject:
                     if _linked_worktree_owns(git_directory, git):
-                        if project == Path("/tmp") or Path("/tmp") in project.parents:
-                            raise ValueError(
-                                f"repositories under /tmp are prohibited: {project}"
-                            )
                         return project
                     raise ValueError(
                         f"external Git directory is forbidden: {git_directory}"
@@ -400,8 +396,6 @@ def _physical_project(cwd: Path) -> Path:
                     )
             else:
                 raise ValueError(f"unsupported Git metadata type: {git}")
-            if project == Path("/tmp") or Path("/tmp") in project.parents:
-                raise ValueError(f"repositories under /tmp are prohibited: {project}")
             return project
     raise ValueError(
         f"invocation directory is not inside a physical Git project: {cwd}"

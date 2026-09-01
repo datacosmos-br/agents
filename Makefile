@@ -2,6 +2,8 @@
 
 AGENTSCTL := uv run agentsctl
 PYTEST_SCRATCH := $(CURDIR)/.test-tmp
+override export UV_PROJECT_ENVIRONMENT := $(CURDIR)/.venv
+override export VIRTUAL_ENV := $(CURDIR)/.venv
 
 .DEFAULT_GOAL := help
 .PHONY: help setup docs audit check waza static fmt fix shell build test spec coverage providers projection gen ci security temp validate-live clean

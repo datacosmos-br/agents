@@ -30,6 +30,7 @@ _EXPECTED_GUARANTEES = frozenset(
         "context-lifecycle",
         "continuous-green",
         "correction-learning",
+        "cross-runtime-session-handoff",
         "database-migration",
         "delivery-iteration",
         "evidence-backed-blocker",

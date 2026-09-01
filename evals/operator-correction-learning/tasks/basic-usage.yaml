@@ -11,9 +11,10 @@ inputs:
     inventing an actor. Preserve evidence only through separately authorized
     canonical Git and PR surfaces, update the owning
     skill's semantic regression role, remove opposing instructions, define
-    validation and repeated search, and keep suspended runtime owners untouched.
+    validation and repeated search, perform the evidence-based skill-exit review,
+    and keep suspended runtime owners untouched.
   files:
   - path: correction-state.yaml
 expected:
-  output_contains: [Git, PR, rules/architecture/engineering-core.md, semantic regression, producer contract, receiver, causal owner, existing authorization, fresh preflight, continue, not DONE, atomic, zero residue]
+  output_contains: [Git, PR, rules/architecture/engineering-core.md, semantic regression, producer contract, receiver, causal owner, existing authorization, fresh preflight, continue, skill-exit review, reusable defect, not DONE, atomic, zero residue]
   output_not_contains: [patch the generator, adjacent workaround, alternate tracker, replacement ledger, partial reconciliation, retry, severe conflict, ask again, another process]

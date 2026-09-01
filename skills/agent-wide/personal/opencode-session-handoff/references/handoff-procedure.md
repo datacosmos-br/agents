@@ -14,27 +14,36 @@ actions.
 
 ## Export and read
 
-Run the native export first and preserve its exit code and diagnostics:
+Run the skill's deterministic exporter. It invokes the native export first and
+preserves its exit code and diagnostics before reading the database:
 
 ```bash
-opencode export <session-id>
+python scripts/export_session_snapshot.py <session-id>
 ```
 
 Plugins may print warnings containing JSON before the session document. Do not
 assume the first `{` begins the export, and never discard a provider or
 credential error merely to make parsing succeed.
 
-For a large session, use OpenCode's database interface read-only to recover the
-cursor without loading the whole transcript:
+The script resolves OpenCode's data owner with `opencode debug paths`, writes
+native stdout and stderr directly to private files, validates the complete
+native document, and retains an invalid result with an explicit `.invalid`
+name. It opens the reported `opencode.db` through SQLite URI `mode=ro`, enables
+`query_only`, validates a strict table/column allowlist, and exports the exact
+session's complete message and part JSON, including text, reasoning, tool input,
+tool output, and tool error. The directory is published atomically below the
+OpenCode data owner's `exports/<session-id>/` path with mode `0700`; every file
+has mode `0600` and every source has a SHA-256 digest in `manifest.json`.
 
-```bash
-opencode db "SELECT position, status, priority, content FROM todo WHERE session_id='<session-id>' ORDER BY position" --format json
-opencode db "SELECT time_created, id, json_extract(data,'$.role') AS role, json_extract(data,'$.mode') AS mode, json_extract(data,'$.finish') AS finish FROM message WHERE session_id='<session-id>' ORDER BY time_created DESC LIMIT 50" --format json
-```
+The database snapshot and native logs are private and may contain raw tool
+output. Only `handoff.sanitised.md` redacts secret keys and credential-shaped
+text for operator review. A failed or invalid native export makes the command
+nonzero after the evidence directory is published; database success never
+changes that native status.
 
-Join `message` to `part` only for messages needed to recover the cursor. Inspect
-text, reasoning, tool input, tool output, and tool error. Never query credential
-tables or print environment secrets.
+For a large session, read only the generated sanitised handoff and query the
+private snapshot locally for additional exact message ids. Never print the raw
+snapshot, query credential tables, or expose environment secrets.
 
 ## Reconstruct and cross-check
 

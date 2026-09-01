@@ -5,6 +5,7 @@
       "architecture/engineering-core",
       "coordination/beads-verification",
       "coordination/operator-precedence",
+      "coordination/session-governance",
       "ethics/professional-integrity",
       "runtime/strict-execution"
     ],
@@ -60,6 +61,10 @@
     ],
     "correction-learning": [
       "skill:operator-correction-learning"
+    ],
+    "cross-runtime-session-handoff": [
+      "rule:coordination/session-governance",
+      "skill:opencode-session-handoff"
     ],
     "database-migration": [
       "command:database-migration",

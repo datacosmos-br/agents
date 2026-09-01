@@ -3,6 +3,7 @@ from __future__ import annotations
 import inspect
 import json
 import subprocess
+import tempfile
 from pathlib import Path
 from typing import Any, cast
 
@@ -1183,12 +1184,21 @@ def test_git_worktree_is_a_valid_project_root(
     monkeypatch.chdir(worktree)
     resolved = worktree.resolve(strict=True)
 
-    if resolved == Path("/tmp") or Path("/tmp") in resolved.parents:
-        with pytest.raises(ValueError, match="repositories under /tmp are prohibited"):
-            projector.project_root()
-        return
-
     assert projector.project_root() == resolved
+
+
+def test_git_worktree_under_system_temp_is_a_valid_project_root(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _, projector = _source(tmp_path)
+    with tempfile.TemporaryDirectory(prefix="agents-projector-", dir="/tmp") as root:
+        temporary = Path(root)
+        repository = _git_repository(temporary / "repository")
+        worktree = temporary / "worktree"
+        _git(repository, "worktree", "add", "--detach", str(worktree))
+        monkeypatch.chdir(worktree)
+
+        assert projector.project_root() == worktree.resolve(strict=True)
 
 
 def test_git_worktree_with_relative_paths_is_a_valid_project_root(
@@ -1212,11 +1222,6 @@ def test_git_worktree_with_relative_paths_is_a_valid_project_root(
     assert not Path(back_pointer.strip()).is_absolute()
     monkeypatch.chdir(worktree)
     resolved = worktree.resolve(strict=True)
-
-    if resolved == Path("/tmp") or Path("/tmp") in resolved.parents:
-        with pytest.raises(ValueError, match="repositories under /tmp are prohibited"):
-            projector.project_root()
-        return
 
     assert projector.project_root() == resolved
 
