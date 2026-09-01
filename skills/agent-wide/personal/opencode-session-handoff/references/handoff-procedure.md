@@ -25,14 +25,15 @@ Plugins may print warnings containing JSON before the session document. Do not
 assume the first `{` begins the export, and never discard a provider or
 credential error merely to make parsing succeed.
 
-The script writes below
-`$XDG_STATE_HOME/agent-session-handoffs/<session-id>/`, validates the complete
-native document, and retains an invalid or truncated result with an explicit
-`.invalid` name. It then validates a strict table/column allowlist through
-`opencode db` and exports the exact session's complete message and part JSON,
-including text, reasoning, tool input, tool output, and tool error. The directory
-is published atomically with mode `0700`; every file has mode `0600` and every
-source has a SHA-256 digest in `manifest.json`.
+The script resolves OpenCode's data owner with `opencode debug paths`, writes
+native stdout and stderr directly to private files, validates the complete
+native document, and retains an invalid result with an explicit `.invalid`
+name. It opens the reported `opencode.db` through SQLite URI `mode=ro`, enables
+`query_only`, validates a strict table/column allowlist, and exports the exact
+session's complete message and part JSON, including text, reasoning, tool input,
+tool output, and tool error. The directory is published atomically below the
+OpenCode data owner's `exports/<session-id>/` path with mode `0700`; every file
+has mode `0600` and every source has a SHA-256 digest in `manifest.json`.
 
 The database snapshot and native logs are private and may contain raw tool
 output. Only `handoff.sanitised.md` redacts secret keys and credential-shaped

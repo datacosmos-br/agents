@@ -93,3 +93,11 @@ opposite.
 At each checkpoint, compare new operator corrections with changes since the prior
 checkpoint. An unreconciled correction pauses the affected feature work until
 owners and consumers agree.
+
+At every skill exit, inspect the measured run for a reusable decision or
+procedure defect. When one exists, correct the narrowest canonical skill owner
+and one material semantic evaluation role in the same landing cycle; a
+project-specific incident is expressed through generic owner primitives. When
+no reusable defect exists, record no governance change. Never manufacture a
+cosmetic edit, duplicate a project rule globally, or turn continuous improvement
+into an unbounded mutation loop.

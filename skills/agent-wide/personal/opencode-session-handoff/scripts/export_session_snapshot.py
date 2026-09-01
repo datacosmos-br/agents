@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Export one OpenCode session into a private, evidence-preserving handoff."""
 
 from __future__ import annotations
@@ -9,6 +8,7 @@ import json
 import os
 import re
 import shutil
+import sqlite3
 import subprocess
 import tempfile
 from pathlib import Path
@@ -50,9 +50,7 @@ TABLE_COLUMNS = {
             "time_updated",
         }
     ),
-    "message": frozenset(
-        {"id", "session_id", "time_created", "time_updated", "data"}
-    ),
+    "message": frozenset({"id", "session_id", "time_created", "time_updated", "data"}),
     "part": frozenset(
         {"id", "message_id", "session_id", "time_created", "time_updated", "data"}
     ),
@@ -75,66 +73,89 @@ def _run(*args: str) -> str:
     return completed.stdout
 
 
-def _query(sql: str) -> list[dict[str, Any]]:
-    payload = json.loads(_run("opencode", "db", sql, "--format", "json"))
-    if not isinstance(payload, list) or any(not isinstance(row, dict) for row in payload):
-        raise TypeError("OpenCode database query did not return a JSON row list")
-    return payload
+def _data_root() -> Path:
+    output = _run("opencode", "debug", "paths")
+    for line in output.splitlines():
+        label, separator, value = line.partition(" ")
+        if separator and label == "data":
+            return Path(value.strip()).resolve(strict=True)
+    raise ValueError("OpenCode did not report its data path")
 
 
-def _validate_schema() -> None:
+def _database(data_root: Path) -> sqlite3.Connection:
+    path = (data_root / "opencode.db").resolve(strict=True)
+    database = sqlite3.connect(f"file:{path}?mode=ro", uri=True)
+    database.row_factory = sqlite3.Row
+    database.execute("PRAGMA query_only = ON")
     for table, required in TABLE_COLUMNS.items():
-        rows = _query(f"PRAGMA table_info({table})")
-        actual = {str(row.get("name")) for row in rows}
+        actual = {
+            str(row[1]) for row in database.execute(f"PRAGMA table_info({table})")
+        }
         missing = required - actual
         if missing:
+            database.close()
             raise ValueError(
                 f"OpenCode {table} schema is missing: {', '.join(sorted(missing))}"
             )
+    return database
 
 
-def _decode_data(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+def _decode_data(rows: list[sqlite3.Row]) -> list[dict[str, Any]]:
     decoded: list[dict[str, Any]] = []
     for row in rows:
-        raw = row.get("data")
+        item = dict(row)
+        raw = item.get("data")
         if not isinstance(raw, str):
             raise TypeError("OpenCode data column is not JSON text")
         data = json.loads(raw)
         if not isinstance(data, dict):
             raise TypeError("OpenCode data column is not a JSON object")
-        decoded.append({**row, "data": data})
+        decoded.append({**item, "data": data})
     return decoded
 
 
-def _snapshot(session_id: str) -> dict[str, Any]:
-    _validate_schema()
-    quoted = f"'{session_id}'"
-    session = _query(
-        "SELECT id, project_id, parent_id, directory, title, version, agent, model, "
-        f"time_created, time_updated FROM session WHERE id={quoted}"
-    )
-    if len(session) != 1:
-        raise LookupError(f"expected exactly one OpenCode session for {session_id}")
-    return {
-        "schema_version": 1,
-        "session": session,
-        "todos": _query(
-            "SELECT position, status, priority, content, time_created, time_updated "
-            f"FROM todo WHERE session_id={quoted} ORDER BY position"
-        ),
-        "messages": _decode_data(
-            _query(
-                "SELECT id, time_created, time_updated, data FROM message "
-                f"WHERE session_id={quoted} ORDER BY time_created, id"
+def _snapshot(session_id: str, data_root: Path) -> dict[str, Any]:
+    with _database(data_root) as database:
+        session = [
+            dict(row)
+            for row in database.execute(
+                "SELECT id, project_id, parent_id, directory, title, version, agent, model, "
+                "time_created, time_updated FROM session WHERE id=?",
+                (session_id,),
             )
-        ),
-        "parts": _decode_data(
-            _query(
-                "SELECT id, message_id, time_created, time_updated, data FROM part "
-                f"WHERE session_id={quoted} ORDER BY time_created, id"
-            )
-        ),
-    }
+        ]
+        if len(session) != 1:
+            raise LookupError(f"expected exactly one OpenCode session for {session_id}")
+        return {
+            "schema_version": 1,
+            "session": session,
+            "todos": [
+                dict(row)
+                for row in database.execute(
+                    "SELECT position, status, priority, content, time_created, time_updated "
+                    "FROM todo WHERE session_id=? ORDER BY position",
+                    (session_id,),
+                )
+            ],
+            "messages": _decode_data(
+                list(
+                    database.execute(
+                        "SELECT id, time_created, time_updated, data FROM message "
+                        "WHERE session_id=? ORDER BY time_created, id",
+                        (session_id,),
+                    )
+                )
+            ),
+            "parts": _decode_data(
+                list(
+                    database.execute(
+                        "SELECT id, message_id, time_created, time_updated, data FROM part "
+                        "WHERE session_id=? ORDER BY time_created, id",
+                        (session_id,),
+                    )
+                )
+            ),
+        }
 
 
 def _redact(value: Any, key: str = "") -> Any:
@@ -213,10 +234,7 @@ def _handoff(snapshot: dict[str, Any], native_status: str) -> str:
 def _output_root(session_id: str, explicit: Path | None) -> Path:
     if explicit is not None:
         return explicit.resolve()
-    state_home = os.environ.get("XDG_STATE_HOME")
-    if not state_home:
-        raise ValueError("XDG_STATE_HOME is required")
-    return Path(state_home).resolve() / "agent-session-handoffs" / session_id
+    return _data_root() / "exports" / session_id
 
 
 def _export(session_id: str, destination: Path) -> int:
@@ -227,12 +245,29 @@ def _export(session_id: str, destination: Path) -> int:
     stage = Path(tempfile.mkdtemp(prefix=f".{session_id}.", dir=destination.parent))
     os.chmod(stage, 0o700)
     try:
-        native = _completed("opencode", "export", session_id)
-        stdout = native.stdout.encode()
-        stderr = native.stderr.encode()
+        stdout_path = stage / "native-export.private.json"
+        stderr_path = stage / "native-export.stderr.private.log"
+        stdout_descriptor = os.open(
+            stdout_path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600
+        )
+        stderr_descriptor = os.open(
+            stderr_path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600
+        )
+        with (
+            os.fdopen(stdout_descriptor, "wb") as stdout_stream,
+            os.fdopen(stderr_descriptor, "wb") as stderr_stream,
+        ):
+            native = subprocess.run(
+                ("opencode", "export", session_id),
+                check=False,
+                stdout=stdout_stream,
+                stderr=stderr_stream,
+            )
+        stdout = stdout_path.read_bytes()
+        stderr = stderr_path.read_bytes()
         native_document: dict[str, Any] | None = None
         try:
-            parsed = json.loads(native.stdout)
+            parsed = json.loads(stdout)
             if not isinstance(parsed, dict):
                 raise TypeError("native export is not a JSON object")
             native_document = parsed
@@ -245,11 +280,12 @@ def _export(session_id: str, destination: Path) -> int:
         if native.returncode != 0:
             native_status = "failed"
 
-        _private_write(stage / native_name, stdout)
-        if stderr:
-            _private_write(stage / "native-export.stderr.private.log", stderr)
+        if native_name != stdout_path.name:
+            stdout_path.rename(stage / native_name)
+        if not stderr:
+            stderr_path.unlink()
 
-        snapshot = _snapshot(session_id)
+        snapshot = _snapshot(session_id, _data_root())
         snapshot_bytes = (
             json.dumps(snapshot, indent=2, ensure_ascii=False).encode() + b"\n"
         )
@@ -265,14 +301,12 @@ def _export(session_id: str, destination: Path) -> int:
                 "exit_code": native.returncode,
                 "stdout_file": native_name,
                 "stdout_sha256": _digest(stdout),
-                "stderr_file": (
-                    "native-export.stderr.private.log" if stderr else None
-                ),
+                "stderr_file": ("native-export.stderr.private.log" if stderr else None),
                 "stderr_sha256": _digest(stderr) if stderr else None,
                 "validated_document": native_document is not None,
             },
             "database_snapshot": {
-                "command": ["opencode", "db"],
+                "source": "opencode.db?mode=ro",
                 "file": "database-snapshot.private.json",
                 "sha256": _digest(snapshot_bytes),
                 "messages": len(snapshot["messages"]),

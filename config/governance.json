@@ -5,6 +5,7 @@
       "architecture/engineering-core",
       "coordination/beads-verification",
       "coordination/operator-precedence",
+      "coordination/session-governance",
       "ethics/professional-integrity",
       "runtime/strict-execution"
     ],
