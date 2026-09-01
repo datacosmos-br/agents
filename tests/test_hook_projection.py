@@ -16,6 +16,7 @@ from agents_governance.governance_config import (
     load_governance_config,
 )
 from agents_governance.hook_projection import HookProjector, _capsule
+from agents_governance.law_surface import LawSurface, PRELUDE_START
 from agents_governance.projection_config import load_projection_config
 from agents_governance.rules import audit_rule_specs
 from agents_governance.runtime import _inventory
@@ -32,6 +33,7 @@ def _projector(root: Path) -> HookProjector:
         load_projection_config(root),
         commands,
         rules,
+        LawSurface.load(root),
     )
 
 
@@ -89,6 +91,16 @@ def test_hook_projection_preserves_foreign_content_and_reaches_fixed_point(
     projector = _projector(root)
 
     projector.apply(project)
+
+    assert (project / "AGENTS.md").read_text(encoding="utf-8").startswith(
+        PRELUDE_START + "\n"
+    )
+    assert (project / "CLAUDE.md").read_text(encoding="utf-8").startswith(
+        PRELUDE_START + "\n"
+    )
+    manifest = _json(project / ".agents" / "law-surface.json")
+    assert manifest["owner"] == "agents-governance"
+    assert manifest["prelude_start"] == PRELUDE_START
     projector.check(project)
     first_mtime = (project / ".codex" / "hooks.json").stat().st_mtime_ns
     projector.apply(project)
@@ -357,7 +369,13 @@ def _projector_without_codex_prompt(root: Path) -> HookProjector:
     cells = dict(base.config.cells)
     cells[key] = mutated
     config = dataclasses.replace(base.config, cells=MappingProxyType(cells))
-    return HookProjector(base.governance, config, base.commands, base.rules)
+    return HookProjector(
+        base.governance,
+        config,
+        base.commands,
+        base.rules,
+        LawSurface.load(root),
+    )
 
 
 def test_retired_hook_event_script_is_removed_and_foreign_survives(

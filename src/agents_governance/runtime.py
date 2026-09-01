@@ -22,6 +22,7 @@ from .governance_config import (
     load_governance_config,
 )
 from .hook_projection import HookProjector
+from .law_surface import LawSurface
 from .native_evals import evaluate_native
 from .projection import Projector
 from .projection_authorization import load_project_authorization
@@ -180,6 +181,7 @@ def sync(root: Path) -> None:
         projection,
         inventory.commands,
         inventory.rules,
+        LawSurface.load(root),
     )
     run_atomic_publications(
         (
