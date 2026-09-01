@@ -283,10 +283,10 @@ CLIProxy (porta 8317). O CLIProxy é um serviço (`ccs-cliproxy.service` em
 model routing (como `flext-rules`) precisam ser propagadas via `agentsctl sync`.
 Nenhuma skill no `~/agents` referencia configuração de CLIProxy.
 
-#### 5e. Fork management: PRs sempre para `marlon-costa-dc/agents:dev`
+#### 5e. Fork management: PRs sempre para `datacosmos-br/agents:dev`
 
-O `~/agents` repo não é fork: `gh api repos/marlon-costa-dc/agents --jq
-.parent` retorna `null`. O remote canônico é `marlon-costa-dc/agents` e a linha
+O `~/agents` repo não é fork: `gh api repos/datacosmos-br/agents --jq
+.parent` retorna `null`. O remote canônico é `datacosmos-br/agents` e a linha
 de integração é `dev`, com promoção a `main` apenas sob autorização explícita do
 operador. Nenhuma skill/command propaga para um fork sem validação de garantia;
 a política de forks vive no seu próprio owner, não aqui.
@@ -645,8 +645,8 @@ interconexão de governança deve se coordenar.
 
 6. **Fork management**:
    - `workspace-consolidation` lista 9 workspaces com remotes: `marlon-costa-dc/*`, `datacosmos-br/*`, `flext-sh/*`
-   - O `~/agents` repo é `marlon-costa-dc/agents` e não é fork (`.parent` = null)
-    - **Coordenação**: PRs para `~/agents` vão para `marlon-costa-dc/agents` → `main`. Não para `datacosmos-br/`.
+   - O `~/agents` repo é `datacosmos-br/agents` e não é fork (`.parent` = null)
+    - **Coordenação**: PRs para `~/agents` vão para `datacosmos-br/agents` → `dev`, com promoção a `main` somente sob autorização explícita.
 
 > **Escopo**: Os itens de coordenação cross-repo que dependem de `~/ai-hub`
 > (`ssot_relink`, `canonical_skill` em `config/skills.yaml`, triggers no

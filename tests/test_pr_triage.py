@@ -35,14 +35,14 @@ def test_rest_inventory_uses_github_pagination(
 
     monkeypatch.setattr(module, "_gh", fake_gh)
 
-    checks = module._checks("marlon-costa-dc", "agents", "head-sha")
+    checks = module._checks("datacosmos-br", "agents", "head-sha")
 
     assert checks == [{"name": "check"}]
     assert calls == [
         [
             "api",
             "--paginate",
-            "repos/marlon-costa-dc/agents/commits/head-sha/check-runs?per_page=100",
+            "repos/datacosmos-br/agents/commits/head-sha/check-runs?per_page=100",
             "-q",
             ".check_runs[] | {name:.name,status:.status,conclusion:.conclusion}",
         ]
@@ -140,7 +140,7 @@ def test_sweep_uses_the_single_pull_mergeability_endpoint(
     ]
 
     def fake_paginated(path: str, query: str) -> list[dict[str, object]]:
-        assert path == "repos/marlon-costa-dc/agents/pulls?state=open&per_page=100"
+        assert path == "repos/datacosmos-br/agents/pulls?state=open&per_page=100"
         assert query == ".[]"
         return pulls
 
@@ -149,7 +149,7 @@ def test_sweep_uses_the_single_pull_mergeability_endpoint(
     def fake_gh(*arguments: str, input_text: str | None = None) -> str:
         calls.append(list(arguments))
         assert arguments[0] == "api"
-        assert arguments[1].startswith("repos/marlon-costa-dc/agents/pulls/")
+        assert arguments[1].startswith("repos/datacosmos-br/agents/pulls/")
         return json.dumps({"mergeable": None, "mergeable_state": "unknown"})
 
     monkeypatch.setattr(module, "_gh_paginated", fake_paginated)
@@ -163,11 +163,11 @@ def test_sweep_uses_the_single_pull_mergeability_endpoint(
     )
     monkeypatch.setattr(module, "review_threads", lambda *arguments: [])
 
-    queue = module.cmd_sweep(("marlon-costa-dc/agents",), {"dev"})
+    queue = module.cmd_sweep(("datacosmos-br/agents",), {"dev"})
 
     assert queue == [
         {
-            "repository": "marlon-costa-dc/agents",
+            "repository": "datacosmos-br/agents",
             "pr": 2,
             "title": "first dev",
             "base": "dev",
