@@ -334,6 +334,8 @@ def _physical_project(cwd: Path) -> Path:
             raise ValueError(f"Git metadata symlink forbidden: {git}")
         if git.exists():
             project = candidate.resolve(strict=True)
+            if project == Path("/tmp"):
+                raise ValueError("/tmp itself cannot be a project root")
             metadata = git.lstat()
             if stat.S_ISDIR(metadata.st_mode):
                 pass

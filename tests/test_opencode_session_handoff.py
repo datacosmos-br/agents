@@ -79,6 +79,17 @@ def test_database_rejects_missing_allowlisted_column(tmp_path: Path) -> None:
         module._database(tmp_path)
 
 
+def test_redaction_covers_quoted_authorization_and_credential_text() -> None:
+    module = _module()
+    raw = '{"authorization":"Bearer abc123","credential":"visible"}'
+
+    redacted = module._redact(raw)
+
+    assert "abc123" not in redacted
+    assert "visible" not in redacted
+    assert redacted.count("[REDACTED]") == 2
+
+
 def _stub_native(
     monkeypatch: pytest.MonkeyPatch,
     module: ModuleType,

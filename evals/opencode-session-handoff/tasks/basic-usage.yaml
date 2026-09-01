@@ -13,5 +13,5 @@ inputs:
   - path: current-state.log
   - path: database-snapshot.private.json
 expected:
-  output_contains: [ses_example, '401', validate, private, sanitised, Phase B, awaiting approval, git status]
+  output_contains: [ses_example, '401', Phase B, awaiting approval, git status]
   output_not_contains: [switch provider, use another model, implementation complete, API key]

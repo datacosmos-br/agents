@@ -25,7 +25,10 @@ SECRET_KEY = re.compile(
 SECRET_TEXT = (
     re.compile(r"(?i)(bearer\s+)[A-Za-z0-9._~+/=-]+"),
     re.compile(r"(?i)((?:set-)?cookie\s*[:=]\s*)[^\r\n]+"),
-    re.compile(r"(?i)((?:api[_-]?key|token|password|secret)\s*[:=]\s*)\S+"),
+    re.compile(
+        r"""(?i)(["']?(?:api[_-]?key|authorization|credential|token|password|secret)"""
+        r"""["']?\s*[:=]\s*["']?)[^"',}\r\n]+"""
+    ),
 )
 TABLE_COLUMNS = {
     "session": frozenset(
