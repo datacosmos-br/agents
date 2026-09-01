@@ -282,3 +282,39 @@ def test_gate_command_exits_nonzero_after_printing_blockers(
     output = json.loads(capsys.readouterr().out)
     assert output["landing_verdict"] == "blocked"
     assert output["landing_blockers"] == ["checks_verdict is pending"]
+
+
+def test_gate_command_returns_normally_for_clean_inventory(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    module = _module(monkeypatch)
+    inventory = {
+        "base": "dev",
+        "head_oid": "head-sha",
+        "state": "open",
+        "draft": False,
+        "mergeability": "mergeable",
+        "mergeable_state": "clean",
+        "checks_verdict": "passed",
+        "unresolved_threads": [],
+    }
+    monkeypatch.setattr(module, "cmd_locate", lambda repository, number: inventory)
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "pr_triage.py",
+            "gate",
+            "owner/repo",
+            "25",
+            "--base",
+            "dev",
+            "--head",
+            "head-sha",
+        ],
+    )
+
+    assert module.main() is None
+    output = json.loads(capsys.readouterr().out)
+    assert output["landing_verdict"] == "passed"
+    assert output["landing_blockers"] == []
