@@ -137,16 +137,6 @@ _ENTRY_FIELDS = frozenset(
         "source_type",
     }
 )
-_LINK_ENTRY_FIELDS = frozenset(
-    {
-        "activation",
-        "adapter_version",
-        "destination",
-        "link_target",
-        "origin",
-        "source_type",
-    }
-)
 
 
 class ProjectionDriftError(RuntimeError):
@@ -179,18 +169,8 @@ class ProjectionSource:
     activation: tuple[str, ...]
     content: str | None = None
     adapter_version: int = 1
-    link_target: str | None = None
 
     def metadata(self) -> dict[str, object]:
-        if self.link_target is not None:
-            return {
-                "activation": list(self.activation),
-                "adapter_version": self.adapter_version,
-                "destination": self.name,
-                "link_target": self.link_target,
-                "origin": self.origin,
-                "source_type": self.link_source_type,
-            }
         return {
             "activation": list(self.activation),
             "adapter_version": self.adapter_version,
@@ -201,10 +181,6 @@ class ProjectionSource:
             "source_digest": self.source_digest,
             "source_type": self.source_type,
         }
-
-    @property
-    def link_source_type(self) -> str:
-        return f"link:{self.source_type}"
 
 
 @dataclass(frozen=True)
@@ -224,7 +200,6 @@ class _TargetState:
     previous: dict[str, dict[str, object]]
     snapshot: str | None
     drift: bool
-    sanctioned_links: frozenset[Path] | None = None
 
 
 @dataclass
@@ -280,10 +255,9 @@ def _symlink_component(path: Path) -> Path | None:
     return None
 
 
-def _tree_snapshot(root: Path, sanctioned_links: frozenset[Path] | None = None) -> str:
-    """Digest one physical destination tree, sanctioning managed symlinks only."""
+def _tree_snapshot(root: Path) -> str:
+    """Digest one physical destination tree; a symlink in it is forbidden."""
 
-    sanctioned = sanctioned_links or frozenset()
     digest = hashlib.sha256()
 
     def visit(path: Path) -> None:
@@ -294,12 +268,7 @@ def _tree_snapshot(root: Path, sanctioned_links: frozenset[Path] | None = None) 
         digest.update(f"{stat.S_IMODE(metadata.st_mode):04o}".encode())
         digest.update(b"\0")
         if stat.S_ISLNK(metadata.st_mode):
-            if path not in sanctioned:
-                raise ValueError(f"projection destination symlink forbidden: {path}")
-            digest.update(b"link\0")
-            digest.update(os.readlink(path).encode())
-            digest.update(b"\0")
-            return
+            raise ValueError(f"projection destination symlink forbidden: {path}")
         if stat.S_ISDIR(metadata.st_mode):
             digest.update(b"directory\0")
             with os.scandir(path) as entries:
@@ -340,12 +309,18 @@ def _linked_worktree_owns(git_directory: Path, git_file: Path) -> bool:
     A linked worktree's administrative directory always carries a ``gitdir``
     file naming the worktree's own ``.git`` file. That back-reference is the
     physical ownership proof; a borrowed or external Git directory has none.
+
+    Git writes that reference relative to the administrative directory when
+    ``worktree.useRelativePaths`` is set, so it is resolved against that
+    directory rather than against the current working directory.
     """
 
     back_pointer = git_directory / "gitdir"
     if not back_pointer.is_file():
         return False
     referenced = Path(back_pointer.read_text(encoding="utf-8").strip())
+    if not referenced.is_absolute():
+        referenced = git_directory / referenced
     return referenced.resolve() == git_file.resolve()
 
 
@@ -1400,36 +1375,6 @@ class Projector:
                     f"projection manifest managed name is invalid: {name!r}"
                 )
             entry = _mapping(raw, f"{path}: managed.{name}")
-            entry_type = entry["source_type"]
-            if isinstance(entry_type, str) and entry_type.startswith("link:"):
-                _exact(entry, _LINK_ENTRY_FIELDS, f"{path}: managed.{name}")
-                if entry["adapter_version"] != 1 or entry["destination"] != name:
-                    raise ValueError(
-                        f"projection manifest entry identity is invalid: {name}"
-                    )
-                link_target = entry["link_target"]
-                if (
-                    not isinstance(link_target, str)
-                    or not link_target
-                    or PurePosixPath(link_target).is_absolute()
-                    or ".." in PurePosixPath(link_target).parts
-                ):
-                    raise ValueError(
-                        f"projection manifest entry link_target is invalid: {name}"
-                    )
-                for field in ("origin",):
-                    if not isinstance(entry[field], str) or not entry[field]:
-                        raise ValueError(
-                            f"projection manifest entry {field} is invalid: {name}"
-                        )
-                activation = _strings(
-                    entry["activation"], f"{path}: managed.{name}.activation"
-                )
-                if not activation:
-                    raise ValueError(
-                        f"projection manifest entry activation is empty: {name}"
-                    )
-                continue
             _exact(entry, _ENTRY_FIELDS, f"{path}: managed.{name}")
             if entry["adapter_version"] != 1 or entry["destination"] != name:
                 raise ValueError(
@@ -1465,7 +1410,7 @@ class Projector:
             return _TargetState(plan, {}, None, True)
         if not root.is_dir():
             raise ValueError(f"projection destination is not a directory: {root}")
-        snapshot = _tree_snapshot(root, self._sanctioned_links(plan, previous=None))
+        snapshot = _tree_snapshot(root)
         payload = self._manifest(root)
         desired = self._manifest_payload(plan)
         previous: dict[str, dict[str, object]] = {}
@@ -1484,9 +1429,6 @@ class Projector:
                         f"projection manifest authority differs at {root}: {field}"
                     )
             previous = cast(dict[str, dict[str, object]], payload["managed"])
-            resanctioned = self._sanctioned_links(plan, previous)
-            if resanctioned is not None:
-                snapshot = _tree_snapshot(root, resanctioned)
             drift = payload != desired or (root / self.MANIFEST).read_text(
                 encoding="utf-8"
             ) != self._render_manifest(desired)
@@ -1494,26 +1436,6 @@ class Projector:
         for name, source in expected.items():
             destination = root / name
             metadata = previous.get(name)
-            if source.link_target is not None:
-                if destination.is_symlink():
-                    if os.readlink(destination) != source.link_target:
-                        raise ValueError(
-                            "managed projection was modified: "
-                            f"symlink target differs: {destination}"
-                        )
-                    if metadata is None or source.metadata() != metadata:
-                        drift = True
-                    continue
-                if destination.exists():
-                    raise ValueError(
-                        "unadjudicated projection divergence: "
-                        f"destination={destination}; proposed managed symlink to "
-                        f"{source.link_target}; current object is not a symlink; "
-                        "disposition=preserve current object; operator decision "
-                        "required before replacement"
-                    )
-                drift = True
-                continue
             if not destination.exists() and not destination.is_symlink():
                 drift = True
                 continue
@@ -1562,44 +1484,17 @@ class Projector:
                 continue
             destination = root / name
             if destination.exists() or destination.is_symlink():
-                if isinstance(metadata["source_type"], str) and metadata[
-                    "source_type"
-                ].startswith("link:"):
-                    if not destination.is_symlink() or os.readlink(
-                        destination
-                    ) != metadata.get("link_target"):
-                        raise ValueError(
-                            f"stale managed projection was modified: {destination}"
-                        )
-                else:
-                    logical = self.catalog.digest_tree(destination)
-                    physical = self.catalog.physical_tree_contract(destination)
-                    if (
-                        logical != metadata["source_digest"]
-                        or physical != metadata["physical_digest"]
-                    ):
-                        raise ValueError(
-                            f"stale managed projection was modified: {destination}"
-                        )
+                logical = self.catalog.digest_tree(destination)
+                physical = self.catalog.physical_tree_contract(destination)
+                if (
+                    logical != metadata["source_digest"]
+                    or physical != metadata["physical_digest"]
+                ):
+                    raise ValueError(
+                        f"stale managed projection was modified: {destination}"
+                    )
             drift = True
         return _TargetState(plan, previous, snapshot, drift)
-
-    def _sanctioned_links(
-        self, plan: ProjectionPlan, previous: dict[str, dict[str, object]] | None
-    ) -> frozenset[Path] | None:
-        """Return managed symlink paths sanctioned inside one projection root."""
-
-        root = plan.root
-        sanctioned: set[Path] = set()
-        if previous is not None:
-            for name, metadata in previous.items():
-                source_type = metadata["source_type"]
-                if isinstance(source_type, str) and source_type.startswith("link:"):
-                    sanctioned.add(root / name)
-        for source in plan.sources:
-            if source.link_target is not None:
-                sanctioned.add(root / source.name)
-        return frozenset(sanctioned) if sanctioned else None
 
     @staticmethod
     def _render_manifest(payload: dict[str, object]) -> str:
@@ -1620,7 +1515,7 @@ class Projector:
         def build() -> _StagedTarget:
             if plan.root.exists():
                 shutil.copytree(plan.root, candidate, symlinks=True)
-                if _tree_snapshot(candidate, state.sanctioned_links) != state.snapshot:
+                if _tree_snapshot(candidate) != state.snapshot:
                     raise RuntimeError(f"projection staging copy differs: {plan.root}")
             else:
                 candidate.mkdir()
@@ -1631,16 +1526,6 @@ class Projector:
                     _discard_owned_tree(destination)
             for source in plan.sources:
                 destination = candidate / source.name
-                if source.link_target is not None:
-                    if (
-                        destination.is_symlink()
-                        and os.readlink(destination) == source.link_target
-                    ):
-                        continue
-                    if destination.exists() or destination.is_symlink():
-                        _discard_owned_tree(destination)
-                    os.symlink(source.link_target, destination)
-                    continue
                 if (
                     destination.exists()
                     and not destination.is_symlink()

@@ -10,6 +10,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from .agent_profiles import AgentProfile, audit_agent_profiles
+from .approvals import ApprovedArtifact, audit_precedence
 from .catalog import Catalog
 from .cleanup import clean_generated, run_atomic_publications
 from .command_evals import audit_command_evals
@@ -76,7 +77,33 @@ def _inventory_from_catalog(root: Path, catalog: Catalog) -> RuntimeInventory:
     rules = audit_rule_specs(root)
     governance = load_governance_config(root)
     audit_governance_config(root, governance, catalog, commands, rules)
+    audit_precedence(root, _approved_artifacts(catalog, commands, rules))
     return RuntimeInventory(catalog, governance, commands, agents, rules)
+
+
+def _approved_artifacts(
+    catalog: Catalog,
+    commands: tuple[CommandSpec, ...],
+    rules: tuple[RuleSpec, ...],
+) -> tuple[ApprovedArtifact, ...]:
+    """Address every active artifact by the identity governance already uses."""
+
+    return (
+        *(
+            ApprovedArtifact(f"rule:{rule.identity}", rule.tags, rule.path)
+            for rule in rules
+        ),
+        *(
+            ApprovedArtifact(
+                f"skill:{record.name}", record.tags, record.directory / "SKILL.md"
+            )
+            for record in catalog.records()
+        ),
+        *(
+            ApprovedArtifact(f"command:{command.name}", command.tags, command.path)
+            for command in commands
+        ),
+    )
 
 
 def _model(root: Path) -> str:

@@ -116,10 +116,14 @@ def test_eval_workflow_is_the_single_native_ci_owner() -> None:
     workflow = yaml.load(source, Loader=yaml.BaseLoader)
     steps = workflow["jobs"]["eval"]["steps"]
     actions = tuple(step["uses"] for step in steps if "uses" in step)
+    checkout = next(
+        step for step in steps if step.get("uses", "").startswith("actions/checkout@")
+    )
     commands = tuple(step["run"] for step in steps if "run" in step)
 
     assert actions
     assert all(re.fullmatch(r"[^@\s]+@[0-9a-f]{40}", action) for action in actions)
+    assert checkout["with"] == {"fetch-depth": "0"}
     assert sum("make ci" in command.splitlines() for command in commands) == 1
     assert "|| true" not in source
     assert "conflict-marker" not in source

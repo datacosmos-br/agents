@@ -1191,6 +1191,36 @@ def test_git_worktree_is_a_valid_project_root(
     assert projector.project_root() == resolved
 
 
+def test_git_worktree_with_relative_paths_is_a_valid_project_root(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Git may write the administrative back-reference relative to its own directory.
+
+    With ``worktree.useRelativePaths`` set, resolving that reference against
+    the process working directory yields a path that does not exist, and a
+    legitimate linked worktree is rejected as an external Git directory.
+    """
+
+    _, projector = _source(tmp_path)
+    repository = _git_repository(tmp_path / "repository")
+    _git(repository, "config", "worktree.useRelativePaths", "true")
+    worktree = tmp_path / "worktree"
+    _git(repository, "worktree", "add", "--relative-paths", "--detach", str(worktree))
+    back_pointer = (
+        repository / ".git" / "worktrees" / worktree.name / "gitdir"
+    ).read_text(encoding="utf-8")
+    assert not Path(back_pointer.strip()).is_absolute()
+    monkeypatch.chdir(worktree)
+    resolved = worktree.resolve(strict=True)
+
+    if resolved == Path("/tmp") or Path("/tmp") in resolved.parents:
+        with pytest.raises(ValueError, match="repositories under /tmp are prohibited"):
+            projector.project_root()
+        return
+
+    assert projector.project_root() == resolved
+
+
 def test_external_git_directory_is_rejected(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
