@@ -6,8 +6,7 @@ from pathlib import Path
 from types import ModuleType
 
 import pytest
-
-from tests.source_loader import load_source_module
+from source_loader import load_source_module
 
 
 def _module(monkeypatch: pytest.MonkeyPatch) -> ModuleType:

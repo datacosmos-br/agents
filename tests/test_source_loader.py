@@ -3,7 +3,7 @@ from __future__ import annotations
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
-from tests.source_loader import load_source_module
+from source_loader import load_source_module
 
 
 def test_catalog_script_loading_is_concurrent_and_residue_free() -> None:
