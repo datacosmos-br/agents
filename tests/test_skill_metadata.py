@@ -159,5 +159,6 @@ def test_symlink_and_special_metadata_are_rejected(tmp_path: Path) -> None:
 
 def test_canonical_metadata_inventory_is_strict() -> None:
     root = Path(__file__).resolve().parents[1]
+    expected = tuple(sorted(root.glob("skills/**/agents/openai.yaml")))
 
-    assert len(validate(root)) == 41
+    assert tuple(document.path for document in validate(root)) == expected
