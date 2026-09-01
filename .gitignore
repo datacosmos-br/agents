@@ -24,10 +24,27 @@ agents.bkp/
 /.beads.gate.lock
 /crew/
 /polecats/
-# Provider runtime projections written by the gas city pack runtime (skill
-# symlinks + ownership manifests into machine-local ~/.gc cache), never source:
+# Provider projection destinations (config/projections.json). Both the
+# agentsctl projector and the gas city pack runtime write here: this repository
+# is a registered rig, so the pack runtime drops skill symlinks and an ownership
+# manifest into the provider trees at any time, unprompted. These are runtime
+# state, never source.
+#
+# This ignore list IS the enforcement:
+# tests/test_tracker_suspension.py asserts that no projection artifact is
+# tracked, staged, or offered as untracked source. A destination missing here
+# would be offered as source and fail that guard, so the two must agree.
+/.agents/
 /.claude/
 /.codex/
+/.cursor/
+/.gemini/
+/.opencode/
+/.github/agents
+/.github/hooks
+/.github/instructions
+/.github/skills
+/GEMINI.md
 
 # Beads / Dolt files (added by bd init)
 .dolt/

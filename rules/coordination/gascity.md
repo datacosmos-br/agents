@@ -16,15 +16,18 @@ Activation is operational state owned by the city under work — its repository
 law and its own runtime state — not a constant restated here. Resolve it at
 preflight for that exact city before any effect:
 
-- while its authority declares suspension, only static configuration review is
+- when its authority declares the city operating, its declared scope is
+  executable under every strict-execution policy, and dispatch, observation, and
+  closure run through the city's own command surface;
+- when its authority declares suspension, only static configuration review is
   authorized and the repository boundary below applies;
-- when its authority records an explicit operator lift, exactly the named scope
-  becomes executable under every strict-execution policy, and everything outside
-  that scope stays suspended.
+- a scope the city's authority does not declare stays unauthorized in either
+  case.
 
-Never infer a lift from installation, an available binary, a running process,
-another city, or a previous session. Never freeze the current value of this
-state into always-on guidance; name the owner that declares it.
+Never infer the state from installation, an available binary, a running process,
+another city, or a previous session — read it from that city's own authority.
+Never freeze the current value of this state into always-on guidance; name the
+owner that declares it.
 
 ## Configuration
 
@@ -63,6 +66,23 @@ so state the intent explicitly wherever it applies:
   owner; city configuration exposes a second, unenforced route to the same
   state.
 
+## Dispatch while the city is operating
+
+Work reaches an agent through the city's own surface: create the item in the
+target rig's store, route it to a configured agent, and observe through the
+city's status, session, and convoy surfaces.
+
+Routing places the session in the rig's own checkout. Gas City is a router, not
+a lane owner: it does not create the branch or the worktree, and it does not own
+a merge queue. Resolve roles and formulas from the city (`gc agent list`,
+`gc formula list`) instead of naming them from memory; a name that no longer
+resolves is drift, not a typo.
+
+Branch creation, worktree layout when a lane needs one, repository Git, native
+gates, PR review, and merge-commit landing remain local
+responsibilities. Stop at the rig's declared integration lane; promotion beyond
+it requires an explicit operator request.
+
 ## Repository boundary while suspended
 
 - Work only in the existing authorized checkout.
@@ -72,6 +92,25 @@ so state the intent explicitly wherever it applies:
   workspace, symlink, cross-repository reference, tracker, or alternate ledger.
   Preserve evidence only in separately authorized Git/PR/CI surfaces.
 - Static Gas City skills are personal governance and never project projections.
+
+## Runtime projections into a registered rig
+
+A registered rig's checkout is also a projection destination. The pack runtime
+writes skill symlinks and an ownership manifest into that rig's provider trees
+whenever it runs, unprompted and without the operator asking. Their presence on
+disk is runtime state, never operator intent and never source.
+
+The boundary is therefore what Git carries, not what exists on disk:
+
+- Every project-scope destination declared by the projection configuration is
+  excluded from source control, and a guard derives that list from the
+  configuration rather than repeating it by hand.
+- A projection artifact that is tracked, staged, or offered as untracked source
+  is a defect, at its owner.
+- A guard must never assert that a projection destination is absent from disk.
+  That assertion makes a clean checkout go red when an unrelated daemon runs,
+  which is a false failure, and deleting the directory to regain green is a
+  symptom fix the runtime silently undoes.
 
 ## Prohibitions
 

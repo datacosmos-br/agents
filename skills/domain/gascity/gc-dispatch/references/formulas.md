@@ -5,6 +5,13 @@ gc formula list                        # List available formulas
 gc formula show <name>                 # Show formula definition
 ```
 
+**Pack boundary.** Formulas come from packs; this city imports only `core`,
+`bd`, and `gascity` roles (`gc import list`). Formulas outside those — the
+`mol-polecat-*` family ships with the legacy polecat pack — resolve only when
+that pack is imported. `gc formula show <name>` fails loud with
+"not found in search paths" when it is not: treat that as a missing-import
+diagnosis, never as a reason to hand-author the lifecycle.
+
 ### Choosing a work formula
 
 Work formulas differ by **isolation** (does the agent get its own worktree and
@@ -15,7 +22,7 @@ a separate merge-review step?). Reach for the lightest one that fits:
 |---------|-----------|------------------|----------|
 | `mol-do-work` | none — works in the CWD | agent commits, then **closes** the bead | demos, throwaway, or a trivial single-agent fix where isolation and review are overkill |
 | `mol-scoped-work` | worktree + explicit setup/teardown | agent-managed, no refinery — work modeled as a routable **step-bead DAG** | multi-step work you want decomposed into independently-routable steps under one owner, without a merge-review gate |
-| `mol-polecat-work` | worktree + feature branch | pushes the branch and **reassigns to the refinery** for merge review | production multi-agent work that must be reviewed before landing on a shared branch — the default for pooled polecats |
+| `mol-polecat-work` *(legacy pack)* | worktree + feature branch | pushes the branch and **reassigns to the refinery** for merge review | production multi-agent work that must be reviewed before landing on a shared branch — requires the legacy polecat pack import; **not present in a stock city** (see pack boundary above) |
 
 Two narrower siblings trade a stage away from `mol-polecat-work`:
 
@@ -26,12 +33,12 @@ Two narrower siblings trade a stage away from `mol-polecat-work`:
   findings to bead notes. For analysis/investigation beads whose output is a
   report, not a code change.
 
-Rule of thumb: choose **`mol-polecat-work` for anything that must land through
-review or survive a session recycle** — its workflow state and branch/target
-metadata live in beads, so a recycled agent resumes the branch instead of
-stranding it. Use **`mol-scoped-work`** when you want worktree isolation and
-step-level routing but own the work end-to-end and need no merge-review handoff.
-Drop to **`mol-do-work`** only for the trivial single-agent case.
+Rule of thumb: choose **`mol-scoped-work` for anything that must survive a
+session recycle** — its step DAG and continuation metadata live in beads, so a
+recycled agent resumes instead of stranding. Add the refinery handoff only by
+importing the legacy polecat pack and using `mol-polecat-work`, which you do
+only when merge review must be a distinct routed role. Drop to
+**`mol-do-work`** only for the trivial single-agent case.
 
 **When the refinery handoff doesn't apply.** `mol-polecat-work` ends by pushing a
 feature branch and reassigning the bead to the refinery, which merges it into the
