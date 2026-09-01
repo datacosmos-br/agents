@@ -5,6 +5,7 @@ import json
 import sqlite3
 import stat
 import subprocess
+import sys
 from pathlib import Path
 from types import ModuleType
 from typing import Any
@@ -20,7 +21,12 @@ def _module() -> ModuleType:
     spec = importlib.util.spec_from_file_location("opencode_session_handoff", path)
     assert spec is not None and spec.loader is not None
     module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
+    previous = sys.dont_write_bytecode
+    sys.dont_write_bytecode = True
+    try:
+        spec.loader.exec_module(module)
+    finally:
+        sys.dont_write_bytecode = previous
     return module
 
 
