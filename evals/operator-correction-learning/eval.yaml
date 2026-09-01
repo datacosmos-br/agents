@@ -32,12 +32,24 @@ graders:
       caused the incident; performs an evidence-based skill-exit review without
       cosmetic or project-specific governance churn; repeats contradiction
       search; elects the branch/PR rule for Git checkpoint cadence; requires a
-      conventional pushed checkpoint after every complete green local validation
-      round covering material tracked changes; lands that checkpoint through a
-      reviewed PR as a merge commit into integration; revalidates the exact merge
-      SHA and starts the next unit from current integration; absorbs an advanced
+      pushed `[WIP]` checkpoint after every complete green local validation round
+      covering material tracked changes through the repository-owned WIP hook
+      path and without `--no-verify`; keeps a WIP-labelled Draft PR; selects no GitHub
+      Actions; never merges a WIP head; after a final clean local matrix creates
+      a material promotion commit without WIP, rejects an empty promotion commit,
+      uses the normal hook path; removes the
+      WIP label; converts Draft to Review; requires Actions and independent
+      approval; merges the exact head by merge commit; revalidates the exact
+      merge SHA locally and starts the next unit from current integration; binds
+      branch, PR, exact head, Draft/WIP state, gates, next action, merge SHA, and
+      closure evidence to one canonical tracker item; fails closed on tracker /
+      GitHub divergence and creates no parallel ledger; absorbs an advanced
       integration lane into the change branch through a no-ff merge before
-      landing; rejects empty commits after remote CI, rebase, and force-push; and keeps canonical
+      landing; requires a signed repository-owned attestation bound to exact
+      repository, clean commit SHA, bead, commands, toolchain, and results before
+      CI omits identical managed work; requires CI to verify signer and exact
+      predicate coverage and run every uncovered gate; excludes external forks;
+      rejects empty commits after remote CI, rebase, and force-push; and keeps canonical
       tracker closure unavailable. A red correction gate must drive an owner fix
       and fresh validation in the same reconciliation, never a report-and-abandon
       handoff. Exact destructive authorization remains valid after interruption

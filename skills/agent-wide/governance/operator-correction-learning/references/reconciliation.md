@@ -97,13 +97,32 @@ owners and consumers agree.
 When a correction governs Git checkpoint cadence, elect the branch/PR rule as
 the invariant owner. Require each complete green local validation round that
 covers material tracked changes to be committed conventionally and pushed
-before more implementation, then land that persisted checkpoint through its PR
-as a merge commit into the integration lane and revalidate the exact merge SHA.
-Start the next implementation unit from that current integrated state. If the
-integration lane advanced before landing, absorb it into the change branch with
-a `--no-ff` merge and revalidate the combined state first. Do not infer an empty
-commit from a clean remote CI result: without a material change it would
-recursively trigger CI rather than preserve new evidence.
+as an explicitly marked `[WIP]` checkpoint through repository-owned hooks that
+recognize typed WIP state without `--no-verify`; GitHub Actions are not selected.
+Keep its integration PR Draft and WIP-labelled until the work is ready to land;
+WIP heads never enter integration. After one final clean local matrix, create a
+material promotion commit without a WIP marker; empty promotion commits are
+prohibited. Use the normal verification path, remove the WIP label, convert the
+PR to Review, require Actions and independent approval, and merge the exact head
+by merge commit. Then revalidate the integration merge SHA locally and start the
+next unit from it. If integration advanced before landing, absorb it into the
+change branch with a `[WIP] [skip ci]` `--no-ff` merge, revalidate, publish it
+without duplicate verification hooks, and update the tracker head first.
+
+When the canonical tracker is selected, make its work item and the GitHub PR one
+state machine: each WIP checkpoint records branch, exact head OID, Draft/WIP
+state, local gates, and next action with the required independent cross-checks.
+Promotion fails closed if tracker and GitHub disagree. Landing records the merge
+SHA and post-merge proof in the same item before closure; never create a second
+ledger for this relationship.
+
+When local gates replace identical managed CI work, require a signed attestation
+owned by the project workflow and bound to exact repository, commit SHA, bead,
+commands, toolchain, and results. The tracker and PR reference that immutable
+proof. CI verifies signer and exact predicate coverage before omitting a gate;
+invalid or incomplete proof never becomes green evidence. Do not call a local
+signature a GitHub Artifact Attestation when it lacks GitHub Actions OIDC, and
+do not project a managed trust policy into external forks.
 
 At every skill exit, inspect the measured run for a reusable decision or
 procedure defect. When one exists, correct the narrowest canonical skill owner

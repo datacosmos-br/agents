@@ -15,12 +15,21 @@ inputs:
     validation and repeated search, perform the evidence-based skill-exit review,
     and keep suspended runtime owners untouched. The operator also establishes
     Git checkpoint cadence: after every complete green local validation round
-    covering material tracked changes, publish a conventional checkpoint commit,
-    land it through a reviewed PR as a merge commit into integration, revalidate
-    that exact merge SHA, and start the next unit from integration; do not
-    manufacture an empty commit after remote CI.
+    covering material tracked changes, publish a [WIP] checkpoint through the
+    repository-owned WIP hook path without --no-verify, keep a WIP-labelled Draft
+    PR against integration, and select no GitHub Actions. Never merge a WIP head.
+    At landing, create a material promotion commit without WIP, use the normal
+    hook path, convert Draft to Review, require Actions and independent approval, merge the exact head by
+    merge commit, revalidate locally, and start the next unit from integration.
+    Bind every WIP and promotion transition to one canonical tracker item whose
+    branch, PR, exact head, Draft/WIP state, gates, merge SHA, and closure evidence
+    must agree with GitHub; create no parallel ledger.
+    When local gates replace identical managed CI work, require a signed
+    repository-owned attestation bound to the exact repository, clean commit SHA,
+    bead, commands, toolchain, and results. CI verifies signer and exact predicate
+    coverage, runs every uncovered gate, and excludes external forks.
   files:
   - path: correction-state.yaml
 expected:
-  output_contains: [Git, PR, rules/architecture/engineering-core.md, semantic regression, producer contract, receiver, causal owner, existing authorization, fresh preflight, continue, skill-exit review, reusable defect, green local validation, conventional checkpoint commit, push, reviewed PR, merge commit, integration, exact merge SHA, revalidate, material tracked changes, no empty commit, not DONE, atomic, zero residue]
-  output_not_contains: [patch the generator, adjacent workaround, alternate tracker, replacement ledger, partial reconciliation, retry, rebase, force-push, severe conflict, ask again, another process]
+  output_contains: [Git, PR, canonical tracker item, rules/architecture/engineering-core.md, semantic regression, producer contract, receiver, causal owner, existing authorization, fresh preflight, continue, skill-exit review, reusable defect, green local validation, WIP, repository-owned hook path, push, Draft PR, WIP label, GitHub Actions NOT SELECTED, branch, exact head, local gates, next action, signed attestation, clean commit SHA, bead, commands, toolchain, results, verifies signer, predicate coverage, uncovered gate, external forks, never merge WIP, material promotion commit, no WIP marker, normal hook path, Review, Actions, independent approval, merge commit, integration, exact merge SHA, local revalidation, closure evidence, no parallel ledger, material tracked changes, not DONE, atomic, zero residue]
+  output_not_contains: [patch the generator, adjacent workaround, alternate tracker, replacement ledger, partial reconciliation, retry, --no-verify, empty promotion commit, rebase, force-push, severe conflict, ask again, another process]

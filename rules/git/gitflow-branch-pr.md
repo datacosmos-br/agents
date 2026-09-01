@@ -17,30 +17,57 @@ orchestration is suspended it is prohibited.
   guidance, assume one from another repository, or reuse the base of a sibling
   project.
 - One git root per PR; never mix two repositories in one commit or PR.
+- When the repository selects its canonical tracker, one active work item owns
+  the branch and PR. Record the branch, current head OID, PR identity, Draft/WIP
+  state, local gate evidence, and next action in that item at every checkpoint.
+  GitHub and tracker state must agree before publication, promotion, landing, or
+  closure; divergence blocks the transition and is corrected at the state owner.
 - **Clean-round checkpoint:** after every complete applicable local validation
   round that is green and covers material tracked changes, immediately stage
-  explicit scoped paths, create a conventional checkpoint commit, and push the
-  change branch. Open or update its PR, require remote gates and review, and
-  merge that persisted checkpoint into integration by merge commit before
-  starting the next implementation unit. Revalidate the exact integration merge
-  SHA, then start the next unit from that current integration state. A red or
-  incomplete round produces no green checkpoint. Never create an empty commit
-  merely because remote CI completed: that would recursively start another CI
-  round without a material state change. Pre-commit/pre-push/CI may repeat their
-  declared matrix; `verification-loop` owns the manual RED→GREEN evidence.
+  explicit scoped paths and create a commit whose subject starts `[WIP]`.
+  Commit and push it through the repository-owned WIP path, whose hooks recognize
+  typed WIP state and exit before repeating the complete local matrix. Never use
+  `--no-verify`. Open or update a Draft PR against integration and apply the
+  `WIP` label. GitHub Actions are not selected for a WIP checkpoint, and WIP
+  commits never merge into integration.
+- **Review promotion:** when the accumulated Draft PR is ready to land, rerun
+  the complete local matrix and create one promotion commit whose subject has
+  no `[WIP]` marker and represents the final material state. An empty promotion
+  commit is prohibited. Commit and push through the normal verification path,
+  remove the `WIP` label, convert Draft to Review, require Actions, conversations,
+  and independent approval, then merge the exact head by merge commit. Revalidate
+  the exact integration merge SHA locally and start the next unit from current
+  integration. A red or incomplete round cannot produce either checkpoint or
+  promotion.
+- Bind promotion to the branch, PR, and exact head recorded by the work item.
+  After landing, record the integration merge SHA and post-merge evidence in the
+  same item; close it only when GitHub, Git history, measured runtime, and current
+  integrated code agree.
 - If integration advanced or diverged, merge `origin/<integration>` into the
-  change branch with `--no-ff`, resolve by preserving valid concurrent work,
-  and revalidate. After that clean combined round, checkpoint and push the merge
-  before continuing. Never rebase or force-push an authorized branch.
-- Open/update the PR against integration, resolve every conversation, obtain
-  approval, require green checks, and merge by merge commit. Revalidate the
-  exact merge SHA on integration.
+  change branch with `--no-ff` and a subject starting `[WIP] [skip ci]`, resolve
+  by preserving valid concurrent work, and revalidate. After that clean combined
+  round, push the merge with verification hooks disabled and update the tracker
+  head evidence before continuing. Never rebase or force-push an authorized
+  branch.
+- WIP publication uses the locally green matrix recorded in the canonical
+  tracker; absence of remote Actions is recorded as `NOT SELECTED`, never as a
+  green remote check. Only the non-WIP promotion head may enter integration, and
+  it retains the full reviewed-PR and remote-check contract.
+- For repositories governed by the managed project workflow, each locally green
+  check/test matrix publishes a repository-owned signed attestation bound to the
+  exact commit SHA, repository identity, canonical bead, commands, toolchain,
+  and results. The bead and Draft PR reference the same immutable attestation.
+  Review CI verifies signer, SHA, predicate, and complete gate coverage before
+  omitting an attested gate; missing, stale, partial, foreign, or invalid proof
+  fails closed or runs the uncovered gate as declared by the typed workflow.
+  Never describe an unverified local report as a GitHub Artifact Attestation.
+  External forks do not inherit this managed trust policy.
 - A failed check, actionable review finding, missing approval, or temporarily
   non-mergeable state keeps this landing cycle active. Fix, push, and rerun every
   actionable item; solicit or request help for independent approval only after
   the technical surface is green. Never switch task, phase, or repository merely
   by reporting the open PR state.
-- Independent review is mandatory and never self-granted. When the operator
+- Independent review is mandatory for the promoted landing and never self-granted. When the operator
   states that no independent reviewer exists and authorizes an administrative
   merge, that authorization covers the human approval row only: green checks,
   resolved conversations, merge-commit strategy, and revalidation of the exact
