@@ -101,8 +101,8 @@ as an explicitly marked `[WIP]` checkpoint through repository-owned hooks that
 recognize typed WIP state without `--no-verify`; GitHub Actions are not selected.
 Keep its integration PR Draft and WIP-labelled until the work is ready to land;
 WIP heads never enter integration. After one final clean local matrix, create a
-material promotion commit without a WIP marker; empty promotion commits are
-prohibited. Use the normal verification path, remove the WIP label, convert the
+material promotion commit without a WIP marker; an empty commit is permitted
+when it is the typed transition from WIP to Review. Use the normal verification path, remove the WIP label, convert the
 PR to Review, require Actions and independent approval, and merge the exact head
 by merge commit. Then revalidate the integration merge SHA locally and start the
 next unit from it. If integration advanced before landing, absorb it into the

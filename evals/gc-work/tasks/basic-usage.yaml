@@ -4,9 +4,14 @@ description: Exercise canonical gc work workflow.
 tags: [gas-city, gc-work, happy-path]
 inputs:
   prompt: >-
-    Demonstrate the canonical gc-work workflow using gc work against the
-    current project. Preflight the city/rig context, run the primary command
-    via the project's declared facade, and report exact command, cwd, exit
-    code, and decisive output without bypass or fallback.
+    Demonstrate the canonical gc-work workflow for one objective executed by
+    two rigs. Preflight the city/rig context, search for the current shared HQ
+    root, link each rig-local implementation bead to its corresponding shared
+    child, and define the four-source update at material Git/gate checkpoints.
+    Cover the bead lifecycle from `gc hook --claim` through evidence-backed
+    close, including the hook ready/claim result and close preconditions.
+    Use mail only to notify collaborators. Report exact commands, cwd, exit
+    codes and decisive output without bypass or fallback.
 expected:
-  output_contains: [work, bead lifecycle, claim close, hook ready, gc]
+  output_contains: [shared root, local bead, gc.shared_epic, gc.shared_child, four-source, bead lifecycle, hook ready, claim, close, mail, notification, gc]
+  output_not_contains: [parallel root, mail as ledger]

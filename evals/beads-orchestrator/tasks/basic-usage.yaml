@@ -7,8 +7,11 @@ inputs:
     Audit tracker-snapshot.yaml. Classify each epic as keep, drain, or a fold
     candidate; identify any ownership conflict; and describe the ordered checks
     required after canonical runtime restoration. Do not execute commands or
-    claim that the graph changed.
+    claim that the graph changed. For the retained multi-rig objective, describe
+    the one shared city root and linked rig-local implementation beads that must
+    be verified after restoration; reject parallel roots.
   files:
   - path: tracker-snapshot.yaml
 expected:
-  output_contains: [ag-100, drain, ag-101, fold candidate, claim collision, ag-130]
+  output_contains: [ag-100, drain, ag-101, fold candidate, claim collision, ag-130, shared root, local bead]
+  output_not_contains: [parallel root]

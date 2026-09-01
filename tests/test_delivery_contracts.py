@@ -74,6 +74,11 @@ def test_eval_workflow_covers_integration_push_and_pull_requests() -> None:
     assert required_paths <= set(events["push"]["paths"])
     assert required_paths <= set(events["pull_request"]["paths"])
 
+    job_condition = workflow["jobs"]["eval"]["if"]
+    assert "github.event.pull_request.draft" in job_condition
+    assert "startsWith(github.event.pull_request.title, '[WIP]')" in job_condition
+    assert "startsWith(github.event.head_commit.message, '[WIP]')" in job_condition
+
 
 def test_dependabot_covers_every_dependency_surface_with_seven_day_cooldown() -> None:
     configuration = yaml.safe_load(
