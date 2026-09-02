@@ -1,6 +1,6 @@
 # Plano de migração do workflow de desenvolvimento → Gas City
 
-**Data:** 2026-08-30 · **Autor:** sessão Hermes · **Status:** F0 aplicado; F1 preparado e bloqueado
+**Data:** 2026-08-30 · **Autor:** sessão Hermes · **Status:** F0 aplicado; F1 aplicado (F1.1–F1.3 aterrissados, F1.4 em PRs); F2–F4 pendentes
 
 Avaliação do estado real medido + plano de cutover.
 
@@ -10,8 +10,9 @@ Avaliação do estado real medido + plano de cutover.
 |---|---|---|
 | Tracker | **feito** — 18 beads sob o epic `ag-cj6`, com grafo de dependência | `bd show ag-cj6` |
 | F0 | **aplicado e validado** (`ag-cj6.1` fechado) | `agentsctl check`/`doctor` exit 0; `waza` 41/41; grep de `suspend\|gt\|polecat` em `~/gc/AGENTS.md` = 0 |
-| F1.1/F1.2/F1.3 | **bloqueado** — `AGENTS.md` é arquivo protegido, aprovação do operador expirou | patches prontos em `docs/patches-f1-purgar-gt.md`; alvos verificados intactos |
-| F2–F4 | não iniciado | depende de F1 |
+| F1.1/F1.2/F1.3 | **aterrissado** — por outros atores: ai-hub PR #622 (merge `9fde3679` em `dev`, fecha `ag-cj6.2`), cosmos-main `988ae8e5` (em `develop`, fecha `ag-cj6.3`/`ag-cj6.15`), ccs `7b22df34` (em `main`, fecha `ag-cj6.4`) | fechamentos `ag-cj6.2/.3/.4/.15` com 4 fontes (2026-09-02) |
+| F1.4 | **em review** — PRs [cosmos-main #214](https://github.com/datacosmos-br/cosmos-main/pull/214), [ccs #26](https://github.com/marlon-costa-dc/ccs/pull/26), [mcb #233](https://github.com/marlonsc/mcb/pull/233) (branch `docs/gascity-naming-sweep`, commits escopados; ccs fast pre-push gate 384 testes OK) | bead `ag-cj6.16` fecha após os merges |
+| F2–F4 | não iniciado (F2: `ag-cj6.5`–`.11`; F3: `.12`/`.13`/`.17`; F4.8 hermes feito) | F2 depende de F1 merge |
 
 **Achados que a execução revelou e esta versão do plano incorpora:**
 
@@ -318,11 +319,11 @@ Nenhum criado. Prefixo sugerido `ag-` (rig `agents`), exceto F4.1 → `gct`.
 |---|---|---|---|
 | `ag-cj6` | **[epic]** Cutover do workflow de desenvolvimento para Gas City | 1 | — |
 | `ag-cj6.1` | F0 — Reescrever `~/gc/AGENTS.md` e rule gascity para city ativa | 1 | — ✅ **fechado** |
-| `ag-cj6.2` | F1.1 — ai-hub: purgar `gt done`/polecat/refinery | 1 | F0 ⛔ bloqueado |
-| `ag-cj6.3` | F1.2 — cosmos-main: `gt sling`/`gt done` → `gc` | 1 | F0 ⛔ bloqueado |
-| `ag-cj6.15` | F1.2b — cosmos-main ADR-134 declara Gas Town owner | 1 | — |
-| `ag-cj6.4` | F1.3 — ccs: `gt prime`/`gt hook`/`gt done` → `gc` | 1 | F0 ⛔ bloqueado |
-| `ag-cj6.16` | F1.4 — varredura de `docs/` e `skills/` | 2 | — |
+| `ag-cj6.2` | F1.1 — ai-hub: purgar `gt done`/polecat/refinery | 1 | F0 ✅ **fechado** (PR #622) |
+| `ag-cj6.3` | F1.2 — cosmos-main: `gt sling`/`gt done` → `gc` | 1 | F0 ✅ **fechado** (`988ae8e5`) |
+| `ag-cj6.15` | F1.2b — cosmos-main ADR-134 declara Gas Town owner | 1 | — ✅ **fechado** (emenda em `develop`) |
+| `ag-cj6.4` | F1.3 — ccs: `gt prime`/`gt hook`/`gt done` → `gc` | 1 | F0 ✅ **fechado** (`7b22df34`) |
+| `ag-cj6.16` | F1.4 — varredura de `docs/` e `skills/` | 2 | — 🔁 em review (PRs #214/#26/#233) |
 | `ag-cj6.5` | F2.1 — Deletar `legacy-formulas.md` | 1 | F0 |
 | `ag-cj6.6` | F2.2 — Corrigir `formulas.md`, reescrever refinery handoff | 1 | F2.1 |
 | `ag-cj6.7` | F2.3 — Exemplos de dispatch com roles reais | 2 | F2.2 |
@@ -333,7 +334,7 @@ Nenhum criado. Prefixo sugerido `ag-` (rig `agents`), exceto F4.1 → `gct`.
 | `ag-cj6.17` | F3.0 — cosmos-main 6 commits atrás, worktree sujo | 2 | — |
 | `ag-cj6.12` | F3.1 — Piloto ponta a ponta em um rig | 1 | F1.1, F1.2, F1.3, F1.2b, F2.8 |
 | `ag-cj6.13` | F3.6 — Propagar rig a rig | 2 | F3.1, F3.0 |
-| `ag-cj6.14` | F4.6 — Fechar/relabelar bead `ag-rig-agents [gt:rig]` | 3 | — |
+| `ag-cj6.14` | F4.6 — Fechar/relabelar bead `ag-rig-agents [gt:rig]` | 3 | — ✅ **fechado** |
 | `gct-1ev0z` | F4.1 — 4 doctor checks estouram timeout (**rig gct**) | 2 | — |
 
 Grafo: `bd dep tree ag-cj6`. F4.1 vive no rig `gct` (repo gascity) porque o
