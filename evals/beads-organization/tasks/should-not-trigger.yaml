@@ -1,0 +1,11 @@
+id: beads-organization-negative-001
+name: Reorganize a shopping list into features
+description: Avoid tracker hierarchy work for a personal list with no repository items.
+tags: [beads, anti-trigger]
+inputs:
+  prompt: >-
+    Organize my weekend errands into a feature with at most two child tasks,
+    and apply priority labels to each errand. This is a private list, not a
+    repository tracker.
+expected:
+  output_not_contains: [bd update, bd find-duplicates, priority:P]
