@@ -146,7 +146,7 @@ def doctor(root: Path) -> None:
 
 def check(root: Path) -> None:
     inventory = _inventory(root)
-    load_projection_config(root)
+    projection = load_projection_config(root)
     model = _model(root)
     validate(
         inventory.catalog,
@@ -155,6 +155,13 @@ def check(root: Path) -> None:
         inventory.agents,
         inventory.rules,
     )
+    Projector(
+        inventory.catalog,
+        projection,
+        inventory.commands,
+        inventory.agents,
+        inventory.rules,
+    ).check()
     print(
         "check: "
         f"{len(inventory.catalog.skill_dirs())} skills, "
@@ -182,6 +189,7 @@ def sync(root: Path) -> None:
         inventory.commands,
         inventory.rules,
         LawSurface.load(root),
+        central_root=catalog.root if project == catalog.root else None,
     )
     run_atomic_publications(
         (

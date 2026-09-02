@@ -30,6 +30,7 @@ _PROVIDERS = (
     "gemini",
     "opencode",
     "antigravity",
+    "pool",
 )
 _SURFACES = ("skills", "commands", "agents", "rules", "hooks")
 
@@ -210,8 +211,8 @@ def _config(root: Path, supported: dict[tuple[str, str], str]) -> None:
     (config / "projections.json").write_text(
         json.dumps(
             {
-                "version": 6,
-                "manifest_versions": {"hooks": 3, "projection": 5},
+                "version": 7,
+                "manifest_versions": {"hooks": 3, "projection": 6},
                 "providers": providers,
             }
         ),
@@ -836,6 +837,36 @@ def test_exact_orphaned_projection_is_adopted_by_digest(
 
     assert managed.stat().st_mtime_ns == before
     assert (target / Projector.MANIFEST).is_file()
+
+
+def test_prior_version_manifest_transitions_without_rewriting_content(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _, projector = _source(tmp_path)
+    project = _project(tmp_path)
+    monkeypatch.chdir(project)
+    projector.apply()
+    target = project / ".agents" / "skills"
+    managed = target / "project-guidance"
+    before = managed.stat().st_mtime_ns
+    payload = _manifest(target)
+    assert payload["version"] == 6
+    payload["version"] = 5
+    entries = cast(dict[str, dict[str, object]], payload["managed"])
+    for entry in entries.values():
+        entry.pop("link_target", None)
+    (target / Projector.MANIFEST).write_text(
+        json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
+
+    projector.apply()
+    projector.check()
+
+    assert managed.stat().st_mtime_ns == before
+    assert _manifest(target)["version"] == 6
+    first = Catalog.physical_tree_contract(target)
+    projector.apply()
+    assert Catalog.physical_tree_contract(target) == first
 
 
 def test_managed_source_update_is_reconciled_but_local_edit_is_rejected(
@@ -1674,3 +1705,81 @@ def test_v2_selection_field_contracts_are_exact() -> None:
 
 
 # ===== End v2 detection_rules tests =====
+
+
+# ===== Alias primary surfaces =====
+
+
+def test_alias_surfaces_link_to_the_primary_and_reach_fixed_point(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _, projector = _source(
+        tmp_path,
+        supported={
+            ("codex", "skills"): ".agents/skills",
+            ("claude", "skills"): ".claude/skills",
+        },
+    )
+    project = _project(tmp_path)
+    monkeypatch.chdir(project)
+
+    projector.apply()
+    projector.check()
+
+    primary = project / ".claude" / "skills"
+    alias = project / ".agents" / "skills"
+    assert (primary / "project-guidance" / "SKILL.md").is_file()
+    link = alias / "project-guidance"
+    assert link.is_symlink()
+    assert link.readlink() == Path("../../.claude/skills/project-guidance")
+    managed = json.loads((alias / Projector.MANIFEST).read_text(encoding="utf-8"))[
+        "managed"
+    ]
+    assert managed["project-guidance"]["link_target"] == (
+        "../../.claude/skills/project-guidance"
+    )
+    primary_managed = json.loads(
+        (primary / Projector.MANIFEST).read_text(encoding="utf-8")
+    )["managed"]
+    assert primary_managed["project-guidance"]["link_target"] is None
+
+    first = Catalog.physical_tree_contract(primary)
+    projector.apply()
+    projector.check()
+    assert Catalog.physical_tree_contract(primary) == first
+    assert not tuple(project.rglob(".agents-stage.*"))
+
+    link.unlink()
+    projector.apply()
+    assert link.is_symlink()
+    assert link.readlink() == Path("../../.claude/skills/project-guidance")
+
+
+def test_alias_link_divergence_requires_adjudication(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _, projector = _source(
+        tmp_path,
+        supported={
+            ("codex", "skills"): ".agents/skills",
+            ("claude", "skills"): ".claude/skills",
+        },
+    )
+    project = _project(tmp_path)
+    monkeypatch.chdir(project)
+    projector.apply()
+
+    link = project / ".agents" / "skills" / "project-guidance"
+    link.unlink()
+    link.symlink_to(project / ".claude" / "skills")
+
+    with pytest.raises(ValueError, match="projection destination symlink forbidden"):
+        projector.apply()
+    assert link.readlink() == project / ".claude" / "skills"
+
+    link.unlink()
+    link.mkdir()
+
+    with pytest.raises(ValueError, match="unadjudicated projection divergence"):
+        projector.apply()
+    assert link.is_dir() and not link.is_symlink()

@@ -86,7 +86,7 @@ class ProjectionCell:
 
 @dataclass(frozen=True)
 class ProjectionConfig:
-    """Complete immutable v6 projection contract."""
+    """Complete immutable v7 projection contract."""
 
     version: int
     projection_manifest_version: int
@@ -303,8 +303,8 @@ def load_projection_config(root: Path) -> ProjectionConfig:
     payload = json.loads(path.read_text(encoding="utf-8"))
     value = _mapping(payload, "projection config")
     _exact_fields(value, _ROOT_FIELDS, "projection config fields")
-    if value["version"] != 6:
-        raise ValueError("projection config must use version 6")
+    if value["version"] != 7:
+        raise ValueError("projection config must use version 7")
     manifest_versions = _mapping(
         value["manifest_versions"], "projection manifest versions"
     )
@@ -313,8 +313,8 @@ def load_projection_config(root: Path) -> ProjectionConfig:
         _MANIFEST_VERSION_FIELDS,
         "projection manifest versions",
     )
-    if manifest_versions["projection"] != 5:
-        raise ValueError("projection directory manifest version must equal 5")
+    if manifest_versions["projection"] != 6:
+        raise ValueError("projection directory manifest version must equal 6")
     if manifest_versions["hooks"] != 3:
         raise ValueError("projection hook manifest version must equal 3")
 
@@ -341,7 +341,12 @@ def load_projection_config(root: Path) -> ProjectionConfig:
             for surface in ProjectionSurface:
                 key = (provider, context, surface)
                 cells[key] = _cell(provider, context, surface, surfaces[surface.value])
-    return ProjectionConfig(6, 5, 3, MappingProxyType(cells))
+    return ProjectionConfig(
+        cast(int, value["version"]),
+        cast(int, manifest_versions["projection"]),
+        cast(int, manifest_versions["hooks"]),
+        MappingProxyType(cells),
+    )
 
 
 __all__ = (

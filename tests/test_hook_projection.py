@@ -17,12 +17,16 @@ from agents_governance.governance_config import (
 )
 from agents_governance.hook_projection import HookProjector, _capsule
 from agents_governance.law_surface import PRELUDE_START, LawSurface
+from agents_governance.projection_authorization import (
+    PROJECT_SELECTION,
+    ProjectAuthorization,
+)
 from agents_governance.projection_config import load_projection_config
 from agents_governance.rules import audit_rule_specs
 from agents_governance.runtime import _inventory
 
 
-def _projector(root: Path) -> HookProjector:
+def _projector(root: Path, central_root: Path | None = None) -> HookProjector:
     catalog = Catalog(root)
     commands = audit_command_specs(root, (record.name for record in catalog.records()))
     rules = audit_rule_specs(root)
@@ -34,6 +38,7 @@ def _projector(root: Path) -> HookProjector:
         commands,
         rules,
         LawSurface.load(root),
+        central_root=central_root,
     )
 
 
@@ -488,3 +493,35 @@ def test_capsule_carries_approval_provenance_for_every_bootstrap_rule() -> None:
     )
     for identity in inventory.governance.bootstrap_rules:
         assert f"## Rule `{identity}`" in capsule
+
+
+def test_central_source_never_merges_capsules_into_its_own_law(
+    tmp_path: Path,
+) -> None:
+    root = Path(__file__).resolve().parents[1]
+    consumer_project = tmp_path / "consumer"
+    consumer_project.mkdir()
+    selection = b'{"version": 1, "agents": [], "opt_ins": [], "selected_tags": []}'
+    consumer = _projector(root)
+    consumer_plans = consumer._plans(
+        ProjectAuthorization(
+            consumer_project,
+            consumer_project / PROJECT_SELECTION,
+            selection,
+        )
+    )
+    assert any(plan.config == consumer_project / "AGENTS.md" for plan in consumer_plans)
+    assert any(plan.config == consumer_project / "CLAUDE.md" for plan in consumer_plans)
+
+    central = _projector(root, central_root=root)
+    central_plans = central._plans(
+        ProjectAuthorization(root, root / PROJECT_SELECTION, selection)
+    )
+    assert central_plans
+    assert all(
+        plan.config not in {root / "AGENTS.md", root / "CLAUDE.md"}
+        for plan in central_plans
+    )
+    assert any(
+        root / ".agents" / "law-surface.json" in plan.desired for plan in central_plans
+    )

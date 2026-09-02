@@ -12,6 +12,7 @@ SCRIPT_EXECUTABLE_ALLOWLISTS = {
     "skills/agent-wide/personal/opencode-session-handoff/scripts/export_session_snapshot.py": {
         "opencode"
     },
+    "skills/domain/gascity/mayor/assets/scripts/create_beads_from_tasks.py": {"gc"},
     "skills/tool/pr-sheriff/scripts/pr_triage.py": {"gh", "git"},
 }
 

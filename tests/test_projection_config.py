@@ -57,8 +57,8 @@ def _matrix() -> dict[str, object]:
             contexts[context.value] = surfaces
         providers[provider.value] = contexts
     return {
-        "version": 6,
-        "manifest_versions": {"hooks": 3, "projection": 5},
+        "version": 7,
+        "manifest_versions": {"hooks": 3, "projection": 6},
         "providers": providers,
     }
 
@@ -69,15 +69,15 @@ def _write(root: Path, payload: object) -> None:
     (config / "projections.json").write_text(json.dumps(payload), encoding="utf-8")
 
 
-def test_projection_config_requires_complete_closed_v6_matrix(tmp_path: Path) -> None:
+def test_projection_config_requires_complete_closed_v7_matrix(tmp_path: Path) -> None:
     _write(tmp_path, _matrix())
 
     config = load_projection_config(tmp_path)
 
-    assert config.version == 6
-    assert config.projection_manifest_version == 5
+    assert config.version == 7
+    assert config.projection_manifest_version == 6
     assert config.hook_manifest_version == 3
-    assert len(config.cells) == 7 * 2 * 5
+    assert len(config.cells) == 8 * 2 * 5
     assert (
         config.cell("claude", "personal", "skills").status is ProjectionStatus.SUPPORTED
     )
@@ -87,7 +87,7 @@ def test_projection_config_requires_complete_closed_v6_matrix(tmp_path: Path) ->
 @pytest.mark.parametrize(
     ("mutation", "message"),
     [
-        (lambda value: value.update(version=5), "projection config must use version 6"),
+        (lambda value: value.update(version=6), "projection config must use version 7"),
         (
             lambda value: value["providers"].pop("codex"),
             "projection providers must equal",
@@ -143,7 +143,15 @@ def test_repository_projection_matrix_classifies_every_cell(tmp_path: Path) -> N
 
     config = load_projection_config(repository)
 
-    assert len(config.cells) == 70
+    assert len(config.cells) == 80
+    assert config.cell("pool", "project", "skills").status is ProjectionStatus.SUPPORTED
+    assert config.cell("pool", "project", "skills").path == ".poolside/skills"
+    assert (
+        config.cell("pool", "personal", "skills").status is ProjectionStatus.UNSUPPORTED
+    )
+    assert (
+        config.cell("pool", "project", "hooks").status is ProjectionStatus.UNSUPPORTED
+    )
     assert (
         config.cell("copilot", "personal", "agents").status
         is ProjectionStatus.SUPPORTED

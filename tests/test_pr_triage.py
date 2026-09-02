@@ -108,6 +108,12 @@ def test_managed_private_access_requires_account_alias_and_exact_permission(
             "push",
             "git@github.com:datacosmos-br/agents.git",
         )
+    with pytest.raises(ValueError, match="declared SSH host alias"):
+        module.managed_private_access(
+            "datacosmos-br/agents",
+            "push",
+            "git@:datacosmos-br/agents.git",
+        )
     with pytest.raises(PermissionError, match="admin"):
         module.managed_private_access(
             "datacosmos-br/agents",

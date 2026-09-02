@@ -1,0 +1,10 @@
+id: dry-refactoring-negative-001
+name: Should not trigger dry-refactoring
+description: Do not run duplication tooling on unrelated prose work.
+tags: [dry-refactoring, anti-trigger]
+inputs:
+  prompt: >-
+    Draft a short release announcement for a new integration. The requested
+    output is prose; no source tree, clone report, or refactor is involved.
+expected:
+  output_not_contains: [jscpd, clone extraction, shared function]

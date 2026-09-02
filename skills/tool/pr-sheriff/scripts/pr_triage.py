@@ -84,7 +84,7 @@ def managed_private_access(
     if not ssh_url.startswith("git@") or not ssh_url.endswith(expected_suffix):
         raise ValueError("SSH URL must identify the exact managed repository")
     host = ssh_url.removeprefix("git@").split(":", 1)[0]
-    if host == "github.com":
+    if not host or host == "github.com":
         raise ValueError(
             "managed private repository requires a declared SSH host alias"
         )
