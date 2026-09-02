@@ -1,5 +1,4 @@
 import pytest
-
 from payments.providers import BankTransferAuthorizer, StripeAuthorizer
 
 

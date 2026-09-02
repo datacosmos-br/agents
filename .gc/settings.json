@@ -7,7 +7,7 @@
       {
         "hooks": [
           {
-            "command": "export PATH=\"$HOME/go/bin:$HOME/.local/bin:$PATH\" && gc handoff --auto \"context cycle\"",
+            "command": "export PATH=\"$HOME/go/bin:$HOME/.local/bin:$PATH\" && gc hook run --when-managed-session -- handoff --auto \"context cycle\"",
             "type": "command"
           }
         ],

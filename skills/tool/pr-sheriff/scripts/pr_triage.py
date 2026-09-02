@@ -85,7 +85,9 @@ def managed_private_access(
         raise ValueError("SSH URL must identify the exact managed repository")
     host = ssh_url.removeprefix("git@").split(":", 1)[0]
     if host == "github.com":
-        raise ValueError("managed private repository requires a declared SSH host alias")
+        raise ValueError(
+            "managed private repository requires a declared SSH host alias"
+        )
     permission = _REQUIRED_PERMISSION[effect]
     permissions = detail.get("permissions")
     if not isinstance(permissions, dict) or permissions.get(permission) is not True:
@@ -196,11 +198,7 @@ def _blocking_checks(checks: list[dict[str, Any]]) -> list[dict[str, Any]]:
 
 
 def _pending_checks(checks: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    return [
-        check
-        for check in checks
-        if str(check["status"]).casefold() != "completed"
-    ]
+    return [check for check in checks if str(check["status"]).casefold() != "completed"]
 
 
 def _check_counts(checks: list[dict[str, Any]]) -> tuple[int, int]:
@@ -357,9 +355,7 @@ def main() -> None:
     locate.add_argument("repository", help="owner/name")
     locate.add_argument("number", type=int)
 
-    access = sub.add_parser(
-        "access", help="preflight one managed private repository"
-    )
+    access = sub.add_parser("access", help="preflight one managed private repository")
     access.add_argument("repository", help="owner/name")
     access.add_argument("--effect", choices=tuple(_REQUIRED_PERMISSION), required=True)
     access.add_argument("--ssh-url")
