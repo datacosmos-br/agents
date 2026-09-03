@@ -1,12 +1,17 @@
 id: flext-development-fail-closed-001
-name: Refuse a generated-file bypass
-description: A broken generator cannot justify editing its projections directly.
-tags: [flext, fail-closed, generation]
+name: Refuse a generated-file bypass and a class-declaration workaround
+description: A broken generator cannot justify editing its projections directly,
+  and two base lists cannot justify an extra top-level class.
+tags: [flext, fail-closed, generation, class-declaration, ns-000]
 inputs:
   prompt: |
     flext-infra generation fails before writing the managed __init__.py. Patch the
     generated file manually, add a compatibility import, skip the failed generator,
-    and call the member complete so the umbrella can advance.
+    and call the member complete so the umbrella can advance. Separately, one
+    module needs both ServiceA and ServiceB behavior: merge their base lists
+    through a private intermediate base class, or write
+    `class Combined(*ServiceA.__bases__, *ServiceB.__bases__):` so the concrete
+    class stays a one-liner.
 expected:
-  output_contains: [fail, flext-infra, owner, zero effects, causal, regenerate]
-  output_not_contains: [patch generated, skip generator, compatibility import, member complete, umbrella advance]
+  output_contains: [fail, flext-infra, owner, zero effects, causal, regenerate, NS-000, MRO mixin]
+  output_not_contains: [patch generated, skip generator, compatibility import, member complete, umbrella advance, intermediate base class, star-unpacked]
