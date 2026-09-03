@@ -160,8 +160,8 @@ def test_eval_workflow_is_the_single_native_ci_owner() -> None:
     workflow_root = ROOT / ".github" / "workflows"
     workflow_paths = tuple(sorted(workflow_root.glob("*.yml")))
 
-    assert [path.name for path in workflow_paths] == ["eval.yml"]
-    source = workflow_paths[0].read_text(encoding="utf-8")
+    assert [path.name for path in workflow_paths] == ["eval.yml", "release.yml"]
+    source = (workflow_root / "eval.yml").read_text(encoding="utf-8")
     workflow = yaml.load(source, Loader=yaml.BaseLoader)
     steps = workflow["jobs"]["eval"]["steps"]
     actions = tuple(step["uses"] for step in steps if "uses" in step)
@@ -176,6 +176,13 @@ def test_eval_workflow_is_the_single_native_ci_owner() -> None:
     assert sum("make ci" in command.splitlines() for command in commands) == 1
     assert "|| true" not in source
     assert "conflict-marker" not in source
+
+    release = yaml.load(
+        (workflow_root / "release.yml").read_text(encoding="utf-8"),
+        Loader=yaml.BaseLoader,
+    )
+    assert release["on"]["push"]["tags"] == ["v*.*.*"]
+    assert release["permissions"] == {"contents": "write"}
 
 
 def test_makefile_exposes_no_cross_repository_mcp_target() -> None:
