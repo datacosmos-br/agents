@@ -27,5 +27,5 @@
     "LICENSE.md"
   ],
   "reporters": ["console"],
-  "min-lines": 20
+  "min-lines": 8
 }

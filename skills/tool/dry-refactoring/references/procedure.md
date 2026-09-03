@@ -14,6 +14,13 @@ submodule commit from its own object database. Never substitute dirty checkout
 state, another branch, `/tmp`, or a local default. Report the exact ref or
 commit used for every snapshot.
 
+Commit `.jscpd-baseline.json` at the repository owner after complete triage.
+Generate it only from a clean lane aligned with the integration branch. After
+integration, rerun the exact comparison with `--fail-on-new-clones 0`; any new
+clone is red until eliminated or classified. Textual reduction alone is not
+success: record the merged commit, command, working directory, exit code,
+before/after counts, and runtime proof before closing the increment.
+
 ## Triage
 
 Classify every reported pair before editing:
