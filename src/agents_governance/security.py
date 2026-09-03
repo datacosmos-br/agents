@@ -9,6 +9,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import cast
 
+from .frontmatter import cast_mapping
+
 _SECTION = re.compile(r"^###\s+(.+)$", re.MULTILINE)
 _DECISION = re.compile(
     r"^\*\*Decis(?:ão|ao)\*\*:\s*(.*)$", re.MULTILINE | re.IGNORECASE
@@ -97,20 +99,14 @@ def _tracked_files(root: Path) -> dict[Path, str]:
     return tracked
 
 
-def _mapping(value: object, context: str) -> dict[str, object]:
-    if not isinstance(value, dict) or not all(isinstance(key, str) for key in value):
-        raise TypeError(f"{context} must be an object with string keys")
-    return cast(dict[str, object], value)
-
-
 def _fixture_roots(root: Path) -> tuple[Path, ...]:
     configuration = root / "pyproject.toml"
     parsed = tomllib.loads(configuration.read_text(encoding="utf-8"))
-    tool = _mapping(parsed["tool"], f"{configuration}: tool")
-    governance = _mapping(
+    tool = cast_mapping(parsed["tool"], f"{configuration}: tool")
+    governance = cast_mapping(
         tool["agents-governance"], f"{configuration}: tool.agents-governance"
     )
-    security = _mapping(
+    security = cast_mapping(
         governance["security"],
         f"{configuration}: tool.agents-governance.security",
     )

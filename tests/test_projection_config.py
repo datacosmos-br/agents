@@ -90,15 +90,15 @@ def test_projection_config_requires_complete_closed_v7_matrix(tmp_path: Path) ->
         (lambda value: value.update(version=6), "projection config must use version 7"),
         (
             lambda value: value["providers"].pop("codex"),
-            "projection providers must equal",
+            "projection providers fields must equal",
         ),
         (
             lambda value: value["providers"]["claude"].pop("project"),
-            "projection contexts for claude must equal",
+            "projection contexts for claude fields must equal",
         ),
         (
             lambda value: value["providers"]["claude"]["project"].pop("agents"),
-            "projection surfaces for claude/project must equal",
+            "projection surfaces for claude/project fields must equal",
         ),
     ],
 )
@@ -190,7 +190,7 @@ def test_hook_cell_requires_complete_native_event_mapping(tmp_path: Path) -> Non
     ]
     _write(tmp_path, payload)
 
-    with pytest.raises(ValueError, match="events must equal"):
+    with pytest.raises(ValueError, match="events fields must equal"):
         load_projection_config(tmp_path)
 
 
