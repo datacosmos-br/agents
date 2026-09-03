@@ -8,6 +8,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import cast
 
+from .frontmatter import require_exact_fields
+
 SYSTEM_TEMP = Path("/tmp")
 _CONFIG_PATH = Path("config/storage.toml")
 _ROOT_FIELDS = frozenset({"repositories", "version"})
@@ -29,14 +31,6 @@ def _mapping(value: object, context: str) -> dict[str, object]:
     if not all(isinstance(key, str) for key in raw):
         raise TypeError(f"{context} keys must be strings")
     return cast(dict[str, object], raw)
-
-
-def _exact(value: dict[str, object], fields: frozenset[str], context: str) -> None:
-    if frozenset(value) != fields:
-        raise ValueError(
-            f"{context} fields must equal {', '.join(sorted(fields))}; "
-            f"got {', '.join(sorted(value)) or 'none'}"
-        )
 
 
 def _canonical(path: Path, context: str) -> Path:
@@ -75,7 +69,7 @@ def _storage_manifest(repository: Path) -> StorageManifest:
     if not path.is_file():
         raise ValueError(f"storage configuration must be a file: {path}")
     payload = _mapping(tomllib.loads(path.read_text(encoding="utf-8")), "storage")
-    _exact(payload, _ROOT_FIELDS, "storage")
+    require_exact_fields(payload, _ROOT_FIELDS, "storage")
     if payload["version"] != 3:
         raise ValueError("storage.version must equal integer 3")
     raw_repositories = payload["repositories"]
@@ -84,7 +78,9 @@ def _storage_manifest(repository: Path) -> StorageManifest:
     repositories: list[Path] = []
     for index, raw_entry in enumerate(cast(list[object], raw_repositories)):
         entry = _mapping(raw_entry, f"storage.repositories[{index}]")
-        _exact(entry, _REPOSITORY_FIELDS, f"storage.repositories[{index}]")
+        require_exact_fields(
+            entry, _REPOSITORY_FIELDS, f"storage.repositories[{index}]"
+        )
         registered = _configured_path(
             entry["path"], path.parent, f"storage.repositories[{index}].path"
         )

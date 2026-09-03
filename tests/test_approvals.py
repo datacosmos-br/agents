@@ -377,16 +377,12 @@ def test_catalog_rejects_dangling_approval_tags(tmp_path: Path) -> None:
         Catalog(tmp_path)
 
 
-def test_project_skills_resolve_approvals_against_their_own_docs(
+def _project_skill_roots(
     tmp_path: Path,
-) -> None:
-    """Each owner approves its own artifacts in its own ``docs/``.
-
-    Resolving a project-local skill against the central authority's ``docs/``
-    would leave a downstream repository unable to approve its own skill: it
-    cannot add a document to ai-hub.
-    """
-
+    name: str,
+    *,
+    publish_project_docs: bool,
+) -> tuple[Path, Path]:
     authority_root = tmp_path / "authority"
     project_root = tmp_path / "project"
     authority_root.mkdir()
@@ -409,7 +405,7 @@ def test_project_skills_resolve_approvals_against_their_own_docs(
     _skill(
         project_root,
         "tool",
-        "local-approved",
+        name,
         (
             "activation:opt-in",
             "decision:ADR-0001",
@@ -423,7 +419,24 @@ def test_project_skills_resolve_approvals_against_their_own_docs(
         ),
     )
 
-    _docs(project_root)
+    if publish_project_docs:
+        _docs(project_root)
+    return authority_root, project_root
+
+
+def test_project_skills_resolve_approvals_against_their_own_docs(
+    tmp_path: Path,
+) -> None:
+    """Each owner approves its own artifacts in its own ``docs/``.
+
+    Resolving a project-local skill against the central authority's ``docs/``
+    would leave a downstream repository unable to approve its own skill: it
+    cannot add a document to ai-hub.
+    """
+
+    authority_root, project_root = _project_skill_roots(
+        tmp_path, "local-approved", publish_project_docs=True
+    )
     authority = Catalog(authority_root)
     catalog = Catalog.project(project_root, authority)
 
@@ -435,40 +448,8 @@ def test_project_skills_resolve_approvals_against_their_own_docs(
 def test_project_skill_without_its_own_docs_fails_loud(tmp_path: Path) -> None:
     """A project that never published its approval documents fails at its root."""
 
-    authority_root = tmp_path / "authority"
-    project_root = tmp_path / "project"
-    authority_root.mkdir()
-    project_root.mkdir()
-    _config(authority_root)
-    _docs(authority_root)
-    _skill(
-        authority_root,
-        "agent-wide",
-        "central",
-        (
-            "decision:ADR-0001",
-            "effective:2026-08-30",
-            "policy:strict-execution",
-            "provenance:agents-owned",
-            "updates:manual",
-            "usage:on-demand",
-        ),
-    )
-    _skill(
-        project_root,
-        "tool",
-        "local-unapproved",
-        (
-            "activation:opt-in",
-            "decision:ADR-0001",
-            "detect:opt-in:local-unapproved",
-            "effective:2026-08-30",
-            "provenance:project-owned",
-            "route:project",
-            "tool:approvals",
-            "updates:manual",
-            "usage:on-demand",
-        ),
+    authority_root, project_root = _project_skill_roots(
+        tmp_path, "local-unapproved", publish_project_docs=False
     )
     authority = Catalog(authority_root)
 

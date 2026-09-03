@@ -46,6 +46,7 @@ from .commands import (
     waza_bpe_counter,
 )
 from .frontmatter import cast_mapping, require_exact_fields
+from .physical_paths import absolute_path, symlink_component
 from .projection_authorization import (
     PROJECT_SELECTION,
     ProjectAuthorization,
@@ -231,22 +232,6 @@ def _strings(value: object, context: str) -> tuple[str, ...]:
     return selected
 
 
-def _absolute(path: Path) -> Path:
-    return Path(os.path.abspath(path))
-
-
-def _symlink_component(path: Path) -> Path | None:
-    absolute = _absolute(path)
-    current = Path(absolute.anchor)
-    for part in absolute.parts[1:]:
-        current /= part
-        if current.is_symlink():
-            return current
-        if not current.exists():
-            break
-    return None
-
-
 def _tree_snapshot(root: Path, allowed_links: dict[str, str] | None = None) -> str:
     """Digest one destination tree; only managed alias links are permitted."""
 
@@ -324,8 +309,8 @@ def _linked_worktree_owns(git_directory: Path, git_file: Path) -> bool:
 
 
 def _physical_project(cwd: Path) -> Path:
-    current = _absolute(cwd)
-    if _symlink_component(current) is not None or not current.is_dir():
+    current = absolute_path(cwd)
+    if symlink_component(current) is not None or not current.is_dir():
         raise ValueError(f"invocation directory must be physical: {current}")
     for candidate in (current, *current.parents):
         git = candidate / ".git"
@@ -385,7 +370,7 @@ def _physical_project(cwd: Path) -> Path:
                     )
                 project.relative_to(umbrella)
                 modules = (umbrella / ".git" / "modules").resolve(strict=True)
-                if _symlink_component(git_directory) is not None:
+                if symlink_component(git_directory) is not None:
                     raise ValueError(
                         f"submodule Git directory traverses symlink: {git_directory}"
                     )
@@ -405,9 +390,9 @@ def _confined(project: Path, raw: str) -> Path:
     relative = Path(raw)
     if relative.is_absolute() or relative == Path(".") or ".." in relative.parts:
         raise ValueError(f"project projection path escapes repository: {raw}")
-    target = _absolute(project / relative)
+    target = absolute_path(project / relative)
     target.relative_to(project)
-    symlink = _symlink_component(target)
+    symlink = symlink_component(target)
     if symlink is not None:
         raise ValueError(f"projection path symlink forbidden: {symlink}")
     return target
@@ -464,7 +449,7 @@ def _validate_source_portability(source: Path, activation: str | None) -> None:
                 continue
             if source.is_file():
                 raise ValueError(f"rendered source contains a relative link: {path}")
-            candidate = _absolute(path.parent / target)
+            candidate = absolute_path(path.parent / target)
             candidate.relative_to(source)
 
 
@@ -895,7 +880,7 @@ class Projector:
             for candidate in sorted(project.rglob(f"*{suffix}")):
                 if self._is_managed_evidence(project, candidate):
                     continue
-                symlink = _symlink_component(candidate)
+                symlink = symlink_component(candidate)
                 if symlink is not None:
                     raise ValueError(
                         f"project detector evidence symlink forbidden: {symlink}"
@@ -907,7 +892,7 @@ class Projector:
             for candidate in sorted(project.glob(value)):
                 if self._is_managed_evidence(project, candidate):
                     continue
-                symlink = _symlink_component(candidate)
+                symlink = symlink_component(candidate)
                 if symlink is not None:
                     raise ValueError(
                         f"project detector evidence symlink forbidden: {symlink}"
@@ -1460,7 +1445,7 @@ class Projector:
 
     def _state(self, plan: ProjectionPlan) -> _TargetState:
         root = plan.root
-        if _symlink_component(root) is not None:
+        if symlink_component(root) is not None:
             raise ValueError(f"projection path symlink forbidden: {root}")
         if not root.exists():
             return _TargetState(plan, {}, None, True)
@@ -1590,7 +1575,7 @@ class Projector:
         while not parent.exists():
             parent = parent.parent
         parent.relative_to(plan.project)
-        if _symlink_component(parent) is not None or not parent.is_dir():
+        if symlink_component(parent) is not None or not parent.is_dir():
             raise ValueError(f"projection staging parent must be physical: {parent}")
         stage = Path(tempfile.mkdtemp(prefix=".agents-stage.", dir=parent))
         candidate = stage / "candidate"
@@ -1674,7 +1659,7 @@ class Projector:
             cursor = cursor.parent
         if cursor != project and project not in cursor.parents:
             raise ValueError(f"projection parent escapes project: {parent}")
-        symlink = _symlink_component(cursor)
+        symlink = symlink_component(cursor)
         if symlink is not None or not cursor.is_dir():
             raise ValueError(f"projection parent is not physical: {cursor}")
         for directory in reversed(missing):

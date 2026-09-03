@@ -297,10 +297,7 @@ def test_landing_gate_reports_every_blocker(
     ]
 
 
-def test_landing_gate_accepts_only_clean_completed_inventory(
-    monkeypatch: pytest.MonkeyPatch,
-) -> None:
-    module = _module(monkeypatch)
+def _landing_inventory(**overrides: object) -> dict[str, object]:
     inventory = {
         "base": "dev",
         "head_oid": "head-sha",
@@ -311,45 +308,15 @@ def test_landing_gate_accepts_only_clean_completed_inventory(
         "checks_verdict": "passed",
         "unresolved_threads": [],
     }
+    inventory.update(overrides)
+    return inventory
 
-    assert module.landing_blockers(inventory, "dev", "head-sha") == []
 
-
-def test_landing_gate_binds_authorized_base_and_head(
+def _prepare_gate(
+    module: object,
     monkeypatch: pytest.MonkeyPatch,
+    inventory: dict[str, object],
 ) -> None:
-    module = _module(monkeypatch)
-    inventory = {
-        "base": "main",
-        "head_oid": "changed-head",
-        "state": "open",
-        "draft": False,
-        "mergeability": "mergeable",
-        "mergeable_state": "clean",
-        "checks_verdict": "passed",
-        "unresolved_threads": [],
-    }
-
-    assert module.landing_blockers(inventory, "dev", "authorized-head") == [
-        "base is main, expected authorized base dev",
-        "head_oid is changed-head, expected authorized head authorized-head",
-    ]
-
-
-def test_gate_command_exits_nonzero_after_printing_blockers(
-    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
-) -> None:
-    module = _module(monkeypatch)
-    inventory = {
-        "base": "dev",
-        "head_oid": "head-sha",
-        "state": "open",
-        "draft": False,
-        "mergeability": "mergeable",
-        "mergeable_state": "clean",
-        "checks_verdict": "pending",
-        "unresolved_threads": [],
-    }
     monkeypatch.setattr(module, "cmd_locate", lambda repository, number: inventory)
     monkeypatch.setattr(
         sys,
@@ -364,6 +331,37 @@ def test_gate_command_exits_nonzero_after_printing_blockers(
             "--head",
             "head-sha",
         ],
+    )
+
+
+def test_landing_gate_accepts_only_clean_completed_inventory(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    module = _module(monkeypatch)
+    inventory = _landing_inventory()
+    assert module.landing_blockers(inventory, "dev", "head-sha") == []
+
+
+def test_landing_gate_binds_authorized_base_and_head(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    module = _module(monkeypatch)
+    inventory = _landing_inventory(base="main", head_oid="changed-head")
+
+    assert module.landing_blockers(inventory, "dev", "authorized-head") == [
+        "base is main, expected authorized base dev",
+        "head_oid is changed-head, expected authorized head authorized-head",
+    ]
+
+
+def test_gate_command_exits_nonzero_after_printing_blockers(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    module = _module(monkeypatch)
+    _prepare_gate(
+        module,
+        monkeypatch,
+        _landing_inventory(checks_verdict="pending"),
     )
 
     with pytest.raises(SystemExit) as raised:
@@ -379,31 +377,7 @@ def test_gate_command_returns_normally_for_clean_inventory(
     monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
 ) -> None:
     module = _module(monkeypatch)
-    inventory = {
-        "base": "dev",
-        "head_oid": "head-sha",
-        "state": "open",
-        "draft": False,
-        "mergeability": "mergeable",
-        "mergeable_state": "clean",
-        "checks_verdict": "passed",
-        "unresolved_threads": [],
-    }
-    monkeypatch.setattr(module, "cmd_locate", lambda repository, number: inventory)
-    monkeypatch.setattr(
-        sys,
-        "argv",
-        [
-            "pr_triage.py",
-            "gate",
-            "owner/repo",
-            "25",
-            "--base",
-            "dev",
-            "--head",
-            "head-sha",
-        ],
-    )
+    _prepare_gate(module, monkeypatch, _landing_inventory())
 
     assert module.main() is None
     output = json.loads(capsys.readouterr().out)
