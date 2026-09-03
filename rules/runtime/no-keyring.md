@@ -17,3 +17,7 @@ Existing operating-system keyring values are external user state: do not
 inspect, enumerate, migrate, mutate, or delete them.
 
 See also: `strict-execution.md` (rule file) — aggregate parent policy.
+See also: `required-environment.md` (rule file) — the encrypted credential
+store (`systemd-creds` + `LoadCredentialEncrypted` + `CREDENTIALS_DIRECTORY`)
+is the sole service-credential mechanism; it is not a keyring and is never
+treated as one.
