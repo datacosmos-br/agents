@@ -17,8 +17,8 @@ from .approvals import (
     core_tags,
     resolve_approval_tags,
 )
+from .frontmatter import parse_frontmatter
 from .tokens import bpe_content
-from .yaml_source import parse_frontmatter
 
 _SLUG = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*\Z")
 _DESCRIPTION_LIMIT = 160

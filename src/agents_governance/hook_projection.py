@@ -25,6 +25,7 @@ from .cleanup import (
     run_with_cleanup,
 )
 from .commands import CommandSpec
+from .frontmatter import cast_mapping
 from .governance_config import GovernanceConfig
 from .law_surface import PRELUDE_END, PRELUDE_START, LawSurface
 from .projection_authorization import (
@@ -40,7 +41,6 @@ from .projection_config import (
     RuleLayout,
 )
 from .rules import RuleSpec
-from .typed_values import cast_mapping
 
 _OWNER = "agents-governance"
 _INSTRUCTIONS_BEGIN = "<!-- AIHUB-GOVERNANCE-INSTRUCTIONS-BEGIN -->"

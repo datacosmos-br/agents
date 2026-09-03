@@ -76,7 +76,7 @@ policy:
     [
         ('model: "legacy"\n', "legacy field"),
         ('unknown: "value"\n', "not documented"),
-        ('interface: "invalid"\n', "must be a mapping"),
+        ('interface: "invalid"\n', "must be an object with string keys"),
         ("interface:\n  display_name: 7\n", "must be a string"),
         ('interface:\n  display_name: ""\n', "must not be empty"),
         ('interface:\n  short_description: "too short"\n', "25-64"),

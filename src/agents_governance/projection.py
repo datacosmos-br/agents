@@ -45,6 +45,7 @@ from .commands import (
     render_command,
     waza_bpe_counter,
 )
+from .frontmatter import cast_mapping, require_exact_fields
 from .physical_paths import absolute_path, symlink_component
 from .projection_authorization import (
     PROJECT_SELECTION,
@@ -61,7 +62,6 @@ from .projection_config import (
 )
 from .rule_adapters import RuleContext, RuleProvider, render_rule
 from .rules import RuleDistribution, RuleSpec, prompt_defense_body
-from .typed_values import cast_mapping, require_exact_fields
 from .validation import validate_skill_catalogs
 
 _DIGEST = re.compile(r"[0-9a-f]{64}\Z")

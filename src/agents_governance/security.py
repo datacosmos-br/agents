@@ -9,7 +9,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import cast
 
-from .typed_values import cast_mapping
+from .frontmatter import cast_mapping
 
 _SECTION = re.compile(r"^###\s+(.+)$", re.MULTILINE)
 _DECISION = re.compile(

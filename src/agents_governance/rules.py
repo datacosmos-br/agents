@@ -13,7 +13,7 @@ from typing import cast
 from urllib.parse import unquote, urlsplit
 
 from .approvals import APPROVAL_NAMESPACES, resolve_approval_tags
-from .yaml_source import parse_frontmatter
+from .frontmatter import parse_frontmatter
 
 _SLUG = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*\Z")
 _LINK = re.compile(r"!?\[[^\]\n]*\]\(([^)\n]+)\)")
@@ -127,10 +127,6 @@ def _validate_spec(spec: RuleSpec) -> None:
     routes = tuple(tag for tag in spec.tags if tag.startswith("route:"))
     if spec.tags and (len(routes) != 1 or routes[0] not in _ROUTES):
         raise ValueError("tagged rules require exactly one supported route tag")
-
-
-def _split_source(path: Path) -> tuple[dict[str, object] | None, str]:
-    return parse_frontmatter(path, required=False)
 
 
 def _metadata(
@@ -278,7 +274,7 @@ def audit_rule_specs(root: Path) -> tuple[RuleSpec, ...]:
                 f"case-insensitive rule identity is duplicated: {identity}"
             )
         identities.add(folded)
-        raw, body = _split_source(path)
+        raw, body = parse_frontmatter(path, required=False)
         description, globs, tags = _metadata(path, raw)
         resolve_approval_tags(repository, tags, path)
         references = _references(repository, rules, path, body)

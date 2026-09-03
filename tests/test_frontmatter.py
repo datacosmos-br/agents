@@ -7,7 +7,7 @@ from pathlib import Path
 import pytest
 import yaml
 
-from agents_governance.yaml_source import (
+from agents_governance.frontmatter import (
     detect_duplicate_key,
     parse_frontmatter,
 )

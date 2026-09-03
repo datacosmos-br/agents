@@ -12,8 +12,7 @@ from pathlib import Path, PurePosixPath
 from typing import Any, cast
 
 from .approvals import APPROVAL_NAMESPACES, resolve_approval_tags
-from .typed_values import cast_mapping, require_exact_fields
-from .yaml_source import parse_frontmatter
+from .frontmatter import cast_mapping, parse_frontmatter, require_exact_fields
 
 NON_PORTABLE_PROJECT_REFERENCE = re.compile(
     r"(?:"
@@ -194,7 +193,7 @@ class Catalog:
 
     @staticmethod
     def _frontmatter(path: Path) -> dict[str, object]:
-        frontmatter, _body = parse_frontmatter(path)
+        frontmatter, _ = parse_frontmatter(path)
         unknown = frozenset(frontmatter) - _FRONTMATTER_FIELDS
         if unknown:
             raise ValueError(

@@ -1,4 +1,10 @@
-"""Canonical fail-loud YAML and frontmatter source parsing."""
+"""Canonical YAML frontmatter parsing and metadata validation.
+
+Single source of truth for frontmatter-bearing Markdown parsing across
+all agents_governance modules. Every module that reads YAML frontmatter
+or validates parsed mapping nodes delegates here: no local copy or variant
+is permitted.
+"""
 
 from __future__ import annotations
 
@@ -8,11 +14,16 @@ from typing import Literal, cast, overload
 import yaml
 from yaml.nodes import MappingNode, Node, SequenceNode
 
-__all__ = ("detect_duplicate_key", "parse_frontmatter")
+__all__ = (
+    "cast_mapping",
+    "detect_duplicate_key",
+    "parse_frontmatter",
+    "require_exact_fields",
+)
 
 
 def detect_duplicate_key(node: Node) -> str | None:
-    """Return the first duplicate mapping key in a YAML node tree."""
+    """Return the first duplicate mapping key in a YAML node tree, else None."""
 
     if isinstance(node, MappingNode):
         seen: set[str] = set()
@@ -51,7 +62,13 @@ def parse_frontmatter(
 def parse_frontmatter(
     path: Path, *, required: bool = True
 ) -> tuple[dict[str, object] | None, str]:
-    """Parse fail-loud YAML frontmatter and return it with the body."""
+    """Parse YAML frontmatter from a Markdown file.
+
+    When *required* is True (the default), raise ``ValueError`` if the file
+    lacks a frontmatter block.  When False, return ``(None, full_text)``.
+    Duplicate keys, non-string keys, and non-mapping frontmatter all raise
+    loudly.
+    """
 
     text = path.read_text(encoding="utf-8")
     if not text.startswith("---\n"):
@@ -73,3 +90,23 @@ def parse_frontmatter(
     if not all(isinstance(key, str) for key in raw):
         raise TypeError(f"{path}: frontmatter keys must be strings")
     return cast(dict[str, object], raw), text[marker + 5 :].removeprefix("\n")
+
+
+def cast_mapping(value: object, context: str) -> dict[str, object]:
+    """Validate that *value* is a dict with string keys, returning it typed."""
+
+    if not isinstance(value, dict) or not all(isinstance(key, str) for key in value):
+        raise TypeError(f"{context} must be an object with string keys")
+    return cast(dict[str, object], value)
+
+
+def require_exact_fields(
+    value: dict[str, object], fields: frozenset[str], context: str
+) -> None:
+    """Raise if *value* does not contain exactly the set *fields*."""
+
+    if frozenset(value) != fields:
+        raise ValueError(
+            f"{context} fields must equal {', '.join(sorted(fields))}; "
+            f"got {', '.join(sorted(value)) or 'none'}"
+        )

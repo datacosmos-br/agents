@@ -14,7 +14,7 @@ from typing import Never, cast
 import yaml
 
 from .catalog import NON_PORTABLE_PROJECT_REFERENCE
-from .yaml_source import parse_frontmatter
+from .frontmatter import parse_frontmatter
 
 _DISTRIBUTIONS = frozenset({"agent-wide", "project-wide"})
 _ACTIVATIONS = frozenset(

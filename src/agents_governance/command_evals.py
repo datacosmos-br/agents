@@ -12,7 +12,7 @@ import yaml
 from yaml.nodes import MappingNode
 
 from .commands import CommandProvider, CommandRoute, CommandSpec
-from .yaml_source import detect_duplicate_key
+from .frontmatter import detect_duplicate_key
 
 _TOP_LEVEL_FIELDS = frozenset({"command", "schemaVersion", "scenarios"})
 _ASSERTION_FIELDS = frozenset({"output_contains", "output_not_contains"})

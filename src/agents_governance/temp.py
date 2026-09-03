@@ -8,7 +8,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import cast
 
-from .typed_values import require_exact_fields
+from .frontmatter import require_exact_fields
 
 SYSTEM_TEMP = Path("/tmp")
 _CONFIG_PATH = Path("config/storage.toml")
