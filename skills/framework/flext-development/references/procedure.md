@@ -18,10 +18,11 @@ effects. Never resolve a missing owner from another checkout or a personal home.
 
 ## Resolve branch-matched law before FLEXT effects
 
-The FLEXT root `AGENTS.md` and `.agents/skills/flext-law/SKILL.md` are
-branch-matched: read them from the exact branch or release the active
-checkout is on. In standalone mode, with no parent workspace, read the raw
-GitHub file pinned to that same branch or tag, never `main`. These compose
+The FLEXT root `AGENTS.md` and the branch-matched local `flext-law` skill
+exposed by the FLEXT repository's provider skill tree (declared in the
+repository's own `AGENTS.md`) are read from the exact branch or release the
+active checkout is on. In standalone mode, with no parent workspace, read the
+raw GitHub file pinned to that same branch or tag, never `main`. These compose
 above the catalog's own global owners: `AGENTS.md`, `make-check`, and
 `verification-loop`. Before any landing effect, run
 `skills/tool/pr-sheriff/scripts/pr_triage.py gate <owner/repo> <pr> --base
