@@ -14,9 +14,21 @@ only custom code allowed in the integration.
   set `parent` on each issue via `u.Cli.run_raw(("curl", ...))`.
 
 HTTP calls use `u.Cli.run_raw` (never `urllib.request`, `requests`, or
-`httpx`). Credentials come from `secret-tool` via `u.Cli.run_raw` at the
-service boundary only — never from settings, config, or environment variables.
+`httpx`). Credentials come from the beads CLI config (`bd config get
+jira.api_token`) — never from settings, config YAML, or environment variables.
 The first exception escapes; no retry, no fallback, no catch-to-None.
+
+## Recovery Runbook: bad push created duplicate/unparented tickets
+
+1. Inventory the damage (needs the operator-set API token):
+   JQL `project = COSM206 AND parent IS EMPTY AND created >= "<sync-date>"`.
+2. Decide per ticket: the ledger's `external_ref` copy is canonical; strays
+   transition to Done with comment
+   `duplicate from sync <date>; canonical mirror is <key>`.
+3. Re-sync only what is open:
+   `bd jira sync --push --state open --dry-run`, review, then run for real.
+4. Prove: `bd jira status` shows a dated Last Sync and Local-Only count that
+   matches the intentionally-unpushed set (closed beads and bugs).
 
 ## Model
 
