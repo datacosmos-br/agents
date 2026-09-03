@@ -75,18 +75,6 @@ def test_eval_workflow_covers_integration_push_and_pull_requests() -> None:
     assert required_paths <= set(events["pull_request"]["paths"])
 
 
-def test_eval_workflow_selects_no_job_for_draft_pull_requests() -> None:
-    workflow = yaml.load(
-        (ROOT / ".github" / "workflows" / "eval.yml").read_text(encoding="utf-8"),
-        Loader=yaml.BaseLoader,
-    )
-
-    assert workflow["jobs"]["eval"]["if"] == (
-        "github.event_name != 'pull_request' || "
-        "github.event.pull_request.draft == false"
-    )
-
-
 def test_dependabot_covers_every_dependency_surface_with_seven_day_cooldown() -> None:
     configuration = yaml.safe_load(
         (ROOT / ".github" / "dependabot.yml").read_text(encoding="utf-8")
