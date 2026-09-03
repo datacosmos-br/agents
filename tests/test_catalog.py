@@ -298,6 +298,34 @@ def test_project_catalog_allows_an_authorized_project_without_local_skills(
     assert catalog.project_local is True
 
 
+def test_canonical_authority_as_project_never_reimports_its_central_skills(
+    tmp_path: Path,
+) -> None:
+    """The source authority cannot become a second, project-local source owner."""
+
+    authority = tmp_path / "central"
+    authority.mkdir()
+    _write_config(authority)
+    _write_skill(
+        authority,
+        "tool",
+        "opt-in-tool",
+        tags=(
+            "activation:opt-in",
+            "detect:opt-in:opt-in-tool",
+            "provenance:agents-owned",
+            "route:project",
+            "tool:opt-in-tool",
+            "updates:manual",
+            "usage:on-demand",
+        ),
+    )
+
+    catalog = Catalog.project(authority, Catalog(authority))
+
+    assert catalog.records() == ()
+
+
 @pytest.mark.parametrize(
     ("category", "tags", "message"),
     [

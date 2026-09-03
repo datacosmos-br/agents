@@ -25,6 +25,7 @@ from .cleanup import (
     run_with_cleanup,
 )
 from .commands import CommandSpec
+from .frontmatter import cast_mapping
 from .governance_config import GovernanceConfig
 from .projection_authorization import (
     ProjectAuthorization,
@@ -105,12 +106,6 @@ class _StagedFile:
 
 def _digest_text(value: str) -> str:
     return hashlib.sha256(value.encode()).hexdigest()
-
-
-def _mapping(value: object, label: str) -> dict[str, object]:
-    if not isinstance(value, dict) or not all(isinstance(key, str) for key in value):
-        raise TypeError(f"{label} must be an object with string keys")
-    return cast(dict[str, object], value)
 
 
 def _physical_boundary(path: Path, label: str) -> Path:
@@ -275,7 +270,7 @@ def _nested_config(
     previous_entries: Mapping[str, object],
 ) -> tuple[dict[str, object], dict[str, object]]:
     result = dict(current)
-    hooks = _mapping(result.get("hooks", {}), f"{provider.value} hooks")
+    hooks = cast_mapping(result.get("hooks", {}), f"{provider.value} hooks")
     merged: dict[str, object] = dict(hooks)
     managed: dict[str, object] = {}
     for event in events:
@@ -285,7 +280,7 @@ def _nested_config(
         kept: list[object] = []
         previous = previous_entries.get(event)
         for raw_group in existing:
-            group = _mapping(raw_group, f"{provider.value} hooks.{event} group")
+            group = cast_mapping(raw_group, f"{provider.value} hooks.{event} group")
             handlers = group.get("hooks")
             if not isinstance(handlers, list):
                 raise TypeError(
@@ -330,7 +325,7 @@ def _cursor_config(
     if version != 1:
         raise ValueError("Cursor hooks version must equal 1")
     result["version"] = 1
-    hooks = _mapping(result.get("hooks", {}), "Cursor hooks")
+    hooks = cast_mapping(result.get("hooks", {}), "Cursor hooks")
     merged: dict[str, object] = dict(hooks)
     managed: dict[str, object] = {}
     for event in events:
@@ -422,7 +417,7 @@ def _read_json(path: Path) -> dict[str, object]:
         return {}
     if path.is_symlink() or not path.is_file():
         raise ValueError(f"hook config must be a physical file: {path}")
-    return _mapping(json.loads(path.read_text(encoding="utf-8")), str(path))
+    return cast_mapping(json.loads(path.read_text(encoding="utf-8")), str(path))
 
 
 def _manifest_path(config: Path) -> Path:
@@ -434,7 +429,7 @@ def _read_manifest(path: Path, expected_version: int) -> dict[str, object] | Non
         return None
     if path.is_symlink() or not path.is_file():
         raise ValueError(f"hook manifest must be a physical file: {path}")
-    payload = _mapping(json.loads(path.read_text(encoding="utf-8")), str(path))
+    payload = cast_mapping(json.loads(path.read_text(encoding="utf-8")), str(path))
     expected = {
         "config",
         "context",
@@ -449,11 +444,11 @@ def _read_manifest(path: Path, expected_version: int) -> dict[str, object] | Non
         raise ValueError(f"hook manifest fields are invalid: {path}")
     if payload["version"] != expected_version or payload["owner"] != _OWNER:
         raise ValueError(f"hook manifest owner/version is invalid: {path}")
-    _mapping(payload["events"], f"{path}: events")
-    _mapping(payload["entries"], f"{path}: entries")
-    managed = _mapping(payload["managed"], f"{path}: managed")
+    cast_mapping(payload["events"], f"{path}: events")
+    cast_mapping(payload["entries"], f"{path}: entries")
+    managed = cast_mapping(payload["managed"], f"{path}: managed")
     for relative, raw in managed.items():
-        entry = _mapping(raw, f"{path}: managed.{relative}")
+        entry = cast_mapping(raw, f"{path}: managed.{relative}")
         if set(entry) != {"digest", "mode"}:
             raise ValueError(f"hook manifest managed fields are invalid: {relative}")
         digest = entry["digest"]
@@ -486,7 +481,9 @@ def _validate_previous(
         if manifest[field] != expected:
             raise ValueError(f"hook manifest authority differs at {config}: {field}")
     planned_paths: Mapping[Path, tuple[str, int]] = planned or {}
-    for relative, raw in _mapping(manifest["managed"], "hook managed files").items():
+    for relative, raw in cast_mapping(
+        manifest["managed"], "hook managed files"
+    ).items():
         path = _destination(boundary, relative, ProjectionContext.PROJECT)
         if path not in planned_paths:
             continue
@@ -494,12 +491,12 @@ def _validate_previous(
             raise ValueError(
                 f"managed hook artifact is missing or non-physical: {path}"
             )
-        entry = _mapping(raw, f"managed hook artifact {relative}")
+        entry = cast_mapping(raw, f"managed hook artifact {relative}")
         actual_digest = hashlib.sha256(path.read_bytes()).hexdigest()
         actual_mode = f"{stat.S_IMODE(path.lstat().st_mode):04o}"
         if actual_digest != entry["digest"] or actual_mode != entry["mode"]:
             raise ValueError(f"managed hook artifact was modified: {path}")
-    entries = _mapping(manifest["entries"], "hook managed entries")
+    entries = cast_mapping(manifest["entries"], "hook managed entries")
     hook_dir = config.parent / "aihub-hooks"
     retained_events = {
         event
@@ -519,7 +516,7 @@ def _validate_previous(
                 if current.get(key) != managed_entry:
                     raise ValueError(f"managed hook entry was modified: {config}:{key}")
             return
-        hooks = _mapping(current.get("hooks", {}), f"{config}: hooks")
+        hooks = cast_mapping(current.get("hooks", {}), f"{config}: hooks")
         for event, managed_entry in entries.items():
             if event not in retained_events:
                 continue
@@ -637,7 +634,7 @@ class HookProjector:
             manifest_path, self.config.hook_manifest_version
         )
         previous_entries = (
-            _mapping(previous_manifest["entries"], "hook managed entries")
+            cast_mapping(previous_manifest["entries"], "hook managed entries")
             if previous_manifest is not None
             else {}
         )
@@ -767,13 +764,13 @@ class HookProjector:
         removals: tuple[HookRemoval, ...] = ()
         if previous_manifest is not None:
             retired: list[HookRemoval] = []
-            for relative, raw in _mapping(
+            for relative, raw in cast_mapping(
                 previous_manifest["managed"], "hook managed files"
             ).items():
                 path = _destination(boundary, relative, ProjectionContext.PROJECT)
                 if path in desired or path == manifest_path:
                     continue
-                entry = _mapping(raw, f"retired hook artifact {relative}")
+                entry = cast_mapping(raw, f"retired hook artifact {relative}")
                 retired.append(
                     HookRemoval(
                         path,

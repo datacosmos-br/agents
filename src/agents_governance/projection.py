@@ -45,6 +45,7 @@ from .commands import (
     render_command,
     waza_bpe_counter,
 )
+from .frontmatter import cast_mapping, require_exact_fields
 from .projection_authorization import (
     PROJECT_SELECTION,
     ProjectAuthorization,
@@ -212,20 +213,6 @@ class _StagedTarget:
     created_parents: tuple[Path, ...] = ()
     installed: bool = False
     had_root: bool = False
-
-
-def _mapping(value: object, context: str) -> dict[str, object]:
-    if not isinstance(value, dict) or not all(isinstance(key, str) for key in value):
-        raise TypeError(f"{context} must be an object with string keys")
-    return cast(dict[str, object], value)
-
-
-def _exact(value: dict[str, object], fields: frozenset[str], context: str) -> None:
-    if frozenset(value) != fields:
-        raise ValueError(
-            f"{context} fields must equal {', '.join(sorted(fields))}; "
-            f"got {', '.join(sorted(value)) or 'none'}"
-        )
 
 
 def _strings(value: object, context: str) -> tuple[str, ...]:
@@ -649,7 +636,7 @@ class Projector:
         seen_rule_ids: set[str] = set()
         for idx, raw_rule in enumerate(rules):
             rule_label = f"{label} detection_rules[{idx}]"
-            rule = _mapping(raw_rule, rule_label)
+            rule = cast_mapping(raw_rule, rule_label)
             rule_id = rule.get("id")
             if (
                 not isinstance(rule_id, str)
@@ -678,7 +665,7 @@ class Projector:
             if not isinstance(raw_conds, list) or not raw_conds:
                 raise TypeError(f"{rule_label} when.{op} must be a non-empty array")
             conds = [
-                _mapping(c, f"{rule_label} when.{op}[{i}]")
+                cast_mapping(c, f"{rule_label} when.{op}[{i}]")
                 for i, c in enumerate(raw_conds)
             ]
             # Validate each condition shape before evaluation
@@ -718,7 +705,7 @@ class Projector:
         if authorization.payload is None:
             return None
         path = authorization.path
-        payload = _mapping(json.loads(authorization.payload), str(path))
+        payload = cast_mapping(json.loads(authorization.payload), str(path))
         version = payload.get("version")
         if version not in (1, 2):
             raise ValueError(f"projection selection version must be 1 or 2: {path}")
@@ -727,7 +714,7 @@ class Projector:
             if version == 2 and "detection_rules" in payload
             else _SELECTION_FIELDS_V1
         )
-        _exact(payload, allowed, str(path))
+        require_exact_fields(payload, allowed, str(path))
         agents = _strings(payload["agents"], f"{path}: agents")
         opt_ins = _strings(payload["opt_ins"], f"{path}: opt_ins")
         selected_tags: set[str] = set(
@@ -766,17 +753,17 @@ class Projector:
         if pyproject.is_symlink():
             raise ValueError(f"dependency manifest symlink forbidden: {pyproject}")
         if pyproject.is_file():
-            loaded = _mapping(
+            loaded = cast_mapping(
                 tomllib.loads(pyproject.read_text(encoding="utf-8")), str(pyproject)
             )
 
             if "project" in loaded:
-                project_table = _mapping(loaded["project"], f"{pyproject}: project")
+                project_table = cast_mapping(loaded["project"], f"{pyproject}: project")
                 add_requirements(
                     project_table.get("dependencies", []),
                     f"{pyproject}: project.dependencies",
                 )
-                optional = _mapping(
+                optional = cast_mapping(
                     project_table.get("optional-dependencies", {}),
                     f"{pyproject}: project.optional-dependencies",
                 )
@@ -785,7 +772,7 @@ class Projector:
                         raw,
                         f"{pyproject}: project.optional-dependencies.{optional_name}",
                     )
-            groups = _mapping(
+            groups = cast_mapping(
                 loaded.get("dependency-groups", {}),
                 f"{pyproject}: dependency-groups",
             )
@@ -794,10 +781,10 @@ class Projector:
                     raw,
                     f"{pyproject}: dependency-groups.{dependency_group_name}",
                 )
-            tool = _mapping(loaded.get("tool", {}), f"{pyproject}: tool")
+            tool = cast_mapping(loaded.get("tool", {}), f"{pyproject}: tool")
             if "poetry" in tool:
-                poetry = _mapping(tool["poetry"], f"{pyproject}: tool.poetry")
-                direct = _mapping(
+                poetry = cast_mapping(tool["poetry"], f"{pyproject}: tool.poetry")
+                direct = cast_mapping(
                     poetry.get("dependencies", {}),
                     f"{pyproject}: tool.poetry.dependencies",
                 )
@@ -806,15 +793,15 @@ class Projector:
                     for name in direct
                     if name.lower() != "python"
                 )
-                poetry_groups = _mapping(
+                poetry_groups = cast_mapping(
                     poetry.get("group", {}), f"{pyproject}: tool.poetry.group"
                 )
                 for group_name, raw_group in poetry_groups.items():
-                    poetry_group = _mapping(
+                    poetry_group = cast_mapping(
                         raw_group,
                         f"{pyproject}: tool.poetry.group.{group_name}",
                     )
-                    group_dependencies = _mapping(
+                    group_dependencies = cast_mapping(
                         poetry_group.get("dependencies", {}),
                         f"{pyproject}: tool.poetry.group.{group_name}.dependencies",
                     )
@@ -825,11 +812,11 @@ class Projector:
         if package_path.is_symlink():
             raise ValueError(f"dependency manifest symlink forbidden: {package_path}")
         if package_path.is_file():
-            package = _mapping(
+            package = cast_mapping(
                 json.loads(package_path.read_text(encoding="utf-8")), str(package_path)
             )
             for field in ("dependencies", "devDependencies", "peerDependencies"):
-                dependencies = _mapping(
+                dependencies = cast_mapping(
                     package.get(field, {}), f"{package_path}: {field}"
                 )
                 names.update(name.lower() for name in dependencies)
@@ -837,12 +824,12 @@ class Projector:
         if pubspec_path.is_symlink():
             raise ValueError(f"dependency manifest symlink forbidden: {pubspec_path}")
         if pubspec_path.is_file():
-            pubspec = _mapping(
+            pubspec = cast_mapping(
                 yaml.safe_load(pubspec_path.read_text(encoding="utf-8")),
                 str(pubspec_path),
             )
             for field in ("dependencies", "dev_dependencies"):
-                dependencies = _mapping(
+                dependencies = cast_mapping(
                     pubspec.get(field, {}), f"{pubspec_path}: {field}"
                 )
                 names.update(name.lower() for name in dependencies)
@@ -1328,8 +1315,8 @@ class Projector:
             return None
         if path.is_symlink() or not path.is_file():
             raise ValueError(f"projection manifest must be a physical file: {path}")
-        payload = _mapping(json.loads(path.read_text(encoding="utf-8")), str(path))
-        _exact(payload, _MANIFEST_FIELDS, str(path))
+        payload = cast_mapping(json.loads(path.read_text(encoding="utf-8")), str(path))
+        require_exact_fields(payload, _MANIFEST_FIELDS, str(path))
         if (
             payload["version"] != self.config.projection_manifest_version
             or payload["owner"] != "agents-governance"
@@ -1354,22 +1341,22 @@ class Projector:
             raise ValueError(
                 f"projection manifest destination must be project-relative: {path}"
             )
-        selection = _mapping(payload["selection"], f"{path}: selection")
-        _exact(
+        selection = cast_mapping(payload["selection"], f"{path}: selection")
+        require_exact_fields(
             selection,
             frozenset({"agents", "opt_ins", "selected_tags"}),
             f"{path}: selection",
         )
         for field in ("agents", "opt_ins", "selected_tags"):
             _strings(selection[field], f"{path}: selection.{field}")
-        managed = _mapping(payload["managed"], f"{path}: managed")
+        managed = cast_mapping(payload["managed"], f"{path}: managed")
         for name, raw in managed.items():
             if Path(name).name != name or not name:
                 raise ValueError(
                     f"projection manifest managed name is invalid: {name!r}"
                 )
-            entry = _mapping(raw, f"{path}: managed.{name}")
-            _exact(entry, _ENTRY_FIELDS, f"{path}: managed.{name}")
+            entry = cast_mapping(raw, f"{path}: managed.{name}")
+            require_exact_fields(entry, _ENTRY_FIELDS, f"{path}: managed.{name}")
             if entry["adapter_version"] != 1 or entry["destination"] != name:
                 raise ValueError(
                     f"projection manifest entry identity is invalid: {name}"

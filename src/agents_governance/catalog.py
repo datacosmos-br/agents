@@ -11,9 +11,8 @@ from enum import StrEnum
 from pathlib import Path, PurePosixPath
 from typing import Any, cast
 
-import yaml
-
 from .approvals import APPROVAL_NAMESPACES, resolve_approval_tags
+from .frontmatter import cast_mapping, parse_frontmatter, require_exact_fields
 
 NON_PORTABLE_PROJECT_REFERENCE = re.compile(
     r"(?:"
@@ -126,22 +125,6 @@ class SkillPolicy:
     tags: tuple[str, ...]
 
 
-def _mapping(value: object, context: str) -> dict[str, object]:
-    if not isinstance(value, dict) or not all(isinstance(key, str) for key in value):
-        raise TypeError(f"{context} must be an object with string keys")
-    return cast(dict[str, object], value)
-
-
-def _exact_fields(
-    value: dict[str, object], expected: frozenset[str], context: str
-) -> None:
-    if frozenset(value) != expected:
-        raise ValueError(
-            f"{context} fields must equal {', '.join(sorted(expected))}; "
-            f"got {', '.join(sorted(value)) or 'none'}"
-        )
-
-
 class Catalog:
     """Discover and validate every canonical skill before returning any record."""
 
@@ -164,7 +147,15 @@ class Catalog:
         catalog.config = authority.config
         catalog.owner = "project"
         catalog.project_local = True
-        catalog._records = catalog._discover(require_inventory=False)
+        # The canonical authority can itself be an authorized project, but its
+        # central `skills/` tree remains the personal authority, never a second
+        # project-local source. Its generated `.agents/` surface is a
+        # projection and must not be reclassified as project-owned source.
+        catalog._records = (
+            ()
+            if catalog.root == authority.root
+            else catalog._discover(require_inventory=False)
+        )
         catalog._directories = tuple(record.directory for record in catalog._records)
         for record in catalog._records:
             resolve_approval_tags(
@@ -191,12 +182,12 @@ class Catalog:
     def _load_policy(path: Path) -> dict[str, object]:
         if path.is_symlink() or not path.is_file():
             raise ValueError(f"skills policy must be a physical file: {path}")
-        loaded = _mapping(json.loads(path.read_text(encoding="utf-8")), str(path))
-        _exact_fields(loaded, frozenset({"version", "budgets"}), str(path))
+        loaded = cast_mapping(json.loads(path.read_text(encoding="utf-8")), str(path))
+        require_exact_fields(loaded, frozenset({"version", "budgets"}), str(path))
         if loaded["version"] != 2:
             raise ValueError(f"skills policy version must be 2: {path}")
-        budgets = _mapping(loaded["budgets"], f"{path}: budgets")
-        _exact_fields(budgets, _BUDGET_FIELDS, f"{path}: budgets")
+        budgets = cast_mapping(loaded["budgets"], f"{path}: budgets")
+        require_exact_fields(budgets, _BUDGET_FIELDS, f"{path}: budgets")
         for key in sorted(_BUDGET_FIELDS):
             value = budgets[key]
             if type(value) is not int or value <= 0:
@@ -205,13 +196,7 @@ class Catalog:
 
     @staticmethod
     def _frontmatter(path: Path) -> dict[str, object]:
-        text = path.read_text(encoding="utf-8")
-        if not text.startswith("---\n"):
-            raise ValueError(f"{path}: missing YAML frontmatter")
-        marker = text.find("\n---\n", 4)
-        if marker < 0:
-            raise ValueError(f"{path}: unterminated YAML frontmatter")
-        frontmatter = _mapping(yaml.safe_load(text[4:marker]), f"{path}: frontmatter")
+        frontmatter, _ = parse_frontmatter(path)
         unknown = frozenset(frontmatter) - _FRONTMATTER_FIELDS
         if unknown:
             raise ValueError(
@@ -281,7 +266,7 @@ class Catalog:
             raise ValueError(f"{skill_file}: declared name {name!r} != {slug!r}")
         if "metadata" not in frontmatter:
             raise ValueError(f"{skill_file}: metadata is required")
-        metadata = _mapping(frontmatter["metadata"], f"{skill_file}: metadata")
+        metadata = cast_mapping(frontmatter["metadata"], f"{skill_file}: metadata")
         if "aihub.tags" not in metadata:
             raise ValueError(f"{skill_file}: metadata.aihub.tags is required")
         raw_tags = metadata["aihub.tags"]
