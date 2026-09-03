@@ -1,5 +1,4 @@
 import pytest
-
 from delivery.worker import timeout_for
 
 

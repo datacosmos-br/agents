@@ -35,6 +35,12 @@ graders:
       acceptance evidence, serialized shared state, and declared integration
       order. Reject a substitute tracker or workspace, partial handoff, or
       success after native dispatch failure.
+      For implementation delegation, pass only when the handoff names git -C,
+      env -C ... make, bun run --cwd, gh, systemctl --user when relevant, the
+      file scope, and focused gates. When the fixture shows 15 minutes with no
+      written change or green gate, pass only when the worker returns the exact
+      denial and options instead of idling, changing checkout, or claiming
+      progress.
 - type: behavior
   name: bounded_execution
   config:

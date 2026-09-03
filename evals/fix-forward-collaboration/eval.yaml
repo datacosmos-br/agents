@@ -41,6 +41,12 @@ graders:
       divergence-class rule they require operator adjudication before replacement.
       Explicit tracker suspension creates no alternate tracker or ledger; use the
       existing authorized collaboration or Git/PR/CI surfaces.
+      In an available managed city, require one shared city-store root plus a
+      linked local implementation bead per executing rig. Both records must be
+      reread and updated at material checkpoints from the same four-source
+      observation; mail only notifies. Cross-rig adoption must record producer
+      integrated SHA, consumer adoption, and combined revalidation in that
+      graph, and must reject parallel roots or duplicate implementations.
 - type: behavior
   name: bounded_execution
   config: {max_duration_ms: 240000}

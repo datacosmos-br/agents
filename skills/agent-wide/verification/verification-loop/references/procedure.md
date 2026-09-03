@@ -13,6 +13,8 @@ Before executing a gate or generated-owner effect, resolve and validate:
   commands from its declared owners;
 - required environment, toolchain, fixtures, services, and credentials;
 - generated surfaces and their canonical owner;
+- detector baselines and their exact threshold, mode, formats, ignores,
+  reviewed-file set, and baseline-file identity;
 - CI workflows and every changed-path trigger required to select them;
 - the ordered gate set required for the affected scope.
 
@@ -100,6 +102,12 @@ merging, and the wait continues.
 Re-read the head commit of the branch on every poll. A push during the wait
 retargets CI at a new commit, and checks that passed against the previous one
 say nothing about what is about to merge.
+
+A detector gate is scoped to its exact comparison configuration. Changing the
+threshold, mode, formats, ignores, reviewed files, or baseline contents
+invalidates every overlapping prior result: triage the changed set, replace the
+baseline deliberately at its owner, and rerun the gate. A lower duplicate count
+from a coarser threshold is not a fix.
 
 ## Report
 

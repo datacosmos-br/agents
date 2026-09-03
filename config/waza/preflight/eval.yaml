@@ -26,4 +26,4 @@ graders:
   config:
     max_duration_ms: 50000
 tasks:
-- tasks/tool-read.yaml
+- tasks/*.yaml

@@ -28,7 +28,9 @@ graders:
       CsvOrderExporter in the string plugin registry and therefore preserves it;
       passes the result through YAGNI and SOLID rechecks; applies
       simplify inline; compares Tokei on the same scope; and names runtime plus
-      native gates. For the missing-baseline task, pass
+      native gates. For detector-driven candidates, require the exact baseline
+      configuration and proof of zero new clones rather than textual similarity
+      alone. For the missing-baseline task, pass
       only when it blocks compression and names the missing owners, callers,
       behavior, runtime, and measurement without proposing deletions. For the
       dry-season task, pass only when it returns a concise factual geography

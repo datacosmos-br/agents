@@ -3,7 +3,8 @@ name: Reconcile a wrong-side remediation correction
 description: Turn operator corrections into durable governance through authority reconciliation.
 tags: [operator-corrections, durable-governance, authority-reconciliation, precedence, contradiction, evidence, happy-path]
 inputs:
-  prompt: Reconcile the operator correction in correction-state.yaml against its
+  prompt: >-
+    Reconcile the operator correction in correction-state.yaml against its
     active authority, then make the replacement durable in governance owners and
     consumers. Treat the observed rename reversal as divergent state rather than
     a competing intention, preserve the existing exact authorization, and define
@@ -12,9 +13,35 @@ inputs:
     canonical Git and PR surfaces, update the owning
     skill's semantic regression role, remove opposing instructions, define
     validation and repeated search, perform the evidence-based skill-exit review,
-    and keep suspended runtime owners untouched.
+    and keep suspended runtime owners untouched. The operator also establishes
+    Git checkpoint cadence: after every complete green local validation round
+    covering material tracked changes, publish a [WIP] checkpoint through the
+    repository-owned WIP hook path without --no-verify, keep a WIP-labelled Draft
+    PR against integration, and select no GitHub Actions. Never merge a WIP head.
+    At landing, create a material promotion commit without WIP, use the normal
+    hook path, convert Draft to Review, require Actions and independent approval, merge the exact head by
+    merge commit, revalidate locally, and start the next unit from integration.
+    Bind every WIP and promotion transition to one canonical tracker item whose
+    branch, PR, exact head, Draft/WIP state, gates, merge SHA, and closure evidence
+    must agree with GitHub; create no parallel ledger.
+    When local gates replace identical managed CI work, require a signed
+    repository-owned attestation bound to the exact repository, clean commit SHA,
+    bead, commands, toolchain, and results. CI verifies signer and exact predicate
+    coverage, runs every uncovered gate, and excludes external forks.
+    Also reconcile the global Bash composition correction at its canonical
+    owner and generated consumers: && and & each consume one &-family allowance,
+    while || and | each consume one |-family allowance. One use from each family
+    may coexist, a second same-family use is blocked, quotes, escapes, &>, and
+    &>> do not count, and every resulting segment remains governed.
+    Finally, reconcile a conditional operational-state correction: repository
+    law says that while Gas City is explicitly suspended, no new lane may be
+    created; the current city authority reports active status and responsive
+    endpoints, but an earlier agent invented a suspended state and prohibited
+    the lane. Retract the false attribution, decide whether the conditional
+    restriction applies now, and define durable enforcement plus semantic
+    regression behavior.
   files:
   - path: correction-state.yaml
 expected:
-  output_contains: [Git, PR, rules/architecture/engineering-core.md, semantic regression, producer contract, receiver, causal owner, existing authorization, fresh preflight, continue, skill-exit review, reusable defect, not DONE, atomic, zero residue]
-  output_not_contains: [patch the generator, adjacent workaround, alternate tracker, replacement ledger, partial reconciliation, retry, severe conflict, ask again, another process]
+  output_contains: [Git, PR, canonical tracker item, rules/architecture/engineering-core.md, semantic regression, producer contract, receiver, causal owner, existing authorization, fresh preflight, continue, skill-exit review, reusable defect, green local validation, WIP, repository-owned hook path, push, Draft PR, WIP label, GitHub Actions NOT SELECTED, branch, exact head, local gates, next action, signed attestation, clean commit SHA, bead, commands, toolchain, results, verifies signer, predicate coverage, uncovered gate, external forks, never merge WIP, material promotion commit, no WIP marker, normal hook path, Review, Actions, independent approval, merge commit, integration, exact merge SHA, local revalidation, closure evidence, no parallel ledger, material tracked changes, canonical owner, generated consumers, '&&', '&', '||', '|', one use, same family, blocked, coexist, quotes, escapes, '&>', '&>>', every segment, governed, conditional restriction, current authority, active, does not apply, maximum-severity integrity failure, fabricated gate evidence, fail closed, dependent decision, retract, not DONE, atomic, zero residue]
+  output_not_contains: [patch the generator, adjacent workaround, alternate tracker, replacement ledger, partial reconciliation, retry, --no-verify, empty promotion commit, rebase, force-push, severe conflict, ask again, another process, Gas City is suspended, lane is prohibited, existing checkout only, substitute workflow, inferred suspension]

@@ -33,4 +33,24 @@ a degraded mode. A tool that silently continues unauthenticated — with a lower
 quota, reduced verification, or unsigned artifacts — is failing quietly; require
 the variable at its boundary so the workflow stops instead.
 
+## Encrypted credential store
+
+A service's credentials come only from its encrypted credential store:
+`systemd-creds`-sealed secrets, declared with `LoadCredentialEncrypted=` and
+read from `$CREDENTIALS_DIRECTORY` at startup. The process environment
+carries only what the service's own loader injects from that directory —
+never a secret set by a shell profile, a `.env` file, a CI variable, or an
+inherited parent-process export.
+
+A unit that has credentials configured but omits `LoadCredentialEncrypted=`,
+or whose `$CREDENTIALS_DIRECTORY` is unset or empty at startup, fails loud
+immediately and keeps failing until the unit is fixed. That crash loop is the
+correct behavior, not a defect to route around with a default, a cached
+secret, or an environment-variable fallback: fix the unit file, never the
+service's startup check.
+
+OS keyring remains prohibited (`rules/runtime/no-keyring.md`); the encrypted
+credential store is a distinct, systemd-owned mechanism and is never
+substituted with a keyring access path or treated as equivalent to one.
+
 See also: `strict-execution.md` (rule file) — aggregate parent policy.

@@ -47,6 +47,14 @@ before interpreting anything.
 7. When reconciliation appears frozen for every session, suspect a hung
    `scale_check`: pool checks have no per-check timeout and block the whole
    tick. Report the offending agent's check command.
+8. When a session's process keeps restarting or will not stop, resolve process
+   ownership before touching the pid: `systemctl --user list-units 'gascity*'
+   'ai-hub*'` for the owning unit's own state, then `journalctl --user -u
+   <unit>` for its causal history, both before any `pgrep`. Distinguish a
+   unit crash-loop (the unit exists and is restarting under its own policy —
+   stop it only with `systemctl --user`, never by signal) from an orphan pid
+   (`pgrep` finds a matching process with no owning unit — the only process
+   eligible for a direct signal, per `rules/runtime/causal-subprocess.md`).
 
 Return the session identity, its state and capacity occupancy, the single most
 probable cause with the command, working directory, exit code, and decisive

@@ -16,6 +16,10 @@ roster, trigger evidence, selected capability, authorized scope, relevant
 project context, native API, and required return evidence. A missing or
 conflicting roster, interface, authority, or boundary stops with zero effects.
 
+An implementation handoff carries the operator-approved shell forms, scoped
+gates, writable paths, and stop-and-report at 15 minutes without a written
+change or green gate.
+
 Select one agent by strongest material trigger overlap and state the confidence
 evidence. Multiple agents are valid only when the operator or plan authorizes
 concurrency and each lane has a measurable benefit, a different canonical owner,

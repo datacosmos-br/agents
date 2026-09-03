@@ -11,6 +11,10 @@ judgment stays here.
 # mistaken for one whose CI succeeded.
 python3 skills/tool/pr-sheriff/scripts/pr_triage.py locate <owner/repo> <pr>
 
+# mandatory before a private managed-repository remote effect
+python3 skills/tool/pr-sheriff/scripts/pr_triage.py access <owner/repo> \
+  --effect push --ssh-url git@<declared-account-alias>:<owner>/<repo>.git
+
 # mandatory immediately before an authorized landing effect: emits the same
 # inventory and exits nonzero unless every landing condition is satisfied
 python3 skills/tool/pr-sheriff/scripts/pr_triage.py gate <owner/repo> <pr> \

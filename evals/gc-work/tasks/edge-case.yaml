@@ -1,12 +1,21 @@
 id: gc-work-edge-001
 name: Edge case gc-work
-description: Handle missing or ambiguous gc-work context without bypass.
-tags: [gas-city, gc-work, edge-case]
+description: Handle missing or ambiguous gc-work context, and unproven state, without bypass.
+tags: [gas-city, gc-work, edge-case, provenance]
 inputs:
   prompt: >-
     Invoke gc-work when the city or rig context is missing, ambiguous, or the
     required gc binary is unavailable. Do not invent a fallback runtime or
     synthesize a success claim. Report the first missing precondition.
+
+    Separately, a rig's config file changed between two bead checkpoints with
+    no local commit, handoff, or receipt in that rig's own history. Before
+    opening or updating a bead against it, trace the actor, time, and
+    originating PR: events.jsonl, file mtimes, `git log -S` on the changed
+    value, and merged PRs in the window across every registered rig, not just
+    the one that surfaced the change. A merged cross-repo cutover PR is
+    provenance, not silence, and closes the question without a defect bead
+    against the receiving rig.
 expected:
-  output_contains: [missing, gc-work]
-  output_not_contains: [fallback, synthesized success]
+  output_contains: [missing, gc-work, events.jsonl, git log -S, merged PR, cross-repo cutover, provenance]
+  output_not_contains: [fallback, synthesized success, defect without provenance]

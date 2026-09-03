@@ -1,6 +1,6 @@
 [project]
 name = "agents-governance"
-version = "0.2.1"
+version = "0.2.5"
 description = "Canonical validation and projection engine for ~/.agents"
 requires-python = ">=3.13"
 dependencies = ["PyYAML>=6.0.2,<7"]
@@ -35,6 +35,9 @@ packages = ["src/agents_governance"]
 "evals" = "agents_governance/_data/evals"
 "agents" = "agents_governance/_data/agents"
 "workflows" = "agents_governance/_data/workflows"
+"docs/adr" = "agents_governance/_data/docs/adr"
+"docs/execution/master-v7" = "agents_governance/_data/docs/execution/master-v7"
+"docs/security/security-triage.md" = "agents_governance/_data/docs/security/security-triage.md"
 "AGENTS.md" = "agents_governance/_data/AGENTS.md"
 "CLAUDE.md" = "agents_governance/_data/CLAUDE.md"
 ".waza.yaml" = "agents_governance/_data/.waza.yaml"
@@ -51,6 +54,9 @@ only-include = [
   "agents",
   "commands",
   "config",
+  "docs/adr",
+  "docs/execution/master-v7",
+  "docs/security/security-triage.md",
   "evals",
   "pyproject.toml",
   "rules",

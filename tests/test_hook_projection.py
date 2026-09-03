@@ -16,12 +16,17 @@ from agents_governance.governance_config import (
     load_governance_config,
 )
 from agents_governance.hook_projection import HookProjector, _capsule
+from agents_governance.law_surface import PRELUDE_START, LawSurface
+from agents_governance.projection_authorization import (
+    PROJECT_SELECTION,
+    ProjectAuthorization,
+)
 from agents_governance.projection_config import load_projection_config
 from agents_governance.rules import audit_rule_specs
 from agents_governance.runtime import _inventory
 
 
-def _projector(root: Path) -> HookProjector:
+def _projector(root: Path, central_root: Path | None = None) -> HookProjector:
     catalog = Catalog(root)
     commands = audit_command_specs(root, (record.name for record in catalog.records()))
     rules = audit_rule_specs(root)
@@ -32,6 +37,8 @@ def _projector(root: Path) -> HookProjector:
         load_projection_config(root),
         commands,
         rules,
+        LawSurface.load(root),
+        central_root=central_root,
     )
 
 
@@ -55,16 +62,27 @@ def _authorize(project: Path) -> None:
     )
 
 
-def test_hook_projection_preserves_foreign_content_and_reaches_fixed_point(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
+def _hook_project(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    *,
+    authorized: bool = True,
+) -> tuple[Path, Path, Path]:
     root = Path(__file__).resolve().parents[1]
     home = tmp_path / "home"
     project = tmp_path / "project"
     home.mkdir()
     project.mkdir()
-    _authorize(project)
+    if authorized:
+        _authorize(project)
     monkeypatch.setenv("HOME", str(home))
+    return root, home, project
+
+
+def test_hook_projection_preserves_foreign_content_and_reaches_fixed_point(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    root, _home, project = _hook_project(tmp_path, monkeypatch)
     claude = project / ".claude" / "settings.json"
     claude.parent.mkdir()
     claude.write_text(
@@ -89,6 +107,20 @@ def test_hook_projection_preserves_foreign_content_and_reaches_fixed_point(
     projector = _projector(root)
 
     projector.apply(project)
+
+    assert (
+        (project / "AGENTS.md")
+        .read_text(encoding="utf-8")
+        .startswith(PRELUDE_START + "\n")
+    )
+    assert (
+        (project / "CLAUDE.md")
+        .read_text(encoding="utf-8")
+        .startswith(PRELUDE_START + "\n")
+    )
+    manifest = _json(project / ".agents" / "law-surface.json")
+    assert manifest["owner"] == "agents-governance"
+    assert manifest["prelude_start"] == PRELUDE_START
     projector.check(project)
     first_mtime = (project / ".codex" / "hooks.json").stat().st_mtime_ns
     projector.apply(project)
@@ -100,8 +132,10 @@ def test_hook_projection_preserves_foreign_content_and_reaches_fixed_point(
     assert any(
         group["hooks"][0].get("command") == "foreign" for group in session_groups
     )
-    assert agents.read_text().startswith("# Existing project law\n")
-    assert agents.read_text().count("AIHUB-GOVERNANCE-INSTRUCTIONS-BEGIN") == 1
+    rendered_agents = agents.read_text()
+    assert rendered_agents.startswith(PRELUDE_START + "\n")
+    assert "# Existing project law\n" in rendered_agents
+    assert rendered_agents.count("AIHUB-GOVERNANCE-INSTRUCTIONS-BEGIN") == 1
 
     copilot = _json(project / ".github" / "hooks" / "aihub-governance.json")
     copilot_handler = copilot["hooks"]["sessionStart"][0]  # type: ignore[index]
@@ -126,13 +160,7 @@ def test_hook_projection_preserves_foreign_content_and_reaches_fixed_point(
 def test_foreign_hook_command_containing_managed_path_is_preserved(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    root = Path(__file__).resolve().parents[1]
-    home = tmp_path / "home"
-    project = tmp_path / "project"
-    home.mkdir()
-    project.mkdir()
-    _authorize(project)
-    monkeypatch.setenv("HOME", str(home))
+    root, _home, project = _hook_project(tmp_path, monkeypatch)
     projector = _projector(root)
     projector.apply(project)
     settings_path = project / ".claude" / "settings.json"
@@ -159,12 +187,7 @@ def test_foreign_hook_command_containing_managed_path_is_preserved(
 def test_personal_merged_configs_preserve_existing_mode_and_default_private(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    root = Path(__file__).resolve().parents[1]
-    home = tmp_path / "home"
-    project = tmp_path / "project"
-    home.mkdir()
-    project.mkdir()
-    monkeypatch.setenv("HOME", str(home))
+    root, home, project = _hook_project(tmp_path, monkeypatch, authorized=False)
     claude = home / ".claude" / "settings.json"
     claude.parent.mkdir()
     claude.write_text('{"mcpServers": {}}', encoding="utf-8")
@@ -184,12 +207,7 @@ def test_personal_merged_configs_preserve_existing_mode_and_default_private(
 def test_existing_hook_config_is_replaced_without_unlink(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    root = Path(__file__).resolve().parents[1]
-    home = tmp_path / "home"
-    project = tmp_path / "project"
-    home.mkdir()
-    project.mkdir()
-    monkeypatch.setenv("HOME", str(home))
+    root, home, project = _hook_project(tmp_path, monkeypatch, authorized=False)
     destination = home / ".claude" / "settings.json"
     destination.parent.mkdir()
     destination.write_text("{}", encoding="utf-8")
@@ -210,13 +228,7 @@ def test_existing_hook_config_is_replaced_without_unlink(
 def test_broken_hook_symlink_created_after_preflight_is_preserved(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    root = Path(__file__).resolve().parents[1]
-    home = tmp_path / "home"
-    project = tmp_path / "project"
-    home.mkdir()
-    project.mkdir()
-    _authorize(project)
-    monkeypatch.setenv("HOME", str(home))
+    root, _home, project = _hook_project(tmp_path, monkeypatch)
     destination = project / "AGENTS.md"
     outside = project / "missing-external-target"
     original_current = HookProjector._current
@@ -242,12 +254,7 @@ def test_broken_hook_symlink_created_after_preflight_is_preserved(
 def test_absent_project_authorization_projects_personal_hooks_only(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    root = Path(__file__).resolve().parents[1]
-    home = tmp_path / "home"
-    project = tmp_path / "project"
-    home.mkdir()
-    project.mkdir()
-    monkeypatch.setenv("HOME", str(home))
+    root, home, project = _hook_project(tmp_path, monkeypatch, authorized=False)
 
     _projector(root).apply(project)
 
@@ -259,13 +266,7 @@ def test_absent_project_authorization_projects_personal_hooks_only(
 def test_generated_hook_executes_and_malformed_input_fails_loudly(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    root = Path(__file__).resolve().parents[1]
-    home = tmp_path / "home"
-    project = tmp_path / "project"
-    home.mkdir()
-    project.mkdir()
-    _authorize(project)
-    monkeypatch.setenv("HOME", str(home))
+    root, _home, project = _hook_project(tmp_path, monkeypatch)
     projector = _projector(root)
     projector.apply(project)
     settings = _json(project / ".claude" / "settings.json")
@@ -295,13 +296,7 @@ def test_generated_hook_executes_and_malformed_input_fails_loudly(
 def test_modified_managed_hook_and_instruction_region_are_rejected(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    root = Path(__file__).resolve().parents[1]
-    home = tmp_path / "home"
-    project = tmp_path / "project"
-    home.mkdir()
-    project.mkdir()
-    _authorize(project)
-    monkeypatch.setenv("HOME", str(home))
+    root, _home, project = _hook_project(tmp_path, monkeypatch)
     projector = _projector(root)
     projector.apply(project)
     script = next((project / ".codex" / "aihub-hooks").glob("*.py"))
@@ -357,19 +352,19 @@ def _projector_without_codex_prompt(root: Path) -> HookProjector:
     cells = dict(base.config.cells)
     cells[key] = mutated
     config = dataclasses.replace(base.config, cells=MappingProxyType(cells))
-    return HookProjector(base.governance, config, base.commands, base.rules)
+    return HookProjector(
+        base.governance,
+        config,
+        base.commands,
+        base.rules,
+        LawSurface.load(root),
+    )
 
 
 def test_retired_hook_event_script_is_removed_and_foreign_survives(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    root = Path(__file__).resolve().parents[1]
-    home = tmp_path / "home"
-    project = tmp_path / "project"
-    home.mkdir()
-    project.mkdir()
-    _authorize(project)
-    monkeypatch.setenv("HOME", str(home))
+    root, _home, project = _hook_project(tmp_path, monkeypatch)
     projector = _projector(root)
     projector.apply(project)
     hooks_dir = project / ".codex" / "aihub-hooks"
@@ -394,13 +389,7 @@ def test_retired_hook_event_script_is_removed_and_foreign_survives(
 def test_modified_retired_artifact_fails_loud_and_preserves_state(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    root = Path(__file__).resolve().parents[1]
-    home = tmp_path / "home"
-    project = tmp_path / "project"
-    home.mkdir()
-    project.mkdir()
-    _authorize(project)
-    monkeypatch.setenv("HOME", str(home))
+    root, _home, project = _hook_project(tmp_path, monkeypatch)
     projector = _projector(root)
     projector.apply(project)
     retired = project / ".codex" / "aihub-hooks" / "codex-userpromptsubmit.py"
@@ -417,13 +406,7 @@ def test_modified_retired_artifact_fails_loud_and_preserves_state(
 def test_config_path_change_retires_artifacts_managed_at_the_old_location(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    root = Path(__file__).resolve().parents[1]
-    home = tmp_path / "home"
-    project = tmp_path / "project"
-    home.mkdir()
-    project.mkdir()
-    _authorize(project)
-    monkeypatch.setenv("HOME", str(home))
+    root, _home, project = _hook_project(tmp_path, monkeypatch)
     projector = _projector(root)
     projector.apply(project)
     manifest_path = project / ".codex" / ".hooks.json.agents-governance.json"
@@ -464,3 +447,35 @@ def test_capsule_carries_approval_provenance_for_every_bootstrap_rule() -> None:
     )
     for identity in inventory.governance.bootstrap_rules:
         assert f"## Rule `{identity}`" in capsule
+
+
+def test_central_source_never_merges_capsules_into_its_own_law(
+    tmp_path: Path,
+) -> None:
+    root = Path(__file__).resolve().parents[1]
+    consumer_project = tmp_path / "consumer"
+    consumer_project.mkdir()
+    selection = b'{"version": 1, "agents": [], "opt_ins": [], "selected_tags": []}'
+    consumer = _projector(root)
+    consumer_plans = consumer._plans(
+        ProjectAuthorization(
+            consumer_project,
+            consumer_project / PROJECT_SELECTION,
+            selection,
+        )
+    )
+    assert any(plan.config == consumer_project / "AGENTS.md" for plan in consumer_plans)
+    assert any(plan.config == consumer_project / "CLAUDE.md" for plan in consumer_plans)
+
+    central = _projector(root, central_root=root)
+    central_plans = central._plans(
+        ProjectAuthorization(root, root / PROJECT_SELECTION, selection)
+    )
+    assert central_plans
+    assert all(
+        plan.config not in {root / "AGENTS.md", root / "CLAUDE.md"}
+        for plan in central_plans
+    )
+    assert any(
+        root / ".agents" / "law-surface.json" in plan.desired for plan in central_plans
+    )

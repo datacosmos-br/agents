@@ -3,7 +3,7 @@ name: gc-city
 description: 'gas city lifecycle, city init, start stop, supervisor status'
 allowed-tools: Bash(gc *)
 metadata:
-  aihub.tags: '["activation:opt-in","decision:plan-00","detect:opt-in:gc-city","domain:gas-city","effective:2026-08-30","policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","provenance:agents-owned","route:agent","technology:gas-city","updates:manual","usage:on-demand"]'
+  aihub.tags: '["activation:opt-in","decision:plan-00","detect:opt-in:gc-city","domain:gas-city","effective:2026-08-30","policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","provenance:agents-owned","route:agent","route:project","technology:gas-city","updates:manual","usage:on-demand"]'
 ---
 ## Verification (mandatory)
 
@@ -30,12 +30,12 @@ gc stop                                # Stop the city
 gc restart                             # Stop then start
 ```
 
-`gc init` and `gc start` register the city with the supervisor and reconcile immediately. Interactive sessions: `gc session new <template>`. One supervisor hosts one reconciliation runtime per city, lock-enforced. Tick timing and `[daemon]` keys: `references/reconciliation-timing.md` (skill file).
+`gc init` and `gc start` register the city and reconcile immediately. Interactive sessions: `gc session new <template>`. One supervisor hosts one reconciliation runtime per city, lock-enforced. Tick timing and `[daemon]` keys: `references/reconciliation-timing.md`.
 
 ## Status
 
 ```
-gc status                              # City-wide overview
+gc status                              # Overview; unit owner
 gc session list                        # Session / agent status
 gc rig status <name>                   # Rig status
 ```
@@ -59,5 +59,4 @@ gc event emit <type> [data]            # Emit event
 
 ## Dashboard and packs
 
-Dashboard: the gc-dashboard skill. Packs add `gc <pack> <command>` subcommands,
-prompts, formulas, and doctor checks — `gc pack list`, `gc pack fetch`.
+Dashboard: the gc-dashboard skill. Packs add `gc <pack> <command>` subcommands and doctor checks — `gc pack list`, `gc pack fetch`.
