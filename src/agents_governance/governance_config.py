@@ -65,6 +65,7 @@ _EXPECTED_GUARANTEES = frozenset(
         "production-readiness",
         "professional-integrity",
         "project-law",
+        "provenance-before-conclusion",
         "pull-request-transparency",
         "repository-authority",
         "repository-research",

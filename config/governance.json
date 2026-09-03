@@ -203,6 +203,9 @@
       "document:AGENTS.md",
       "rule:coordination/fix-forward-collaboration"
     ],
+    "provenance-before-conclusion": [
+      "rule:coordination/provenance-before-conclusion"
+    ],
     "pull-request-transparency": [
       "command:pr-list",
       "rule:coordination/operator-precedence"

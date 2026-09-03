@@ -23,13 +23,4 @@ Each managed execution uses one HQ root and linked bead per rig, both carrying
 four-source checkpoints. Instructions, tracker prime, and skills enforce this;
 divergence, parallel roots, and mail ledgers fail.
 
-## Provenance before conclusion
-
-Before labeling silent or changed state as a defect, trace its actor, time,
-and originating PR: `events.jsonl`, file mtimes, `git log -S` on the changed
-value, and merged PRs in the window across every registered rig, not just the
-one that surfaced the change. A state without a proven author is neither
-defect nor intention — it is unproven, and stays unproven until one of the
-four sources names an actor and a time. A rig's config changed by a merged
-cross-repo cutover PR is provenance, not silence; correct the bead's premise
-instead of opening a defect against the receiving rig.
+Compose with `provenance before conclusion` (rule file).
