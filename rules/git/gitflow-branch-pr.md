@@ -83,6 +83,13 @@ orchestration is suspended it is prohibited.
   round, push through the repository-owned typed WIP path and update the tracker
   head evidence before continuing. `[skip ci]`, `[ci skip]`, `--no-verify`,
   rebase, and force-push are prohibited.
+- **Red base adoption:** when a lane's integration base already fails its own
+  gate, adopt those defects in the same PR that lands the lane's change: fix
+  them, cite the owning commit that introduced each, and leave a note on the
+  bead notifying the owning lane. Never narrow the gate or exclude the failing
+  path to make the lane's own change look green on top of a red base. A
+  `[WIP]` commit is never the head of a merge into integration; the merge
+  guard refuses a PR whose head commit subject starts `[WIP]`.
 - WIP publication records every validation and attestation as `NOT SELECTED`,
   never as green. Only the non-WIP promotion head may enter integration, and
   it retains the full reviewed-PR and remote-check contract.
