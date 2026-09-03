@@ -2,10 +2,13 @@ command: gc-session-triage
 schemaVersion: '1.0'
 scenarios:
   - role: happy-path
-    prompt: Diagnose a named Gas City session that stays in creating and never becomes active.
+    prompt: Diagnose a named Gas City session that stays in creating and never
+      becomes active, and a second named session whose process keeps
+      restarting, distinguishing a systemd-owned unit crash-loop from an
+      orphan pid with no owning unit.
     assertions:
-      output_contains: [session state, pool capacity, decisive output, remediation]
-      output_not_contains: [session started, session stopped]
+      output_contains: [session state, pool capacity, decisive output, remediation, systemctl --user list-units, journalctl --user, crash-loop, orphan pid]
+      output_not_contains: [session started, session stopped, kill -9]
   - role: ambiguous-input
     prompt: Diagnose a Gas City session without naming a session id or alias.
     assertions:

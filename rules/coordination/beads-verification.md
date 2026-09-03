@@ -22,3 +22,5 @@ evidence is a violation. Fix divergence in the bead, never in reality.
 Each managed execution uses one HQ root and linked bead per rig, both carrying
 four-source checkpoints. Instructions, tracker prime, and skills enforce this;
 divergence, parallel roots, and mail ledgers fail.
+
+Compose with `provenance before conclusion` (rule file).

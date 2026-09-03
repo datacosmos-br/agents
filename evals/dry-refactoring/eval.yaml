@@ -20,13 +20,14 @@ graders:
   name: dry-refactoring-contract
   config:
     prompt: |-
-      Grade the dry-refactoring response. Pass only when it runs jscpd to detect
-      clones first, reads both duplicated fragments before designing the shared
-      extraction, updates every call site and not only the two reported
-      locations, re-runs jscpd to prove the clone is gone, and orders remaining
-      clones by impact. Reject refactors without a re-run, extracted
-      abstractions with unclear names, deleting tests to silence clones, or a
-      consolidated copy that keeps the duplicated original in place.
+      Grade the dry-refactoring response. Pass only when it runs jscpd at the
+      selected strict eight-line baseline first, reads both duplicated fragments
+      before designing shared extraction, classifies each candidate rather than
+      treating textual similarity as proof, updates every call site, re-runs the
+      identical configuration, and proves zero new clones. Reject unreviewed
+      rebaselining, refactors without a re-run, extracted abstractions with
+      unclear names, deleting tests to silence clones, or a consolidated copy
+      that keeps the duplicated original in place.
 - type: behavior
   name: bounded_execution
   config: {max_duration_ms: 240000}

@@ -30,6 +30,9 @@ graders:
       reporting a red result as a handoff. A failed stage
       must stop that invocation, drive owner correction, and rerun invalidated
       stages in the same phase without an unchanged retry or alternate gate.
+      A detector result is valid only for its exact threshold, mode, ignores,
+      reviewed-file set, and baseline; changing any of them invalidates prior
+      overlapping evidence and requires rerun after deliberate rebaselining.
       A composite command with successful prefix output and final exit 1 is red
       as a whole; substeps cannot make it green or justify later proof, and a
       native Make owner cannot be replaced by its underlying test runner.
