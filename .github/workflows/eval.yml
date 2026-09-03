@@ -119,6 +119,7 @@ jobs:
             quality)
               make static
               make shell
+              make duplication
               make build
               ;;
             runtime)

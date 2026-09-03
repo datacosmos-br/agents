@@ -68,6 +68,10 @@ shell: ## validate shell scripts and GitHub workflows
 	$(call BANNER,shell · actionlint)
 	@actionlint .github/workflows/*.yml
 
+duplication: ## enforce zero strict duplication in canonical Python source
+	$(call BANNER,duplication · jscpd)
+	@jscpd src --config $(CURDIR)/.jscpd.json
+
 build: ## build source and wheel artifacts
 	$(call BANNER,build · sdist + wheel)
 	@find config skills rules commands agents workflows docs -name __pycache__ -type d -exec rm -rf {} +
