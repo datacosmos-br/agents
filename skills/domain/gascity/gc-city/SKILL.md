@@ -35,7 +35,7 @@ gc restart                             # Stop then start
 ## Status
 
 ```
-gc status                              # City-wide overview
+gc status                              # Overview; unit owner
 gc session list                        # Session / agent status
 gc rig status <name>                   # Rig status
 ```
