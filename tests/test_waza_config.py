@@ -2,12 +2,13 @@ from __future__ import annotations
 
 import json
 import stat
-from collections.abc import Sequence
+from collections.abc import Callable, Sequence
 from pathlib import Path
 from typing import cast
 
 import pytest
 import yaml
+from waza_fixtures import write_eval_suite
 
 import agents_governance.waza as waza_module
 from agents_governance.waza import (
@@ -37,117 +38,75 @@ def _model_authority(root: Path, model: str = _MODEL) -> None:
 
 
 def _suite(root: Path) -> Path:
-    directory = root / "evals" / "example"
-    tasks = directory / "tasks"
-    tasks.mkdir(parents=True)
-    (directory / "eval.yaml").write_text(
-        yaml.safe_dump(
-            {
-                "name": "example-eval",
-                "skill": "example",
-                "config": {
-                    "trials_per_task": 1,
-                    "model": _MODEL,
-                    "timeout_seconds": 60,
-                    "parallel": False,
-                    "max_attempts": 0,
-                    "fail_fast": True,
-                    "executor": "copilot-sdk",
-                    "required_skills": ["example"],
-                    "skill_directories": ["../../skills/agent-wide/example"],
-                },
-                "graders": [
-                    {
-                        "type": "prompt",
-                        "name": "example-contract",
-                        "config": {"prompt": "Grade example material output."},
-                    },
-                    {
-                        "type": "behavior",
-                        "name": "bounded",
-                        "config": {"max_duration_ms": 50_000},
-                    },
-                ],
-                "tasks": ["tasks/*.yaml"],
-            },
-            sort_keys=False,
-        ),
-        encoding="utf-8",
-    )
     prompts = {
         "basic-usage.yaml": "Execute the material example.",
         "edge-case.yaml": "",
         "should-not-trigger.yaml": "Do unrelated work.",
     }
-    for index, (name, prompt) in enumerate(prompts.items()):
-        (tasks / name).write_text(
-            yaml.safe_dump(
-                {
-                    "id": f"example-{index}",
-                    "inputs": {"prompt": prompt},
-                    "expected": {
-                        "output_contains": ["material output"],
-                        "output_not_contains": ["forbidden action"],
-                    },
-                },
-                sort_keys=False,
-            ),
-            encoding="utf-8",
-        )
-    return directory
+    tasks: dict[str, dict[str, object]] = {
+        name: {
+            "id": f"example-{index}",
+            "inputs": {"prompt": prompt},
+            "expected": {
+                "output_contains": ["material output"],
+                "output_not_contains": ["forbidden action"],
+            },
+        }
+        for index, (name, prompt) in enumerate(prompts.items())
+    }
+    return write_eval_suite(
+        root,
+        "evals/example",
+        name="example",
+        skill="example",
+        model=_MODEL,
+        skill_directories=["../../skills/agent-wide/example"],
+        graders=[
+            {
+                "type": "prompt",
+                "name": "example-contract",
+                "config": {"prompt": "Grade example material output."},
+            },
+            {
+                "type": "behavior",
+                "name": "bounded",
+                "config": {"max_duration_ms": 50_000},
+            },
+        ],
+        tasks=tasks,
+    )
 
 
 def _preflight_suite(root: Path) -> EvalSuiteSpec:
-    directory = root / "config" / "waza" / "preflight"
-    tasks = directory / "tasks"
-    tasks.mkdir(parents=True)
-    (directory / "eval.yaml").write_text(
-        yaml.safe_dump(
+    write_eval_suite(
+        root,
+        "config/waza/preflight",
+        name="preflight",
+        skill="waza-transport-preflight",
+        model=_MODEL,
+        skill_directories=["skill"],
+        graders=[
             {
-                "name": "preflight-eval",
-                "skill": "waza-transport-preflight",
-                "config": {
-                    "trials_per_task": 1,
-                    "model": _MODEL,
-                    "timeout_seconds": 60,
-                    "parallel": False,
-                    "max_attempts": 0,
-                    "fail_fast": True,
-                    "executor": "copilot-sdk",
-                    "required_skills": ["waza-transport-preflight"],
-                    "skill_directories": ["skill"],
-                },
-                "graders": [
-                    {
-                        "type": "code",
-                        "name": "sentinel-returned",
-                        "config": {"prompt": "Require the exact sentinel."},
-                    },
-                    {
-                        "type": "behavior",
-                        "name": "bounded",
-                        "config": {"max_duration_ms": 50_000},
-                    },
-                ],
-                "tasks": ["tasks/*.yaml"],
+                "type": "code",
+                "name": "sentinel-returned",
+                "config": {"prompt": "Require the exact sentinel."},
             },
-            sort_keys=False,
-        ),
-        encoding="utf-8",
-    )
-    (tasks / "tool-read.yaml").write_text(
-        yaml.safe_dump(
             {
+                "type": "behavior",
+                "name": "bounded",
+                "config": {"max_duration_ms": 50_000},
+            },
+        ],
+        tasks={
+            "tool-read.yaml": {
                 "id": "tool-read-001",
                 "inputs": {
                     "prompt": "Read the exact sentinel.",
                     "files": [{"path": "sentinel.txt"}],
                 },
                 "expected": {"output_contains": ["exact-sentinel"]},
-            },
-            sort_keys=False,
-        ),
-        encoding="utf-8",
+            }
+        },
     )
     return waza_module._preflight_suite(root)
 
@@ -195,6 +154,21 @@ def _artifact(
         },
         "tasks": tasks,
     }
+
+
+def _artifact_runner(
+    by_path: dict[Path, EvalSuiteSpec],
+    preflight: EvalSuiteSpec,
+) -> Callable[[Sequence[str], Path], None]:
+    def runner(command: Sequence[str], _root: Path) -> None:
+        selected = by_path[Path(command[2])]
+        output = Path(command[command.index("--output") + 1])
+        output.write_text(
+            json.dumps(_artifact(selected, tool_call_count=int(selected is preflight))),
+            encoding="utf-8",
+        )
+
+    return runner
 
 
 def _live_root(root: Path) -> tuple[EvalSuiteSpec, EvalSuiteSpec]:
@@ -292,6 +266,24 @@ def test_live_corpus_runs_every_suite_and_publishes_one_complete_artifact(
     assert not tuple((tmp_path / "results").glob(".waza-live-stage.*"))
 
 
+def test_live_corpus_owns_missing_results_root(tmp_path: Path) -> None:
+    preflight, suite = _live_root(tmp_path)
+    (tmp_path / "results").rmdir()
+    by_path = {preflight.path: preflight, suite.path: suite}
+    runner = _artifact_runner(by_path, preflight)
+
+    destination = run_live_corpus(
+        tmp_path,
+        _MODEL,
+        (suite,),
+        "/owner/bin/waza",
+        runner=runner,
+    )
+
+    assert destination.is_file()
+    assert stat.S_IMODE((tmp_path / "results").stat().st_mode) == 0o700
+
+
 def test_runner_failure_propagates_and_candidate_is_cleaned(tmp_path: Path) -> None:
     _preflight, suite = _live_root(tmp_path)
 
@@ -344,14 +336,7 @@ def test_publication_failure_propagates_and_preserves_destination(
     destination = latest / "results.json"
     destination.write_text('{"original": true}\n', encoding="utf-8")
     by_path = {preflight.path: preflight, suite.path: suite}
-
-    def runner(command: Sequence[str], _root: Path) -> None:
-        selected = by_path[Path(command[2])]
-        output = Path(command[command.index("--output") + 1])
-        output.write_text(
-            json.dumps(_artifact(selected, tool_call_count=int(selected is preflight))),
-            encoding="utf-8",
-        )
+    runner = _artifact_runner(by_path, preflight)
 
     def fail_replace(_source: str | Path, _destination: str | Path) -> None:
         raise OSError("publication exploded")

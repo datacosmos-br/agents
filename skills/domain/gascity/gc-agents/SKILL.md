@@ -3,7 +3,7 @@ name: gc-agents
 description: 'gas city agents, session lifecycle, pool capacity, drain restart, reconciliation'
 allowed-tools: Bash(gc *)
 metadata:
-  aihub.tags: '["activation:opt-in","decision:plan-00","detect:opt-in:gc-agents","domain:gas-city","effective:2026-08-30","policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","provenance:agents-owned","route:agent","technology:gas-city","updates:manual","usage:on-demand"]'
+  aihub.tags: '["activation:opt-in","decision:plan-00","detect:opt-in:gc-agents","domain:gas-city","effective:2026-08-30","policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","provenance:agents-owned","route:agent","route:project","technology:gas-city","updates:manual","usage:on-demand"]'
 ---
 ## Verification (mandatory)
 
@@ -27,3 +27,7 @@ For session state, the controller reconciliation tick, the drain/restart
 handshake, pool capacity keys, and claim identity, read
 `references/lifecycle-reconciliation.md` (skill file) before diagnosing a session
 that will not start, will not stop, restarts in a loop, or ignores a drain.
+
+Managed availability is proven by `systemctl --user`, `gc order check`, supervisor
+log, and Dolt runtime publication—not by a process census. Never send a signal to a
+process inside a unit; ask the unit owner to stop or restart.

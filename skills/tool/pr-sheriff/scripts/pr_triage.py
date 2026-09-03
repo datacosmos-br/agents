@@ -29,6 +29,9 @@ import sys
 from typing import Any
 
 _PASSING_CONCLUSIONS = frozenset({"success", "neutral", "skipped"})
+EXTERNAL_EXECUTABLES = frozenset({"gh", "git"})
+_MANAGED_PRIVATE_OWNERS = frozenset({"datacosmos-br", "marlon-costa-dc"})
+_REQUIRED_PERMISSION = {"read": "pull", "push": "push", "admin": "admin"}
 
 
 def _gh(*arguments: str, input_text: str | None = None) -> str:
@@ -44,6 +47,63 @@ def _gh(*arguments: str, input_text: str | None = None) -> str:
         sys.stderr.write(completed.stderr)
         raise SystemExit(completed.returncode)
     return completed.stdout
+
+
+def _external(*arguments: str) -> str:
+    executable = arguments[0]
+    if executable not in EXTERNAL_EXECUTABLES:
+        raise ValueError(f"external executable is not declared: {executable}")
+    completed = subprocess.run(
+        list(arguments), capture_output=True, text=True, check=False
+    )
+    if completed.returncode != 0:
+        sys.stderr.write(completed.stderr)
+        raise SystemExit(completed.returncode)
+    return completed.stdout
+
+
+def managed_private_access(
+    repository: str, effect: str, ssh_url: str | None
+) -> dict[str, Any]:
+    owner, separator, name = repository.partition("/")
+    if not separator or not owner or not name or "/" in name:
+        raise ValueError("repository must be exactly owner/name")
+    detail = json.loads(_gh("api", f"repos/{repository}"))
+    private_managed = bool(detail.get("private")) and owner in _MANAGED_PRIVATE_OWNERS
+    result: dict[str, Any] = {
+        "repository": repository,
+        "private_managed": private_managed,
+        "effect": effect,
+    }
+    if not private_managed:
+        result["access_preflight"] = "not_selected"
+        return result
+    if ssh_url is None:
+        raise ValueError("managed private repository requires --ssh-url")
+    expected_suffix = f":{repository}.git"
+    if not ssh_url.startswith("git@") or not ssh_url.endswith(expected_suffix):
+        raise ValueError("SSH URL must identify the exact managed repository")
+    host = ssh_url.removeprefix("git@").split(":", 1)[0]
+    if not host or host == "github.com":
+        raise ValueError(
+            "managed private repository requires a declared SSH host alias"
+        )
+    permission = _REQUIRED_PERMISSION[effect]
+    permissions = detail.get("permissions")
+    if not isinstance(permissions, dict) or permissions.get(permission) is not True:
+        raise PermissionError(
+            f"GitHub permission {permission} is required for {repository}"
+        )
+    _external("gh", "auth", "status", "--active", "--hostname", "github.com")
+    _external("git", "ls-remote", ssh_url, "HEAD")
+    result.update(
+        {
+            "access_preflight": "passed",
+            "permission": permission,
+            "ssh_host_alias": host,
+        }
+    )
+    return result
 
 
 def _graphql(query: str, **variables: Any) -> dict[str, Any]:
@@ -138,11 +198,7 @@ def _blocking_checks(checks: list[dict[str, Any]]) -> list[dict[str, Any]]:
 
 
 def _pending_checks(checks: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    return [
-        check
-        for check in checks
-        if str(check["status"]).casefold() != "completed"
-    ]
+    return [check for check in checks if str(check["status"]).casefold() != "completed"]
 
 
 def _check_counts(checks: list[dict[str, Any]]) -> tuple[int, int]:
@@ -299,6 +355,11 @@ def main() -> None:
     locate.add_argument("repository", help="owner/name")
     locate.add_argument("number", type=int)
 
+    access = sub.add_parser("access", help="preflight one managed private repository")
+    access.add_argument("repository", help="owner/name")
+    access.add_argument("--effect", choices=tuple(_REQUIRED_PERMISSION), required=True)
+    access.add_argument("--ssh-url")
+
     gate = sub.add_parser("gate", help="fail unless the PR is ready to land")
     gate.add_argument("repository", help="owner/name")
     gate.add_argument("number", type=int)
@@ -330,6 +391,10 @@ def main() -> None:
     gate_blocked = False
     if arguments.command == "locate":
         result: Any = cmd_locate(arguments.repository, arguments.number)
+    elif arguments.command == "access":
+        result = managed_private_access(
+            arguments.repository, arguments.effect, arguments.ssh_url
+        )
     elif arguments.command == "gate":
         result = cmd_locate(arguments.repository, arguments.number)
         result["landing_blockers"] = landing_blockers(

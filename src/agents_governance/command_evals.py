@@ -9,9 +9,10 @@ from pathlib import Path
 from typing import cast
 
 import yaml
-from yaml.nodes import MappingNode, Node, SequenceNode
+from yaml.nodes import MappingNode
 
 from .commands import CommandProvider, CommandRoute, CommandSpec
+from .frontmatter import detect_duplicate_key
 
 _TOP_LEVEL_FIELDS = frozenset({"command", "schemaVersion", "scenarios"})
 _ASSERTION_FIELDS = frozenset({"output_contains", "output_not_contains"})
@@ -46,32 +47,13 @@ class CommandEvalSpec:
     scenarios: tuple[CommandEvalScenario, ...]
 
 
-def _duplicate_key(node: Node) -> str | None:
-    if isinstance(node, MappingNode):
-        seen: set[str] = set()
-        for key_node, value_node in node.value:
-            key = str(getattr(key_node, "value", "<non-scalar>"))
-            if key in seen:
-                return key
-            seen.add(key)
-            duplicate = _duplicate_key(value_node)
-            if duplicate is not None:
-                return duplicate
-    elif isinstance(node, SequenceNode):
-        for child in node.value:
-            duplicate = _duplicate_key(child)
-            if duplicate is not None:
-                return duplicate
-    return None
-
-
 def _mapping(path: Path) -> dict[str, object]:
     source = path.read_text(encoding="utf-8")
     node = yaml.compose(source, Loader=yaml.SafeLoader)
     loaded = yaml.safe_load(source)
     if not isinstance(node, MappingNode) or not isinstance(loaded, dict):
         raise TypeError(f"{path}: eval source must be a mapping")
-    duplicate = _duplicate_key(node)
+    duplicate = detect_duplicate_key(node)
     if duplicate is not None:
         raise ValueError(f"{path}: eval key is duplicated: {duplicate}")
     raw = cast(dict[object, object], loaded)

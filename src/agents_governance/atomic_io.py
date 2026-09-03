@@ -9,6 +9,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from .cleanup import PreparedPublication, Publication, run_cleanup, run_with_cleanup
+from .physical_paths import symlink_component
 
 
 @dataclass(frozen=True)
@@ -28,18 +29,6 @@ class _StagedText:
     installed: bool = False
 
 
-def _symlink_component(path: Path) -> Path | None:
-    absolute = path.absolute()
-    current = Path(absolute.anchor)
-    for part in absolute.parts[1:]:
-        current /= part
-        if current.is_symlink():
-            return current
-        if not current.exists():
-            break
-    return None
-
-
 def discard_physical_file(path: Path) -> None:
     """Remove one exact owned file without following a link."""
 
@@ -55,7 +44,7 @@ def discard_physical_file(path: Path) -> None:
 def stage_text(destination: Path, text: str, *, mode: int = 0o644) -> Path:
     """Write and sync one destination-local candidate without publishing it."""
 
-    symlink = _symlink_component(destination)
+    symlink = symlink_component(destination)
     if symlink is not None:
         raise RuntimeError(f"publication path symlink forbidden: {symlink}")
     parent = destination.parent

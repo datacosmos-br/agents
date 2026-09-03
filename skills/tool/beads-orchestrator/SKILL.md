@@ -17,13 +17,17 @@ read-only convergence plan. Never invoke or replace the tracker.
 
 When available:
 
-1. Read the current graph revision, objectives, acceptance evidence,
-   dependencies, claims, integration state, and actor authority.
+1. Read the graph revision, objective, evidence, dependencies, claims,
+   integration, authority, and linked city-root/rig-local pairs. Search first:
+   one objective has one shared root, never a per-agent replacement.
 2. Classify each requested node from evidence. Staleness alone never abandons a
    claim; a foreign or ambiguous claim blocks mutation.
-3. Derive one complete mutation set from the current graph. Re-read immediately
+3. Require each executing rig to own a local bead linked by metadata to the
+   shared root and child. The root owns coordination; the local bead owns
+   repository evidence. Missing or divergent links fail before effects.
+4. Derive one complete mutation set from the current graph. Re-read immediately
    before effects; any revision change invalidates the plan.
-4. Apply the authorized set atomically through the canonical tracker owner and
+5. Apply the authorized set atomically through the canonical tracker owner and
    verify the resulting graph. Never hand-edit storage or use alternate routing,
    commands, providers, credentials, retries, partial re-parenting, or inferred
    closure.

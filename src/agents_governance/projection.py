@@ -11,7 +11,7 @@ import stat
 import subprocess
 import tempfile
 import tomllib
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from functools import partial
 from pathlib import Path, PurePosixPath
 from typing import cast
@@ -45,6 +45,8 @@ from .commands import (
     render_command,
     waza_bpe_counter,
 )
+from .frontmatter import cast_mapping, require_exact_fields
+from .physical_paths import absolute_path, symlink_component
 from .projection_authorization import (
     PROJECT_SELECTION,
     ProjectAuthorization,
@@ -130,6 +132,7 @@ _ENTRY_FIELDS = frozenset(
         "activation",
         "adapter_version",
         "destination",
+        "link_target",
         "origin",
         "physical_digest",
         "slug",
@@ -137,6 +140,8 @@ _ENTRY_FIELDS = frozenset(
         "source_type",
     }
 )
+_ENTRY_FIELDS_V5 = _ENTRY_FIELDS - {"link_target"}
+_PRIOR_PROJECTION_MANIFEST_VERSION = 5
 
 
 class ProjectionDriftError(RuntimeError):
@@ -169,12 +174,14 @@ class ProjectionSource:
     activation: tuple[str, ...]
     content: str | None = None
     adapter_version: int = 1
+    link_target: str | None = None
 
     def metadata(self) -> dict[str, object]:
         return {
             "activation": list(self.activation),
             "adapter_version": self.adapter_version,
             "destination": self.name,
+            "link_target": self.link_target,
             "origin": self.origin,
             "physical_digest": self.physical_digest,
             "slug": self.slug,
@@ -214,20 +221,6 @@ class _StagedTarget:
     had_root: bool = False
 
 
-def _mapping(value: object, context: str) -> dict[str, object]:
-    if not isinstance(value, dict) or not all(isinstance(key, str) for key in value):
-        raise TypeError(f"{context} must be an object with string keys")
-    return cast(dict[str, object], value)
-
-
-def _exact(value: dict[str, object], fields: frozenset[str], context: str) -> None:
-    if frozenset(value) != fields:
-        raise ValueError(
-            f"{context} fields must equal {', '.join(sorted(fields))}; "
-            f"got {', '.join(sorted(value)) or 'none'}"
-        )
-
-
 def _strings(value: object, context: str) -> tuple[str, ...]:
     if not isinstance(value, list) or not all(
         isinstance(item, str) and item and item == item.strip() for item in value
@@ -239,25 +232,10 @@ def _strings(value: object, context: str) -> tuple[str, ...]:
     return selected
 
 
-def _absolute(path: Path) -> Path:
-    return Path(os.path.abspath(path))
+def _tree_snapshot(root: Path, allowed_links: dict[str, str] | None = None) -> str:
+    """Digest one destination tree; only managed alias links are permitted."""
 
-
-def _symlink_component(path: Path) -> Path | None:
-    absolute = _absolute(path)
-    current = Path(absolute.anchor)
-    for part in absolute.parts[1:]:
-        current /= part
-        if current.is_symlink():
-            return current
-        if not current.exists():
-            break
-    return None
-
-
-def _tree_snapshot(root: Path) -> str:
-    """Digest one physical destination tree; a symlink in it is forbidden."""
-
+    links = allowed_links or {}
     digest = hashlib.sha256()
 
     def visit(path: Path) -> None:
@@ -268,7 +246,13 @@ def _tree_snapshot(root: Path) -> str:
         digest.update(f"{stat.S_IMODE(metadata.st_mode):04o}".encode())
         digest.update(b"\0")
         if stat.S_ISLNK(metadata.st_mode):
-            raise ValueError(f"projection destination symlink forbidden: {path}")
+            target = os.readlink(path)
+            if links.get(relative) != target:
+                raise ValueError(f"projection destination symlink forbidden: {path}")
+            digest.update(b"symlink\0")
+            digest.update(target.encode())
+            digest.update(b"\0")
+            return
         if stat.S_ISDIR(metadata.st_mode):
             digest.update(b"directory\0")
             with os.scandir(path) as entries:
@@ -325,8 +309,8 @@ def _linked_worktree_owns(git_directory: Path, git_file: Path) -> bool:
 
 
 def _physical_project(cwd: Path) -> Path:
-    current = _absolute(cwd)
-    if _symlink_component(current) is not None or not current.is_dir():
+    current = absolute_path(cwd)
+    if symlink_component(current) is not None or not current.is_dir():
         raise ValueError(f"invocation directory must be physical: {current}")
     for candidate in (current, *current.parents):
         git = candidate / ".git"
@@ -386,7 +370,7 @@ def _physical_project(cwd: Path) -> Path:
                     )
                 project.relative_to(umbrella)
                 modules = (umbrella / ".git" / "modules").resolve(strict=True)
-                if _symlink_component(git_directory) is not None:
+                if symlink_component(git_directory) is not None:
                     raise ValueError(
                         f"submodule Git directory traverses symlink: {git_directory}"
                     )
@@ -406,9 +390,9 @@ def _confined(project: Path, raw: str) -> Path:
     relative = Path(raw)
     if relative.is_absolute() or relative == Path(".") or ".." in relative.parts:
         raise ValueError(f"project projection path escapes repository: {raw}")
-    target = _absolute(project / relative)
+    target = absolute_path(project / relative)
     target.relative_to(project)
-    symlink = _symlink_component(target)
+    symlink = symlink_component(target)
     if symlink is not None:
         raise ValueError(f"projection path symlink forbidden: {symlink}")
     return target
@@ -440,7 +424,7 @@ def _local_link(target: str) -> str | None:
     return raw.split("#", 1)[0].split("?", 1)[0]
 
 
-def _validate_source_portability(source: Path) -> None:
+def _validate_source_portability(source: Path, activation: str | None) -> None:
     Catalog.physical_tree_contract(source)
     files = (
         (source,)
@@ -451,6 +435,8 @@ def _validate_source_portability(source: Path) -> None:
         if path.suffix.lower() not in _TEXT_SUFFIXES:
             continue
         text = path.read_text(encoding="utf-8")
+        if activation == "opt-in":
+            continue
         if NON_PORTABLE_PROJECT_REFERENCE.search(text):
             raise ValueError(
                 f"project source contains a non-portable reference: {path}"
@@ -463,7 +449,7 @@ def _validate_source_portability(source: Path) -> None:
                 continue
             if source.is_file():
                 raise ValueError(f"rendered source contains a relative link: {path}")
-            candidate = _absolute(path.parent / target)
+            candidate = absolute_path(path.parent / target)
             candidate.relative_to(source)
 
 
@@ -649,7 +635,7 @@ class Projector:
         seen_rule_ids: set[str] = set()
         for idx, raw_rule in enumerate(rules):
             rule_label = f"{label} detection_rules[{idx}]"
-            rule = _mapping(raw_rule, rule_label)
+            rule = cast_mapping(raw_rule, rule_label)
             rule_id = rule.get("id")
             if (
                 not isinstance(rule_id, str)
@@ -678,7 +664,7 @@ class Projector:
             if not isinstance(raw_conds, list) or not raw_conds:
                 raise TypeError(f"{rule_label} when.{op} must be a non-empty array")
             conds = [
-                _mapping(c, f"{rule_label} when.{op}[{i}]")
+                cast_mapping(c, f"{rule_label} when.{op}[{i}]")
                 for i, c in enumerate(raw_conds)
             ]
             # Validate each condition shape before evaluation
@@ -718,7 +704,7 @@ class Projector:
         if authorization.payload is None:
             return None
         path = authorization.path
-        payload = _mapping(json.loads(authorization.payload), str(path))
+        payload = cast_mapping(json.loads(authorization.payload), str(path))
         version = payload.get("version")
         if version not in (1, 2):
             raise ValueError(f"projection selection version must be 1 or 2: {path}")
@@ -727,7 +713,7 @@ class Projector:
             if version == 2 and "detection_rules" in payload
             else _SELECTION_FIELDS_V1
         )
-        _exact(payload, allowed, str(path))
+        require_exact_fields(payload, allowed, str(path))
         agents = _strings(payload["agents"], f"{path}: agents")
         opt_ins = _strings(payload["opt_ins"], f"{path}: opt_ins")
         selected_tags: set[str] = set(
@@ -766,17 +752,17 @@ class Projector:
         if pyproject.is_symlink():
             raise ValueError(f"dependency manifest symlink forbidden: {pyproject}")
         if pyproject.is_file():
-            loaded = _mapping(
+            loaded = cast_mapping(
                 tomllib.loads(pyproject.read_text(encoding="utf-8")), str(pyproject)
             )
 
             if "project" in loaded:
-                project_table = _mapping(loaded["project"], f"{pyproject}: project")
+                project_table = cast_mapping(loaded["project"], f"{pyproject}: project")
                 add_requirements(
                     project_table.get("dependencies", []),
                     f"{pyproject}: project.dependencies",
                 )
-                optional = _mapping(
+                optional = cast_mapping(
                     project_table.get("optional-dependencies", {}),
                     f"{pyproject}: project.optional-dependencies",
                 )
@@ -785,7 +771,7 @@ class Projector:
                         raw,
                         f"{pyproject}: project.optional-dependencies.{optional_name}",
                     )
-            groups = _mapping(
+            groups = cast_mapping(
                 loaded.get("dependency-groups", {}),
                 f"{pyproject}: dependency-groups",
             )
@@ -794,10 +780,10 @@ class Projector:
                     raw,
                     f"{pyproject}: dependency-groups.{dependency_group_name}",
                 )
-            tool = _mapping(loaded.get("tool", {}), f"{pyproject}: tool")
+            tool = cast_mapping(loaded.get("tool", {}), f"{pyproject}: tool")
             if "poetry" in tool:
-                poetry = _mapping(tool["poetry"], f"{pyproject}: tool.poetry")
-                direct = _mapping(
+                poetry = cast_mapping(tool["poetry"], f"{pyproject}: tool.poetry")
+                direct = cast_mapping(
                     poetry.get("dependencies", {}),
                     f"{pyproject}: tool.poetry.dependencies",
                 )
@@ -806,15 +792,15 @@ class Projector:
                     for name in direct
                     if name.lower() != "python"
                 )
-                poetry_groups = _mapping(
+                poetry_groups = cast_mapping(
                     poetry.get("group", {}), f"{pyproject}: tool.poetry.group"
                 )
                 for group_name, raw_group in poetry_groups.items():
-                    poetry_group = _mapping(
+                    poetry_group = cast_mapping(
                         raw_group,
                         f"{pyproject}: tool.poetry.group.{group_name}",
                     )
-                    group_dependencies = _mapping(
+                    group_dependencies = cast_mapping(
                         poetry_group.get("dependencies", {}),
                         f"{pyproject}: tool.poetry.group.{group_name}.dependencies",
                     )
@@ -825,11 +811,11 @@ class Projector:
         if package_path.is_symlink():
             raise ValueError(f"dependency manifest symlink forbidden: {package_path}")
         if package_path.is_file():
-            package = _mapping(
+            package = cast_mapping(
                 json.loads(package_path.read_text(encoding="utf-8")), str(package_path)
             )
             for field in ("dependencies", "devDependencies", "peerDependencies"):
-                dependencies = _mapping(
+                dependencies = cast_mapping(
                     package.get(field, {}), f"{package_path}: {field}"
                 )
                 names.update(name.lower() for name in dependencies)
@@ -837,12 +823,12 @@ class Projector:
         if pubspec_path.is_symlink():
             raise ValueError(f"dependency manifest symlink forbidden: {pubspec_path}")
         if pubspec_path.is_file():
-            pubspec = _mapping(
+            pubspec = cast_mapping(
                 yaml.safe_load(pubspec_path.read_text(encoding="utf-8")),
                 str(pubspec_path),
             )
             for field in ("dependencies", "dev_dependencies"):
-                dependencies = _mapping(
+                dependencies = cast_mapping(
                     pubspec.get(field, {}), f"{pubspec_path}: {field}"
                 )
                 names.update(name.lower() for name in dependencies)
@@ -894,7 +880,7 @@ class Projector:
             for candidate in sorted(project.rglob(f"*{suffix}")):
                 if self._is_managed_evidence(project, candidate):
                     continue
-                symlink = _symlink_component(candidate)
+                symlink = symlink_component(candidate)
                 if symlink is not None:
                     raise ValueError(
                         f"project detector evidence symlink forbidden: {symlink}"
@@ -906,7 +892,7 @@ class Projector:
             for candidate in sorted(project.glob(value)):
                 if self._is_managed_evidence(project, candidate):
                     continue
-                symlink = _symlink_component(candidate)
+                symlink = symlink_component(candidate)
                 if symlink is not None:
                     raise ValueError(
                         f"project detector evidence symlink forbidden: {symlink}"
@@ -928,7 +914,7 @@ class Projector:
         conditional = tuple(
             record
             for record in records
-            if record.category.conditional and record.route == "project"
+            if record.category.conditional and "project" in record.routes
         )
         known_opt_ins = {
             detector.split(":", 2)[2]
@@ -982,7 +968,7 @@ class Projector:
         by_name = {record.name: record for record in records}
         for name in sorted(activated):
             record = by_name[name]
-            _validate_source_portability(record.directory)
+            _validate_source_portability(record.directory, record.activation)
             sources.append(
                 ProjectionSource(
                     name,
@@ -1077,7 +1063,7 @@ class Projector:
             record
             for record in (*self.catalog.records(), *local_records)
             if record.category is SkillCategory.PROJECT_WIDE
-            or (record.category.conditional and record.route == "project")
+            or (record.category.conditional and "project" in record.routes)
         )
         local_skill_names = frozenset(record.name for record in local_records)
         dependencies = (
@@ -1269,6 +1255,46 @@ class Projector:
                             )
                         by_name[source.name] = source
 
+        project_skill_keys = {
+            key: bucket
+            for key, bucket in grouped.items()
+            if key[1] is ProjectionContext.PROJECT
+            and bucket["surface"] is ProjectionSurface.SKILLS
+        }
+        if project_skill_keys:
+            provider_order = {
+                provider.value: index for index, provider in enumerate(AgentProvider)
+            }
+            primary_key = min(
+                project_skill_keys,
+                key=lambda key: (
+                    -len(cast(set[str], project_skill_keys[key]["providers"])),
+                    min(
+                        provider_order[name]
+                        for name in cast(set[str], project_skill_keys[key]["providers"])
+                    ),
+                ),
+            )
+            primary_root = primary_key[0]
+            primary_sources = cast(
+                dict[str, ProjectionSource],
+                project_skill_keys[primary_key]["sources"],
+            )
+            for key, bucket in project_skill_keys.items():
+                if key == primary_key:
+                    continue
+                alias_root = key[0]
+                sources = cast(dict[str, ProjectionSource], bucket["sources"])
+                if frozenset(sources) != frozenset(primary_sources):
+                    raise ValueError(
+                        f"project skill surfaces diverge: {alias_root}, {primary_root}"
+                    )
+                aliased: dict[str, ProjectionSource] = {}
+                for name, source in sorted(sources.items()):
+                    link = os.path.relpath(primary_root / name, alias_root)
+                    aliased[name] = replace(source, link_target=link)
+                bucket["sources"] = aliased
+
         plans = tuple(
             ProjectionPlan(
                 cast(Path, bucket["boundary"]),
@@ -1328,13 +1354,23 @@ class Projector:
             return None
         if path.is_symlink() or not path.is_file():
             raise ValueError(f"projection manifest must be a physical file: {path}")
-        payload = _mapping(json.loads(path.read_text(encoding="utf-8")), str(path))
-        _exact(payload, _MANIFEST_FIELDS, str(path))
+        payload = cast_mapping(json.loads(path.read_text(encoding="utf-8")), str(path))
+        require_exact_fields(payload, _MANIFEST_FIELDS, str(path))
+        version = payload["version"]
         if (
-            payload["version"] != self.config.projection_manifest_version
+            version
+            not in (
+                self.config.projection_manifest_version,
+                _PRIOR_PROJECTION_MANIFEST_VERSION,
+            )
             or payload["owner"] != "agents-governance"
         ):
             raise ValueError(f"projection manifest owner/version is invalid: {path}")
+        entry_fields = (
+            _ENTRY_FIELDS
+            if version == self.config.projection_manifest_version
+            else _ENTRY_FIELDS_V5
+        )
         if payload["context"] not in {context.value for context in ProjectionContext}:
             raise ValueError(f"projection manifest context is invalid: {path}")
         _strings(payload["providers"], f"{path}: providers")
@@ -1354,22 +1390,22 @@ class Projector:
             raise ValueError(
                 f"projection manifest destination must be project-relative: {path}"
             )
-        selection = _mapping(payload["selection"], f"{path}: selection")
-        _exact(
+        selection = cast_mapping(payload["selection"], f"{path}: selection")
+        require_exact_fields(
             selection,
             frozenset({"agents", "opt_ins", "selected_tags"}),
             f"{path}: selection",
         )
         for field in ("agents", "opt_ins", "selected_tags"):
             _strings(selection[field], f"{path}: selection.{field}")
-        managed = _mapping(payload["managed"], f"{path}: managed")
+        managed = cast_mapping(payload["managed"], f"{path}: managed")
         for name, raw in managed.items():
             if Path(name).name != name or not name:
                 raise ValueError(
                     f"projection manifest managed name is invalid: {name!r}"
                 )
-            entry = _mapping(raw, f"{path}: managed.{name}")
-            _exact(entry, _ENTRY_FIELDS, f"{path}: managed.{name}")
+            entry = cast_mapping(raw, f"{path}: managed.{name}")
+            require_exact_fields(entry, entry_fields, f"{path}: managed.{name}")
             if entry["adapter_version"] != 1 or entry["destination"] != name:
                 raise ValueError(
                     f"projection manifest entry identity is invalid: {name}"
@@ -1380,6 +1416,17 @@ class Projector:
                 if not isinstance(entry[field], str) or not entry[field]:
                     raise ValueError(
                         f"projection manifest entry {field} is invalid: {name}"
+                    )
+            link_target = entry.get("link_target")
+            if link_target is not None:
+                if not isinstance(link_target, str) or not link_target:
+                    raise ValueError(
+                        f"projection manifest entry link_target is invalid: {name}"
+                    )
+                portable = PurePosixPath(link_target)
+                if portable.is_absolute() or "\\" in link_target or not portable.parts:
+                    raise ValueError(
+                        f"projection manifest entry link_target is invalid: {name}"
                     )
             for field in ("physical_digest", "source_digest"):
                 digest = entry[field]
@@ -1398,13 +1445,18 @@ class Projector:
 
     def _state(self, plan: ProjectionPlan) -> _TargetState:
         root = plan.root
-        if _symlink_component(root) is not None:
+        if symlink_component(root) is not None:
             raise ValueError(f"projection path symlink forbidden: {root}")
         if not root.exists():
             return _TargetState(plan, {}, None, True)
         if not root.is_dir():
             raise ValueError(f"projection destination is not a directory: {root}")
-        snapshot = _tree_snapshot(root)
+        links = {
+            source.name: source.link_target
+            for source in plan.sources
+            if source.link_target is not None
+        }
+        snapshot = _tree_snapshot(root, links)
         payload = self._manifest(root)
         desired = self._manifest_payload(plan)
         previous: dict[str, dict[str, object]] = {}
@@ -1416,7 +1468,6 @@ class Projector:
                 "owner",
                 "project",
                 "surface",
-                "version",
             ):
                 if payload[field] != desired[field]:
                     raise ValueError(
@@ -1432,6 +1483,21 @@ class Projector:
             metadata = previous.get(name)
             if not destination.exists() and not destination.is_symlink():
                 drift = True
+                continue
+            if source.link_target is not None:
+                if destination.exists() and not destination.is_symlink():
+                    raise ValueError(
+                        "unadjudicated projection divergence: "
+                        f"destination={destination}; proposed_source={source.source}; "
+                        f"source_type={source.source_type}; "
+                        f"proposed_origin={source.origin}; "
+                        "current_type=physical; "
+                        f"proposed_link_target={source.link_target}; "
+                        "current_owner=unproven; disposition=preserve current object; "
+                        "operator decision required before replacement"
+                    )
+                if metadata is None or source.metadata() != metadata:
+                    drift = True
                 continue
             if metadata is None:
                 if (
@@ -1478,6 +1544,10 @@ class Projector:
                 continue
             destination = root / name
             if destination.exists() or destination.is_symlink():
+                if destination.is_symlink():
+                    raise ValueError(
+                        f"stale managed projection was modified: {destination}"
+                    )
                 logical = self.catalog.digest_tree(destination)
                 physical = self.catalog.physical_tree_contract(destination)
                 if (
@@ -1496,11 +1566,16 @@ class Projector:
 
     def _stage(self, state: _TargetState) -> _StagedTarget:
         plan = state.plan
+        links = {
+            source.name: source.link_target
+            for source in plan.sources
+            if source.link_target is not None
+        }
         parent = plan.root.parent
         while not parent.exists():
             parent = parent.parent
         parent.relative_to(plan.project)
-        if _symlink_component(parent) is not None or not parent.is_dir():
+        if symlink_component(parent) is not None or not parent.is_dir():
             raise ValueError(f"projection staging parent must be physical: {parent}")
         stage = Path(tempfile.mkdtemp(prefix=".agents-stage.", dir=parent))
         candidate = stage / "candidate"
@@ -1509,7 +1584,7 @@ class Projector:
         def build() -> _StagedTarget:
             if plan.root.exists():
                 shutil.copytree(plan.root, candidate, symlinks=True)
-                if _tree_snapshot(candidate) != state.snapshot:
+                if _tree_snapshot(candidate, links) != state.snapshot:
                     raise RuntimeError(f"projection staging copy differs: {plan.root}")
             else:
                 candidate.mkdir()
@@ -1520,6 +1595,13 @@ class Projector:
                     _discard_owned_tree(destination)
             for source in plan.sources:
                 destination = candidate / source.name
+                if source.link_target is not None:
+                    if destination.exists() or destination.is_symlink():
+                        _discard_owned_tree(destination)
+                    destination.symlink_to(source.link_target)
+                    if os.readlink(destination) != source.link_target:
+                        raise RuntimeError(f"staged alias link differs: {destination}")
+                    continue
                 if (
                     destination.exists()
                     and not destination.is_symlink()
@@ -1561,7 +1643,7 @@ class Projector:
                 stage,
                 candidate,
                 backup,
-                _tree_snapshot(candidate),
+                _tree_snapshot(candidate, links),
             )
 
         return run_with_cleanup(build, lambda: _discard_owned_tree(stage))
@@ -1577,7 +1659,7 @@ class Projector:
             cursor = cursor.parent
         if cursor != project and project not in cursor.parents:
             raise ValueError(f"projection parent escapes project: {parent}")
-        symlink = _symlink_component(cursor)
+        symlink = symlink_component(cursor)
         if symlink is not None or not cursor.is_dir():
             raise ValueError(f"projection parent is not physical: {cursor}")
         for directory in reversed(missing):
@@ -1585,8 +1667,16 @@ class Projector:
             staged.created_parents = (*staged.created_parents, directory)
 
     def _publish(self, staged: _StagedTarget) -> None:
-        root = staged.state.plan.root
-        current = _tree_snapshot(root) if root.exists() or root.is_symlink() else None
+        plan = staged.state.plan
+        links = {
+            source.name: source.link_target
+            for source in plan.sources
+            if source.link_target is not None
+        }
+        root = plan.root
+        current = (
+            _tree_snapshot(root, links) if root.exists() or root.is_symlink() else None
+        )
         if current != staged.state.snapshot:
             raise RuntimeError(f"projection changed after preflight: {root}")
         self._create_parent(staged)
@@ -1602,17 +1692,23 @@ class Projector:
             path.rmdir()
 
     def _rollback(self, staged: _StagedTarget) -> None:
-        root = staged.state.plan.root
+        plan = staged.state.plan
+        root = plan.root
+        links = {
+            source.name: source.link_target
+            for source in plan.sources
+            if source.link_target is not None
+        }
         if staged.installed:
             if not root.exists() and not root.is_symlink():
                 raise RuntimeError(
                     f"installed projection disappeared before rollback: {root}"
                 )
-            if _tree_snapshot(root) != staged.candidate_snapshot:
+            if _tree_snapshot(root, links) != staged.candidate_snapshot:
                 raise RuntimeError(
                     f"installed projection changed before rollback: {root}"
                 )
-            remove_physical(root)
+            _discard_owned_tree(root)
             staged.installed = False
         if staged.backup.exists():
             staged.backup.replace(root)
@@ -1624,6 +1720,8 @@ class Projector:
         project = self.project_root()
         authorization = load_project_authorization(project)
         for plan in self._plans(authorization):
+            if not plan.root.exists():
+                continue
             state = self._state(plan)
             if state.drift:
                 raise ProjectionDriftError(f"project projection differs: {plan.root}")

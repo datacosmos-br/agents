@@ -11,9 +11,8 @@ from enum import StrEnum
 from pathlib import Path, PurePosixPath
 from typing import Any, cast
 
-import yaml
-
 from .approvals import APPROVAL_NAMESPACES, resolve_approval_tags
+from .frontmatter import cast_mapping, parse_frontmatter, require_exact_fields
 
 NON_PORTABLE_PROJECT_REFERENCE = re.compile(
     r"(?:"
@@ -105,7 +104,7 @@ class SkillRecord:
     usage: str
     updates: str
     provenance: str
-    route: str | None
+    routes: tuple[str, ...]
     activation: str | None
     subjects: tuple[str, ...]
     detectors: tuple[str, ...]
@@ -124,22 +123,6 @@ class SkillPolicy:
     distributions: tuple[str, ...]
     category: SkillCategory
     tags: tuple[str, ...]
-
-
-def _mapping(value: object, context: str) -> dict[str, object]:
-    if not isinstance(value, dict) or not all(isinstance(key, str) for key in value):
-        raise TypeError(f"{context} must be an object with string keys")
-    return cast(dict[str, object], value)
-
-
-def _exact_fields(
-    value: dict[str, object], expected: frozenset[str], context: str
-) -> None:
-    if frozenset(value) != expected:
-        raise ValueError(
-            f"{context} fields must equal {', '.join(sorted(expected))}; "
-            f"got {', '.join(sorted(value)) or 'none'}"
-        )
 
 
 class Catalog:
@@ -164,7 +147,12 @@ class Catalog:
         catalog.config = authority.config
         catalog.owner = "project"
         catalog.project_local = True
-        catalog._records = catalog._discover(require_inventory=False)
+        if catalog.root == authority.root:
+            # The authorized project is the central source itself: no skill of
+            # its tree is project-local, so the local population is empty.
+            catalog._records = ()
+        else:
+            catalog._records = catalog._discover(require_inventory=False)
         catalog._directories = tuple(record.directory for record in catalog._records)
         for record in catalog._records:
             resolve_approval_tags(
@@ -180,7 +168,7 @@ class Catalog:
                     f"{record.directory / 'SKILL.md'}: project-local agent-wide "
                     "skill is forbidden"
                 )
-            if record.category.conditional and record.route != "project":
+            if record.category.conditional and "project" not in record.routes:
                 raise ValueError(
                     f"{record.directory / 'SKILL.md'}: project-local conditional "
                     "skill requires route:project"
@@ -191,12 +179,12 @@ class Catalog:
     def _load_policy(path: Path) -> dict[str, object]:
         if path.is_symlink() or not path.is_file():
             raise ValueError(f"skills policy must be a physical file: {path}")
-        loaded = _mapping(json.loads(path.read_text(encoding="utf-8")), str(path))
-        _exact_fields(loaded, frozenset({"version", "budgets"}), str(path))
+        loaded = cast_mapping(json.loads(path.read_text(encoding="utf-8")), str(path))
+        require_exact_fields(loaded, frozenset({"version", "budgets"}), str(path))
         if loaded["version"] != 2:
             raise ValueError(f"skills policy version must be 2: {path}")
-        budgets = _mapping(loaded["budgets"], f"{path}: budgets")
-        _exact_fields(budgets, _BUDGET_FIELDS, f"{path}: budgets")
+        budgets = cast_mapping(loaded["budgets"], f"{path}: budgets")
+        require_exact_fields(budgets, _BUDGET_FIELDS, f"{path}: budgets")
         for key in sorted(_BUDGET_FIELDS):
             value = budgets[key]
             if type(value) is not int or value <= 0:
@@ -205,13 +193,7 @@ class Catalog:
 
     @staticmethod
     def _frontmatter(path: Path) -> dict[str, object]:
-        text = path.read_text(encoding="utf-8")
-        if not text.startswith("---\n"):
-            raise ValueError(f"{path}: missing YAML frontmatter")
-        marker = text.find("\n---\n", 4)
-        if marker < 0:
-            raise ValueError(f"{path}: unterminated YAML frontmatter")
-        frontmatter = _mapping(yaml.safe_load(text[4:marker]), f"{path}: frontmatter")
+        frontmatter, _ = parse_frontmatter(path)
         unknown = frozenset(frontmatter) - _FRONTMATTER_FIELDS
         if unknown:
             raise ValueError(
@@ -281,7 +263,7 @@ class Catalog:
             raise ValueError(f"{skill_file}: declared name {name!r} != {slug!r}")
         if "metadata" not in frontmatter:
             raise ValueError(f"{skill_file}: metadata is required")
-        metadata = _mapping(frontmatter["metadata"], f"{skill_file}: metadata")
+        metadata = cast_mapping(frontmatter["metadata"], f"{skill_file}: metadata")
         if "aihub.tags" not in metadata:
             raise ValueError(f"{skill_file}: metadata.aihub.tags is required")
         raw_tags = metadata["aihub.tags"]
@@ -325,10 +307,16 @@ class Catalog:
         subjects = tuple(
             tag.split(":", 1)[1] for tag in tags if tag.startswith(f"{category.value}:")
         )
-        route: str | None = None
+        routes: tuple[str, ...] = ()
         activation: str | None = None
         if category.conditional:
-            route = self._one_tag(skill_file, tags, "route", _ROUTE_TAGS)
+            if not route_tags or any(tag not in _ROUTE_TAGS for tag in route_tags):
+                raise ValueError(
+                    f"{skill_file}: conditional skill requires at least one of "
+                    f"{', '.join(sorted(_ROUTE_TAGS))}; got "
+                    f"{', '.join(route_tags) or 'none'}"
+                )
+            routes = tuple(tag.split(":", 1)[1] for tag in route_tags)
             activation = self._one_tag(skill_file, tags, "activation", _ACTIVATION_TAGS)
             if not subjects:
                 raise ValueError(
@@ -362,7 +350,7 @@ class Catalog:
             usage,
             updates,
             provenance,
-            route,
+            routes,
             activation,
             subjects,
             detectors,
@@ -425,12 +413,12 @@ class Catalog:
             return ("personal",)
         if record.category is SkillCategory.PROJECT_WIDE:
             return ("project-generic",)
-        route = "project" if record.route == "project" else "agent"
         capabilities = tuple(
             f"{route}-capability:{record.category.value}:{subject}"
+            for route in record.routes
             for subject in record.subjects
         )
-        return ("personal", *capabilities) if route == "agent" else capabilities
+        return ("personal", *capabilities) if "agent" in record.routes else capabilities
 
     def _policy(self, record: SkillRecord) -> SkillPolicy:
         budgets = cast(dict[str, int], self.config["budgets"])

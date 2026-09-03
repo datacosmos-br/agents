@@ -448,8 +448,11 @@ def run_live_corpus(
 
     repository = root.resolve(strict=True)
     results = repository / "results"
-    if results.is_symlink() or not results.is_dir():
+    if results.is_symlink() or (results.exists() and not results.is_dir()):
         raise ValueError(f"Waza results root must be a physical directory: {results}")
+    created_results = not results.exists()
+    if created_results:
+        results.mkdir(mode=0o700)
     latest = results / "latest"
     if latest.is_symlink() or (latest.exists() and not latest.is_dir()):
         raise ValueError(f"Waza latest result must be a physical directory: {latest}")
@@ -476,6 +479,8 @@ def run_live_corpus(
             actions.append(partial(remove_physical, stage))
         if created_latest and latest.exists():
             actions.append(latest.rmdir)
+        if created_results and results.exists():
+            actions.append(results.rmdir)
         run_cleanup(tuple(actions))
 
     def operation() -> Path:

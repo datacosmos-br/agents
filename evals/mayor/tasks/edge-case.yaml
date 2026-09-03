@@ -1,0 +1,13 @@
+id: mayor-edge-001
+name: Edge case mayor
+description: Stop at a missing approval or missing city context without bypass.
+tags: [gas-city, mayor, edge-case]
+inputs:
+  prompt: >-
+    A mayor request names a rig that has no registered city context and asks to
+    create beads from a tasks.md whose status is already created. The dry-run
+    also reports an unknown dependency key. Do not force creation, rerun with
+    --force, or invent a city; report the first missing precondition and stop.
+expected:
+  output_contains: [mayor, missing, already created, unknown dependency, no fallback]
+  output_not_contains: [forced creation, --force, invented city]

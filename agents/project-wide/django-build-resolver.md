@@ -155,14 +155,18 @@ python -c "import <app>; print(<app>.__file__)"
 # Bad - top-level causes circular import
 from apps.users.models import User
 
+
 # Good - import inside function
 def get_user(pk):
     from apps.users.models import User
+
     return User.objects.get(pk=pk)
+
 
 # Good - use apps registry
 from django.apps import apps
-User = apps.get_model('users', 'User')
+
+User = apps.get_model("users", "User")
 ```
 
 ### Database Connection Errors

@@ -14,6 +14,7 @@ from typing import Never, cast
 import yaml
 
 from .catalog import NON_PORTABLE_PROJECT_REFERENCE
+from .frontmatter import parse_frontmatter
 
 _DISTRIBUTIONS = frozenset({"agent-wide", "project-wide"})
 _ACTIVATIONS = frozenset(
@@ -50,6 +51,7 @@ class AgentProvider(StrEnum):
     GEMINI = "gemini"
     OPENCODE = "opencode"
     ANTIGRAVITY = "antigravity"
+    POOL = "pool"
 
 
 class AgentContext(StrEnum):
@@ -95,20 +97,11 @@ class AgentRenderError(ValueError):
 
 
 def _frontmatter(path: Path) -> tuple[dict[str, object], str]:
-    text = path.read_text(encoding="utf-8")
-    if not text.startswith("---\n"):
-        raise ValueError(f"{path}: missing YAML frontmatter")
-    marker = text.find("\n---\n", 4)
-    if marker < 0:
-        raise ValueError(f"{path}: unterminated YAML frontmatter")
-    loaded = yaml.safe_load(text[4:marker])
-    if not isinstance(loaded, dict) or not all(isinstance(key, str) for key in loaded):
-        raise TypeError(f"{path}: frontmatter must be a string-keyed mapping")
-    metadata = cast(dict[str, object], loaded)
+    metadata, instructions = parse_frontmatter(path)
     unknown = frozenset(metadata) - _TOP_LEVEL_FIELDS
     if unknown:
         raise ValueError(f"{path}: unknown agent fields: {', '.join(sorted(unknown))}")
-    return metadata, text[marker + 5 :].removeprefix("\n")
+    return metadata, instructions
 
 
 def _tag_values(path: Path, metadata: dict[str, object]) -> tuple[str, ...]:
@@ -409,6 +402,7 @@ def render_agent(
         AgentProvider.CURSOR,
         AgentProvider.CODEX,
         AgentProvider.ANTIGRAVITY,
+        AgentProvider.POOL,
     }:
         _unsupported(
             profile,

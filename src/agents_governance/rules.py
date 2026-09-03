@@ -12,10 +12,8 @@ from pathlib import Path, PurePosixPath
 from typing import cast
 from urllib.parse import unquote, urlsplit
 
-import yaml
-from yaml.nodes import MappingNode, Node, SequenceNode
-
 from .approvals import APPROVAL_NAMESPACES, resolve_approval_tags
+from .frontmatter import parse_frontmatter
 
 _SLUG = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*\Z")
 _LINK = re.compile(r"!?\[[^\]\n]*\]\(([^)\n]+)\)")
@@ -129,46 +127,6 @@ def _validate_spec(spec: RuleSpec) -> None:
     routes = tuple(tag for tag in spec.tags if tag.startswith("route:"))
     if spec.tags and (len(routes) != 1 or routes[0] not in _ROUTES):
         raise ValueError("tagged rules require exactly one supported route tag")
-
-
-def _duplicate_key(node: Node) -> str | None:
-    if isinstance(node, MappingNode):
-        seen: set[str] = set()
-        for key_node, value_node in node.value:
-            key = str(getattr(key_node, "value", "<non-scalar>"))
-            if key in seen:
-                return key
-            seen.add(key)
-            duplicate = _duplicate_key(value_node)
-            if duplicate is not None:
-                return duplicate
-    elif isinstance(node, SequenceNode):
-        for child in node.value:
-            duplicate = _duplicate_key(child)
-            if duplicate is not None:
-                return duplicate
-    return None
-
-
-def _split_source(path: Path) -> tuple[dict[str, object] | None, str]:
-    text = path.read_text(encoding="utf-8")
-    if not text.startswith("---\n"):
-        return None, text
-    marker = text.find("\n---\n", 4)
-    if marker < 0:
-        raise ValueError(f"{path}: unterminated YAML frontmatter")
-    source = text[4:marker]
-    node = yaml.compose(source, Loader=yaml.SafeLoader)
-    loaded = yaml.safe_load(source)
-    if not isinstance(node, MappingNode) or not isinstance(loaded, dict):
-        raise TypeError(f"{path}: frontmatter must be a mapping")
-    duplicate = _duplicate_key(node)
-    if duplicate is not None:
-        raise ValueError(f"{path}: frontmatter key is duplicated: {duplicate}")
-    raw = cast(dict[object, object], loaded)
-    if not all(isinstance(key, str) for key in raw):
-        raise TypeError(f"{path}: frontmatter keys must be strings")
-    return cast(dict[str, object], raw), text[marker + 5 :].removeprefix("\n")
 
 
 def _metadata(
@@ -316,7 +274,7 @@ def audit_rule_specs(root: Path) -> tuple[RuleSpec, ...]:
                 f"case-insensitive rule identity is duplicated: {identity}"
             )
         identities.add(folded)
-        raw, body = _split_source(path)
+        raw, body = parse_frontmatter(path, required=False)
         description, globs, tags = _metadata(path, raw)
         resolve_approval_tags(repository, tags, path)
         references = _references(repository, rules, path, body)

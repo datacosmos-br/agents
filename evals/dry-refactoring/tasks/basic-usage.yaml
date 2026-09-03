@@ -1,0 +1,15 @@
+id: dry-refactoring-happy-001
+name: Happy path dry-refactoring
+description: Eliminate one reported clone through a shared extraction.
+tags: [dry-refactoring, jscpd, clones, copy-paste, duplication, extract, function, refactoring, workflow, happy-path]
+inputs:
+  prompt: >-
+    Run jscpd on a source tree whose strict baseline floor is eight lines and
+    that reports one eight-line clone between two modules. Read both fragments,
+    prove they are semantically identical, extract one shared function with a
+    descriptive name, update both call sites and any other usages, re-run the
+    identical baseline configuration to prove zero new clones, and run the
+    project tests before reporting exact commands and exit codes.
+expected:
+  output_contains: [jscpd, eight-line, clone, extract, shared function, call sites, re-run, zero new clones, tests, exit code]
+  output_not_contains: [clone remains, without rerunning]

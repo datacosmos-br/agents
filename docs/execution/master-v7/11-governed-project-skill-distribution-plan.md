@@ -378,6 +378,16 @@ the failing invocation and re-raises the first cause. A second unchanged sync
 must be byte-identical and add no filesystem or Git diff beyond the reviewed
 first-sync snapshot.
 
+Operator decision (2026-09-02), central propagation update: within one
+authorized physical project, the skill source set is published as one primary
+physical copy per skill — the candidate surface with the most providers,
+declaration order breaking ties — and sibling provider skill surfaces of the
+same project become relative symlinks into that primary, always resolving
+inside the same project. Personal homes remain independent physical copies.
+The retired Gas City pack runtime is no longer a skill source: Gas City skills
+are owned by the central `skills/domain/gascity/` catalog and distributed only
+by `agentsctl sync`.
+
 ## Workspace preflight
 
 Resolve each declared physical checkout from the operator's declared workspace contract, and

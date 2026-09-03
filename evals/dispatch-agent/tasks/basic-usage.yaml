@@ -12,6 +12,10 @@ inputs:
     index with the coordinator, and declare how the evidence is integrated before
     any implementation. Do not invent a tracker, worktree, model, provider, or
     additional agent.
+    Then draft one separate implementation handoff for a single sonnet worker in
+    /repo/worktrees/feature editing only src/payment.py and tests/test_payment.py.
+    It must run env -C /repo/worktrees/feature make check FILE=tests/test_payment.py
+    and make test FILE=tests/test_payment.py, and carry the allowed shell forms.
   files:
   - path: parallel-roster.json
 expected:
@@ -25,6 +29,7 @@ expected:
   - confidence
   - integration
   - coordinator
+  - env -C /repo/worktrees/feature make check FILE=tests/test_payment.py
   output_not_contains:
   - substitute tracker
   - separate worktree

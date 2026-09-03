@@ -22,6 +22,7 @@ from .governance_config import (
     load_governance_config,
 )
 from .hook_projection import HookProjector
+from .law_surface import LawSurface
 from .native_evals import evaluate_native
 from .projection import Projector
 from .projection_authorization import load_project_authorization
@@ -145,7 +146,7 @@ def doctor(root: Path) -> None:
 
 def check(root: Path) -> None:
     inventory = _inventory(root)
-    load_projection_config(root)
+    projection = load_projection_config(root)
     model = _model(root)
     validate(
         inventory.catalog,
@@ -154,6 +155,13 @@ def check(root: Path) -> None:
         inventory.agents,
         inventory.rules,
     )
+    Projector(
+        inventory.catalog,
+        projection,
+        inventory.commands,
+        inventory.agents,
+        inventory.rules,
+    ).check()
     print(
         "check: "
         f"{len(inventory.catalog.skill_dirs())} skills, "
@@ -180,6 +188,8 @@ def sync(root: Path) -> None:
         projection,
         inventory.commands,
         inventory.rules,
+        LawSurface.load(root),
+        central_root=catalog.root if project == catalog.root else None,
     )
     run_atomic_publications(
         (

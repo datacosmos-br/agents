@@ -6,13 +6,10 @@ metadata:
 ---
 ## Verification (mandatory)
 
-Before acting on any bead, run the four-source cross-check defined in
-`rules/coordination/beads-verification.md` (project law): the registered state
-records, git history, measured reality, and the intent of the most recent
-code. Declare the check and attach evidence — command, working directory,
-exit code, decisive output — before closing. A bead whose premise the
-current code retired is closed obsolete with evidence, never executed as
-written.
+Before bead effects, apply the four-source cross-check in
+`rules/coordination/beads-verification.md`. Record command, working directory,
+exit code, and decisive output. Close a retired premise as obsolete with
+evidence; never execute it.
 
 
 
@@ -31,6 +28,8 @@ no workspace or runtime effect. A missing or conflicting declaration is the
 first cause; do not invent a path, use a loose clone, worktree, temporary or
 cross-repository location, translate another runtime's command, or substitute a
 provider.
+
+Before effects read `execution modes`; never mix modes or use `make work`.
 
 After explicit restoration, validate the complete placement graph, current
 owner interface, authority, and non-derivable current-process credentials before

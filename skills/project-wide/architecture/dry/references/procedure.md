@@ -5,7 +5,9 @@
 Resolve public behavior, owner and caller graph, generators/projections,
 dependencies, runtime, gates, and a green baseline. Confirm duplication by
 semantics, responsibility, or measured repeated work; size and textual similarity
-are insufficient. Missing baseline or ownership stops before edits.
+are insufficient. A jscpd report is candidate evidence only when its threshold,
+mode, ignores, formats, and baseline identity are fixed by the selected project
+and stated in the proof. Missing baseline or ownership stops before edits.
 
 An index, call graph, LSP result, or static dead-code report is candidate
 evidence, never proof that a symbol has no consumer. Before removal or rename,
@@ -17,9 +19,10 @@ consumers. A valid unresolved reference blocks the change. Edit a generated
 owner or template and regenerate; never patch its projection.
 
 Measure the same scoped files before and after with the project's metrics owner,
-or `tokei` only when already available and required. Performance claims require
-the same representative profile, query count, trace, or benchmark before and
-after; fewer lines do not prove speed.
+or `tokei` only when already available and required. For detector-driven work,
+rerun the identical baseline configuration before and after and require zero new
+clones. Performance claims require the same representative profile, query count,
+trace, or benchmark before and after; fewer lines do not prove speed.
 
 ## Remediation
 

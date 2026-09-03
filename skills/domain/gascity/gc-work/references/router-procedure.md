@@ -10,6 +10,28 @@ Each rig has its own `.beads/` database with its own ID prefix (e.g. `fe-` for f
 
 Use `gc rig list` to see rig names, paths, and prefixes.
 
+## Shared execution graph
+
+Every managed execution has one current coordination root in the city store.
+Search the city store before creation. For every rig that performs a slice,
+create or reuse a bead in that rig and link it with metadata
+`gc.shared_epic=<root>` and `gc.shared_child=<root-child>`. The city root owns
+cross-rig scope, dependency order, decisions and integration; the rig bead owns
+branch, exact commit, PR, gates and repository-local next action.
+
+At claim, every material Git or gate change, handoff and close, reread both
+records and apply the four-source cross-check. Update the local evidence and the
+shared child's bounded status in the same checkpoint. If either side disagrees,
+stop repository effects and reconcile the canonical records. Use `gc mail` only
+to notify collaborators of the bead update; never place unique status or a
+decision solely in mail.
+
+When another rig produces code or generated output consumed by this slice,
+record its integrated SHA as an explicit dependency transition. Adopt the
+producer through the declared integration lane, revalidate the combined result,
+and publish consumer evidence back to the shared graph. Do not implement a
+parallel owner merely because the producer is pending.
+
 ## Creating work
 
 **Use `--rig` to create beads in the right database.** If the work will be dispatched to a rig-scoped agent, create the bead in that agent's rig:

@@ -25,6 +25,13 @@ Each handoff states the objective, owner, readable and writable scope, exclusion
 current branch and repository context, accepted concurrent work, prohibited
 behavior, required evidence, focused gates, integration gates, and stop conditions.
 
+Include the allowed lane command forms and selected gates in the handoff body.
+Use `env -C <worktree> make <verb>` for make targets, `git -C` for repository
+state, and `bun run --cwd` for package scripts. Define blocked behavior as
+reporting the exact denial and options after 15 minutes with no written change
+or green gate, never silently idling, switching lane, editing an occupied
+checkout, or retrying a red gate.
+
 Require the worker to reread mutable owners before edits, preserve compatible
 current work, fix defects forward, and return changed paths, exact commands, exit
 codes, decisive output, limitations, and risk. A worker does not gain authority to
