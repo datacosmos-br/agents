@@ -12,6 +12,7 @@ from typing import cast
 from .catalog import Catalog
 from .commands import CommandSpec
 from .rules import RuleActivation, RuleSpec
+from .typed_values import cast_mapping
 
 _OWNER = re.compile(r"(rule|skill|command|document):([A-Za-z0-9][A-Za-z0-9./_-]*)\Z")
 _ROOT_FIELDS = frozenset({"bootstrap", "guarantees", "version"})
@@ -95,12 +96,6 @@ class GovernanceConfig:
     guarantees: MappingProxyType[str, tuple[str, ...]]
 
 
-def _mapping(value: object, label: str) -> dict[str, object]:
-    if not isinstance(value, dict) or not all(isinstance(key, str) for key in value):
-        raise TypeError(f"{label} must be an object with string keys")
-    return cast(dict[str, object], value)
-
-
 def _exact_fields(
     value: dict[str, object], expected: frozenset[str], label: str
 ) -> None:
@@ -129,13 +124,15 @@ def load_governance_config(root: Path) -> GovernanceConfig:
     path = root / "config" / "governance.json"
     if path.is_symlink() or not path.is_file():
         raise ValueError("governance config must be a physical regular file")
-    value = _mapping(json.loads(path.read_text(encoding="utf-8")), "governance config")
+    value = cast_mapping(
+        json.loads(path.read_text(encoding="utf-8")), "governance config"
+    )
     _exact_fields(value, _ROOT_FIELDS, "governance config")
     if value["version"] != 2:
         raise ValueError("governance config version must equal 2")
-    bootstrap = _mapping(value["bootstrap"], "governance bootstrap")
+    bootstrap = cast_mapping(value["bootstrap"], "governance bootstrap")
     _exact_fields(bootstrap, _BOOTSTRAP_FIELDS, "governance bootstrap")
-    guarantees = _mapping(value["guarantees"], "governance guarantee map")
+    guarantees = cast_mapping(value["guarantees"], "governance guarantee map")
     if frozenset(guarantees) != _EXPECTED_GUARANTEES:
         raise ValueError("governance guarantee map must cover every guarantee exactly")
     parsed_guarantees = {

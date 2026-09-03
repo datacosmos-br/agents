@@ -62,16 +62,27 @@ def _authorize(project: Path) -> None:
     )
 
 
-def test_hook_projection_preserves_foreign_content_and_reaches_fixed_point(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
+def _hook_project(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    *,
+    authorized: bool = True,
+) -> tuple[Path, Path, Path]:
     root = Path(__file__).resolve().parents[1]
     home = tmp_path / "home"
     project = tmp_path / "project"
     home.mkdir()
     project.mkdir()
-    _authorize(project)
+    if authorized:
+        _authorize(project)
     monkeypatch.setenv("HOME", str(home))
+    return root, home, project
+
+
+def test_hook_projection_preserves_foreign_content_and_reaches_fixed_point(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    root, _home, project = _hook_project(tmp_path, monkeypatch)
     claude = project / ".claude" / "settings.json"
     claude.parent.mkdir()
     claude.write_text(
@@ -149,13 +160,7 @@ def test_hook_projection_preserves_foreign_content_and_reaches_fixed_point(
 def test_foreign_hook_command_containing_managed_path_is_preserved(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    root = Path(__file__).resolve().parents[1]
-    home = tmp_path / "home"
-    project = tmp_path / "project"
-    home.mkdir()
-    project.mkdir()
-    _authorize(project)
-    monkeypatch.setenv("HOME", str(home))
+    root, _home, project = _hook_project(tmp_path, monkeypatch)
     projector = _projector(root)
     projector.apply(project)
     settings_path = project / ".claude" / "settings.json"
@@ -182,12 +187,7 @@ def test_foreign_hook_command_containing_managed_path_is_preserved(
 def test_personal_merged_configs_preserve_existing_mode_and_default_private(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    root = Path(__file__).resolve().parents[1]
-    home = tmp_path / "home"
-    project = tmp_path / "project"
-    home.mkdir()
-    project.mkdir()
-    monkeypatch.setenv("HOME", str(home))
+    root, home, project = _hook_project(tmp_path, monkeypatch, authorized=False)
     claude = home / ".claude" / "settings.json"
     claude.parent.mkdir()
     claude.write_text('{"mcpServers": {}}', encoding="utf-8")
@@ -207,12 +207,7 @@ def test_personal_merged_configs_preserve_existing_mode_and_default_private(
 def test_existing_hook_config_is_replaced_without_unlink(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    root = Path(__file__).resolve().parents[1]
-    home = tmp_path / "home"
-    project = tmp_path / "project"
-    home.mkdir()
-    project.mkdir()
-    monkeypatch.setenv("HOME", str(home))
+    root, home, project = _hook_project(tmp_path, monkeypatch, authorized=False)
     destination = home / ".claude" / "settings.json"
     destination.parent.mkdir()
     destination.write_text("{}", encoding="utf-8")
@@ -233,13 +228,7 @@ def test_existing_hook_config_is_replaced_without_unlink(
 def test_broken_hook_symlink_created_after_preflight_is_preserved(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    root = Path(__file__).resolve().parents[1]
-    home = tmp_path / "home"
-    project = tmp_path / "project"
-    home.mkdir()
-    project.mkdir()
-    _authorize(project)
-    monkeypatch.setenv("HOME", str(home))
+    root, _home, project = _hook_project(tmp_path, monkeypatch)
     destination = project / "AGENTS.md"
     outside = project / "missing-external-target"
     original_current = HookProjector._current
@@ -265,12 +254,7 @@ def test_broken_hook_symlink_created_after_preflight_is_preserved(
 def test_absent_project_authorization_projects_personal_hooks_only(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    root = Path(__file__).resolve().parents[1]
-    home = tmp_path / "home"
-    project = tmp_path / "project"
-    home.mkdir()
-    project.mkdir()
-    monkeypatch.setenv("HOME", str(home))
+    root, home, project = _hook_project(tmp_path, monkeypatch, authorized=False)
 
     _projector(root).apply(project)
 
@@ -282,13 +266,7 @@ def test_absent_project_authorization_projects_personal_hooks_only(
 def test_generated_hook_executes_and_malformed_input_fails_loudly(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    root = Path(__file__).resolve().parents[1]
-    home = tmp_path / "home"
-    project = tmp_path / "project"
-    home.mkdir()
-    project.mkdir()
-    _authorize(project)
-    monkeypatch.setenv("HOME", str(home))
+    root, _home, project = _hook_project(tmp_path, monkeypatch)
     projector = _projector(root)
     projector.apply(project)
     settings = _json(project / ".claude" / "settings.json")
@@ -318,13 +296,7 @@ def test_generated_hook_executes_and_malformed_input_fails_loudly(
 def test_modified_managed_hook_and_instruction_region_are_rejected(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    root = Path(__file__).resolve().parents[1]
-    home = tmp_path / "home"
-    project = tmp_path / "project"
-    home.mkdir()
-    project.mkdir()
-    _authorize(project)
-    monkeypatch.setenv("HOME", str(home))
+    root, _home, project = _hook_project(tmp_path, monkeypatch)
     projector = _projector(root)
     projector.apply(project)
     script = next((project / ".codex" / "aihub-hooks").glob("*.py"))
@@ -392,13 +364,7 @@ def _projector_without_codex_prompt(root: Path) -> HookProjector:
 def test_retired_hook_event_script_is_removed_and_foreign_survives(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    root = Path(__file__).resolve().parents[1]
-    home = tmp_path / "home"
-    project = tmp_path / "project"
-    home.mkdir()
-    project.mkdir()
-    _authorize(project)
-    monkeypatch.setenv("HOME", str(home))
+    root, _home, project = _hook_project(tmp_path, monkeypatch)
     projector = _projector(root)
     projector.apply(project)
     hooks_dir = project / ".codex" / "aihub-hooks"
@@ -423,13 +389,7 @@ def test_retired_hook_event_script_is_removed_and_foreign_survives(
 def test_modified_retired_artifact_fails_loud_and_preserves_state(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    root = Path(__file__).resolve().parents[1]
-    home = tmp_path / "home"
-    project = tmp_path / "project"
-    home.mkdir()
-    project.mkdir()
-    _authorize(project)
-    monkeypatch.setenv("HOME", str(home))
+    root, _home, project = _hook_project(tmp_path, monkeypatch)
     projector = _projector(root)
     projector.apply(project)
     retired = project / ".codex" / "aihub-hooks" / "codex-userpromptsubmit.py"
@@ -446,13 +406,7 @@ def test_modified_retired_artifact_fails_loud_and_preserves_state(
 def test_config_path_change_retires_artifacts_managed_at_the_old_location(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    root = Path(__file__).resolve().parents[1]
-    home = tmp_path / "home"
-    project = tmp_path / "project"
-    home.mkdir()
-    project.mkdir()
-    _authorize(project)
-    monkeypatch.setenv("HOME", str(home))
+    root, _home, project = _hook_project(tmp_path, monkeypatch)
     projector = _projector(root)
     projector.apply(project)
     manifest_path = project / ".codex" / ".hooks.json.agents-governance.json"

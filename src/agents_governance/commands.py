@@ -11,9 +11,6 @@ from enum import StrEnum
 from pathlib import Path, PurePosixPath
 from typing import cast
 
-import yaml
-from yaml.nodes import MappingNode, Node, SequenceNode
-
 from .approvals import (
     APPROVAL_NAMESPACES,
     approval_note,
@@ -21,6 +18,7 @@ from .approvals import (
     resolve_approval_tags,
 )
 from .tokens import bpe_content
+from .yaml_source import parse_frontmatter
 
 _SLUG = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*\Z")
 _DESCRIPTION_LIMIT = 160
@@ -182,46 +180,6 @@ def _validate_spec(spec: CommandSpec) -> None:
         )
 
 
-def _duplicate_key(node: Node) -> str | None:
-    if isinstance(node, MappingNode):
-        seen: set[str] = set()
-        for key_node, value_node in node.value:
-            key = str(getattr(key_node, "value", "<non-scalar>"))
-            if key in seen:
-                return key
-            seen.add(key)
-            duplicate = _duplicate_key(value_node)
-            if duplicate is not None:
-                return duplicate
-    elif isinstance(node, SequenceNode):
-        for child in node.value:
-            duplicate = _duplicate_key(child)
-            if duplicate is not None:
-                return duplicate
-    return None
-
-
-def _frontmatter(path: Path) -> tuple[dict[str, object], str]:
-    text = path.read_text(encoding="utf-8")
-    if not text.startswith("---\n"):
-        raise ValueError(f"{path}: missing YAML frontmatter")
-    marker = text.find("\n---\n", 4)
-    if marker < 0:
-        raise ValueError(f"{path}: unterminated YAML frontmatter")
-    source = text[4:marker]
-    node = yaml.compose(source, Loader=yaml.SafeLoader)
-    loaded = yaml.safe_load(source)
-    if not isinstance(node, MappingNode) or not isinstance(loaded, dict):
-        raise TypeError(f"{path}: frontmatter must be a mapping")
-    duplicate = _duplicate_key(node)
-    if duplicate is not None:
-        raise ValueError(f"{path}: frontmatter key is duplicated: {duplicate}")
-    raw = cast(dict[object, object], loaded)
-    if not all(isinstance(key, str) for key in raw):
-        raise TypeError(f"{path}: frontmatter keys must be strings")
-    return cast(dict[str, object], raw), text[marker + 5 :].removeprefix("\n")
-
-
 def _tags(
     path: Path, raw: object
 ) -> tuple[tuple[str, ...], CommandRoute, tuple[CommandIntent, ...], CommandRisk]:
@@ -265,7 +223,7 @@ def _tags(
 
 
 def _load_command(path: Path) -> CommandSpec:
-    payload, body = _frontmatter(path)
+    payload, body = parse_frontmatter(path)
     unknown = frozenset(payload) - _TOP_LEVEL_FIELDS
     if unknown:
         raise ValueError(

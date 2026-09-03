@@ -10,6 +10,7 @@ from types import MappingProxyType
 from typing import cast
 
 from .agent_profiles import AgentProvider
+from .typed_values import cast_mapping
 
 
 class ProjectionContext(StrEnum):
@@ -119,12 +120,6 @@ _HOOK_EVENTS = frozenset(
 )
 
 
-def _mapping(value: object, label: str) -> dict[str, object]:
-    if not isinstance(value, dict) or not all(isinstance(key, str) for key in value):
-        raise TypeError(f"{label} must be an object with string keys")
-    return cast(dict[str, object], value)
-
-
 def _exact_fields(
     value: dict[str, object], expected: frozenset[str], label: str
 ) -> None:
@@ -165,7 +160,7 @@ def _cell(
     raw: object,
 ) -> ProjectionCell:
     label = f"projection cell {provider.value}/{context.value}/{surface.value}"
-    value = _mapping(raw, label)
+    value = cast_mapping(raw, label)
     if "status" not in value:
         raise ValueError(f"{label} status is required")
     raw_status = value["status"]
@@ -202,12 +197,12 @@ def _cell(
     events: MappingProxyType[str, HookEvent] | None = None
     layout: RuleLayout | None = None
     if surface is ProjectionSurface.HOOKS:
-        raw_events = _mapping(value["events"], f"{label} events")
+        raw_events = cast_mapping(value["events"], f"{label} events")
         _exact_fields(raw_events, _HOOK_EVENTS, f"{label} events")
         parsed_events: dict[str, HookEvent] = {}
         for logical_event in sorted(_HOOK_EVENTS):
             event_label = f"{label} events.{logical_event}"
-            event = _mapping(raw_events[logical_event], event_label)
+            event = cast_mapping(raw_events[logical_event], event_label)
             raw_event_status = event.get("status")
             if not isinstance(raw_event_status, str):
                 raise TypeError(f"{event_label} status must be a string")
@@ -301,11 +296,11 @@ def load_projection_config(root: Path) -> ProjectionConfig:
     if path.is_symlink() or not path.is_file():
         raise ValueError("projection config must be a physical regular file")
     payload = json.loads(path.read_text(encoding="utf-8"))
-    value = _mapping(payload, "projection config")
+    value = cast_mapping(payload, "projection config")
     _exact_fields(value, _ROOT_FIELDS, "projection config fields")
     if value["version"] != 7:
         raise ValueError("projection config must use version 7")
-    manifest_versions = _mapping(
+    manifest_versions = cast_mapping(
         value["manifest_versions"], "projection manifest versions"
     )
     _exact_fields(
@@ -318,18 +313,18 @@ def load_projection_config(root: Path) -> ProjectionConfig:
     if manifest_versions["hooks"] != 3:
         raise ValueError("projection hook manifest version must equal 3")
 
-    providers = _mapping(value["providers"], "projection providers")
+    providers = cast_mapping(value["providers"], "projection providers")
     _exact_fields(providers, _PROVIDERS, "projection providers")
     cells: dict[
         tuple[AgentProvider, ProjectionContext, ProjectionSurface], ProjectionCell
     ] = {}
     for provider in AgentProvider:
-        contexts = _mapping(
+        contexts = cast_mapping(
             providers[provider.value], f"projection contexts for {provider.value}"
         )
         _exact_fields(contexts, _CONTEXTS, f"projection contexts for {provider.value}")
         for context in ProjectionContext:
-            surfaces = _mapping(
+            surfaces = cast_mapping(
                 contexts[context.value],
                 f"projection surfaces for {provider.value}/{context.value}",
             )
