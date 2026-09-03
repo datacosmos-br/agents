@@ -4,7 +4,7 @@ description: 'native gates, project validation, command discovery'
 license: MIT
 metadata:
   aihub.tags: '["decision:plan-00","effective:2026-08-29","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","provenance:agents-owned","role:verification","updates:manual","usage:router"]'
-  version: 2.0.0
+  version: 2.1.0
 ---
 
 # Make Check
@@ -20,13 +20,14 @@ test, lint, format, generation, security, or release commands.
 3. Exercise the real runtime before tests when behavior changes.
 4. Run the chosen target and record working directory, exit code, decisive output,
    covered scope, and warnings.
-5. If a required target, dependency, or tool is missing or broken, stop that
-   invocation, correct its canonical owner, and rerun the native target. Keep the
-   same task active; request authority only when the required owner is materially
-   outside the approved scope. Never substitute a raw command.
-6. Verify the project's version owner resolves every required tool to its newest
-   released version. Treat every resulting diagnostic as blocking and repair its
-   owner through the native workflow.
+5. If a required target, dependency, or tool is missing or broken, stop,
+   correct its canonical owner, and rerun the native target. Keep the task
+   active; never substitute a raw command.
+6. Resolve every required tool through the project's newest released version
+   owner; every diagnostic is blocking.
+7. For a configured duplication gate, use the canonical 8-line strict baseline;
+   after integration require `--fail-on-new-clones 0`. Never substitute an
+   ad-hoc threshold or report.
 
 ## Rules
 
@@ -35,8 +36,5 @@ test, lint, format, generation, security, or release commands.
   authority required by project law.
 - A warning, skip, empty report, or missing tool is red. Preserve its exact
   output, correct the owner, and rerun only the invalidated native target.
-- Never cap, downgrade, override, substitute, or suppress the newest released
-  tool version or classify its diagnostic as compatibility or false positive
-  without prior operator discussion, reproducible evidence, and explicit
-  authorization.
-- Later edits invalidate earlier gate evidence for their affected scope.
+- Later edits or integration commits invalidate earlier gate evidence in their
+  affected scope until the same native check is rerun.
