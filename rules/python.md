@@ -2,7 +2,7 @@
 globs: ["*.py", "**/*.py", "pyproject.toml"]
 description: Python rules
 metadata:
-  aihub.tags: '["decision:plan-00","effective:2026-08-28","route:both"]'
+  aihub.tags: '["decision:plan-00","effective:2026-09-02","route:both"]'
 ---
 
 # Python rules
@@ -34,14 +34,38 @@ the owner or report the exact blocker.
   declared compatibility range.
 - Prefer precise types, protocols at public boundaries, built-in generics where
   supported, and explicit `X | None` semantics.
-- Avoid `Any`, `object`, unchecked casts, broad ignores, and untyped external
-  input. A narrowly unavoidable third-party stub gap must follow project policy
-  and retain its exact diagnostic code and rationale.
+- NEVER use `Any` or bare `object` in operator-owned Python. Strict typing is
+  absolute: every parameter, return, and attribute is precisely typed, and the
+  project's type gates run strict. A narrowly unavoidable third-party stub gap
+  must follow project policy and retain its exact diagnostic code and
+  rationale; it never licenses `Any` in first-party signatures.
+- The prohibition covers tests too: test code is typed with the same strictness
+  as production code — fixtures, params, and returns included.
 - Parse untrusted input once into a typed model at the boundary. Use the
   project's declared validation/model owner; do not impose Pydantic on projects
   that do not use it.
 - Public APIs document parameters, return values, errors, side effects, and
   compatibility.
+
+## Module structure and namespaces
+
+- Declared projects compose code through the canonical single-letter
+  namespaces — `c` (constants), `t` (types), `p` (protocols), `m` (models),
+  `u` (utilities) — plus typed `services`/`api` facades. Import and use them;
+  never re-declare parallel constants, models, protocols, or helpers locally.
+- Modules are organized as nested classes inside a typed owner class (the
+  flext/ai-hub pattern: one owner class per file, nested classes as
+  sub-owners), never loose top-level function soup.
+- Services own behavior, models own data, protocols own boundaries, constants
+  own values. A new capability lands in its owner layer; if the owner layer is
+  missing, create it through the declared facade before writing logic.
+
+## Revalidation after mutation
+
+- After every code mutation, immediately revalidate with the project's
+  declared gates: formatter/linter (`ruff`), type checker (`pyrefly`/mypy),
+  and the duplication scanner (`jscpd`) alongside the test gate. A gate the
+  project does not declare is not invented; one it declares is never skipped.
 
 ## Errors and resources
 
