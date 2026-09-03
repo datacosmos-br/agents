@@ -3,8 +3,8 @@ name: verification-loop
 description: 'completion evidence, runtime verification, native gates'
 license: MIT
 metadata:
-  aihub.tags: '["decision:plan-00","effective:2026-08-30","policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","policy:zero-residue","provenance:agents-owned","role:verification","updates:manual","usage:router"]'
-  version: 1.0.0
+  aihub.tags: '["decision:plan-00","effective:2026-09-03","policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","policy:zero-residue","provenance:agents-owned","role:verification","updates:manual","usage:router"]'
+  version: 1.1.0
 ---
 
 # Verification Loop
