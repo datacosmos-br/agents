@@ -18,4 +18,13 @@ commands, or success based on partial output. Cleanup may terminate only the
 process group created and owned by this invocation; the original child failure
 remains the exception re-raised.
 
+A process owned by a supervising unit is stopped through its owner, never by
+signal: a `systemd --user` unit is stopped with `systemctl --user`, never
+`kill`, `pkill`, or `pgrep -f ... | xargs kill`. Signaling the pid directly
+races the owner's own restart policy and reports a false recovery. Triage
+starts with the owner before the process: `systemctl --user list-units` for
+the unit's own state, then `journalctl --user -u <unit>` for its causal
+history, both before any `pgrep`. Only a process `pgrep` finds with no
+matching unit is orphaned and eligible for direct signal.
+
 See also: `strict-execution.md` (rule file) — aggregate parent policy.
