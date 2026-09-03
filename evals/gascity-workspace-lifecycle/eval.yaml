@@ -24,9 +24,12 @@ graders:
       the city, rig, pinned Pack V2 import, agent, formula, provider, and physical
       workspace from the supplied city.toml while keeping the suspended runtime
       entirely static with zero workspace effects. Beads requirements apply only
-      when the project explicitly selects Beads. Reject invented commands,
-      active dispatch, loose clones, worktrees, temporary or cross-repository
-      paths, symlinks, provider fallback, or mechanical command translation.
+      when the project explicitly selects Beads. Distinguish delegated execution
+      through gc sling from an explicitly operator-authorized self-owned Git
+      worktree, and reject make work or any mixing of those modes. Reject
+      invented commands, unauthorized active dispatch, loose clones, temporary
+      or cross-repository paths, symlinks, provider fallback, or mechanical
+      command translation.
 - type: behavior
   name: bounded_execution
   config:
