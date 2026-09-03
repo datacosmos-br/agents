@@ -189,6 +189,7 @@ def test_eval_workflow_is_the_single_native_ci_owner() -> None:
         "make check",
         "make static",
         "make shell",
+        "make duplication",
         "make build",
         "make test",
         "make spec",
