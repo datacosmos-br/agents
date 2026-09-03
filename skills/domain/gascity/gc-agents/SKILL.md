@@ -27,3 +27,7 @@ For session state, the controller reconciliation tick, the drain/restart
 handshake, pool capacity keys, and claim identity, read
 `references/lifecycle-reconciliation.md` (skill file) before diagnosing a session
 that will not start, will not stop, restarts in a loop, or ignores a drain.
+
+Managed availability is proven by `systemctl --user`, `gc order check`, supervisor
+log, and Dolt runtime publication—not by a process census. Never send a signal to a
+process inside a unit; ask the unit owner to stop or restart.

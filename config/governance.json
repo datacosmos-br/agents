@@ -101,6 +101,10 @@
       "command:feature-development",
       "skill:search-first"
     ],
+    "file-owned-handoff": [
+      "command:plan-handoff",
+      "skill:plan-focus-recovery"
+    ],
     "finish-through-closure": [
       "skill:anti-phase-skip",
       "skill:sprint-closure"
