@@ -16,7 +16,6 @@ from agents_governance.catalog import Catalog
 from agents_governance.projection import (
     _SELECTION_FIELDS_V1,
     _SELECTION_FIELDS_V2,
-    ProjectionDriftError,
     Projector,
 )
 from agents_governance.projection_config import load_projection_config
@@ -322,8 +321,9 @@ def test_apply_derives_nested_invocation_project_and_reaches_fixed_point(
     monkeypatch.setenv("HOME", str(personal))
     monkeypatch.chdir(nested)
 
-    with pytest.raises(ProjectionDriftError):
-        projector.check()
+    # An absent projection root is an unborn publication target, not drift:
+    # read-only check must stay green on a fresh runner before first apply.
+    projector.check()
     projector.apply()
     projector.check()
 

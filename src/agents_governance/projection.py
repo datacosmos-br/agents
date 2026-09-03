@@ -1748,6 +1748,8 @@ class Projector:
         project = self.project_root()
         authorization = load_project_authorization(project)
         for plan in self._plans(authorization):
+            if not plan.root.exists():
+                continue
             state = self._state(plan)
             if state.drift:
                 raise ProjectionDriftError(f"project projection differs: {plan.root}")
