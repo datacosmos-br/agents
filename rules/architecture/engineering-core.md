@@ -22,15 +22,6 @@ At a cross-boundary failure, prove the producer contract and output. Fix its
 owner when invalid or the receiver when it conforms. Never alter a correct
 adjacent owner for an invalid consumer; symptom workarounds are defects.
 
-A config placeholder such as `${AI_HUB}` has exactly one expander: the typed
-loader that owns its schema. No other code re-expands, re-substitutes, or
-hardcodes that placeholder's resolved value. A second expander — for example a
-write-guard that substitutes the literal with its own constant — is a SSOT
-violation even when both owners agree today: the two paths diverge silently on
-the next change, surfacing as a `KeyError` in CI or an ambiguous test that
-fails for the wrong reason. Fix the duplicate at its owner: delete the second
-expansion path and route every consumer through the one loader.
-
 Hardcodes, normalized failure, failover, retry, fallback, compatibility,
 partial execution, keyring, and unevidenced success are defects. Typed owners
 keep defaults. The first exception escapes its CLI with traceback and cause.
