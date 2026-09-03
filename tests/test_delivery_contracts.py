@@ -74,7 +74,7 @@ def test_eval_workflow_covers_integration_push_and_pull_requests() -> None:
     assert required_paths <= set(events["push"]["paths"])
     assert required_paths <= set(events["pull_request"]["paths"])
 
-    job_condition = workflow["jobs"]["eval"]["if"]
+    job_condition = workflow["jobs"]["gates"]["if"]
     assert "github.event.pull_request.draft" in job_condition
     assert "startsWith(github.event.pull_request.title, '[WIP]')" in job_condition
     assert "startsWith(github.event.head_commit.message, '[WIP]')" in job_condition
@@ -150,7 +150,7 @@ def test_eval_workflow_materializes_derived_shell_storage() -> None:
         Loader=yaml.BaseLoader,
     )
     commands = tuple(
-        step.get("run") for step in workflow["jobs"]["eval"]["steps"] if "run" in step
+        step.get("run") for step in workflow["jobs"]["gates"]["steps"] if "run" in step
     )
 
     assert 'install -d -m 700 "$HOME/tmp"' in commands
@@ -163,7 +163,16 @@ def test_eval_workflow_is_the_single_native_ci_owner() -> None:
     assert [path.name for path in workflow_paths] == ["eval.yml", "release.yml"]
     source = (workflow_root / "eval.yml").read_text(encoding="utf-8")
     workflow = yaml.load(source, Loader=yaml.BaseLoader)
-    steps = workflow["jobs"]["eval"]["steps"]
+    jobs = workflow["jobs"]
+    assert set(jobs) == {"gates"}
+    assert jobs["gates"]["strategy"]["matrix"]["suite"] == [
+        "contracts",
+        "quality",
+        "runtime",
+    ]
+    assert jobs["gates"]["timeout-minutes"] == "12"
+    assert workflow["concurrency"]["cancel-in-progress"] == "true"
+    steps = jobs["gates"]["steps"]
     actions = tuple(step["uses"] for step in steps if "uses" in step)
     checkout = next(
         step for step in steps if step.get("uses", "").startswith("actions/checkout@")
@@ -173,7 +182,18 @@ def test_eval_workflow_is_the_single_native_ci_owner() -> None:
     assert actions
     assert all(re.fullmatch(r"[^@\s]+@[0-9a-f]{40}", action) for action in actions)
     assert checkout["with"] == {"fetch-depth": "0"}
-    assert sum("make ci" in command.splitlines() for command in commands) == 1
+    joined_commands = "\n".join(command for command in commands if command)
+    assert "make ci" not in joined_commands
+    for gate in (
+        "make docs",
+        "make check",
+        "make static",
+        "make shell",
+        "make build",
+        "make test",
+        "make spec",
+    ):
+        assert gate in joined_commands
     assert "|| true" not in source
     assert "conflict-marker" not in source
 
