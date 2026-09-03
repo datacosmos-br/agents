@@ -1,0 +1,13 @@
+id: beads-organization-edge-001
+name: Duplicate report with legitimate owner triad
+description: Adjudicate a mechanical duplicate pair that metadata proves legitimate.
+tags: [beads, organization, deduplication, edge-case]
+inputs:
+  prompt: >-
+    The deduplication gate reports two open beads with similarity 1.0, but one
+    carries gc.logical_bead_id pointing at the other inside an in-progress
+    workflow root. Decide what to close, preserve the live workflow, and record
+    the adjudication so the next gate run does not re-flag the pair.
+expected:
+  output_contains: [metadata, triad, comment, nothing closed]
+  output_not_contains: [close both, force close]

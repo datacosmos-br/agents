@@ -72,13 +72,14 @@ def test_additive_capability_rule_is_in_the_generated_session_capsule(
         runtime.load_projection_config(ROOT),
         inventory.commands,
         inventory.rules,
+        runtime.LawSurface.load(ROOT),
     )
 
     hooks.apply(project)
 
     script = next((project / ".codex" / "aihub-hooks").glob("*.py"))
     rendered = script.read_text(encoding="utf-8")
-    assert "Auxiliary tracking" in rendered
+    assert "Every other executable" in rendered
     assert "strict execution" in rendered
     assert "[strict execution](" not in rendered
 

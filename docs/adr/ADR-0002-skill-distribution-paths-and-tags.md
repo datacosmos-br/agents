@@ -75,6 +75,20 @@ Beads-related selection remain empty in all 51 consumers.
 6. Installation and detection provide evidence but never select an auxiliary
    capability.
 
+### Dual-route conditional skills and opt-in portability
+
+Operator decision (2026-09-02): a conditional skill may carry `route:agent`,
+`route:project`, or both. With both routes the skill keeps its unconditional
+personal-home distribution and becomes opt-in-selectable in authorized
+projects.
+
+A conditional skill whose activation is exactly `activation:opt-in` is exempt
+from the project portability reference scan: the physical project's explicit
+`opt_ins` entry in `.agents/projection.json` is the portability authorization
+for that bundle's domain vocabulary (for example Gas City command surfaces).
+The opt-in vocabulary is owned by `detect:opt-in:*` tags on central owners; an
+unknown `opt_ins` value fails discovery before any effect.
+
 ## Options considered
 
 | Option | Benefits | Costs and risks | Result |

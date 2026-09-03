@@ -24,6 +24,17 @@ is credential-readiness evidence; do not reject it based on its authentication
 storage backend or demand a duplicate token environment variable. Never extract,
 print, migrate, or switch the configured credential or profile.
 
+Before any remote effect, query the exact repository. When GitHub reports it as
+private and its owner is `datacosmos-br` or `marlon-costa-dc`, run the bundled
+`access` preflight for the required read, push, or admin effect. It requires the
+active GitHub account, matching repository permission, an SSH URL for that exact
+repository through a non-default declared host alias, and successful
+`git ls-remote` through that identity. HTTPS, `github.com`'s generic SSH host,
+Git URL rewriting, and alternate account or protocol fallback fail closed.
+Public and other-owner repositories do not activate this managed-private
+contract. They still require any capability explicitly selected by their own
+workflow.
+
 Recommend or execute only the smallest action owned by the repository's current
 Git/GitHub lifecycle. Do not copy landing commands here, bypass checks, dismiss
 reviews, omit PRs, invoke orchestration/tracker runtime, retry, or switch

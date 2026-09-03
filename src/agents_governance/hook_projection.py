@@ -26,6 +26,7 @@ from .cleanup import (
 )
 from .commands import CommandSpec
 from .governance_config import GovernanceConfig
+from .law_surface import PRELUDE_END, PRELUDE_START, LawSurface
 from .projection_authorization import (
     ProjectAuthorization,
     load_project_authorization,
@@ -583,8 +584,18 @@ def _validate_capsule(value: str, path: Path) -> None:
         raise ValueError(f"managed instruction capsule was modified: {path}")
 
 
-def _merge_instruction(path: Path, capsule: str) -> str:
+def _without_existing_prelude(current: str, path: Path) -> str:
+    if not current.startswith(PRELUDE_START):
+        return current
+    end = current.find(PRELUDE_END)
+    if end < 0:
+        raise ValueError(f"instruction prelude is malformed: {path}")
+    return current[end + len(PRELUDE_END) :].lstrip("\n")
+
+
+def _merge_instruction(path: Path, capsule: str, law_surface: LawSurface) -> str:
     current = _read_instruction(path)
+    current = _without_existing_prelude(current, path)
     begin_count = current.count(_INSTRUCTIONS_BEGIN)
     end_count = current.count(_INSTRUCTIONS_END)
     if begin_count != end_count or begin_count > 1:
@@ -592,13 +603,13 @@ def _merge_instruction(path: Path, capsule: str) -> str:
     block = f"{_INSTRUCTIONS_BEGIN}\n{capsule.rstrip()}\n{_INSTRUCTIONS_END}"
     if begin_count == 0:
         if not current:
-            return f"{block}\n"
+            return f"{law_surface.prelude}\n{block}\n"
         separator = "\n" if current.endswith("\n") else "\n\n"
-        return f"{current}{separator}{block}\n"
+        return f"{law_surface.prelude}\n{current}{separator}{block}\n"
     before, remainder = current.split(_INSTRUCTIONS_BEGIN, 1)
     owned, after = remainder.split(_INSTRUCTIONS_END, 1)
     _validate_capsule(owned.strip(), path)
-    return f"{before}{block}{after}"
+    return f"{law_surface.prelude}\n{before}{block}{after}"
 
 
 class HookProjector:
@@ -610,11 +621,17 @@ class HookProjector:
         config: ProjectionConfig,
         commands: tuple[CommandSpec, ...],
         rules: tuple[RuleSpec, ...],
+        law_surface: LawSurface,
+        central_root: Path | None = None,
     ) -> None:
         self.governance = governance
         self.config = config
         self.commands = commands
         self.rules = rules
+        self.law_surface = law_surface
+        self._central_root = (
+            None if central_root is None else central_root.resolve(strict=True)
+        )
 
     def _plan(
         self,
@@ -788,22 +805,37 @@ class HookProjector:
         home = _physical_boundary(Path.home(), "personal home")
         repository = _physical_boundary(authorization.project, "project root")
         project_authorized = authorization.selected
-        capsule = _capsule(self.governance, self.commands, self.rules)
-        hooks = tuple(
-            self._plan(
-                provider,
-                context,
-                home if context is ProjectionContext.PERSONAL else repository,
-                capsule,
-            )
-            for provider in AgentProvider
-            for context in ProjectionContext
-            if context is ProjectionContext.PERSONAL or project_authorized
+        # The central source is never a consumer of its own instruction
+        # documents: AGENTS.md/CLAUDE.md at that root are canonical law, and a
+        # generated capsule must not be merged into them.
+        project_instructions_authorized = (
+            project_authorized and repository != self._central_root
         )
-        instructions: list[HookPlan] = []
+        capsule = _capsule(self.governance, self.commands, self.rules)
+        planned: list[HookPlan] = []
         for provider in AgentProvider:
             for context in ProjectionContext:
                 if context is ProjectionContext.PROJECT and not project_authorized:
+                    continue
+                cell = self.config.cell(provider, context, ProjectionSurface.HOOKS)
+                if cell.status is not ProjectionStatus.SUPPORTED:
+                    continue
+                planned.append(
+                    self._plan(
+                        provider,
+                        context,
+                        home if context is ProjectionContext.PERSONAL else repository,
+                        capsule,
+                    )
+                )
+        hooks = tuple(planned)
+        instructions: list[HookPlan] = []
+        for provider in AgentProvider:
+            for context in ProjectionContext:
+                if (
+                    context is ProjectionContext.PROJECT
+                    and not project_instructions_authorized
+                ):
                     continue
                 cell = self.config.cell(provider, context, ProjectionSurface.RULES)
                 if (
@@ -822,13 +854,52 @@ class HookProjector:
                         destination,
                         {
                             destination: (
-                                _merge_instruction(destination, capsule),
+                                _merge_instruction(
+                                    destination, capsule, self.law_surface
+                                ),
                                 0o644,
                             )
                         },
                     )
                 )
-        return (*hooks, *instructions)
+        manifests = tuple(
+            HookPlan(
+                AgentProvider.CODEX,
+                context,
+                boundary,
+                boundary / ".agents" / "law-surface.json",
+                {
+                    boundary / ".agents" / "law-surface.json": (
+                        self.law_surface.manifest(),
+                        0o644,
+                    )
+                },
+            )
+            for context, boundary in (
+                ((ProjectionContext.PROJECT, repository),) if project_authorized else ()
+            )
+        )
+        canonical_documents = (
+            (
+                HookPlan(
+                    AgentProvider.CLAUDE,
+                    ProjectionContext.PROJECT,
+                    repository,
+                    repository / "CLAUDE.md",
+                    {
+                        repository / "CLAUDE.md": (
+                            _merge_instruction(
+                                repository / "CLAUDE.md", capsule, self.law_surface
+                            ),
+                            0o644,
+                        )
+                    },
+                ),
+            )
+            if project_instructions_authorized
+            else ()
+        )
+        return (*hooks, *instructions, *canonical_documents, *manifests)
 
     @staticmethod
     def _state(destination: Path, desired: str, mode: int) -> _FileState:

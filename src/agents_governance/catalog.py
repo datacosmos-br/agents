@@ -105,7 +105,7 @@ class SkillRecord:
     usage: str
     updates: str
     provenance: str
-    route: str | None
+    routes: tuple[str, ...]
     activation: str | None
     subjects: tuple[str, ...]
     detectors: tuple[str, ...]
@@ -164,7 +164,12 @@ class Catalog:
         catalog.config = authority.config
         catalog.owner = "project"
         catalog.project_local = True
-        catalog._records = catalog._discover(require_inventory=False)
+        if catalog.root == authority.root:
+            # The authorized project is the central source itself: no skill of
+            # its tree is project-local, so the local population is empty.
+            catalog._records = ()
+        else:
+            catalog._records = catalog._discover(require_inventory=False)
         catalog._directories = tuple(record.directory for record in catalog._records)
         for record in catalog._records:
             resolve_approval_tags(
@@ -180,7 +185,7 @@ class Catalog:
                     f"{record.directory / 'SKILL.md'}: project-local agent-wide "
                     "skill is forbidden"
                 )
-            if record.category.conditional and record.route != "project":
+            if record.category.conditional and "project" not in record.routes:
                 raise ValueError(
                     f"{record.directory / 'SKILL.md'}: project-local conditional "
                     "skill requires route:project"
@@ -325,10 +330,16 @@ class Catalog:
         subjects = tuple(
             tag.split(":", 1)[1] for tag in tags if tag.startswith(f"{category.value}:")
         )
-        route: str | None = None
+        routes: tuple[str, ...] = ()
         activation: str | None = None
         if category.conditional:
-            route = self._one_tag(skill_file, tags, "route", _ROUTE_TAGS)
+            if not route_tags or any(tag not in _ROUTE_TAGS for tag in route_tags):
+                raise ValueError(
+                    f"{skill_file}: conditional skill requires at least one of "
+                    f"{', '.join(sorted(_ROUTE_TAGS))}; got "
+                    f"{', '.join(route_tags) or 'none'}"
+                )
+            routes = tuple(tag.split(":", 1)[1] for tag in route_tags)
             activation = self._one_tag(skill_file, tags, "activation", _ACTIVATION_TAGS)
             if not subjects:
                 raise ValueError(
@@ -362,7 +373,7 @@ class Catalog:
             usage,
             updates,
             provenance,
-            route,
+            routes,
             activation,
             subjects,
             detectors,
@@ -425,12 +436,12 @@ class Catalog:
             return ("personal",)
         if record.category is SkillCategory.PROJECT_WIDE:
             return ("project-generic",)
-        route = "project" if record.route == "project" else "agent"
         capabilities = tuple(
             f"{route}-capability:{record.category.value}:{subject}"
+            for route in record.routes
             for subject in record.subjects
         )
-        return ("personal", *capabilities) if route == "agent" else capabilities
+        return ("personal", *capabilities) if "agent" in record.routes else capabilities
 
     def _policy(self, record: SkillRecord) -> SkillPolicy:
         budgets = cast(dict[str, int], self.config["budgets"])

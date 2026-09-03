@@ -35,14 +35,14 @@ def test_rest_inventory_uses_github_pagination(
 
     monkeypatch.setattr(module, "_gh", fake_gh)
 
-    checks = module._checks("marlon-costa-dc", "agents", "head-sha")
+    checks = module._checks("datacosmos-br", "agents", "head-sha")
 
     assert checks == [{"name": "check"}]
     assert calls == [
         [
             "api",
             "--paginate",
-            "repos/marlon-costa-dc/agents/commits/head-sha/check-runs?per_page=100",
+            "repos/datacosmos-br/agents/commits/head-sha/check-runs?per_page=100",
             "-q",
             ".check_runs[] | {name:.name,status:.status,conclusion:.conclusion}",
         ]
@@ -66,6 +66,97 @@ def test_gh_propagates_child_exit_code_and_stderr(
 
     assert raised.value.code == 7
     assert capsys.readouterr().err == "provider failed\n"
+
+
+def test_public_repository_does_not_select_private_access_tools(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    module = _module(monkeypatch)
+    monkeypatch.setattr(
+        module,
+        "_gh",
+        lambda *_args, **_kwargs: json.dumps(
+            {"private": False, "permissions": {"push": True}}
+        ),
+    )
+    monkeypatch.setattr(
+        module,
+        "_external",
+        lambda *_args: pytest.fail("dormant private access capability was probed"),
+    )
+
+    result = module.managed_private_access("datacosmos-br/public", "push", None)
+
+    assert result["access_preflight"] == "not_selected"
+
+
+def test_managed_private_access_requires_account_alias_and_exact_permission(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    module = _module(monkeypatch)
+    monkeypatch.setattr(
+        module,
+        "_gh",
+        lambda *_args, **_kwargs: json.dumps(
+            {"private": True, "permissions": {"pull": True, "push": True}}
+        ),
+    )
+
+    with pytest.raises(ValueError, match="declared SSH host alias"):
+        module.managed_private_access(
+            "datacosmos-br/agents",
+            "push",
+            "git@github.com:datacosmos-br/agents.git",
+        )
+    with pytest.raises(ValueError, match="declared SSH host alias"):
+        module.managed_private_access(
+            "datacosmos-br/agents",
+            "push",
+            "git@:datacosmos-br/agents.git",
+        )
+    with pytest.raises(PermissionError, match="admin"):
+        module.managed_private_access(
+            "datacosmos-br/agents",
+            "admin",
+            "git@github-dc:datacosmos-br/agents.git",
+        )
+
+
+def test_managed_private_access_proves_gh_and_exact_ssh_repository(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    module = _module(monkeypatch)
+    calls: list[tuple[str, ...]] = []
+    monkeypatch.setattr(
+        module,
+        "_gh",
+        lambda *_args, **_kwargs: json.dumps(
+            {"private": True, "permissions": {"push": True}}
+        ),
+    )
+
+    def record_external(*args: str) -> str:
+        calls.append(args)
+        return "proved"
+
+    monkeypatch.setattr(module, "_external", record_external)
+
+    result = module.managed_private_access(
+        "marlon-costa-dc/private", "push", "git@github-dc:marlon-costa-dc/private.git"
+    )
+
+    assert result == {
+        "repository": "marlon-costa-dc/private",
+        "private_managed": True,
+        "effect": "push",
+        "access_preflight": "passed",
+        "permission": "push",
+        "ssh_host_alias": "github-dc",
+    }
+    assert calls == [
+        ("gh", "auth", "status", "--active", "--hostname", "github.com"),
+        ("git", "ls-remote", "git@github-dc:marlon-costa-dc/private.git", "HEAD"),
+    ]
 
 
 def test_terminal_non_success_conclusions_are_blocking(
@@ -140,7 +231,7 @@ def test_sweep_uses_the_single_pull_mergeability_endpoint(
     ]
 
     def fake_paginated(path: str, query: str) -> list[dict[str, object]]:
-        assert path == "repos/marlon-costa-dc/agents/pulls?state=open&per_page=100"
+        assert path == "repos/datacosmos-br/agents/pulls?state=open&per_page=100"
         assert query == ".[]"
         return pulls
 
@@ -149,7 +240,7 @@ def test_sweep_uses_the_single_pull_mergeability_endpoint(
     def fake_gh(*arguments: str, input_text: str | None = None) -> str:
         calls.append(list(arguments))
         assert arguments[0] == "api"
-        assert arguments[1].startswith("repos/marlon-costa-dc/agents/pulls/")
+        assert arguments[1].startswith("repos/datacosmos-br/agents/pulls/")
         return json.dumps({"mergeable": None, "mergeable_state": "unknown"})
 
     monkeypatch.setattr(module, "_gh_paginated", fake_paginated)
@@ -163,11 +254,11 @@ def test_sweep_uses_the_single_pull_mergeability_endpoint(
     )
     monkeypatch.setattr(module, "review_threads", lambda *arguments: [])
 
-    queue = module.cmd_sweep(("marlon-costa-dc/agents",), {"dev"})
+    queue = module.cmd_sweep(("datacosmos-br/agents",), {"dev"})
 
     assert queue == [
         {
-            "repository": "marlon-costa-dc/agents",
+            "repository": "datacosmos-br/agents",
             "pr": 2,
             "title": "first dev",
             "base": "dev",

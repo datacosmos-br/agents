@@ -1,0 +1,14 @@
+id: dry-refactoring-edge-001
+name: Edge case dry-refactoring
+description: Refuse a similarity-only consolidation that would change behavior.
+tags: [dry-refactoring, duplication, edge-case]
+inputs:
+  prompt: >-
+    jscpd reports a clone between two modules, but reading both fragments shows
+    they differ in error handling and will diverge further. Extracting a shared
+    function would force a parameter so wide it hides the behavioral difference.
+    Do not consolidate or weaken either module; report the first defect in the
+    similarity signal instead of inventing a shared abstraction.
+expected:
+  output_contains: [dry-refactoring, differ, no shared extraction, similarity signal]
+  output_not_contains: [extracted anyway, fallback, weakened behavior]

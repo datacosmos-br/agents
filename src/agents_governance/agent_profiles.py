@@ -50,6 +50,7 @@ class AgentProvider(StrEnum):
     GEMINI = "gemini"
     OPENCODE = "opencode"
     ANTIGRAVITY = "antigravity"
+    POOL = "pool"
 
 
 class AgentContext(StrEnum):
@@ -409,6 +410,7 @@ def render_agent(
         AgentProvider.CURSOR,
         AgentProvider.CODEX,
         AgentProvider.ANTIGRAVITY,
+        AgentProvider.POOL,
     }:
         _unsupported(
             profile,

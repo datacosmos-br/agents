@@ -1,0 +1,34 @@
+name: dry-refactoring-eval
+description: Guided jscpd-driven elimination of copy-paste duplication.
+skill: dry-refactoring
+schemaVersion: '1.0'
+version: '1.0'
+config:
+  trials_per_task: 1
+  timeout_seconds: 300
+  parallel: false
+  max_attempts: 0
+  fail_fast: true
+  executor: copilot-sdk
+  model: aihub-primary
+  skill_directories:
+  - ../../skills/tool/dry-refactoring
+  required_skills:
+  - dry-refactoring
+graders:
+- type: prompt
+  name: dry-refactoring-contract
+  config:
+    prompt: |-
+      Grade the dry-refactoring response. Pass only when it runs jscpd to detect
+      clones first, reads both duplicated fragments before designing the shared
+      extraction, updates every call site and not only the two reported
+      locations, re-runs jscpd to prove the clone is gone, and orders remaining
+      clones by impact. Reject refactors without a re-run, extracted
+      abstractions with unclear names, deleting tests to silence clones, or a
+      consolidated copy that keeps the duplicated original in place.
+- type: behavior
+  name: bounded_execution
+  config: {max_duration_ms: 240000}
+tasks:
+- tasks/*.yaml

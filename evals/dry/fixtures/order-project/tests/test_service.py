@@ -1,5 +1,4 @@
 import pytest
-
 from orders.identity import InvalidOrderId
 from orders.service import OrderCoordinator
 

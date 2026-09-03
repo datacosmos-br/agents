@@ -28,6 +28,12 @@ graders:
       adds a duplicate CI owner, a self-referential scanner, an unpinned action,
       `|| true`, or a job that does not execute `make ci`. Accept a directly
       successful `gh` command without demanding duplicated token configuration.
+      For a configured private repository owned by datacosmos-br or
+      marlon-costa-dc, require the bundled access preflight to prove the active
+      authorized gh account, effect-specific permission, exact SSH repository
+      URL through its declared non-default account alias, and git ls-remote.
+      Reject HTTPS, generic github.com SSH, URL rewrite, protocol/account
+      fallback, or activating this contract for an unselected public repository.
       Reject organization scanning, omitted PRs, dismissed failures, credential
       extraction or switching, retries, fallback, active Gas City/tracker
       operations, or landing without observed integration and post-merge SHA

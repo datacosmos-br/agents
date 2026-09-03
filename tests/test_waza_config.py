@@ -292,6 +292,31 @@ def test_live_corpus_runs_every_suite_and_publishes_one_complete_artifact(
     assert not tuple((tmp_path / "results").glob(".waza-live-stage.*"))
 
 
+def test_live_corpus_owns_missing_results_root(tmp_path: Path) -> None:
+    preflight, suite = _live_root(tmp_path)
+    (tmp_path / "results").rmdir()
+    by_path = {preflight.path: preflight, suite.path: suite}
+
+    def runner(command: Sequence[str], _root: Path) -> None:
+        selected = by_path[Path(command[2])]
+        output = Path(command[command.index("--output") + 1])
+        output.write_text(
+            json.dumps(_artifact(selected, tool_call_count=int(selected is preflight))),
+            encoding="utf-8",
+        )
+
+    destination = run_live_corpus(
+        tmp_path,
+        _MODEL,
+        (suite,),
+        "/owner/bin/waza",
+        runner=runner,
+    )
+
+    assert destination.is_file()
+    assert stat.S_IMODE((tmp_path / "results").stat().st_mode) == 0o700
+
+
 def test_runner_failure_propagates_and_candidate_is_cleaned(tmp_path: Path) -> None:
     _preflight, suite = _live_root(tmp_path)
 

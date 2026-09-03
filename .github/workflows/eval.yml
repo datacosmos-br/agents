@@ -55,6 +55,9 @@ permissions:
 
 jobs:
   eval:
+    if: >-
+      (github.event_name == 'push' && !startsWith(github.event.head_commit.message, '[WIP]')) ||
+      (github.event_name == 'pull_request' && !github.event.pull_request.draft && !startsWith(github.event.pull_request.title, '[WIP]'))
     name: Run Evaluations
     runs-on: ubuntu-latest
     steps:

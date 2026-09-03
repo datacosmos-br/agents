@@ -6,26 +6,19 @@ metadata:
 
 # Bead verification is critical and mandatory
 
-Every bead — at creation, at every update, and before close — declares and
-passes a critical cross-check against four independent sources:
+At creation, update and close, every bead passes four independent sources:
 
-1. **Registered state records** — the authorized state documents, handoffs
-   and receipts. A bead contradicting its ledger is corrected at the ledger's
-   owner, never silently.
-2. **Git history** — real commits and merged PRs on the integration lane.
-   Work is not done because a bead says so; it is done when the lane carries
-   it.
-3. **Measured reality** — disk, processes, receipts, live endpoints, with
-   command, working directory, exit code and decisive output.
-4. **The intent of the most recent code** — the integrated HEAD, not an
-   older revision. A bead whose premise the current code or the current law
-   retired is closed as obsolete with the evidence, never executed as
-   written.
+1. **Registered state** — authorized documents, handoffs and receipts; correct
+   contradictions at their ledger owner.
+2. **Git history** — commits and merged PRs on the integration lane.
+3. **Measured reality** — disk, processes and endpoints, with command, working
+   directory, exit code and decisive output.
+4. **Current-code intent** — integrated HEAD, never an older revision. Close a
+   retired premise as obsolete with evidence; never execute it as written.
 
-The bead is the hypothesis; reality is the proof. Closing without the
-four-source declaration plus evidence is a violation, never a shortcut.
-Divergence between bead and reality is fixed in the bead — never in reality.
+The bead is the hypothesis; reality is proof. Closing without four-source
+evidence is a violation. Fix divergence in the bead, never in reality.
 
-Orchestration surfaces that must carry this rule: the city `AGENTS.md`,
-the tracker prime override (what the tracker prints at session start), and
-every city skill. A surface that does not carry it is a defect.
+Each managed execution uses one HQ root and linked bead per rig, both carrying
+four-source checkpoints. Instructions, tracker prime, and skills enforce this;
+divergence, parallel roots, and mail ledgers fail.

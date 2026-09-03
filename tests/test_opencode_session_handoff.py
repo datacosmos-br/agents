@@ -20,6 +20,26 @@ def _module() -> ModuleType:
     return load_source_module("opencode_session_handoff", path)
 
 
+def _script_path() -> Path:
+    return (
+        Path(__file__).parents[1]
+        / "skills/agent-wide/personal/opencode-session-handoff/scripts/export_session_snapshot.py"
+    )
+
+
+def test_exporter_help_runs_under_isolated_system_python() -> None:
+    result = subprocess.run(
+        ("/usr/bin/python3", "-I", "-S", str(_script_path()), "--help"),
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+
+    assert result.returncode == 0
+    assert "usage: export_session_snapshot.py" in result.stdout
+    assert result.stderr == ""
+
+
 def _database(root: Path) -> None:
     with sqlite3.connect(root / "opencode.db") as database:
         database.executescript("""

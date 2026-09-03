@@ -5,4 +5,4 @@ tags: [git, branch, anti-trigger]
 inputs:
   prompt: Suggest a clearer name for one unpushed local branch. There is no pull request, remote review, check, thread, or merge decision.
 expected:
-  output_not_contains: [PR inventory, unresolved threads, merge state]
+  output_not_contains: [PR inventory, unresolved threads, merge state, gh auth, SSH preflight]
