@@ -37,6 +37,10 @@ first effect.
   destination filesystem. Its failure raises; no alternate copy primitive is
   attempted. Copies remain independent physical trees; symbolic links and
   cross-repository references are prohibited.
+- A unit test's writes stay inside its `tmp_path` fixture; a test that writes
+  to the repository tree, the real home directory, or any path outside
+  `tmp_path` is a test defect at its owner, never a skip. See
+  `observable-runtime.md` (rule file) for the complete sandboxing contract.
 
 A repository-local `.venv` is a regenerable local runtime artifact, never a
 source, projection, backup, quarantine payload, or dependency shared between
