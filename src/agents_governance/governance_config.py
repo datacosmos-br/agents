@@ -45,6 +45,7 @@ _EXPECTED_GUARANTEES = frozenset(
         "finish-through-closure",
         "fix-forward-collaboration",
         "gas-city-operations",
+        "gate-budget",
         "generated-boundaries",
         "github-issue-transparency",
         "governance-artifact-composition",

@@ -127,6 +127,9 @@
       "skill:gc-rigs",
       "skill:gc-work"
     ],
+    "gate-budget": [
+      "rule:workflow/gate-budget"
+    ],
     "generated-boundaries": [
       "rule:python/config-settings-ssot",
       "rule:workflow/generators-not-projections"
