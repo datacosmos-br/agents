@@ -40,6 +40,7 @@ _EXPECTED_GUARANTEES = frozenset(
         "execution-traceability",
         "fail-loud",
         "feature-development",
+        "file-owned-handoff",
         "finish-through-closure",
         "fix-forward-collaboration",
         "gas-city-operations",
