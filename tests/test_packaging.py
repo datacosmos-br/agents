@@ -17,5 +17,10 @@ def test_published_package_bundles_approval_authority() -> None:
         force_include["docs/execution/master-v7"]
         == "agents_governance/_data/docs/execution/master-v7"
     )
+    assert (
+        force_include["docs/security/security-triage.md"]
+        == "agents_governance/_data/docs/security/security-triage.md"
+    )
     assert "docs/adr" in sdist_include
     assert "docs/execution/master-v7" in sdist_include
+    assert "docs/security/security-triage.md" in sdist_include

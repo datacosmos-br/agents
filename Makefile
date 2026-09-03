@@ -2,11 +2,13 @@
 
 AGENTSCTL := uv run agentsctl
 PYTEST_SCRATCH := $(CURDIR)/.test-tmp
+WHEEL_SMOKE := $(PYTEST_SCRATCH)/wheel-smoke
+WHEEL_PROJECT := $(PYTEST_SCRATCH)/wheel-project
 override export UV_PROJECT_ENVIRONMENT := $(CURDIR)/.venv
 override export VIRTUAL_ENV := $(CURDIR)/.venv
 
 .DEFAULT_GOAL := help
-.PHONY: help setup docs audit check waza static fmt fix shell build test spec coverage providers projection gen ci security temp validate-live clean
+.PHONY: help setup docs audit check waza static fmt fix shell build test spec coverage providers projection gen ci security temp validate-live validate-wheel clean
 .DELETE_ON_ERROR:
 
 define BANNER
@@ -106,3 +108,14 @@ clean: ## remove only validated generated artifacts
 
 ## complete offline composition
 ci: docs audit check static shell build test coverage providers temp ## run every offline development gate
+
+validate-wheel: ## validate one published agents-governance wheel in isolation
+	$(call BANNER,validate-wheel · published package)
+	@test -n "$(WHEEL)" || { echo 'WHEEL=<path> is required' >&2; exit 2; }
+	@test -f "$(WHEEL)" || { echo "wheel does not exist: $(WHEEL)" >&2; exit 2; }
+	@uv venv --clear $(WHEEL_SMOKE)
+	@uv pip install --python $(WHEEL_SMOKE)/bin/python $(WHEEL)
+	@$(WHEEL_SMOKE)/bin/agentsctl doctor
+	@mkdir -p $(WHEEL_PROJECT)/.git $(WHEEL_PROJECT)/.agents
+	@printf '%s\n' '{"version":1,"agents":[],"opt_ins":[],"selected_tags":[]}' > $(WHEEL_PROJECT)/.agents/projection.json
+	@env -C $(WHEEL_PROJECT) HOME=$(WHEEL_PROJECT) $(WHEEL_SMOKE)/bin/agentsctl check
