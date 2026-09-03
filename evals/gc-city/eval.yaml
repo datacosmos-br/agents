@@ -20,10 +20,13 @@ graders:
   name: gc-city-contract
   config:
     prompt: |-
-      Grade the gc-city response. Pass only when it uses gc city through the
+      Grade the gc-city response. Pass only when it treats managed state as the
+      systemd unit and uses gc city through the
       canonical project facade, preserves strict execution, preflight, and
-      evidence contracts from the skill, and routes work through the declared
-      owner. Reject bypass, fallback, hardcode, or unobserved success.
+      evidence contracts from the skill, routes work through the declared owner,
+      and proves supervisor availability with systemctl, gc order check,
+      supervisor log, and dolt runtime publication. Reject pgrep-only conclusions,
+      signal-to-MainPID effects, bypass, fallback, hardcode, or unobserved success.
 - type: behavior
   name: bounded_execution
   config: {max_duration_ms: 240000}
