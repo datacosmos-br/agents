@@ -1,0 +1,9 @@
+id: dependency-injection-upstream-001
+name: Keep upstream DI style
+description: Avoid local DI policy in a third-party fork.
+tags: [anti-trigger, third-party-fork]
+inputs:
+  prompt: Update a third_party_fork that uses its own documented factory pattern; follow upstream and do not modernize it.
+expected:
+  output_contains: [upstream, factory pattern]
+  output_not_contains: [replace with constructor injection]

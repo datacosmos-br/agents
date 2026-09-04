@@ -17,6 +17,7 @@ from agents_governance.catalog import Catalog
 from agents_governance.projection import (
     _SELECTION_FIELDS_V1,
     _SELECTION_FIELDS_V2,
+    _SELECTION_FIELDS_V3,
     Projector,
 )
 from agents_governance.projection_config import load_projection_config
@@ -1649,6 +1650,14 @@ def test_v2_selection_field_contracts_are_exact() -> None:
         "version",
     }
     assert set(_SELECTION_FIELDS_V2) == set(_SELECTION_FIELDS_V1) | {"detection_rules"}
+    assert set(_SELECTION_FIELDS_V3) == {
+        "agents",
+        "detection_catalog_digest",
+        "opt_ins",
+        "project_profile",
+        "selected_tags",
+        "version",
+    }
 
 
 # ===== End v2 detection_rules tests =====
@@ -1736,10 +1745,13 @@ def test_canonical_marker_authorizes_minimal_project_selection(
     selection = json.loads(authorization.path.read_text(encoding="utf-8"))
     assert selection == {
         "agents": [],
-        "detection_rules": [_flext_detection_rule()],
+        "detection_catalog_digest": Projector._detection_catalog_digest(
+            projector.config.project_detection_rules
+        ),
         "opt_ins": [],
+        "project_profile": "internal_flext",
         "selected_tags": [],
-        "version": 2,
+        "version": 3,
     }
     second = projector.authorize(project)
     assert second.path.read_bytes() == authorization.path.read_bytes()

@@ -1,79 +1,54 @@
 # PR Sheriff review triage
 
-Use [scripts/pr_triage.py](../scripts/pr_triage.py) for the mechanical loop; the
-judgment stays here.
+Read repository-local configuration first. If and only if it explicitly selects
+AI Hub's managed-private contract, use AI Hub to resolve that configured
+workspace before reading PR state:
 
 ```sh
-# inventory: head/base, mergeability, checks_verdict, blocking/pending checks,
-# unresolved threads.
-# checks_verdict is the field to read: an empty check set reports
-# not_determined, never passed, so a PR whose CI has not started yet cannot be
-# mistaken for one whose CI succeeded.
-python3 skills/tool/pr-sheriff/scripts/pr_triage.py locate <owner/repo> <pr>
-
-# mandatory before a private managed-repository remote effect
-python3 skills/tool/pr-sheriff/scripts/pr_triage.py access <owner/repo> \
-  --effect push --ssh-url git@<declared-account-alias>:<owner>/<repo>.git
-
-# mandatory immediately before an authorized landing effect: emits the same
-# inventory and exits nonzero unless every landing condition is satisfied
-python3 skills/tool/pr-sheriff/scripts/pr_triage.py gate <owner/repo> <pr> \
-  --base <declared-integration-branch> --head <authorized-head-oid>
-
-# bind the effect to the exact OID returned and checked by gate; a concurrent
-# push fails instead of landing unreviewed code
-gh pr merge <pr> --merge --match-head-commit <authorized-head-oid>
-
-# integration-lane queue across repositories; read each repository's declared
-# integration branch from its own law — a branch name written here would be
-# wrong for the next repository swept
-python3 skills/tool/pr-sheriff/scripts/pr_triage.py sweep <owner/repo>... --base <declared-integration-branch>...
-
-# answer one thread with the evidence file, then resolve it
-python3 skills/tool/pr-sheriff/scripts/pr_triage.py settle <thread-id> --body-file evidence.md
+ai-hub forge-resolve --workspace <absolute-repository-path>
+ai-hub forge-doctor
+git remote get-url origin
+git config --local --get core.sshCommand
+git ls-remote origin HEAD
 ```
 
-REST inventories are paginated completely. A completed check is blocking when
-its conclusion is anything other than `success`, `neutral`, or `skipped`;
-therefore cancelled, timed-out, stale, `action_required`, and startup failures
-cannot disappear from the inventory. A check whose status is not `COMPLETED`
-remains pending. `mergeability` is explicitly `mergeable`, `conflicting`, or
-`unknown`; GitHub's pending `null` is never coerced to `false`.
+For public and other-owner repositories, omit this entire AI Hub block. Use the
+repository's declared Git/GitHub lifecycle directly; tool installation is not
+capability selection.
 
-`locate` remains an informational inventory and exits zero after a successful
-query even when its JSON reports blockers. Never compose a landing effect after
-`locate`; compose it only after `gate`, whose exit status requires an open,
-non-draft, mergeable PR with clean merge state, passed checks, and zero
-unresolved threads. `gate` additionally requires the caller's declared base and
-authorized head OID. The following merge must use `--match-head-commit` with
-that same OID; temporal proximity alone does not close the push/merge race.
+An explicitly selected private managed repository must use the exact
+`git@github.com:<owner>/<repo>.git` origin and repository-local SSH identity.
+Never mutate `~/.ssh/config`, introduce a host alias, execute Python directly,
+or invoke a helper script through its shebang.
 
-Triage decision rules, each applied per finding before any reply:
+Collect the complete PR inventory with `gh pr list`, then query each PR with
+`gh pr view --json` for head/base OIDs, draft/state, mergeability, merge state,
+reviews and check rollup. Query unresolved review threads through paginated
+`gh api graphql`; an empty check set is not determined, never passed. A check
+not completed stays pending, and every completed conclusion other than the
+repository's accepted success conclusions remains blocking.
 
-1. **Stale finding** — the reported defect no longer reproduces at the PR head.
-   Prove non-reproduction at runtime or by parsing the actual artifact
-   (`ast.parse` for import claims, the built binary for behavior claims), reply
-   with the exact proof, and resolve the thread. Never resolve on assertion
-   alone.
-2. **Valid finding with a code owner in this repository** — fix at the owner,
-   cite the fix commit in the reply, resolve after push.
-3. **Valid finding in a generated projection** — never hand-edit the
-   projection; fix the generator SSOT upstream, land its PR, then re-pin
-   (lockfile) and regenerate. Reply with the upstream PR reference.
-4. **By-design external reference** (governance parent files, fleet skill
-   paths) — exclude at the repository's lint config with an override scoped to
-   the exact glob, never a blanket rule disable, and say so in the reply.
-5. **New findings on the push** — re-reviews re-fire after every push; re-run
-   `locate` after each push before declaring the batch settled.
+Immediately before an authorized merge, repeat the PR query and require the
+declared integration base, the authorized head OID, open non-draft state,
+mergeable/clean state, passed native CI owner, required approval and zero
+unresolved threads. Bind the merge to that same OID:
 
-Landing traps that have cost lanes hours, encoded so they stay cheap:
+```sh
+gh pr merge <pr> --merge --match-head-commit <authorized-head-oid>
+```
 
-- The PR head branch is the only branch of record. A lane that pushes fixes to
-  a same-named local branch without verifying `headRefOid` has landed nothing;
-  verify the OID after every push.
-- A lockfile pins the generator OID. Landing a generator fix upstream moves
-  CI only after the consumer's lockfile re-resolves and the projection is
-  regenerated; state which of the two is missing when a gate stays red.
-- A committed symlink with an absolute target escapes every CI checkout root;
-  generators must render physical files, and adopting the regenerated
-  projection is the fix.
+Triage each finding:
+
+1. For a stale finding, prove non-reproduction against the current head before
+   replying and resolving.
+2. For a valid repository finding, correct its owner, push, re-query the head
+   OID and rerun invalidated gates.
+3. For generated output, correct and land the generator, update its pin and
+   regenerate the consumer.
+4. For an intentional external reference, use the narrow repository-owned
+   configuration override; never disable a rule globally.
+5. After every push, query all checks, reviews and threads again.
+
+The PR head is the branch of record. A local same-named branch is not evidence.
+Never land from a stale OID, treat GitHub's pending mergeability as false, or
+claim completion before the integration SHA and post-merge runtime proof.

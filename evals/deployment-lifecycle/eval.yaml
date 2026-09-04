@@ -1,0 +1,24 @@
+name: deployment-lifecycle-eval
+description: Immutable staged deployment for internal projects and managed forks.
+skill: deployment-lifecycle
+schemaVersion: '1.0'
+version: '1.0'
+config:
+  trials_per_task: 1
+  timeout_seconds: 300
+  parallel: false
+  max_attempts: 0
+  fail_fast: true
+  executor: copilot-sdk
+  model: aihub-primary
+  skill_directories: [../../skills/domain/deployment-lifecycle]
+  required_skills: [deployment-lifecycle]
+graders:
+- type: prompt
+  name: deployment-lifecycle-contract
+  config:
+    prompt: Grade deployment-lifecycle. Pass only for integrated-SHA immutable artifacts, digest, staging, native acceptance, atomic activation, installed-runtime proof, causal failure, and upstream build ownership for forks.
+- type: behavior
+  name: bounded_execution
+  config: {max_duration_ms: 240000}
+tasks: [tasks/*.yaml]

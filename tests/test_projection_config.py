@@ -209,7 +209,10 @@ def test_repository_projection_matrix_classifies_every_cell(tmp_path: Path) -> N
 
     assert len(config.cells) == 80
     assert [rule.rule_id for rule in config.project_detection_rules] == [
-        "flext-managed"
+        "aihub-internal",
+        "aihub-internal-flext",
+        "aihub-third-party-fork",
+        "flext-managed",
     ]
     assert config.cell("pool", "project", "skills").status is ProjectionStatus.SUPPORTED
     assert config.cell("pool", "project", "skills").path == ".poolside/skills"

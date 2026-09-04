@@ -4,12 +4,13 @@ description: Use command discovery to select native gates for project validation
 tags: [make, native-gates, project-validation, command-discovery, happy-path]
 inputs:
   prompt: Perform command discovery from the supplied Makefile, then select its
-    declared native gates for project validation. For a change limited to
-    src/widget.py, return the exact scoped lint-and-format command and the evidence
+    declared native gates for project validation. The Makefile declares setup.
+    For a change limited to src/widget.py, return the ordered setup and exact
+    scoped lint-and-format commands and the evidence
     required for green. The declared resolver has selected the newest released
     formatter and its findings remain blocking; do not execute the command,
     downgrade or override the version, or substitute a raw tool command.
   files:
   - path: Makefile
 expected:
-  output_contains: [make check, 'CHECK_GATES=lint,format', 'FILES=src/widget.py', blocking]
+  output_contains: [make setup, make check, 'CHECK_GATES=lint,format', 'FILES=src/widget.py', blocking]

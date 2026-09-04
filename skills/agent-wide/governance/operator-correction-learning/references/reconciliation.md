@@ -28,7 +28,10 @@ must not create a dual-tracking period.
    dependency, validator, test, facade, or adjacent layer because it is easier
    to change than the causal owner.
 2. Resolve precedence. A newer operator rule replaces conflicting lower or older
-   guidance. Two current operator rules that materially conflict require one
+   guidance. Reconcile every affected skill, rule, decision, document, tracker
+   item, plan, template, projection, and generated consumer; none may remain as
+   an active exception or reinterpret the operator's requested outcome. Two
+   current operator rules that materially conflict require one
    precise question before mutation. A prior exact operator authorization remains
    authoritative across interruption, state divergence, and red gates. Re-preflight
    and continue without asking again unless the effect expands beyond its approved

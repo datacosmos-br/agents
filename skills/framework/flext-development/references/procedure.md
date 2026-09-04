@@ -24,17 +24,29 @@ repository's own `AGENTS.md`) are read from the exact branch or release the
 active checkout is on. In standalone mode, with no parent workspace, read the
 raw GitHub file pinned to that same branch or tag, never `main`. These compose
 above the catalog's own global owners: `AGENTS.md`, `make-check`, and
-`verification-loop`. Before any landing effect, run
-`skills/tool/pr-sheriff/scripts/pr_triage.py gate <owner/repo> <pr> --base
-<declared-integration-branch> --head <authorized-head-oid>` (pr-sheriff).
+`verification-loop`. Before any landing effect, use `pr-sheriff`: resolve the
+workspace/account through the declared forge authority, collect fresh direct
+forge evidence for the
+declared integration branch and authorized head OID, then bind the merge to
+that OID.
 Missing or branch-mismatched authority fails the same as a missing owner
 above: zero effects, no fallback to `main` or a same-named catalog entry.
 
 ## Preserve the architecture
 
-- Compose the public facade in semantic order `c -> t -> p -> m -> u`; operational
-  facets include `r`, `e`, `x`, `h`, `d`, and `s`. Reverse runtime imports are
-  forbidden; type-only reverse references stay under `TYPE_CHECKING`.
+- Use Python 3.13 and Pydantic 2 from the manifest. The canonical structural
+  facets are `c` constants, `t` types, `m` models, `p` protocols, and `u` pure
+  utilities. Typed `settings` own external input and typed `config` owns
+  validated derivation. `base` contains only minimal shared foundations,
+  `services/` owns use cases receiving `p` dependencies, `api.py` is the
+  programmatic facade and composition root, and `cli.py` is a thin process
+  adapter only for a declared CLI capability.
+- `c/t/m/p/settings/config` never import `base`, `u`, `services`, `api`, or
+  `cli`; `base/u` depend only inward; services depend on typed ports; API and CLI
+  assemble the graph. Type-only reverse references stay under `TYPE_CHECKING`.
+- Use the `flext-core` container primitive only at the executable composition
+  root. Business services receive dependencies explicitly and never resolve
+  globals, string keys, shared containers, or introspected registrations.
 - Keep one thin package API/MRO facade and one generated lazy package root. Do not
   create an eager export path, custom import router, compatibility alias, renamed
   service base, parallel namespace, or duplicate facade.

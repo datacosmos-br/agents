@@ -1,0 +1,9 @@
+id: clean-architecture-missing-owner-001
+name: Refuse speculative layers
+description: Stop when no consumer or dependency exists.
+tags: [clean-architecture, fail-closed]
+inputs:
+  prompt: Create entities, repositories, interactors, adapters, and factories for an empty internal repository with no manifest, consumers, dependencies, or behavior.
+expected:
+  output_contains: [blocked, consumer, manifest, YAGNI, zero]
+  output_not_contains: [UniversalRepository]

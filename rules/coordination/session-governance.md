@@ -19,8 +19,9 @@ specialises global capabilities; it does not copy their universal procedure or
 bind governance to a personal filesystem path. Generated provider surfaces are
 projections of those owners and are changed only by regeneration.
 
-At each prompt, apply the newest operator intent and route only the skills
-material to that request. When a session demonstrates a reusable procedural gap,
+At each prompt, strictly follow every applicable skill. Reconcile all lower
+owners and consumers to newest operator intent; no conflict may remain.
+When a session demonstrates a reusable procedural gap,
 correct the narrowest canonical global owner, add a material evaluation, deploy
 its projections through the canonical lifecycle, and keep project-local text to
 selection and domain-specific constraints. After compaction, restore the active

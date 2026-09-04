@@ -3,6 +3,45 @@
   "manifest_versions": {"hooks": 3, "projection": 6},
   "project_detection_rules": [
     {
+      "activate_tags": ["internal"],
+      "id": "aihub-internal",
+      "when": {
+        "any": [
+          {
+            "paths": [".aihub/project.json"],
+            "pattern": "\"project_profile\": \"internal\"",
+            "type": "file_contains"
+          }
+        ]
+      }
+    },
+    {
+      "activate_tags": ["internal-flext"],
+      "id": "aihub-internal-flext",
+      "when": {
+        "any": [
+          {
+            "paths": [".aihub/project.json"],
+            "pattern": "\"project_profile\": \"internal_flext\"",
+            "type": "file_contains"
+          }
+        ]
+      }
+    },
+    {
+      "activate_tags": ["third-party-fork"],
+      "id": "aihub-third-party-fork",
+      "when": {
+        "any": [
+          {
+            "paths": [".aihub/project.json"],
+            "pattern": "\"project_profile\": \"third_party_fork\"",
+            "type": "file_contains"
+          }
+        ]
+      }
+    },
+    {
       "activate_tags": ["flext"],
       "id": "flext-managed",
       "when": {
