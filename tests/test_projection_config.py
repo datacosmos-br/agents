@@ -1,11 +1,16 @@
 from __future__ import annotations
 
 import json
-from collections.abc import Callable, Mapping, Sequence
+from collections.abc import Callable
 from pathlib import Path
 from typing import cast
 
 import pytest
+from projection_fixtures import (
+    JsonDocument,
+    JsonValue,
+    flext_detection_rule,
+)
 
 from agents_governance.agent_profiles import AgentProvider
 from agents_governance.projection_config import (
@@ -16,13 +21,6 @@ from agents_governance.projection_config import (
     ProjectionSurface,
     load_projection_config,
 )
-
-# Why: Sequence/Mapping recursion keeps nested JSON documents assignable under
-# invariance (ag-2wq detection-rule fixtures).
-type JsonValue = (
-    None | bool | int | float | str | Sequence["JsonValue"] | Mapping[str, "JsonValue"]
-)
-type JsonDocument = dict[str, JsonValue]
 
 
 def _providers(payload: JsonDocument) -> dict[str, JsonDocument]:
@@ -113,20 +111,7 @@ def test_projection_config_requires_complete_closed_v7_matrix(tmp_path: Path) ->
 def test_projection_config_owns_optional_project_detection_rules(
     tmp_path: Path,
 ) -> None:
-    rule: JsonDocument = {
-        "activate_tags": ["flext"],
-        "id": "flext-managed",
-        "when": {
-            "any": [
-                {
-                    "paths": ["pyproject.toml"],
-                    "pattern": "@flext-managed",
-                    "type": "file_contains",
-                }
-            ]
-        },
-    }
-    _write(tmp_path, _matrix(project_detection_rules=[rule]))
+    _write(tmp_path, _matrix(project_detection_rules=[flext_detection_rule()]))
 
     config = load_projection_config(tmp_path)
 
