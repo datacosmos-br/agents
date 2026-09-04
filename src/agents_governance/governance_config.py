@@ -82,6 +82,7 @@ _EXPECTED_GUARANTEES = frozenset(
         "sprint-closure",
         "stage-gate",
         "strict-execution",
+        "strict-typing",
         "topic-monopoly",
         "tracker-evidence",
     }
