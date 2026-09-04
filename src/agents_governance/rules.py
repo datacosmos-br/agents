@@ -18,7 +18,14 @@ from .frontmatter import parse_frontmatter
 _SLUG = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*\Z")
 _LINK = re.compile(r"!?\[[^\]\n]*\]\(([^)\n]+)\)")
 _SCHEME = re.compile(r"[A-Za-z][A-Za-z0-9+.-]*:")
-_FRONTMATTER_FIELDS = frozenset({"description", "globs", "metadata"})
+_FRONTMATTER_FIELDS = frozenset(
+    {
+        "capsule_summary",
+        "description",
+        "globs",
+        "metadata",
+    }
+)
 _METADATA_FIELDS = frozenset({"aihub.tags"})
 _ROUTES = frozenset({"route:both", "route:personal", "route:project"})
 _PROMPT_DEFENSE_IDENTITY = "security/prompt-defense"
@@ -45,6 +52,14 @@ class RuleSpec:
     references: tuple[str, ...]
     body: str
     tags: tuple[str, ...] = ()
+    capsule_summary: str | None = None
+    """Short standing form of this rule, rendered into the session capsule.
+
+    Claude Code truncates hook output above 10,000 characters, so the capsule
+    cannot carry full rule bodies once a handful of rules are bootstrapped. A
+    bootstrap rule declares its own summary; the body stays canonical and is
+    loaded by routing.
+    """
 
     def __post_init__(self) -> None:
         _validate_spec(self)
@@ -131,9 +146,9 @@ def _validate_spec(spec: RuleSpec) -> None:
 
 def _metadata(
     path: Path, raw: dict[str, object] | None
-) -> tuple[str | None, tuple[str, ...], tuple[str, ...]]:
+) -> tuple[str | None, tuple[str, ...], tuple[str, ...], str | None]:
     if raw is None:
-        return None, (), ()
+        return None, (), (), None
     unknown = frozenset(raw) - _FRONTMATTER_FIELDS
     if unknown:
         raise ValueError(f"{path}: unknown rule fields: {', '.join(sorted(unknown))}")
@@ -185,7 +200,13 @@ def _metadata(
             for tag in tags
         ):
             raise ValueError(f"{path}: rule tags support only route and approval tags")
-    return description, globs, tags
+    summary: str | None = None
+    if "capsule_summary" in raw:
+        value = raw["capsule_summary"]
+        if not isinstance(value, str) or not value.strip():
+            raise ValueError(f"{path}: capsule_summary must be non-empty text")
+        summary = value.strip()
+    return description, globs, tags, summary
 
 
 def _link_target(raw: str) -> str:
@@ -275,7 +296,7 @@ def audit_rule_specs(root: Path) -> tuple[RuleSpec, ...]:
             )
         identities.add(folded)
         raw, body = parse_frontmatter(path, required=False)
-        description, globs, tags = _metadata(path, raw)
+        description, globs, tags, capsule_summary = _metadata(path, raw)
         resolve_approval_tags(repository, tags, path)
         references = _references(repository, rules, path, body)
         normalized_body = body.strip()
@@ -292,6 +313,7 @@ def audit_rule_specs(root: Path) -> tuple[RuleSpec, ...]:
                 references,
                 body,
                 tags,
+                capsule_summary,
             )
         )
     return tuple(sorted(specs, key=lambda spec: spec.identity))

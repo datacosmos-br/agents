@@ -109,8 +109,13 @@ def test_additive_capability_rule_is_in_the_generated_session_capsule(
 
     script = next((project / ".codex" / "aihub-hooks").glob("*.py"))
     rendered = script.read_text(encoding="utf-8")
-    assert "Every other executable" in rendered
-    assert "strict execution" in rendered
+    # ag-qio: the capsule carries each bootstrap rule's declared standing
+    # summary, not its body — Claude Code truncates hook output past 10,000
+    # characters, and six full bodies already consumed the whole budget.
+    assert "runtime/strict-execution" in rendered
+    assert "elect one writable authority" in rendered
+    assert "fail loud, no fallback" in rendered
+    # Markdown links are flattened to their text wherever they appear.
     assert "[strict execution](" not in rendered
 
 

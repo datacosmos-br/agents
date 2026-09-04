@@ -1,5 +1,13 @@
 ---
 description: Mandatory fail-loud execution protocol for every project workflow.
+capsule_summary: |
+  Every project applies all of these together: fail loud, no fallback, preflight
+  before effects, required environment, atomic effects, causal subprocess
+  propagation, no keyring, zero residue.
+
+  A project rule may reject more inputs; it can never relax, catch, normalize,
+  skip, defer or route around any of them. Existing opposing behavior is a
+  blocking violation to fix at its owner, not grandfathered compatibility.
 metadata:
   aihub.tags: '["decision:ADR-0004","effective:2026-08-29","route:both"]'
 ---
