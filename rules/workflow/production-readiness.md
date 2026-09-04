@@ -1,7 +1,5 @@
 ---
 description: Production ships complete; every defect in the blast radius is adopted and fixed, including pre-existing ones.
-metadata:
-  aihub.tags: '["decision:plan-00","effective:2026-08-30","route:both"]'
 ---
 
 # Production readiness adopts every defect in scope

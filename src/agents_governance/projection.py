@@ -24,6 +24,7 @@ from .agent_profiles import (
     AgentProvider,
     render_agent,
 )
+from .atomic_io import atomic_write_text
 from .catalog import (
     NON_PORTABLE_PROJECT_REFERENCE,
     Catalog,
@@ -696,6 +697,59 @@ class Projector:
                     raise ValueError(f"{rule_label} activate_tags tag invalid: {tag}")
                 active.add(tag)
         return active
+
+    @staticmethod
+    def _selection_document(rules: tuple[dict[str, object], ...]) -> str:
+        payload: dict[str, object] = {
+            "agents": [],
+            "detection_rules": list(rules),
+            "opt_ins": [],
+            "selected_tags": [],
+            "version": 2,
+        }
+        return json.dumps(payload, indent=2, sort_keys=True) + "\n"
+
+    def authorize(self, project: Path) -> ProjectAuthorization:
+        """Authorize a detected canonical project with one minimal selection."""
+
+        authorization = load_project_authorization(project)
+        if authorization.selected or not self.config.project_detection_rules:
+            return authorization
+        path = project / PROJECT_SELECTION
+        label = f"{project / PROJECT_SELECTION}: canonical detection rules"
+        Projector._detect_active_tags(
+            project,
+            list(self.config.project_detection_rules),
+            label,
+        )
+        active_rules = tuple(
+            rule
+            for rule in self.config.project_detection_rules
+            if Projector._detect_active_tags(project, [rule], label)
+        )
+        if not active_rules:
+            return authorization
+        text = Projector._selection_document(active_rules)
+        created: list[Path] = []
+        try:
+            cursor = path.parent
+            missing: list[Path] = []
+            while not cursor.exists():
+                missing.append(cursor)
+                cursor = cursor.parent
+            if symlink_component(cursor) is not None or not cursor.is_dir():
+                raise ValueError(
+                    f"selection parent must be a physical directory: {cursor}"
+                )
+            for directory in reversed(missing):
+                directory.mkdir()
+                created.append(directory)
+            atomic_write_text(path, text, mode=0o644)
+        except BaseException:
+            for directory in reversed(created):
+                directory.rmdir()
+            raise
+        return load_project_authorization(project)
 
     @staticmethod
     def _selection(
@@ -1718,7 +1772,7 @@ class Projector:
         """Raise on the first project projection defect or drift."""
 
         project = self.project_root()
-        authorization = load_project_authorization(project)
+        authorization = self.authorize(project)
         for plan in self._plans(authorization):
             if not plan.root.exists():
                 continue
@@ -1742,7 +1796,7 @@ class Projector:
         """Preflight and defer every changed directory publication."""
 
         selected = (
-            load_project_authorization(self.project_root())
+            self.authorize(self.project_root())
             if authorization is None
             else authorization
         )

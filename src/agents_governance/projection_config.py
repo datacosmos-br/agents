@@ -92,6 +92,7 @@ class ProjectionConfig:
     version: int
     projection_manifest_version: int
     hook_manifest_version: int
+    project_detection_rules: tuple[dict[str, object], ...]
     cells: MappingProxyType[
         tuple[AgentProvider, ProjectionContext, ProjectionSurface], ProjectionCell
     ]
@@ -111,6 +112,8 @@ class ProjectionConfig:
 
 
 _ROOT_FIELDS = frozenset({"manifest_versions", "providers", "version"})
+_PROJECT_DETECTION_FIELD = "project_detection_rules"
+_ROOT_FIELDS_WITH_DETECTION = _ROOT_FIELDS | {_PROJECT_DETECTION_FIELD}
 _MANIFEST_VERSION_FIELDS = frozenset({"hooks", "projection"})
 _CONTEXTS = frozenset(context.value for context in ProjectionContext)
 _SURFACES = frozenset(surface.value for surface in ProjectionSurface)
@@ -286,7 +289,12 @@ def load_projection_config(root: Path) -> ProjectionConfig:
         raise ValueError("projection config must be a physical regular file")
     payload = json.loads(path.read_text(encoding="utf-8"))
     value = cast_mapping(payload, "projection config")
-    require_exact_fields(value, _ROOT_FIELDS, "projection config fields")
+    fields = (
+        _ROOT_FIELDS_WITH_DETECTION
+        if _PROJECT_DETECTION_FIELD in value
+        else _ROOT_FIELDS
+    )
+    require_exact_fields(value, fields, "projection config fields")
     if value["version"] != 7:
         raise ValueError("projection config must use version 7")
     manifest_versions = cast_mapping(
@@ -301,6 +309,15 @@ def load_projection_config(root: Path) -> ProjectionConfig:
         raise ValueError("projection directory manifest version must equal 6")
     if manifest_versions["hooks"] != 3:
         raise ValueError("projection hook manifest version must equal 3")
+
+    raw_detection_rules = value.get(_PROJECT_DETECTION_FIELD, [])
+    if not isinstance(raw_detection_rules, list) or not all(
+        isinstance(rule, dict) for rule in raw_detection_rules
+    ):
+        raise TypeError("projection project detection rules must be an array")
+    detection_rules = tuple(
+        cast(dict[str, object], rule) for rule in raw_detection_rules
+    )
 
     providers = cast_mapping(value["providers"], "projection providers")
     require_exact_fields(providers, _PROVIDERS, "projection providers")
@@ -331,6 +348,7 @@ def load_projection_config(root: Path) -> ProjectionConfig:
         cast(int, value["version"]),
         cast(int, manifest_versions["projection"]),
         cast(int, manifest_versions["hooks"]),
+        detection_rules,
         MappingProxyType(cells),
     )
 

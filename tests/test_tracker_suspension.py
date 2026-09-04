@@ -95,7 +95,7 @@ def test_suspended_tracker_tools_have_no_active_command_projection() -> None:
 
 
 def test_source_repository_does_not_select_or_contain_project_projection() -> None:
-    """No projection artifact may be versioned or offered as source.
+    """No derived projection artifact may be versioned or offered as source.
 
     The invariant is about *what Git carries*, not about what a directory
     entry happens to exist on one developer's disk. This repository is a
@@ -116,6 +116,7 @@ def test_source_repository_does_not_select_or_contain_project_projection() -> No
         r"|\.github/(?:agents|hooks|instructions|skills)/"
         r"|GEMINI\.md$)"
     )
+    commitable_selection = ".agents/projection.json"
 
     tracked = subprocess.run(
         ("git", "ls-files", "-z"),
@@ -132,10 +133,45 @@ def test_source_repository_does_not_select_or_contain_project_projection() -> No
         text=True,
     ).stdout.split("\0")
 
-    assert [path for path in tracked if path and projection.match(path)] == []
     assert [
-        entry[3:] for entry in offered if entry[3:] and projection.match(entry[3:])
+        path
+        for path in tracked
+        if path and projection.match(path) and path != commitable_selection
     ] == []
+    assert [
+        entry[3:]
+        for entry in offered
+        if entry[3:]
+        and projection.match(entry[3:])
+        and entry[3:] != commitable_selection
+    ] == []
+
+    assert (
+        subprocess.run(
+            ("git", "check-ignore", "-q", commitable_selection),
+            cwd=ROOT,
+            check=False,
+        ).returncode
+        == 1
+    )
+    assert (
+        subprocess.run(
+            ("git", "check-ignore", "-q", ".claude/settings.json"),
+            cwd=ROOT,
+            check=False,
+        ).returncode
+        == 0
+    )
+    assert (
+        subprocess.run(
+            ("git", "ls-files", "--", "AGENTS.md"),
+            cwd=ROOT,
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.strip()
+        == "AGENTS.md"
+    )
 
     # A generated capsule must never be merged into the canonical instruction.
     assert "AIHUB-GOVERNANCE-INSTRUCTIONS" not in (ROOT / "AGENTS.md").read_text(

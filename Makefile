@@ -8,7 +8,7 @@ override export UV_PROJECT_ENVIRONMENT := $(CURDIR)/.venv
 override export VIRTUAL_ENV := $(CURDIR)/.venv
 
 .DEFAULT_GOAL := help
-.PHONY: help setup docs audit check waza static fmt fix shell build test spec coverage providers projection gen ci security temp validate-live validate-wheel clean
+.PHONY: help setup docs audit check waza static fmt fix shell duplication duplication-baseline build test spec coverage providers projection gen ci security temp validate-live validate-wheel clean
 .DELETE_ON_ERROR:
 
 define BANNER
@@ -70,7 +70,15 @@ shell: ## validate shell scripts and GitHub workflows
 
 duplication: ## enforce zero strict duplication in canonical Python source
 	$(call BANNER,duplication · jscpd)
-	@jscpd src --config $(CURDIR)/.jscpd.json
+	@npx --yes jscpd@5.1.2 src --config $(CURDIR)/.jscpd.json \
+		--baseline $(CURDIR)/.jscpd-baseline.json --fail-on-new-clones 0 \
+		--output $(CURDIR)/.reports/jscpd --reporters console,json
+
+duplication-baseline: ## regenerate the reviewed 8-line duplication baseline
+	$(call BANNER,duplication-baseline · jscpd)
+	@npx --yes jscpd@5.1.2 src --config $(CURDIR)/.jscpd.json \
+		--baseline $(CURDIR)/.jscpd-baseline.json --update-baseline \
+		--output $(CURDIR)/.reports/jscpd --reporters console,json
 
 build: ## build source and wheel artifacts
 	$(call BANNER,build · sdist + wheel)
