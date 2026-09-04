@@ -283,11 +283,6 @@ def _command(path: Path) -> str:
     return f"python3 {shlex.quote(str(path))}"
 
 
-def _project_command(path: Path, boundary: Path) -> str:
-    relative = path.relative_to(boundary).as_posix()
-    return f'python3 "$CLAUDE_PROJECT_DIR/{relative}"'
-
-
 def _nested_config(
     provider: AgentProvider,
     current: dict[str, object],
@@ -707,15 +702,7 @@ class HookProjector:
                 path: (_script(provider, event, capsule), 0o755)
                 for event, path in scripts.items()
             }
-            commands = {
-                event: (
-                    _project_command(scripts[event], boundary)
-                    if provider is AgentProvider.CLAUDE
-                    and context is ProjectionContext.PROJECT
-                    else _command(scripts[event])
-                )
-                for event in events
-            }
+            commands = {event: _command(scripts[event]) for event in events}
             exact = dict(desired)
             entries = {}
             merged_provider = provider in {
@@ -832,6 +819,69 @@ class HookProjector:
             removals = tuple(sorted(retired, key=lambda item: str(item.path)))
         return HookPlan(provider, context, boundary, config, desired, removals)
 
+    def _retire_claude_project_hooks(self, boundary: Path) -> HookPlan | None:
+        """Remove only project hook artifacts previously published by this owner."""
+
+        cell = self.config.cell(
+            AgentProvider.CLAUDE,
+            ProjectionContext.PROJECT,
+            ProjectionSurface.HOOKS,
+        )
+        assert cell.path is not None
+        config = _destination(boundary, cell.path, ProjectionContext.PROJECT)
+        manifest_path = _manifest_path(config)
+        manifest = _read_manifest(manifest_path, self.config.hook_manifest_version)
+        if manifest is None:
+            return None
+        current = _read_json(config)
+        hooks = cast_mapping(current.get("hooks", {}), f"{config}: hooks")
+        rendered_hooks: dict[str, object] = dict(hooks)
+        entries = cast_mapping(manifest["entries"], "hook managed entries")
+        for event, managed_entry in entries.items():
+            existing = rendered_hooks.get(event)
+            if not isinstance(existing, list) or existing.count(managed_entry) != 1:
+                raise ValueError(f"managed hook entry was modified: {config}:{event}")
+            retained = [entry for entry in existing if entry != managed_entry]
+            if retained:
+                rendered_hooks[event] = retained
+            else:
+                rendered_hooks.pop(event)
+        rendered = dict(current)
+        if rendered_hooks:
+            rendered["hooks"] = rendered_hooks
+        else:
+            rendered.pop("hooks", None)
+
+        removals: list[HookRemoval] = []
+        for relative, raw in cast_mapping(
+            manifest["managed"], "hook managed files"
+        ).items():
+            path = _destination(boundary, relative, ProjectionContext.PROJECT)
+            entry = cast_mapping(raw, f"retired hook artifact {relative}")
+            removals.append(
+                HookRemoval(
+                    path,
+                    cast(str, entry["digest"]),
+                    cast(str, entry["mode"]),
+                )
+            )
+        removals.append(
+            HookRemoval(
+                manifest_path,
+                hashlib.sha256(manifest_path.read_bytes()).hexdigest(),
+                f"{stat.S_IMODE(manifest_path.lstat().st_mode):04o}",
+            )
+        )
+        mode = stat.S_IMODE(config.lstat().st_mode)
+        return HookPlan(
+            AgentProvider.CLAUDE,
+            ProjectionContext.PROJECT,
+            boundary,
+            config,
+            {config: (_render_json(rendered), mode)},
+            tuple(sorted(removals, key=lambda removal: str(removal.path))),
+        )
+
     def _plans(self, authorization: ProjectAuthorization) -> tuple[HookPlan, ...]:
         home = _physical_boundary(Path.home(), "personal home")
         repository = _physical_boundary(authorization.project, "project root")
@@ -848,6 +898,11 @@ class HookProjector:
             for context in ProjectionContext:
                 if context is ProjectionContext.PROJECT and not project_authorized:
                     continue
+                if (
+                    provider is AgentProvider.CLAUDE
+                    and context is ProjectionContext.PROJECT
+                ):
+                    continue
                 cell = self.config.cell(provider, context, ProjectionSurface.HOOKS)
                 if cell.status is not ProjectionStatus.SUPPORTED:
                     continue
@@ -859,6 +914,10 @@ class HookProjector:
                         capsule,
                     )
                 )
+        if project_authorized:
+            retirement = self._retire_claude_project_hooks(repository)
+            if retirement is not None:
+                planned.append(retirement)
         hooks = tuple(planned)
         instructions: list[HookPlan] = []
         for provider in AgentProvider:
