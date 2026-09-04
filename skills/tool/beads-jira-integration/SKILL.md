@@ -27,12 +27,15 @@ or script env vars.
 ## Sync (native `bd jira sync`)
 
 ```bash
-bd jira sync --push --dry-run      # preview
-bd jira sync --push --create-only  # create new issues only
-bd jira sync --pull                # pull status changes
+bd jira sync --push --state open --dry-run   # preview (state open is the default contract)
+bd jira sync --push --state open --create-only  # create new issues only
+bd jira sync --pull --state open             # pull status changes
+bd jira sync --push --issues <id>,<id>       # selective push
 ```
 
 The CLI writes `external_ref` on created beads; never set it manually.
+`--parent <bead>` limits the push to one bead and its descendants; `--state`
+defaults to `all` upstream — always pass `--state open` explicitly.
 
 ## Hierarchy Alignment
 
@@ -43,6 +46,19 @@ The CLI writes `external_ref` on created beads; never set it manually.
 | bug | not pushed to Jira |
 
 Epic key: `config.CosmosMain.jira.epic_key`.
+
+## Sync Policy (beads is SSOT; Jira is a mirror of OPEN work)
+
+- Only OPEN beads sync. Closed beads and `bug` type never create Jira issues.
+- Re-push without dedup creates duplicate tickets: always `--dry-run` first,
+  and keep `external_ref` as the single dedup key.
+- A push that fails to write `external_ref` back leaves orphan Jira tickets
+  the ledger cannot see — audit with
+  `project = <KEY> AND parent IS EMPTY AND created >= "<sync-date>"`
+  and transition strays to Done with a cause comment.
+- The Jira API token is operator custody: it lives in `bd config`
+  (or secret-tool at the service boundary), never in transcripts, git, or env
+  files.
 
 ## Prohibited Patterns
 
