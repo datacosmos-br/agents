@@ -1,6 +1,7 @@
 # Development support and gate composition for the optionless agentsctl runtime.
 
 AGENTSCTL := uv run agentsctl
+JSCPD := npx --yes jscpd@5.1.2
 PYTEST_SCRATCH := $(CURDIR)/.test-tmp
 WHEEL_SMOKE := $(PYTEST_SCRATCH)/wheel-smoke
 WHEEL_PROJECT := $(PYTEST_SCRATCH)/wheel-project
@@ -8,7 +9,7 @@ override export UV_PROJECT_ENVIRONMENT := $(CURDIR)/.venv
 override export VIRTUAL_ENV := $(CURDIR)/.venv
 
 .DEFAULT_GOAL := help
-.PHONY: help setup docs audit check waza static fmt fix shell build test spec coverage providers projection gen ci security temp validate-live validate-wheel clean
+.PHONY: help setup docs audit check waza static fmt fix shell duplication duplication-baseline build test spec coverage providers projection gen ci security temp validate-live validate-wheel clean
 .DELETE_ON_ERROR:
 
 define BANNER
@@ -70,7 +71,13 @@ shell: ## validate shell scripts and GitHub workflows
 
 duplication: ## enforce zero strict duplication in canonical Python source
 	$(call BANNER,duplication · jscpd)
-	@jscpd src --config $(CURDIR)/.jscpd.json
+	@$(JSCPD) src tests --config $(CURDIR)/.jscpd.json \
+		--baseline $(CURDIR)/.jscpd-baseline.json --fail-on-new-clones 0
+
+duplication-baseline: ## rebuild the owned eight-line jscpd baseline
+	$(call BANNER,duplication-baseline · jscpd)
+	@$(JSCPD) src tests --config $(CURDIR)/.jscpd.json \
+		--baseline $(CURDIR)/.jscpd-baseline.json --update-baseline
 
 build: ## build source and wheel artifacts
 	$(call BANNER,build · sdist + wheel)

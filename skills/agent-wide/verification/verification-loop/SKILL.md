@@ -21,3 +21,6 @@ overlap. Production readiness adopts every defect in the blast
 radius, including pre-existing ones; read
 `rules/workflow/production-readiness.md` (rule file) before any completion
 claim over a red or unresolved base.
+When the repository owns the deployed runtime, completion also requires
+installing or reconciling that runtime from the merged integration SHA and
+proving the public surface there.
