@@ -25,7 +25,6 @@ from .hook_projection import HookProjector
 from .law_surface import LawSurface
 from .native_evals import evaluate_native
 from .projection import Projector
-from .projection_authorization import load_project_authorization
 from .projection_config import load_projection_config
 from .provenance import version as provenance_version
 from .rules import RuleSpec, audit_rule_specs
@@ -182,7 +181,7 @@ def sync(root: Path) -> None:
         inventory.rules,
     )
     project = projector.project_root()
-    authorization = load_project_authorization(project)
+    authorization = projector.authorize(project)
     hooks = HookProjector(
         inventory.governance,
         projection,

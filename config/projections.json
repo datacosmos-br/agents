@@ -1,6 +1,21 @@
 {
   "version": 7,
   "manifest_versions": {"hooks": 3, "projection": 6},
+  "project_detection_rules": [
+    {
+      "activate_tags": ["flext"],
+      "id": "flext-managed",
+      "when": {
+        "any": [
+          {
+            "paths": ["pyproject.toml"],
+            "pattern": "@flext-managed",
+            "type": "file_contains"
+          }
+        ]
+      }
+    }
+  ],
   "providers": {
     "claude": {
       "personal": {

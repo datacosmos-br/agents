@@ -8,6 +8,7 @@ import pytest
 from agents_governance import runtime
 from agents_governance.catalog import Catalog
 from agents_governance.cleanup import Publication
+from agents_governance.projection_authorization import ProjectAuthorization
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -119,12 +120,14 @@ def test_sync_selects_projection_without_live_or_security(
     capsys: pytest.CaptureFixture[str],
 ) -> None:
     events: list[str] = []
-    authorize = runtime.load_project_authorization
+    authorize = runtime.Projector.authorize
     publish = runtime.run_atomic_publications
 
-    def record_authorization(project: Path) -> object:
+    def record_authorization(
+        projector: runtime.Projector, project: Path
+    ) -> ProjectAuthorization:
         events.append("authorization")
-        return authorize(project)
+        return authorize(projector, project)
 
     def record_publication(publications: Sequence[Publication]) -> None:
         events.append("publication")
@@ -132,7 +135,7 @@ def test_sync_selects_projection_without_live_or_security(
 
     _cached_inventory(monkeypatch)
     _reject_runtime_capabilities(monkeypatch)
-    monkeypatch.setattr(runtime, "load_project_authorization", record_authorization)
+    monkeypatch.setattr(runtime.Projector, "authorize", record_authorization)
     monkeypatch.setattr(runtime, "run_atomic_publications", record_publication)
     home, project = _sync_project(tmp_path, monkeypatch)
     assert Path.home().resolve(strict=True) == home

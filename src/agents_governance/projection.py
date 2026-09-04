@@ -24,6 +24,7 @@ from .agent_profiles import (
     AgentProvider,
     render_agent,
 )
+from .atomic_io import atomic_write_text
 from .catalog import (
     NON_PORTABLE_PROJECT_REFERENCE,
     Catalog,
@@ -53,6 +54,10 @@ from .projection_authorization import (
     load_project_authorization,
 )
 from .projection_config import (
+    DetectionCondition,
+    DetectionConditionType,
+    DetectionOperator,
+    ProjectDetectionRule,
     ProjectionCell,
     ProjectionConfig,
     ProjectionContext,
@@ -90,9 +95,6 @@ _TEXT_SUFFIXES = frozenset(
 _SELECTION_FIELDS_V1 = frozenset({"agents", "opt_ins", "selected_tags", "version"})
 _SELECTION_FIELDS_V2 = frozenset(
     {"agents", "opt_ins", "selected_tags", "version", "detection_rules"}
-)
-_DETECTION_CONDITION_TYPES = frozenset(
-    {"path_exists", "path_missing", "file_contains", "file_not_contains"}
 )
 _DETECTION_EXCLUDED_COMPONENTS = frozenset(
     {
@@ -532,34 +534,15 @@ class Projector:
         return resolved
 
     @staticmethod
-    def _detection_paths(
-        condition: dict[str, object], rule_label: str, condition_label: str
-    ) -> list[str]:
-        raw_paths = condition.get("paths")
-        if (
-            not isinstance(raw_paths, list)
-            or not raw_paths
-            or not all(isinstance(path, str) and path for path in raw_paths)
-        ):
-            raise TypeError(
-                f"{rule_label} {condition_label}.paths must be a non-empty "
-                "array of strings"
-            )
-        paths = cast(list[str], raw_paths)
-        for path in paths:
-            Projector._bounded_detection_pattern(
-                path, f"{rule_label} {condition_label}.paths"
-            )
-        return paths
+    def _detection_paths(condition: DetectionCondition) -> tuple[str, ...]:
+        for path in condition.paths:
+            Projector._bounded_detection_pattern(path, "detection condition paths")
+        return condition.paths
 
     @staticmethod
-    def _detect_condition_holds(project: Path, condition: dict[str, object]) -> bool:
-        raw_type = condition.get("type")
-        if not isinstance(raw_type, str) or raw_type not in _DETECTION_CONDITION_TYPES:
-            raise ValueError(f"unknown detection condition type: {raw_type}")
-        pattern = condition.get("pattern", "")
-        if not isinstance(pattern, str) or not pattern:
-            raise ValueError("detection condition pattern must be a non-empty string")
+    def _detect_condition_holds(project: Path, condition: DetectionCondition) -> bool:
+        condition_type = condition.condition_type
+        pattern = condition.pattern
         Projector._bounded_detection_pattern(pattern, "detection pattern")
         pattern_path = PurePosixPath(pattern)
 
@@ -569,8 +552,11 @@ class Projector:
                 for part in candidate.relative_to(project).parts
             )
 
-        if raw_type in {"file_contains", "file_not_contains"}:
-            paths = Projector._detection_paths(condition, "detection rule", "condition")
+        if condition_type in (
+            DetectionConditionType.FILE_CONTAINS,
+            DetectionConditionType.FILE_NOT_CONTAINS,
+        ):
+            paths = Projector._detection_paths(condition)
             matched_files: set[Path] = set()
             total_bytes = 0
             for glob_pattern in paths:
@@ -605,7 +591,11 @@ class Projector:
                 pattern in candidate.read_text(encoding="utf-8")
                 for candidate in matched_files
             )
-            return contains if raw_type == "file_contains" else not contains
+            return (
+                contains
+                if condition_type is DetectionConditionType.FILE_CONTAINS
+                else not contains
+            )
 
         matches: list[Path] = []
         for candidate in project.glob(pattern):
@@ -625,80 +615,129 @@ class Projector:
                 and Projector._contained_physical_path(candidate, project) is not None
                 and not candidate.is_symlink()
             )
-        return has_match if raw_type == "path_exists" else not has_match
+        return (
+            has_match
+            if condition_type is DetectionConditionType.PATH_EXISTS
+            else not has_match
+        )
 
     @staticmethod
-    def _detect_active_tags(project: Path, rules: object, label: str) -> set[str]:
-        if not isinstance(rules, list):
-            raise TypeError(f"{label} detection_rules must be an array")
+    def _detect_active_tags(
+        project: Path, rules: tuple[ProjectDetectionRule, ...]
+    ) -> set[str]:
         active: set[str] = set()
         seen_rule_ids: set[str] = set()
-        for idx, raw_rule in enumerate(rules):
-            rule_label = f"{label} detection_rules[{idx}]"
-            rule = cast_mapping(raw_rule, rule_label)
-            rule_id = rule.get("id")
-            if (
-                not isinstance(rule_id, str)
-                or not rule_id
-                or rule_id.strip() != rule_id
-            ):
-                raise ValueError(f"{rule_label} id must be a non-empty trimmed string")
-            if not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", rule_id):
-                raise ValueError(f"{rule_label} id must match [a-z0-9]+(-[a-z0-9]+)*")
-            if rule_id in seen_rule_ids:
-                raise ValueError(f"{rule_label} duplicates detection rule id {rule_id}")
-            seen_rule_ids.add(rule_id)
-            when = rule.get("when")
-            if not isinstance(when, dict):
-                raise TypeError(f"{rule_label} when must be an object")
-            if frozenset(when) not in (
-                frozenset({"all"}),
-                frozenset({"any"}),
-                frozenset({"none"}),
-            ):
+        for rule in rules:
+            if not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", rule.rule_id):
+                raise ValueError(f"detection rule id invalid: {rule.rule_id}")
+            if rule.rule_id in seen_rule_ids:
                 raise ValueError(
-                    f"{rule_label} when must be exactly one of all/any/none"
+                    f"detection rules duplicates detection rule id {rule.rule_id}"
                 )
-            op = next(iter(when))
-            raw_conds = when[op]
-            if not isinstance(raw_conds, list) or not raw_conds:
-                raise TypeError(f"{rule_label} when.{op} must be a non-empty array")
-            conds = [
-                cast_mapping(c, f"{rule_label} when.{op}[{i}]")
-                for i, c in enumerate(raw_conds)
+            seen_rule_ids.add(rule.rule_id)
+            results = [
+                Projector._detect_condition_holds(project, condition)
+                for condition in rule.conditions
             ]
-            # Validate each condition shape before evaluation
-            for c in conds:
-                if "type" not in c:
-                    raise ValueError(f"{rule_label} condition missing type")
-            # Evaluate
-            results = [Projector._detect_condition_holds(project, c) for c in conds]
             triggered = (
                 all(results)
-                if op == "all"
+                if rule.operator is DetectionOperator.ALL
                 else any(results)
-                if op == "any"
+                if rule.operator is DetectionOperator.ANY
                 else not any(results)
             )
             if not triggered:
                 continue
-            raw_tags = rule.get("activate_tags")
-            if (
-                not isinstance(raw_tags, list)
-                or not raw_tags
-                or not all(isinstance(t, str) and t for t in raw_tags)
-            ):
-                raise TypeError(
-                    f"{rule_label} activate_tags must be a non-empty array of strings"
-                )
-            for tag in cast(list[str], raw_tags):
+            for tag in rule.activate_tags:
                 if not re.fullmatch(r"[a-z0-9]+(?:[-:][a-z0-9]+)*", tag):
-                    raise ValueError(f"{rule_label} activate_tags tag invalid: {tag}")
+                    raise ValueError(f"detection activate tag invalid: {tag}")
                 active.add(tag)
         return active
 
     @staticmethod
+    def _render_detection_rules(rules: tuple[ProjectDetectionRule, ...]):
+        return [
+            {
+                "activate_tags": list(rule.activate_tags),
+                "id": rule.rule_id,
+                "when": {
+                    rule.operator.value: [
+                        {
+                            **(
+                                {"paths": list(condition.paths)}
+                                if condition.paths
+                                else {}
+                            ),
+                            "pattern": condition.pattern,
+                            "type": condition.condition_type.value,
+                        }
+                        for condition in rule.conditions
+                    ]
+                },
+            }
+            for rule in rules
+        ]
+
+    @staticmethod
+    def _selection_document(rules: tuple[ProjectDetectionRule, ...]) -> str:
+        rendered_rules = Projector._render_detection_rules(rules)
+        return (
+            json.dumps(
+                {
+                    "agents": [],
+                    "detection_rules": rendered_rules,
+                    "opt_ins": [],
+                    "selected_tags": [],
+                    "version": 2,
+                },
+                indent=2,
+                sort_keys=True,
+            )
+            + "\n"
+        )
+
+    def authorize(self, project: Path) -> ProjectAuthorization:
+        """Authorize a detected canonical project with one minimal selection."""
+
+        authorization = load_project_authorization(project)
+        if authorization.selected or not self.config.project_detection_rules:
+            return authorization
+        path = project / PROJECT_SELECTION
+        Projector._detect_active_tags(project, self.config.project_detection_rules)
+        active_rules = tuple(
+            rule
+            for rule in self.config.project_detection_rules
+            if Projector._detect_active_tags(project, (rule,))
+        )
+        if not active_rules:
+            return authorization
+        text = Projector._selection_document(active_rules)
+        created: list[Path] = []
+
+        def publish_selection() -> None:
+            cursor = path.parent
+            missing: list[Path] = []
+            while not cursor.exists():
+                missing.append(cursor)
+                cursor = cursor.parent
+            if symlink_component(cursor) is not None or not cursor.is_dir():
+                raise ValueError(
+                    f"selection parent must be a physical directory: {cursor}"
+                )
+            for directory in reversed(missing):
+                directory.mkdir()
+                created.append(directory)
+            atomic_write_text(path, text, mode=0o644)
+
+        def rollback_directories() -> None:
+            for directory in reversed(created):
+                directory.rmdir()
+
+        run_with_cleanup(publish_selection, rollback_directories)
+        return load_project_authorization(project)
+
     def _selection(
+        self,
         authorization: ProjectAuthorization,
     ) -> ProjectionSelection | None:
         if authorization.payload is None:
@@ -720,11 +759,17 @@ class Projector:
             _strings(payload["selected_tags"], f"{path}: selected_tags")
         )
         if version == 2 and "detection_rules" in payload:
+            expected_rules = Projector._render_detection_rules(
+                self.config.project_detection_rules
+            )
+            if payload["detection_rules"] != expected_rules:
+                raise ValueError(
+                    f"{path}: detection_rules must equal the canonical projection config"
+                )
             selected_tags.update(
                 Projector._detect_active_tags(
                     authorization.project,
-                    payload["detection_rules"],
-                    str(path),
+                    self.config.project_detection_rules,
                 )
             )
         return ProjectionSelection(agents, opt_ins, tuple(sorted(selected_tags)))
@@ -1718,7 +1763,7 @@ class Projector:
         """Raise on the first project projection defect or drift."""
 
         project = self.project_root()
-        authorization = load_project_authorization(project)
+        authorization = self.authorize(project)
         for plan in self._plans(authorization):
             if not plan.root.exists():
                 continue
@@ -1742,7 +1787,7 @@ class Projector:
         """Preflight and defer every changed directory publication."""
 
         selected = (
-            load_project_authorization(self.project_root())
+            self.authorize(self.project_root())
             if authorization is None
             else authorization
         )

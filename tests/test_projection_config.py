@@ -15,6 +15,11 @@ from agents_governance.projection_config import (
     load_projection_config,
 )
 
+type JsonValue = (
+    None | bool | int | float | str | list[JsonValue] | dict[str, JsonValue]
+)
+type JsonDocument = dict[str, JsonValue]
+
 
 def _supported(path: str, *, max_tokens: int | None = None) -> dict[str, object]:
     cell: dict[str, object] = {"status": "SUPPORTED", "path": path}
@@ -27,7 +32,9 @@ def _unsupported(reason: str = "UNSUPPORTED: no native contract") -> dict[str, s
     return {"status": "UNSUPPORTED", "reason": reason}
 
 
-def _matrix() -> dict[str, object]:
+def _matrix(
+    *, project_detection_rules: list[JsonDocument] | None = None
+) -> JsonDocument:
     providers: dict[str, object] = {}
     for provider in AgentProvider:
         contexts: dict[str, object] = {}
@@ -56,11 +63,14 @@ def _matrix() -> dict[str, object]:
                 surfaces[surface.value] = cell
             contexts[context.value] = surfaces
         providers[provider.value] = contexts
-    return {
+    payload = {
         "version": 7,
         "manifest_versions": {"hooks": 3, "projection": 6},
         "providers": providers,
     }
+    if project_detection_rules is not None:
+        payload["project_detection_rules"] = project_detection_rules
+    return payload
 
 
 def _write(root: Path, payload: object) -> None:
@@ -82,6 +92,41 @@ def test_projection_config_requires_complete_closed_v7_matrix(tmp_path: Path) ->
         config.cell("claude", "personal", "skills").status is ProjectionStatus.SUPPORTED
     )
     assert config.cell("claude", "personal", "skills").path == "${HOME}/.claude/skills"
+
+
+def test_projection_config_owns_optional_project_detection_rules(
+    tmp_path: Path,
+) -> None:
+    rule: JsonDocument = {
+        "activate_tags": ["flext"],
+        "id": "flext-managed",
+        "when": {
+            "any": [
+                {
+                    "paths": ["pyproject.toml"],
+                    "pattern": "@flext-managed",
+                    "type": "file_contains",
+                }
+            ]
+        },
+    }
+    _write(tmp_path, _matrix(project_detection_rules=[rule]))
+
+    config = load_projection_config(tmp_path)
+
+    assert tuple(item.rule_id for item in config.project_detection_rules) == (
+        "flext-managed",
+    )
+
+
+def test_projection_config_rejects_non_rule_detection_contract(
+    tmp_path: Path,
+) -> None:
+    payload = _matrix(project_detection_rules=["flext-managed"])  # type: ignore[list-item]
+    _write(tmp_path, payload)
+
+    with pytest.raises(TypeError, match="project detection rules"):
+        load_projection_config(tmp_path)
 
 
 @pytest.mark.parametrize(
@@ -144,6 +189,9 @@ def test_repository_projection_matrix_classifies_every_cell(tmp_path: Path) -> N
     config = load_projection_config(repository)
 
     assert len(config.cells) == 80
+    assert [rule.rule_id for rule in config.project_detection_rules] == [
+        "flext-managed"
+    ]
     assert config.cell("pool", "project", "skills").status is ProjectionStatus.SUPPORTED
     assert config.cell("pool", "project", "skills").path == ".poolside/skills"
     assert (

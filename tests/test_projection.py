@@ -33,6 +33,11 @@ _PROVIDERS = (
 )
 _SURFACES = ("skills", "commands", "agents", "rules", "hooks")
 
+type JsonValue = (
+    None | bool | int | float | str | list[JsonValue] | dict[str, JsonValue]
+)
+type JsonDocument = dict[str, JsonValue]
+
 
 def _encode(tags: tuple[str, ...]) -> str:
     return json.dumps(list(approved(tags)), separators=(",", ":"))
@@ -117,7 +122,12 @@ def _skill_eval(root: Path, name: str, category: str) -> None:
     )
 
 
-def _config(root: Path, supported: dict[tuple[str, str], str]) -> None:
+def _config(
+    root: Path,
+    supported: dict[tuple[str, str], str],
+    *,
+    project_detection_rules: list[JsonDocument] | None = None,
+) -> None:
     config = root / "config"
     config.mkdir()
     (config / "skills.json").write_text(
@@ -187,14 +197,15 @@ def _config(root: Path, supported: dict[tuple[str, str], str]) -> None:
                 )
             contexts[context] = surfaces
         providers[provider] = contexts
+    projection_payload: JsonDocument = {
+        "version": 7,
+        "manifest_versions": {"hooks": 3, "projection": 6},
+        "providers": providers,
+    }
+    if project_detection_rules is not None:
+        projection_payload["project_detection_rules"] = project_detection_rules
     (config / "projections.json").write_text(
-        json.dumps(
-            {
-                "version": 7,
-                "manifest_versions": {"hooks": 3, "projection": 6},
-                "providers": providers,
-            }
-        ),
+        json.dumps(projection_payload),
         encoding="utf-8",
     )
 
@@ -203,12 +214,35 @@ def _source(
     tmp_path: Path,
     *,
     supported: dict[tuple[str, str], str] | None = None,
+    project_detection_rules: list[JsonDocument] | None = None,
 ) -> tuple[Path, Projector]:
     root = tmp_path / "source"
     root.mkdir()
     _skill(root, "project-guidance")
-    _config(root, supported or {("codex", "skills"): ".agents/skills"})
+    if project_detection_rules is not None:
+        _conditional_skill(root, "flext")
+    _config(
+        root,
+        supported or {("codex", "skills"): ".agents/skills"},
+        project_detection_rules=project_detection_rules,
+    )
     return root, Projector(Catalog(root), load_projection_config(root), (), (), ())
+
+
+def _flext_detection_rule() -> JsonDocument:
+    return {
+        "activate_tags": ["flext"],
+        "id": "flext-managed",
+        "when": {
+            "any": [
+                {
+                    "paths": ["pyproject.toml"],
+                    "pattern": "@flext-managed",
+                    "type": "file_contains",
+                }
+            ]
+        },
+    }
 
 
 def _agent_projector(
@@ -1310,7 +1344,11 @@ def _make_v2_project(
     _skill(source, "project-guidance")
     for tag in sorted({*selected_tags, *_rule_activate_tags(detection_rules)}):
         _conditional_skill(source, tag)
-    _config(source, {("codex", "skills"): ".agents/skills"})
+    _config(
+        source,
+        {("codex", "skills"): ".agents/skills"},
+        project_detection_rules=detection_rules,
+    )
     projector = Projector(Catalog(source), load_projection_config(source), (), (), ())
     monkeypatch.chdir(project)
     return project, projector
@@ -1673,3 +1711,52 @@ def test_alias_link_divergence_requires_adjudication(
     with pytest.raises(ValueError, match="unadjudicated projection divergence"):
         projector.apply()
     assert link.is_dir() and not link.is_symlink()
+
+
+def test_canonical_marker_authorizes_minimal_project_selection(
+    tmp_path: Path,
+) -> None:
+    _, projector = _source(
+        tmp_path,
+        project_detection_rules=[_flext_detection_rule()],
+    )
+    project = tmp_path / "consumer"
+    project.mkdir()
+    (project / "pyproject.toml").write_text(
+        "# @flext-managed\n",
+        encoding="utf-8",
+    )
+
+    authorization = projector.authorize(project)
+
+    assert authorization.selected
+    selection = json.loads(authorization.path.read_text(encoding="utf-8"))
+    assert selection == {
+        "agents": [],
+        "detection_rules": [_flext_detection_rule()],
+        "opt_ins": [],
+        "selected_tags": [],
+        "version": 2,
+    }
+    second = projector.authorize(project)
+    assert second.path.read_bytes() == authorization.path.read_bytes()
+
+
+def test_canonical_marker_does_not_create_unauthorized_selection(
+    tmp_path: Path,
+) -> None:
+    _, projector = _source(
+        tmp_path,
+        project_detection_rules=[_flext_detection_rule()],
+    )
+    project = tmp_path / "consumer"
+    project.mkdir()
+    (project / "pyproject.toml").write_text(
+        "# another project\n",
+        encoding="utf-8",
+    )
+
+    authorization = projector.authorize(project)
+
+    assert not authorization.selected
+    assert not authorization.path.exists()

@@ -263,11 +263,16 @@ def _command(path: Path) -> str:
     return f"python3 {shlex.quote(str(path))}"
 
 
+def _project_command(path: Path, boundary: Path) -> str:
+    relative = path.relative_to(boundary).as_posix()
+    return f'python3 "$CLAUDE_PROJECT_DIR/{relative}"'
+
+
 def _nested_config(
     provider: AgentProvider,
     current: dict[str, object],
     events: tuple[str, ...],
-    scripts: dict[str, Path],
+    commands: dict[str, str],
     previous_entries: Mapping[str, object],
 ) -> tuple[dict[str, object], dict[str, object]]:
     result = dict(current)
@@ -291,7 +296,7 @@ def _nested_config(
                 kept.append(raw_group)
         handler: dict[str, object] = {
             "type": "command",
-            "command": _command(scripts[event]),
+            "command": commands[event],
         }
         if provider is AgentProvider.CODEX:
             handler["statusMessage"] = "Applying synchronized governance"
@@ -682,6 +687,15 @@ class HookProjector:
                 path: (_script(provider, event, capsule), 0o755)
                 for event, path in scripts.items()
             }
+            commands = {
+                event: (
+                    _project_command(scripts[event], boundary)
+                    if provider is AgentProvider.CLAUDE
+                    and context is ProjectionContext.PROJECT
+                    else _command(scripts[event])
+                )
+                for event in events
+            }
             exact = dict(desired)
             entries = {}
             merged_provider = provider in {
@@ -715,7 +729,7 @@ class HookProjector:
             }:
                 assert current is not None
                 rendered, entries = _nested_config(
-                    provider, current, events, scripts, previous_entries
+                    provider, current, events, commands, previous_entries
                 )
             elif provider is AgentProvider.CURSOR:
                 assert current is not None
