@@ -107,7 +107,7 @@ fixed at its owner.
 | claude | `~/.claude/projects/-home-marlonsc-agents` (recent transcript) | governance capsule markers present — hooks inject the law | validated; no action |
 | codex | 120 sessions since 2026-08-28; 100 carry `AIHUB` markers | 20 sessions lack the marker | rejected as speculative — per-session hook-install dating unavailable; re-evaluate only when reproducible |
 | opencode | 10,968 sessions; most recent are `beads lote r-01..05` sweeps via beads-task-agent (2026-08-30) | tracker sweeps while Beads is formally suspended | closed as operator-authorized reconciliation (operator adjudication recorded 2026-08-30) |
-| poolside | `~/.poolside/settings.local.yaml`; projection matrix | provider absent from `config/projections.json` (no hooks, no skill surface) and local allowlist contains `bash *` | accepted gap recorded (operator adjudication 2026-08-30); a poolside adapter requires separate authorization |
+| poolside | `~/.poolside/settings.local.yaml`; historical projection matrix | provider lacked a supported personal contract at audit time and local allowlist contained `bash *` | historical gap; current support is resolved from the typed provider adapter |
 | omo | `~/.omo` (codegraph, lsp-daemon); process table | no live daemons at audit time | no action — living runtime registration is owned by the agents runtime, not by this plan |
 
 ### Etapa 6 — strengthening from findings (2026-08-30)
@@ -122,7 +122,7 @@ provider-evidence table.
 ### Etapa 7 — Gas City agent-side audit (2026-08-30)
 
 Corrected premise with evidence: `~/.config/opencode/skills` is the opencode
-personal projection destination declared in `config/projections.json`, and the
+personal projection destination declared by the typed provider adapter, and the
 Gas City skills there carry `provenance:agents-owned` — they are owned
 projections of the canonical owner, not loose copies. Nothing is fused or
 deleted; deletion would break sync convergence. The nine Gas City skills

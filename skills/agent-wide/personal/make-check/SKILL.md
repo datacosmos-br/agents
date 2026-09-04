@@ -4,37 +4,38 @@ description: 'native gates, project validation, command discovery'
 license: MIT
 metadata:
   aihub.tags: '["decision:plan-00","effective:2026-08-29","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","provenance:agents-owned","role:verification","updates:manual","usage:router"]'
-  version: 2.1.0
+  version: 2.3.0
 ---
 
 # Make Check
 
-Discover and use the repository's canonical Make surface before running build,
-test, lint, format, generation, security, or release commands.
+Use the repository's canonical Make surface.
 
 ## Procedure
 
 1. From the authorized repository root, read project law and run `make help`.
-2. Select the declared target that owns the requested behavior. Use its scoped or
-   changed-file option only when the help surface documents one.
-3. Exercise the real runtime before tests when behavior changes.
-4. Run the chosen target and record working directory, exit code, decisive output,
-   covered scope, and warnings.
-5. If a required target, dependency, or tool is missing or broken, stop,
-   correct its canonical owner, and rerun the native target. Keep the task
-   active; never substitute a raw command.
-6. Resolve every required tool through the project's newest released version
-   owner; every diagnostic is blocking.
-7. For a configured duplication gate, use the canonical 8-line strict baseline;
-   after integration require `--fail-on-new-clones 0`. Never substitute an
-   ad-hoc threshold or report.
+2. Run declared `make setup` before every development or validation verb. A pin,
+   downgrade, stale generator, or version guard blocking the newest owner is red.
+3. Select only the exact command grammar documented by the current project's
+   law or `make help`. A generic skill phase such as test, build, runtime, or
+   documentation never authorizes synthesizing a `WHAT`, `PROJECT`, `FILE`,
+   `MATCH`, `ARGS`, or other selector.
+4. Exercise changed behavior through its real runtime before tests.
+5. Record command, cwd, exit, decisive output, scope, and warnings.
+6. On a broken owner, stop that invocation, fix the owner, and rerun the native
+   target in the same task. Never substitute a raw command.
 
 ## Rules
 
-- Do not invent target names or copy another repository's Make contract.
+- Never invent syntax or skip setup for an existing environment. Copy the
+  owner's declared command exactly; do not combine valid fragments.
+- For a configured duplication gate, use only flags supported by the selected
+  executable and require its canonical zero-clone exit status. Never invent a
+  baseline flag, ad hoc threshold, or substitute report.
 - Do not call destructive, deployment, release, or promotion targets without the
   authority required by project law.
-- A warning, skip, empty report, or missing tool is red. Preserve its exact
-  output, correct the owner, and rerun only the invalidated native target.
+- Warning, skip, empty output, missing tool, or newest-version diagnostic is red.
+  Never cap, downgrade, override, substitute, suppress, or call it compatibility
+  without prior operator discussion, reproducible proof, and authorization.
 - Later edits or integration commits invalidate earlier gate evidence in their
   affected scope until the same native check is rerun.

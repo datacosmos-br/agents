@@ -28,7 +28,6 @@ REQUIRED_MAKE_TARGETS = {
     "static",
     "shell",
     "duplication",
-    "duplication-baseline",
     "build",
     "test",
     "spec",
@@ -266,19 +265,16 @@ def test_make_is_development_support_for_the_optionless_runtime() -> None:
     assert not (ROOT / "config" / "waza.mk").exists()
 
 
-def test_duplication_gate_owns_the_eight_line_baseline_contract() -> None:
+def test_duplication_gate_owns_zero_clone_contract() -> None:
     config = json.loads((ROOT / ".jscpd.json").read_text(encoding="utf-8"))
     makefile = (ROOT / "Makefile").read_text(encoding="utf-8")
 
     assert config["mode"] == "strict"
     assert config["min-lines"] == 8
-    assert (ROOT / ".jscpd-baseline.json").is_file()
     assert re.search(r"^duplication:\s*##.*$", makefile, flags=re.MULTILINE)
     assert "jscpd src tests" in makefile
-    assert "--baseline $(CURDIR)/.jscpd-baseline.json" in makefile
-    assert "--fail-on-new-clones 0" in makefile
-    assert re.search(r"^duplication-baseline:\s*##.*$", makefile, flags=re.MULTILINE)
-    assert "--update-baseline" in makefile
+    assert "--exit-code 1" in makefile
+    assert "baseline" not in makefile
 
 
 def test_make_isolates_concurrent_pytest_invocations() -> None:

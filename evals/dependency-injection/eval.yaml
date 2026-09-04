@@ -1,0 +1,24 @@
+name: dependency-injection-eval
+description: Explicit typed injection without service location or hidden wiring.
+skill: dependency-injection
+schemaVersion: '1.0'
+version: '1.0'
+config:
+  trials_per_task: 1
+  timeout_seconds: 300
+  parallel: false
+  max_attempts: 0
+  fail_fast: true
+  executor: copilot-sdk
+  model: aihub-primary
+  skill_directories: [../../skills/domain/dependency-injection]
+  required_skills: [dependency-injection]
+graders:
+- type: prompt
+  name: dependency-injection-contract
+  config:
+    prompt: Grade dependency-injection. Pass only for explicit typed injection at a real internal boundary, one executable composition root, no service locator/global container/introspection, and no activation for a third-party fork.
+- type: behavior
+  name: bounded_execution
+  config: {max_duration_ms: 240000}
+tasks: [tasks/*.yaml]

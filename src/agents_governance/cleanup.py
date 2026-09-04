@@ -142,12 +142,15 @@ def run_atomic_publications(publications: Sequence[Publication]) -> None:
         raise primary
 
 
-def _remove_tree(path: Path) -> None:
+def _physical_children(path: Path, operation: str) -> list[os.DirEntry[str]]:
     if path.is_symlink():
-        raise RuntimeError(f"refusing to clean symlink: {path}")
+        raise RuntimeError(f"refusing to {operation} symlink: {path}")
     with os.scandir(path) as entries:
-        children = list(entries)
-    for entry in children:
+        return list(entries)
+
+
+def _remove_tree(path: Path) -> None:
+    for entry in _physical_children(path, "clean"):
         child = Path(entry.path)
         if entry.is_symlink():
             raise RuntimeError(f"refusing to clean symlink: {child}")
@@ -163,13 +166,9 @@ def _remove_tree(path: Path) -> None:
 def _validate_tree(path: Path) -> None:
     """Prove an entire generated tree is physical before any deletion starts."""
 
-    if path.is_symlink():
-        raise RuntimeError(f"refusing to clean symlink: {path}")
     if not path.is_dir():
         raise RuntimeError(f"generated cleanup target is not a directory: {path}")
-    with os.scandir(path) as entries:
-        children = list(entries)
-    for entry in children:
+    for entry in _physical_children(path, "clean"):
         child = Path(entry.path)
         if entry.is_symlink():
             raise RuntimeError(f"refusing to clean symlink: {child}")

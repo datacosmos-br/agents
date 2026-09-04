@@ -1,0 +1,24 @@
+name: runtime-language-level-eval
+description: Manifest-derived modern language and typing enforcement for internal projects.
+skill: runtime-language-level
+schemaVersion: '1.0'
+version: '1.0'
+config:
+  trials_per_task: 1
+  timeout_seconds: 300
+  parallel: false
+  max_attempts: 0
+  fail_fast: true
+  executor: copilot-sdk
+  model: aihub-primary
+  skill_directories: [../../skills/domain/runtime-language-level]
+  required_skills: [runtime-language-level]
+graders:
+- type: prompt
+  name: runtime-language-level-contract
+  config:
+    prompt: Grade runtime-language-level. Pass only when the runtime floor comes from the manifest, every tool target agrees, precise native typing replaces downlevel compatibility for internal code, and third-party forks remain governed by upstream.
+- type: behavior
+  name: bounded_execution
+  config: {max_duration_ms: 240000}
+tasks: [tasks/*.yaml]

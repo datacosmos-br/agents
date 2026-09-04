@@ -27,7 +27,10 @@ graders:
       proves the producing owner's contract and output before choosing a repair
       owner; fixes a nonconforming producer at its owner or a defective receiver
       at the receiver; never changes a correct adjacent layer as accommodation;
-      updates canonical owners rather than projections; removes semantic
+      updates canonical owners rather than projections and reconciles every
+      conflicting skill, rule, decision, document, tracker item, plan, template,
+      projection, and generated consumer; permits no lower-authority artifact to
+      narrow, reinterpret, or defer the operator instruction; removes semantic
       opposites; adds an owning-skill semantic regression when agent behavior
       caused the incident; performs an evidence-based skill-exit review without
       cosmetic or project-specific governance churn; repeats contradiction

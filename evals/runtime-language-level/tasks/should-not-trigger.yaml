@@ -1,0 +1,9 @@
+id: runtime-language-upstream-001
+name: Preserve upstream language level
+description: Do not modernize a third-party fork.
+tags: [anti-trigger, third-party-fork]
+inputs:
+  prompt: A third_party_fork supports an older runtime by upstream policy. Make the smallest upstream-style patch.
+expected:
+  output_contains: [upstream, declared runtime]
+  output_not_contains: [upgrade the runtime, impose modern typing]

@@ -2,15 +2,12 @@
 
 from __future__ import annotations
 
-import json
 from dataclasses import dataclass
 from enum import StrEnum
-from pathlib import Path, PurePosixPath
+from pathlib import Path
 from types import MappingProxyType
-from typing import cast
 
 from .agent_profiles import AgentProvider
-from .frontmatter import cast_mapping, require_exact_fields
 
 
 class ProjectionContext(StrEnum):
@@ -123,7 +120,7 @@ class ProjectionCell:
 
 @dataclass(frozen=True)
 class ProjectionConfig:
-    """Complete immutable v7 projection contract."""
+    """Complete immutable calculated projection contract."""
 
     version: int
     projection_manifest_version: int
@@ -147,312 +144,305 @@ class ProjectionConfig:
         return self.cells[key]
 
 
-_ROOT_FIELDS = frozenset({"manifest_versions", "providers", "version"})
-_PROJECT_DETECTION_FIELD = "project_detection_rules"
-_ROOT_FIELDS_WITH_DETECTION = _ROOT_FIELDS | {_PROJECT_DETECTION_FIELD}
-_MANIFEST_VERSION_FIELDS = frozenset({"hooks", "projection"})
-_CONTEXTS = frozenset(context.value for context in ProjectionContext)
-_SURFACES = frozenset(surface.value for surface in ProjectionSurface)
-_PROVIDERS = frozenset(provider.value for provider in AgentProvider)
-_HOOK_EVENTS = frozenset(
-    {"context_refresh", "prompt_submit", "session_start", "subagent_start"}
-)
+def _project_detection_rules() -> tuple[ProjectDetectionRule, ...]:
+    """Calculate portable capability tags from generated project evidence."""
+
+    return (
+        ProjectDetectionRule(
+            "associated-internal",
+            ("internal",),
+            DetectionOperator.ANY,
+            (
+                DetectionCondition(
+                    DetectionConditionType.FILE_CONTAINS,
+                    '"project_profile": "internal"',
+                    (".aihub/project.json",),
+                ),
+            ),
+        ),
+        ProjectDetectionRule(
+            "associated-internal-flext",
+            ("internal-flext",),
+            DetectionOperator.ANY,
+            (
+                DetectionCondition(
+                    DetectionConditionType.FILE_CONTAINS,
+                    '"project_profile": "internal_flext"',
+                    (".aihub/project.json",),
+                ),
+            ),
+        ),
+        ProjectDetectionRule(
+            "associated-upstream-fork",
+            ("third-party-fork",),
+            DetectionOperator.ANY,
+            (
+                DetectionCondition(
+                    DetectionConditionType.FILE_CONTAINS,
+                    '"project_profile": "third_party_fork"',
+                    (".aihub/project.json",),
+                ),
+            ),
+        ),
+        ProjectDetectionRule(
+            "flext-capability",
+            ("flext",),
+            DetectionOperator.ANY,
+            (
+                DetectionCondition(
+                    DetectionConditionType.FILE_CONTAINS,
+                    "@flext-managed",
+                    ("pyproject.toml",),
+                ),
+            ),
+        ),
+    )
 
 
-def _validate_path(path: object, context: ProjectionContext, label: str) -> str:
-    if not isinstance(path, str) or not path:
-        raise TypeError(f"{label} path must be a non-empty string")
-    if path.startswith(("~", "/home/", "/Users/")):
-        raise ValueError(f"{label} path must not hardcode a user home")
-    if context is ProjectionContext.PERSONAL:
-        if not path.startswith("${HOME}/"):
-            raise ValueError(f"{label} personal path must start with ${{HOME}}/")
-        candidate = PurePosixPath(path.removeprefix("${HOME}/"))
-        if candidate == PurePosixPath(".") or ".." in candidate.parts:
-            raise ValueError(f"{label} personal path must remain below ${{HOME}}")
+def _surface_path(
+    provider: AgentProvider, context: ProjectionContext, surface: ProjectionSurface
+) -> str | None:
+    """Derive native destinations from provider, context, and artifact type."""
+
+    personal = context is ProjectionContext.PERSONAL
+    home = "${HOME}/" if personal else ""
+    roots = {
+        AgentProvider.CLAUDE: ".claude",
+        AgentProvider.CODEX: ".codex" if personal else ".agents",
+        AgentProvider.CURSOR: ".cursor",
+        AgentProvider.COPILOT: ".copilot" if personal else ".github",
+        AgentProvider.GEMINI: ".gemini",
+        AgentProvider.OPENCODE: ".config/opencode" if personal else ".opencode",
+        AgentProvider.ANTIGRAVITY: ".gemini/antigravity-cli" if personal else ".agents",
+        AgentProvider.POOL: ".poolside",
+    }
+    root = home + roots[provider]
+    if surface in {
+        ProjectionSurface.SKILLS,
+        ProjectionSurface.COMMANDS,
+        ProjectionSurface.AGENTS,
+    }:
+        return f"{root}/{surface.value}"
+    if surface is ProjectionSurface.RULES:
+        names = {
+            AgentProvider.CODEX: "AGENTS.md",
+            AgentProvider.GEMINI: "GEMINI.md",
+            AgentProvider.OPENCODE: "AGENTS.md",
+            AgentProvider.ANTIGRAVITY: "GEMINI.md",
+        }
+        if provider in names:
+            if provider is AgentProvider.CODEX and not personal:
+                return "AGENTS.md"
+            if provider is AgentProvider.GEMINI and not personal:
+                return "GEMINI.md"
+            if provider is AgentProvider.OPENCODE and not personal:
+                return "AGENTS.md"
+            if provider is AgentProvider.ANTIGRAVITY:
+                return "${HOME}/.gemini/GEMINI.md"
+            return f"{root}/{names[provider]}"
+        return (
+            f"{root}/{'instructions' if provider is AgentProvider.COPILOT else 'rules'}"
+        )
+    hook_names = {
+        AgentProvider.CLAUDE: "settings.json",
+        AgentProvider.CODEX: "hooks.json",
+        AgentProvider.CURSOR: "hooks.json",
+        AgentProvider.COPILOT: "hooks/aihub-governance.json",
+        AgentProvider.GEMINI: "settings.json",
+        AgentProvider.OPENCODE: "plugins/aihub-governance.ts",
+        AgentProvider.ANTIGRAVITY: "plugins/aihub-governance/hooks.json"
+        if personal
+        else "hooks.json",
+    }
+    name = hook_names.get(provider)
+    if name is None:
+        return None
+    hook_root = (
+        ("${HOME}/.codex" if personal else ".codex")
+        if provider is AgentProvider.CODEX
+        else root
+    )
+    return f"{hook_root}/{name}"
+
+
+def _supported(
+    provider: AgentProvider, context: ProjectionContext, surface: ProjectionSurface
+) -> bool:
+    """Derive support from the provider-native renderer inventory."""
+
+    if provider is AgentProvider.POOL:
+        return (
+            surface is ProjectionSurface.SKILLS and context is ProjectionContext.PROJECT
+        )
+    if surface in {ProjectionSurface.SKILLS, ProjectionSurface.HOOKS}:
+        return True
+    if surface is ProjectionSurface.COMMANDS:
+        return provider in {
+            AgentProvider.CLAUDE,
+            AgentProvider.GEMINI,
+            AgentProvider.OPENCODE,
+        } or (provider is AgentProvider.CURSOR and context is ProjectionContext.PROJECT)
+    if surface is ProjectionSurface.AGENTS:
+        return provider in {
+            AgentProvider.CLAUDE,
+            AgentProvider.COPILOT,
+            AgentProvider.GEMINI,
+            AgentProvider.OPENCODE,
+        }
+    return (
+        provider
+        in {
+            AgentProvider.CLAUDE,
+            AgentProvider.CODEX,
+            AgentProvider.COPILOT,
+            AgentProvider.GEMINI,
+            AgentProvider.OPENCODE,
+        }
+        or (provider is AgentProvider.CURSOR and context is ProjectionContext.PROJECT)
+        or (
+            provider is AgentProvider.ANTIGRAVITY
+            and context is ProjectionContext.PERSONAL
+        )
+    )
+
+
+def _hook_events(provider: AgentProvider) -> MappingProxyType[str, HookEvent]:
+    """Return native lifecycle evidence owned by each hook adapter."""
+
+    local = (HookClient.LOCAL,)
+    cloud_local = (HookClient.CLOUD, HookClient.LOCAL)
+    unsupported = HookEvent(
+        ProjectionStatus.UNSUPPORTED,
+        reason=f"UNSUPPORTED: {provider.value} exposes no documented subagent lifecycle boundary",
+    )
+    clients: tuple[tuple[HookClient, ...], ...]
+    if provider in {AgentProvider.CLAUDE, AgentProvider.CODEX}:
+        names = ("SessionStart", "UserPromptSubmit", "SessionStart", "SubagentStart")
+        coverages = (HookCoverage.EXACT,) * 4
+        clients = (local,) * 4
+    elif provider is AgentProvider.CURSOR:
+        names = ("sessionStart", "beforeSubmitPrompt", "preCompact", "subagentStart")
+        coverages = (
+            HookCoverage.EXACT,
+            HookCoverage.ADVISORY,
+            HookCoverage.ADVISORY,
+            HookCoverage.ADVISORY,
+        )
+        clients = (local, cloud_local, cloud_local, cloud_local)
+    elif provider is AgentProvider.COPILOT:
+        names = ("sessionStart", "userPromptSubmitted", "preCompact", "subagentStart")
+        coverages = (
+            HookCoverage.EXACT,
+            HookCoverage.ADVISORY,
+            HookCoverage.ADVISORY,
+            HookCoverage.EXACT,
+        )
+        clients = (local,) * 4
+    elif provider is AgentProvider.GEMINI:
+        return MappingProxyType(
+            {
+                "session_start": HookEvent(
+                    ProjectionStatus.SUPPORTED,
+                    ("SessionStart",),
+                    HookCoverage.EXACT,
+                    local,
+                ),
+                "prompt_submit": HookEvent(
+                    ProjectionStatus.SUPPORTED,
+                    ("BeforeAgent",),
+                    HookCoverage.EXACT,
+                    local,
+                ),
+                "context_refresh": HookEvent(
+                    ProjectionStatus.SUPPORTED,
+                    ("PreCompress", "BeforeAgent"),
+                    HookCoverage.EQUIVALENT,
+                    local,
+                ),
+                "subagent_start": unsupported,
+            }
+        )
+    elif provider is AgentProvider.OPENCODE:
+        event = "experimental.chat.system.transform"
+        return MappingProxyType(
+            {
+                "session_start": HookEvent(
+                    ProjectionStatus.SUPPORTED, (event,), HookCoverage.EQUIVALENT, local
+                ),
+                "prompt_submit": HookEvent(
+                    ProjectionStatus.SUPPORTED, (event,), HookCoverage.EQUIVALENT, local
+                ),
+                "context_refresh": HookEvent(
+                    ProjectionStatus.SUPPORTED,
+                    ("experimental.session.compacting", event),
+                    HookCoverage.EXACT,
+                    local,
+                ),
+                "subagent_start": unsupported,
+            }
+        )
     else:
-        candidate = PurePosixPath(path)
-    if context is ProjectionContext.PROJECT and (
-        candidate.is_absolute()
-        or candidate == PurePosixPath(".")
-        or ".." in candidate.parts
-    ):
-        raise ValueError(f"{label} project path must remain repository-relative")
-    return path
-
-
-def _cell(
-    provider: AgentProvider,
-    context: ProjectionContext,
-    surface: ProjectionSurface,
-    raw: object,
-) -> ProjectionCell:
-    label = f"projection cell {provider.value}/{context.value}/{surface.value}"
-    value = cast_mapping(raw, label)
-    if "status" not in value:
-        raise ValueError(f"{label} status is required")
-    raw_status = value["status"]
-    if not isinstance(raw_status, str):
-        raise TypeError(f"{label} status must be a string")
-    status = ProjectionStatus(raw_status)
-    if status is ProjectionStatus.UNSUPPORTED:
-        require_exact_fields(
-            value, frozenset({"reason", "status"}), f"{label} UNSUPPORTED cell fields"
-        )
-        reason = value["reason"]
-        if not isinstance(reason, str) or not reason.startswith("UNSUPPORTED: "):
-            raise ValueError(
-                f"{label} UNSUPPORTED reason must start with 'UNSUPPORTED: '"
+        names = ("PreInvocation",) * 4
+        coverages = (HookCoverage.EQUIVALENT,) * 4
+        clients = (local,) * 4
+    return MappingProxyType(
+        {
+            name: HookEvent(
+                ProjectionStatus.SUPPORTED, (native,), coverage, selected_clients
             )
-        return ProjectionCell(provider, context, surface, status, reason=reason)
-
-    expected = {"path", "status"}
-    if surface is ProjectionSurface.COMMANDS and "max_tokens" in value:
-        expected.add("max_tokens")
-    if surface is ProjectionSurface.HOOKS:
-        expected.add("events")
-    if surface is ProjectionSurface.RULES:
-        expected.add("layout")
-    require_exact_fields(value, frozenset(expected), f"{label} SUPPORTED cell fields")
-    path = _validate_path(value["path"], context, label)
-    max_tokens = value.get("max_tokens")
-    if max_tokens is not None and (
-        not isinstance(max_tokens, int)
-        or isinstance(max_tokens, bool)
-        or max_tokens <= 0
-    ):
-        raise ValueError(f"{label} max_tokens must be a positive integer")
-    events: MappingProxyType[str, HookEvent] | None = None
-    layout: RuleLayout | None = None
-    if surface is ProjectionSurface.HOOKS:
-        raw_events = cast_mapping(value["events"], f"{label} events")
-        require_exact_fields(raw_events, _HOOK_EVENTS, f"{label} events")
-        parsed_events: dict[str, HookEvent] = {}
-        for logical_event in sorted(_HOOK_EVENTS):
-            event_label = f"{label} events.{logical_event}"
-            event = cast_mapping(raw_events[logical_event], event_label)
-            raw_event_status = event.get("status")
-            if not isinstance(raw_event_status, str):
-                raise TypeError(f"{event_label} status must be a string")
-            event_status = ProjectionStatus(raw_event_status)
-            if event_status is ProjectionStatus.UNSUPPORTED:
-                require_exact_fields(
-                    event,
-                    frozenset({"reason", "status"}),
-                    f"{event_label} UNSUPPORTED fields",
-                )
-                reason = event["reason"]
-                if not isinstance(reason, str) or not reason.startswith(
-                    "UNSUPPORTED: "
-                ):
-                    raise ValueError(
-                        f"{event_label} UNSUPPORTED reason must start with "
-                        "'UNSUPPORTED: '"
-                    )
-                parsed_events[logical_event] = HookEvent(event_status, reason=reason)
-                continue
-            require_exact_fields(
-                event,
-                frozenset({"clients", "coverage", "native", "status"}),
-                f"{event_label} SUPPORTED fields",
-            )
-            native = event["native"]
-            if (
-                not isinstance(native, list)
-                or not native
-                or not all(
-                    isinstance(item, str)
-                    and item
-                    and item == item.strip()
-                    and not any(character.isspace() for character in item)
-                    for item in native
-                )
-            ):
-                raise TypeError(
-                    f"{event_label} native must be a non-empty "
-                    "array of native event names"
-                )
-            selected = tuple(cast(list[str], native))
-            if len(selected) != len(set(selected)):
-                raise ValueError(f"{event_label} native must contain unique names")
-            raw_coverage = event["coverage"]
-            if not isinstance(raw_coverage, str):
-                raise TypeError(f"{event_label} coverage must be a string")
-            coverage = HookCoverage(raw_coverage)
-            raw_clients = event["clients"]
-            if (
-                not isinstance(raw_clients, list)
-                or not raw_clients
-                or not all(isinstance(client, str) for client in raw_clients)
-            ):
-                raise TypeError(
-                    f"{event_label} clients must be a non-empty array of strings"
-                )
-            clients = tuple(HookClient(client) for client in raw_clients)
-            if clients != tuple(sorted(set(clients), key=lambda item: item.value)):
-                raise ValueError(f"{event_label} clients must be unique and sorted")
-            parsed_events[logical_event] = HookEvent(
-                event_status,
-                selected,
-                coverage,
+            for name, native, coverage, selected_clients in zip(
+                ("session_start", "prompt_submit", "context_refresh", "subagent_start"),
+                names,
+                coverages,
                 clients,
+                strict=True,
             )
-        events = MappingProxyType(parsed_events)
-    if surface is ProjectionSurface.RULES:
-        raw_layout = value["layout"]
-        if not isinstance(raw_layout, str):
-            raise TypeError(f"{label} layout must be a string")
-        layout = RuleLayout(raw_layout)
-        if layout is RuleLayout.DOCUMENT and not path.endswith(".md"):
-            raise ValueError(f"{label} document layout path must end with .md")
-    return ProjectionCell(
-        provider,
-        context,
-        surface,
-        status,
-        path=path,
-        max_tokens=max_tokens,
-        events=events,
-        layout=layout,
+        }
     )
 
 
-def load_projection_config(root: Path) -> ProjectionConfig:
-    """Load the only accepted schema; legacy and partial matrices fail closed."""
+def calculated_projection_config(_root: Path) -> ProjectionConfig:
+    """Build the complete contract without a project or provider registry file."""
 
-    path = root / "config" / "projections.json"
-    if path.is_symlink() or not path.is_file():
-        raise ValueError("projection config must be a physical regular file")
-    payload = json.loads(path.read_text(encoding="utf-8"))
-    value = cast_mapping(payload, "projection config")
-    fields = (
-        _ROOT_FIELDS_WITH_DETECTION
-        if _PROJECT_DETECTION_FIELD in value
-        else _ROOT_FIELDS
-    )
-    require_exact_fields(value, fields, "projection config fields")
-    if value["version"] != 7:
-        raise ValueError("projection config must use version 7")
-    manifest_versions = cast_mapping(
-        value["manifest_versions"], "projection manifest versions"
-    )
-    require_exact_fields(
-        manifest_versions,
-        _MANIFEST_VERSION_FIELDS,
-        "projection manifest versions",
-    )
-    if manifest_versions["projection"] != 6:
-        raise ValueError("projection directory manifest version must equal 6")
-    if manifest_versions["hooks"] != 3:
-        raise ValueError("projection hook manifest version must equal 3")
-
-    raw_detection_rules = value.get(_PROJECT_DETECTION_FIELD, [])
-    if not isinstance(raw_detection_rules, list):
-        raise TypeError("projection project detection rules must be an array")
-    parsed_detection_rules: list[ProjectDetectionRule] = []
-    for rule_index, raw_rule in enumerate(raw_detection_rules):
-        if not isinstance(raw_rule, dict):
-            raise TypeError("projection project detection rules must contain rules")
-        rule_label = f"projection project_detection_rules[{rule_index}]"
-        rule = cast_mapping(raw_rule, rule_label)
-        require_exact_fields(
-            rule, frozenset({"activate_tags", "id", "when"}), rule_label
-        )
-        rule_id = rule["id"]
-        if not isinstance(rule_id, str) or not rule_id:
-            raise TypeError(f"{rule_label} id must be a non-empty string")
-        raw_tags = rule["activate_tags"]
-        if (
-            not isinstance(raw_tags, list)
-            or not raw_tags
-            or not all(isinstance(tag, str) and tag for tag in raw_tags)
-        ):
-            raise TypeError(
-                f"{rule_label} activate_tags must be a non-empty string array"
-            )
-        tags = tuple(tag for tag in raw_tags if isinstance(tag, str))
-        raw_when = cast_mapping(rule["when"], f"{rule_label} when")
-        if len(raw_when) != 1:
-            raise ValueError(f"{rule_label} when must contain one operator")
-        raw_operator = next(iter(raw_when))
-        operator = DetectionOperator(raw_operator)
-        raw_conditions = raw_when[raw_operator]
-        if not isinstance(raw_conditions, list) or not raw_conditions:
-            raise TypeError(f"{rule_label} conditions must be a non-empty array")
-        conditions: list[DetectionCondition] = []
-        for condition_index, raw_condition in enumerate(raw_conditions):
-            condition_label = f"{rule_label} condition[{condition_index}]"
-            condition = cast_mapping(raw_condition, condition_label)
-            raw_type = condition.get("type")
-            if not isinstance(raw_type, str):
-                raise TypeError(f"{condition_label} type must be a string")
-            condition_type = DetectionConditionType(raw_type)
-            raw_pattern = condition.get("pattern")
-            if not isinstance(raw_pattern, str) or not raw_pattern:
-                raise TypeError(f"{condition_label} pattern must be a string")
-            raw_paths = condition.get("paths", [])
-            if not isinstance(raw_paths, list) or not all(
-                isinstance(item, str) and item for item in raw_paths
-            ):
-                raise TypeError(f"{condition_label} paths must be a string array")
-            paths = tuple(item for item in raw_paths if isinstance(item, str))
-            expected_fields = (
-                frozenset({"paths", "pattern", "type"})
-                if condition_type
-                in (
-                    DetectionConditionType.FILE_CONTAINS,
-                    DetectionConditionType.FILE_NOT_CONTAINS,
-                )
-                else frozenset({"pattern", "type"})
-            )
-            require_exact_fields(condition, expected_fields, condition_label)
-            if (
-                condition_type
-                in (
-                    DetectionConditionType.FILE_CONTAINS,
-                    DetectionConditionType.FILE_NOT_CONTAINS,
-                )
-                and not paths
-            ):
-                raise ValueError(f"{condition_label} paths must not be empty")
-            conditions.append(DetectionCondition(condition_type, raw_pattern, paths))
-        parsed_detection_rules.append(
-            ProjectDetectionRule(rule_id, tags, operator, tuple(conditions))
-        )
-    detection_rules = tuple(parsed_detection_rules)
-
-    providers = cast_mapping(value["providers"], "projection providers")
-    require_exact_fields(providers, _PROVIDERS, "projection providers")
     cells: dict[
         tuple[AgentProvider, ProjectionContext, ProjectionSurface], ProjectionCell
     ] = {}
     for provider in AgentProvider:
-        contexts = cast_mapping(
-            providers[provider.value], f"projection contexts for {provider.value}"
-        )
-        require_exact_fields(
-            contexts, _CONTEXTS, f"projection contexts for {provider.value}"
-        )
         for context in ProjectionContext:
-            surfaces = cast_mapping(
-                contexts[context.value],
-                f"projection surfaces for {provider.value}/{context.value}",
-            )
-            require_exact_fields(
-                surfaces,
-                _SURFACES,
-                f"projection surfaces for {provider.value}/{context.value}",
-            )
             for surface in ProjectionSurface:
-                key = (provider, context, surface)
-                cells[key] = _cell(provider, context, surface, surfaces[surface.value])
+                supported = _supported(provider, context, surface)
+                path = _surface_path(provider, context, surface) if supported else None
+                cells[(provider, context, surface)] = ProjectionCell(
+                    provider,
+                    context,
+                    surface,
+                    ProjectionStatus.SUPPORTED
+                    if supported
+                    else ProjectionStatus.UNSUPPORTED,
+                    path=path,
+                    reason=None
+                    if supported
+                    else f"UNSUPPORTED: {provider.value} has no native {context.value} {surface.value} contract",
+                    events=_hook_events(provider)
+                    if supported and surface is ProjectionSurface.HOOKS
+                    else None,
+                    layout=(
+                        RuleLayout.DOCUMENT
+                        if path is not None and path.endswith(".md")
+                        else RuleLayout.DIRECTORY
+                    )
+                    if supported and surface is ProjectionSurface.RULES
+                    else None,
+                )
     return ProjectionConfig(
-        cast(int, value["version"]),
-        cast(int, manifest_versions["projection"]),
-        cast(int, manifest_versions["hooks"]),
-        detection_rules,
-        MappingProxyType(cells),
+        8, 6, 3, _project_detection_rules(), MappingProxyType(cells)
     )
+
+
+def load_projection_config(root: Path) -> ProjectionConfig:
+    """Return provider-native contracts calculated by their typed owner."""
+
+    return calculated_projection_config(root)
 
 
 __all__ = (

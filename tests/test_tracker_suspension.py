@@ -1,9 +1,14 @@
 from __future__ import annotations
 
-import json
 import re
 import subprocess
 from pathlib import Path
+
+from agents_governance.projection_config import (
+    ProjectionContext,
+    ProjectionStatus,
+    load_projection_config,
+)
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -182,28 +187,27 @@ def test_source_repository_does_not_select_or_contain_project_projection() -> No
 def test_every_project_projection_destination_is_ignored() -> None:
     """Each project-scope destination must be excluded from source control.
 
-    The previous guard checked artifacts one hand-maintained path list at a
-    time, so a newly supported provider silently escaped it. Here the list of
-    destinations is derived from `config/projections.json` itself: add a
-    project-scope destination without ignoring it and this fails, naming the
-    surface that would be offered as source.
+    The previous guard checked one hand-maintained path list at a time, so a
+    newly supported provider silently escaped it. Destinations now come from
+    the same calculated provider contract consumed by
+    agentsctl, so no parallel path registry can drift.
     """
 
-    payload = json.loads(
-        (ROOT / "config" / "projections.json").read_text(encoding="utf-8")
-    )
-
+    contract = load_projection_config(ROOT)
     destinations: set[str] = set()
-    for provider in payload["providers"].values():
-        for surface in provider.get("project", {}).values():
-            if surface.get("status") != "SUPPORTED":
-                continue
-            destination = surface["path"]
-            # Root-level canonical files (AGENTS.md, CLAUDE.md) are source that
-            # the projector rewrites in place, not a projection-only artifact.
-            if "/" not in destination:
-                continue
-            destinations.add(destination)
+    for cell in contract.cells.values():
+        if (
+            cell.context is not ProjectionContext.PROJECT
+            or cell.status is not ProjectionStatus.SUPPORTED
+            or cell.path is None
+        ):
+            continue
+        destination = cell.path
+        # Root-level canonical files are source rewritten in place, not
+        # projection-only artifacts.
+        if "/" not in destination:
+            continue
+        destinations.add(destination)
 
     assert destinations, "no project-scope destination resolved"
 

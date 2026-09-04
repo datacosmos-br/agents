@@ -7,6 +7,10 @@ metadata:
 
 # FLEXT typing: strict always — `Any` and `object` are grave violations
 
+This rule applies only when the active project profile is `internal_flext`. A
+third-party fork is excluded even when it
+contains Python files or depends on FLEXT-compatible packages.
+
 Using `Any` or bare `object` in a Python annotation is a grave violation, in
 any module, test, or scratch script that lands in a governed tree. Typing is
 strict everywhere, without exception and without temporary authorization.

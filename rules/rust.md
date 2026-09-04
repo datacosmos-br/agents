@@ -7,6 +7,10 @@ metadata:
 
 # Rust rules
 
+Apply local typing and language-modernization requirements only to `internal`
+and `internal_flext`. A `third_party_fork` follows its upstream edition,
+MSRV, architecture, and toolchain contract.
+
 Use the project's declared Rust toolchain, workspace structure, features, and
 canonical command facade. Never impose a repository-specific architecture on a
 generic Rust project.

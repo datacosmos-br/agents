@@ -160,18 +160,16 @@ def test_hook_projection_preserves_foreign_content_and_reaches_fixed_point(
 def test_foreign_hook_command_containing_managed_path_is_preserved(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    root, _home, project = _hook_project(tmp_path, monkeypatch)
+    root, home, project = _hook_project(tmp_path, monkeypatch)
     projector = _projector(root)
     projector.apply(project)
-    settings_path = project / ".claude" / "settings.json"
+    settings_path = home / ".claude" / "settings.json"
     settings = _json(settings_path)
     foreign = {
         "hooks": [
             {
                 "type": "command",
-                "command": (
-                    f"echo {project / '.claude' / 'aihub-hooks' / 'foreign.py'}"
-                ),
+                "command": (f"echo {home / '.claude' / 'aihub-hooks' / 'foreign.py'}"),
             }
         ]
     }
@@ -269,16 +267,16 @@ def test_generated_hook_executes_and_malformed_input_fails_loudly(
     root, _home, project = _hook_project(tmp_path, monkeypatch)
     projector = _projector(root)
     projector.apply(project)
-    settings = _json(project / ".claude" / "settings.json")
+    settings = _json(_home / ".claude" / "settings.json")
     command = settings["hooks"]["SessionStart"][-1]["hooks"][0]["command"]  # type: ignore[index]
-    assert command == (
-        'python3 "$CLAUDE_PROJECT_DIR/.claude/aihub-hooks/claude-sessionstart.py"'
+    assert command == str(
+        "python3 " + str(_home / ".claude" / "aihub-hooks" / "claude-sessionstart.py")
     )
 
     accepted = subprocess.run(
         command,
         shell=True,
-        env={**os.environ, "CLAUDE_PROJECT_DIR": str(project)},
+        env=os.environ,
         input="{}",
         text=True,
         capture_output=True,
@@ -290,7 +288,7 @@ def test_generated_hook_executes_and_malformed_input_fails_loudly(
     rejected = subprocess.run(
         command,
         shell=True,
-        env={**os.environ, "CLAUDE_PROJECT_DIR": str(project)},
+        env=os.environ,
         input="[]",
         text=True,
         capture_output=True,
@@ -298,6 +296,36 @@ def test_generated_hook_executes_and_malformed_input_fails_loudly(
     )
     assert rejected.returncode != 0
     assert "TypeError: hook input must be a JSON object" in rejected.stderr
+
+
+def test_project_claude_hooks_are_retired_while_foreign_settings_survive(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    root, _home, project = _hook_project(tmp_path, monkeypatch)
+    projector = _projector(root)
+    from agents_governance.agent_profiles import AgentProvider
+    from agents_governance.projection_config import ProjectionContext
+
+    legacy = projector._plan(
+        AgentProvider.CLAUDE,
+        ProjectionContext.PROJECT,
+        project,
+        _capsule(projector.governance, projector.commands, projector.rules),
+    )
+    for path, (content, mode) in legacy.desired.items():
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(content, encoding="utf-8")
+        path.chmod(mode)
+    settings_path = project / ".claude" / "settings.json"
+    settings = _json(settings_path)
+    settings["foreign"] = "preserved"
+    settings_path.write_text(json.dumps(settings), encoding="utf-8")
+
+    _projector(root).apply(project)
+
+    assert _json(settings_path) == {"foreign": "preserved"}
+    assert not tuple((project / ".claude" / "aihub-hooks").glob("*"))
+    assert not (project / ".claude" / ".settings.json.agents-governance.json").exists()
 
 
 def test_modified_managed_hook_and_instruction_region_are_rejected(

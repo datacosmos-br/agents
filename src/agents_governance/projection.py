@@ -11,7 +11,9 @@ import stat
 import subprocess
 import tempfile
 import tomllib
+from collections.abc import Iterable
 from dataclasses import dataclass, replace
+from enum import StrEnum
 from functools import partial
 from pathlib import Path, PurePosixPath
 from typing import cast
@@ -96,6 +98,16 @@ _SELECTION_FIELDS_V1 = frozenset({"agents", "opt_ins", "selected_tags", "version
 _SELECTION_FIELDS_V2 = frozenset(
     {"agents", "opt_ins", "selected_tags", "version", "detection_rules"}
 )
+_SELECTION_FIELDS_V3 = frozenset(
+    {
+        "agents",
+        "detection_catalog_digest",
+        "opt_ins",
+        "project_profile",
+        "selected_tags",
+        "version",
+    }
+)
 _DETECTION_EXCLUDED_COMPONENTS = frozenset(
     {
         ".git",
@@ -150,11 +162,21 @@ class ProjectionDriftError(RuntimeError):
     """The project projection differs from its canonical source."""
 
 
+class ProjectProfile(StrEnum):
+    """Closed project-governance profiles selected by the association owner."""
+
+    UNCLASSIFIED = "unclassified"
+    INTERNAL = "internal"
+    INTERNAL_FLEXT = "internal_flext"
+    THIRD_PARTY_FORK = "third_party_fork"
+
+
 @dataclass(frozen=True)
 class ProjectionSelection:
     agents: tuple[str, ...] = ()
     opt_ins: tuple[str, ...] = ()
     selected_tags: tuple[str, ...] = ()
+    project_profile: ProjectProfile = ProjectProfile.UNCLASSIFIED
 
     def payload(self) -> dict[str, list[str]]:
         return {
@@ -209,6 +231,7 @@ class _TargetState:
     previous: dict[str, dict[str, object]]
     snapshot: str | None
     drift: bool
+    retired_gc_links: dict[str, str]
 
 
 @dataclass
@@ -271,6 +294,41 @@ def _tree_snapshot(root: Path, allowed_links: dict[str, str] | None = None) -> s
 
     visit(root)
     return digest.hexdigest()
+
+
+def _retired_gc_links(root: Path) -> dict[str, str]:
+    """Validate the exact retired Gas City projection before atomic cutover."""
+
+    manifest = root / ".gc-skill-ownership.json"
+    if not manifest.exists() and not manifest.is_symlink():
+        return {}
+    if manifest.is_symlink() or not manifest.is_file():
+        raise ValueError(
+            f"retired Gas City manifest must be a physical file: {manifest}"
+        )
+    payload = cast_mapping(
+        json.loads(manifest.read_text(encoding="utf-8")), str(manifest)
+    )
+    require_exact_fields(payload, frozenset({"targets"}), str(manifest))
+    targets = cast_mapping(payload["targets"], f"{manifest}: targets")
+    links: dict[str, str] = {}
+    for name, raw_target in targets.items():
+        if Path(name).name != name or not name:
+            raise ValueError(f"retired Gas City skill name is invalid: {name!r}")
+        if not isinstance(raw_target, str) or not raw_target:
+            raise TypeError(f"retired Gas City skill target is invalid: {name}")
+        destination = root / name
+        if not destination.exists() and not destination.is_symlink():
+            continue
+        if not destination.is_symlink():
+            raise ValueError(
+                f"retired Gas City skill is not an owned symlink: {destination}"
+            )
+        observed = os.readlink(destination)
+        if observed != raw_target:
+            raise ValueError(f"retired Gas City skill target differs: {destination}")
+        links[name] = raw_target
+    return links
 
 
 def _discard_owned_tree(path: Path) -> None:
@@ -679,16 +737,46 @@ class Projector:
         ]
 
     @staticmethod
-    def _selection_document(rules: tuple[ProjectDetectionRule, ...]) -> str:
-        rendered_rules = Projector._render_detection_rules(rules)
+    def _detection_catalog_digest(rules: tuple[ProjectDetectionRule, ...]) -> str:
+        payload = json.dumps(
+            Projector._render_detection_rules(rules),
+            separators=(",", ":"),
+            sort_keys=True,
+        ).encode()
+        return hashlib.sha256(payload).hexdigest()
+
+    @staticmethod
+    def _profile_from_tags(tags: set[str]) -> ProjectProfile | None:
+        fork = "third-party-fork" in tags
+        internal = "internal" in tags
+        flext = "flext" in tags or "internal-flext" in tags
+        if fork and (internal or flext):
+            raise ValueError(
+                "project detection produced conflicting ownership profiles"
+            )
+        if fork:
+            return ProjectProfile.THIRD_PARTY_FORK
+        if flext:
+            return ProjectProfile.INTERNAL_FLEXT
+        if internal:
+            return ProjectProfile.INTERNAL
+        return None
+
+    @staticmethod
+    def _selection_document(
+        rules: tuple[ProjectDetectionRule, ...], profile: ProjectProfile
+    ) -> str:
         return (
             json.dumps(
                 {
                     "agents": [],
-                    "detection_rules": rendered_rules,
+                    "detection_catalog_digest": Projector._detection_catalog_digest(
+                        rules
+                    ),
                     "opt_ins": [],
+                    "project_profile": profile.value,
                     "selected_tags": [],
-                    "version": 2,
+                    "version": 3,
                 },
                 indent=2,
                 sort_keys=True,
@@ -696,22 +784,57 @@ class Projector:
             + "\n"
         )
 
-    def authorize(self, project: Path) -> ProjectAuthorization:
-        """Authorize a detected canonical project with one minimal selection."""
+    def authorize(
+        self, project: Path, *, synchronize: bool = True
+    ) -> ProjectAuthorization:
+        """Inspect or synchronize one detected canonical project selection."""
 
         authorization = load_project_authorization(project)
-        if authorization.selected or not self.config.project_detection_rules:
+        if not self.config.project_detection_rules:
             return authorization
+        if authorization.selected:
+            payload = cast_mapping(
+                json.loads(cast(str, authorization.payload)), str(authorization.path)
+            )
+            if payload.get("version") != 3:
+                return authorization
+            digest = Projector._detection_catalog_digest(
+                self.config.project_detection_rules
+            )
+            if payload.get("detection_catalog_digest") == digest:
+                return authorization
+            detected_profile = Projector._profile_from_tags(
+                Projector._detect_active_tags(
+                    project, self.config.project_detection_rules
+                )
+            )
+            recorded_profile = ProjectProfile(cast(str, payload["project_profile"]))
+            if (
+                detected_profile is not None
+                and detected_profile is not recorded_profile
+            ):
+                raise ValueError(
+                    f"{authorization.path}: project profile conflicts with current detection evidence"
+                )
+            if not synchronize:
+                return authorization
+            payload["detection_catalog_digest"] = digest
+            atomic_write_text(
+                authorization.path,
+                json.dumps(payload, indent=2, sort_keys=True) + "\n",
+                mode=0o644,
+            )
+            return load_project_authorization(project)
         path = project / PROJECT_SELECTION
-        Projector._detect_active_tags(project, self.config.project_detection_rules)
-        active_rules = tuple(
-            rule
-            for rule in self.config.project_detection_rules
-            if Projector._detect_active_tags(project, (rule,))
+        active_tags = Projector._detect_active_tags(
+            project, self.config.project_detection_rules
         )
-        if not active_rules:
+        profile = Projector._profile_from_tags(active_tags)
+        if profile is None or not synchronize:
             return authorization
-        text = Projector._selection_document(active_rules)
+        text = Projector._selection_document(
+            self.config.project_detection_rules, profile
+        )
         created: list[Path] = []
 
         def publish_selection() -> None:
@@ -745,10 +868,12 @@ class Projector:
         path = authorization.path
         payload = cast_mapping(json.loads(authorization.payload), str(path))
         version = payload.get("version")
-        if version not in (1, 2):
-            raise ValueError(f"projection selection version must be 1 or 2: {path}")
+        if version not in (1, 2, 3):
+            raise ValueError(f"projection selection version must be 1, 2, or 3: {path}")
         allowed = (
-            _SELECTION_FIELDS_V2
+            _SELECTION_FIELDS_V3
+            if version == 3
+            else _SELECTION_FIELDS_V2
             if version == 2 and "detection_rules" in payload
             else _SELECTION_FIELDS_V1
         )
@@ -758,6 +883,39 @@ class Projector:
         selected_tags: set[str] = set(
             _strings(payload["selected_tags"], f"{path}: selected_tags")
         )
+        profile = ProjectProfile.UNCLASSIFIED
+        if version == 3:
+            raw_profile = payload["project_profile"]
+            if not isinstance(raw_profile, str):
+                raise TypeError(f"{path}: project_profile must be a string")
+            profile = ProjectProfile(raw_profile)
+            digest = payload["detection_catalog_digest"]
+            if not isinstance(digest, str) or _DIGEST.fullmatch(digest) is None:
+                raise TypeError(
+                    f"{path}: detection_catalog_digest must be a SHA-256 digest"
+                )
+            expected_digest = Projector._detection_catalog_digest(
+                self.config.project_detection_rules
+            )
+            if digest != expected_digest:
+                raise ValueError(
+                    f"{path}: detection catalog differs from canonical projection config"
+                )
+            detected_tags = Projector._detect_active_tags(
+                authorization.project, self.config.project_detection_rules
+            )
+            detected_profile = Projector._profile_from_tags(detected_tags)
+            if detected_profile is not None and detected_profile is not profile:
+                raise ValueError(
+                    f"{path}: project profile conflicts with current detection evidence"
+                )
+            if profile is ProjectProfile.INTERNAL:
+                selected_tags.add("internal")
+            elif profile is ProjectProfile.INTERNAL_FLEXT:
+                selected_tags.update(("flext", "internal"))
+            elif profile is ProjectProfile.THIRD_PARTY_FORK:
+                selected_tags.add("third-party-fork")
+            selected_tags.update(detected_tags)
         if version == 2 and "detection_rules" in payload:
             expected_rules = Projector._render_detection_rules(
                 self.config.project_detection_rules
@@ -772,7 +930,9 @@ class Projector:
                     self.config.project_detection_rules,
                 )
             )
-        return ProjectionSelection(agents, opt_ins, tuple(sorted(selected_tags)))
+        return ProjectionSelection(
+            agents, opt_ins, tuple(sorted(selected_tags)), profile
+        )
 
     @staticmethod
     def _normalized_dependency(value: str) -> str | None:
@@ -906,6 +1066,21 @@ class Projector:
             for prefix in self._managed_prefixes()
         )
 
+    def _has_path_evidence(
+        self, project: Path, candidates: object, *, files_only: bool = False
+    ) -> bool:
+        for candidate in sorted(cast(Iterable[Path], candidates)):
+            if self._is_managed_evidence(project, candidate):
+                continue
+            symlink = symlink_component(candidate)
+            if symlink is not None:
+                raise ValueError(
+                    f"project detector evidence symlink forbidden: {symlink}"
+                )
+            if candidate.is_file() if files_only else candidate.exists():
+                return True
+        return False
+
     def _detector_matches(
         self, project: Path, detector: str, dependencies: set[str]
     ) -> bool:
@@ -922,29 +1097,11 @@ class Projector:
             return dependency in dependencies or value.lower() in dependencies
         if kind in {"owned-extension", "extension"}:
             suffix = value if value.startswith(".") else f".{value}"
-            for candidate in sorted(project.rglob(f"*{suffix}")):
-                if self._is_managed_evidence(project, candidate):
-                    continue
-                symlink = symlink_component(candidate)
-                if symlink is not None:
-                    raise ValueError(
-                        f"project detector evidence symlink forbidden: {symlink}"
-                    )
-                if candidate.is_file():
-                    return True
-            return False
+            return self._has_path_evidence(
+                project, project.rglob(f"*{suffix}"), files_only=True
+            )
         if kind == "owned-glob":
-            for candidate in sorted(project.glob(value)):
-                if self._is_managed_evidence(project, candidate):
-                    continue
-                symlink = symlink_component(candidate)
-                if symlink is not None:
-                    raise ValueError(
-                        f"project detector evidence symlink forbidden: {symlink}"
-                    )
-                if candidate.exists():
-                    return True
-            return False
+            return self._has_path_evidence(project, project.glob(value))
         if kind in {"opt-in", "selected-tag"}:
             return False
         raise ValueError(f"unsupported project detector: {detector}")
@@ -961,6 +1118,12 @@ class Projector:
             for record in records
             if record.category.conditional and "project" in record.routes
         )
+        if selection.project_profile is ProjectProfile.THIRD_PARTY_FORK:
+            conditional = tuple(
+                record
+                for record in conditional
+                if record.name in {"deployment-lifecycle", "upstream-fork-maintenance"}
+            )
         known_opt_ins = {
             detector.split(":", 2)[2]
             for record in conditional
@@ -976,7 +1139,8 @@ class Projector:
         unknown_opt_ins = set(selection.opt_ins) - known_opt_ins
         if unknown_opt_ins:
             raise ValueError(f"unknown project opt-in: {min(unknown_opt_ins)}")
-        unknown_tags = set(selection.selected_tags) - known_tags
+        profile_tags = {"internal", "flext", "third-party-fork"}
+        unknown_tags = set(selection.selected_tags) - known_tags - profile_tags
         if unknown_tags:
             raise ValueError(f"unknown selected tag: {min(unknown_tags)}")
         activated: dict[str, tuple[str, ...]] = {}
@@ -1001,11 +1165,13 @@ class Projector:
         records: tuple[SkillRecord, ...],
         selected: dict[str, tuple[str, ...]],
         local_names: frozenset[str],
+        profile: ProjectProfile,
     ) -> tuple[ProjectionSource, ...]:
         activated: dict[str, set[str]] = {
             record.name: {"project-generic"}
             for record in records
             if record.category is SkillCategory.PROJECT_WIDE
+            and profile is not ProjectProfile.THIRD_PARTY_FORK
         }
         for name, evidence in selected.items():
             activated[name] = set(evidence)
@@ -1100,6 +1266,7 @@ class Projector:
         local_catalog = (
             Catalog.project(project, self.catalog)
             if project_selection is not None
+            and project_selection.project_profile is ProjectProfile.UNCLASSIFIED
             else None
         )
         validate_skill_catalogs(self.catalog, local_catalog)
@@ -1124,6 +1291,7 @@ class Projector:
                     project_records,
                 ),
                 local_skill_names,
+                project_selection.project_profile,
             )
             if project_selection is not None
             else ()
@@ -1493,7 +1661,7 @@ class Projector:
         if symlink_component(root) is not None:
             raise ValueError(f"projection path symlink forbidden: {root}")
         if not root.exists():
-            return _TargetState(plan, {}, None, True)
+            return _TargetState(plan, {}, None, True, {})
         if not root.is_dir():
             raise ValueError(f"projection destination is not a directory: {root}")
         links = {
@@ -1501,6 +1669,8 @@ class Projector:
             for source in plan.sources
             if source.link_target is not None
         }
+        retired_gc_links = _retired_gc_links(root)
+        links.update(retired_gc_links)
         snapshot = _tree_snapshot(root, links)
         payload = self._manifest(root)
         desired = self._manifest_payload(plan)
@@ -1603,7 +1773,13 @@ class Projector:
                         f"stale managed projection was modified: {destination}"
                     )
             drift = True
-        return _TargetState(plan, previous, snapshot, drift)
+        return _TargetState(
+            plan,
+            previous,
+            snapshot,
+            drift or bool(retired_gc_links),
+            retired_gc_links,
+        )
 
     @staticmethod
     def _render_manifest(payload: dict[str, object]) -> str:
@@ -1616,6 +1792,7 @@ class Projector:
             for source in plan.sources
             if source.link_target is not None
         }
+        links.update(state.retired_gc_links)
         parent = plan.root.parent
         while not parent.exists():
             parent = parent.parent
@@ -1633,6 +1810,10 @@ class Projector:
                     raise RuntimeError(f"projection staging copy differs: {plan.root}")
             else:
                 candidate.mkdir()
+            for retired in (*state.retired_gc_links, ".gc-skill-ownership.json"):
+                destination = candidate / retired
+                if destination.exists() or destination.is_symlink():
+                    _discard_owned_tree(destination)
             expected = {source.name: source for source in plan.sources}
             for stale in set(state.previous) - set(expected):
                 destination = candidate / stale
@@ -1718,6 +1899,7 @@ class Projector:
             for source in plan.sources
             if source.link_target is not None
         }
+        links.update(staged.state.retired_gc_links)
         root = plan.root
         current = (
             _tree_snapshot(root, links) if root.exists() or root.is_symlink() else None
@@ -1763,7 +1945,7 @@ class Projector:
         """Raise on the first project projection defect or drift."""
 
         project = self.project_root()
-        authorization = self.authorize(project)
+        authorization = self.authorize(project, synchronize=False)
         for plan in self._plans(authorization):
             if not plan.root.exists():
                 continue

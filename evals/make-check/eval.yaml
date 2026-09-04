@@ -21,9 +21,11 @@ graders:
   config:
     prompt: |-
       Grade the make-check response. Pass only when it inspects the supplied
-      Makefile help contract, chooses the smallest declared native verb and
+      Makefile help contract, runs the declared `make setup` first, chooses the smallest declared native verb and
       scoped arguments for the request, and states the command/cwd/exit/output
-      evidence needed for green. A broken required owner must be corrected and
+      evidence needed for green. Existing environments never waive setup. A stale
+      generator, exact tool pin, downgrade, or version guard that blocks the
+      newest owner is red. A broken required owner must be corrected and
       the native target rerun in the same task. The newest released required tool
       and every diagnostic it emits remain blocking. Reject raw ruff, pytest, or
       uv invocations, invented targets, destructive targets, claims without fresh

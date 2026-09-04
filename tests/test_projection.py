@@ -4,7 +4,10 @@ import inspect
 import json
 import subprocess
 import tempfile
+from collections.abc import Sequence
+from dataclasses import replace
 from pathlib import Path
+from types import MappingProxyType
 from typing import Any, cast
 
 import pytest
@@ -21,9 +24,19 @@ from agents_governance.catalog import Catalog
 from agents_governance.projection import (
     _SELECTION_FIELDS_V1,
     _SELECTION_FIELDS_V2,
+    _SELECTION_FIELDS_V3,
     Projector,
 )
-from agents_governance.projection_config import load_projection_config
+from agents_governance.projection_config import (
+    DetectionCondition,
+    DetectionConditionType,
+    DetectionOperator,
+    ProjectDetectionRule,
+    ProjectionConfig,
+    ProjectionContext,
+    ProjectionStatus,
+    load_projection_config,
+)
 from agents_governance.rules import audit_rule_specs
 
 _PROVIDERS = (
@@ -126,8 +139,9 @@ def _config(
     root: Path,
     supported: dict[tuple[str, str], str],
     *,
+    personal_supported: dict[tuple[str, str], str] | None = None,
     project_detection_rules: list[JsonDocument] | None = None,
-) -> None:
+) -> ProjectionConfig:
     config = root / "config"
     config.mkdir()
     (config / "skills.json").write_text(
@@ -153,60 +167,51 @@ def _config(
         "domain",
     ):
         (root / "skills" / category).mkdir(parents=True, exist_ok=True)
-    providers: dict[str, JsonValue] = {}
-    for provider in _PROVIDERS:
-        contexts: dict[str, JsonValue] = {}
-        for context in ("personal", "project"):
-            surfaces: dict[str, JsonValue] = {}
-            for surface in _SURFACES:
-                path = (
-                    supported.get((provider, surface)) if context == "project" else None
-                )
-                surfaces[surface] = (
-                    {
-                        "status": "SUPPORTED",
-                        "path": path,
-                        **(
-                            {
-                                "events": {
-                                    logical: {
-                                        "status": "SUPPORTED",
-                                        "native": [native],
-                                        "coverage": "exact",
-                                        "clients": ["local"],
-                                    }
-                                    for logical, native in {
-                                        "context_refresh": "ContextRefresh",
-                                        "prompt_submit": "PromptSubmit",
-                                        "session_start": "SessionStart",
-                                        "subagent_start": "SubagentStart",
-                                    }.items()
-                                },
-                            }
-                            if surface == "hooks"
-                            else {"layout": "directory"}
-                            if surface == "rules"
-                            else {}
-                        ),
-                    }
-                    if path is not None
-                    else {
-                        "status": "UNSUPPORTED",
-                        "reason": "UNSUPPORTED: not part of this focused fixture",
-                    }
-                )
-            contexts[context] = surfaces
-        providers[provider] = contexts
-    projection_payload: JsonDocument = {
-        "version": 7,
-        "manifest_versions": {"hooks": 3, "projection": 6},
-        "providers": providers,
-    }
-    if project_detection_rules is not None:
-        projection_payload["project_detection_rules"] = project_detection_rules
-    (config / "projections.json").write_text(
-        json.dumps(projection_payload),
-        encoding="utf-8",
+    base = load_projection_config(root)
+    cells = {}
+    for key, cell in base.cells.items():
+        selected = (
+            supported
+            if cell.context is ProjectionContext.PROJECT
+            else personal_supported or {}
+        )
+        selected_path = selected.get((cell.provider.value, cell.surface.value))
+        cells[key] = (
+            replace(cell, path=selected_path)
+            if selected_path is not None
+            else replace(
+                cell,
+                status=ProjectionStatus.UNSUPPORTED,
+                path=None,
+                reason="UNSUPPORTED: not part of this focused fixture",
+                events=None,
+                layout=None,
+            )
+        )
+    rules: list[ProjectDetectionRule] = []
+    for raw in project_detection_rules or []:
+        when = cast("JsonDocument", raw["when"])
+        operator = next(iter(when))
+        conditions = cast("Sequence[JsonDocument]", when[operator])
+        rules.append(
+            ProjectDetectionRule(
+                cast(str, raw["id"]),
+                tuple(cast("Sequence[str]", raw["activate_tags"])),
+                DetectionOperator(operator),
+                tuple(
+                    DetectionCondition(
+                        DetectionConditionType(cast(str, condition["type"])),
+                        cast(str, condition["pattern"]),
+                        tuple(cast("Sequence[str]", condition.get("paths", []))),
+                    )
+                    for condition in conditions
+                ),
+            )
+        )
+    return replace(
+        base,
+        project_detection_rules=tuple(rules),
+        cells=MappingProxyType(cells),
     )
 
 
@@ -220,13 +225,17 @@ def _source(
     root.mkdir()
     _skill(root, "project-guidance")
     if project_detection_rules is not None:
-        _conditional_skill(root, "flext")
-    _config(
+        detected = set(_rule_activate_tags(project_detection_rules))
+        if "flext" in detected:
+            detected.add("internal")
+        for tag in sorted(detected):
+            _conditional_skill(root, tag)
+    projection = _config(
         root,
         supported or {("codex", "skills"): ".agents/skills"},
         project_detection_rules=project_detection_rules,
     )
-    return root, Projector(Catalog(root), load_projection_config(root), (), (), ())
+    return root, Projector(Catalog(root), projection, (), (), ())
 
 
 def _agent_projector(
@@ -236,14 +245,27 @@ def _agent_projector(
     root.mkdir()
     _skill(root, "project-guidance")
     _agent_source(root)
-    _config(root, supported)
+    projection = _config(root, supported)
     return root, Projector(
         Catalog(root),
-        load_projection_config(root),
+        projection,
         (),
         audit_agent_profiles(root),
         audit_rule_specs(root),
     )
+
+
+def _skill_projector(
+    tmp_path: Path,
+    specs: tuple[tuple[str, str, tuple[str, ...]], ...],
+) -> tuple[Path, Projector]:
+    root = tmp_path / "source"
+    root.mkdir()
+    _skill(root, "project-guidance")
+    for name, category, tags in specs:
+        _skill(root, name, category=category, tags=tags)
+    projection = _config(root, {("codex", "skills"): ".agents/skills"})
+    return root, Projector(Catalog(root), projection, (), (), ())
 
 
 def _project(
@@ -463,39 +485,37 @@ def test_authorized_local_skill_composes_with_central_sources_and_reaches_fixed_
 def test_selected_flext_and_cosmos_tags_activate_only_their_central_skills(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    root = tmp_path / "source"
-    root.mkdir()
-    _skill(root, "project-guidance")
-    _skill(
-        root,
-        "flext-development",
-        category="framework",
-        tags=(
-            "activation:detected",
-            "detect:selected-tag:flext",
-            "framework:flext",
-            "provenance:agents-owned",
-            "route:project",
-            "updates:manual",
-            "usage:on-demand",
+    _, projector = _skill_projector(
+        tmp_path,
+        (
+            (
+                "flext-development",
+                "framework",
+                (
+                    "activation:detected",
+                    "detect:selected-tag:flext",
+                    "framework:flext",
+                    "provenance:agents-owned",
+                    "route:project",
+                    "updates:manual",
+                    "usage:on-demand",
+                ),
+            ),
+            (
+                "cosmos-gitops",
+                "domain",
+                (
+                    "activation:detected",
+                    "detect:selected-tag:cosmos-gitops",
+                    "domain:cosmos-gitops",
+                    "provenance:agents-owned",
+                    "route:project",
+                    "updates:manual",
+                    "usage:on-demand",
+                ),
+            ),
         ),
     )
-    _skill(
-        root,
-        "cosmos-gitops",
-        category="domain",
-        tags=(
-            "activation:detected",
-            "detect:selected-tag:cosmos-gitops",
-            "domain:cosmos-gitops",
-            "provenance:agents-owned",
-            "route:project",
-            "updates:manual",
-            "usage:on-demand",
-        ),
-    )
-    _config(root, {("codex", "skills"): ".agents/skills"})
-    projector = Projector(Catalog(root), load_projection_config(root), (), (), ())
     project = _project(tmp_path, selected_tags=("flext",))
     monkeypatch.chdir(project)
 
@@ -653,20 +673,17 @@ def test_personal_projection_includes_agent_routed_capabilities(
             "usage:on-demand",
         ),
     )
-    _config(root, {})
-    config_path = root / "config" / "projections.json"
-    config = json.loads(config_path.read_text(encoding="utf-8"))
-    config["providers"]["codex"]["personal"]["skills"] = {
-        "status": "SUPPORTED",
-        "path": "${HOME}/.codex/skills",
-    }
-    config_path.write_text(json.dumps(config), encoding="utf-8")
+    projection = _config(
+        root,
+        {},
+        personal_supported={("codex", "skills"): "${HOME}/.codex/skills"},
+    )
     project = _project(tmp_path, authorized=False)
     home = tmp_path / "home"
     home.mkdir()
     monkeypatch.setenv("HOME", str(home))
     monkeypatch.chdir(project)
-    projector = Projector(Catalog(root), load_projection_config(root), (), (), ())
+    projector = Projector(Catalog(root), projection, (), (), ())
 
     projector.apply()
 
@@ -682,18 +699,15 @@ def test_personal_projection_never_publishes_over_canonical_skill_sources(
     root = tmp_path / "source"
     root.mkdir()
     _skill(root, "always", category="agent-wide")
-    _config(root, {})
-    config_path = root / "config" / "projections.json"
-    config = json.loads(config_path.read_text(encoding="utf-8"))
-    config["providers"]["codex"]["personal"]["skills"] = {
-        "status": "SUPPORTED",
-        "path": "${HOME}/source/skills",
-    }
-    config_path.write_text(json.dumps(config), encoding="utf-8")
+    projection = _config(
+        root,
+        {},
+        personal_supported={("codex", "skills"): "${HOME}/source/skills"},
+    )
     project = _project(tmp_path, authorized=False)
     monkeypatch.setenv("HOME", str(tmp_path))
     monkeypatch.chdir(project)
-    projector = Projector(Catalog(root), load_projection_config(root), (), (), ())
+    projector = Projector(Catalog(root), projection, (), (), ())
 
     projector.apply()
 
@@ -762,10 +776,7 @@ def test_divergent_unmanifested_agent_requires_adjudication_before_publication(
 def test_foreign_symlink_is_preserved_and_blocks_projection(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    _, projector = _source(tmp_path)
-    project = _project(tmp_path)
-    target = project / ".agents" / "skills"
-    target.mkdir(parents=True)
+    projector, project, target = _empty_projection_target(tmp_path)
     outside = project / "foreign-source"
     outside.mkdir()
     link = target / "foreign-link"
@@ -947,10 +958,7 @@ def test_invalid_manifest_and_destination_symlink_are_never_rewritten(
 def test_removed_manifest_schema_is_rejected_without_rewrite(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    _, projector = _source(tmp_path)
-    project = _project(tmp_path)
-    target = project / ".agents" / "skills"
-    target.mkdir(parents=True)
+    projector, project, target = _empty_projection_target(tmp_path)
     manifest = target / Projector.MANIFEST
     removed = json.dumps({"managed": {}, "version": 2})
     manifest.write_text(removed, encoding="utf-8")
@@ -960,6 +968,14 @@ def test_removed_manifest_schema_is_rejected_without_rewrite(
         projector.apply()
 
     assert manifest.read_text(encoding="utf-8") == removed
+
+
+def _empty_projection_target(tmp_path: Path) -> tuple[Projector, Path, Path]:
+    _, projector = _source(tmp_path)
+    project = _project(tmp_path)
+    target = project / ".agents" / "skills"
+    target.mkdir(parents=True)
+    return projector, project, target
 
 
 def test_absolute_manifest_identity_is_rejected_without_rewrite(
@@ -985,25 +1001,24 @@ def test_absolute_manifest_identity_is_rejected_without_rewrite(
 def test_project_selection_activates_only_declared_project_opt_in(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    root = tmp_path / "source"
-    root.mkdir()
-    _skill(root, "project-guidance")
-    _skill(
-        root,
-        "selected-tool",
-        category="tool",
-        tags=(
-            "activation:opt-in",
-            "detect:opt-in:selected-tool",
-            "provenance:test",
-            "route:project",
-            "tool:selected-tool",
-            "updates:manual",
-            "usage:on-demand",
+    _, projector = _skill_projector(
+        tmp_path,
+        (
+            (
+                "selected-tool",
+                "tool",
+                (
+                    "activation:opt-in",
+                    "detect:opt-in:selected-tool",
+                    "provenance:test",
+                    "route:project",
+                    "tool:selected-tool",
+                    "updates:manual",
+                    "usage:on-demand",
+                ),
+            ),
         ),
     )
-    _config(root, {("codex", "skills"): ".agents/skills"})
-    projector = Projector(Catalog(root), load_projection_config(root), (), (), ())
     project = _project(tmp_path, opt_ins=("selected-tool",))
     monkeypatch.chdir(project)
 
@@ -1071,8 +1086,8 @@ def test_each_skill_uses_only_its_own_detector_evidence(
                 "usage:on-demand",
             ),
         )
-    _config(root, {("codex", "skills"): ".agents/skills"})
-    projector = Projector(Catalog(root), load_projection_config(root), (), (), ())
+    projection = _config(root, {("codex", "skills"): ".agents/skills"})
+    projector = Projector(Catalog(root), projection, (), (), ())
     project = _project(tmp_path)
     (project / "first.marker").write_text("present", encoding="utf-8")
     monkeypatch.chdir(project)
@@ -1207,10 +1222,7 @@ def test_external_git_directory_is_rejected(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     _, projector = _source(tmp_path)
-    external = _git_repository(tmp_path / "external")
-    project = tmp_path / "project"
-    project.mkdir()
-    (project / ".git").write_text(f"gitdir: {external / '.git'}\n", encoding="utf-8")
+    project = _project_with_external_gitdir(tmp_path, "project")
     monkeypatch.chdir(project)
 
     with pytest.raises(ValueError, match="external Git directory is forbidden"):
@@ -1228,14 +1240,19 @@ def test_external_git_directory_under_a_worktrees_directory_is_rejected(
     """
 
     _, projector = _source(tmp_path)
-    external = _git_repository(tmp_path / "external")
-    project = tmp_path / "worktrees" / "borrowed"
-    project.mkdir(parents=True)
-    (project / ".git").write_text(f"gitdir: {external / '.git'}\n", encoding="utf-8")
+    project = _project_with_external_gitdir(tmp_path, "worktrees/borrowed")
     monkeypatch.chdir(project)
 
     with pytest.raises(ValueError, match="external Git directory is forbidden"):
         projector.apply()
+
+
+def _project_with_external_gitdir(tmp_path: Path, relative: str) -> Path:
+    external = _git_repository(tmp_path / "external")
+    project = tmp_path / relative
+    project.mkdir(parents=True)
+    (project / ".git").write_text(f"gitdir: {external / '.git'}\n", encoding="utf-8")
+    return project
 
 
 def test_malformed_git_file_propagates_git_failure(
@@ -1328,12 +1345,12 @@ def _make_v2_project(
     _skill(source, "project-guidance")
     for tag in sorted({*selected_tags, *_rule_activate_tags(detection_rules)}):
         _conditional_skill(source, tag)
-    _config(
+    projection = _config(
         source,
         {("codex", "skills"): ".agents/skills"},
         project_detection_rules=detection_rules,
     )
-    projector = Projector(Catalog(source), load_projection_config(source), (), (), ())
+    projector = Projector(Catalog(source), projection, (), (), ())
     monkeypatch.chdir(project)
     return project, projector
 
@@ -1630,6 +1647,14 @@ def test_v2_selection_field_contracts_are_exact() -> None:
         "version",
     }
     assert set(_SELECTION_FIELDS_V2) == set(_SELECTION_FIELDS_V1) | {"detection_rules"}
+    assert set(_SELECTION_FIELDS_V3) == {
+        "agents",
+        "detection_catalog_digest",
+        "opt_ins",
+        "project_profile",
+        "selected_tags",
+        "version",
+    }
 
 
 # ===== End v2 detection_rules tests =====
@@ -1697,27 +1722,25 @@ def test_alias_link_divergence_requires_adjudication(
     assert link.is_dir() and not link.is_symlink()
 
 
-def _marker_consumer(tmp_path: Path, pyproject: str) -> tuple[Projector, Path]:
-    """Build a flext-detecting projector and a consumer carrying ``pyproject``.
-
-    Returns:
-        The projector and the consumer project directory it will authorize.
-
-    """
+def _flext_consumer(
+    tmp_path: Path, content: str, *, git: bool
+) -> tuple[Projector, Path]:
     _, projector = _source(
         tmp_path,
         project_detection_rules=[flext_detection_rule()],
     )
     project = tmp_path / "consumer"
     project.mkdir()
-    (project / "pyproject.toml").write_text(pyproject, encoding="utf-8")
+    if git:
+        (project / ".git").mkdir()
+    (project / "pyproject.toml").write_text(content, encoding="utf-8")
     return projector, project
 
 
 def test_canonical_marker_authorizes_minimal_project_selection(
     tmp_path: Path,
 ) -> None:
-    projector, project = _marker_consumer(tmp_path, "# @flext-managed\n")
+    projector, project = _flext_consumer(tmp_path, "# @flext-managed\n", git=True)
 
     authorization = projector.authorize(project)
 
@@ -1725,19 +1748,42 @@ def test_canonical_marker_authorizes_minimal_project_selection(
     selection = json.loads(authorization.path.read_text(encoding="utf-8"))
     assert selection == {
         "agents": [],
-        "detection_rules": [flext_detection_rule()],
+        "detection_catalog_digest": Projector._detection_catalog_digest(
+            projector.config.project_detection_rules
+        ),
         "opt_ins": [],
+        "project_profile": "internal_flext",
         "selected_tags": [],
-        "version": 2,
+        "version": 3,
     }
     second = projector.authorize(project)
     assert second.path.read_bytes() == authorization.path.read_bytes()
 
 
+def test_check_rejects_stale_detection_digest_without_mutating_selection(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    projector, project = _flext_consumer(tmp_path, "# @flext-managed\n", git=True)
+    monkeypatch.chdir(project)
+    authorization = projector.authorize(project)
+    payload = json.loads(authorization.path.read_text(encoding="utf-8"))
+    payload["detection_catalog_digest"] = "0" * 64
+    stale = json.dumps(payload, indent=2, sort_keys=True) + "\n"
+    authorization.path.write_text(stale, encoding="utf-8")
+
+    with pytest.raises(ValueError, match="detection catalog differs"):
+        projector.check()
+
+    assert authorization.path.read_text(encoding="utf-8") == stale
+    projector.apply()
+    projector.check()
+
+
 def test_canonical_marker_does_not_create_unauthorized_selection(
     tmp_path: Path,
 ) -> None:
-    projector, project = _marker_consumer(tmp_path, "# another project\n")
+    projector, project = _flext_consumer(tmp_path, "# another project\n", git=False)
 
     authorization = projector.authorize(project)
 

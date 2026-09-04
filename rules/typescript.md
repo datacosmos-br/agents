@@ -7,6 +7,10 @@ metadata:
 
 # TypeScript rules
 
+Apply local typing and language-modernization requirements only to `internal`
+and `internal_flext`. A `third_party_fork` follows its upstream TypeScript,
+JavaScript, runtime, and toolchain contract.
+
 Use the project's declared runtime, TypeScript version, module system, package
 manager, framework, and canonical command facade. Never impose a repository-
 specific architecture on a generic TypeScript project.

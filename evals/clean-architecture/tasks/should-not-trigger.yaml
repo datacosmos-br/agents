@@ -1,0 +1,9 @@
+id: clean-architecture-third-party-fork-001
+name: Preserve upstream architecture
+description: Do not apply internal architecture to a third-party fork.
+tags: [anti-trigger, third-party-fork]
+inputs:
+  prompt: This repository is a verified third_party_fork. Fix one upstream bug while preserving its contribution guide and architecture.
+expected:
+  output_contains: [upstream, minimal delta]
+  output_not_contains: [impose Clean Architecture, new composition root]

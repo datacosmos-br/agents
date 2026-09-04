@@ -1,5 +1,6 @@
 {
   "agents": [],
+  "detection_catalog_digest": "ed120ec18cf124b9800be322179674e0a84bec78a2488b04b7a63081d4fcc190",
   "opt_ins": [
     "gascity-docs",
     "gc-agents",
@@ -11,6 +12,7 @@
     "gc-work",
     "mayor"
   ],
+  "project_profile": "internal",
   "selected_tags": [],
-  "version": 1
+  "version": 3
 }

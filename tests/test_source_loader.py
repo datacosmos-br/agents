@@ -13,7 +13,6 @@ SCRIPT_EXECUTABLE_ALLOWLISTS = {
         "opencode"
     },
     "skills/domain/gascity/mayor/assets/scripts/create_beads_from_tasks.py": {"gc"},
-    "skills/tool/pr-sheriff/scripts/pr_triage.py": {"gh", "git"},
 }
 
 
@@ -63,7 +62,8 @@ def test_catalog_script_loading_is_concurrent_and_residue_free() -> None:
     sources = (
         root
         / "skills/agent-wide/personal/opencode-session-handoff/scripts/export_session_snapshot.py",
-        root / "skills/tool/pr-sheriff/scripts/pr_triage.py",
+        root
+        / "skills/agent-wide/personal/opencode-session-handoff/scripts/export_session_snapshot.py",
     )
     before = tuple(source.parent.glob("__pycache__/*.pyc") for source in sources)
     assert all(not tuple(paths) for paths in before)

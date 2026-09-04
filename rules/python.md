@@ -12,6 +12,11 @@ frameworks, package manager, typing policy, and canonical command facade. Never
 inject another repository's development or orchestration contract into a
 generic Python project.
 
+When the project profile is `third_party_fork`, the upstream Python contract is
+authoritative: do not impose local typing modernization, DI, syntax, framework,
+or architecture rules. The stricter internal guidance below applies only to
+`internal` and `internal_flext`.
+
 ## Validation
 
 1. Discover native commands from `make help` or the repository's declared
