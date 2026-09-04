@@ -92,7 +92,7 @@ runtimes.
 | Family | Members first | Umbrella | Integration lane | Required `selected_tags` | Allowed local skills |
 |---|---:|---|---|---|---|
 | Central | — | `agents` | feature → `dev` → `main` | empty; `agents` and `opt_ins` also empty | none outside the central catalog |
-| FLEXT | 31 | `flext` | `0.12.0-dev` | tag `flext` via `selected_tags` or v2 `detection_rules`; canary proves which form is sufficient | none |
+| FLEXT | 31 | `flext` | `0.12.0-dev` | canonical marker `@flext-managed` in `pyproject.toml` generates a v2 selection for tag `flext`; explicit `selected_tags` or v2 `detection_rules` remain compatible | none |
 | Cosmos Docgen | 5 | `cosmos-docgen` | `dev` | empty | `dcdoc-thin-code` only |
 | Cosmos Main | 12 | `cosmos-main` | `develop` | `["cosmos-gitops"]` only in `cosmos-main` and the `cosmos-gitops` member; empty elsewhere | `cosmos-command-development` and `cosmos-main-standards` only |
 

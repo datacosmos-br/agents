@@ -1,0 +1,16 @@
+{
+  "agents": [],
+  "opt_ins": [
+    "gascity-docs",
+    "gc-agents",
+    "gc-city",
+    "gc-dashboard",
+    "gc-dispatch",
+    "gc-mail",
+    "gc-rigs",
+    "gc-work",
+    "mayor"
+  ],
+  "selected_tags": [],
+  "version": 1
+}

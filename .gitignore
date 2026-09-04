@@ -24,7 +24,9 @@ agents.bkp/
 /.beads.gate.lock
 /crew/
 /polecats/
-# Provider projection destinations (config/projections.json). Both the
+# Provider projection destinations (config/projections.json). Project-owned
+# selection and root instruction documents are source; every derived provider
+# artifact below them is runtime state. Both the
 # agentsctl projector and the gas city pack runtime write here: this repository
 # is a registered rig, so the pack runtime drops skill symlinks and an ownership
 # manifest into the provider trees at any time, unprompted. These are runtime
@@ -34,7 +36,8 @@ agents.bkp/
 # tests/test_tracker_suspension.py asserts that no projection artifact is
 # tracked, staged, or offered as untracked source. A destination missing here
 # would be offered as source and fail that guard, so the two must agree.
-/.agents/
+/.agents/*
+!/.agents/projection.json
 /.claude/
 /.codex/
 /.cursor/

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import json
-import shlex
+import os
 import stat
 import subprocess
 from pathlib import Path
@@ -271,9 +271,14 @@ def test_generated_hook_executes_and_malformed_input_fails_loudly(
     projector.apply(project)
     settings = _json(project / ".claude" / "settings.json")
     command = settings["hooks"]["SessionStart"][-1]["hooks"][0]["command"]  # type: ignore[index]
+    assert command == (
+        'python3 "$CLAUDE_PROJECT_DIR/.claude/aihub-hooks/claude-sessionstart.py"'
+    )
 
     accepted = subprocess.run(
-        shlex.split(command),
+        command,
+        shell=True,
+        env={**os.environ, "CLAUDE_PROJECT_DIR": str(project)},
         input="{}",
         text=True,
         capture_output=True,
@@ -283,7 +288,9 @@ def test_generated_hook_executes_and_malformed_input_fails_loudly(
     assert "additionalContext" in output["hookSpecificOutput"]
 
     rejected = subprocess.run(
-        shlex.split(command),
+        command,
+        shell=True,
+        env={**os.environ, "CLAUDE_PROJECT_DIR": str(project)},
         input="[]",
         text=True,
         capture_output=True,
