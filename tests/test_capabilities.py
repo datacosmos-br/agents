@@ -8,6 +8,7 @@ import pytest
 from agents_governance import runtime
 from agents_governance.catalog import Catalog
 from agents_governance.cleanup import Publication
+from agents_governance.projection_authorization import ProjectAuthorization
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -122,7 +123,9 @@ def test_sync_selects_projection_without_live_or_security(
     authorize = runtime.Projector.authorize
     publish = runtime.run_atomic_publications
 
-    def record_authorization(projector: runtime.Projector, project: Path) -> object:
+    def record_authorization(
+        projector: runtime.Projector, project: Path
+    ) -> ProjectAuthorization:
         events.append("authorization")
         return authorize(projector, project)
 

@@ -4,6 +4,7 @@ import inspect
 import json
 import subprocess
 import tempfile
+from collections.abc import Mapping, Sequence
 from pathlib import Path
 from typing import Any, cast
 
@@ -32,6 +33,13 @@ _PROVIDERS = (
     "pool",
 )
 _SURFACES = ("skills", "commands", "agents", "rules", "hooks")
+
+# Why: Sequence/Mapping recursion keeps nested JSON documents assignable under
+# invariance (ag-2wq detection-rule fixtures).
+type JsonValue = (
+    None | bool | int | float | str | Sequence["JsonValue"] | Mapping[str, "JsonValue"]
+)
+type JsonDocument = dict[str, JsonValue]
 
 
 def _encode(tags: tuple[str, ...]) -> str:
@@ -121,7 +129,7 @@ def _config(
     root: Path,
     supported: dict[tuple[str, str], str],
     *,
-    project_detection_rules: list[dict[str, object]] | None = None,
+    project_detection_rules: list[JsonDocument] | None = None,
 ) -> None:
     config = root / "config"
     config.mkdir()
@@ -148,11 +156,11 @@ def _config(
         "domain",
     ):
         (root / "skills" / category).mkdir(parents=True, exist_ok=True)
-    providers: dict[str, object] = {}
+    providers: dict[str, JsonValue] = {}
     for provider in _PROVIDERS:
-        contexts: dict[str, object] = {}
+        contexts: dict[str, JsonValue] = {}
         for context in ("personal", "project"):
-            surfaces: dict[str, object] = {}
+            surfaces: dict[str, JsonValue] = {}
             for surface in _SURFACES:
                 path = (
                     supported.get((provider, surface)) if context == "project" else None
@@ -192,7 +200,7 @@ def _config(
                 )
             contexts[context] = surfaces
         providers[provider] = contexts
-    projection_payload: dict[str, object] = {
+    projection_payload: JsonDocument = {
         "version": 7,
         "manifest_versions": {"hooks": 3, "projection": 6},
         "providers": providers,
@@ -209,7 +217,7 @@ def _source(
     tmp_path: Path,
     *,
     supported: dict[tuple[str, str], str] | None = None,
-    project_detection_rules: list[dict[str, object]] | None = None,
+    project_detection_rules: list[JsonDocument] | None = None,
 ) -> tuple[Path, Projector]:
     root = tmp_path / "source"
     root.mkdir()
@@ -224,7 +232,7 @@ def _source(
     return root, Projector(Catalog(root), load_projection_config(root), (), (), ())
 
 
-def _flext_detection_rule() -> dict[str, object]:
+def _flext_detection_rule() -> JsonDocument:
     return {
         "activate_tags": ["flext"],
         "id": "flext-managed",
@@ -1279,7 +1287,7 @@ def test_git_metadata_symlink_is_rejected(
 # ===== v2 detection_rules tests =====
 
 
-def _rule_activate_tags(rules: list[dict[str, object]]) -> set[str]:
+def _rule_activate_tags(rules: list[JsonDocument]) -> set[str]:
     tags: set[str] = set()
     for rule in rules:
         tags.update(cast(list[str], rule["activate_tags"]))
@@ -1312,7 +1320,7 @@ def _conditional_skill(root: Path, tag: str) -> None:
 def _make_v2_project(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
-    detection_rules: list[dict[str, object]],
+    detection_rules: list[JsonDocument],
     *,
     selected_tags: tuple[str, ...] = (),
     project_name: str = "project",
@@ -1339,7 +1347,11 @@ def _make_v2_project(
     _skill(source, "project-guidance")
     for tag in sorted({*selected_tags, *_rule_activate_tags(detection_rules)}):
         _conditional_skill(source, tag)
-    _config(source, {("codex", "skills"): ".agents/skills"})
+    _config(
+        source,
+        {("codex", "skills"): ".agents/skills"},
+        project_detection_rules=detection_rules,
+    )
     projector = Projector(Catalog(source), load_projection_config(source), (), (), ())
     monkeypatch.chdir(project)
     return project, projector
@@ -1359,8 +1371,8 @@ def _detection_rule(
     tag: str,
     *,
     paths: tuple[str, ...] | None = None,
-) -> dict[str, object]:
-    conditions: list[dict[str, object]] = [
+) -> JsonDocument:
+    conditions: list[dict[str, JsonValue]] = [
         {"type": condition_type, "pattern": pattern} for pattern in patterns
     ]
     if paths is not None:
@@ -1379,11 +1391,11 @@ def _path_rule(
     condition_type: str,
     patterns: tuple[str, ...],
     tag: str,
-) -> dict[str, object]:
+) -> JsonDocument:
     return _detection_rule(identifier, condition_type, operator, patterns, tag)
 
 
-def _documentation_path_rule(operator: str) -> list[dict[str, object]]:
+def _documentation_path_rule(operator: str) -> list[JsonDocument]:
     return [
         _path_rule(
             "doc-project",
@@ -1402,7 +1414,7 @@ def _file_rule(
     pattern: str,
     tag: str,
     paths: tuple[str, ...],
-) -> dict[str, object]:
+) -> JsonDocument:
     return _detection_rule(
         identifier,
         condition_type,
@@ -1506,7 +1518,7 @@ def test_v2_detection_rules_file_not_contains(
 def test_v2_detection_rules_when_none(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    rules: list[dict[str, object]] = [
+    rules: list[JsonDocument] = [
         {
             "id": "always",
             "when": {"none": [{"type": "path_exists", "pattern": "docs/absent.md"}]},
@@ -1526,7 +1538,7 @@ def test_v2_detection_rules_external_symlink_is_not_evidence(
     outside = tmp_path / "outside-source"
     outside.mkdir()
     (outside / "index.md").write_text("# Docs\n", encoding="utf-8")
-    rules: list[dict[str, object]] = [
+    rules: list[JsonDocument] = [
         {
             "id": "doc-project",
             "when": {"all": [{"type": "path_exists", "pattern": "link/*.md"}]},
@@ -1544,7 +1556,7 @@ def test_v2_detection_rules_external_symlink_is_not_evidence(
 def test_v2_detection_rules_reject_unbounded_file_scope(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    rules: list[dict[str, object]] = [
+    rules: list[JsonDocument] = [
         {
             "id": "unbounded",
             "when": {
@@ -1569,7 +1581,7 @@ def test_v2_detection_rules_enforces_file_quota(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     monkeypatch.setattr("agents_governance.projection._DETECTION_MAX_FILES", 1)
-    rules: list[dict[str, object]] = [
+    rules: list[JsonDocument] = [
         {
             "id": "quota",
             "when": {
