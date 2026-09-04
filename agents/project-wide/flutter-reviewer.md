@@ -219,26 +219,9 @@ Issue: Consumer rebuilds entire page on every state change.
 Fix: Narrow scope to the subtree that depends on changed state, or use a selector.
 ```
 
-## Summary Format
+## Summary and Approval
 
-End every review with:
-
-```
-## Review Summary
-
-| Severity | Count | Status |
-|----------|-------|--------|
-| CRITICAL | 0     | pass   |
-| HIGH     | 1     | block  |
-| MEDIUM   | 2     | info   |
-| LOW      | 0     | note   |
-
-Verdict: BLOCK — HIGH issues must be fixed before merge.
-```
-
-## Approval Criteria
-
-- **Approve**: No CRITICAL or HIGH issues
-- **Block**: Any CRITICAL or HIGH issues — must fix before merge
+Use `docs/review-output-contract.md` with the
+`high-blocking` approval policy.
 
 Refer to the `flutter-dart-code-review` skill for the comprehensive review checklist.
