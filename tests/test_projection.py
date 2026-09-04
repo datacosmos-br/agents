@@ -4,7 +4,7 @@ import inspect
 import json
 import subprocess
 import tempfile
-from collections.abc import Mapping, Sequence
+from collections.abc import Sequence
 from dataclasses import replace
 from pathlib import Path
 from types import MappingProxyType
@@ -12,6 +12,11 @@ from typing import Any, cast
 
 import pytest
 from conftest import approved, seed_approval_docs
+from projection_fixtures import (
+    JsonDocument,
+    JsonValue,
+    flext_detection_rule,
+)
 from waza_fixtures import write_eval_suite
 
 from agents_governance.agent_profiles import audit_agent_profiles
@@ -45,13 +50,6 @@ _PROVIDERS = (
     "pool",
 )
 _SURFACES = ("skills", "commands", "agents", "rules", "hooks")
-
-# Why: Sequence/Mapping recursion keeps nested JSON documents assignable under
-# invariance (ag-2wq detection-rule fixtures).
-type JsonValue = (
-    None | bool | int | float | str | Sequence["JsonValue"] | Mapping[str, "JsonValue"]
-)
-type JsonDocument = dict[str, JsonValue]
 
 
 def _encode(tags: tuple[str, ...]) -> str:
@@ -238,22 +236,6 @@ def _source(
         project_detection_rules=project_detection_rules,
     )
     return root, Projector(Catalog(root), projection, (), (), ())
-
-
-def _flext_detection_rule() -> JsonDocument:
-    return {
-        "activate_tags": ["flext"],
-        "id": "flext-managed",
-        "when": {
-            "any": [
-                {
-                    "paths": ["pyproject.toml"],
-                    "pattern": "@flext-managed",
-                    "type": "file_contains",
-                }
-            ]
-        },
-    }
 
 
 def _agent_projector(
@@ -1745,7 +1727,7 @@ def _flext_consumer(
 ) -> tuple[Projector, Path]:
     _, projector = _source(
         tmp_path,
-        project_detection_rules=[_flext_detection_rule()],
+        project_detection_rules=[flext_detection_rule()],
     )
     project = tmp_path / "consumer"
     project.mkdir()

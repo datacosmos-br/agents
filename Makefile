@@ -1,6 +1,11 @@
 # Development support and gate composition for the optionless agentsctl runtime.
 
 AGENTSCTL := uv run agentsctl
+# Gate tools are pinned in .mise.toml. Invoke them through mise so an ambient
+# PATH entry of the same name cannot shadow the declared version: a local
+# `jscpd` shim resolving to a different tool made `make duplication`
+# unrunnable outside CI, which provisions the same file via jdx/mise-action.
+MISE_EXEC := mise exec --
 PYTEST_SCRATCH := $(CURDIR)/.test-tmp
 WHEEL_SMOKE := $(PYTEST_SCRATCH)/wheel-smoke
 WHEEL_PROJECT := $(PYTEST_SCRATCH)/wheel-project
@@ -26,7 +31,8 @@ help: ## show the complete development surface
 
 ## environment provisioning
 setup: ## create the repository-local runtime environment
-	$(call BANNER,setup · uv venv + sync)
+	$(call BANNER,setup · mise install + uv venv + sync)
+	@mise install
 	@uv venv --clear
 	@uv sync --all-groups
 
@@ -66,11 +72,12 @@ fix: ## apply canonical Python lint corrections during development
 
 shell: ## validate shell scripts and GitHub workflows
 	$(call BANNER,shell · actionlint)
-	@actionlint .github/workflows/*.yml
+	@$(MISE_EXEC) actionlint .github/workflows/*.yml
 
 duplication: ## enforce zero strict duplication in canonical Python source
 	$(call BANNER,duplication · jscpd)
-	@jscpd src tests --config $(CURDIR)/.jscpd.json --exit-code 1
+	@$(MISE_EXEC) jscpd src tests --config $(CURDIR)/.jscpd.json \
+		--exit-code 1
 
 build: ## build source and wheel artifacts
 	$(call BANNER,build · sdist + wheel)
