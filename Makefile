@@ -1,7 +1,6 @@
 # Development support and gate composition for the optionless agentsctl runtime.
 
 AGENTSCTL := uv run agentsctl
-JSCPD := npx --yes jscpd@5.1.2
 PYTEST_SCRATCH := $(CURDIR)/.test-tmp
 WHEEL_SMOKE := $(PYTEST_SCRATCH)/wheel-smoke
 WHEEL_PROJECT := $(PYTEST_SCRATCH)/wheel-project
@@ -71,12 +70,12 @@ shell: ## validate shell scripts and GitHub workflows
 
 duplication: ## enforce zero strict duplication in canonical Python source
 	$(call BANNER,duplication · jscpd)
-	@$(JSCPD) src tests --config $(CURDIR)/.jscpd.json \
+	@jscpd src tests --config $(CURDIR)/.jscpd.json \
 		--baseline $(CURDIR)/.jscpd-baseline.json --fail-on-new-clones 0
 
 duplication-baseline: ## rebuild the owned eight-line jscpd baseline
 	$(call BANNER,duplication-baseline · jscpd)
-	@$(JSCPD) src tests --config $(CURDIR)/.jscpd.json \
+	@jscpd src tests --config $(CURDIR)/.jscpd.json \
 		--baseline $(CURDIR)/.jscpd-baseline.json --update-baseline
 
 build: ## build source and wheel artifacts

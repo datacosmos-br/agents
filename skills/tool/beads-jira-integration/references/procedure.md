@@ -80,3 +80,29 @@ credential handling.
 2. No `__pycache__`, `.csv`, `.sh`, or legacy scripts remain.
 3. `git status --short` shows only the expected FLEXT artifacts.
 4. `bd jira status` confirms all features have `external_ref`.
+
+## Sync Policy (beads is SSOT; Jira mirrors OPEN work)
+
+- Only OPEN beads sync. Closed beads and `bug` type never create Jira issues.
+- Re-push without dedup creates duplicate tickets: always `--dry-run` first,
+  and keep `external_ref` as the single dedup key.
+- `--parent <bead>` limits the push to one bead and its descendants.
+- A push that fails to write `external_ref` back leaves orphan Jira tickets the
+  ledger cannot see — audit with
+  `project = <KEY> AND parent IS EMPTY AND created >= "<sync-date>"` and
+  transition strays to Done with a cause comment.
+- The Jira API token is operator custody: it lives in `bd config` (or
+  secret-tool at the service boundary), never in transcripts, git, or env files.
+
+## Configuration (native `bd config`)
+
+```bash
+bd config set jira.url "https://<instance>.atlassian.net"
+bd config set jira.project "<PROJECT_KEY>"
+bd config set jira.push_prefix "<bead-prefix>"
+bd config set jira.username "<email>"
+bd config set jira.api_token "<token>"
+```
+
+The beads CLI owns all Jira credentials — never source, `.env`, project YAML,
+or script env vars.
