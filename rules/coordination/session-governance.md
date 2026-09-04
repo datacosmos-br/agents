@@ -1,5 +1,17 @@
 ---
 description: Rehydrate governance at session, prompt, compaction, and subagent boundaries.
+capsule_summary: |
+  Static provider instructions own the standing contract; hooks only deliver it
+  and are never a policy owner or second runtime path.
+
+  At session start load the current operator and repository instructions, global
+  identities first, then the repository manifest and its narrower local owners.
+  At each prompt apply the newest operator intent and route only the skills that
+  request needs.
+
+  After compaction restore the goal, evidence, scope, exclusions, accepted
+  concurrent work, first red gate and next action. Subagents inherit authority
+  and the fix-forward contract, and may never discard another actor's work.
 metadata:
   aihub.tags: '["decision:plan-00","effective:2026-08-29","route:both"]'
 ---

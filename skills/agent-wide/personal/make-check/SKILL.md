@@ -13,7 +13,7 @@ Use the repository's canonical Make surface.
 
 ## Procedure
 
-1. At the authorized root, read project law and run `make help`.
+1. From the authorized repository root, read project law and run `make help`.
 2. Run declared `make setup` before every development or validation verb. A pin,
    downgrade, stale generator, or version guard blocking the newest owner is red.
 3. Select only the exact command grammar documented by the current project's
@@ -37,4 +37,5 @@ Use the repository's canonical Make surface.
 - Warning, skip, empty output, missing tool, or newest-version diagnostic is red.
   Never cap, downgrade, override, substitute, suppress, or call it compatibility
   without prior operator discussion, reproducible proof, and authorization.
-- Later edits invalidate earlier gate evidence for their affected scope.
+- Later edits or integration commits invalidate earlier gate evidence in their
+  affected scope until the same native check is rerun.

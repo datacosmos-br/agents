@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import re
 from pathlib import Path
 
@@ -26,6 +27,8 @@ REQUIRED_MAKE_TARGETS = {
     "check",
     "static",
     "shell",
+    "duplication",
+    "duplication-baseline",
     "build",
     "test",
     "spec",
@@ -93,35 +96,56 @@ def test_wip_policy_never_uses_generic_ci_bypass_markers() -> None:
         assert "verification hooks disabled" not in text
 
 
+def _landing_law() -> str:
+    """Return the landing law as one whitespace-normalized string.
+
+    The obligations live in two owners since ag-qio: the rule carries the part
+    delivered in every session capsule, and `docs/gitflow-landing-detail.md`
+    carries the operational detail that does not fit a 10,000-character hook
+    budget. Both are law, so both are searched, and normalizing whitespace keeps
+    these contracts asserting the obligation rather than today's line wrapping.
+
+    Returns:
+        The concatenated owners with every whitespace run collapsed to one space.
+
+    """
+    owners = (
+        ROOT / "rules/git/gitflow-branch-pr.md",
+        ROOT / "docs/gitflow-landing-detail.md",
+    )
+    joined = "\n".join(owner.read_text(encoding="utf-8") for owner in owners)
+    return " ".join(joined.split())
+
+
 def test_draft_has_no_validation_and_review_aggregation_is_unbounded() -> None:
     """Any number of Drafts aggregate into the single validated Review PR."""
-    rule = (ROOT / "rules/git/gitflow-branch-pr.md").read_text(encoding="utf-8")
-    assert "No validation is selected for Draft/WIP" in rule
-    assert "CodeQL, Copilot review and review agents all" in rule
-    assert "any finite\n  number `N >= 1`" in rule
-    assert "no configured or implicit cardinality\n  limit is permitted" in rule
-    assert "merge every exact\n  Draft head with `--no-ff`" in rule
-    assert "The agent declares only the maintained PR and source" in rule
-    assert "first successful aggregate push it comments" in rule
-    assert "then closes it" in rule
-    assert "may be any PR kind and may remain Draft" in rule
-    assert "validation and attestation as `NOT SELECTED`" in rule
-    assert "preserves\n  the promotion lane at the exact aggregate cursor" in rule
-    assert "Do not roll back,\n  clean, retry, fall back, attest" in rule
+    law = _landing_law()
+    assert "No validation is selected for Draft/WIP" in law
+    assert "CodeQL, Copilot review and review agents all" in law
+    assert "any finite number `N >= 1`" in law
+    assert "no configured or implicit cardinality limit is permitted" in law
+    assert "merge every exact Draft head with `--no-ff`" in law
+    assert "The agent declares only the maintained PR and source" in law
+    assert "first successful aggregate push it comments" in law
+    assert "then closes it" in law
+    assert "may be any PR kind and may remain Draft" in law
+    assert "validation and attestation as `NOT SELECTED`" in law
+    assert "preserves the promotion lane at the exact aggregate cursor" in law
+    assert "Do not roll back, clean, retry, fall back, attest" in law
 
 
 def test_managed_control_plane_requires_admin_at_review_transition() -> None:
     """Draft persistence cannot bypass the admin-owned Review boundary."""
-    rule = (ROOT / "rules/git/gitflow-branch-pr.md").read_text(encoding="utf-8")
-    assert "registered Gas City rig is the project-inventory authority" in rule
-    assert "Humans, including repository admins,\n  cannot update" in rule
-    assert "integration\n  branch accepts changes only through a reviewed PR" in rule
-    assert "It may enter Review only\n  when the actor" in rule
-    assert "repository `admin`\n  permission" in rule
-    assert "never checks out or executes PR-head content" in rule
-    assert "opened directly as Review as well as `ready_for_review`" in rule
-    assert "converts the PR\n  back to Draft" in rule
-    assert "head synchronization invalidates the exact-SHA\n  receipt" in rule
+    law = _landing_law()
+    assert "registered Gas City rig is the project-inventory authority" in law
+    assert "Humans, including repository admins, cannot update" in law
+    assert "integration branch accepts changes only through a reviewed PR" in law
+    assert "It may enter Review only when the actor" in law
+    assert "repository `admin` permission" in law
+    assert "never checks out or executes PR-head content" in law
+    assert "opened directly as Review as well as `ready_for_review`" in law
+    assert "converts the PR back to Draft" in law
+    assert "head synchronization invalidates the exact-SHA receipt" in law
 
 
 def test_dependabot_covers_every_dependency_surface_with_seven_day_cooldown() -> None:
@@ -240,6 +264,21 @@ def test_make_is_development_support_for_the_optionless_runtime() -> None:
     assert "config/waza.mk" not in makefile
     assert "?=" not in makefile
     assert not (ROOT / "config" / "waza.mk").exists()
+
+
+def test_duplication_gate_owns_the_eight_line_baseline_contract() -> None:
+    config = json.loads((ROOT / ".jscpd.json").read_text(encoding="utf-8"))
+    makefile = (ROOT / "Makefile").read_text(encoding="utf-8")
+
+    assert config["mode"] == "strict"
+    assert config["min-lines"] == 8
+    assert (ROOT / ".jscpd-baseline.json").is_file()
+    assert re.search(r"^duplication:\s*##.*$", makefile, flags=re.MULTILINE)
+    assert "jscpd src tests" in makefile
+    assert "--baseline $(CURDIR)/.jscpd-baseline.json" in makefile
+    assert "--fail-on-new-clones 0" in makefile
+    assert re.search(r"^duplication-baseline:\s*##.*$", makefile, flags=re.MULTILINE)
+    assert "--update-baseline" in makefile
 
 
 def test_make_isolates_concurrent_pytest_invocations() -> None:
