@@ -66,7 +66,7 @@ valida essa cobertura.
 Após o merge dos PRs 16, 17 e 18, `main` publicou o commit
 `d8d7f26a00b1836b3e7eb9c0c4a49a91cec58116`. As duas execuções finais de `Run
 Evaluations` e o scan Semgrep 218580766 terminaram em `SUCCESS`; a consulta
-autenticada `GET /repos/marlon-costa-dc/agents/dependabot/alerts?state=open`
+autenticada `GET /repos/datacosmos-br/agents/dependabot/alerts?state=open`
 retornou zero alertas. Nenhum alerta foi dispensado ou suprimido.
 
 `SNYK_TOKEN` não existe no ambiente do processo atual. Portanto, Snyk está `NOT

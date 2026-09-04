@@ -4,19 +4,19 @@ import inspect
 import json
 import subprocess
 import tempfile
+from collections.abc import Mapping, Sequence
 from pathlib import Path
 from typing import Any, cast
 
 import pytest
-import yaml
 from conftest import approved, seed_approval_docs
+from waza_fixtures import write_eval_suite
 
 from agents_governance.agent_profiles import audit_agent_profiles
 from agents_governance.catalog import Catalog
 from agents_governance.projection import (
     _SELECTION_FIELDS_V1,
     _SELECTION_FIELDS_V2,
-    ProjectionDriftError,
     Projector,
 )
 from agents_governance.projection_config import load_projection_config
@@ -30,8 +30,16 @@ _PROVIDERS = (
     "gemini",
     "opencode",
     "antigravity",
+    "pool",
 )
 _SURFACES = ("skills", "commands", "agents", "rules", "hooks")
+
+# Why: Sequence/Mapping recursion keeps nested JSON documents assignable under
+# invariance (ag-2wq detection-rule fixtures).
+type JsonValue = (
+    None | bool | int | float | str | Sequence["JsonValue"] | Mapping[str, "JsonValue"]
+)
+type JsonDocument = dict[str, JsonValue]
 
 
 def _encode(tags: tuple[str, ...]) -> str:
@@ -74,44 +82,7 @@ def _skill(
 
 
 def _skill_eval(root: Path, name: str, category: str) -> None:
-    directory = root / "evals" / name
-    tasks = directory / "tasks"
-    tasks.mkdir(parents=True)
-    (directory / "eval.yaml").write_text(
-        yaml.safe_dump(
-            {
-                "name": f"{name}-eval",
-                "skill": name,
-                "config": {
-                    "trials_per_task": 1,
-                    "model": "aihub-primary",
-                    "timeout_seconds": 60,
-                    "parallel": False,
-                    "max_attempts": 0,
-                    "fail_fast": True,
-                    "executor": "copilot-sdk",
-                    "required_skills": [name],
-                    "skill_directories": [f"../../skills/{category}/{name}"],
-                },
-                "graders": [
-                    {
-                        "type": "prompt",
-                        "name": f"{name}-contract",
-                        "config": {"prompt": f"Grade the {name} material result."},
-                    },
-                    {
-                        "type": "behavior",
-                        "name": "bounded",
-                        "config": {"max_duration_ms": 50_000},
-                    },
-                ],
-                "tasks": ["tasks/*.yaml"],
-            },
-            sort_keys=False,
-        ),
-        encoding="utf-8",
-    )
-    scenarios = {
+    scenarios: dict[str, dict[str, object]] = {
         "basic-usage.yaml": {
             "id": f"{name}-happy-001",
             "inputs": {"prompt": f"Produce the material {name} result."},
@@ -131,13 +102,35 @@ def _skill_eval(root: Path, name: str, category: str) -> None:
             "expected": {"output_not_contains": [f"activated {name}"]},
         },
     }
-    for filename, payload in scenarios.items():
-        (tasks / filename).write_text(
-            yaml.safe_dump(payload, sort_keys=False), encoding="utf-8"
-        )
+    write_eval_suite(
+        root,
+        f"evals/{name}",
+        name=name,
+        skill=name,
+        model="aihub-primary",
+        skill_directories=[f"../../skills/{category}/{name}"],
+        graders=[
+            {
+                "type": "prompt",
+                "name": f"{name}-contract",
+                "config": {"prompt": f"Grade the {name} material result."},
+            },
+            {
+                "type": "behavior",
+                "name": "bounded",
+                "config": {"max_duration_ms": 50_000},
+            },
+        ],
+        tasks=scenarios,
+    )
 
 
-def _config(root: Path, supported: dict[tuple[str, str], str]) -> None:
+def _config(
+    root: Path,
+    supported: dict[tuple[str, str], str],
+    *,
+    project_detection_rules: list[JsonDocument] | None = None,
+) -> None:
     config = root / "config"
     config.mkdir()
     (config / "skills.json").write_text(
@@ -163,11 +156,11 @@ def _config(root: Path, supported: dict[tuple[str, str], str]) -> None:
         "domain",
     ):
         (root / "skills" / category).mkdir(parents=True, exist_ok=True)
-    providers: dict[str, object] = {}
+    providers: dict[str, JsonValue] = {}
     for provider in _PROVIDERS:
-        contexts: dict[str, object] = {}
+        contexts: dict[str, JsonValue] = {}
         for context in ("personal", "project"):
-            surfaces: dict[str, object] = {}
+            surfaces: dict[str, JsonValue] = {}
             for surface in _SURFACES:
                 path = (
                     supported.get((provider, surface)) if context == "project" else None
@@ -207,14 +200,15 @@ def _config(root: Path, supported: dict[tuple[str, str], str]) -> None:
                 )
             contexts[context] = surfaces
         providers[provider] = contexts
+    projection_payload: JsonDocument = {
+        "version": 7,
+        "manifest_versions": {"hooks": 3, "projection": 6},
+        "providers": providers,
+    }
+    if project_detection_rules is not None:
+        projection_payload["project_detection_rules"] = project_detection_rules
     (config / "projections.json").write_text(
-        json.dumps(
-            {
-                "version": 6,
-                "manifest_versions": {"hooks": 3, "projection": 5},
-                "providers": providers,
-            }
-        ),
+        json.dumps(projection_payload),
         encoding="utf-8",
     )
 
@@ -223,18 +217,60 @@ def _source(
     tmp_path: Path,
     *,
     supported: dict[tuple[str, str], str] | None = None,
+    project_detection_rules: list[JsonDocument] | None = None,
 ) -> tuple[Path, Projector]:
     root = tmp_path / "source"
     root.mkdir()
     _skill(root, "project-guidance")
-    _config(root, supported or {("codex", "skills"): ".agents/skills"})
+    if project_detection_rules is not None:
+        _conditional_skill(root, "flext")
+    _config(
+        root,
+        supported or {("codex", "skills"): ".agents/skills"},
+        project_detection_rules=project_detection_rules,
+    )
     return root, Projector(Catalog(root), load_projection_config(root), (), (), ())
+
+
+def _flext_detection_rule() -> JsonDocument:
+    return {
+        "activate_tags": ["flext"],
+        "id": "flext-managed",
+        "when": {
+            "any": [
+                {
+                    "paths": ["pyproject.toml"],
+                    "pattern": "@flext-managed",
+                    "type": "file_contains",
+                }
+            ]
+        },
+    }
+
+
+def _agent_projector(
+    tmp_path: Path, supported: dict[tuple[str, str], str]
+) -> tuple[Path, Projector]:
+    root = tmp_path / "source"
+    root.mkdir()
+    _skill(root, "project-guidance")
+    _agent_source(root)
+    _config(root, supported)
+    return root, Projector(
+        Catalog(root),
+        load_projection_config(root),
+        (),
+        audit_agent_profiles(root),
+        audit_rule_specs(root),
+    )
 
 
 def _project(
     tmp_path: Path,
     *,
     authorized: bool = True,
+    agents: tuple[str, ...] = (),
+    opt_ins: tuple[str, ...] = (),
     selected_tags: tuple[str, ...] = (),
 ) -> Path:
     project = tmp_path / "project"
@@ -247,8 +283,8 @@ def _project(
             json.dumps(
                 {
                     "version": 1,
-                    "agents": [],
-                    "opt_ins": [],
+                    "agents": list(agents),
+                    "opt_ins": list(opt_ins),
                     "selected_tags": list(selected_tags),
                 }
             ),
@@ -289,6 +325,40 @@ def _manifest(root: Path) -> dict[str, object]:
     return json.loads((root / Projector.MANIFEST).read_text(encoding="utf-8"))
 
 
+def _selected_tags(project: Path) -> list[str]:
+    selection = cast(
+        dict[str, object], _manifest(project / ".agents" / "skills")["selection"]
+    )
+    return cast(list[str], selection["selected_tags"])
+
+
+def _dual_skill_project(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> tuple[Projector, Path]:
+    _, projector = _source(
+        tmp_path,
+        supported={
+            ("codex", "skills"): ".agents/skills",
+            ("claude", "skills"): ".claude/skills",
+        },
+    )
+    project = _project(tmp_path)
+    monkeypatch.chdir(project)
+    return projector, project
+
+
+def _published_target(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> tuple[Projector, Path, Path, int]:
+    _, projector = _source(tmp_path)
+    project = _project(tmp_path)
+    monkeypatch.chdir(project)
+    projector.apply()
+    target = project / ".agents" / "skills"
+    managed = target / "project-guidance"
+    return projector, target, managed, managed.stat().st_mtime_ns
+
+
 def _git(repository: Path, *arguments: str) -> str:
     return subprocess.run(
         ("git", "-C", str(repository), *arguments),
@@ -309,6 +379,25 @@ def _git_repository(path: Path) -> Path:
     return path
 
 
+def _submodule(
+    tmp_path: Path,
+) -> tuple[Projector, Path, Path]:
+    _, projector = _source(tmp_path)
+    member_source = _git_repository(tmp_path / "member-source")
+    umbrella = _git_repository(tmp_path / "umbrella")
+    _git(
+        umbrella,
+        "-c",
+        "protocol.file.allow=always",
+        "submodule",
+        "add",
+        str(member_source),
+        "member",
+    )
+    _git(umbrella, "commit", "-am", "add member")
+    return projector, umbrella, umbrella / "member"
+
+
 def test_apply_derives_nested_invocation_project_and_reaches_fixed_point(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
@@ -321,8 +410,9 @@ def test_apply_derives_nested_invocation_project_and_reaches_fixed_point(
     monkeypatch.setenv("HOME", str(personal))
     monkeypatch.chdir(nested)
 
-    with pytest.raises(ProjectionDriftError):
-        projector.check()
+    # An absent projection root is an unborn publication target, not drift:
+    # read-only check must stay green on a fresh runner before first apply.
+    projector.check()
     projector.apply()
     projector.check()
 
@@ -633,19 +723,11 @@ def test_personal_projection_never_publishes_over_canonical_skill_sources(
 def test_foreign_collision_fails_before_any_publication(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    _, projector = _source(
-        tmp_path,
-        supported={
-            ("codex", "skills"): ".agents/skills",
-            ("claude", "skills"): ".claude/skills",
-        },
-    )
-    project = _project(tmp_path)
+    projector, project = _dual_skill_project(tmp_path, monkeypatch)
     collision = project / ".claude" / "skills" / "project-guidance"
     collision.mkdir(parents=True)
     marker = collision / "foreign"
     marker.write_text("keep", encoding="utf-8")
-    monkeypatch.chdir(project)
 
     with pytest.raises(ValueError, match="unadjudicated projection divergence"):
         projector.apply()
@@ -658,37 +740,14 @@ def test_foreign_collision_fails_before_any_publication(
 def test_divergent_unmanifested_agent_requires_adjudication_before_publication(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    root = tmp_path / "source"
-    root.mkdir()
-    _skill(root, "project-guidance")
-    _agent_source(root)
-    _config(
-        root,
+    _root, projector = _agent_projector(
+        tmp_path,
         {
             ("codex", "skills"): ".agents/skills",
             ("claude", "agents"): ".claude/agents",
         },
     )
-    projector = Projector(
-        Catalog(root),
-        load_projection_config(root),
-        (),
-        audit_agent_profiles(root),
-        audit_rule_specs(root),
-    )
-    project = _project(tmp_path)
-    selection = project / ".agents" / "projection.json"
-    selection.write_text(
-        json.dumps(
-            {
-                "version": 1,
-                "agents": ["reviewer"],
-                "opt_ins": [],
-                "selected_tags": [],
-            }
-        ),
-        encoding="utf-8",
-    )
+    project = _project(tmp_path, agents=("reviewer",))
     collision = project / ".claude" / "agents" / "reviewer.md"
     collision.parent.mkdir(parents=True)
     foreign = (
@@ -822,13 +881,7 @@ def test_unmanifested_source_symlink_requires_adjudication(
 def test_exact_orphaned_projection_is_adopted_by_digest(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    _, projector = _source(tmp_path)
-    project = _project(tmp_path)
-    monkeypatch.chdir(project)
-    projector.apply()
-    target = project / ".agents" / "skills"
-    managed = target / "project-guidance"
-    before = managed.stat().st_mtime_ns
+    projector, target, managed, before = _published_target(tmp_path, monkeypatch)
     (target / Projector.MANIFEST).unlink()
 
     projector.apply()
@@ -836,6 +889,30 @@ def test_exact_orphaned_projection_is_adopted_by_digest(
 
     assert managed.stat().st_mtime_ns == before
     assert (target / Projector.MANIFEST).is_file()
+
+
+def test_prior_version_manifest_transitions_without_rewriting_content(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    projector, target, managed, before = _published_target(tmp_path, monkeypatch)
+    payload = _manifest(target)
+    assert payload["version"] == 6
+    payload["version"] = 5
+    entries = cast(dict[str, dict[str, object]], payload["managed"])
+    for entry in entries.values():
+        entry.pop("link_target", None)
+    (target / Projector.MANIFEST).write_text(
+        json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
+
+    projector.apply()
+    projector.check()
+
+    assert managed.stat().st_mtime_ns == before
+    assert _manifest(target)["version"] == 6
+    first = Catalog.physical_tree_contract(target)
+    projector.apply()
+    assert Catalog.physical_tree_contract(target) == first
 
 
 def test_managed_source_update_is_reconciled_but_local_edit_is_rejected(
@@ -946,20 +1023,7 @@ def test_project_selection_activates_only_declared_project_opt_in(
     )
     _config(root, {("codex", "skills"): ".agents/skills"})
     projector = Projector(Catalog(root), load_projection_config(root), (), (), ())
-    project = _project(tmp_path)
-    selection = project / ".agents" / "projection.json"
-    selection.parent.mkdir(exist_ok=True)
-    selection.write_text(
-        json.dumps(
-            {
-                "version": 1,
-                "agents": [],
-                "opt_ins": ["selected-tool"],
-                "selected_tags": [],
-            }
-        ),
-        encoding="utf-8",
-    )
+    project = _project(tmp_path, opt_ins=("selected-tool",))
     monkeypatch.chdir(project)
 
     projector.apply()
@@ -974,32 +1038,10 @@ def test_project_selection_activates_only_declared_project_opt_in(
 def test_project_selection_projects_copilot_agent_with_native_identity(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    root = tmp_path / "source"
-    root.mkdir()
-    _skill(root, "project-guidance")
-    _agent_source(root)
-    _config(root, {("copilot", "agents"): ".github/agents"})
-    projector = Projector(
-        Catalog(root),
-        load_projection_config(root),
-        (),
-        audit_agent_profiles(root),
-        audit_rule_specs(root),
+    _root, projector = _agent_projector(
+        tmp_path, {("copilot", "agents"): ".github/agents"}
     )
-    project = _project(tmp_path)
-    selection = project / ".agents" / "projection.json"
-    selection.parent.mkdir(exist_ok=True)
-    selection.write_text(
-        json.dumps(
-            {
-                "version": 1,
-                "agents": ["reviewer"],
-                "opt_ins": [],
-                "selected_tags": [],
-            }
-        ),
-        encoding="utf-8",
-    )
+    project = _project(tmp_path, agents=("reviewer",))
     monkeypatch.chdir(project)
 
     projector.apply()
@@ -1016,20 +1058,7 @@ def test_unknown_selection_fails_without_creating_projection(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     _, projector = _source(tmp_path)
-    project = _project(tmp_path)
-    selection = project / ".agents" / "projection.json"
-    selection.parent.mkdir(exist_ok=True)
-    selection.write_text(
-        json.dumps(
-            {
-                "version": 1,
-                "agents": [],
-                "opt_ins": ["unknown"],
-                "selected_tags": [],
-            }
-        ),
-        encoding="utf-8",
-    )
+    project = _project(tmp_path, opt_ins=("unknown",))
     monkeypatch.chdir(project)
 
     with pytest.raises(ValueError, match="unknown project opt-in"):
@@ -1093,15 +1122,7 @@ def test_invalid_dependency_manifest_is_not_treated_as_empty(
 def test_second_target_failure_rolls_back_first_target(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    _, projector = _source(
-        tmp_path,
-        supported={
-            ("codex", "skills"): ".agents/skills",
-            ("claude", "skills"): ".claude/skills",
-        },
-    )
-    project = _project(tmp_path)
-    monkeypatch.chdir(project)
+    projector, project = _dual_skill_project(tmp_path, monkeypatch)
     original = projector._publish
 
     def fail_second(staged: Any) -> None:
@@ -1128,20 +1149,7 @@ def test_projector_public_operations_are_optionless() -> None:
 def test_contained_git_submodule_is_a_physical_project(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    _, projector = _source(tmp_path)
-    member_source = _git_repository(tmp_path / "member-source")
-    umbrella = _git_repository(tmp_path / "umbrella")
-    _git(
-        umbrella,
-        "-c",
-        "protocol.file.allow=always",
-        "submodule",
-        "add",
-        str(member_source),
-        "member",
-    )
-    _git(umbrella, "commit", "-am", "add member")
-    member = umbrella / "member"
+    projector, _umbrella, member = _submodule(tmp_path)
     nested = member / "src"
     nested.mkdir()
     monkeypatch.chdir(nested)
@@ -1152,19 +1160,7 @@ def test_contained_git_submodule_is_a_physical_project(
 def test_borrowed_contained_submodule_git_directory_is_rejected(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    _, projector = _source(tmp_path)
-    member_source = _git_repository(tmp_path / "member-source")
-    umbrella = _git_repository(tmp_path / "umbrella")
-    _git(
-        umbrella,
-        "-c",
-        "protocol.file.allow=always",
-        "submodule",
-        "add",
-        str(member_source),
-        "member",
-    )
-    _git(umbrella, "commit", "-am", "add member")
+    projector, umbrella, _member = _submodule(tmp_path)
     borrowed = umbrella / "borrowed"
     borrowed.mkdir()
     (borrowed / ".git").write_text("gitdir: ../.git/modules/member\n", encoding="utf-8")
@@ -1291,7 +1287,7 @@ def test_git_metadata_symlink_is_rejected(
 # ===== v2 detection_rules tests =====
 
 
-def _rule_activate_tags(rules: list[dict[str, object]]) -> set[str]:
+def _rule_activate_tags(rules: list[JsonDocument]) -> set[str]:
     tags: set[str] = set()
     for rule in rules:
         tags.update(cast(list[str], rule["activate_tags"]))
@@ -1324,7 +1320,7 @@ def _conditional_skill(root: Path, tag: str) -> None:
 def _make_v2_project(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
-    detection_rules: list[dict[str, object]],
+    detection_rules: list[JsonDocument],
     *,
     selected_tags: tuple[str, ...] = (),
     project_name: str = "project",
@@ -1351,7 +1347,11 @@ def _make_v2_project(
     _skill(source, "project-guidance")
     for tag in sorted({*selected_tags, *_rule_activate_tags(detection_rules)}):
         _conditional_skill(source, tag)
-    _config(source, {("codex", "skills"): ".agents/skills"})
+    _config(
+        source,
+        {("codex", "skills"): ".agents/skills"},
+        project_detection_rules=detection_rules,
+    )
     projector = Projector(Catalog(source), load_projection_config(source), (), (), ())
     monkeypatch.chdir(project)
     return project, projector
@@ -1363,21 +1363,72 @@ def _write_doc(project: Path, name: str = "index.md") -> None:
     (docs / name).write_text("# Docs\n", encoding="utf-8")
 
 
+def _detection_rule(
+    identifier: str,
+    condition_type: str,
+    operator: str,
+    patterns: tuple[str, ...],
+    tag: str,
+    *,
+    paths: tuple[str, ...] | None = None,
+) -> JsonDocument:
+    conditions: list[dict[str, JsonValue]] = [
+        {"type": condition_type, "pattern": pattern} for pattern in patterns
+    ]
+    if paths is not None:
+        for condition in conditions:
+            condition["paths"] = list(paths)
+    return {
+        "id": identifier,
+        "when": {operator: conditions},
+        "activate_tags": [tag],
+    }
+
+
+def _path_rule(
+    identifier: str,
+    operator: str,
+    condition_type: str,
+    patterns: tuple[str, ...],
+    tag: str,
+) -> JsonDocument:
+    return _detection_rule(identifier, condition_type, operator, patterns, tag)
+
+
+def _documentation_path_rule(operator: str) -> list[JsonDocument]:
+    return [
+        _path_rule(
+            "doc-project",
+            operator,
+            "path_exists",
+            ("docs/*.md", "mkdocs.yml"),
+            "documentation",
+        )
+    ]
+
+
+def _file_rule(
+    identifier: str,
+    operator: str,
+    condition_type: str,
+    pattern: str,
+    tag: str,
+    paths: tuple[str, ...],
+) -> JsonDocument:
+    return _detection_rule(
+        identifier,
+        condition_type,
+        operator,
+        (pattern,),
+        tag,
+        paths=paths,
+    )
+
+
 def test_v2_detection_rules_path_exists_activates_tag(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    rules: list[dict[str, object]] = [
-        {
-            "id": "doc-project",
-            "when": {
-                "all": [
-                    {"type": "path_exists", "pattern": "docs/*.md"},
-                    {"type": "path_exists", "pattern": "mkdocs.yml"},
-                ]
-            },
-            "activate_tags": ["documentation"],
-        }
-    ]
+    rules = _documentation_path_rule("all")
     project, projector = _make_v2_project(tmp_path, monkeypatch, rules)
     _write_doc(project)
     (project / "mkdocs.yml").write_text("site_name: Test\n", encoding="utf-8")
@@ -1386,27 +1437,13 @@ def test_v2_detection_rules_path_exists_activates_tag(
 
     target = project / ".agents" / "skills"
     assert (target / "documentation-skill" / "SKILL.md").is_file()
-    assert "documentation" in cast(
-        list[str],
-        cast(dict[str, object], _manifest(target)["selection"])["selected_tags"],
-    )
+    assert "documentation" in _selected_tags(project)
 
 
 def test_v2_detection_rules_path_exists_any_operator(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    rules: list[dict[str, object]] = [
-        {
-            "id": "doc-project",
-            "when": {
-                "any": [
-                    {"type": "path_exists", "pattern": "docs/*.md"},
-                    {"type": "path_exists", "pattern": "mkdocs.yml"},
-                ]
-            },
-            "activate_tags": ["documentation"],
-        }
-    ]
+    rules = _documentation_path_rule("any")
     project, projector = _make_v2_project(tmp_path, monkeypatch, rules)
     _write_doc(project)
 
@@ -1418,18 +1455,7 @@ def test_v2_detection_rules_path_exists_any_operator(
 def test_v2_detection_rules_path_exists_all_requires_all(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    rules: list[dict[str, object]] = [
-        {
-            "id": "doc-project",
-            "when": {
-                "all": [
-                    {"type": "path_exists", "pattern": "docs/*.md"},
-                    {"type": "path_exists", "pattern": "mkdocs.yml"},
-                ]
-            },
-            "activate_tags": ["documentation"],
-        }
-    ]
+    rules = _documentation_path_rule("all")
     project, projector = _make_v2_project(tmp_path, monkeypatch, rules)
     _write_doc(project)
 
@@ -1441,43 +1467,26 @@ def test_v2_detection_rules_path_exists_all_requires_all(
 def test_v2_detection_rules_path_missing(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    rules: list[dict[str, object]] = [
-        {
-            "id": "no-docs",
-            "when": {"all": [{"type": "path_missing", "pattern": "docs/*.md"}]},
-            "activate_tags": ["no-docs"],
-        }
-    ]
+    rules = [_path_rule("no-docs", "all", "path_missing", ("docs/*.md",), "no-docs")]
     project, projector = _make_v2_project(tmp_path, monkeypatch, rules)
 
     projector.apply()
 
-    selected = cast(
-        list[str],
-        cast(dict[str, object], _manifest(project / ".agents" / "skills")["selection"])[
-            "selected_tags"
-        ],
-    )
-    assert "no-docs" in selected
+    assert "no-docs" in _selected_tags(project)
 
 
 def test_v2_detection_rules_file_contains(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    rules: list[dict[str, object]] = [
-        {
-            "id": "flext-usage",
-            "when": {
-                "any": [
-                    {
-                        "type": "file_contains",
-                        "pattern": "flext",
-                        "paths": ["docs/*.md", "pyproject.toml"],
-                    }
-                ]
-            },
-            "activate_tags": ["flext"],
-        }
+    rules = [
+        _file_rule(
+            "flext-usage",
+            "any",
+            "file_contains",
+            "flext",
+            "flext",
+            ("docs/*.md", "pyproject.toml"),
+        )
     ]
     project, projector = _make_v2_project(tmp_path, monkeypatch, rules)
     _write_doc(project, "readme.md")
@@ -1491,20 +1500,10 @@ def test_v2_detection_rules_file_contains(
 def test_v2_detection_rules_file_not_contains(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    rules: list[dict[str, object]] = [
-        {
-            "id": "no-flext",
-            "when": {
-                "all": [
-                    {
-                        "type": "file_not_contains",
-                        "pattern": "flext",
-                        "paths": ["src/*.py"],
-                    }
-                ]
-            },
-            "activate_tags": ["no-flext"],
-        }
+    rules = [
+        _file_rule(
+            "no-flext", "all", "file_not_contains", "flext", "no-flext", ("src/*.py",)
+        )
     ]
     project, projector = _make_v2_project(tmp_path, monkeypatch, rules)
     source = project / "src"
@@ -1513,19 +1512,13 @@ def test_v2_detection_rules_file_not_contains(
 
     projector.apply()
 
-    selected = cast(
-        list[str],
-        cast(dict[str, object], _manifest(project / ".agents" / "skills")["selection"])[
-            "selected_tags"
-        ],
-    )
-    assert "no-flext" in selected
+    assert "no-flext" in _selected_tags(project)
 
 
 def test_v2_detection_rules_when_none(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    rules: list[dict[str, object]] = [
+    rules: list[JsonDocument] = [
         {
             "id": "always",
             "when": {"none": [{"type": "path_exists", "pattern": "docs/absent.md"}]},
@@ -1545,7 +1538,7 @@ def test_v2_detection_rules_external_symlink_is_not_evidence(
     outside = tmp_path / "outside-source"
     outside.mkdir()
     (outside / "index.md").write_text("# Docs\n", encoding="utf-8")
-    rules: list[dict[str, object]] = [
+    rules: list[JsonDocument] = [
         {
             "id": "doc-project",
             "when": {"all": [{"type": "path_exists", "pattern": "link/*.md"}]},
@@ -1563,7 +1556,7 @@ def test_v2_detection_rules_external_symlink_is_not_evidence(
 def test_v2_detection_rules_reject_unbounded_file_scope(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    rules: list[dict[str, object]] = [
+    rules: list[JsonDocument] = [
         {
             "id": "unbounded",
             "when": {
@@ -1588,7 +1581,7 @@ def test_v2_detection_rules_enforces_file_quota(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     monkeypatch.setattr("agents_governance.projection._DETECTION_MAX_FILES", 1)
-    rules: list[dict[str, object]] = [
+    rules: list[JsonDocument] = [
         {
             "id": "quota",
             "when": {
@@ -1614,17 +1607,9 @@ def test_v2_detection_rules_enforces_file_quota(
 def test_v2_detection_rules_reject_duplicate_rule_ids(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    rules: list[dict[str, object]] = [
-        {
-            "id": "duplicate",
-            "when": {"all": [{"type": "path_exists", "pattern": "one.txt"}]},
-            "activate_tags": ["one"],
-        },
-        {
-            "id": "duplicate",
-            "when": {"all": [{"type": "path_exists", "pattern": "two.txt"}]},
-            "activate_tags": ["two"],
-        },
+    rules = [
+        _path_rule("duplicate", "all", "path_exists", ("one.txt",), "one"),
+        _path_rule("duplicate", "all", "path_exists", ("two.txt",), "two"),
     ]
     _, projector = _make_v2_project(tmp_path, monkeypatch, rules)
 
@@ -1635,12 +1620,10 @@ def test_v2_detection_rules_reject_duplicate_rule_ids(
 def test_v2_detection_rules_merge_with_selected_tags(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    rules: list[dict[str, object]] = [
-        {
-            "id": "python-project",
-            "when": {"all": [{"type": "path_exists", "pattern": "pyproject.toml"}]},
-            "activate_tags": ["python"],
-        }
+    rules = [
+        _path_rule(
+            "python-project", "all", "path_exists", ("pyproject.toml",), "python"
+        )
     ]
     project, projector = _make_v2_project(
         tmp_path,
@@ -1654,12 +1637,7 @@ def test_v2_detection_rules_merge_with_selected_tags(
 
     projector.apply()
 
-    selected = cast(
-        list[str],
-        cast(dict[str, object], _manifest(project / ".agents" / "skills")["selection"])[
-            "selected_tags"
-        ],
-    )
+    selected = _selected_tags(project)
     assert {"python", "documentation"} <= set(selected)
 
 
@@ -1674,3 +1652,114 @@ def test_v2_selection_field_contracts_are_exact() -> None:
 
 
 # ===== End v2 detection_rules tests =====
+
+
+# ===== Alias primary surfaces =====
+
+
+def test_alias_surfaces_link_to_the_primary_and_reach_fixed_point(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    projector, project = _dual_skill_project(tmp_path, monkeypatch)
+
+    projector.apply()
+    projector.check()
+
+    primary = project / ".claude" / "skills"
+    alias = project / ".agents" / "skills"
+    assert (primary / "project-guidance" / "SKILL.md").is_file()
+    link = alias / "project-guidance"
+    assert link.is_symlink()
+    assert link.readlink() == Path("../../.claude/skills/project-guidance")
+    managed = json.loads((alias / Projector.MANIFEST).read_text(encoding="utf-8"))[
+        "managed"
+    ]
+    assert managed["project-guidance"]["link_target"] == (
+        "../../.claude/skills/project-guidance"
+    )
+    primary_managed = json.loads(
+        (primary / Projector.MANIFEST).read_text(encoding="utf-8")
+    )["managed"]
+    assert primary_managed["project-guidance"]["link_target"] is None
+
+    first = Catalog.physical_tree_contract(primary)
+    projector.apply()
+    projector.check()
+    assert Catalog.physical_tree_contract(primary) == first
+    assert not tuple(project.rglob(".agents-stage.*"))
+
+    link.unlink()
+    projector.apply()
+    assert link.is_symlink()
+    assert link.readlink() == Path("../../.claude/skills/project-guidance")
+
+
+def test_alias_link_divergence_requires_adjudication(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    projector, project = _dual_skill_project(tmp_path, monkeypatch)
+    projector.apply()
+
+    link = project / ".agents" / "skills" / "project-guidance"
+    link.unlink()
+    link.symlink_to(project / ".claude" / "skills")
+
+    with pytest.raises(ValueError, match="projection destination symlink forbidden"):
+        projector.apply()
+    assert link.readlink() == project / ".claude" / "skills"
+
+    link.unlink()
+    link.mkdir()
+
+    with pytest.raises(ValueError, match="unadjudicated projection divergence"):
+        projector.apply()
+    assert link.is_dir() and not link.is_symlink()
+
+
+def test_canonical_marker_authorizes_minimal_project_selection(
+    tmp_path: Path,
+) -> None:
+    _, projector = _source(
+        tmp_path,
+        project_detection_rules=[_flext_detection_rule()],
+    )
+    project = tmp_path / "consumer"
+    project.mkdir()
+    (project / "pyproject.toml").write_text(
+        "# @flext-managed\n",
+        encoding="utf-8",
+    )
+
+    authorization = projector.authorize(project)
+
+    assert authorization.selected
+    selection = json.loads(authorization.path.read_text(encoding="utf-8"))
+    assert selection == {
+        "agents": [],
+        "detection_rules": [_flext_detection_rule()],
+        "opt_ins": [],
+        "selected_tags": [],
+        "version": 2,
+    }
+    second = projector.authorize(project)
+    assert second.path.read_bytes() == authorization.path.read_bytes()
+
+
+def test_canonical_marker_does_not_create_unauthorized_selection(
+    tmp_path: Path,
+) -> None:
+    _, projector = _source(
+        tmp_path,
+        project_detection_rules=[_flext_detection_rule()],
+    )
+    project = tmp_path / "consumer"
+    project.mkdir()
+    (project / "pyproject.toml").write_text(
+        "# another project\n",
+        encoding="utf-8",
+    )
+
+    authorization = projector.authorize(project)
+
+    assert not authorization.selected
+    assert not authorization.path.exists()

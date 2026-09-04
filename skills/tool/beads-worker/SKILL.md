@@ -15,6 +15,11 @@ assignment, unblocked dependencies, exact file scope, existing checkout and
 branch, acceptance contract, integration target, and required gates. A foreign,
 stale, ambiguous, or blocked assignment stops before effects.
 
+For managed shared work, verify the city-store root and child linked by the
+local bead. Record repository evidence locally and cross-rig dependency,
+handoff, producer SHA, and integration state in the shared child. Reread both at
+each material checkpoint; disagreement stops effects for owner reconciliation.
+
 Execute only the assigned slice through repository owners. Preserve concurrent
 work, eliminate superseded code and rewired-consumer residue, and propagate the
 first command or gate failure unchanged. Correct an in-scope owner and rerun the

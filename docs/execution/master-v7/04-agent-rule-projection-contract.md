@@ -197,6 +197,14 @@ generated v5 manifest records portable project identity (`.`), project-relative
 destination, context, surface, providers, selection, source type, slug,
 activation evidence, logical digest, physical digest, and adapter version.
 
+Canonical project detection is declarative in the optional
+`project_detection_rules` owner of `config/projections.json`. A rule that
+matches the invocation project authorizes exactly one minimal v2 selection
+document containing only its triggered rules; `sync` publishes it atomically
+only when the project-owned selection is absent. The document is portable
+project source. Provider settings, hook scripts, and other derived projection
+destinations remain runtime state and are never source.
+
 ## Physical projection law
 
 - The source package is the only catalog authority; the current process home

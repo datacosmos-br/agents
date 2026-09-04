@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import json
+from collections.abc import Callable, Mapping, Sequence
 from pathlib import Path
+from typing import cast
 
 import pytest
 
@@ -15,9 +17,28 @@ from agents_governance.projection_config import (
     load_projection_config,
 )
 
+# Why: Sequence/Mapping recursion keeps nested JSON documents assignable under
+# invariance (ag-2wq detection-rule fixtures).
+type JsonValue = (
+    None | bool | int | float | str | Sequence["JsonValue"] | Mapping[str, "JsonValue"]
+)
+type JsonDocument = dict[str, JsonValue]
 
-def _supported(path: str, *, max_tokens: int | None = None) -> dict[str, object]:
-    cell: dict[str, object] = {"status": "SUPPORTED", "path": path}
+
+def _providers(payload: JsonDocument) -> dict[str, JsonDocument]:
+    return cast("dict[str, JsonDocument]", payload["providers"])
+
+
+def _cell(
+    payload: JsonDocument, provider: str, context: str, surface: str
+) -> JsonDocument:
+    contexts = _providers(payload)[provider]
+    surfaces = cast("JsonDocument", contexts[context])
+    return cast("JsonDocument", surfaces[surface])
+
+
+def _supported(path: str, *, max_tokens: int | None = None) -> dict[str, JsonValue]:
+    cell: dict[str, JsonValue] = {"status": "SUPPORTED", "path": path}
     if max_tokens is not None:
         cell["max_tokens"] = max_tokens
     return cell
@@ -27,13 +48,15 @@ def _unsupported(reason: str = "UNSUPPORTED: no native contract") -> dict[str, s
     return {"status": "UNSUPPORTED", "reason": reason}
 
 
-def _matrix() -> dict[str, object]:
-    providers: dict[str, object] = {}
+def _matrix(
+    *, project_detection_rules: list[JsonDocument] | None = None
+) -> JsonDocument:
+    providers: dict[str, JsonValue] = {}
     for provider in AgentProvider:
-        contexts: dict[str, object] = {}
+        contexts: dict[str, JsonValue] = {}
         for context in ProjectionContext:
             prefix = "${HOME}/." if context is ProjectionContext.PERSONAL else "."
-            surfaces: dict[str, object] = {}
+            surfaces: dict[str, JsonValue] = {}
             for surface in ProjectionSurface:
                 cell = _supported(f"{prefix}{provider.value}/{surface.value}")
                 if surface is ProjectionSurface.RULES:
@@ -56,11 +79,14 @@ def _matrix() -> dict[str, object]:
                 surfaces[surface.value] = cell
             contexts[context.value] = surfaces
         providers[provider.value] = contexts
-    return {
-        "version": 6,
-        "manifest_versions": {"hooks": 3, "projection": 5},
+    payload: JsonDocument = {
+        "version": 7,
+        "manifest_versions": {"hooks": 3, "projection": 6},
         "providers": providers,
     }
+    if project_detection_rules is not None:
+        payload["project_detection_rules"] = project_detection_rules
+    return payload
 
 
 def _write(root: Path, payload: object) -> None:
@@ -69,44 +95,82 @@ def _write(root: Path, payload: object) -> None:
     (config / "projections.json").write_text(json.dumps(payload), encoding="utf-8")
 
 
-def test_projection_config_requires_complete_closed_v6_matrix(tmp_path: Path) -> None:
+def test_projection_config_requires_complete_closed_v7_matrix(tmp_path: Path) -> None:
     _write(tmp_path, _matrix())
 
     config = load_projection_config(tmp_path)
 
-    assert config.version == 6
-    assert config.projection_manifest_version == 5
+    assert config.version == 7
+    assert config.projection_manifest_version == 6
     assert config.hook_manifest_version == 3
-    assert len(config.cells) == 7 * 2 * 5
+    assert len(config.cells) == 8 * 2 * 5
     assert (
         config.cell("claude", "personal", "skills").status is ProjectionStatus.SUPPORTED
     )
     assert config.cell("claude", "personal", "skills").path == "${HOME}/.claude/skills"
 
 
+def test_projection_config_owns_optional_project_detection_rules(
+    tmp_path: Path,
+) -> None:
+    rule: JsonDocument = {
+        "activate_tags": ["flext"],
+        "id": "flext-managed",
+        "when": {
+            "any": [
+                {
+                    "paths": ["pyproject.toml"],
+                    "pattern": "@flext-managed",
+                    "type": "file_contains",
+                }
+            ]
+        },
+    }
+    _write(tmp_path, _matrix(project_detection_rules=[rule]))
+
+    config = load_projection_config(tmp_path)
+
+    assert tuple(item.rule_id for item in config.project_detection_rules) == (
+        "flext-managed",
+    )
+
+
+def test_projection_config_rejects_non_rule_detection_contract(
+    tmp_path: Path,
+) -> None:
+    payload = _matrix()
+    payload["project_detection_rules"] = ["flext-managed"]
+    _write(tmp_path, payload)
+
+    with pytest.raises(TypeError, match="project detection rules"):
+        load_projection_config(tmp_path)
+
+
 @pytest.mark.parametrize(
     ("mutation", "message"),
     [
-        (lambda value: value.update(version=5), "projection config must use version 6"),
+        (lambda value: value.update(version=6), "projection config must use version 7"),
         (
-            lambda value: value["providers"].pop("codex"),
-            "projection providers must equal",
+            lambda value: _providers(value).pop("codex"),
+            "projection providers fields must equal",
         ),
         (
-            lambda value: value["providers"]["claude"].pop("project"),
-            "projection contexts for claude must equal",
+            lambda value: _providers(value)["claude"].pop("project"),
+            "projection contexts for claude fields must equal",
         ),
         (
-            lambda value: value["providers"]["claude"]["project"].pop("agents"),
-            "projection surfaces for claude/project must equal",
+            lambda value: cast(
+                "JsonDocument", _providers(value)["claude"]["project"]
+            ).pop("agents"),
+            "projection surfaces for claude/project fields must equal",
         ),
     ],
 )
 def test_projection_config_rejects_incomplete_or_legacy_contract(
-    tmp_path: Path, mutation: object, message: str
+    tmp_path: Path, mutation: Callable[[JsonDocument], object], message: str
 ) -> None:
     payload = _matrix()
-    mutation(payload)  # type: ignore[operator]
+    mutation(payload)
     _write(tmp_path, payload)
 
     with pytest.raises((TypeError, ValueError), match=message):
@@ -128,12 +192,12 @@ def test_projection_config_rejects_incomplete_or_legacy_contract(
     ],
 )
 def test_projection_config_rejects_ambiguous_cells(
-    tmp_path: Path, cell: dict[str, object], message: str
+    tmp_path: Path, cell: JsonDocument, message: str
 ) -> None:
     payload = _matrix()
-    payload["providers"]["claude"]["personal"]["skills"] = cell  # type: ignore[index]
+    personal = cast("JsonDocument", _providers(payload)["claude"]["personal"])
+    personal["skills"] = cell
     _write(tmp_path, payload)
-
     with pytest.raises((TypeError, ValueError), match=message):
         load_projection_config(tmp_path)
 
@@ -143,7 +207,18 @@ def test_repository_projection_matrix_classifies_every_cell(tmp_path: Path) -> N
 
     config = load_projection_config(repository)
 
-    assert len(config.cells) == 70
+    assert len(config.cells) == 80
+    assert [rule.rule_id for rule in config.project_detection_rules] == [
+        "flext-managed"
+    ]
+    assert config.cell("pool", "project", "skills").status is ProjectionStatus.SUPPORTED
+    assert config.cell("pool", "project", "skills").path == ".poolside/skills"
+    assert (
+        config.cell("pool", "personal", "skills").status is ProjectionStatus.UNSUPPORTED
+    )
+    assert (
+        config.cell("pool", "project", "hooks").status is ProjectionStatus.UNSUPPORTED
+    )
     assert (
         config.cell("copilot", "personal", "agents").status
         is ProjectionStatus.SUPPORTED
@@ -177,12 +252,13 @@ def test_repository_projection_matrix_classifies_every_cell(tmp_path: Path) -> N
 
 def test_hook_cell_requires_complete_native_event_mapping(tmp_path: Path) -> None:
     payload = _matrix()
-    del payload["providers"]["claude"]["project"]["hooks"]["events"][  # type: ignore[index]
-        "context_refresh"
-    ]
+    events = cast(
+        "JsonDocument", _cell(payload, "claude", "project", "hooks")["events"]
+    )
+    del events["context_refresh"]
     _write(tmp_path, payload)
 
-    with pytest.raises(ValueError, match="events must equal"):
+    with pytest.raises(ValueError, match="events fields must equal"):
         load_projection_config(tmp_path)
 
 
@@ -190,22 +266,23 @@ def test_hook_event_requires_native_events_or_unsupported_reason(
     tmp_path: Path,
 ) -> None:
     payload = _matrix()
-    event = payload["providers"]["claude"]["project"]["hooks"]["events"][  # type: ignore[index]
-        "context_refresh"
-    ]
-    event["native"] = []  # type: ignore[index]
+    events = cast(
+        "JsonDocument", _cell(payload, "claude", "project", "hooks")["events"]
+    )
+    event = cast("JsonDocument", events["context_refresh"])
+    event["native"] = []
     _write(tmp_path, payload)
 
     with pytest.raises(TypeError, match="native must be a non-empty array"):
         load_projection_config(tmp_path)
 
-    event.clear()  # type: ignore[union-attr]
-    event.update(  # type: ignore[union-attr]
+    event.clear()
+    event.update(
         status="UNSUPPORTED",
         reason="UNSUPPORTED: provider exposes no subagent lifecycle boundary",
     )
     _write(tmp_path, payload)
     config = load_projection_config(tmp_path)
-    events = config.cell("claude", "project", "hooks").events
-    assert events is not None
-    assert events["context_refresh"].status is ProjectionStatus.UNSUPPORTED
+    native_events = config.cell("claude", "project", "hooks").events
+    assert native_events is not None
+    assert native_events["context_refresh"].status is ProjectionStatus.UNSUPPORTED

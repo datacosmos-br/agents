@@ -53,10 +53,22 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: governance-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  eval:
-    name: Run Evaluations
+  gates:
+    if: >-
+      (github.event_name == 'push' && !startsWith(github.event.head_commit.message, '[WIP]')) ||
+      (github.event_name == 'pull_request' && !github.event.pull_request.draft && !startsWith(github.event.pull_request.title, '[WIP]'))
+    name: Run ${{ matrix.suite }} gates
     runs-on: ubuntu-latest
+    timeout-minutes: 12
+    strategy:
+      fail-fast: false
+      matrix:
+        suite: [contracts, quality, runtime]
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -97,4 +109,25 @@ jobs:
       - name: Run complete offline pipeline
         run: |
           uv sync --all-groups
-          make ci
+          case "${{ matrix.suite }}" in
+            contracts)
+              make docs
+              make check
+              make temp
+              make providers
+              ;;
+            quality)
+              make static
+              make shell
+              make duplication
+              make build
+              ;;
+            runtime)
+              make test
+              make spec
+              ;;
+            *)
+              echo "unknown gate suite: ${{ matrix.suite }}" >&2
+              exit 2
+              ;;
+          esac

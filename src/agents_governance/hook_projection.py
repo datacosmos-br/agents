@@ -25,7 +25,9 @@ from .cleanup import (
     run_with_cleanup,
 )
 from .commands import CommandSpec
+from .frontmatter import cast_mapping
 from .governance_config import GovernanceConfig
+from .law_surface import PRELUDE_END, PRELUDE_START, LawSurface
 from .projection_authorization import (
     ProjectAuthorization,
     load_project_authorization,
@@ -105,12 +107,6 @@ class _StagedFile:
 
 def _digest_text(value: str) -> str:
     return hashlib.sha256(value.encode()).hexdigest()
-
-
-def _mapping(value: object, label: str) -> dict[str, object]:
-    if not isinstance(value, dict) or not all(isinstance(key, str) for key in value):
-        raise TypeError(f"{label} must be an object with string keys")
-    return cast(dict[str, object], value)
 
 
 def _physical_boundary(path: Path, label: str) -> Path:
@@ -267,15 +263,20 @@ def _command(path: Path) -> str:
     return f"python3 {shlex.quote(str(path))}"
 
 
+def _project_command(path: Path, boundary: Path) -> str:
+    relative = path.relative_to(boundary).as_posix()
+    return f'python3 "$CLAUDE_PROJECT_DIR/{relative}"'
+
+
 def _nested_config(
     provider: AgentProvider,
     current: dict[str, object],
     events: tuple[str, ...],
-    scripts: dict[str, Path],
+    commands: dict[str, str],
     previous_entries: Mapping[str, object],
 ) -> tuple[dict[str, object], dict[str, object]]:
     result = dict(current)
-    hooks = _mapping(result.get("hooks", {}), f"{provider.value} hooks")
+    hooks = cast_mapping(result.get("hooks", {}), f"{provider.value} hooks")
     merged: dict[str, object] = dict(hooks)
     managed: dict[str, object] = {}
     for event in events:
@@ -285,7 +286,7 @@ def _nested_config(
         kept: list[object] = []
         previous = previous_entries.get(event)
         for raw_group in existing:
-            group = _mapping(raw_group, f"{provider.value} hooks.{event} group")
+            group = cast_mapping(raw_group, f"{provider.value} hooks.{event} group")
             handlers = group.get("hooks")
             if not isinstance(handlers, list):
                 raise TypeError(
@@ -295,7 +296,7 @@ def _nested_config(
                 kept.append(raw_group)
         handler: dict[str, object] = {
             "type": "command",
-            "command": _command(scripts[event]),
+            "command": commands[event],
         }
         if provider is AgentProvider.CODEX:
             handler["statusMessage"] = "Applying synchronized governance"
@@ -330,7 +331,7 @@ def _cursor_config(
     if version != 1:
         raise ValueError("Cursor hooks version must equal 1")
     result["version"] = 1
-    hooks = _mapping(result.get("hooks", {}), "Cursor hooks")
+    hooks = cast_mapping(result.get("hooks", {}), "Cursor hooks")
     merged: dict[str, object] = dict(hooks)
     managed: dict[str, object] = {}
     for event in events:
@@ -422,7 +423,7 @@ def _read_json(path: Path) -> dict[str, object]:
         return {}
     if path.is_symlink() or not path.is_file():
         raise ValueError(f"hook config must be a physical file: {path}")
-    return _mapping(json.loads(path.read_text(encoding="utf-8")), str(path))
+    return cast_mapping(json.loads(path.read_text(encoding="utf-8")), str(path))
 
 
 def _manifest_path(config: Path) -> Path:
@@ -434,7 +435,7 @@ def _read_manifest(path: Path, expected_version: int) -> dict[str, object] | Non
         return None
     if path.is_symlink() or not path.is_file():
         raise ValueError(f"hook manifest must be a physical file: {path}")
-    payload = _mapping(json.loads(path.read_text(encoding="utf-8")), str(path))
+    payload = cast_mapping(json.loads(path.read_text(encoding="utf-8")), str(path))
     expected = {
         "config",
         "context",
@@ -449,11 +450,11 @@ def _read_manifest(path: Path, expected_version: int) -> dict[str, object] | Non
         raise ValueError(f"hook manifest fields are invalid: {path}")
     if payload["version"] != expected_version or payload["owner"] != _OWNER:
         raise ValueError(f"hook manifest owner/version is invalid: {path}")
-    _mapping(payload["events"], f"{path}: events")
-    _mapping(payload["entries"], f"{path}: entries")
-    managed = _mapping(payload["managed"], f"{path}: managed")
+    cast_mapping(payload["events"], f"{path}: events")
+    cast_mapping(payload["entries"], f"{path}: entries")
+    managed = cast_mapping(payload["managed"], f"{path}: managed")
     for relative, raw in managed.items():
-        entry = _mapping(raw, f"{path}: managed.{relative}")
+        entry = cast_mapping(raw, f"{path}: managed.{relative}")
         if set(entry) != {"digest", "mode"}:
             raise ValueError(f"hook manifest managed fields are invalid: {relative}")
         digest = entry["digest"]
@@ -486,7 +487,9 @@ def _validate_previous(
         if manifest[field] != expected:
             raise ValueError(f"hook manifest authority differs at {config}: {field}")
     planned_paths: Mapping[Path, tuple[str, int]] = planned or {}
-    for relative, raw in _mapping(manifest["managed"], "hook managed files").items():
+    for relative, raw in cast_mapping(
+        manifest["managed"], "hook managed files"
+    ).items():
         path = _destination(boundary, relative, ProjectionContext.PROJECT)
         if path not in planned_paths:
             continue
@@ -494,12 +497,12 @@ def _validate_previous(
             raise ValueError(
                 f"managed hook artifact is missing or non-physical: {path}"
             )
-        entry = _mapping(raw, f"managed hook artifact {relative}")
+        entry = cast_mapping(raw, f"managed hook artifact {relative}")
         actual_digest = hashlib.sha256(path.read_bytes()).hexdigest()
         actual_mode = f"{stat.S_IMODE(path.lstat().st_mode):04o}"
         if actual_digest != entry["digest"] or actual_mode != entry["mode"]:
             raise ValueError(f"managed hook artifact was modified: {path}")
-    entries = _mapping(manifest["entries"], "hook managed entries")
+    entries = cast_mapping(manifest["entries"], "hook managed entries")
     hook_dir = config.parent / "aihub-hooks"
     retained_events = {
         event
@@ -519,7 +522,7 @@ def _validate_previous(
                 if current.get(key) != managed_entry:
                     raise ValueError(f"managed hook entry was modified: {config}:{key}")
             return
-        hooks = _mapping(current.get("hooks", {}), f"{config}: hooks")
+        hooks = cast_mapping(current.get("hooks", {}), f"{config}: hooks")
         for event, managed_entry in entries.items():
             if event not in retained_events:
                 continue
@@ -583,8 +586,18 @@ def _validate_capsule(value: str, path: Path) -> None:
         raise ValueError(f"managed instruction capsule was modified: {path}")
 
 
-def _merge_instruction(path: Path, capsule: str) -> str:
+def _without_existing_prelude(current: str, path: Path) -> str:
+    if not current.startswith(PRELUDE_START):
+        return current
+    end = current.find(PRELUDE_END)
+    if end < 0:
+        raise ValueError(f"instruction prelude is malformed: {path}")
+    return current[end + len(PRELUDE_END) :].lstrip("\n")
+
+
+def _merge_instruction(path: Path, capsule: str, law_surface: LawSurface) -> str:
     current = _read_instruction(path)
+    current = _without_existing_prelude(current, path)
     begin_count = current.count(_INSTRUCTIONS_BEGIN)
     end_count = current.count(_INSTRUCTIONS_END)
     if begin_count != end_count or begin_count > 1:
@@ -592,13 +605,13 @@ def _merge_instruction(path: Path, capsule: str) -> str:
     block = f"{_INSTRUCTIONS_BEGIN}\n{capsule.rstrip()}\n{_INSTRUCTIONS_END}"
     if begin_count == 0:
         if not current:
-            return f"{block}\n"
+            return f"{law_surface.prelude}\n{block}\n"
         separator = "\n" if current.endswith("\n") else "\n\n"
-        return f"{current}{separator}{block}\n"
+        return f"{law_surface.prelude}\n{current}{separator}{block}\n"
     before, remainder = current.split(_INSTRUCTIONS_BEGIN, 1)
     owned, after = remainder.split(_INSTRUCTIONS_END, 1)
     _validate_capsule(owned.strip(), path)
-    return f"{before}{block}{after}"
+    return f"{law_surface.prelude}\n{before}{block}{after}"
 
 
 class HookProjector:
@@ -610,11 +623,17 @@ class HookProjector:
         config: ProjectionConfig,
         commands: tuple[CommandSpec, ...],
         rules: tuple[RuleSpec, ...],
+        law_surface: LawSurface,
+        central_root: Path | None = None,
     ) -> None:
         self.governance = governance
         self.config = config
         self.commands = commands
         self.rules = rules
+        self.law_surface = law_surface
+        self._central_root = (
+            None if central_root is None else central_root.resolve(strict=True)
+        )
 
     def _plan(
         self,
@@ -637,7 +656,7 @@ class HookProjector:
             manifest_path, self.config.hook_manifest_version
         )
         previous_entries = (
-            _mapping(previous_manifest["entries"], "hook managed entries")
+            cast_mapping(previous_manifest["entries"], "hook managed entries")
             if previous_manifest is not None
             else {}
         )
@@ -667,6 +686,15 @@ class HookProjector:
             desired = {
                 path: (_script(provider, event, capsule), 0o755)
                 for event, path in scripts.items()
+            }
+            commands = {
+                event: (
+                    _project_command(scripts[event], boundary)
+                    if provider is AgentProvider.CLAUDE
+                    and context is ProjectionContext.PROJECT
+                    else _command(scripts[event])
+                )
+                for event in events
             }
             exact = dict(desired)
             entries = {}
@@ -701,7 +729,7 @@ class HookProjector:
             }:
                 assert current is not None
                 rendered, entries = _nested_config(
-                    provider, current, events, scripts, previous_entries
+                    provider, current, events, commands, previous_entries
                 )
             elif provider is AgentProvider.CURSOR:
                 assert current is not None
@@ -767,13 +795,13 @@ class HookProjector:
         removals: tuple[HookRemoval, ...] = ()
         if previous_manifest is not None:
             retired: list[HookRemoval] = []
-            for relative, raw in _mapping(
+            for relative, raw in cast_mapping(
                 previous_manifest["managed"], "hook managed files"
             ).items():
                 path = _destination(boundary, relative, ProjectionContext.PROJECT)
                 if path in desired or path == manifest_path:
                     continue
-                entry = _mapping(raw, f"retired hook artifact {relative}")
+                entry = cast_mapping(raw, f"retired hook artifact {relative}")
                 retired.append(
                     HookRemoval(
                         path,
@@ -788,22 +816,37 @@ class HookProjector:
         home = _physical_boundary(Path.home(), "personal home")
         repository = _physical_boundary(authorization.project, "project root")
         project_authorized = authorization.selected
-        capsule = _capsule(self.governance, self.commands, self.rules)
-        hooks = tuple(
-            self._plan(
-                provider,
-                context,
-                home if context is ProjectionContext.PERSONAL else repository,
-                capsule,
-            )
-            for provider in AgentProvider
-            for context in ProjectionContext
-            if context is ProjectionContext.PERSONAL or project_authorized
+        # The central source is never a consumer of its own instruction
+        # documents: AGENTS.md/CLAUDE.md at that root are canonical law, and a
+        # generated capsule must not be merged into them.
+        project_instructions_authorized = (
+            project_authorized and repository != self._central_root
         )
-        instructions: list[HookPlan] = []
+        capsule = _capsule(self.governance, self.commands, self.rules)
+        planned: list[HookPlan] = []
         for provider in AgentProvider:
             for context in ProjectionContext:
                 if context is ProjectionContext.PROJECT and not project_authorized:
+                    continue
+                cell = self.config.cell(provider, context, ProjectionSurface.HOOKS)
+                if cell.status is not ProjectionStatus.SUPPORTED:
+                    continue
+                planned.append(
+                    self._plan(
+                        provider,
+                        context,
+                        home if context is ProjectionContext.PERSONAL else repository,
+                        capsule,
+                    )
+                )
+        hooks = tuple(planned)
+        instructions: list[HookPlan] = []
+        for provider in AgentProvider:
+            for context in ProjectionContext:
+                if (
+                    context is ProjectionContext.PROJECT
+                    and not project_instructions_authorized
+                ):
                     continue
                 cell = self.config.cell(provider, context, ProjectionSurface.RULES)
                 if (
@@ -822,13 +865,52 @@ class HookProjector:
                         destination,
                         {
                             destination: (
-                                _merge_instruction(destination, capsule),
+                                _merge_instruction(
+                                    destination, capsule, self.law_surface
+                                ),
                                 0o644,
                             )
                         },
                     )
                 )
-        return (*hooks, *instructions)
+        manifests = tuple(
+            HookPlan(
+                AgentProvider.CODEX,
+                context,
+                boundary,
+                boundary / ".agents" / "law-surface.json",
+                {
+                    boundary / ".agents" / "law-surface.json": (
+                        self.law_surface.manifest(),
+                        0o644,
+                    )
+                },
+            )
+            for context, boundary in (
+                ((ProjectionContext.PROJECT, repository),) if project_authorized else ()
+            )
+        )
+        canonical_documents = (
+            (
+                HookPlan(
+                    AgentProvider.CLAUDE,
+                    ProjectionContext.PROJECT,
+                    repository,
+                    repository / "CLAUDE.md",
+                    {
+                        repository / "CLAUDE.md": (
+                            _merge_instruction(
+                                repository / "CLAUDE.md", capsule, self.law_surface
+                            ),
+                            0o644,
+                        )
+                    },
+                ),
+            )
+            if project_instructions_authorized
+            else ()
+        )
+        return (*hooks, *instructions, *canonical_documents, *manifests)
 
     @staticmethod
     def _state(destination: Path, desired: str, mode: int) -> _FileState:

@@ -124,7 +124,7 @@ Allowed axes:
 | `usage` | exactly one | `usage:router`, `usage:on-demand`, `usage:frozen` |
 | `updates` | exactly one | `updates:manual`, `updates:forbidden` |
 | `provenance` | exactly one | `provenance:agents-owned`, `provenance:project-owned`, `provenance:vendor` |
-| `route` | exactly one for conditional groups; absent from wide groups | `route:agent`, `route:project` |
+| `route` | one or two for conditional groups; absent from wide groups | `route:agent`, `route:project` |
 | `activation` | exactly one for conditional groups; absent from wide groups | `activation:detected`, `activation:detected-or-opt-in`, `activation:opt-in` |
 | detector | required by conditional activation | `detect:marker:go.mod`, `detect:dependency:npm:react`, `detect:owned-extension:.py`, `detect:owned-glob:src/**`, `detect:opt-in:scope-code-navigation`, `detect:selected-tag:tool:mcp` |
 | primary subject | one or more for conditional groups | `technology:go`, `framework:react`, `tool:context7`, `domain:mle` |
@@ -134,8 +134,10 @@ Path-derived invariants:
 
 - `agent-wide` and `project-wide` derive distribution only from their paths;
   `route:*`, `activation:*`, and `detect:*` are forbidden there.
-- Every conditional group requires exactly one route, one activation, and at
-  least one subject in its own path namespace.
+- Every conditional group requires at least one route (`route:agent`,
+  `route:project`, or both), one activation, and at least one subject in its
+  own path namespace. With both routes the skill distributes personally and
+  becomes opt-in-selectable in authorized projects.
 - `activation:detected` and `activation:detected-or-opt-in` require a non-opt-in
   detector. `activation:opt-in` and `activation:detected-or-opt-in` require an
   explicit `detect:opt-in:*` tag.

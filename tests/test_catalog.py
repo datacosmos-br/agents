@@ -298,6 +298,20 @@ def test_project_catalog_allows_an_authorized_project_without_local_skills(
     assert catalog.project_local is True
 
 
+def test_project_catalog_of_the_central_source_is_empty(tmp_path: Path) -> None:
+    central = tmp_path / "central"
+    central.mkdir()
+    _write_config(central)
+    _write_skill(central, "project-wide", "example")
+
+    catalog = Catalog(central)
+    local = Catalog.project(central, catalog)
+
+    assert local.records() == ()
+    assert local.owner == "project"
+    assert local.project_local is True
+
+
 @pytest.mark.parametrize(
     ("category", "tags", "message"),
     [
@@ -464,3 +478,42 @@ def test_canonical_skills_have_no_import_registry_identity() -> None:
             text = path.read_text(encoding="utf-8", errors="replace").lower()
             assert "skillshare" not in text, path
             assert "skillsmp synced skills" not in text, path
+
+
+def test_dual_route_conditional_keeps_personal_and_project_distribution(
+    tmp_path: Path,
+) -> None:
+    _write_config(tmp_path)
+    _write_skill(
+        tmp_path,
+        "tool",
+        "gas-city-kit",
+        tags=(
+            "activation:opt-in",
+            "detect:opt-in:gas-city-kit",
+            "provenance:agents-owned",
+            "route:agent",
+            "route:project",
+            "tool:gas-city",
+            "updates:manual",
+            "usage:on-demand",
+        ),
+    )
+
+    catalog = Catalog(tmp_path)
+    record = catalog.record("gas-city-kit")
+    policy = catalog.policy("gas-city-kit")
+
+    assert record.routes == ("agent", "project")
+    assert "gas-city-kit" in catalog.names_for("personal")
+    assert catalog.names_for("project-capability:tool:gas-city") == {"gas-city-kit"}
+    assert policy.distributions == (
+        "personal",
+        "agent-capability:tool:gas-city",
+        "project-capability:tool:gas-city",
+    )
+    assert catalog.inventory()[0]["distributions"] == [
+        "personal",
+        "agent-capability:tool:gas-city",
+        "project-capability:tool:gas-city",
+    ]

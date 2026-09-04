@@ -51,12 +51,26 @@ Generated manifests preserve source truth: central bundles use
 not inferred from a destination path, and a projection never becomes canonical
 input.
 
+### Same-project primary and alias skill surfaces
+
+Operator decision (2026-09-02): within one authorized physical project, when
+multiple provider skill surfaces receive the same project skill set, exactly
+one primary surface is elected — the candidate destination with the most
+providers, declaration order breaking ties — and keeps physical copies. The
+remaining sibling surfaces become relative symlinks into that primary, always
+resolving inside the same project. Personal homes keep independent physical
+copies. Cross-repository symlinks, absolute link targets, and links escaping
+the project remain forbidden; the ownership manifest records the alias target
+per entry and alias drift fails loud.
+
 ### Principles
 
 1. Projection is a deterministic function of one canonical typed source and an
    explicit provider capability contract.
 2. Destination files are independent physical copies; no symlink, cross-repo
-   include, absolute source lookup, or path dependency.
+   include, absolute source lookup, or path dependency. Exception: inside one
+   physical project, sibling skill surfaces may be relative aliases of the
+   elected primary skill surface.
 3. Cleanup is ownership-proven and fail-closed.
 4. Semantic equivalence matters; byte equality across incompatible provider
    formats does not.
@@ -108,7 +122,7 @@ flowchart LR
 | Decision part | Status | Durable evidence |
 |---|---|---|
 | Projection architecture | Accepted | This ADR and master v7 contracts |
-| Typed adapters and ownership manifest | Implemented on work lane | Schema v5, project/context/surface/provider/selection ownership, source/physical digests, and activation evidence |
+| Typed adapters and ownership manifest | Implemented on work lane | Schema v6, project/context/surface/provider/selection ownership, source/physical digests, link targets, and activation evidence |
 | Full projection fixed point | Not evidenced | Master v7 Phase 5 |
 | Physical root cutover | Future increment | Explicitly excluded from the current repository cutover |
 | Local composition and contained submodules | Accepted for governed distribution | This ADR and successor plan; implementation and runtime proof remain required |

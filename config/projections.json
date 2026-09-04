@@ -1,6 +1,21 @@
 {
-  "version": 6,
-  "manifest_versions": {"hooks": 3, "projection": 5},
+  "version": 7,
+  "manifest_versions": {"hooks": 3, "projection": 6},
+  "project_detection_rules": [
+    {
+      "activate_tags": ["flext"],
+      "id": "flext-managed",
+      "when": {
+        "any": [
+          {
+            "paths": ["pyproject.toml"],
+            "pattern": "@flext-managed",
+            "type": "file_contains"
+          }
+        ]
+      }
+    }
+  ],
   "providers": {
     "claude": {
       "personal": {
@@ -112,6 +127,22 @@
         "agents": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: Antigravity agent MCP tool identity is not documented for the complete catalog"},
         "rules": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: Antigravity documents activation choices but no file metadata schema for preserving path-scoped semantics"},
         "hooks": {"status": "SUPPORTED", "path": ".agents/hooks.json", "events": {"session_start": {"status": "SUPPORTED", "native": ["PreInvocation"], "coverage": "equivalent", "clients": ["local"]}, "prompt_submit": {"status": "SUPPORTED", "native": ["PreInvocation"], "coverage": "equivalent", "clients": ["local"]}, "context_refresh": {"status": "SUPPORTED", "native": ["PreInvocation"], "coverage": "equivalent", "clients": ["local"]}, "subagent_start": {"status": "SUPPORTED", "native": ["PreInvocation"], "coverage": "equivalent", "clients": ["local"]}}}
+      }
+    },
+    "pool": {
+      "personal": {
+        "skills": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: Poolside has no documented default personal skills directory"},
+        "commands": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: Poolside has no documented custom-command file contract"},
+        "agents": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: Poolside has no documented agent file contract"},
+        "rules": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: Poolside has no documented rule file contract"},
+        "hooks": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: Poolside exposes no documented lifecycle hook boundary"}
+      },
+      "project": {
+        "skills": {"status": "SUPPORTED", "path": ".poolside/skills"},
+        "commands": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: Poolside has no documented custom-command file contract"},
+        "agents": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: Poolside has no documented agent file contract"},
+        "rules": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: Poolside has no documented rule file contract"},
+        "hooks": {"status": "UNSUPPORTED", "reason": "UNSUPPORTED: Poolside exposes no documented lifecycle hook boundary"}
       }
     }
   }

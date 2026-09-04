@@ -74,6 +74,55 @@ def test_eval_workflow_covers_integration_push_and_pull_requests() -> None:
     assert required_paths <= set(events["push"]["paths"])
     assert required_paths <= set(events["pull_request"]["paths"])
 
+    job_condition = workflow["jobs"]["gates"]["if"]
+    assert "github.event.pull_request.draft" in job_condition
+    assert "startsWith(github.event.pull_request.title, '[WIP]')" in job_condition
+    assert "startsWith(github.event.head_commit.message, '[WIP]')" in job_condition
+
+
+def test_wip_policy_never_uses_generic_ci_bypass_markers() -> None:
+    """Typed WIP state, not generic CI skip syntax, owns checkpoint behavior."""
+    owners = (
+        ROOT / "rules/git/gitflow-branch-pr.md",
+        ROOT
+        / "skills/agent-wide/governance/operator-correction-learning/references/reconciliation.md",
+    )
+    for owner in owners:
+        text = owner.read_text(encoding="utf-8").lower()
+        assert "[wip] [skip ci]" not in text
+        assert "verification hooks disabled" not in text
+
+
+def test_draft_has_no_validation_and_review_aggregation_is_unbounded() -> None:
+    """Any number of Drafts aggregate into the single validated Review PR."""
+    rule = (ROOT / "rules/git/gitflow-branch-pr.md").read_text(encoding="utf-8")
+    assert "No validation is selected for Draft/WIP" in rule
+    assert "CodeQL, Copilot review and review agents all" in rule
+    assert "any finite\n  number `N >= 1`" in rule
+    assert "no configured or implicit cardinality\n  limit is permitted" in rule
+    assert "merge every exact\n  Draft head with `--no-ff`" in rule
+    assert "The agent declares only the maintained PR and source" in rule
+    assert "first successful aggregate push it comments" in rule
+    assert "then closes it" in rule
+    assert "may be any PR kind and may remain Draft" in rule
+    assert "validation and attestation as `NOT SELECTED`" in rule
+    assert "preserves\n  the promotion lane at the exact aggregate cursor" in rule
+    assert "Do not roll back,\n  clean, retry, fall back, attest" in rule
+
+
+def test_managed_control_plane_requires_admin_at_review_transition() -> None:
+    """Draft persistence cannot bypass the admin-owned Review boundary."""
+    rule = (ROOT / "rules/git/gitflow-branch-pr.md").read_text(encoding="utf-8")
+    assert "registered Gas City rig is the project-inventory authority" in rule
+    assert "Humans, including repository admins,\n  cannot update" in rule
+    assert "integration\n  branch accepts changes only through a reviewed PR" in rule
+    assert "It may enter Review only\n  when the actor" in rule
+    assert "repository `admin`\n  permission" in rule
+    assert "never checks out or executes PR-head content" in rule
+    assert "opened directly as Review as well as `ready_for_review`" in rule
+    assert "converts the PR\n  back to Draft" in rule
+    assert "head synchronization invalidates the exact-SHA\n  receipt" in rule
+
 
 def test_dependabot_covers_every_dependency_surface_with_seven_day_cooldown() -> None:
     configuration = yaml.safe_load(
@@ -101,7 +150,7 @@ def test_eval_workflow_materializes_derived_shell_storage() -> None:
         Loader=yaml.BaseLoader,
     )
     commands = tuple(
-        step.get("run") for step in workflow["jobs"]["eval"]["steps"] if "run" in step
+        step.get("run") for step in workflow["jobs"]["gates"]["steps"] if "run" in step
     )
 
     assert 'install -d -m 700 "$HOME/tmp"' in commands
@@ -111,10 +160,19 @@ def test_eval_workflow_is_the_single_native_ci_owner() -> None:
     workflow_root = ROOT / ".github" / "workflows"
     workflow_paths = tuple(sorted(workflow_root.glob("*.yml")))
 
-    assert [path.name for path in workflow_paths] == ["eval.yml"]
-    source = workflow_paths[0].read_text(encoding="utf-8")
+    assert [path.name for path in workflow_paths] == ["eval.yml", "release.yml"]
+    source = (workflow_root / "eval.yml").read_text(encoding="utf-8")
     workflow = yaml.load(source, Loader=yaml.BaseLoader)
-    steps = workflow["jobs"]["eval"]["steps"]
+    jobs = workflow["jobs"]
+    assert set(jobs) == {"gates"}
+    assert jobs["gates"]["strategy"]["matrix"]["suite"] == [
+        "contracts",
+        "quality",
+        "runtime",
+    ]
+    assert jobs["gates"]["timeout-minutes"] == "12"
+    assert workflow["concurrency"]["cancel-in-progress"] == "true"
+    steps = jobs["gates"]["steps"]
     actions = tuple(step["uses"] for step in steps if "uses" in step)
     checkout = next(
         step for step in steps if step.get("uses", "").startswith("actions/checkout@")
@@ -124,9 +182,28 @@ def test_eval_workflow_is_the_single_native_ci_owner() -> None:
     assert actions
     assert all(re.fullmatch(r"[^@\s]+@[0-9a-f]{40}", action) for action in actions)
     assert checkout["with"] == {"fetch-depth": "0"}
-    assert sum("make ci" in command.splitlines() for command in commands) == 1
+    joined_commands = "\n".join(command for command in commands if command)
+    assert "make ci" not in joined_commands
+    for gate in (
+        "make docs",
+        "make check",
+        "make static",
+        "make shell",
+        "make duplication",
+        "make build",
+        "make test",
+        "make spec",
+    ):
+        assert gate in joined_commands
     assert "|| true" not in source
     assert "conflict-marker" not in source
+
+    release = yaml.load(
+        (workflow_root / "release.yml").read_text(encoding="utf-8"),
+        Loader=yaml.BaseLoader,
+    )
+    assert release["on"]["push"]["tags"] == ["v*.*.*"]
+    assert release["permissions"] == {"contents": "write"}
 
 
 def test_makefile_exposes_no_cross_repository_mcp_target() -> None:

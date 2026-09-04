@@ -248,7 +248,9 @@ def _require_skill(root: Path, catalog: Catalog, record: SkillRecord) -> None:
     frontmatter = Catalog._frontmatter(skill_file)
     require_description(frontmatter["description"])
     if record.category is SkillCategory.PROJECT_WIDE or (
-        record.category.conditional and record.route == "project"
+        record.category.conditional
+        and "project" in record.routes
+        and record.activation != "opt-in"
     ):
         for path in sorted(directory.rglob("*")):
             if path.is_file() and NON_PORTABLE_PROJECT_REFERENCE.search(

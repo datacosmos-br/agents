@@ -66,6 +66,20 @@ so state the intent explicitly wherever it applies:
   owner; city configuration exposes a second, unenforced route to the same
   state.
 
+Topology mutation — city state is `city.toml`, `.gc/`, and `.beads/` under the
+city root:
+
+- It changes only through the city's own commands (`gc rig add`, `gc rig
+  remove`, `gc doctor --fix`, the runtime) inside a cutover the operator
+  authorized and a bead records. No agent edits those files directly, in any
+  rig, including a rig whose work references the city.
+- A cutover that mutates topology commits that mutation in the city's own
+  integration lane in the same change that motivated it. A city left with a
+  dirty `city.toml` after a cross-repository cutover is a defect of that
+  cutover, never of the runtime, and is adopted forward at the city.
+- Runtime projections into the city root stay runtime state, never source
+  (see below); a guard asserts what Git carries, not what exists on disk.
+
 ## Dispatch while the city is operating
 
 Work reaches an agent through the city's own surface: create the item in the

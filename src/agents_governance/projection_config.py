@@ -10,6 +10,7 @@ from types import MappingProxyType
 from typing import cast
 
 from .agent_profiles import AgentProvider
+from .frontmatter import cast_mapping, require_exact_fields
 
 
 class ProjectionContext(StrEnum):
@@ -58,6 +59,42 @@ class RuleLayout(StrEnum):
     DOCUMENT = "document"
 
 
+class DetectionConditionType(StrEnum):
+    """Closed set of project detection predicates."""
+
+    FILE_CONTAINS = "file_contains"
+    FILE_NOT_CONTAINS = "file_not_contains"
+    PATH_EXISTS = "path_exists"
+    PATH_MISSING = "path_missing"
+
+
+class DetectionOperator(StrEnum):
+    """Boolean composition supported by one project detection rule."""
+
+    ALL = "all"
+    ANY = "any"
+    NONE = "none"
+
+
+@dataclass(frozen=True)
+class DetectionCondition:
+    """One validated project detection condition."""
+
+    condition_type: DetectionConditionType
+    pattern: str
+    paths: tuple[str, ...] = ()
+
+
+@dataclass(frozen=True)
+class ProjectDetectionRule:
+    """One validated declarative project classification rule."""
+
+    rule_id: str
+    activate_tags: tuple[str, ...]
+    operator: DetectionOperator
+    conditions: tuple[DetectionCondition, ...]
+
+
 @dataclass(frozen=True)
 class HookEvent:
     """One logical lifecycle boundary with explicit native support."""
@@ -86,11 +123,12 @@ class ProjectionCell:
 
 @dataclass(frozen=True)
 class ProjectionConfig:
-    """Complete immutable v6 projection contract."""
+    """Complete immutable v7 projection contract."""
 
     version: int
     projection_manifest_version: int
     hook_manifest_version: int
+    project_detection_rules: tuple[ProjectDetectionRule, ...]
     cells: MappingProxyType[
         tuple[AgentProvider, ProjectionContext, ProjectionSurface], ProjectionCell
     ]
@@ -110,6 +148,8 @@ class ProjectionConfig:
 
 
 _ROOT_FIELDS = frozenset({"manifest_versions", "providers", "version"})
+_PROJECT_DETECTION_FIELD = "project_detection_rules"
+_ROOT_FIELDS_WITH_DETECTION = _ROOT_FIELDS | {_PROJECT_DETECTION_FIELD}
 _MANIFEST_VERSION_FIELDS = frozenset({"hooks", "projection"})
 _CONTEXTS = frozenset(context.value for context in ProjectionContext)
 _SURFACES = frozenset(surface.value for surface in ProjectionSurface)
@@ -117,23 +157,6 @@ _PROVIDERS = frozenset(provider.value for provider in AgentProvider)
 _HOOK_EVENTS = frozenset(
     {"context_refresh", "prompt_submit", "session_start", "subagent_start"}
 )
-
-
-def _mapping(value: object, label: str) -> dict[str, object]:
-    if not isinstance(value, dict) or not all(isinstance(key, str) for key in value):
-        raise TypeError(f"{label} must be an object with string keys")
-    return cast(dict[str, object], value)
-
-
-def _exact_fields(
-    value: dict[str, object], expected: frozenset[str], label: str
-) -> None:
-    actual = frozenset(value)
-    if actual != expected:
-        raise ValueError(
-            f"{label} must equal {', '.join(sorted(expected))}; "
-            f"got {', '.join(sorted(actual)) or 'none'}"
-        )
 
 
 def _validate_path(path: object, context: ProjectionContext, label: str) -> str:
@@ -165,7 +188,7 @@ def _cell(
     raw: object,
 ) -> ProjectionCell:
     label = f"projection cell {provider.value}/{context.value}/{surface.value}"
-    value = _mapping(raw, label)
+    value = cast_mapping(raw, label)
     if "status" not in value:
         raise ValueError(f"{label} status is required")
     raw_status = value["status"]
@@ -173,7 +196,7 @@ def _cell(
         raise TypeError(f"{label} status must be a string")
     status = ProjectionStatus(raw_status)
     if status is ProjectionStatus.UNSUPPORTED:
-        _exact_fields(
+        require_exact_fields(
             value, frozenset({"reason", "status"}), f"{label} UNSUPPORTED cell fields"
         )
         reason = value["reason"]
@@ -190,7 +213,7 @@ def _cell(
         expected.add("events")
     if surface is ProjectionSurface.RULES:
         expected.add("layout")
-    _exact_fields(value, frozenset(expected), f"{label} SUPPORTED cell fields")
+    require_exact_fields(value, frozenset(expected), f"{label} SUPPORTED cell fields")
     path = _validate_path(value["path"], context, label)
     max_tokens = value.get("max_tokens")
     if max_tokens is not None and (
@@ -202,18 +225,18 @@ def _cell(
     events: MappingProxyType[str, HookEvent] | None = None
     layout: RuleLayout | None = None
     if surface is ProjectionSurface.HOOKS:
-        raw_events = _mapping(value["events"], f"{label} events")
-        _exact_fields(raw_events, _HOOK_EVENTS, f"{label} events")
+        raw_events = cast_mapping(value["events"], f"{label} events")
+        require_exact_fields(raw_events, _HOOK_EVENTS, f"{label} events")
         parsed_events: dict[str, HookEvent] = {}
         for logical_event in sorted(_HOOK_EVENTS):
             event_label = f"{label} events.{logical_event}"
-            event = _mapping(raw_events[logical_event], event_label)
+            event = cast_mapping(raw_events[logical_event], event_label)
             raw_event_status = event.get("status")
             if not isinstance(raw_event_status, str):
                 raise TypeError(f"{event_label} status must be a string")
             event_status = ProjectionStatus(raw_event_status)
             if event_status is ProjectionStatus.UNSUPPORTED:
-                _exact_fields(
+                require_exact_fields(
                     event,
                     frozenset({"reason", "status"}),
                     f"{event_label} UNSUPPORTED fields",
@@ -228,7 +251,7 @@ def _cell(
                     )
                 parsed_events[logical_event] = HookEvent(event_status, reason=reason)
                 continue
-            _exact_fields(
+            require_exact_fields(
                 event,
                 frozenset({"clients", "coverage", "native", "status"}),
                 f"{event_label} SUPPORTED fields",
@@ -301,39 +324,121 @@ def load_projection_config(root: Path) -> ProjectionConfig:
     if path.is_symlink() or not path.is_file():
         raise ValueError("projection config must be a physical regular file")
     payload = json.loads(path.read_text(encoding="utf-8"))
-    value = _mapping(payload, "projection config")
-    _exact_fields(value, _ROOT_FIELDS, "projection config fields")
-    if value["version"] != 6:
-        raise ValueError("projection config must use version 6")
-    manifest_versions = _mapping(
+    value = cast_mapping(payload, "projection config")
+    fields = (
+        _ROOT_FIELDS_WITH_DETECTION
+        if _PROJECT_DETECTION_FIELD in value
+        else _ROOT_FIELDS
+    )
+    require_exact_fields(value, fields, "projection config fields")
+    if value["version"] != 7:
+        raise ValueError("projection config must use version 7")
+    manifest_versions = cast_mapping(
         value["manifest_versions"], "projection manifest versions"
     )
-    _exact_fields(
+    require_exact_fields(
         manifest_versions,
         _MANIFEST_VERSION_FIELDS,
         "projection manifest versions",
     )
-    if manifest_versions["projection"] != 5:
-        raise ValueError("projection directory manifest version must equal 5")
+    if manifest_versions["projection"] != 6:
+        raise ValueError("projection directory manifest version must equal 6")
     if manifest_versions["hooks"] != 3:
         raise ValueError("projection hook manifest version must equal 3")
 
-    providers = _mapping(value["providers"], "projection providers")
-    _exact_fields(providers, _PROVIDERS, "projection providers")
+    raw_detection_rules = value.get(_PROJECT_DETECTION_FIELD, [])
+    if not isinstance(raw_detection_rules, list):
+        raise TypeError("projection project detection rules must be an array")
+    parsed_detection_rules: list[ProjectDetectionRule] = []
+    for rule_index, raw_rule in enumerate(raw_detection_rules):
+        if not isinstance(raw_rule, dict):
+            raise TypeError("projection project detection rules must contain rules")
+        rule_label = f"projection project_detection_rules[{rule_index}]"
+        rule = cast_mapping(raw_rule, rule_label)
+        require_exact_fields(
+            rule, frozenset({"activate_tags", "id", "when"}), rule_label
+        )
+        rule_id = rule["id"]
+        if not isinstance(rule_id, str) or not rule_id:
+            raise TypeError(f"{rule_label} id must be a non-empty string")
+        raw_tags = rule["activate_tags"]
+        if (
+            not isinstance(raw_tags, list)
+            or not raw_tags
+            or not all(isinstance(tag, str) and tag for tag in raw_tags)
+        ):
+            raise TypeError(
+                f"{rule_label} activate_tags must be a non-empty string array"
+            )
+        tags = tuple(tag for tag in raw_tags if isinstance(tag, str))
+        raw_when = cast_mapping(rule["when"], f"{rule_label} when")
+        if len(raw_when) != 1:
+            raise ValueError(f"{rule_label} when must contain one operator")
+        raw_operator = next(iter(raw_when))
+        operator = DetectionOperator(raw_operator)
+        raw_conditions = raw_when[raw_operator]
+        if not isinstance(raw_conditions, list) or not raw_conditions:
+            raise TypeError(f"{rule_label} conditions must be a non-empty array")
+        conditions: list[DetectionCondition] = []
+        for condition_index, raw_condition in enumerate(raw_conditions):
+            condition_label = f"{rule_label} condition[{condition_index}]"
+            condition = cast_mapping(raw_condition, condition_label)
+            raw_type = condition.get("type")
+            if not isinstance(raw_type, str):
+                raise TypeError(f"{condition_label} type must be a string")
+            condition_type = DetectionConditionType(raw_type)
+            raw_pattern = condition.get("pattern")
+            if not isinstance(raw_pattern, str) or not raw_pattern:
+                raise TypeError(f"{condition_label} pattern must be a string")
+            raw_paths = condition.get("paths", [])
+            if not isinstance(raw_paths, list) or not all(
+                isinstance(item, str) and item for item in raw_paths
+            ):
+                raise TypeError(f"{condition_label} paths must be a string array")
+            paths = tuple(item for item in raw_paths if isinstance(item, str))
+            expected_fields = (
+                frozenset({"paths", "pattern", "type"})
+                if condition_type
+                in (
+                    DetectionConditionType.FILE_CONTAINS,
+                    DetectionConditionType.FILE_NOT_CONTAINS,
+                )
+                else frozenset({"pattern", "type"})
+            )
+            require_exact_fields(condition, expected_fields, condition_label)
+            if (
+                condition_type
+                in (
+                    DetectionConditionType.FILE_CONTAINS,
+                    DetectionConditionType.FILE_NOT_CONTAINS,
+                )
+                and not paths
+            ):
+                raise ValueError(f"{condition_label} paths must not be empty")
+            conditions.append(DetectionCondition(condition_type, raw_pattern, paths))
+        parsed_detection_rules.append(
+            ProjectDetectionRule(rule_id, tags, operator, tuple(conditions))
+        )
+    detection_rules = tuple(parsed_detection_rules)
+
+    providers = cast_mapping(value["providers"], "projection providers")
+    require_exact_fields(providers, _PROVIDERS, "projection providers")
     cells: dict[
         tuple[AgentProvider, ProjectionContext, ProjectionSurface], ProjectionCell
     ] = {}
     for provider in AgentProvider:
-        contexts = _mapping(
+        contexts = cast_mapping(
             providers[provider.value], f"projection contexts for {provider.value}"
         )
-        _exact_fields(contexts, _CONTEXTS, f"projection contexts for {provider.value}")
+        require_exact_fields(
+            contexts, _CONTEXTS, f"projection contexts for {provider.value}"
+        )
         for context in ProjectionContext:
-            surfaces = _mapping(
+            surfaces = cast_mapping(
                 contexts[context.value],
                 f"projection surfaces for {provider.value}/{context.value}",
             )
-            _exact_fields(
+            require_exact_fields(
                 surfaces,
                 _SURFACES,
                 f"projection surfaces for {provider.value}/{context.value}",
@@ -341,13 +446,23 @@ def load_projection_config(root: Path) -> ProjectionConfig:
             for surface in ProjectionSurface:
                 key = (provider, context, surface)
                 cells[key] = _cell(provider, context, surface, surfaces[surface.value])
-    return ProjectionConfig(6, 5, 3, MappingProxyType(cells))
+    return ProjectionConfig(
+        cast(int, value["version"]),
+        cast(int, manifest_versions["projection"]),
+        cast(int, manifest_versions["hooks"]),
+        detection_rules,
+        MappingProxyType(cells),
+    )
 
 
 __all__ = (
+    "DetectionCondition",
+    "DetectionConditionType",
+    "DetectionOperator",
     "HookClient",
     "HookCoverage",
     "HookEvent",
+    "ProjectDetectionRule",
     "ProjectionCell",
     "ProjectionConfig",
     "ProjectionContext",

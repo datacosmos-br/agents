@@ -11,6 +11,8 @@ from typing import cast
 import yaml
 from yaml.nodes import MappingNode, Node, ScalarNode, SequenceNode
 
+from .frontmatter import cast_mapping
+
 _TOP_LEVEL_FIELDS = frozenset({"dependencies", "interface", "policy"})
 _LEGACY_TOP_LEVEL_FIELDS = frozenset({"description", "model", "name", "tools"})
 _INTERFACE_FIELDS = frozenset(
@@ -55,15 +57,6 @@ class SkillMetadata:
     interface: InterfaceMetadata | None
     tools: tuple[ToolDependency, ...]
     allow_implicit_invocation: bool | None
-
-
-def _mapping(value: object, field: str) -> dict[str, object]:
-    if not isinstance(value, dict):
-        raise TypeError(f"{field} must be a mapping")
-    raw = cast(dict[object, object], value)
-    if not all(isinstance(key, str) for key in raw):
-        raise TypeError(f"{field} keys must be strings")
-    return cast(dict[str, object], raw)
 
 
 def _known_fields(
@@ -122,7 +115,7 @@ def _physical_asset(metadata_path: Path, value: str, field: str) -> None:
 def _interface(
     metadata_path: Path, skill_name: str, value: object
 ) -> InterfaceMetadata:
-    section = _mapping(value, "interface")
+    section = cast_mapping(value, "interface")
     _known_fields(section, _INTERFACE_FIELDS, "interface")
     display_name = _string(section, "display_name", "interface")
     short_description = _string(section, "short_description", "interface")
@@ -157,7 +150,7 @@ def _interface(
 
 
 def _dependencies(value: object) -> tuple[ToolDependency, ...]:
-    section = _mapping(value, "dependencies")
+    section = cast_mapping(value, "dependencies")
     _known_fields(section, _DEPENDENCIES_FIELDS, "dependencies")
     if "tools" not in section:
         return ()
@@ -168,7 +161,7 @@ def _dependencies(value: object) -> tuple[ToolDependency, ...]:
     identities: set[tuple[str, str]] = set()
     for index, raw_tool in enumerate(cast(list[object], raw_tools)):
         field = f"dependencies.tools[{index}]"
-        tool = _mapping(raw_tool, field)
+        tool = cast_mapping(raw_tool, field)
         _known_fields(tool, _TOOL_FIELDS, field)
         kind = _string(tool, "type", field, required=True)
         dependency = _string(tool, "value", field, required=True)
@@ -193,7 +186,7 @@ def _dependencies(value: object) -> tuple[ToolDependency, ...]:
 
 
 def _policy(value: object) -> bool | None:
-    section = _mapping(value, "policy")
+    section = cast_mapping(value, "policy")
     _known_fields(section, _POLICY_FIELDS, "policy")
     if "allow_implicit_invocation" not in section:
         return None
@@ -244,7 +237,7 @@ def _load(root: Path, path: Path, skill_name: str) -> SkillMetadata | None:
             f"metadata document must be a mapping: {path.relative_to(root)}"
         )
     _structure(node)
-    document = _mapping(payload, "document")
+    document = cast_mapping(payload, "document")
     _known_fields(
         document,
         _TOP_LEVEL_FIELDS,
