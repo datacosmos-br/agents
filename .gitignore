@@ -13,6 +13,7 @@ agents.bkp/
 # Gas City creates rig-scoped worktrees at <rig-root>/worktrees/<id>.
 /worktrees/
 /.pytest-scratch/
+/.reports/
 .cache/
 /$HOME/
 
@@ -38,6 +39,7 @@ agents.bkp/
 # would be offered as source and fail that guard, so the two must agree.
 /.agents/*
 !/.agents/projection.json
+/.gc/
 /.claude/
 /.codex/
 /.cursor/
