@@ -12,6 +12,10 @@ capsule_summary: |
   Hardcodes, normalized failure, failover, retry, fallback, partial execution
   and unevidenced success are defects. The first exception escapes with its
   traceback and cause.
+
+  A managed repository keeps its exact declared-identity remote. A broken alias
+  never authorizes the generic form, and an agent never writes the operator's SSH
+  configuration or keys — identity is corrected in git, or reported.
 metadata:
   aihub.tags: '["decision:plan-00","effective:2026-08-29","route:both"]'
 ---
@@ -48,6 +52,14 @@ forge account and their exact SSH remote with declared account identity before
 remote effects. HTTPS, rewriting, generic identity, and account or protocol
 fallback are prohibited. Public and other-owner repos do not select this
 contract by tool presence.
+
+A broken account alias never authorizes the generic form. When the declared
+identity stops resolving, the remote stays declared and the alias is restored by
+its owner; migrating repositories to a generic remote to regain access converts
+one outage into a standing violation. The operator's SSH client configuration and
+keys are never written by an agent — not to repair identity, not to deploy a
+fragment, not to restore access. Identity is corrected in git; anything that
+requires editing SSH configuration is reported to the operator instead.
 
 An external token validation without its token is not executed and is recorded
 as `NOT EXECUTED`, never green; it does not block offline gates, landing, or
