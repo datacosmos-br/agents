@@ -141,9 +141,8 @@ def test_canonical_inventory_is_discovered_without_extinct_hook_rules() -> None:
     assert "Every other executable" in engineering_core
     assert "authorized, selected" in engineering_core
     assert "PATH presence never selects" in engineering_core
-    assert "managed-private owner set" in engineering_core
-    assert "exact SSH remote" in engineering_core
-    assert "HTTPS" in engineering_core
+    assert "current Git and forge configuration" in engineering_core
+    assert "mutate user SSH" in engineering_core
     assert "The first exception escapes" in engineering_core
     assert "complete the approved landing cycle" in " ".join(engineering_core.split())
     assert "security/prompt-defense" in specs

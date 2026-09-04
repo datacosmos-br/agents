@@ -1,25 +1,16 @@
 # PR Sheriff review triage
 
-Read repository-local configuration first. If and only if it explicitly selects
-AI Hub's managed-private contract, use AI Hub to resolve that configured
-workspace before reading PR state:
+Read repository-local configuration and optional AI Hub association metadata,
+then use the existing Git and GitHub configuration directly:
 
 ```sh
-ai-hub forge-resolve --workspace <absolute-repository-path>
-ai-hub forge-doctor
 git remote get-url origin
-git config --local --get core.sshCommand
 git ls-remote origin HEAD
 ```
 
-For public and other-owner repositories, omit this entire AI Hub block. Use the
-repository's declared Git/GitHub lifecycle directly; tool installation is not
-capability selection.
-
-An explicitly selected private managed repository must use the exact
-`git@github.com:<owner>/<repo>.git` origin and repository-local SSH identity.
 Never mutate `~/.ssh/config`, introduce a host alias, execute Python directly,
-or invoke a helper script through its shebang.
+or invoke a helper script through its shebang. Do not rewrite a functioning
+remote to satisfy a separate access policy.
 
 Collect the complete PR inventory with `gh pr list`, then query each PR with
 `gh pr view --json` for head/base OIDs, draft/state, mergeability, merge state,

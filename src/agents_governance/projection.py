@@ -11,6 +11,7 @@ import stat
 import subprocess
 import tempfile
 import tomllib
+from collections.abc import Iterable
 from dataclasses import dataclass, replace
 from enum import StrEnum
 from functools import partial
@@ -302,8 +303,12 @@ def _retired_gc_links(root: Path) -> dict[str, str]:
     if not manifest.exists() and not manifest.is_symlink():
         return {}
     if manifest.is_symlink() or not manifest.is_file():
-        raise ValueError(f"retired Gas City manifest must be a physical file: {manifest}")
-    payload = cast_mapping(json.loads(manifest.read_text(encoding="utf-8")), str(manifest))
+        raise ValueError(
+            f"retired Gas City manifest must be a physical file: {manifest}"
+        )
+    payload = cast_mapping(
+        json.loads(manifest.read_text(encoding="utf-8")), str(manifest)
+    )
     require_exact_fields(payload, frozenset({"targets"}), str(manifest))
     targets = cast_mapping(payload["targets"], f"{manifest}: targets")
     links: dict[str, str] = {}
@@ -316,7 +321,9 @@ def _retired_gc_links(root: Path) -> dict[str, str]:
         if not destination.exists() and not destination.is_symlink():
             continue
         if not destination.is_symlink():
-            raise ValueError(f"retired Gas City skill is not an owned symlink: {destination}")
+            raise ValueError(
+                f"retired Gas City skill is not an owned symlink: {destination}"
+            )
         observed = os.readlink(destination)
         if observed != raw_target:
             raise ValueError(f"retired Gas City skill target differs: {destination}")
@@ -777,18 +784,53 @@ class Projector:
             + "\n"
         )
 
-    def authorize(self, project: Path) -> ProjectAuthorization:
-        """Authorize a detected canonical project with one minimal selection."""
+    def authorize(
+        self, project: Path, *, synchronize: bool = True
+    ) -> ProjectAuthorization:
+        """Inspect or synchronize one detected canonical project selection."""
 
         authorization = load_project_authorization(project)
-        if authorization.selected or not self.config.project_detection_rules:
+        if not self.config.project_detection_rules:
             return authorization
+        if authorization.selected:
+            payload = cast_mapping(
+                json.loads(cast(str, authorization.payload)), str(authorization.path)
+            )
+            if payload.get("version") != 3:
+                return authorization
+            digest = Projector._detection_catalog_digest(
+                self.config.project_detection_rules
+            )
+            if payload.get("detection_catalog_digest") == digest:
+                return authorization
+            detected_profile = Projector._profile_from_tags(
+                Projector._detect_active_tags(
+                    project, self.config.project_detection_rules
+                )
+            )
+            recorded_profile = ProjectProfile(cast(str, payload["project_profile"]))
+            if (
+                detected_profile is not None
+                and detected_profile is not recorded_profile
+            ):
+                raise ValueError(
+                    f"{authorization.path}: project profile conflicts with current detection evidence"
+                )
+            if not synchronize:
+                return authorization
+            payload["detection_catalog_digest"] = digest
+            atomic_write_text(
+                authorization.path,
+                json.dumps(payload, indent=2, sort_keys=True) + "\n",
+                mode=0o644,
+            )
+            return load_project_authorization(project)
         path = project / PROJECT_SELECTION
         active_tags = Projector._detect_active_tags(
             project, self.config.project_detection_rules
         )
         profile = Projector._profile_from_tags(active_tags)
-        if profile is None:
+        if profile is None or not synchronize:
             return authorization
         text = Projector._selection_document(
             self.config.project_detection_rules, profile
@@ -1024,6 +1066,21 @@ class Projector:
             for prefix in self._managed_prefixes()
         )
 
+    def _has_path_evidence(
+        self, project: Path, candidates: object, *, files_only: bool = False
+    ) -> bool:
+        for candidate in sorted(cast(Iterable[Path], candidates)):
+            if self._is_managed_evidence(project, candidate):
+                continue
+            symlink = symlink_component(candidate)
+            if symlink is not None:
+                raise ValueError(
+                    f"project detector evidence symlink forbidden: {symlink}"
+                )
+            if candidate.is_file() if files_only else candidate.exists():
+                return True
+        return False
+
     def _detector_matches(
         self, project: Path, detector: str, dependencies: set[str]
     ) -> bool:
@@ -1040,29 +1097,11 @@ class Projector:
             return dependency in dependencies or value.lower() in dependencies
         if kind in {"owned-extension", "extension"}:
             suffix = value if value.startswith(".") else f".{value}"
-            for candidate in sorted(project.rglob(f"*{suffix}")):
-                if self._is_managed_evidence(project, candidate):
-                    continue
-                symlink = symlink_component(candidate)
-                if symlink is not None:
-                    raise ValueError(
-                        f"project detector evidence symlink forbidden: {symlink}"
-                    )
-                if candidate.is_file():
-                    return True
-            return False
+            return self._has_path_evidence(
+                project, project.rglob(f"*{suffix}"), files_only=True
+            )
         if kind == "owned-glob":
-            for candidate in sorted(project.glob(value)):
-                if self._is_managed_evidence(project, candidate):
-                    continue
-                symlink = symlink_component(candidate)
-                if symlink is not None:
-                    raise ValueError(
-                        f"project detector evidence symlink forbidden: {symlink}"
-                    )
-                if candidate.exists():
-                    return True
-            return False
+            return self._has_path_evidence(project, project.glob(value))
         if kind in {"opt-in", "selected-tag"}:
             return False
         raise ValueError(f"unsupported project detector: {detector}")
@@ -1100,7 +1139,8 @@ class Projector:
         unknown_opt_ins = set(selection.opt_ins) - known_opt_ins
         if unknown_opt_ins:
             raise ValueError(f"unknown project opt-in: {min(unknown_opt_ins)}")
-        unknown_tags = set(selection.selected_tags) - known_tags
+        profile_tags = {"internal", "flext", "third-party-fork"}
+        unknown_tags = set(selection.selected_tags) - known_tags - profile_tags
         if unknown_tags:
             raise ValueError(f"unknown selected tag: {min(unknown_tags)}")
         activated: dict[str, tuple[str, ...]] = {}
@@ -1905,7 +1945,7 @@ class Projector:
         """Raise on the first project projection defect or drift."""
 
         project = self.project_root()
-        authorization = self.authorize(project)
+        authorization = self.authorize(project, synchronize=False)
         for plan in self._plans(authorization):
             if not plan.root.exists():
                 continue

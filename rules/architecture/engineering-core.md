@@ -43,11 +43,9 @@ authorized, selected capability; installation or PATH presence never selects
 it. Do not load, locate, probe, or gate dormant capabilities. A selected invalid
 capability fails without fallback and requires only non-derivable values.
 
-Repos in a selected managed-private owner set require an authorized active
-forge account and their exact SSH remote with declared account identity before
-remote effects. HTTPS, rewriting, generic identity, and account or protocol
-fallback are prohibited. Public and other-owner repos do not select this
-contract by tool presence.
+Remote access follows the repository's current Git and forge configuration.
+Never rewrite protocols, create identity aliases, or mutate user SSH
+configuration as a prerequisite for ordinary Git operations.
 
 An external token validation without its token is not executed and is recorded
 as `NOT EXECUTED`, never green; it does not block offline gates, landing, or

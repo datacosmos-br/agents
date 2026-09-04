@@ -15,10 +15,9 @@ no legacy package, command, rule, projection, or synchronization surface remains
 - `agents/`, `commands/`, `rules/`, `workflows/`: personal agent capabilities.
 - `config/skills.json`: skill BPE and line-budget policy; recursive paths and
   frontmatter own classification and distribution.
-- `config/projections.json`: complete provider/context/surface capability
-  classification, hook fidelity, and personal/project destinations.
 - `src/agents_governance/`: strict validation, discovery, orchestration, and
-  provider-native projection behind the sole `agentsctl` runtime facade.
+  calculated provider-native contracts and projection behind the sole
+  `agentsctl` runtime facade.
 - `.waza.yaml` and `evals/`: Waza gates and behavioral evaluation.
 
 When `agentsctl sync` is invoked, the nearest ancestor that owns a physical

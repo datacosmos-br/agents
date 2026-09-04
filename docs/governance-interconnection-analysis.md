@@ -244,7 +244,7 @@ ativadas via `agentsctl sync` e o `ssot-relink` sobrescreve.
 - `ssot_relink.py` → `driver.py:project_hub_skills()` (line 128-148): projeta para `~/agents/skills/`
 - `ssot_relink.py` → `driver.py:~110 agent_skills()`: projeta para `<agent_home>/skills/`
 - `runtime.py:168-200 sync()`: projeta para `${HOME}/.claude/skills/` (personal)
-- `projections.json`: claude personal skills → `${HOME}/.claude/skills`
+- provider adapter calculation: Claude personal skills → `${HOME}/.claude/skills`
 
 **Nomeação divergente:** ai-hub `inviolable-rules` (bundle: `governance/rules`)
 não existe no catalog canônico do `~/agents`. `agentsctl sync` não consegue
@@ -275,11 +275,11 @@ Nenhum daemon monitora mudanças em `~/agents/skills/` ou
 | `workspace-standards` | n/a | ❌ |
 | (mais) | | |
 
-#### 5d. cliproxy-mgmt: CLIProxy não é provider em `projections.json`
+#### 5d. cliproxy-mgmt: CLIProxy não é provider de agentes
 
 O `connect-poolside-openai-api` plan adiciona perfil `poolside` ao CCS via
 CLIProxy (porta 8317). O CLIProxy é um serviço (`ccs-cliproxy.service` em
-`services.yaml`), não um "agent" no `projections.json`. Mas skills que gerenciam
+`services.yaml`), não um provider de agentes. Mas skills que gerenciam
 model routing (como `flext-rules`) precisam ser propagadas via `agentsctl sync`.
 Nenhuma skill no `~/agents` referencia configuração de CLIProxy.
 
@@ -585,7 +585,7 @@ interconexão de governança deve se coordenar.
 - `ssot-relink --mode adopt` → `agent_skills(home)`: copia de `~/ai-hub/skills/<bundle>/<path>/` → `<agent_home>/skills/<entry.name>/` (ex: `~/.claude/skills/caveman/`)
 - Systemd services: `ai-hub-watch.service` (incremental CRG), `ai-hub-maintain.service` (manutenção), `ai-hub-hooks.service` (daemon de hooks), `ai-hub-mcp.service` (gateway MCP)
 
-**Sistema 2 — agentsctl projection** (`~/agents/projections.json` + `src/agents_governance/projection.py`):
+**Sistema 2 — agentsctl projection** (contratos calculados em `src/agents_governance/`):
 - 7 providers (claude, codex, cursor, copilot, gemini, opencode, antigravity) × 2 contexts (personal, project) × 5 surfaces (skills, commands, agents, rules, hooks)
 - `agentsctl sync` projeta de `~/agents/` para paths específicas de cada provider
 - Personal: `${HOME}/.claude/skills/`, etc.
@@ -610,7 +610,7 @@ interconexão de governança deve se coordenar.
 | 9 | `recover-fix-gt-bd-doctor-issues` | `~/gt` | Fix gt/bd doctors | ❌ Cancelled | N/A — GT suspensa. |
 | 10 | `skills-cohesion-gastown` | `~/agents` | Remove non-canonical bead/gt/dolt refs | ✅ Complete (2 edits) | **Step 7**: gascity rule move. AGENTS.md já foi limpo. Mas `CLAUDE.md` do `~/agents` ainda referencia "local Dolt DB" — precisa verificar se foi corrigido. |
 | 11 | `assume-sweep-dedicated-agent` | `~/gt` | Bead sweep do Mayor | ✅ Executed (persistido) | Cross-plan tracking via beads. O epic `agents` foi criado em `hq` db. |
-| 12 | `connect-poolside-openai-api` | `~/.ccs` | CLIProxy model routing | ⚠️ In progress | **Coordenação cliproxy-mgmt**: o `projections.json` define quais providers recebem skills. CLIProxy é um provider — precisa garantir que skills de routing/model são propagadas via `agentsctl sync` para o diretório do CLIProxy. |
+| 12 | `connect-poolside-openai-api` | `~/.ccs` | CLIProxy model routing | ⚠️ In progress | **Coordenação cliproxy-mgmt**: adapters tipados definem quais providers recebem skills. CLIProxy é um serviço e seu routing deve permanecer no owner do serviço. |
 | 13 | `build-idempotent-incremental-publish` | `~/cosmos-docgen` | Build idempotency | ✅ Complete | N/A — cosmos-docgen, não governance. |
 | 14 | `datacosmos-padronizacao-layouts` | `~/cosmos-docgen` | UX standardization | ⚠️ Pending | N/A — dcdoc, não governance. |
 
@@ -637,7 +637,7 @@ interconexão de governança deve se coordenar.
 4. **cliproxy-mgmt**:
    - `connect-poolside-openai-api` conecta Poolside AI API ao CCS via CLIProxy (porta 8317)
    - `services.yaml` declara `ccs-cliproxy.service` + `ai-hub-model-pipeline.service` (conecta ao cliproxy)
-   - **Coordenação**: O CLIProxy não é um "agent" no `projections.json` — ele é um serviço. Mas skills que gerenciam model routing devem ser propagadas via `agentsctl sync` para o diretório do CLIProxy. Verificar se `~/.ccs` tem um `.ccs/skills/` equivalente.
+   - **Coordenação**: O CLIProxy não é um agent provider — ele é um serviço. Skills de model routing permanecem no owner do serviço; `agentsctl` projeta apenas superfícies nativas de agentes.
 
 5. **Bead claim + branch finalization**:
    - `ai-hub-generator-refactor` e `assume-sweep-dedicated-agent` usam `bd claim`/`bd close` para gestão de trabalho

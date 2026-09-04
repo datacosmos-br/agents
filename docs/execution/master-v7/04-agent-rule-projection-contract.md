@@ -197,13 +197,14 @@ generated v5 manifest records portable project identity (`.`), project-relative
 destination, context, surface, providers, selection, source type, slug,
 activation evidence, logical digest, physical digest, and adapter version.
 
-Canonical project detection is declarative in the optional
-`project_detection_rules` owner of `config/projections.json`. A rule that
-matches the invocation project authorizes exactly one minimal v2 selection
-document containing only its triggered rules; `sync` publishes it atomically
-only when the project-owned selection is absent. The document is portable
-project source. Provider settings, hook scripts, and other derived projection
-destinations remain runtime state and are never source.
+Canonical project detection is a typed contract in
+`agents_governance.projection_config`. A matching association marker authorizes
+one minimal v3 selection containing its closed project profile and the digest
+of the complete detection catalog; `sync` creates or refreshes it, while
+`check` remains read-only and rejects stale or contradictory evidence. The
+document is portable project source. Provider settings, hook scripts, and
+other derived projection destinations remain runtime state and are never
+source.
 
 ## Physical projection law
 

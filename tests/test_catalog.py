@@ -281,17 +281,20 @@ def test_duplicate_names_across_categories_are_rejected(tmp_path: Path) -> None:
         Catalog(tmp_path)
 
 
-def test_project_catalog_allows_an_authorized_project_without_local_skills(
-    tmp_path: Path,
-) -> None:
+def _empty_project_catalog(tmp_path: Path, central_category: str) -> Catalog:
     central = tmp_path / "central"
     central.mkdir()
     _write_config(central)
-    _write_skill(central, "agent-wide", "example")
+    _write_skill(central, central_category, "example")
     project = tmp_path / "project"
     project.mkdir()
+    return Catalog.project(project, Catalog(central))
 
-    catalog = Catalog.project(project, Catalog(central))
+
+def test_project_catalog_allows_an_authorized_project_without_local_skills(
+    tmp_path: Path,
+) -> None:
+    catalog = _empty_project_catalog(tmp_path, "agent-wide")
 
     assert catalog.records() == ()
     assert catalog.owner == "project"
@@ -299,13 +302,7 @@ def test_project_catalog_allows_an_authorized_project_without_local_skills(
 
 
 def test_project_catalog_of_the_central_source_is_empty(tmp_path: Path) -> None:
-    central = tmp_path / "central"
-    central.mkdir()
-    _write_config(central)
-    _write_skill(central, "project-wide", "example")
-
-    catalog = Catalog(central)
-    local = Catalog.project(central, catalog)
+    local = _empty_project_catalog(tmp_path, "project-wide")
 
     assert local.records() == ()
     assert local.owner == "project"

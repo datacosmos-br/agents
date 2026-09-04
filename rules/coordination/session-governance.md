@@ -53,7 +53,7 @@ read-only native state store supplies enough evidence to reconstruct the cursor;
 never resume the source agent, switch provider, or change reality merely to
 transfer ownership.
 
-Provider capability is explicit in `config/projections.json`. An exact native
+Provider capability is calculated by its typed provider adapter. An exact native
 event is used when available. A documented per-turn or pre-model equivalent is
 used when it is the provider's only delivery point, and observational events
 remain observational. Never claim an exact lifecycle semantic that the provider

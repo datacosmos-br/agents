@@ -204,13 +204,17 @@ def _seed_eval_suite(root: Path) -> None:
     )
 
 
+def _write_skill_config(root: Path) -> None:
+    (root / "config").mkdir()
+    (root / "config" / "skills.json").write_text(
+        json.dumps({"version": 2, "budgets": _BUDGETS}), encoding="utf-8"
+    )
+
+
 def test_opt_in_dual_route_skill_may_reference_project_vocabulary(
     tmp_path: Path,
 ) -> None:
-    (tmp_path / "config").mkdir()
-    (tmp_path / "config" / "skills.json").write_text(
-        json.dumps({"version": 2, "budgets": _BUDGETS}), encoding="utf-8"
-    )
+    _write_skill_config(tmp_path)
     _seed_dual_route_skill(
         tmp_path,
         activation="opt-in",
@@ -224,10 +228,7 @@ def test_opt_in_dual_route_skill_may_reference_project_vocabulary(
 def test_detected_dual_route_skill_rejects_non_portable_vocabulary(
     tmp_path: Path,
 ) -> None:
-    (tmp_path / "config").mkdir()
-    (tmp_path / "config" / "skills.json").write_text(
-        json.dumps({"version": 2, "budgets": _BUDGETS}), encoding="utf-8"
-    )
+    _write_skill_config(tmp_path)
     _seed_dual_route_skill(
         tmp_path,
         activation="detected",

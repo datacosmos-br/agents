@@ -1,12 +1,11 @@
-# dry-refactoring — baseline and extraction procedure
+# dry-refactoring — comparison and extraction procedure
 
 ## Comparison boundary
 
 Use eight lines and strict mode unless the selected project explicitly owns a
-different floor. Resolve the project gate before ad-hoc flags; an existing
-baseline is valid only with its exact threshold, mode, formats, ignores, and
-reviewed file set. Changing any of them invalidates prior green output and
-requires triage before a new baseline.
+different floor. Resolve the project gate before ad-hoc flags. Changing its
+threshold, mode, formats, ignores, or reviewed file set invalidates prior green
+output and requires complete triage.
 
 For cross-repository work, materialize committed integration refs into a
 worktree sibling snapshot on the destination filesystem. Archive each recorded
@@ -14,12 +13,12 @@ submodule commit from its own object database. Never substitute dirty checkout
 state, another branch, `/tmp`, or a local default. Report the exact ref or
 commit used for every snapshot.
 
-Commit `.jscpd-baseline.json` at the repository owner after complete triage.
-Generate it only from a clean lane aligned with the integration branch. After
-integration, rerun the exact comparison with `--fail-on-new-clones 0`; any new
-clone is red until eliminated or classified. Textual reduction alone is not
-success: record the merged commit, command, working directory, exit code,
-before/after counts, and runtime proof before closing the increment.
+After integration, rerun the exact comparison with the selected executable's
+documented nonzero-on-clone option. Any clone is red until eliminated. A
+baseline or threshold suppression is not a completion mechanism. Textual
+reduction alone is not success: record the merged commit, command, working
+directory, exit code, before/after counts, and runtime proof before closing the
+increment.
 
 ## Triage
 
@@ -36,9 +35,8 @@ Classify every reported pair before editing:
 - **tokenizer false positive** — unrelated Markdown, YAML, configuration, or
   prose shape.
 
-A rebaselined entry must belong to one of the last four reviewed classes. A new
-baseline is an atomic review artifact, never a suppression mechanism. If triage
-is incomplete, fail closed with zero edits and no baseline replacement.
+Entries in the last four classes remain documented evidence outside detector
+suppression. If triage is incomplete, fail closed with zero edits.
 
 **Extract function** — the duplicate is a block of logic: move it to one
 shared function called from both sites.

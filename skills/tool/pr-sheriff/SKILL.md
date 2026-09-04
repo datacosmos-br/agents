@@ -12,13 +12,10 @@ metadata:
 
 Activate only for explicit pull-request triage or landing in one repository selected by active configuration. Never infer a repository or scan an organization. Follow the complete `router procedure` (skill file) and preserve its owners, evidence contracts, failure propagation, and required output standard.
 
-Resolve repository ownership and access classification from the repository's
-active local configuration before selecting any forge capability. Use AI Hub as
-the account and identity authority only when that configuration explicitly
-selects its managed-private contract. Public and other-owner repositories never
-select AI Hub merely because it is installed. Then use `gh` and `git` directly
-for PR evidence. Never run a Python helper directly or through its shebang, and
-never create, include, or edit `~/.ssh/config`; repository-specific SSH
-selection belongs in local Git configuration.
+Resolve repository ownership and association from active local configuration;
+AI Hub may supply that metadata but is not an SSH or credential gate. Use `gh`
+and `git` directly for PR evidence with their current configuration. Never run
+a Python helper directly or through its shebang, and never create, include, or
+edit `~/.ssh/config`.
 
 Use the `PR Sheriff review triage` (skill file) procedure for the mechanical loop, decision rules, and landing traps; preserve the canonical router contract.

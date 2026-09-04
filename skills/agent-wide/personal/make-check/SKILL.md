@@ -4,7 +4,7 @@ description: 'native gates, project validation, command discovery'
 license: MIT
 metadata:
   aihub.tags: '["decision:plan-00","effective:2026-08-29","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","provenance:agents-owned","role:verification","updates:manual","usage:router"]'
-  version: 2.2.0
+  version: 2.3.0
 ---
 
 # Make Check
@@ -29,9 +29,9 @@ Use the repository's canonical Make surface.
 
 - Never invent syntax or skip setup for an existing environment. Copy the
   owner's declared command exactly; do not combine valid fragments.
-- For a configured duplication gate, use the canonical strict baseline and,
-  after integration, require `--fail-on-new-clones 0`. Never substitute an ad
-  hoc threshold or report.
+- For a configured duplication gate, use only flags supported by the selected
+  executable and require its canonical zero-clone exit status. Never invent a
+  baseline flag, ad hoc threshold, or substitute report.
 - Do not call destructive, deployment, release, or promotion targets without the
   authority required by project law.
 - Warning, skip, empty output, missing tool, or newest-version diagnostic is red.
