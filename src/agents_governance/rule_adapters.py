@@ -12,6 +12,7 @@ from typing import Never
 import yaml
 
 from .approvals import approval_note
+from .artifact_contract import validate_relative_physical_artifact
 from .rules import RuleActivation, RuleSpec
 
 _ALL_PATHS_GLOB = "**"
@@ -48,14 +49,7 @@ class RuleArtifact:
     content: str
 
     def __post_init__(self) -> None:
-        if self.destination.is_absolute() or any(
-            part in {"", ".", ".."} for part in self.destination.parts
-        ):
-            raise ValueError(
-                "rule artifact destination must be a relative physical path"
-            )
-        if not self.content.strip():
-            raise ValueError("rule artifact content must be non-empty")
+        validate_relative_physical_artifact(self.destination, self.content, "rule")
 
 
 class RuleRenderError(ValueError):

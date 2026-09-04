@@ -130,20 +130,10 @@ bandit -r . -ll                      # Security scan (medium+)
 pytest --cov=apps --cov-report=term-missing -q  # Tests + coverage
 ```
 
-## Review Output Format
+## Review Output and Approval
 
-```text
-[SEVERITY] Issue title
-File: apps/orders/views.py:42
-Issue: Description of the problem
-Fix: What to change and why
-```
-
-## Approval Criteria
-
-- **Approve**: No CRITICAL or HIGH issues
-- **Warning**: MEDIUM issues only (can merge with caution)
-- **Block**: CRITICAL or HIGH issues found
+Use `docs/review-output-contract.md` with the
+`medium-caution` approval policy.
 
 ## Framework-Specific Checks
 
