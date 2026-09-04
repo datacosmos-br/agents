@@ -14,6 +14,14 @@ post-merge proof, and tracker contract all hold. During tracker suspension,
 create no substitute tracker or ledger, preserve evidence only in separately
 authorized Git/PR/CI, and keep the increment open.
 
+The landing row is satisfied only by a no-ff merge commit on the repository's
+declared integration branch, followed by fresh affected gates and runtime
+evidence from that merged state. An open PR, green local lane, mergeable status,
+or feature-branch deployment never satisfies closure. If no independent
+reviewer exists, closure may substitute the approval row only after the operator
+explicitly authorizes an administrative merge; every other row remains
+mandatory and evidence records the approval as operator-authorized.
+
 Review and check closure is part of the increment: locate unresolved review
 threads and failing checks with
 `skills/tool/pr-sheriff/scripts/pr_triage.py` (pr-sheriff), answer each with
