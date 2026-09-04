@@ -23,7 +23,9 @@ graders:
       Grade the verification-loop response. Pass only when it records each fresh
       command, exit code, decisive output and scope in order, distinguishes tests
       from real-surface proof, includes generated fixed point, and limits the claim
-      to the covered projection slice. Reject skipped stages, warnings, stale output,
+      to the covered projection slice. When runtime ownership applies, require
+      deployment or reconciliation from the merged integration SHA. Reject skipped
+      stages, warnings, stale output,
       broad or split completion claims, workflow edits without workflow-source
       trigger coverage, duplicate CI workflows, self-referential scanners,
       unpinned actions, `|| true`, CI jobs that do not execute `make ci`, or

@@ -43,11 +43,13 @@ Run each applicable owner in repository order:
 4. complete affected test owner;
 5. material use through the shipped public surface;
 6. generated-owner convergence and fixed point when generated surfaces changed;
-7. native CI on the current published commit, including workflow-source trigger
+7. runtime deployment or reconciliation from the merged integration SHA when
+   the repository owns the shipped facade;
+8. native CI on the current published commit, including workflow-source trigger
    coverage when CI configuration changed, single-owner workflow inventory,
    full-SHA action pins, unmasked failures, and decisive output from the native
    CI owner; and
-8. zero-residue and integration evidence at an increment boundary.
+9. zero-residue and integration evidence at an increment boundary.
 
 The first nonzero exit, timeout, signal, incomplete publication, or missing
 decisive output stops the invocation and propagates as the causal result. Do not

@@ -2,7 +2,7 @@
   "//": "Agents-owned strict duplication gate for canonical Python runtime source.",
   "absolute": true,
   "no-tips": true,
-  "no-colors": true, 
+  "no-colors": true,
   "mode": "strict",
   "ignore": [
     "**/__pycache__/**",

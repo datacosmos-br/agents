@@ -26,3 +26,6 @@ For an increment with a PR, integration proof includes unresolved-thread triage,
 green required checks, a no-ff merge commit on the integration branch, rerun of
 affected gates on the merged checkout, and measured runtime reconciliation.
 Never treat “mergeable”, an open PR, or local-only success as landed.
+When the repository owns the deployed runtime, completion also requires
+installing or reconciling that runtime from the merged integration SHA and
+proving the public surface there.

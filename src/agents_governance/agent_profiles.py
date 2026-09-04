@@ -13,6 +13,7 @@ from typing import Never, cast
 
 import yaml
 
+from .artifact_contract import validate_relative_physical_artifact
 from .catalog import NON_PORTABLE_PROJECT_REFERENCE
 from .frontmatter import parse_frontmatter
 
@@ -84,12 +85,7 @@ class AgentArtifact:
     content: str
 
     def __post_init__(self) -> None:
-        if self.destination.is_absolute() or any(
-            part in {"", ".", ".."} for part in self.destination.parts
-        ):
-            raise ValueError("agent destination must be a relative physical path")
-        if not self.content.strip():
-            raise ValueError("agent artifact content must be non-empty")
+        validate_relative_physical_artifact(self.destination, self.content, "agent")
 
 
 class AgentRenderError(ValueError):
