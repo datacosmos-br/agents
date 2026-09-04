@@ -266,6 +266,9 @@
     "strict-execution": [
       "rule:runtime/strict-execution"
     ],
+    "strict-typing": [
+      "rule:python/flext-typing"
+    ],
     "topic-monopoly": [
       "rule:coordination/plan-topic-monopoly"
     ],
