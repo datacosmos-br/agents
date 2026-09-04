@@ -4,12 +4,16 @@ import inspect
 import json
 import subprocess
 import tempfile
-from collections.abc import Mapping, Sequence
 from pathlib import Path
 from typing import Any, cast
 
 import pytest
 from conftest import approved, seed_approval_docs
+from projection_fixtures import (
+    JsonDocument,
+    JsonValue,
+    flext_detection_rule,
+)
 from waza_fixtures import write_eval_suite
 
 from agents_governance.agent_profiles import audit_agent_profiles
@@ -33,13 +37,6 @@ _PROVIDERS = (
     "pool",
 )
 _SURFACES = ("skills", "commands", "agents", "rules", "hooks")
-
-# Why: Sequence/Mapping recursion keeps nested JSON documents assignable under
-# invariance (ag-2wq detection-rule fixtures).
-type JsonValue = (
-    None | bool | int | float | str | Sequence["JsonValue"] | Mapping[str, "JsonValue"]
-)
-type JsonDocument = dict[str, JsonValue]
 
 
 def _encode(tags: tuple[str, ...]) -> str:
@@ -230,22 +227,6 @@ def _source(
         project_detection_rules=project_detection_rules,
     )
     return root, Projector(Catalog(root), load_projection_config(root), (), (), ())
-
-
-def _flext_detection_rule() -> JsonDocument:
-    return {
-        "activate_tags": ["flext"],
-        "id": "flext-managed",
-        "when": {
-            "any": [
-                {
-                    "paths": ["pyproject.toml"],
-                    "pattern": "@flext-managed",
-                    "type": "file_contains",
-                }
-            ]
-        },
-    }
 
 
 def _agent_projector(
@@ -1716,19 +1697,27 @@ def test_alias_link_divergence_requires_adjudication(
     assert link.is_dir() and not link.is_symlink()
 
 
-def test_canonical_marker_authorizes_minimal_project_selection(
-    tmp_path: Path,
-) -> None:
+def _marker_consumer(tmp_path: Path, pyproject: str) -> tuple[Projector, Path]:
+    """Build a flext-detecting projector and a consumer carrying ``pyproject``.
+
+    Returns:
+        The projector and the consumer project directory it will authorize.
+
+    """
     _, projector = _source(
         tmp_path,
-        project_detection_rules=[_flext_detection_rule()],
+        project_detection_rules=[flext_detection_rule()],
     )
     project = tmp_path / "consumer"
     project.mkdir()
-    (project / "pyproject.toml").write_text(
-        "# @flext-managed\n",
-        encoding="utf-8",
-    )
+    (project / "pyproject.toml").write_text(pyproject, encoding="utf-8")
+    return projector, project
+
+
+def test_canonical_marker_authorizes_minimal_project_selection(
+    tmp_path: Path,
+) -> None:
+    projector, project = _marker_consumer(tmp_path, "# @flext-managed\n")
 
     authorization = projector.authorize(project)
 
@@ -1736,7 +1725,7 @@ def test_canonical_marker_authorizes_minimal_project_selection(
     selection = json.loads(authorization.path.read_text(encoding="utf-8"))
     assert selection == {
         "agents": [],
-        "detection_rules": [_flext_detection_rule()],
+        "detection_rules": [flext_detection_rule()],
         "opt_ins": [],
         "selected_tags": [],
         "version": 2,
@@ -1748,16 +1737,7 @@ def test_canonical_marker_authorizes_minimal_project_selection(
 def test_canonical_marker_does_not_create_unauthorized_selection(
     tmp_path: Path,
 ) -> None:
-    _, projector = _source(
-        tmp_path,
-        project_detection_rules=[_flext_detection_rule()],
-    )
-    project = tmp_path / "consumer"
-    project.mkdir()
-    (project / "pyproject.toml").write_text(
-        "# another project\n",
-        encoding="utf-8",
-    )
+    projector, project = _marker_consumer(tmp_path, "# another project\n")
 
     authorization = projector.authorize(project)
 
