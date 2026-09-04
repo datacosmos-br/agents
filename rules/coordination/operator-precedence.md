@@ -1,5 +1,16 @@
 ---
 description: Authority order and recency precedence
+capsule_summary: |
+  Authority order: operator request > orchestration contract > canonical tracker
+  > ADRs > skills > docs > defaults. Inside one level, the newer artifact wins —
+  higher `effective:` date, or one declaring `supersedes:`.
+
+  On conflict adjust the lower or older artifact; never override the operator to
+  satisfy stale guidance. A superseded plan or ADR is evidence, never revived.
+
+  Exact operator authorization survives interruption, divergence and red gates:
+  re-preflight and continue. Ask only when the effect expands beyond it, or when
+  two evidenced current intentions genuinely conflict.
 metadata:
   aihub.tags: '["decision:plan-12","effective:2026-08-30","route:both"]'
 ---

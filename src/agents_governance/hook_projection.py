@@ -147,6 +147,21 @@ def _capsule(
     )
     if missing:
         raise ValueError(f"governance capsule owner is missing: {missing[0]}")
+    # Claude Code truncates hook output above 10,000 characters, so the capsule
+    # renders each bootstrap rule's declared standing summary rather than its
+    # body: six full bodies already consumed the whole budget, which made the
+    # landing law impossible to bootstrap at all. The body stays canonical in
+    # the rule file and reaches the model by routing.
+    unsummarized = tuple(
+        identity
+        for identity in governance.bootstrap_rules
+        if by_identity[identity].capsule_summary is None
+    )
+    if unsummarized:
+        raise ValueError(
+            "governance capsule requires capsule_summary on every bootstrap rule: "
+            f"{unsummarized[0]}"
+        )
     sections = [
         "# Generated session governance capsule",
         "",
@@ -154,16 +169,21 @@ def _capsule(
             "This projection is derived by `agentsctl sync`; edit canonical "
             "`AGENTS.md`, `rules/`, `skills/`, or `commands/`, never this output. "
             "The operator's newest request has precedence. Provider hooks are "
-            "delivery mechanisms, not policy owners."
+            "delivery mechanisms, not policy owners. Each rule below is the "
+            "standing summary of its canonical file in `rules/`; open that file "
+            "when a decision turns on its detail."
         ),
     ]
     for identity in governance.bootstrap_rules:
+        summary = by_identity[identity].capsule_summary
+        if summary is None:  # pragma: no cover - proven absent above
+            raise ValueError(f"governance capsule summary vanished: {identity}")
         sections.extend(
             (
                 "",
                 f"## Rule `{identity}`",
                 "",
-                _MARKDOWN_LINK.sub(r"\1", by_identity[identity].body.strip())
+                _MARKDOWN_LINK.sub(r"\1", summary)
                 + approval_note(by_identity[identity].tags),
             )
         )

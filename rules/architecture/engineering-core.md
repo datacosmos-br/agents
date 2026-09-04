@@ -1,5 +1,17 @@
 ---
 description: Apply the mandatory engineering decision and delivery sequence.
+capsule_summary: |
+  Every implementation: research the owner first, cut scope without a current
+  consumer, elect one writable authority and make every other copy a generated
+  projection, implement through the owner, remove duplication, then exercise
+  runtime behavior and run every applicable gate before changing phase.
+
+  At a cross-boundary failure, prove the producer's contract and fix whichever
+  side is wrong — never bend a correct owner for an invalid consumer.
+
+  Hardcodes, normalized failure, failover, retry, fallback, partial execution
+  and unevidenced success are defects. The first exception escapes with its
+  traceback and cause.
 metadata:
   aihub.tags: '["decision:plan-00","effective:2026-08-29","route:both"]'
 ---
