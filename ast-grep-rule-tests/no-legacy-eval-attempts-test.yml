@@ -1,5 +1,0 @@
-id: no-legacy-eval-attempts
-valid:
-  - "retry_attempts: 0"
-invalid:
-  - "max_attempts: 1"

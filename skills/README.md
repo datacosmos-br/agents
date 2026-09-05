@@ -11,6 +11,13 @@ activation state.
 - Every skill is a self-contained physical bundle and has exactly one
   provider-neutral suite under `evals/<slug>/`.
 
+Specialization is an explicit acyclic graph declared with `extends:<skill>`.
+Compose from the broadest owner to the narrowest: project-wide capability,
+technology/language, framework or library, then project-local policy. A child
+references `$<parent>` and contains only its delta; it never copies or weakens
+the parent. Parents never import knowledge from descendants. The catalog rejects
+missing parents, cycles, reversed layers, and implicit parent references.
+
 Keep `SKILL.md` as a concise activation router. Detailed procedures, scripts,
 and assets stay inside that same bundle. A change is complete only when
 `make audit APPLY=Y`, `make check APPLY=Y`, and `make waza APPLY=Y` validate the physical

@@ -1,5 +1,0 @@
-id: no-local-eval-schema-owner
-valid:
-  - "version: '1.0'"
-invalid:
-  - "schema_version: 1"

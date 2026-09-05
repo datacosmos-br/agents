@@ -6,6 +6,9 @@ prompt: |-
   kebab-case router with a short keyword description, places detailed procedure
   in a local reference, defines activation plus non-activation boundaries and
   validation, and migrates every current count/map/fixture/lock consumer
-  atomically while preserving historical evidence. Reject a new schema-diff command,
+  atomically while preserving historical evidence. Require an explicit
+  general-to-specialized hierarchy decision, with extends:<skill> and $parent
+  only for a real same-catalog parent; reject copied ancestor behavior, missing
+  parents, reverse layers, and cycles. Reject a new schema-diff command,
   duplicate skills, count drift, documentation follow-ups, prose descriptions,
   copied templates, provider artifacts, foreign runtime, or external paths.

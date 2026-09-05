@@ -1,0 +1,147 @@
+id: no-owner-owned-policy-in-suites
+snapshots:
+  ? |-
+    config:
+      skill_directories:
+      - skills
+      required_skills:
+      - my-skill
+  : fixed: ''
+    labels:
+    - source: |-
+        config:
+          skill_directories:
+          - skills
+          required_skills:
+          - my-skill
+      style: primary
+      start: 0
+      end: 71
+  'fail_fast: true':
+    fixed: ''
+    labels:
+    - source: 'fail_fast: true'
+      style: primary
+      start: 0
+      end: 15
+  ? |-
+    graders:
+    - type: prompt
+      name: grader
+      config:
+        prompt: grade it
+  : fixed: ''
+    labels:
+    - source: |-
+        graders:
+        - type: prompt
+          name: grader
+          config:
+            prompt: grade it
+      style: primary
+      start: 0
+      end: 69
+  'max_attempts: 3':
+    fixed: ''
+    labels:
+    - source: 'max_attempts: 3'
+      style: primary
+      start: 0
+      end: 15
+  ? |-
+    metrics:
+    - name: behavior_quality
+      weight: 1.0
+      threshold: 1.0
+  : fixed: ''
+    labels:
+    - source: |-
+        metrics:
+        - name: behavior_quality
+          weight: 1.0
+          threshold: 1.0
+      style: primary
+      start: 0
+      end: 64
+  'parallel: false':
+    fixed: ''
+    labels:
+    - source: 'parallel: false'
+      style: primary
+      start: 0
+      end: 15
+  ? |-
+    required_skills:
+    - my-skill
+  : fixed: ''
+    labels:
+    - source: |-
+        required_skills:
+        - my-skill
+      style: primary
+      start: 0
+      end: 27
+  'retry_attempts: 0':
+    fixed: ''
+    labels:
+    - source: 'retry_attempts: 0'
+      style: primary
+      start: 0
+      end: 17
+  'schemaVersion: 2':
+    fixed: ''
+    labels:
+    - source: 'schemaVersion: 2'
+      style: primary
+      start: 0
+      end: 16
+  'schema_version: 1':
+    fixed: ''
+    labels:
+    - source: 'schema_version: 1'
+      style: primary
+      start: 0
+      end: 17
+  ? |-
+    skill_directories:
+    - skills
+  : fixed: ''
+    labels:
+    - source: |-
+        skill_directories:
+        - skills
+      style: primary
+      start: 0
+      end: 27
+  ? |-
+    tasks:
+    - tasks/*.yaml
+  : fixed: ''
+    labels:
+    - source: |-
+        tasks:
+        - tasks/*.yaml
+      style: primary
+      start: 0
+      end: 21
+  'timeout_seconds: 300':
+    fixed: ''
+    labels:
+    - source: 'timeout_seconds: 300'
+      style: primary
+      start: 0
+      end: 20
+  'trials_per_task: 1':
+    fixed: ''
+    labels:
+    - source: 'trials_per_task: 1'
+      style: primary
+      start: 0
+      end: 18
+  'version: ''1.0''':
+    fixed: ''
+    labels:
+    - source: 'version: ''1.0'''
+      style: primary
+      start: 0
+      end: 14

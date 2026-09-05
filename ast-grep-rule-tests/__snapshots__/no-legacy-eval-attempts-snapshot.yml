@@ -1,9 +1,0 @@
-id: no-legacy-eval-attempts
-snapshots:
-  'max_attempts: 1':
-    fixed: 'retry_attempts: 0'
-    labels:
-    - source: 'max_attempts: 1'
-      style: primary
-      start: 0
-      end: 15

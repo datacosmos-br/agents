@@ -8,3 +8,5 @@ prompt: |-
   assumptions, disabling Testmon or globally clearing its cache when it is
   project-owned, partial behavior, or success without raw first-failure,
   zero-effect, bounded targeted invalidation, and residue proof.
+  Require explicit composition of $solid before the Python-only delta; reject
+  copied general SOLID policy or a forwarding adapter around an existing owner.

@@ -1,5 +1,0 @@
-id: no-local-eval-name-owner
-valid:
-  - "name: example-contract"
-invalid:
-  - "name: example-eval"

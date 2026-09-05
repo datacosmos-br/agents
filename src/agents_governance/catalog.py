@@ -34,6 +34,7 @@ _TAG_NAMESPACES = (
             "activation",
             "detect",
             "domain",
+            "extends",
             "framework",
             "lens",
             "mode",
@@ -127,6 +128,7 @@ class SkillRecord:
     activation: str | None
     subjects: tuple[str, ...]
     detectors: tuple[str, ...]
+    parents: tuple[str, ...]
 
 
 class Catalog:
@@ -136,6 +138,7 @@ class Catalog:
         self.root = root.resolve(strict=True)
         self._policy = self._load_policy(self.root / "config" / "skills.json")
         self._records = self._discover()
+        self._validate_hierarchy()
         self._validate_tree()
         for record in self._records:
             resolve_approval_tags(self.root, record.tags, record.directory / "SKILL.md")
@@ -367,6 +370,13 @@ class Catalog:
         route_tags = tuple(tag for tag in tags if tag.startswith("route:"))
         activation_tags = tuple(tag for tag in tags if tag.startswith("activation:"))
         detectors = tuple(tag for tag in tags if tag.startswith("detect:"))
+        parents = tuple(
+            tag.split(":", 1)[1] for tag in tags if tag.startswith("extends:")
+        )
+        if any(_NAME.fullmatch(parent) is None for parent in parents):
+            raise ValueError(f"{skill_file}: invalid extends:* skill name")
+        if name in parents:
+            raise ValueError(f"{skill_file}: a skill cannot extend itself")
         subjects = tuple(
             tag.split(":", 1)[1] for tag in tags if tag.startswith(f"{category.value}:")
         )
@@ -417,6 +427,7 @@ class Catalog:
             activation,
             subjects,
             detectors,
+            parents,
         )
 
     def _discover(self) -> tuple[SkillRecord, ...]:
@@ -449,6 +460,55 @@ class Catalog:
             names.add(record.name)
             records.append(record)
         return tuple(sorted(records, key=lambda record: record.name))
+
+    def _validate_hierarchy(self) -> None:
+        """Validate the explicit general-to-specialized skill dependency DAG."""
+        by_name = {record.name: record for record in self._records}
+        ranks = {
+            SkillCategory.AGENT_WIDE: 0,
+            SkillCategory.PROJECT_WIDE: 0,
+            SkillCategory.TECHNOLOGY: 1,
+            SkillCategory.FRAMEWORK: 2,
+            SkillCategory.TOOL: 2,
+            SkillCategory.DOMAIN: 2,
+        }
+        for record in self._records:
+            router = (record.directory / "SKILL.md").read_text(encoding="utf-8")
+            for parent_name in record.parents:
+                parent = by_name.get(parent_name)
+                if parent is None:
+                    raise ValueError(
+                        f"{record.directory / 'SKILL.md'}: unknown parent skill: {parent_name}"
+                    )
+                if ranks[parent.category] > ranks[record.category]:
+                    raise ValueError(
+                        f"{record.directory / 'SKILL.md'}: parent {parent_name!r} is "
+                        "more specialized than its child"
+                    )
+                if f"${parent_name}" not in router:
+                    raise ValueError(
+                        f"{record.directory / 'SKILL.md'}: parent ${parent_name} must "
+                        "be referenced explicitly"
+                    )
+
+        visited: set[str] = set()
+        active: list[str] = []
+
+        def visit(name: str) -> None:
+            if name in visited:
+                return
+            if name in active:
+                start = active.index(name)
+                cycle = " -> ".join((*active[start:], name))
+                raise ValueError(f"cyclic skill hierarchy: {cycle}")
+            active.append(name)
+            for parent_name in by_name[name].parents:
+                visit(parent_name)
+            active.pop()
+            visited.add(name)
+
+        for name in sorted(by_name):
+            visit(name)
 
     def records(self) -> tuple[SkillRecord, ...]:
         return self._records

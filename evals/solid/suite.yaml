@@ -14,3 +14,5 @@ prompt: |-
   contracts, old/new coexistence, catch/retry/fallback normalization, partial
   rewiring, or completion without causal runtime, zero-effect failure, residue
   search, and native gates.
+  Keep the SOLID decision language-neutral and route language/framework syntax
+  to an explicit child skill.

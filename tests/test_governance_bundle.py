@@ -45,6 +45,16 @@ def test_public_inventories_have_unique_physical_owners(
     assert all(path.is_file() and not path.is_symlink() for path in rules.values())
 
 
+def test_public_skill_hierarchy_composes_general_to_specialized(
+    governance_bundle: GovernanceBundle,
+) -> None:
+    skills = {skill.name: skill for skill in governance_bundle.skills}
+
+    assert skills["solid"].parents == ()
+    assert skills["python-development"].parents == ("solid",)
+    assert skills["flext-development"].parents == ("python-development",)
+
+
 def test_distribution_exposes_no_runtime_executable() -> None:
     metadata = distribution("agents-governance")
     assert not metadata.entry_points

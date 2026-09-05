@@ -1,5 +1,4 @@
 description: Inline complete-code generation, fail-closed evidence, and bounded non-triggering.
-version: '2.0'
 prompt: |-
   Grade according to the task's role. For the happy-path contract, pass only
   when the response supplies a complete implementation of both typed public

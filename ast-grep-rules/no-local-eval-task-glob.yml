@@ -1,9 +1,0 @@
-id: no-local-eval-task-glob
-language: Yaml
-severity: error
-message: Evaluation task roles belong only to config/evals.json.
-rule:
-  pattern: |-
-    tasks:
-    - tasks/*.yaml
-fix: ""

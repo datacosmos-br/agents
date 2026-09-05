@@ -1,5 +1,0 @@
-id: no-legacy-eval-schema-version
-valid:
-  - "schema_version: 1"
-invalid:
-  - "schemaVersion: '1.2'"

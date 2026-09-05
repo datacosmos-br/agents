@@ -1,9 +1,0 @@
-id: no-local-eval-inline-task-glob
-snapshots:
-  'tasks: [tasks/*.yaml]':
-    fixed: ''
-    labels:
-    - source: 'tasks: [tasks/*.yaml]'
-      style: primary
-      start: 0
-      end: 21

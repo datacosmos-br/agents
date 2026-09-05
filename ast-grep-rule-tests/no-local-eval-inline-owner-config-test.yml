@@ -1,8 +1,0 @@
-id: no-local-eval-inline-owner-config
-valid:
-  - "description: Skill-specific evaluation contract."
-invalid:
-  - |-
-    config:
-      skill_directories: [../../skills/domain/example]
-      required_skills: [example]

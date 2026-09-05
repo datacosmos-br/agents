@@ -1,6 +1,0 @@
-id: no-local-eval-default-version
-valid:
-  - "version: '2.0'"
-  - "description: Skill-specific evaluation contract."
-invalid:
-  - "version: '1.0'"

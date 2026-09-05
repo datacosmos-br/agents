@@ -9,3 +9,5 @@ generated_surfaces:
 layers: [settings, config, c, t, p, m, u, base, services, api, cli]
 integration_branch: dev
 runtime_probe: import public api and validate one order
+existing_utility_owner: u.Infra
+obsolete_adapter: codemod/discovery.py

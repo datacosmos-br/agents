@@ -1,0 +1,29 @@
+id: no-owner-owned-policy-in-suites
+language: Yaml
+severity: error
+message: >
+  Execution policy, schema identity, task manifests, metric defaults, and skill
+  ownership are single-owner facts declared by config/evals.json. A suite
+  declares only grading intent: description, prompt, tasks, and fixtures. This
+  one generalized rule replaces every per-key legacy pattern; the FLEXT law it
+  enforces is SSOT with zero residue.
+rule:
+  any:
+  - pattern: "schemaVersion: $VERSION"
+  - pattern: "schema_version: $VERSION"
+  - pattern: "version: $VERSION"
+  - pattern: "max_attempts: $ATTEMPTS"
+  - pattern: "retry_attempts: $RETRIES"
+  - pattern: "trials_per_task: $TRIALS"
+  - pattern: "timeout_seconds: $TIMEOUT"
+  - pattern: "parallel: $FLAG"
+  - pattern: "fail_fast: $FLAG"
+  - pattern: "skill_directories: $DIRS"
+  - pattern: "required_skills: $SKILLS"
+  - pattern: "tasks: $GLOBS"
+  - pattern: "metrics: $METRICS"
+  - pattern: "graders: $GRADERS"
+  - pattern: "config: $POLICY"
+fix: ""
+files:
+  - "**/suite.yaml"

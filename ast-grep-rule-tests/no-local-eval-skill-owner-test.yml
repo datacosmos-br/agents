@@ -1,5 +1,0 @@
-id: no-local-eval-skill-owner
-valid:
-  - "description: Skill-specific evaluation contract."
-invalid:
-  - "skill: example"

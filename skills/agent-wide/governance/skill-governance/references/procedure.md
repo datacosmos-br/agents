@@ -60,6 +60,23 @@ examples, schemas, or templates under the same bundle's `references/`, `scripts/
 or `assets/` directories. Never use a symlink, external repository path, user-home
 path, or generated copy as the source of truth.
 
+## Specialization hierarchy
+
+Represent specialization with `extends:<skill>` metadata and an explicit
+`$<parent>` router reference. Compose broad to narrow: agent/project-wide
+capability, technology or language, framework or library, then project-local
+policy. A child contains only the behavior introduced at its layer and delegates
+all inherited behavior to its parent. A parent contains no descendant-specific
+imports, commands, types, layout, or framework names.
+
+Resolve every parent from the same physical catalog. Reject missing parents,
+self-edges, cycles, a parent more specialized than its child, redundant copied
+rules, compatibility routers, and an implicit relationship inferred only from a
+directory or keyword. A multi-runtime skill may declare multiple real parents;
+each edge needs a current consumer and the composed contract must remain
+consistent. Update the child evaluation to prove its delta and its parent route,
+while the parent evaluation remains technology-neutral.
+
 ## Evaluation
 
 Every active skill owns one provider-neutral `suite.yaml` manifest with exactly

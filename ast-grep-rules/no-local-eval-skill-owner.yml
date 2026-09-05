@@ -1,7 +1,0 @@
-id: no-local-eval-skill-owner
-language: Yaml
-severity: error
-message: Evaluation skill identity is derived from its physical suite path.
-rule:
-  pattern: "skill: $SKILL"
-fix: ""

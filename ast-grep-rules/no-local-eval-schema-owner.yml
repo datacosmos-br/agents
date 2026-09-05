@@ -1,7 +1,0 @@
-id: no-local-eval-schema-owner
-language: Yaml
-severity: error
-message: Evaluation schema version is derived by the Waza projection owner.
-rule:
-  pattern: "schema_version: 1"
-fix: ""

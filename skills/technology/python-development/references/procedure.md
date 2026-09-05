@@ -20,6 +20,22 @@ plugin, selector, cache mode, or raw command.
 - Edit a schema/generator owner rather than its projection. Rewire consumers and
   remove dead, duplicate, fallback, compatibility, and old paths.
 
+## Python SOLID specialization
+
+Apply `$solid` before this section. Search functions, methods, classes, imports,
+re-exports, package metadata, and all call sites. If reusable behavior already
+lives on a public utility or facade, extend that callable with keyword-only
+options whose defaults preserve existing callers. Rewire callers directly and
+delete local forwarding methods, feature-specific discovery classes, aliases,
+and duplicate DFS/parsing/I/O implementations. Do not create a new method merely
+to give one caller a domain-specific name.
+
+Keep a class only when it owns cohesive state, lifecycle, substitution, or a
+protocol boundary. A stateless single-call class, a method that only delegates,
+and a module that only renames another callable are residue. Use the existing
+public import direction, precise return types, and causal exceptions; regenerate
+managed exports from their owner after deletion.
+
 For a defect, capture expected/observed behavior, smallest reproducer, versions,
 and exact exception; test falsifiable causes and correct the earliest wrong owner.
 For tests, use the declared facade and complete owned selection. Zero collected or

@@ -1,7 +1,0 @@
-id: no-local-eval-inline-task-glob
-language: Yaml
-severity: error
-message: Inline evaluation task roles belong only to config/evals.json.
-rule:
-  pattern: "tasks: [tasks/*.yaml]"
-fix: ""

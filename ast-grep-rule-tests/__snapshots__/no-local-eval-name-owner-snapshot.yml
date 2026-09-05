@@ -1,9 +1,0 @@
-id: no-local-eval-name-owner
-snapshots:
-  'name: example-eval':
-    fixed: ''
-    labels:
-    - source: 'name: example-eval'
-      style: primary
-      start: 0
-      end: 18
