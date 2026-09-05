@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import re
+import shlex
 import subprocess
 import sys
 from pathlib import Path
@@ -18,7 +19,10 @@ def run_strict(
 ) -> str:
     """Forward exact output and raise on nonzero, empty, or warning evidence."""
 
-    print(label, flush=True)
+    print(
+        f"{label}\ncwd: {cwd}\ncommand: {shlex.join(command)}",
+        flush=True,
+    )
     completed = subprocess.run(
         command,
         cwd=cwd,
@@ -31,14 +35,7 @@ def run_strict(
     sys.stdout.flush()
     sys.stderr.write(completed.stderr)
     sys.stderr.flush()
-    if completed.returncode != 0:
-        raise RuntimeError(
-            f"subprocess failed: {label}\n"
-            f"command: {command}\n"
-            f"exit: {completed.returncode}\n"
-            f"--- stdout ---\n{completed.stdout}\n"
-            f"--- stderr ---\n{completed.stderr}"
-        )
+    completed.check_returncode()
     output = f"{completed.stdout}\n{completed.stderr}"
     if not output.strip():
         raise RuntimeError(f"subprocess produced no evidence: {label}")

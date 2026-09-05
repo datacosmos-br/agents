@@ -51,8 +51,15 @@ def _verify(repository: Path, projection: Path) -> None:
         environment,
     )
     _run(
-        (*_WAZA, "tokens", "check", "./skills", "--strict", "--no-update-check"),
-        projection,
+        (
+            *_WAZA,
+            "tokens",
+            "check",
+            str(projection / "skills"),
+            "--strict",
+            "--no-update-check",
+        ),
+        repository,
         "projected skill token budgets",
     )
     for surface in (repository / "rules", repository / "commands"):
@@ -87,7 +94,7 @@ def _verify(repository: Path, projection: Path) -> None:
                 "--format",
                 "human",
             ),
-            projection,
+            repository,
             f"spec {name}",
         )
         verified += 1
