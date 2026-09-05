@@ -68,6 +68,9 @@ addopts = "-p no:cacheprovider --strict-config --strict-markers"
 testpaths = ["tests"]
 tmp_path_retention_policy = "none"
 
+[tool.coverage.run]
+core = "ctrace"
+
 [tool.pyright]
 include = ["src", "tests", "tools"]
 venvPath = "."
