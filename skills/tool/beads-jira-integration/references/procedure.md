@@ -77,7 +77,8 @@ credential handling.
 ## Verification
 
 1. `scripts/jira/` contains only `link_epic.py`.
-2. No `__pycache__`, `.csv`, `.sh`, or legacy scripts remain.
+2. No Git-visible `.csv`, `.sh`, or legacy scripts remain; repository-ignored
+   caches are outside the inventory.
 3. `git status --short` shows only the expected FLEXT artifacts.
 4. `bd jira status` confirms all features have `external_ref`.
 

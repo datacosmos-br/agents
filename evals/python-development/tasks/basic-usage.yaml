@@ -3,9 +3,9 @@ name: Diagnose shared mutable state
 description: Exercise Python package development and toolchain detection through a typed defect repair.
 tags: [python, development, typing, testing, debugging, packaging, happy-path]
 inputs:
-  prompt: Compose $solid then $python-development while reviewing sample.py and pyproject.toml as a detected Python package. Debug the cross-call defect, provide the smallest material typed owner correction that preserves existing callers and the package contract, reject a forwarding adapter or parallel helper, and name the configured test-owner regression plus raw first failure, zero effects, residue search, and runtime proof without inventing Make, Testmon, retry, or fallback.
+  prompt: Compose $solid then $python-development while reviewing sample.py and pyproject.toml as a detected Python package. Debug the cross-call defect, provide the smallest material typed owner correction that preserves existing callers and the package contract, reject a forwarding adapter or parallel helper, keep bytecode enabled, and derive ignored artifacts from the repository Git ignore contract rather than PYTHONDONTWRITEBYTECODE, python -B, cache deletion, or copied lists. Name the configured test-owner regression plus raw first failure, zero effects, residue search, and runtime proof without inventing Make, Testmon, retry, or fallback.
   files:
   - path: sample.py
   - path: pyproject.toml
 expected:
-  output_contains: [SOLID, Python, mutable, existing callers, adapter, regression, None, zero effects]
+  output_contains: [SOLID, Python, mutable, existing callers, adapter, bytecode, gitignore, regression, None, zero effects]

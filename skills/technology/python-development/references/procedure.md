@@ -9,6 +9,12 @@ plugin, selector, cache mode, or raw command.
 
 ## Owner implementation
 
+- Keep Python bytecode caching enabled. Never set `PYTHONDONTWRITEBYTECODE`, use
+  `python -B`, or remove `__pycache__` as part of ordinary setup, fix, format,
+  check, test, build, or runtime flows. Declare disposable bytecode and tool
+  caches once in the repository `.gitignore`, then make every discovery,
+  cleanliness, duplication, packaging, and structural scan consume Git's
+  standard ignore semantics instead of copying cache-name lists.
 - Parse external input once into project-owned types; avoid `Any`, unsafe casts,
   ignores, and test-only values.
 - Keep mutable state ownership explicit, functions cohesive, imports free of

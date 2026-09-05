@@ -10,3 +10,5 @@ prompt: |-
   zero-effect, bounded targeted invalidation, and residue proof.
   Require explicit composition of $solid before the Python-only delta; reject
   copied general SOLID policy or a forwarding adapter around an existing owner.
+  Reject PYTHONDONTWRITEBYTECODE, python -B, ordinary-flow cache deletion, and
+  copied artifact lists; require enabled bytecode and Git-ignore-owned discovery.

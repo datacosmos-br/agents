@@ -11,6 +11,11 @@ rewire every current consumer; do not create a named one-off component. Remove
 the same pre-existing in-scope offender in the cutover. YAGNI forbids abstractions
 without a real current consumer.
 
+Repository artifact visibility has one owner: its `.gitignore`. Extend the
+existing Git-aware file-inventory facade and rewire scanners to it; never copy
+cache or build-artifact name lists into commands, services, gates, agents, or
+tool-specific configuration.
+
 A config placeholder such as `${AI_HUB}` has exactly one expander: the typed
 loader that owns its schema. No other code re-expands, re-substitutes, or
 hardcodes that placeholder's resolved value. A second expander — for example a

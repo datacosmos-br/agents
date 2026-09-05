@@ -19,6 +19,10 @@ apply flag, truthy alias, dry-run inversion, or hidden mode. A distinct
 operation receives a distinct public root verb; a missing verb is repaired at
 the Make/codegen owner before work continues.
 
+Every command inventory honors the repository `.gitignore` through the shared
+Git-aware owner. It does not disable language caches, delete ignored caches in
+ordinary flows, bypass standard ignores, or maintain a parallel artifact list.
+
 Before a non-trivial refactor, the declared CRG verb resolves symbols,
 relationships, consumers, and blast radius from its current index, then the LSP
 verb confirms language-owned definitions and references. Repeated structural
