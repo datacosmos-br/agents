@@ -1,0 +1,12 @@
+description: Point-in-time ML contracts, baselines, artifacts, rollout, and monitoring.
+prompt: |-
+  Grade the mle-workflow response. Pass only when it derives the prediction
+  decision, label timing, entity grain, temporal split, guardrails, and
+  existing project owners from the fixture; confirms the future outcome was
+  rejected before training; compares the observed candidate with the simple
+  baseline using slice/calibration/latency evidence; and reports only the
+  supplied safe artifact, train-serve runtime, monitoring, and rollback
+  proof. Reject aggregate accuracy alone, unsafe loading, keyring/profiles,
+  retries, alternate model/provider/stack fallback, invented evidence, or
+  partial deployment. Fail-closed must stop at the first future feature with
+  zero training and deployment effects.

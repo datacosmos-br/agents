@@ -16,7 +16,7 @@ bundle = GovernanceBundle.load()
 ```
 
 The returned frozen snapshot exposes `root`, `schema_version`,
-`distribution_version`, `config`, `skills`, `skill_metadata`, `commands`,
+`distribution_version`, `config`, `eval_policy`, `skills`, `skill_metadata`, `commands`,
 `agents`, `rules`, and `law`. Loading is read-only and fails on the first
 catalog, evaluation-resource, approval, ownership, metadata, profile, command,
 rule, or strict-prelude defect.
@@ -30,18 +30,20 @@ security runner, compatibility alias, or second loading path in this package.
 ```text
 make help
 make setup APPLY=Y
-make audit
+make audit APPLY=Y
 make check APPLY=Y
 make runtime APPLY=Y
-make waza
-make static
-make conform
+make waza APPLY=Y
+make static APPLY=Y
+make conform APPLY=Y
 make fmt APPLY=Y
 make fix APPLY=Y
-make shell
-make duplication
+make mod-check APPLY=Y
+make mod APPLY=Y
+make shell APPLY=Y
+make duplication APPLY=Y
 make build APPLY=Y
-make validate-wheel APPLY=Y
+make validate-artifacts APPLY=Y
 make test APPLY=Y
 make test-full APPLY=Y
 make ci APPLY=Y
@@ -49,11 +51,11 @@ make ci APPLY=Y
 
 `make test` and the declared full form both use the same testmon cache; the full
 form uses testmon no-selection rather than bypassing cache collection. CI invokes
-the same Make owners. The Waza gate validates only local skill quality, semantic
-suite structure, and token limits; model execution belongs to a selected AI Hub
-runtime and is not claimed by this package.
+the same Make owners. The Waza gate proves the projected suite schema, every
+skill/evaluation reference, the exact spec threshold, and token ceilings; model
+execution belongs to a selected AI Hub runtime and is not claimed by this package.
 
-Release wheels contain every resource required by `GovernanceBundle.load()`:
+Release sdists and wheels contain every resource required by `GovernanceBundle.load()`:
 configuration, skills, semantic skill evals, rules, commands, agents, the strict
-prelude owner, and documents referenced by the governance map. A wheel is valid
-without a source checkout and performs no writes when loaded.
+prelude owner, and documents referenced by the governance map. Each artifact is
+validated without a source checkout and performs no writes when loaded.

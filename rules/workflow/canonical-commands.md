@@ -1,7 +1,7 @@
 ---
-description: Use selector-free root Make verbs as the only operational surface
+description: Use root Make, structural codemods, CRG, and LSP as the operational surface
 metadata:
-  aihub.tags: '["decision:ADR-0008","effective:2026-08-28","route:both"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-09-05","route:both"]'
 ---
 
 # Use selector-free root Make verbs
@@ -18,6 +18,15 @@ other mutating verb uses that same acknowledgement. Do not introduce a second
 apply flag, truthy alias, dry-run inversion, or hidden mode. A distinct
 operation receives a distinct public root verb; a missing verb is repaired at
 the Make/codegen owner before work continues.
+
+Before a non-trivial refactor, the declared CRG verb resolves symbols,
+relationships, consumers, and blast radius from its current index, then the LSP
+verb confirms language-owned definitions and references. Repeated structural
+wiring changes execute through `make mod APPLY=Y` and tested ast-grep rules;
+manual file-by-file rewiring is forbidden. A missing or stale index, unavailable
+LSP, absent `mod` verb, failed codemod test, unexpected match cardinality, or
+non-idempotent rewrite is RED and is corrected at its toolchain owner without a
+textual-search or manual-edit fallback.
 
 The public incremental test verb always activates pytest-testmon and its shared
 external persistent database. The public full-test verb first invokes that

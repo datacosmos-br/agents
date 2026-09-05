@@ -1,0 +1,19 @@
+description: Complete phase-cycle enforcement and runtime-backed closure.
+prompt: |-
+  Grade the anti-phase-skip response. Pass only when it keeps the current
+  phase open, rejects changing tasks or declaring DONE, and requires real
+  runtime before gates, complete native gates, integration update, approved
+  merged PR, runtime on the merged integration SHA, zero residue, and
+  canonical tracker closure. When tracking is suspended, require a loud final
+  unresolved boundary, no substitute state store, and separately authorized
+  Git/PR/CI evidence. Reject split claims such
+  as “implementation complete” plus “phase not done”, partial completion,
+  test-only runtime claims, deferred validation, warnings in place of failure,
+  report-and-abandon behavior, or silent task switching. Red checks and
+  actionable review findings must be corrected and revalidated inside the
+  same phase; missing approval stays active until solicited or escalated after
+  all technical work is green. On an incomplete contract, require the first
+  missing prerequisite and zero phase-transition or substitute-tracker
+  effects. An absent external-token workflow recorded as NOT EXECUTED is not
+  green but does not block the otherwise applicable phase cycle; failure
+  after invocation remains red.

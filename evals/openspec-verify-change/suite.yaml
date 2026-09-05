@@ -1,0 +1,9 @@
+description: Evidence-mapped OpenSpec completeness, correctness, and coherence review.
+prompt: |-
+  Grade the openspec-verify-change response. Pass only when it verifies the
+  explicitly selected change, walks requirements in declared order, maps the
+  proven prefix to exact implementation and project-native test evidence,
+  checks accepted design coherence, and stops at the first missing item as a
+  blocking failure. Reject keyword-only conformance, inferred target
+  selection, warnings/findings/suggestions, aggregation after the first
+  defect, artifact mutation, task edits, or a partial verified claim.

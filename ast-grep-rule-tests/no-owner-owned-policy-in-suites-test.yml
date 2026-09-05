@@ -1,0 +1,19 @@
+id: no-owner-owned-policy-in-suites
+valid:
+  - "description: Project documentation conventions.\nprompt: |-\n  Grade the response."
+invalid:
+  - "schema_version: 1"
+  - "schemaVersion: 2"
+  - "version: '1.0'"
+  - "max_attempts: 3"
+  - "retry_attempts: 0"
+  - "trials_per_task: 1"
+  - "timeout_seconds: 300"
+  - "parallel: false"
+  - "fail_fast: true"
+  - "skill_directories:\n- skills"
+  - "required_skills:\n- my-skill"
+  - "tasks:\n- tasks/*.yaml"
+  - "metrics:\n- name: behavior_quality\n  weight: 1.0\n  threshold: 1.0"
+  - "graders:\n- type: prompt\n  name: grader\n  config:\n    prompt: grade it"
+  - "config:\n  skill_directories:\n  - skills\n  required_skills:\n  - my-skill"

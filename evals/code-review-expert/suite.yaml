@@ -1,0 +1,8 @@
+description: Evidence-backed severity review of current changes.
+prompt: |-
+  Grade the code-review-expert response. Pass only when it reviews the supplied patch without editing, reports
+  file and added-line evidence, assigns defensible severity, explains
+  exploitability and impact for SQL injection and missing ownership checks,
+  and distinguishes the false-success error path. Reject style-only commentary,
+  warnings, optional suggestions, deferred cleanup, approval without complete
+  preflight, or implementation during review.

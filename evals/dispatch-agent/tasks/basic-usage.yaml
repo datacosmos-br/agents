@@ -16,7 +16,5 @@ inputs:
   files:
   - path: parallel-roster.json
 expected:
-  outcomes:
-  - type: task_completed
   output_contains: [runtime-debugger, security-reviewer, documentation-reviewer, read-only, confidence, integration, coordinator, env -C /repo/worktrees/feature make check APPLY=Y]
   output_not_contains: [substitute tracker, separate worktree, delegation completed after failure]

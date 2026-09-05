@@ -1,0 +1,10 @@
+project: event-router
+runtime_owner:
+  requires_python: '>=3.13,<3.14'
+tooling:
+  ruff_target: py310
+  mypy_python_version: '3.10'
+source_residue:
+  - typing_extensions.TypeAlias
+  - from __future__ import annotations
+required_probe: import the built wheel under CPython 3.13

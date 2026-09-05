@@ -1,0 +1,9 @@
+fork: third_party_fork/json-parser
+upstream:
+  repository: example/json-parser
+  base_tag: v6.2.1
+  base_commit: 4f65b8d
+bug: escaped surrogate pairs are truncated in streaming mode
+upstream_test_command: make test
+local_delta_files: [src/stream.c, tests/surrogate_pairs.c]
+release_artifact: json-parser-6.2.1+fork.1.tar.gz

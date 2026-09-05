@@ -1,6 +1,7 @@
-# Waza quality configuration for the provider-neutral governance bundle.
-# config/skills.json owns semantic class budgets; Waza independently validates
-# local skill/eval quality and file ceilings. Model execution belongs to AI Hub.
+# Waza spec and token configuration for the provider-neutral governance bundle.
+# config/skills.json owns semantic class budgets; Waza independently proves the
+# projected schema, references, threshold, and file ceilings. Model execution
+# belongs to AI Hub.
 
 tokens:
   warningThreshold: 450
@@ -16,12 +17,17 @@ tokens:
       "docs/prompts/*.md": 10000
       "docs/architecture/*.md": 10000
       "skills/agent-wide/personal/frontend-slides/STYLE_PRESETS.md": 3000
-      # Per-class SKILL.md budgets are derived by GovernanceBundle from local tags;
-      # config/skills.json owns numeric ceilings only. Waza remains the
-      # independent 5k/15k file-ceiling gate.
+      # The Waza projection derives exact per-SKILL.md overrides from usage tags;
+      # config/skills.json remains the sole owner of those numeric ceilings.
       # AGENTS.md intentionally uses the default *.md limit (2000 tokens).
 
 paths:
   skills: skills
-  rules: rules
-  commands: commands
+  evals: evals
+
+# Development-only schema values for Waza's offline spec validator. The root
+# gate performs no authentication, model listing, or model execution.
+# GovernanceBundle and the wheel never include this file.
+defaults:
+  engine: copilot-sdk
+  model: gpt-5.4

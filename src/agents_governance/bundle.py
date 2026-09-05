@@ -18,7 +18,7 @@ from .law_surface import LawSurface
 from .provenance import version as distribution_version
 from .resources import resource_root
 from .rules import RuleSpec, audit_rule_specs
-from .skill_evals import audit_skill_evals
+from .skill_evals import EvalPolicy, audit_skill_evals
 from .skill_metadata import SkillMetadata
 from .skill_metadata import validate as validate_skill_metadata
 
@@ -33,6 +33,7 @@ class GovernanceBundle:
     schema_version: int
     distribution_version: str
     config: GovernanceConfig
+    eval_policy: EvalPolicy
     skills: tuple[SkillRecord, ...]
     skill_metadata: tuple[SkillMetadata, ...]
     commands: tuple[CommandSpec, ...]
@@ -47,7 +48,7 @@ class GovernanceBundle:
         source = (resource_root() if root is None else root).resolve(strict=True)
         catalog = Catalog(source)
         skills = catalog.records()
-        audit_skill_evals(source, skills)
+        eval_policy = audit_skill_evals(source, skills)
         commands = audit_command_specs(source, (skill.name for skill in skills))
         agents = audit_agent_profiles(source)
         rules = audit_rule_specs(source)
@@ -61,6 +62,7 @@ class GovernanceBundle:
             BUNDLE_SCHEMA_VERSION,
             distribution_version(),
             config,
+            eval_policy,
             skills,
             metadata,
             commands,

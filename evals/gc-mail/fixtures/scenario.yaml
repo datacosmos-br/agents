@@ -1,0 +1,9 @@
+sender: billing/reviewer
+recipient: billing/worker-2
+thread: invoice-cancellation-review
+inbox:
+  unread: 1
+  message_id: msg-184
+  subject: Clarify failure receipt
+linked_bead: billing-72
+requested_action: reply with the exact red gate evidence

@@ -1,11 +1,10 @@
 id: gc-mail-negative-001
-name: Should not trigger gc-mail
-description: Do not force gc-mail onto unrelated work.
+name: Draft a customer support email
+description: Keep ordinary external correspondence outside bead-backed agent mail.
 tags: [gas-city, gc-mail, anti-trigger]
 inputs:
   prompt: >-
-    Write a short product announcement for a new feature. Do not use gc mail
-    or Gas City orchestration in the response; the requested output is prose,
-    not an agent workflow.
+    Draft a polite email telling a customer that their replacement keyboard
+    shipped today and will arrive within three business days.
 expected:
   output_not_contains: [gc mail, Gas City]

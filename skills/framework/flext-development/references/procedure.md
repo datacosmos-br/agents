@@ -17,6 +17,8 @@
 
 ## Preserve Clean Architecture and strict DI
 
+Apply `$python-development` and its `$solid` parent before this FLEXT delta.
+
 Domain and application import no I/O, adapters, frameworks, process state,
 global registries, or concrete services. They depend on precise `p` ports.
 Public `api.py` is the only composition root and injects concrete edges once;
@@ -42,6 +44,21 @@ Settings own external input and config owns validated derivation before the
 facade graph. Import and use their published objects directly. Never alias,
 copy, redeclare, re-derive, or reread their values in leaf modules. Type-only
 reverse references stay non-runtime and cannot mask a dependency cycle.
+
+## FLEXT SOLID specialization
+
+Reusable behavior belongs to the lowest existing public facet owner. General
+dependency parsing, graph ordering, file discovery, and semantic operations live
+on the appropriate `u` facade; a codemod, gate, service, API, or CLI consumes that
+facade directly and owns only orchestration. Improve an existing utility with
+typed keyword-only options and compatible defaults before considering another
+method. Never add a domain-named utility wrapper, pass-through `_rules` method,
+stateless discovery class, local alias, or adapter that only forwards to `u`.
+
+For a cutover, inventory all imports and generated exports, rewire consumers to
+the final facade, delete the adapter module, change the generator owner, and run
+the root generation fixed point. A generated package root is evidence to
+regenerate it, never a reason to retain the old class or edit the export by hand.
 
 ## Generate and migrate atomically
 

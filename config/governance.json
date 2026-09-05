@@ -272,6 +272,10 @@
       "rule:git/gitflow-branch-pr",
       "skill:verification-loop"
     ],
+    "skill-specialization-hierarchy": [
+      "rule:architecture/governance-artifact-composition",
+      "skill:skill-governance"
+    ],
     "small-batches": [
       "skill:verification-loop"
     ],

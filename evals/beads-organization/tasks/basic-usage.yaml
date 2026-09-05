@@ -10,6 +10,8 @@ inputs:
     adjudicated, apply priority and domain labels to the open feature and task
     items, and verify no open child has a closed parent before reporting the
     commands and exit codes.
+  files:
+  - path: scenario.yaml
 expected:
   output_contains: [bd find-duplicates, SUPERSEDED, labels, parent, exit code]
   output_not_contains: [push without gate, closed without reason]

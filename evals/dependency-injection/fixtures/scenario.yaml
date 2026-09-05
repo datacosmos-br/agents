@@ -1,0 +1,8 @@
+module: scheduler/jobs.py
+composition_root: worker.py
+current_source: Scheduler reads datetime.now from module scope
+consumer: ExpirationService
+required_port:
+  name: Clock
+  operation: now returns an aware datetime
+runtime_case: an expired job is rejected at the supplied instant

@@ -26,7 +26,7 @@ def source_root() -> Path:
 
     A release wheel never reaches this path because :func:`resources.resource_root`
     returns the bundled ``_data`` directory first.  This function is only the
-    fallback for editable installs, where ``direct_url.json`` must record a
+    explicit editable-install path, where ``direct_url.json`` must record a
     ``file://`` source with ``dir_info.editable = true``.
     """
 

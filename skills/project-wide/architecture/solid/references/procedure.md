@@ -37,6 +37,21 @@ evidence blocks redesign.
 5. Recheck `yagni`, `ssot`, and all five decisions; apply `simplify` to the final
    graph.
 
+## Promote reused behavior; exterminate adapters
+
+Inventory the behavior owner, every caller, alternate implementation, adapter,
+fallback, test, and document. When multiple current modules need the same
+behavior, improve the lowest existing general owner. Preserve its public calls;
+add optional inputs with behavior-preserving defaults when the variation is real.
+Do not add a parallel helper, feature-named wrapper, discovery class, forwarding
+method, or one-call adapter for behavior the owner already expresses.
+
+Rewire every caller directly to the generalized contract, then delete the old
+adapter and its exports, fixtures, docs, and configuration in the same change.
+Keep a separate adapter only at a real external boundary whose protocol,
+lifecycle, errors, or effects differ materially. File or method count alone does
+not justify a boundary.
+
 Run the real public runtime and one contract suite across every implementation,
 including the first causal error and zero-effect failure. Then run the declared
 native gates and search for superseded construction or duplicate owners. Never

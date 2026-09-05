@@ -25,6 +25,13 @@ Reference the selected owner instead of copying its contract into adjacent
 artifacts. A mixed source is split by responsibility; its historical filename,
 type, wording, or directory does not survive as an alias.
 
+Skill specialization is a dependency DAG, never copied prose. Universal and
+project-wide behavior remains in its general owner; technology/language skills
+declare only their delta; framework/library skills declare only the next delta;
+project-local skills declare only the final local contract. Every child records
+`extends:<parent>` and references `$<parent>` explicitly. Missing parents,
+cycles, reverse specialization, or duplicated ancestor rules are invalid.
+
 External and historical artifacts are evidence only. Before adopting behavior,
 prove its current requirement and consumer, provenance and license, executable
 or generated resources, activation boundary, effects, failure contract, and

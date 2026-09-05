@@ -1,0 +1,13 @@
+integration:
+  state: configured
+  jira_project: BILL
+preview:
+  create:
+    - bead: billing-72
+      summary: Add invoice cancellation
+      parent_bead: billing-10
+  update: []
+bead_after_create:
+  id: billing-72
+  external_ref: absent
+jira_parent_link: absent
