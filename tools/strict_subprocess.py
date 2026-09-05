@@ -31,7 +31,14 @@ def run_strict(
     sys.stdout.flush()
     sys.stderr.write(completed.stderr)
     sys.stderr.flush()
-    completed.check_returncode()
+    if completed.returncode != 0:
+        raise RuntimeError(
+            f"subprocess failed: {label}\n"
+            f"command: {command}\n"
+            f"exit: {completed.returncode}\n"
+            f"--- stdout ---\n{completed.stdout}\n"
+            f"--- stderr ---\n{completed.stderr}"
+        )
     output = f"{completed.stdout}\n{completed.stderr}"
     if not output.strip():
         raise RuntimeError(f"subprocess produced no evidence: {label}")
