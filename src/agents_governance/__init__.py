@@ -8,6 +8,12 @@ from .governance_config import GovernanceConfig
 from .law_surface import LawSurface
 from .provenance import version as _distribution_version
 from .rules import RuleActivation, RuleDistribution, RuleSpec
+from .skill_evals import (
+    EvalBehaviorGraderPolicy,
+    EvalExecutionPolicy,
+    EvalMetricPolicy,
+    EvalPolicy,
+)
 from .skill_metadata import InterfaceMetadata, SkillMetadata, ToolDependency
 
 __version__ = _distribution_version()
@@ -19,6 +25,10 @@ __all__ = (
     "CommandRisk",
     "CommandRoute",
     "CommandSpec",
+    "EvalBehaviorGraderPolicy",
+    "EvalExecutionPolicy",
+    "EvalMetricPolicy",
+    "EvalPolicy",
     "GovernanceBundle",
     "GovernanceConfig",
     "InterfaceMetadata",

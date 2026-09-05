@@ -6,6 +6,7 @@ from importlib.metadata import distribution
 
 from agents_governance import (
     BUNDLE_SCHEMA_VERSION,
+    EvalPolicy,
     GovernanceBundle,
     __version__,
 )
@@ -16,6 +17,7 @@ def test_public_bundle_is_complete_and_versioned(
 ) -> None:
     assert governance_bundle.schema_version == BUNDLE_SCHEMA_VERSION
     assert governance_bundle.distribution_version == __version__
+    assert isinstance(governance_bundle.eval_policy, EvalPolicy)
     assert governance_bundle.root.is_dir()
     assert governance_bundle.skills
     assert governance_bundle.commands
