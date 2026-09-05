@@ -22,7 +22,7 @@ override export UV_PROJECT_ENVIRONMENT := $(CURDIR)/.venv
 override export VIRTUAL_ENV := $(CURDIR)/.venv
 
 .DEFAULT_GOAL := help
-.PHONY: help setup docs audit check runtime waza static conform fmt fix shell duplication build test test-full ci validate-wheel
+.PHONY: help setup docs audit check runtime waza static conform fmt fix shell duplication build test test-full ci validate-wheel publish
 .DELETE_ON_ERROR:
 
 define BANNER
@@ -72,19 +72,12 @@ audit: ## print the complete public semantic inventory
 	fi
 	@uv run python -c 'from agents_governance import GovernanceBundle; bundle = GovernanceBundle.load(); print(f"{len(bundle.skills)} skills, {len(bundle.commands)} commands, {len(bundle.agents)} agents, {len(bundle.rules)} rules")'
 
-waza: ## validate provider-neutral skill quality with Waza
-	$(call BANNER,waza · strict token ceilings + semantic spec coverage)
+waza: ## validate provider-neutral skill suites and Waza token ceilings
+	$(call BANNER,waza · provider-neutral suites + strict token ceilings)
+	@$(MAKE) audit
 	@$(MISE_EXEC) waza tokens check "$(CURDIR)/skills" --strict --no-update-check
 	@$(MISE_EXEC) waza tokens check "$(CURDIR)/rules" --strict --no-update-check
 	@$(MISE_EXEC) waza tokens check "$(CURDIR)/commands" --strict --no-update-check
-	@find "$(CURDIR)/skills" -type f -name SKILL.md -exec sh -eu -c '\
-		for skill_file do \
-			skill_dir="$${skill_file%/SKILL.md}"; \
-			skill_name="$${skill_dir##*/}"; \
-			eval_file="$(CURDIR)/evals/$$skill_name/eval.yaml"; \
-			test -f "$$eval_file"; \
-			$(MISE_EXEC) waza spec verify --skill "$$skill_dir" --eval "$$eval_file" --fail --threshold 1 --format human; \
-		done' sh {} +
 
 static: ## lint, formatting, and Python type analysis
 	$(call BANNER,static · ruff + pyright + mypy)
@@ -129,6 +122,7 @@ duplication: ## enforce zero strict duplication in canonical Python source
 build: ## build source and wheel artifacts; requires APPLY=Y
 	$(call REQUIRE_APPLY)
 	$(call BANNER,build · sdist + wheel)
+	@mkdir -p "$(CURDIR)/dist"
 	@find "$(CURDIR)/dist" -mindepth 1 -maxdepth 1 -type f ! -name .gitignore -delete
 	@uv build
 
@@ -162,3 +156,17 @@ ci: ## run every gate in runtime-first order; requires APPLY=Y
 	$(call REQUIRE_APPLY)
 	@$(MAKE) check APPLY=Y
 	@$(MAKE) test-full APPLY=Y
+
+## release publication
+publish: ## publish the validated tag artifacts; requires APPLY=Y
+	$(call REQUIRE_APPLY)
+	$(call BANNER,publish · immutable GitHub release)
+	@test -n "$$GITHUB_REF_NAME" || { echo 'GITHUB_REF_NAME is required' >&2; exit 2; }
+	@test -n "$$GH_TOKEN" || { echo 'GH_TOKEN is required' >&2; exit 2; }
+	@version="$$(uv run python -c 'from pathlib import Path; import tomllib; print(tomllib.loads(Path("pyproject.toml").read_text())["project"]["version"])')"; \
+		test "$$GITHUB_REF_NAME" = "v$$version" || { \
+			echo "release tag $$GITHUB_REF_NAME does not equal v$$version" >&2; exit 1; \
+		}
+	@$(MAKE) runtime APPLY=Y
+	@cd "$(CURDIR)/dist" && sha256sum ./* > SHA256SUMS
+	@gh release create "$$GITHUB_REF_NAME" --verify-tag --generate-notes "$(CURDIR)"/dist/*
