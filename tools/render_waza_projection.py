@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import os
 import shutil
 import tempfile
@@ -58,7 +59,7 @@ def _projection_config(repository: Path, destination: Path) -> tuple[str, str]:
         raise ValueError(".waza.yaml defaults must contain only engine and model")
     engine = defaults["engine"]
     model = defaults["model"]
-    if engine != "copilot-sdk":
+    if not isinstance(engine, str) or engine != "copilot-sdk":
         raise ValueError(".waza.yaml defaults.engine must select the real copilot-sdk")
     if not isinstance(model, str) or not model.strip() or model == "auto":
         raise ValueError(".waza.yaml defaults.model must name one concrete model")
@@ -125,6 +126,21 @@ def _build(repository: Path, destination: Path) -> None:
         _copy_suite(suite, evals / suite.name, engine, model)
 
 
+def _snapshot(root: Path) -> tuple[tuple[str, str], ...]:
+    entries: list[tuple[str, str]] = []
+    for path in sorted(root.rglob("*")):
+        relative = path.relative_to(root).as_posix()
+        if path.is_symlink() or not (path.is_dir() or path.is_file()):
+            raise ValueError(f"projection contains a non-physical path: {path}")
+        digest = (
+            "directory"
+            if path.is_dir()
+            else hashlib.sha256(path.read_bytes()).hexdigest()
+        )
+        entries.append((relative, digest))
+    return tuple(entries)
+
+
 def main() -> None:
     repository = Path(__file__).resolve().parents[1]
     configured = os.environ.get("WAZA_PROJECTION_ROOT")
@@ -136,18 +152,24 @@ def main() -> None:
     if target.is_symlink() or (target.exists() and not target.is_dir()):
         raise ValueError(f"Waza projection root must be a physical directory: {target}")
     target.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
-    stage = Path(tempfile.mkdtemp(prefix=".waza-stage-", dir=target.parent))
-    try:
-        _build(repository, stage)
+    with (
+        tempfile.TemporaryDirectory(
+            prefix=".waza-first-", dir=target.parent
+        ) as first_name,
+        tempfile.TemporaryDirectory(
+            prefix=".waza-second-", dir=target.parent
+        ) as second_name,
+    ):
+        first = Path(first_name)
+        second = Path(second_name)
+        _build(repository, first)
+        _build(repository, second)
+        if _snapshot(first) != _snapshot(second):
+            raise ValueError("Waza projection is not a generation fixed point")
         if target.exists():
             shutil.rmtree(target)
-        stage.replace(target)
-    except BaseException as primary:
-        try:
-            shutil.rmtree(stage)
-        except BaseException as cleanup:
-            primary.add_note(f"Waza projection cleanup failed: {cleanup!r}")
-        raise
+        shutil.copytree(first, target)
+    print("Waza projection fixed point: 2 identical generations")
 
 
 if __name__ == "__main__":
