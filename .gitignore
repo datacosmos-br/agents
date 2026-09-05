@@ -64,4 +64,4 @@ agents.bkp/
 .beads/*
 !.beads/identity.toml
 
-/.testmondata/
+/.testmondata*
