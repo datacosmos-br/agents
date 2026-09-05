@@ -2,6 +2,7 @@
 
 MISE_EXEC := mise exec --
 CACHE_HOME := $(if $(XDG_CACHE_HOME),$(XDG_CACHE_HOME),$(HOME)/.cache)
+PYRIGHT_CACHE_ROOT := $(CACHE_HOME)/agents-governance/pyright
 TEST_STATE_ROOT := $(CACHE_HOME)/agents-governance/pytest
 TESTMON_DATAFILE := $(TEST_STATE_ROOT)/.testmondata
 PYTEST_SCRATCH := $(TEST_STATE_ROOT)/scratch
@@ -19,6 +20,7 @@ OBSOLETE_LOCAL_PATHS := \
 	$(CURDIR)/tests/__pycache__
 override export TESTMON_DATAFILE := $(TESTMON_DATAFILE)
 override export PYTHONDONTWRITEBYTECODE := 1
+override export PYRIGHT_PYTHON_CACHE_DIR := $(PYRIGHT_CACHE_ROOT)
 override export WAZA_PROJECTION_ROOT := $(WAZA_PROJECTION_ROOT)
 override export UV_PROJECT_ENVIRONMENT := $(CURDIR)/.venv
 override export VIRTUAL_ENV := $(CURDIR)/.venv
@@ -35,12 +37,17 @@ define REQUIRE_APPLY
 	@test "$(APPLY)" = Y || { echo 'APPLY=Y is required for this operation' >&2; exit 2; }
 endef
 
+define REJECT_APPLY
+	@test -z "$(APPLY)" || { echo 'APPLY is not accepted for this read-only operation' >&2; exit 2; }
+endef
+
 define RUN_TESTMON
 	@install -d -m 700 "$(TEST_STATE_ROOT)" "$(PYTEST_SCRATCH)"
 	@uv run pytest --basetemp "$(PYTEST_SCRATCH)" --testmon $(1)
 endef
 
 help: ## show the complete selector-free development surface
+	$(call REJECT_APPLY)
 	@awk 'BEGIN{FS=":.*## "} /^## /{sub(/^## */,""); print ""; print} /^[a-z][a-z_-]*:.*## /{printf "  %-14s %s\n",$$1,$$2}' $(MAKEFILE_LIST)
 
 ## environment provisioning
@@ -55,17 +62,19 @@ setup: ## create the declared repository runtime environment; requires APPLY=Y
 check: ## run every applicable non-test gate; requires APPLY=Y
 	$(call REQUIRE_APPLY)
 	$(call BANNER,check · complete non-test gate composition)
-	@$(MAKE) docs
-	@$(MAKE) static
-	@$(MAKE) mod-check
-	@$(MAKE) conform
-	@$(MAKE) waza
+	@$(MAKE) docs APPLY=Y
+	@$(MAKE) static APPLY=Y
+	@$(MAKE) mod-check APPLY=Y
+	@$(MAKE) conform APPLY=Y
+	@$(MAKE) waza APPLY=Y
 	@$(MAKE) runtime APPLY=Y
 
-docs: ## validate documentation through the public bundle contract
-	@$(MAKE) audit
+docs: ## validate documentation through the public bundle contract; requires APPLY=Y
+	$(call REQUIRE_APPLY)
+	@$(MAKE) audit APPLY=Y
 
-audit: ## print the complete public semantic inventory
+audit: ## print the complete public semantic inventory; requires APPLY=Y
+	$(call REQUIRE_APPLY)
 	$(call BANNER,audit · GovernanceBundle.load)
 	@for obsolete in $(OBSOLETE_LOCAL_PATHS); do \
 		test ! -e "$$obsolete" || { echo "obsolete local cache: $$obsolete" >&2; exit 1; }; \
@@ -75,36 +84,44 @@ audit: ## print the complete public semantic inventory
 	fi
 	@uv run python -c 'from agents_governance import GovernanceBundle; bundle = GovernanceBundle.load(); print(f"{len(bundle.skills)} skills, {len(bundle.commands)} commands, {len(bundle.agents)} agents, {len(bundle.rules)} rules")'
 
-waza: ## validate provider-neutral skill suites and Waza readiness; requires APPLY=Y
+waza: ## validate provider-neutral skill suites with Waza; requires APPLY=Y
 	$(call REQUIRE_APPLY)
-	@$(MAKE) audit
-	$(call BANNER,waza · provider-neutral suites + strict readiness)
+	@$(MAKE) audit APPLY=Y
+	$(call BANNER,waza · provider-neutral suites + deterministic spec proof)
 	@test "$$($(MISE_EXEC) waza --version)" = 'waza version 0.38.7'
-	@$(MISE_EXEC) waza models --json | uv run python tools/validate_waza_runtime.py
 	@uv run python tools/render_waza_projection.py
-	@$(MISE_EXEC) waza tokens check "$(CURDIR)/skills" --strict --no-update-check
+	@env -C "$(WAZA_PROJECTION_ROOT)" $(MISE_EXEC) waza tokens check ./skills --strict --no-update-check
 	@$(MISE_EXEC) waza tokens check "$(CURDIR)/rules" --strict --no-update-check
 	@$(MISE_EXEC) waza tokens check "$(CURDIR)/commands" --strict --no-update-check
-	@expected="$$(find "$(CURDIR)/skills" -type f -name SKILL.md | wc -l)"; \
-	output="$$(cd "$(WAZA_PROJECTION_ROOT)" && $(MISE_EXEC) waza check --no-update-check 2>&1)" || { \
-		status=$$?; printf '%s\n' "$$output"; exit $$status; \
+	@expected="$$(find "$(WAZA_PROJECTION_ROOT)/evals" -mindepth 2 -maxdepth 2 -type f -name eval.yaml | wc -l)"; \
+	test "$$expected" -gt 0 || { echo 'Waza projection contains no evaluation suites' >&2; exit 1; }; \
+	verified=0; \
+	for evaluation in "$(WAZA_PROJECTION_ROOT)"/evals/*/eval.yaml; do \
+		test -f "$$evaluation" || { echo "missing projected evaluation: $$evaluation" >&2; exit 1; }; \
+		name="$$(basename "$$(dirname "$$evaluation")")"; \
+		skill="$$(find "$(WAZA_PROJECTION_ROOT)/skills" -type d -name "$$name" -print)"; \
+		test -n "$$skill" && test "$$(printf '%s\n' "$$skill" | wc -l)" -eq 1 || { \
+			echo "projected skill owner is not unique: $$name" >&2; exit 1; \
+		}; \
+		env -C "$(WAZA_PROJECTION_ROOT)" $(MISE_EXEC) waza spec verify \
+			--skill "$$skill" --eval "$$evaluation" --threshold 1 --fail --format human; \
+		verified=$$((verified + 1)); \
+	done; \
+	test "$$verified" -eq "$$expected" || { \
+		echo "Waza verified $$verified suites, expected $$expected" >&2; exit 1; \
 	}; \
-	test -n "$$output" || { echo 'Waza produced empty output' >&2; exit 1; }; \
-	printf '%s\n' "$$output"; \
-	high="$$(printf '%s\n' "$$output" | grep -c '📋 Compliance Score: High')"; \
-	ready="$$(printf '%s\n' "$$output" | grep -c '✅ Your skill is ready for submission!')"; \
-	test "$$high" -eq "$$expected" || { echo "Waza High count $$high != $$expected" >&2; exit 1; }; \
-	test "$$ready" -eq "$$expected" || { echo "Waza ready count $$ready != $$expected" >&2; exit 1; }; \
-	case "$$output" in *'⚠'*|*'❌'*) echo 'Waza reported a warning or failure' >&2; exit 1;; esac
+	printf 'Waza spec verification: %s suites\n' "$$verified"
 
-static: ## lint, formatting, and Python type analysis
+static: ## lint, formatting, and Python type analysis; requires APPLY=Y
+	$(call REQUIRE_APPLY)
 	$(call BANNER,static · ruff + pyright + mypy)
 	@uv run ruff check src tests tools
 	@uv run ruff format --check src tests tools
 	@uv run pyright src tests tools
 	@uv run mypy src tests tools
 
-conform: ## validate workflow and zero-duplication conformance
+conform: ## validate workflow and zero-duplication conformance; requires APPLY=Y
+	$(call REQUIRE_APPLY)
 	@$(MAKE) shell
 	@$(MAKE) duplication
 
@@ -129,24 +146,27 @@ fix: ## apply canonical corrections; requires APPLY=Y
 		fi; \
 	done
 
-mod-check: ## test ast-grep rules and reject structural migration residue
+mod-check: ## test ast-grep rules and reject structural migration residue; requires APPLY=Y
+	$(call REQUIRE_APPLY)
 	$(call BANNER,mod-check · ast-grep tests + strict structural scan)
-	@$(MISE_EXEC) ast-grep test --config "$(CURDIR)/sgconfig.yml" --skip-snapshot-tests
+	@$(MISE_EXEC) ast-grep test --config "$(CURDIR)/sgconfig.yml"
 	@$(MISE_EXEC) ast-grep scan --config "$(CURDIR)/sgconfig.yml" --error "$(CURDIR)/evals"
 
 mod: ## apply tested structural migrations; requires APPLY=Y
 	$(call REQUIRE_APPLY)
 	$(call BANNER,mod · ast-grep structural rewrite)
-	@$(MISE_EXEC) ast-grep test --config "$(CURDIR)/sgconfig.yml" --skip-snapshot-tests
+	@$(MISE_EXEC) ast-grep test --config "$(CURDIR)/sgconfig.yml" --update-all
 	@$(MISE_EXEC) ast-grep scan --config "$(CURDIR)/sgconfig.yml" --update-all "$(CURDIR)/evals"
-	@$(MAKE) mod-check
-	@$(MAKE) audit
+	@$(MAKE) mod-check APPLY=Y
+	@$(MAKE) audit APPLY=Y
 
-shell: ## validate shell scripts and GitHub workflows
+shell: ## validate shell scripts and GitHub workflows; requires APPLY=Y
+	$(call REQUIRE_APPLY)
 	$(call BANNER,shell · actionlint)
 	@$(MISE_EXEC) actionlint .github/workflows/*.yml
 
-duplication: ## enforce zero strict duplication in canonical Python source
+duplication: ## enforce zero strict duplication in canonical Python source; requires APPLY=Y
+	$(call REQUIRE_APPLY)
 	$(call BANNER,duplication · jscpd)
 	@$(MISE_EXEC) jscpd src tests tools --config $(CURDIR)/.jscpd.json --exit-code 1
 
