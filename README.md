@@ -43,7 +43,7 @@ make mod APPLY=Y
 make shell APPLY=Y
 make duplication APPLY=Y
 make build APPLY=Y
-make validate-wheel APPLY=Y
+make validate-artifacts APPLY=Y
 make test APPLY=Y
 make test-full APPLY=Y
 make ci APPLY=Y
@@ -51,11 +51,11 @@ make ci APPLY=Y
 
 `make test` and the declared full form both use the same testmon cache; the full
 form uses testmon no-selection rather than bypassing cache collection. CI invokes
-the same Make owners. The Waza gate validates only local skill quality, semantic
-suite structure, and token limits; model execution belongs to a selected AI Hub
-runtime and is not claimed by this package.
+the same Make owners. The Waza gate proves the projected suite schema, every
+skill/evaluation reference, the exact spec threshold, and token ceilings; model
+execution belongs to a selected AI Hub runtime and is not claimed by this package.
 
-Release wheels contain every resource required by `GovernanceBundle.load()`:
+Release sdists and wheels contain every resource required by `GovernanceBundle.load()`:
 configuration, skills, semantic skill evals, rules, commands, agents, the strict
-prelude owner, and documents referenced by the governance map. A wheel is valid
-without a source checkout and performs no writes when loaded.
+prelude owner, and documents referenced by the governance map. Each artifact is
+validated without a source checkout and performs no writes when loaded.

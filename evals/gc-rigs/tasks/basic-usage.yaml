@@ -8,5 +8,7 @@ inputs:
     current project. Preflight the city/rig context, run the primary command
     via the project's declared facade, and report exact command, cwd, exit
     code, and decisive output without bypass or fallback.
+  files:
+  - path: scenario.yaml
 expected:
   output_contains: [rigs, rig registration, bead scoping, suspend resume, gc]

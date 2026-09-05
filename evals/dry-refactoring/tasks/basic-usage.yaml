@@ -10,6 +10,8 @@ inputs:
     descriptive name, update both call sites and any other usages, re-run the
     identical baseline configuration to prove zero new clones, and run the
     project tests before reporting exact commands and exit codes.
+  files:
+  - path: scenario.yaml
 expected:
   output_contains: [jscpd, eight-line, clone, extract, shared function, call sites, re-run, zero new clones, tests, exit code]
   output_not_contains: [clone remains, without rerunning]

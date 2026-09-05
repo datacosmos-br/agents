@@ -1,0 +1,13 @@
+rig: search
+role: worker
+bead: search-118
+formula_catalog:
+  - name: indexed-migration
+    required_vars: [index_name, integration_branch]
+  - name: documentation-only
+    required_vars: [document]
+request:
+  formula: indexed-migration
+  vars:
+    index_name: products-v3
+    integration_branch: dev

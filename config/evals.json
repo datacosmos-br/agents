@@ -1,5 +1,7 @@
 {
   "version": 1,
+  "default_suite_version": "1.0",
+  "waza_schema_version": "1.2",
   "execution": {
     "trials_per_task": 1,
     "timeout_seconds": 60,
@@ -17,7 +19,7 @@
     "type": "behavior",
     "name": "bounded_execution",
     "config": {
-      "max_duration_ms": 59000
+      "max_duration_ms": 48000
     }
   },
   "tasks": {

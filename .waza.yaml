@@ -1,6 +1,7 @@
-# Waza quality configuration for the provider-neutral governance bundle.
-# config/skills.json owns semantic class budgets; Waza independently validates
-# local skill/eval quality and file ceilings. Model execution belongs to AI Hub.
+# Waza spec and token configuration for the provider-neutral governance bundle.
+# config/skills.json owns semantic class budgets; Waza independently proves the
+# projected schema, references, threshold, and file ceilings. Model execution
+# belongs to AI Hub.
 
 tokens:
   warningThreshold: 450

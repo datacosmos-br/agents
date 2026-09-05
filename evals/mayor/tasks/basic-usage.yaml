@@ -10,6 +10,8 @@ inputs:
     and then for real, discover the runnable formula through `gc formula
     catalog`, sling it onto the created convoy with explicit vars, and report
     bead IDs with the next observable checkpoint.
+  files:
+  - path: scenario.yaml
 expected:
   output_contains: [dry-run, gc formula catalog, gc sling, convoy, bead IDs, checkpoint, artifact]
   output_not_contains: [invented formula, reserved variable, approved without operator]

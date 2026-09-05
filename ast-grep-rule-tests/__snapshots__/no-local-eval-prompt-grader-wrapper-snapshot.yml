@@ -1,0 +1,43 @@
+id: no-local-eval-prompt-grader-wrapper
+snapshots:
+  ? |-
+    graders:
+    - type: prompt
+      name: example-contract
+      config:
+        prompt: Grade the result.
+  : fixed: 'prompt: Grade the result.'
+    labels:
+    - source: |-
+        graders:
+        - type: prompt
+          name: example-contract
+          config:
+            prompt: Grade the result.
+      style: primary
+      start: 0
+      end: 88
+  ? |-
+    graders:
+    - type: prompt
+      name: example-contract
+      config:
+        prompt: |-
+          Grade the complete result.
+          Reject partial evidence.
+  : fixed: |-
+      prompt: |-
+        Grade the complete result.
+        Reject partial evidence.
+    labels:
+    - source: |-
+        graders:
+        - type: prompt
+          name: example-contract
+          config:
+            prompt: |-
+              Grade the complete result.
+              Reject partial evidence.
+      style: primary
+      start: 0
+      end: 137

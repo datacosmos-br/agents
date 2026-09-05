@@ -11,6 +11,8 @@ inputs:
     generator, and the runtime dependency is flext-core. Explain the owner-correct
     change, c/t/p/m/u and typed-data boundaries, member-before-gitlink order, real
     public probe, fixed point, and native Make gates.
+  files:
+  - path: scenario.yaml
 expected:
   output_contains: [flext-infra, flext-core, c, t, p, m, u, generated, member, gitlink, fixed point, Make, runtime]
   output_not_contains: [hand-edit, fallback, compatibility alias, personal home, reverse runtime import]

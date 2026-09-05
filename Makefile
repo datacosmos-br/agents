@@ -5,7 +5,7 @@ CACHE_HOME := $(if $(XDG_CACHE_HOME),$(XDG_CACHE_HOME),$(HOME)/.cache)
 PYRIGHT_CACHE_ROOT := $(CACHE_HOME)/agents-governance/pyright
 TEST_STATE_ROOT := $(CACHE_HOME)/agents-governance/pytest
 TESTMON_DATAFILE := $(TEST_STATE_ROOT)/.testmondata
-WHEEL_SMOKE := $(CACHE_HOME)/agents-governance/wheel-smoke
+ARTIFACT_STATE_ROOT := $(CACHE_HOME)/agents-governance/artifacts
 WAZA_PROJECTION_ROOT := $(CACHE_HOME)/agents-governance/waza-projection
 OBSOLETE_LOCAL_PATHS := \
 	$(CURDIR)/.testmondata \
@@ -18,6 +18,7 @@ OBSOLETE_LOCAL_PATHS := \
 	$(CURDIR)/src/agents_governance/__pycache__ \
 	$(CURDIR)/tests/__pycache__
 override export TESTMON_DATAFILE := $(TESTMON_DATAFILE)
+override export ARTIFACT_STATE_ROOT := $(ARTIFACT_STATE_ROOT)
 override export PYTHONDONTWRITEBYTECODE := 1
 override export PYRIGHT_PYTHON_CACHE_DIR := $(PYRIGHT_CACHE_ROOT)
 override export WAZA_PROJECTION_ROOT := $(WAZA_PROJECTION_ROOT)
@@ -25,7 +26,7 @@ override export UV_PROJECT_ENVIRONMENT := $(CURDIR)/.venv
 override export VIRTUAL_ENV := $(CURDIR)/.venv
 
 .DEFAULT_GOAL := help
-.PHONY: help setup docs audit check runtime waza static conform fmt fix mod mod-check shell duplication build test test-full ci validate-wheel publish
+.PHONY: help setup docs audit check runtime waza static conform fmt fix mod mod-check shell duplication build test test-full ci validate-artifacts publish
 .DELETE_ON_ERROR:
 
 define BANNER
@@ -86,29 +87,7 @@ waza: ## validate provider-neutral skill suites with Waza; requires APPLY=Y
 	$(call REQUIRE_APPLY)
 	@$(MAKE) audit APPLY=Y
 	$(call BANNER,waza · provider-neutral suites + deterministic spec proof)
-	@test "$$($(MISE_EXEC) waza --version)" = 'waza version 0.38.7'
-	@uv run python tools/render_waza_projection.py
-	@env -C "$(WAZA_PROJECTION_ROOT)" $(MISE_EXEC) waza tokens check ./skills --strict --no-update-check
-	@$(MISE_EXEC) waza tokens check "$(CURDIR)/rules" --strict --no-update-check
-	@$(MISE_EXEC) waza tokens check "$(CURDIR)/commands" --strict --no-update-check
-	@expected="$$(find "$(WAZA_PROJECTION_ROOT)/evals" -mindepth 2 -maxdepth 2 -type f -name eval.yaml | wc -l)"; \
-	test "$$expected" -gt 0 || { echo 'Waza projection contains no evaluation suites' >&2; exit 1; }; \
-	verified=0; \
-	for evaluation in "$(WAZA_PROJECTION_ROOT)"/evals/*/eval.yaml; do \
-		test -f "$$evaluation" || { echo "missing projected evaluation: $$evaluation" >&2; exit 1; }; \
-		name="$$(basename "$$(dirname "$$evaluation")")"; \
-		skill="$$(find "$(WAZA_PROJECTION_ROOT)/skills" -type d -name "$$name" -print)"; \
-		test -n "$$skill" && test "$$(printf '%s\n' "$$skill" | wc -l)" -eq 1 || { \
-			echo "projected skill owner is not unique: $$name" >&2; exit 1; \
-		}; \
-		env -C "$(WAZA_PROJECTION_ROOT)" $(MISE_EXEC) waza spec verify \
-			--skill "$$skill" --eval "$$evaluation" --threshold 1 --fail --format human; \
-		verified=$$((verified + 1)); \
-	done; \
-	test "$$verified" -eq "$$expected" || { \
-		echo "Waza verified $$verified suites, expected $$expected" >&2; exit 1; \
-	}; \
-	printf 'Waza spec verification: %s suites\n' "$$verified"
+	@uv run python tools/waza_gate.py
 
 static: ## lint, formatting, and Python type analysis; requires APPLY=Y
 	$(call REQUIRE_APPLY)
@@ -122,6 +101,7 @@ conform: ## validate workflow and zero-duplication conformance; requires APPLY=Y
 	$(call REQUIRE_APPLY)
 	@$(MAKE) shell
 	@$(MAKE) duplication
+	@git diff --check
 
 fmt: ## apply canonical Python formatting; requires APPLY=Y
 	$(call REQUIRE_APPLY)
@@ -164,31 +144,25 @@ shell: ## validate shell scripts and GitHub workflows; requires APPLY=Y
 	$(call BANNER,shell · actionlint)
 	@$(MISE_EXEC) actionlint .github/workflows/*.yml
 
-duplication: ## enforce zero strict duplication in canonical Python source; requires APPLY=Y
+duplication: ## enforce zero strict duplication in canonical source and evaluations; requires APPLY=Y
 	$(call REQUIRE_APPLY)
 	$(call BANNER,duplication · jscpd)
-	@$(MISE_EXEC) jscpd src tests tools --config $(CURDIR)/.jscpd.json --exit-code 1
+	@$(MISE_EXEC) jscpd src tests tools evals --config $(CURDIR)/.jscpd.json --exit-code 1
 
 build: ## build source and wheel artifacts; requires APPLY=Y
 	$(call REQUIRE_APPLY)
 	$(call BANNER,build · sdist + wheel)
-	@mkdir -p "$(CURDIR)/dist"
-	@find "$(CURDIR)/dist" -mindepth 1 -maxdepth 1 -type f ! -name .gitignore -delete
-	@uv build
+	@ARTIFACT_MODE=build uv run python tools/artifact_gate.py
 
-validate-wheel: ## validate the current built wheel in isolation; requires APPLY=Y
+validate-artifacts: ## validate the exact sdist and wheel in isolation; requires APPLY=Y
 	$(call REQUIRE_APPLY)
-	$(call BANNER,validate-wheel · installed public bundle)
-	@wheel="$$(uv run python -c 'from pathlib import Path; import tomllib; project = tomllib.loads(Path("pyproject.toml").read_text())["project"]; print(Path("dist") / (project["name"].replace("-", "_") + "-" + project["version"] + "-py3-none-any.whl"))')"; \
-		test -f "$$wheel"; \
-		uv venv --clear "$(WHEEL_SMOKE)"; \
-		uv pip install --python "$(WHEEL_SMOKE)/bin/python" "$$wheel"; \
-		"$(WHEEL_SMOKE)/bin/python" -c 'from agents_governance import GovernanceBundle; bundle = GovernanceBundle.load(); print(bundle.distribution_version, bundle.schema_version)'
+	$(call BANNER,validate-artifacts · installed public bundle from sdist + wheel)
+	@ARTIFACT_MODE=validate uv run python tools/artifact_gate.py
 
 runtime: ## build, install, and load the public wheel; requires APPLY=Y
 	$(call REQUIRE_APPLY)
-	@$(MAKE) build APPLY=Y
-	@$(MAKE) validate-wheel APPLY=Y
+	$(call BANNER,runtime · atomic build + isolated sdist/wheel proof)
+	@ARTIFACT_MODE=runtime uv run python tools/artifact_gate.py
 
 test: ## run affected tests through the shared testmon cache; requires APPLY=Y
 	$(call REQUIRE_APPLY)
@@ -211,12 +185,4 @@ ci: ## run every gate in runtime-first order; requires APPLY=Y
 publish: ## publish the validated tag artifacts; requires APPLY=Y
 	$(call REQUIRE_APPLY)
 	$(call BANNER,publish · immutable GitHub release)
-	@test -n "$$GITHUB_REF_NAME" || { echo 'GITHUB_REF_NAME is required' >&2; exit 2; }
-	@test -n "$$GH_TOKEN" || { echo 'GH_TOKEN is required' >&2; exit 2; }
-	@version="$$(uv run python -c 'from pathlib import Path; import tomllib; print(tomllib.loads(Path("pyproject.toml").read_text())["project"]["version"])')"; \
-		test "$$GITHUB_REF_NAME" = "v$$version" || { \
-			echo "release tag $$GITHUB_REF_NAME does not equal v$$version" >&2; exit 1; \
-		}
-	@$(MAKE) runtime APPLY=Y
-	@cd "$(CURDIR)/dist" && sha256sum ./* > SHA256SUMS
-	@gh release create "$$GITHUB_REF_NAME" --verify-tag --generate-notes "$(CURDIR)"/dist/*
+	@ARTIFACT_MODE=publish uv run python tools/artifact_gate.py

@@ -1,0 +1,11 @@
+umbrella: flext
+member: flext-orders
+generator_owner: flext-infra
+runtime_dependency: flext-core
+requested_service: typed order validation
+generated_surfaces:
+  - src/flext_orders/__init__.py
+  - src/flext_orders/m.py
+layers: [settings, config, c, t, p, m, u, base, services, api, cli]
+integration_branch: dev
+runtime_probe: import public api and validate one order

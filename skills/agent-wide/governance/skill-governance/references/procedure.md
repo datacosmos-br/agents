@@ -82,8 +82,8 @@ roles as one atomic bundle change. Do not publish a router with partial evals.
 Run `make runtime APPLY=Y` to validate the installed bundle, then
 `make check APPLY=Y`, `make test APPLY=Y`, and `make test-full APPLY=Y`. The
 official Waza spec verifier is part of the check owner and validates every
-projected skill/evaluation pair offline at the exact threshold. Readiness
-advisories and live model execution are not semantic authorities. Never invoke
+projected skill/evaluation pair offline at the exact threshold. Any advisory or
+warning is a failed validation; live model execution remains an AI Hub concern. Never invoke
 Waza, pytest, or another underlying tool directly. If the skill changes the
 public semantic contract, migrate all AI Hub consumers in the same cutover;
 AI Hub owns downstream generation.

@@ -4,5 +4,7 @@ description: Apply dependency injection through typed ports and explicit composi
 tags: [dependency-injection, happy-path, internal]
 inputs:
   prompt: "An internal scheduler reads a global clock. Apply dependency injection with typed ports and an explicit composition root: reuse or define the smallest Clock protocol, inject it into the service, and assemble the system clock at the worker entry point."
+  files:
+  - path: scenario.yaml
 expected:
   output_contains: [Clock, protocol, inject, worker, constructor]

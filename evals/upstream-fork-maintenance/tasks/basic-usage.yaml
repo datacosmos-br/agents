@@ -4,5 +4,7 @@ description: Preserve third-party forks through upstream style and explicit delt
 tags: [happy-path, third-party-fork, upstream]
 inputs:
   prompt: Fix one bug in a verified third_party_fork. Read and follow upstream architecture, style, runtime, build, and tests; preserve the base identity and prove the minimal delta and deployed artifact.
+  files:
+  - path: scenario.yaml
 expected:
   output_contains: [upstream, base identity, minimal delta, native tests, artifact]

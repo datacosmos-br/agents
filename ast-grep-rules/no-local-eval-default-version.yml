@@ -1,0 +1,9 @@
+id: no-local-eval-default-version
+language: Yaml
+severity: error
+message: The default suite version belongs only to config/evals.json.
+rule:
+  all:
+  - kind: block_mapping_pair
+  - regex: '^version: [''\"]?1\.0[''\"]?$'
+fix: ""

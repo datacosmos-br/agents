@@ -1,0 +1,9 @@
+id: no-local-eval-default-version
+snapshots:
+  'version: ''1.0''':
+    fixed: ''
+    labels:
+    - source: 'version: ''1.0'''
+      style: primary
+      start: 0
+      end: 14

@@ -1,0 +1,9 @@
+city: harbor
+dashboard:
+  state: stopped
+  configured_address: 127.0.0.1:7337
+  api_health: unavailable
+sessions:
+  running: 4
+  draining: 1
+requested_observation: start through the declared facade and prove API plus web status
