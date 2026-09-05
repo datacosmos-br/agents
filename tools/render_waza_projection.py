@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import cast
 
 import yaml
+
 from agents_governance import GovernanceBundle
 
 _OWNER_MARKER = (
@@ -17,15 +18,7 @@ _OWNER_MARKER = (
     ".waza.yaml and rerun the root verb.\n"
 )
 _SEMANTIC_CONFIG_FIELDS = frozenset(
-    {
-        "fail_fast",
-        "parallel",
-        "required_skills",
-        "retry_attempts",
-        "skill_directories",
-        "timeout_seconds",
-        "trials_per_task",
-    }
+    {"required_skills", "skill_directories"}
 )
 
 
@@ -94,15 +87,23 @@ def _projection_config(repository: Path, destination: Path) -> tuple[str, str]:
     return engine, model
 
 
-def _eval_projection(source: Path, destination: Path, engine: str, model: str) -> None:
+def _eval_projection(
+    source: Path,
+    destination: Path,
+    engine: str,
+    model: str,
+    defaults: dict[str, object],
+) -> None:
     semantic = _load(source)
     schema_version = semantic.pop("schema_version", None)
     if schema_version != 1:
         raise ValueError(f"{source}: schema_version must equal 1")
     semantic["schemaVersion"] = "1.2"
-    config = _mapping(semantic.get("config"), f"{source}: config")
-    if frozenset(config) != _SEMANTIC_CONFIG_FIELDS:
+    suite_config = _mapping(semantic.get("config"), f"{source}: config")
+    if frozenset(suite_config) != _SEMANTIC_CONFIG_FIELDS:
         raise ValueError(f"{source}: semantic config fields are not canonical")
+    config = dict(_mapping(defaults.get("execution"), "config/evals.json execution"))
+    config.update(suite_config)
     retry_attempts = config.pop("retry_attempts")
     if retry_attempts != 0:
         raise ValueError(f"{source}: retry_attempts must equal zero")
@@ -117,13 +118,41 @@ def _eval_projection(source: Path, destination: Path, engine: str, model: str) -
     ):
         raise TypeError(f"{source}: skill_directories must contain one path")
     semantic["config"] = config
+    semantic["metrics"] = [
+        dict(_mapping(defaults.get("metric"), "config/evals.json metric"))
+    ]
+    graders = semantic.get("graders")
+    if not isinstance(graders, list) or len(graders) != 1:
+        raise TypeError(f"{source}: semantic graders must contain one prompt contract")
+    semantic["graders"] = [
+        *graders,
+        dict(
+            _mapping(
+                defaults.get("behavior_grader"),
+                "config/evals.json behavior_grader",
+            )
+        ),
+    ]
+    semantic["tasks"] = ["tasks/*.yaml"]
     _write(destination, semantic, str(source.relative_to(source.parents[2])))
 
 
-def _copy_suite(source: Path, destination: Path, engine: str, model: str) -> None:
+def _copy_suite(
+    source: Path,
+    destination: Path,
+    engine: str,
+    model: str,
+    defaults: dict[str, object],
+) -> None:
     _copy_physical_tree(source, destination)
     (destination / "suite.yaml").unlink()
-    _eval_projection(source / "suite.yaml", destination / "eval.yaml", engine, model)
+    _eval_projection(
+        source / "suite.yaml",
+        destination / "eval.yaml",
+        engine,
+        model,
+        defaults,
+    )
 
 
 def _build(repository: Path, destination: Path) -> None:
@@ -136,10 +165,11 @@ def _build(repository: Path, destination: Path) -> None:
     evals = destination / "evals"
     evals.mkdir()
     engine, model = _projection_config(repository, destination)
+    defaults = _load(repository / "config" / "evals.json")
     for suite in sorted((repository / "evals").iterdir(), key=lambda path: path.name):
         if suite.is_symlink() or not suite.is_dir():
             raise ValueError(f"semantic suite must be a physical directory: {suite}")
-        _copy_suite(suite, evals / suite.name, engine, model)
+        _copy_suite(suite, evals / suite.name, engine, model, defaults)
 
 
 def _snapshot(root: Path) -> tuple[tuple[str, str], ...]:
@@ -182,9 +212,12 @@ def main() -> None:
         _build(repository, second)
         if _snapshot(first) != _snapshot(second):
             raise ValueError("Waza projection is not a generation fixed point")
+        if target.exists() and _snapshot(target) == _snapshot(first):
+            print("Waza projection fixed point: target already current")
+            return
         if target.exists():
             shutil.rmtree(target)
-        shutil.copytree(first, target)
+        first.replace(target)
     print("Waza projection fixed point: 2 identical generations")
 
 
