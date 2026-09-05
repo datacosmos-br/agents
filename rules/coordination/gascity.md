@@ -65,6 +65,11 @@ so state the intent explicitly wherever it applies:
 - Pin an external or rig-local endpoint only through the declared rig endpoint
   owner; city configuration exposes a second, unenforced route to the same
   state.
+- Suspension has two layers with two owners. `suspended_on_start` in
+  `city.toml` is the declared default for every machine and changes only by
+  cutover; the runtime suspension state under `.gc/runtime/` written by
+  `gc rig suspend|resume` is a machine-local override and is never committed.
+  Neither file alone is the effective state: read it from `gc status`.
 
 Topology mutation — city state is `city.toml`, `.gc/`, and `.beads/` under the
 city root:

@@ -53,4 +53,16 @@ OS keyring remains prohibited (`rules/runtime/no-keyring.md`); the encrypted
 credential store is a distinct, systemd-owned mechanism and is never
 substituted with a keyring access path or treated as equivalent to one.
 
+## Session-bus variables belong to the login session
+
+`systemctl --user`, `systemd-run --user`, and `journalctl --user` need
+`XDG_RUNTIME_DIR` and `DBUS_SESSION_BUS_ADDRESS`, which PAM sets for the login
+session. A shell without them (an agent spawned outside the session) fails
+loud there; that failure is correct. Never export either variable statically
+from a generator, profile, or hook — a frozen value points at a runtime
+directory that disappears with the session. A one-shot command that needs a
+sealed credential runs as
+`systemd-run --user -p LoadCredentialEncrypted=<name>:<path> ...` from a shell
+that already carries the session variables; that is the declared delivery.
+
 See also: `strict-execution.md` (rule file) — aggregate parent policy.
