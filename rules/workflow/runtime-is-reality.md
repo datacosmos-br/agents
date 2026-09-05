@@ -1,27 +1,31 @@
 ---
-description: Verifying a change or claiming work done. Load when writing or fixing tests, running QA, or deciding whether a task is complete.
+description: Verify runtime reality before tests or completion claims
 metadata:
-  aihub.tags: '["decision:plan-00","effective:2026-08-28","route:both"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-08-28","route:both"]'
 ---
 
 # Reality is the running system; tests are checks, not the SSOT
 
-Validate against the real declared runtime (CLI, daemon, config, or public API)
-and exercise the actual feature—type and lint green are necessary, not
-sufficient.
+First reproduce and validate the declared public import, API, CLI, daemon,
+service, generated consumer, deployed artifact, or other real runtime selected
+by the project. Verify its revision or release identity. Only after that
+contract is measured may tests be created, adapted, or invoked. An editable
+checkout, test assertion, snapshot, local cache, generated copy, or stale
+environment does not define runtime behavior.
 
-- A test that only passes by keeping removed or legacy artifacts is wrong: fix or
-  delete the test; never restore legacy just to make it pass.
-- A config/settings test that breaks when a valid SSOT value changes is defective.
-  Test contracts and derivations across arbitrary valid inputs; goldens may lock
-  generated structure, never mutable config-owned values.
-- A missing facade constant fails only at runtime — import and run the real path.
-- Before concluding root cause, prove the running or installed artifact matches
-  the declared authoritative revision or release. An editable checkout, local
-  cache, generated copy, or stale environment is not evidence of remote/runtime
-  behavior until identity is verified.
-- Use the newest released version of every required tool. Every diagnostic it
-  emits is blocking. A cap, downgrade, substitution, suppression, compatibility
-  classification, or false-positive classification requires prior operator
-  discussion, reproducible evidence, and explicit authorization; without all
-  three, correct the owner and rerun that released version.
+A test that preserves removed behavior, copied configuration, private shape, or
+a hardcoded owner value is defective and is rewritten or deleted. Use the
+public root and typed shared fixtures. Missing public constants and invalid
+dependency wiring are exercised through the actual import and call path.
+
+Every test path uses its selector-free root Make verb with `APPLY=Y`, the same
+external persistent testmon database, and the observable-test rule. The full
+verb runs incremental selection first and no-selection second without clearing
+the database. Warning, skip, empty output, missing tool/report, zero collection,
+catch, retry, or normalization is RED. A typed incremental testmon cache hit may
+execute zero tests only with database integrity and complete deselection
+accounting; it is reported as a cache hit, never as tests passed.
+
+The newest declared tool version owns its diagnostics. Do not cap, downgrade,
+substitute, suppress, or relabel a result. Correct the owner and rerun the same
+root Make verb; the first exception and raw traceback remain causal.

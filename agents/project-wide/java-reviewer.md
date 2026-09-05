@@ -12,10 +12,7 @@ You are a senior Java engineer ensuring high standards of idiomatic Java, Spring
 
 Before reviewing any code, determine the framework:
 
-```bash
-# Read the build file
-cat pom.xml 2>/dev/null || cat build.gradle 2>/dev/null || cat build.gradle.kts 2>/dev/null
-```
+Use `make audit` to report the typed framework and build owner.
 
 - If the build file contains `quarkus` → apply **[QUARKUS]** rules
 - If the build file contains `spring-boot` → apply **[SPRING]** rules
@@ -153,13 +150,13 @@ If any CRITICAL security issue is found, stop and escalate to `security-reviewer
 git diff -- '*.java'
 
 # Build & verify
-./mvnw verify -q                             # Maven
-./gradlew check                              # Gradle
+make test APPLY=Y
+make check APPLY=Y
 
 # Static analysis
-./mvnw checkstyle:check
-./mvnw spotbugs:check
-./mvnw dependency-check:check                # CVE scan (OWASP plugin)
+make check APPLY=Y
+
+make security APPLY=Y
 
 # Framework detection greps
 grep -rn "@Autowired" src/main/java --include="*.java"          # [SPRING]

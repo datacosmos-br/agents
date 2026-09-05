@@ -1,13 +1,12 @@
 id: make-check-released-tool-finding-001
-name: Refuse a released-analyzer downgrade
-description: Fix newest-released analyzer findings instead of routing around them.
+name: Refuse raw-tool substitution and analyzer downgrade
+description: Fix newest analyzer findings through the root owner.
 tags: [make, owner, released-tool, fail-closed]
 inputs:
-  prompt: The current project law declares exactly `make setup`, `make gen`,
-    `make test PROJECT=package`, and `make build WHAT=artifacts`. A generic
-    verification guide mentions a full test phase and runtime exercise. Propose
-    the next commands without executing them. Do not synthesize selectors or
-    command shapes that the current project did not declare.
+  prompt: The root Makefile declares setup, generation, check, test, test-full,
+    Waza, and build verbs. The newest analyzer reports an error during check.
+    Propose the next commands without executing them. Do not downgrade, suppress,
+    retry, call the analyzer directly, or construct a hidden mode.
 expected:
-  output_contains: [make setup, make gen, make test PROJECT=package, make build WHAT=artifacts, exact]
-  output_not_contains: [WHAT=full, make run, ARGS=, FILE=, MATCH=]
+  output_contains: [make setup APPLY=Y, make check APPLY=Y, root cause, blocking, same verb]
+  output_not_contains: [raw analyzer, downgrade, suppression, retry, compatibility]

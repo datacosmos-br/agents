@@ -5,7 +5,7 @@ capsule_summary: |
   symptom to make a check pass. Fix the generalized root cause and report the
   exact command, working directory, exit code and decisive output.
 metadata:
-  aihub.tags: '["decision:plan-00","effective:2026-08-25","route:both"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-08-25","route:both"]'
 ---
 
 # Professional integrity is absolute

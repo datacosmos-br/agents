@@ -1,19 +1,14 @@
 # Gate evidence
 
-- Environment: `agentsctl doctor`, exit 0, editable runtime identity validated.
-- Repository check: `make check`, exit 0, zero warnings.
-- Static analysis: `make static`, exit 0, zero errors.
-- Tests: `make test`, exit 0, 431 passed.
-- Real surface: `agentsctl check`, exit 0, current discovered catalog validated.
-- Generated fixed point: `make audit`, exit 0, and its required second owner pass produced no diff.
-- CI trigger contract: delivery tests exited 0 and prove `.github/workflows/**`
-  selects the native workflow on both integration pushes and pull requests.
-- CI authority: `.github/workflows/eval.yml` is the only workflow, every
-  `uses:` reference is pinned to a full commit SHA, zero `|| true` occurrences
-  exist, no workflow scans itself, and the published job executed `make ci`.
-- External-token gates: `SNYK_TOKEN` and `CLIPROXY_API_KEY` are absent, so
-  `make security` and `make validate-live` are `NOT EXECUTED` under the
-  operator-authorized applicability rule. Neither workflow is claimed green.
-- Final quarantine/provider composite: provider matrix and `agentsctl check`
-  printed successful substep output, then the required destination inspection
-  failed because the expected path was absent. The composite process exited 1.
+- Public installed bundle: root Make audit verb, exit 0, version identity proven.
+- Runtime contract: root Make check verb with APPLY acknowledgement, exit 0.
+- Static analysis: root Make static verb, exit 0, zero warnings.
+- Incremental tests: root Make test verb with APPLY acknowledgement, exit 0;
+  testmon reports a database-integrity-checked cache hit and complete deselection
+  accounting, so zero tests executed. This is not a tests-passed claim.
+- CI authority: the published job invokes the root CI verb with APPLY
+  acknowledgement and every action reference is a full commit SHA.
+- External credential workflow: required credential absent, so the explicitly
+  selected live operation is NOT EXECUTED and not green.
+- Final composite: successful substep output was followed by a required artifact
+  inspection failure. The composite process exited 1.

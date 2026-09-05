@@ -22,8 +22,8 @@ You are an expert security specialist focused on identifying and remediating vul
 ## Analysis Commands
 
 ```bash
-npm audit --audit-level=high
-npx eslint . --plugin security
+make security APPLY=Y
+make check APPLY=Y
 ```
 
 ## Review Workflow

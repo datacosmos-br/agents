@@ -9,8 +9,6 @@ config:
   parallel: false
   max_attempts: 0
   fail_fast: true
-  executor: copilot-sdk
-  model: aihub-primary
   skill_directories: [../../skills/domain/upstream-fork-maintenance]
   required_skills: [upstream-fork-maintenance]
 graders:

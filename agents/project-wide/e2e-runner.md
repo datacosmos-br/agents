@@ -39,15 +39,12 @@ agent-browser wait visible @e5     # Wait for element
 agent-browser screenshot result.png
 ```
 
-Example Playwright commands when it is the declared owner:
+Use the root Make owner for browser execution and reports:
 
 ```bash
-npx playwright test                        # Run all E2E tests
-npx playwright test tests/auth.spec.ts     # Run specific file
-npx playwright test --headed               # See browser
-npx playwright test --debug                # Debug with inspector
-npx playwright test --trace on             # Run with trace
-npx playwright show-report                 # View HTML report
+make runtime APPLY=Y
+make test APPLY=Y
+make test-full APPLY=Y
 ```
 
 ## Workflow
@@ -80,10 +77,8 @@ npx playwright show-report                 # View HTML report
 
 ## Flaky Test Handling
 
-```typescript
-// Identify flakiness
-// npx playwright test --repeat-each=10
-```
+Repeated browser execution must have its own selector-free root Make verb; do
+not pass runner flags directly.
 
 Common causes: race conditions (use auto-wait locators), network timing (wait for response), animation timing (wait for `networkidle`).
 

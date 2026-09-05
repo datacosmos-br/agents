@@ -1,12 +1,8 @@
-cd /home/example/worktree && make check
-make -C /home/example/worktree check
-env -C /home/example/worktree make check FILE=tests/unit/test_one.py
-git -C /home/example/worktree status -sb
-bun run --cwd /home/example/package test
-make check > /dev/null
-make test 2>&1 | tee /home/example/scratchpad/test.log
-export PATH=/usr/bin:/bin; env -C /home/example/worktree make test
-make check FILE=a.py || make test FILE=b.py || make lint
-git -C /home/example/worktree status -sb && git -C /home/example/worktree diff --check
-cat failed.log | grep ERROR | tee diagnosis.txt
-env -C /home/example/worktree make check FILE=tests/unit/test_one.py
+cd /home/example/worktree && make check APPLY=Y
+make -C /home/example/worktree check APPLY=Y
+env -C /home/example/worktree make check APPLY=Y
+direct test-runner invocation
+direct linter invocation
+make check APPLY=Y > /dev/null
+env -C /home/example/worktree make test APPLY=Y
+env -C /home/example/worktree make audit

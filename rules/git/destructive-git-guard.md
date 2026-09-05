@@ -1,7 +1,7 @@
 ---
 description: Adopt the current worktree and never discard it with Git
 metadata:
-  aihub.tags: '["decision:plan-00","effective:2026-08-29","route:both"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-08-29","route:both"]'
 ---
 
 # Adopt the current worktree and never discard it with Git

@@ -1,67 +1,31 @@
-results/
-.waza-cache/
-coverage.txt
-*.exe
 .env.local
-__pycache__/
-.skills-archive/
-agents.bkp/
-.agents.bkp/
-.archive/
-.test-tmp/
-/.pytest_cache/
-# Gas City creates rig-scoped worktrees at <rig-root>/worktrees/<id>.
-/worktrees/
-/.pytest-scratch/
-/.reports/
-.cache/
-/$HOME/
+/.venv/
+/dist/*
+!/dist/.gitignore
 
-# Generated skill inventory lock — superseded by provenance-backed discovery.
-/skills.lock.json
-
-# Existing checkout runtime/ephemeral state only; symlink adoption is prohibited.
-# (gt town-level mayor/refinery/witness live in ~/gt, NOT here, so not ignored here):
-/.beads.gate.lock
-/crew/
-/polecats/
-# Provider projection destinations (config/projections.json). Project-owned
-# selection and root instruction documents are source; every derived provider
-# artifact below them is runtime state. Both the
-# agentsctl projector and the gas city pack runtime write here: this repository
-# is a registered rig, so the pack runtime drops skill symlinks and an ownership
-# manifest into the provider trees at any time, unprompted. These are runtime
-# state, never source.
-#
-# This ignore list IS the enforcement:
-# tests/test_tracker_suspension.py asserts that no projection artifact is
-# tracked, staged, or offered as untracked source. A destination missing here
-# would be offered as source and fail that guard, so the two must agree.
-/.agents/*
-!/.agents/projection.json
-/.gc/
+# AI Hub owns provider/runtime materialization. These paths are never semantic
+# package input and every generated file must carry the AI Hub owner marker.
+/.agents/
 /.claude/
 /.codex/
 /.cursor/
 /.gemini/
 /.opencode/
-/.github/agents
-/.github/hooks
-/.github/instructions
-/.github/skills
+/.github/agents/
+/.github/hooks/
+/.github/instructions/
+/.github/skills/
 /GEMINI.md
 
-# Beads / Dolt files (added by bd init)
-.dolt/
+# Gas City and the selected tracker own their suspended runtime state.
+/.gc/
+/crew/
+/polecats/
+/worktrees/
+/.dolt/
+/.beads/*
+!/.beads/identity.toml
 *.db
 .beads-credential-key
-.beads/proxieddb/
 .gqlout.json
 .poolside/
-.poolside/
-
-# Gas City
-.beads/*
-!.beads/identity.toml
-
-/.testmondata*

@@ -3,7 +3,7 @@ name: database-migration
 description: Plan and execute one project-owned database migration through its canonical schema owner.
 argument-hint: "<database and approved schema or data change>"
 metadata:
-  aihub.tags: '["decision:plan-00","effective:2026-08-29","intent:implementation","risk:write","route:project"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-08-29","intent:implementation","risk:write","route:project"]'
 ---
 
 # Database migration

@@ -3,7 +3,7 @@ name: gc-dispatch
 description: 'gas city dispatch, sling routing, formula workflow, convoy orders'
 allowed-tools: Bash(gc *)
 metadata:
-  aihub.tags: '["activation:opt-in","decision:plan-00","detect:opt-in:gc-dispatch","domain:gas-city","effective:2026-08-30","policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","provenance:agents-owned","route:agent","route:project","technology:gas-city","updates:manual","usage:on-demand"]'
+  aihub.tags: '["activation:opt-in","decision:ADR-0008","detect:opt-in:gc-dispatch","domain:gas-city","effective:2026-08-30","policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","provenance:agents-owned","route:agent","route:project","technology:gas-city","updates:manual","usage:on-demand"]'
 ---
 ## Verification (mandatory)
 

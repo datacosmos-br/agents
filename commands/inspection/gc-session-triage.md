@@ -3,7 +3,7 @@ name: gc-session-triage
 description: Diagnose a Gas City session that will not start, stop, or drain, with evidence.
 argument-hint: "<session id or alias, optionally the city path>"
 metadata:
-  aihub.tags: '["decision:plan-00","effective:2026-08-30","intent:inspection","risk:external","route:agent"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-08-30","intent:inspection","risk:external","route:agent"]'
 ---
 
 # Gas City session triage

@@ -3,7 +3,7 @@ name: clean-architecture
 description: 'clean architecture, inward dependencies, ports adapters'
 license: MIT
 metadata:
-  aihub.tags: '["activation:detected","decision:plan-00","detect:selected-tag:internal","domain:architecture","effective:2026-09-04","policy:fail-loud","policy:no-fallback","policy:strict-execution","provenance:agents-owned","route:project","updates:manual","usage:router"]'
+  aihub.tags: '["activation:detected","decision:ADR-0008","detect:selected-tag:internal","domain:architecture","effective:2026-09-04","policy:fail-loud","policy:no-fallback","policy:strict-execution","provenance:agents-owned","route:project","updates:manual","usage:router"]'
 ---
 
 # Clean Architecture

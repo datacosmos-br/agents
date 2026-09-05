@@ -2,14 +2,12 @@
 
 from __future__ import annotations
 
-import hashlib
 import json
 import re
-import stat
 from dataclasses import dataclass
 from enum import StrEnum
 from pathlib import Path, PurePosixPath
-from typing import Any, cast
+from typing import cast
 
 from .approvals import APPROVAL_NAMESPACES, resolve_approval_tags
 from .frontmatter import cast_mapping, parse_frontmatter, require_exact_fields
@@ -75,7 +73,6 @@ _OPTIONAL_STRING_FIELDS = frozenset({"allowed-tools", "compatibility", "license"
 _BUDGET_FIELDS = frozenset(
     {"router_tokens", "frozen_tokens", "on_demand_tokens", "max_lines"}
 )
-_INVENTORY_VERSION = 1
 
 
 class SkillCategory(StrEnum):
@@ -110,70 +107,15 @@ class SkillRecord:
     detectors: tuple[str, ...]
 
 
-@dataclass(frozen=True)
-class SkillPolicy:
-    """Resolved policy for one canonical skill."""
-
-    name: str
-    class_name: str
-    provenance: str
-    updates: str
-    max_tokens: int
-    max_lines: int
-    distributions: tuple[str, ...]
-    category: SkillCategory
-    tags: tuple[str, ...]
-
-
 class Catalog:
     """Discover and validate every canonical skill before returning any record."""
 
     def __init__(self, root: Path) -> None:
         self.root = root.resolve(strict=True)
-        self.config = self._load_policy(self.root / "config" / "skills.json")
-        self.owner = "agents"
-        self.project_local = False
-        self._records = self._discover(require_inventory=True)
-        self._directories = tuple(record.directory for record in self._records)
+        self._load_policy(self.root / "config" / "skills.json")
+        self._records = self._discover()
         for record in self._records:
             resolve_approval_tags(self.root, record.tags, record.directory / "SKILL.md")
-
-    @classmethod
-    def project(cls, root: Path, authority: Catalog) -> Catalog:
-        """Discover an authorized project's private skills under central policy."""
-
-        catalog = cls.__new__(cls)
-        catalog.root = root.resolve(strict=True)
-        catalog.config = authority.config
-        catalog.owner = "project"
-        catalog.project_local = True
-        if catalog.root == authority.root:
-            # The authorized project is the central source itself: no skill of
-            # its tree is project-local, so the local population is empty.
-            catalog._records = ()
-        else:
-            catalog._records = catalog._discover(require_inventory=False)
-        catalog._directories = tuple(record.directory for record in catalog._records)
-        for record in catalog._records:
-            resolve_approval_tags(
-                catalog.root, record.tags, record.directory / "SKILL.md"
-            )
-            if record.provenance != "project-owned":
-                raise ValueError(
-                    f"{record.directory / 'SKILL.md'}: project-local skill requires "
-                    "provenance:project-owned"
-                )
-            if record.category is SkillCategory.AGENT_WIDE:
-                raise ValueError(
-                    f"{record.directory / 'SKILL.md'}: project-local agent-wide "
-                    "skill is forbidden"
-                )
-            if record.category.conditional and "project" not in record.routes:
-                raise ValueError(
-                    f"{record.directory / 'SKILL.md'}: project-local conditional "
-                    "skill requires route:project"
-                )
-        return catalog
 
     @staticmethod
     def _load_policy(path: Path) -> dict[str, object]:
@@ -356,18 +298,12 @@ class Catalog:
             detectors,
         )
 
-    def _discover(self, *, require_inventory: bool) -> tuple[SkillRecord, ...]:
+    def _discover(self) -> tuple[SkillRecord, ...]:
         skills_root = self.root / "skills"
-        if not skills_root.exists() and not skills_root.is_symlink():
-            if require_inventory:
-                raise ValueError(
-                    f"skills root must be a physical directory: {skills_root}"
-                )
-            return ()
         if skills_root.is_symlink() or not skills_root.is_dir():
             raise ValueError(f"skills root must be a physical directory: {skills_root}")
         skill_files = tuple(sorted(skills_root.rglob("SKILL.md")))
-        if require_inventory and not skill_files:
+        if not skill_files:
             raise ValueError(f"skill inventory is empty: {skills_root}")
         records: list[SkillRecord] = []
         names: set[str] = set()
@@ -396,166 +332,10 @@ class Catalog:
     def records(self) -> tuple[SkillRecord, ...]:
         return self._records
 
-    def skill_dirs(self) -> tuple[Path, ...]:
-        return self._directories
-
-    def record(self, name: str) -> SkillRecord:
-        selected = tuple(record for record in self._records if record.name == name)
-        if len(selected) != 1:
-            raise KeyError(f"unknown canonical skill: {name}")
-        return selected[0]
-
-    @staticmethod
-    def _distributions(record: SkillRecord) -> tuple[str, ...]:
-        if record.updates == "forbidden":
-            return ()
-        if record.category is SkillCategory.AGENT_WIDE:
-            return ("personal",)
-        if record.category is SkillCategory.PROJECT_WIDE:
-            return ("project-generic",)
-        capabilities = tuple(
-            f"{route}-capability:{record.category.value}:{subject}"
-            for route in record.routes
-            for subject in record.subjects
-        )
-        return ("personal", *capabilities) if "agent" in record.routes else capabilities
-
-    def _policy(self, record: SkillRecord) -> SkillPolicy:
-        budgets = cast(dict[str, int], self.config["budgets"])
-        if record.updates == "forbidden":
-            max_tokens = budgets["frozen_tokens"]
-        elif record.usage == "router":
-            max_tokens = budgets["router_tokens"]
-        else:
-            max_tokens = budgets["on_demand_tokens"]
-        return SkillPolicy(
-            record.name,
-            record.usage.replace("-", "_"),
-            record.provenance,
-            record.updates,
-            max_tokens,
-            budgets["max_lines"],
-            self._distributions(record),
-            record.category,
-            record.tags,
-        )
-
-    def policy(self, name: str) -> SkillPolicy:
-        return self._policy(self.record(name))
-
-    def policy_for(self, directory: Path) -> SkillPolicy:
-        canonical = directory.resolve(strict=True)
-        selected = tuple(
-            record
-            for record in self._records
-            if record.directory.resolve(strict=True) == canonical
-        )
-        if len(selected) != 1:
-            raise KeyError(f"unknown canonical skill directory: {directory}")
-        return self._policy(selected[0])
-
-    def names_for(self, distribution: str) -> frozenset[str]:
-        return frozenset(
-            record.name
-            for record in self._records
-            if distribution in self._distributions(record)
-        )
-
-    @staticmethod
-    def physical_tree_contract(directory: Path) -> str:
-        digest = hashlib.sha256()
-        root_metadata = directory.lstat()
-        paths: tuple[Path, ...]
-        if stat.S_ISLNK(root_metadata.st_mode):
-            raise ValueError(f"symlink forbidden in physical bundle: {directory}")
-        if stat.S_ISREG(root_metadata.st_mode):
-            paths = (directory,)
-            root_is_file = True
-        elif stat.S_ISDIR(root_metadata.st_mode):
-            paths = (directory, *sorted(directory.rglob("*")))
-            root_is_file = False
-        else:
-            raise ValueError(f"unsupported file type in physical bundle: {directory}")
-        for path in paths:
-            metadata = path.lstat()
-            if stat.S_ISLNK(metadata.st_mode):
-                raise ValueError(f"symlink forbidden in physical bundle: {path}")
-            if stat.S_ISREG(metadata.st_mode):
-                entry_type = "file"
-            elif stat.S_ISDIR(metadata.st_mode):
-                entry_type = "directory"
-            else:
-                raise ValueError(f"unsupported file type in physical bundle: {path}")
-            relative = (
-                "."
-                if root_is_file or path == directory
-                else path.relative_to(directory).as_posix()
-            )
-            digest.update(entry_type.encode())
-            digest.update(b"\0")
-            digest.update(relative.encode())
-            digest.update(b"\0")
-            digest.update(f"{stat.S_IMODE(metadata.st_mode):04o}".encode())
-            digest.update(b"\0")
-            if entry_type == "file":
-                digest.update(path.read_bytes())
-                digest.update(b"\0")
-        return digest.hexdigest()
-
-    @staticmethod
-    def digest_tree(directory: Path) -> str:
-        Catalog.physical_tree_contract(directory)
-        digest = hashlib.sha256()
-        paths = (
-            (directory,)
-            if directory.is_file()
-            else tuple(sorted(item for item in directory.rglob("*") if item.is_file()))
-        )
-        for path in paths:
-            relative = (
-                path.name
-                if directory.is_file()
-                else path.relative_to(directory).as_posix()
-            )
-            digest.update(relative.encode())
-            digest.update(b"\0")
-            digest.update(path.read_bytes())
-            digest.update(b"\0")
-        return digest.hexdigest()
-
-    def inventory(self) -> list[dict[str, Any]]:
-        entries: list[dict[str, Any]] = []
-        for record in self._records:
-            policy = self._policy(record)
-            entries.append(
-                {
-                    "name": record.name,
-                    "owner": self.owner,
-                    "category": record.category.value,
-                    "class": policy.class_name,
-                    "provenance": policy.provenance,
-                    "updates": policy.updates,
-                    "max_tokens": policy.max_tokens,
-                    "max_lines": policy.max_lines,
-                    "distributions": list(policy.distributions),
-                    "tags": list(record.tags),
-                    "path": record.directory.relative_to(self.root).as_posix(),
-                    "digest": self.digest_tree(record.directory),
-                }
-            )
-        return entries
-
-    def inventory_payload(self) -> dict[str, Any]:
-        return {"version": _INVENTORY_VERSION, "skills": self.inventory()}
-
-    def render_inventory(self) -> str:
-        return json.dumps(self.inventory_payload(), indent=2, sort_keys=True) + "\n"
-
 
 __all__ = (
     "NON_PORTABLE_PROJECT_REFERENCE",
     "Catalog",
     "SkillCategory",
-    "SkillPolicy",
     "SkillRecord",
 )

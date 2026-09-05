@@ -1,24 +1,35 @@
 ---
 description: Test observable runtime behavior
 metadata:
-  aihub.tags: '["decision:plan-00","effective:2026-08-30","route:both"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-08-30","route:both"]'
 ---
 
 # Test observable runtime behavior
 
-Tests validate what the public module does. Do not mock, assert private methods,
-ignore violations, aggregate defects, or freeze implementation shape. Prove
-that raw exceptions, causes, child failures, and pre-effect validation escape
-through the public surface. Runtime is reality; fix a defective test instead of
-restoring incorrect or legacy production behavior.
+Measure the real public runtime or installed artifact before creating or
+adapting a test. Tests validate current behavior; they never define it. Use only
+public package roots, shared conftest owners, and typed fixtures. Do not mock,
+monkeypatch, patch construction, import private modules, assert private methods,
+copy configuration, freeze implementation shape, or hardcode owner values.
 
-A unit test opens no network socket and writes nowhere outside its `tmp_path`
-fixture. Fixtures provision the contract under test — credential store, git
-remotes, service endpoints — physically inside that sandbox; a test proves
-behavior against the fixture, never against a real remote. A test that
-reaches outside the sandbox (a `git ls-remote` against a real remote, an
-unstubbed HTTP call, a write to the repository tree or the real home
-directory) is a test defect at its owner, never an accepted skip, xfail, or
-network-dependent marker.
+For `internal_flext`, all construction comes from `flext-tests` and its public
+`tm`, `c`, `t`, `p`, `m`, and `u` facets. A local fixture binds scenario data
+but never redeclares that machinery. Unit tests open no network socket and write
+only inside fixture-owned storage; real integration services use their public
+harness.
 
-See also: `runtime-is-reality.md` (rule file) — runtime-first contract.
+Every incremental, full, and CI pytest execution uses a selector-free root Make
+verb, `APPLY=Y`, pytest-testmon, and the same external persistent database. The
+full verb first completes the incremental verb, then runs
+`--testmon --testmon-noselect` with that database. Raw pytest, direct test-file
+selection, and cache deletion are prohibited.
+
+A warning, skip, xfail, empty output, missing tool, missing report, zero
+collection, unexecuted selected suite, caught exception, retry, or normalized
+failure is RED. Only zero execution from a typed incremental testmon cache hit
+is acceptable, and only when database integrity and complete deselection
+accounting are proved; report it as a cache hit, never as tests passed. The
+first exception, cause, and raw traceback escape unchanged.
+
+See [`runtime-is-reality.md`](../workflow/runtime-is-reality.md) for the
+runtime-first owner.

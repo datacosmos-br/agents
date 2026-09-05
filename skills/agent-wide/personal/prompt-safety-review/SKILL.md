@@ -2,7 +2,7 @@
 name: prompt-safety-review
 description: 'prompt injection, instruction safety, deployment review'
 metadata:
-  aihub.tags: '["decision:plan-00","effective:2026-08-29","policy:fail-loud","policy:no-fallback","policy:no-keyring","policy:preflight-before-effects","policy:strict-execution","provenance:agents-owned","role:security","updates:manual","usage:on-demand"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-08-29","policy:fail-loud","policy:no-fallback","policy:no-keyring","policy:preflight-before-effects","policy:strict-execution","provenance:agents-owned","role:security","updates:manual","usage:on-demand"]'
 ---
 
 # Prompt Safety Review

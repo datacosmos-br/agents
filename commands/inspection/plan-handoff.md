@@ -3,7 +3,7 @@ name: plan-handoff
 description: Start a file-owned execution handoff from plan files and measured current state, never a transcript.
 argument-hint: "<plan directory containing 00-index.md>"
 metadata:
-  aihub.tags: '["decision:plan-00","effective:2026-09-03","intent:inspection","risk:external","route:agent"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-09-03","intent:inspection","risk:external","route:agent"]'
 ---
 
 # Plan handoff

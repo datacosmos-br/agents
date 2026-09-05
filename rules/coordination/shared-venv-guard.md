@@ -1,7 +1,7 @@
 ---
 description: Python environments are physical and checkout-local
 metadata:
-  aihub.tags: '["decision:plan-00","effective:2026-08-30","route:both"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-08-30","route:both"]'
 ---
 
 # Python environments are physical and checkout-local

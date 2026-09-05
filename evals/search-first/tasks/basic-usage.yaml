@@ -24,4 +24,4 @@ inputs:
 expected:
   outcomes:
   - type: task_completed
-  output_contains: [AGENTS.md, architecture.md, PageTokenCodec, list_orders, itsdangerous, 2.2.0, YAGNI, no new SOLID boundary, simplify inline, no structural DRY, pytest tests/test_orders.py]
+  output_contains: [AGENTS.md, architecture.md, PageTokenCodec, list_orders, itsdangerous, 2.2.0, YAGNI, no new SOLID boundary, simplify inline, no structural DRY, make test APPLY=Y]

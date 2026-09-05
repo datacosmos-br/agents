@@ -17,7 +17,7 @@ capsule_summary: |
   never authorizes the generic form, and an agent never writes the operator's SSH
   configuration or keys — identity is corrected in git, or reported.
 metadata:
-  aihub.tags: '["decision:plan-00","effective:2026-08-29","route:both"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-08-29","route:both"]'
 ---
 
 # Engineering core
