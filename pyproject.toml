@@ -52,7 +52,6 @@ only-include = [
   "src",
   "tests",
   "uv.lock",
-  "workflows",
 ]
 
 [tool.pytest.ini_options]
@@ -61,6 +60,6 @@ testpaths = ["tests"]
 tmp_path_retention_policy = "none"
 
 [tool.pyright]
-include = ["src", "tests"]
+include = ["src", "tests", "tools"]
 venvPath = "."
 venv = ".venv"

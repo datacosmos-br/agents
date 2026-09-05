@@ -29,27 +29,31 @@ consumers, executable effects, and failure behavior. Reduce each behavior to its
 outcome, trigger, non-trigger, inputs, effects, scope, consumer, and material
 proof before selecting an owner.
 
-Classify each surviving statement through the repository artifact contract:
-mandatory invariants belong to rules, conditional procedures to skills, explicit
-invocation grammar to commands, deterministic behavior to typed runtime, and
-provider forms to generated projections. Extend or compose the current owner
-when it already covers the behavior. Create a skill only for an independently
-recurring outcome with complete semantic evaluation. Split mixed sources and
-reject copied structure, provider assumptions, private paths, foreign runtimes,
-fallback, retry, compatibility, partial execution, and behavior without a
-current consumer.
+Classify each surviving statement through this repository's semantic artifact
+contract: mandatory invariants belong to rules, conditional procedures to
+skills, explicit invocation grammar to commands, and discovery metadata to
+agents or config. AI Hub alone maps the published bundle into project runtime
+and provider delivery. Extend or compose the current semantic owner when it
+already covers the behavior. Create a skill only for an independently recurring
+outcome with complete semantic evaluation. Split mixed sources and reject copied
+structure, provider assumptions, private paths, foreign runtimes, fallback,
+retry, compatibility, partial execution, and behavior without a current
+consumer.
 
-Rewire every current consumer and update ownership mapping, evaluations,
-inventory, documentation, and generated projections atomically. Remove each
-superseded canonical identity in the same cutover without modifying the supplied
-source corpus. Prove representative behavior, native gates, fixed-point
-generation, and zero duplicate owner, alias, or stale-consumer residue.
+Rewire every current consumer and update ownership mapping, semantic suites,
+documentation, and the public bundle atomically. Remove each superseded
+canonical identity in the same cutover without modifying the supplied source
+corpus. Prove the installed bundle and zero duplicate owner, alias, or
+stale-consumer residue; AI Hub owns downstream generation and its fixed-point
+proof.
 
 ## Bundle contract
 
 Create one kebab-case directory containing a compact `SKILL.md` router. Its
-frontmatter has the matching name and a short comma-separated keyword list;
-descriptions are discovery metadata, never prose or provenance.
+frontmatter has the matching name and at least 150 characters of precise routing
+metadata: `USE FOR:` triggers, `DO NOT USE FOR:` boundaries, `INVOKES:` owner,
+and `FOR SINGLE OPERATIONS:` guidance. Descriptions are discovery contracts,
+not provenance or generic keyword lists.
 
 Keep activation, non-activation, and routing in `SKILL.md`. Put detailed procedure,
 examples, schemas, or templates under the same bundle's `references/`, `scripts/`,
@@ -58,7 +62,8 @@ path, or generated copy as the source of truth.
 
 ## Evaluation
 
-Every active skill owns one Waza suite with exactly three semantic roles:
+Every active skill owns one provider-neutral `suite.yaml` manifest with exactly
+three semantic roles:
 
 - a realistic happy path using a domain-specific regular fixture;
 - a genuinely missing or ambiguous input that fails closed;
@@ -74,10 +79,13 @@ roles as one atomic bundle change. Do not publish a router with partial evals.
 
 ## Validation
 
-Run the repository's canonical skill validator, official Waza spec coverage gate,
-focused tests, and projection fixed-point check. If the new skill changes a public
-catalog or projection contract, regenerate through its owner and migrate all
-consumers in the same change.
+Run `make runtime APPLY=Y` to validate the installed bundle, then
+`make check APPLY=Y`, `make test APPLY=Y`, and `make test-full APPLY=Y`. The
+official Waza readiness inspection is part of the check owner and must emit no
+warning, low compliance, missing suite, schema error, or empty report. Never
+invoke Waza, pytest, or another underlying tool directly. If the skill changes
+the public semantic contract, migrate all AI Hub consumers in the same cutover;
+AI Hub owns downstream generation.
 
 Before adding, removing, or renaming a skill, search migration maps, category
 lists, numeric acceptance criteria, fixtures, docs, generated inventories, and CI
@@ -101,6 +109,7 @@ placeholder, and superseded consumer residue.
 - Technology skills are distributed only after structured project detection and
   never as personal capabilities.
 - Personal skills contain non-technological operator workflows and capabilities.
-- Mandatory invariants, explicit invocation grammar, deterministic runtime, and
-  provider projections remain with rules, commands, typed owners, and adapters;
-  split a mixed historical bundle rather than copying those statements here.
+- Mandatory invariants, explicit invocation grammar, and discovery metadata
+  remain with rules, commands, agents, and config. Runtime and provider delivery
+  remain outside this bundle with AI Hub; split a mixed historical source rather
+  than copying those statements here.

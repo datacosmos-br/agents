@@ -1,0 +1,36 @@
+name: bash-guard-lane-execution-eval
+description: Allowed lane command forms and precise denials for chaining and output loss.
+skill: bash-guard-lane-execution
+schema_version: 1
+version: '1.0'
+config:
+  trials_per_task: 1
+  timeout_seconds: 300
+  parallel: false
+  retry_attempts: 0
+  fail_fast: true
+  required_skills:
+  - bash-guard-lane-execution
+  skill_directories:
+  - ../../skills/project-wide/shell/bash-guard-lane-execution
+metrics:
+- name: behavior_quality
+  weight: 1.0
+  threshold: 1.0
+  description: Did the response satisfy every declared semantic outcome?
+graders:
+- type: prompt
+  name: bash-guard-lane-execution-contract
+  config:
+    prompt: |-
+      Grade bash-guard-lane-execution. Pass only when the response replaces `cd`,
+      `make -C`, raw tools, and provider CLIs with `env -C ... make` against the
+      lane root; uses no selector; preserves stdout and stderr; reports command,
+      worktree, exit code, and decisive output; and treats a guard denial as RED
+      until the root Make owner is corrected. Reject directory mutation, output
+      loss, chained bypasses, partial runs, retries, or pretending a denial is green.
+- type: behavior
+  name: bounded_execution
+  config: {max_duration_ms: 240000}
+tasks:
+- tasks/*.yaml

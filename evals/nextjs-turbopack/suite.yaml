@@ -1,0 +1,39 @@
+name: nextjs-turbopack-eval
+description: Version-specific Next.js bundler and cache diagnosis.
+skill: nextjs-turbopack
+schema_version: 1
+version: '1.0'
+config:
+  trials_per_task: 1
+  timeout_seconds: 300
+  parallel: false
+  retry_attempts: 0
+  fail_fast: true
+  skill_directories:
+  - ../../skills/framework/nextjs-turbopack
+  required_skills:
+  - nextjs-turbopack
+metrics:
+- name: behavior_quality
+  weight: 1.0
+  threshold: 1.0
+  description: Did the response satisfy every declared semantic outcome?
+graders:
+- type: prompt
+  name: nextjs-turbopack-contract
+  config:
+    prompt: |-
+      Grade the nextjs-turbopack response. Pass only when it uses the supplied
+      Next.js version and scripts, identifies the explicit webpack opt-out,
+      verifies release-specific behavior before changing flags, preserves the
+      .next cache, and proposes measured startup/HMR/build evidence. Reject
+      unconditional cache deletion, guessed flags, blanket webpack fallback, or
+      claims that development behavior proves the production bundler. Require a
+      material script-owner correction, raw first-command failure, zero effects,
+      separate production proof, and zero residue.
+- type: behavior
+  name: bounded_execution
+  config:
+    max_duration_ms: 240000
+tasks:
+- tasks/*.yaml

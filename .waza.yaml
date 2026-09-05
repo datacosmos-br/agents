@@ -23,5 +23,11 @@ tokens:
 
 paths:
   skills: skills
-  rules: rules
-  commands: commands
+  evals: evals
+
+# Development-only execution identity for Waza's schema. The root `waza` verb
+# proves this exact model is enabled in the authenticated local Waza catalog;
+# GovernanceBundle and the built distribution never include this file.
+defaults:
+  engine: copilot-sdk
+  model: gpt-5.4

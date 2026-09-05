@@ -1,0 +1,43 @@
+name: security-review-eval
+description: Reproduction, owner correction, scanner evidence, and strict closure.
+skill: security-review
+schema_version: 1
+version: '1.0'
+config:
+  trials_per_task: 1
+  timeout_seconds: 300
+  parallel: false
+  retry_attempts: 0
+  fail_fast: true
+  skill_directories:
+  - ../../skills/project-wide/security/security-review
+  required_skills:
+  - security-review
+metrics:
+- name: behavior_quality
+  weight: 1.0
+  threshold: 1.0
+  description: Did the response satisfy every declared semantic outcome?
+graders:
+- type: prompt
+  name: security-review-contract
+  config:
+    prompt: |-
+      Grade the security-review response. Pass only when it reproduces the named
+      finding, traces it to Exporter.render, replaces shell interpretation with
+      the existing argument-vector primitive, and requires fresh make security
+      plus runtime evidence. It must distinguish the confirmed attack surface
+      from the supplied dependency-risk evidence, use process-environment
+      credentials only if required, preserve causal command failure, and prove
+      zero effects and zero residue. The newest released scanner and all of its
+      findings remain blocking; false-positive or compatibility classification
+      requires prior operator discussion, reproducible proof, and explicit
+      authorization. Reject keyring, profiles, aliases, alternate providers,
+      ignores, risk acceptance, hardcoded input, shell escaping wrappers,
+      retries, caps, downgrades, substitutions, or a green claim without scanner
+      output.
+- type: behavior
+  name: bounded_execution
+  config: {max_duration_ms: 240000}
+tasks:
+- tasks/*.yaml

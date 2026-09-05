@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import re
+import stat
 from dataclasses import dataclass
 from enum import StrEnum
 from pathlib import Path, PurePosixPath
@@ -73,6 +74,28 @@ _OPTIONAL_STRING_FIELDS = frozenset({"allowed-tools", "compatibility", "license"
 _BUDGET_FIELDS = frozenset(
     {"router_tokens", "frozen_tokens", "on_demand_tokens", "max_lines"}
 )
+_LINK = re.compile(r"\[[^\]]+\]\(([^)]+)\)")
+_FENCED_CODE = re.compile(r"^```.*?^```\s*$", re.MULTILINE | re.DOTALL)
+_DESCRIPTION_TOKEN = r"[a-z0-9](?:[a-z0-9+./_-]*[a-z0-9+])?"
+_DESCRIPTION_TERM = re.compile(
+    rf"{_DESCRIPTION_TOKEN}(?: {_DESCRIPTION_TOKEN}){{0,2}}\Z"
+)
+_PROSE_MARKERS = frozenset(
+    {
+        "after",
+        "because",
+        "before",
+        "during",
+        "if",
+        "then",
+        "that",
+        "when",
+        "where",
+        "which",
+        "while",
+        "whose",
+    }
+)
 
 
 class SkillCategory(StrEnum):
@@ -112,8 +135,9 @@ class Catalog:
 
     def __init__(self, root: Path) -> None:
         self.root = root.resolve(strict=True)
-        self._load_policy(self.root / "config" / "skills.json")
+        self._policy = self._load_policy(self.root / "config" / "skills.json")
         self._records = self._discover()
+        self._validate_tree()
         for record in self._records:
             resolve_approval_tags(self.root, record.tags, record.directory / "SKILL.md")
 
@@ -149,6 +173,115 @@ class Catalog:
             if not isinstance(value, str) or not value or value != value.strip():
                 raise TypeError(f"{path}: {field} must be a non-empty trimmed string")
         return frontmatter
+
+    @staticmethod
+    def _require_description(value: object, path: Path) -> None:
+        if not isinstance(value, str) or not value:
+            raise ValueError(f"{path}: description is required")
+        if value != value.strip() or "\n" in value or "\r" in value:
+            raise ValueError(f"{path}: description must be one trimmed line")
+        if not 12 <= len(value) <= 96 or value != value.casefold():
+            raise ValueError(f"{path}: description must be 12-96 lowercase characters")
+        if re.search(r",(?! )| ,", value):
+            raise ValueError(f"{path}: description terms require comma-space")
+        terms = value.split(", ")
+        if not 3 <= len(terms) <= 10 or len(terms) != len(set(terms)):
+            raise ValueError(f"{path}: description requires 3-10 unique terms")
+        if any(marker in term.split() for term in terms for marker in _PROSE_MARKERS):
+            raise ValueError(f"{path}: description must be terms, not prose")
+        if any(_DESCRIPTION_TERM.fullmatch(term) is None for term in terms):
+            raise ValueError(f"{path}: description contains an invalid term")
+
+    @staticmethod
+    def _physical_tree(directory: Path) -> tuple[Path, ...]:
+        if directory.is_symlink() or not directory.is_dir():
+            raise ValueError(f"skill bundle must be a physical directory: {directory}")
+        paths = tuple(sorted(directory.rglob("*")))
+        for path in paths:
+            mode = path.lstat().st_mode
+            if stat.S_ISLNK(mode):
+                raise ValueError(f"symlink forbidden in skill bundle: {path}")
+            if not stat.S_ISDIR(mode) and not stat.S_ISREG(mode):
+                raise ValueError(f"unsupported skill resource type: {path}")
+        return paths
+
+    def _require_local_links(self, directory: Path, markdown: Path) -> None:
+        text = _FENCED_CODE.sub("", markdown.read_text(encoding="utf-8"))
+        for raw_target in _LINK.findall(text):
+            target = raw_target.strip().split(maxsplit=1)[0]
+            if target.startswith(("http://", "https://", "#", "mailto:")):
+                continue
+            clean = target.split("#", 1)[0].split("?", 1)[0]
+            if not clean or ("/" not in clean and "." not in clean):
+                continue
+            portable = PurePosixPath(clean)
+            if portable.is_absolute() or "\\" in clean:
+                raise ValueError(f"{markdown}: local reference escapes skill bundle")
+            candidate = markdown.parent.joinpath(*portable.parts)
+            resolved = candidate.resolve(strict=True)
+            resolved.relative_to(directory.resolve(strict=True))
+            resolved.relative_to(self.root)
+
+    def _validate_record(self, record: SkillRecord) -> None:
+        directory = record.directory
+        resources = self._physical_tree(directory)
+        skill_file = directory / "SKILL.md"
+        frontmatter = self._frontmatter(skill_file)
+        self._require_description(frontmatter.get("description"), skill_file)
+        budgets = cast(dict[str, int], self._policy["budgets"])
+        if (
+            len(skill_file.read_text(encoding="utf-8").splitlines())
+            > budgets["max_lines"]
+        ):
+            raise ValueError(f"{skill_file}: skill exceeds max_lines")
+        project_distributed = record.category is SkillCategory.PROJECT_WIDE or (
+            record.category.conditional
+            and "project" in record.routes
+            and record.activation != "opt-in"
+        )
+        for path in resources:
+            if not path.is_file():
+                continue
+            text = path.read_text(encoding="utf-8")
+            if project_distributed and NON_PORTABLE_PROJECT_REFERENCE.search(text):
+                raise ValueError(f"project-distributed skill is not portable: {path}")
+            if path.suffix == ".md":
+                self._require_local_links(directory, path)
+
+    def _validate_tree(self) -> None:
+        skills_root = self.root / "skills"
+        allowed_root_files = {skills_root / "README.md"}
+        category_roots = {skills_root / category.value for category in SkillCategory}
+        for entry in skills_root.iterdir():
+            if entry in allowed_root_files:
+                if entry.is_symlink() or not entry.is_file():
+                    raise ValueError(f"skill root document must be physical: {entry}")
+                continue
+            if entry not in category_roots:
+                raise ValueError(f"unknown skill root entry: {entry}")
+        owners = tuple(
+            record.directory.resolve(strict=True) for record in self._records
+        )
+        for category_root in sorted(category_roots):
+            if category_root.is_symlink() or not category_root.is_dir():
+                raise ValueError(f"skill category must be physical: {category_root}")
+            for path in sorted(category_root.rglob("*")):
+                mode = path.lstat().st_mode
+                if stat.S_ISLNK(mode):
+                    raise ValueError(f"symlink forbidden in skills tree: {path}")
+                if stat.S_ISDIR(mode):
+                    if not any(path.iterdir()):
+                        raise ValueError(f"empty skill directory is forbidden: {path}")
+                    continue
+                if not stat.S_ISREG(mode):
+                    raise ValueError(f"unsupported skill resource type: {path}")
+                resolved = path.resolve(strict=True)
+                if not any(resolved.is_relative_to(owner) for owner in owners):
+                    raise ValueError(
+                        f"orphan skill resource has no SKILL.md owner: {path}"
+                    )
+        for record in self._records:
+            self._validate_record(record)
 
     @staticmethod
     def _one_tag(

@@ -1,0 +1,37 @@
+name: agent-browser-eval
+description: Snapshot-ref browser interaction and evidence.
+skill: agent-browser
+schema_version: 1
+version: '1.0'
+config:
+  trials_per_task: 1
+  timeout_seconds: 300
+  parallel: false
+  retry_attempts: 0
+  fail_fast: true
+  skill_directories:
+  - ../../skills/tool/agent-browser
+  required_skills:
+  - agent-browser
+metrics:
+- name: behavior_quality
+  weight: 1.0
+  threshold: 1.0
+  description: Did the response satisfy every declared semantic outcome?
+graders:
+- type: prompt
+  name: agent-browser-contract
+  config:
+    prompt: |-
+      Grade the agent-browser response. Pass only when it preflights the current
+      page and effect boundary, uses a fresh interactive snapshot before every
+      ref-based action, fills every requested field, re-snapshots after the DOM
+      change, and reports the rendered confirmation plus durable screenshot
+      evidence. Reject stale refs, selector invention, profiles, aliases,
+      retries, fallback, partial artifacts, or unobserved success. On missing
+      page or snapshot, require the first cause and zero browser effects.
+- type: behavior
+  name: bounded_execution
+  config: {max_duration_ms: 240000}
+tasks:
+- tasks/*.yaml

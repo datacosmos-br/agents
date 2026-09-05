@@ -1,0 +1,36 @@
+name: brand-voice-eval
+description: Source-derived reusable voice-profile construction.
+skill: brand-voice
+schema_version: 1
+version: '1.0'
+config:
+  trials_per_task: 1
+  timeout_seconds: 300
+  parallel: false
+  retry_attempts: 0
+  fail_fast: true
+  skill_directories:
+  - ../../skills/agent-wide/personal/brand-voice
+  required_skills:
+  - brand-voice
+metrics:
+- name: behavior_quality
+  weight: 1.0
+  threshold: 1.0
+  description: Did the response satisfy every declared semantic outcome?
+graders:
+- type: prompt
+  name: brand-voice-contract
+  config:
+    prompt: |-
+      Grade the brand-voice response. Pass only when its VOICE PROFILE follows the canonical schema and every
+      rhythm, claim, preferred-move, banned-move, and channel observation is
+      traceable to the supplied samples. Reject generic platform advice,
+      personality invention, stale-profile substitution, partial profiles, or
+      averaging away a visible source split. Missing samples must stop at the
+      first source defect with no profile publication.
+- type: behavior
+  name: bounded_execution
+  config: {max_duration_ms: 240000}
+tasks:
+- tasks/*.yaml

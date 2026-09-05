@@ -1,0 +1,37 @@
+name: documentation-criteria-eval
+description: Semantic evaluation suite for documentation-criteria.
+skill: documentation-criteria
+schema_version: 1
+version: '1.0'
+config:
+  trials_per_task: 1
+  timeout_seconds: 300
+  parallel: false
+  retry_attempts: 0
+  fail_fast: true
+  skill_directories:
+  - ../../skills/project-wide/documentation/documentation-criteria
+  required_skills:
+  - documentation-criteria
+metrics:
+- name: behavior_quality
+  weight: 1.0
+  threshold: 1.0
+  description: Did the response select the required documents and order from evidence?
+graders:
+- type: prompt
+  name: documentation-criteria-contract
+  config:
+    prompt: |-
+      Grade the documentation-criteria response. Pass only if it applies the
+      semantic-impact and authority criteria to the supplied change, selects every
+      required document in the correct order, assigns each concern to the
+      proper document scope, and names measurable structural and approval gates
+      without producing unnecessary documentation, default paths, placeholders,
+      or dependent drafts before upstream approval.
+- type: behavior
+  name: bounded_execution
+  config:
+    max_duration_ms: 240000
+tasks:
+- tasks/*.yaml

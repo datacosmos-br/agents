@@ -6,6 +6,7 @@ TEST_STATE_ROOT := $(CACHE_HOME)/agents-governance/pytest
 TESTMON_DATAFILE := $(TEST_STATE_ROOT)/.testmondata
 PYTEST_SCRATCH := $(TEST_STATE_ROOT)/scratch
 WHEEL_SMOKE := $(CACHE_HOME)/agents-governance/wheel-smoke
+WAZA_PROJECTION_ROOT := $(CACHE_HOME)/agents-governance/waza-projection
 OBSOLETE_LOCAL_PATHS := \
 	$(CURDIR)/.testmondata \
 	$(CURDIR)/.pytest-scratch \
@@ -18,11 +19,12 @@ OBSOLETE_LOCAL_PATHS := \
 	$(CURDIR)/tests/__pycache__
 override export TESTMON_DATAFILE := $(TESTMON_DATAFILE)
 override export PYTHONDONTWRITEBYTECODE := 1
+override export WAZA_PROJECTION_ROOT := $(WAZA_PROJECTION_ROOT)
 override export UV_PROJECT_ENVIRONMENT := $(CURDIR)/.venv
 override export VIRTUAL_ENV := $(CURDIR)/.venv
 
 .DEFAULT_GOAL := help
-.PHONY: help setup docs audit check runtime waza static conform fmt fix shell duplication build test test-full ci validate-wheel publish
+.PHONY: help setup docs audit check runtime waza static conform fmt fix mod mod-check shell duplication build test test-full ci validate-wheel publish
 .DELETE_ON_ERROR:
 
 define BANNER
@@ -55,6 +57,7 @@ check: ## run every applicable non-test gate; requires APPLY=Y
 	$(call BANNER,check · complete non-test gate composition)
 	@$(MAKE) docs
 	@$(MAKE) static
+	@$(MAKE) mod-check
 	@$(MAKE) conform
 	@$(MAKE) waza
 	@$(MAKE) runtime APPLY=Y
@@ -72,19 +75,34 @@ audit: ## print the complete public semantic inventory
 	fi
 	@uv run python -c 'from agents_governance import GovernanceBundle; bundle = GovernanceBundle.load(); print(f"{len(bundle.skills)} skills, {len(bundle.commands)} commands, {len(bundle.agents)} agents, {len(bundle.rules)} rules")'
 
-waza: ## validate provider-neutral skill suites and Waza token ceilings
-	$(call BANNER,waza · provider-neutral suites + strict token ceilings)
+waza: ## validate provider-neutral skill suites and Waza readiness; requires APPLY=Y
+	$(call REQUIRE_APPLY)
 	@$(MAKE) audit
+	$(call BANNER,waza · provider-neutral suites + strict readiness)
+	@test "$$($(MISE_EXEC) waza --version)" = 'waza version 0.38.7'
+	@$(MISE_EXEC) waza models --json | uv run python tools/validate_waza_runtime.py
+	@uv run python tools/render_waza_projection.py
 	@$(MISE_EXEC) waza tokens check "$(CURDIR)/skills" --strict --no-update-check
 	@$(MISE_EXEC) waza tokens check "$(CURDIR)/rules" --strict --no-update-check
 	@$(MISE_EXEC) waza tokens check "$(CURDIR)/commands" --strict --no-update-check
+	@expected="$$(find "$(CURDIR)/skills" -type f -name SKILL.md | wc -l)"; \
+	output="$$(cd "$(WAZA_PROJECTION_ROOT)" && $(MISE_EXEC) waza check --no-update-check 2>&1)" || { \
+		status=$$?; printf '%s\n' "$$output"; exit $$status; \
+	}; \
+	test -n "$$output" || { echo 'Waza produced empty output' >&2; exit 1; }; \
+	printf '%s\n' "$$output"; \
+	high="$$(printf '%s\n' "$$output" | grep -c '📋 Compliance Score: High')"; \
+	ready="$$(printf '%s\n' "$$output" | grep -c '✅ Your skill is ready for submission!')"; \
+	test "$$high" -eq "$$expected" || { echo "Waza High count $$high != $$expected" >&2; exit 1; }; \
+	test "$$ready" -eq "$$expected" || { echo "Waza ready count $$ready != $$expected" >&2; exit 1; }; \
+	case "$$output" in *'⚠'*|*'❌'*) echo 'Waza reported a warning or failure' >&2; exit 1;; esac
 
 static: ## lint, formatting, and Python type analysis
 	$(call BANNER,static · ruff + pyright + mypy)
-	@uv run ruff check src tests
-	@uv run ruff format --check src tests
-	@uv run pyright src tests
-	@uv run mypy src tests
+	@uv run ruff check src tests tools
+	@uv run ruff format --check src tests tools
+	@uv run pyright src tests tools
+	@uv run mypy src tests tools
 
 conform: ## validate workflow and zero-duplication conformance
 	@$(MAKE) shell
@@ -93,12 +111,12 @@ conform: ## validate workflow and zero-duplication conformance
 fmt: ## apply canonical Python formatting; requires APPLY=Y
 	$(call REQUIRE_APPLY)
 	$(call BANNER,fmt · ruff format)
-	@uv run ruff format src tests
+	@uv run ruff format src tests tools
 
 fix: ## apply canonical corrections; requires APPLY=Y
 	$(call REQUIRE_APPLY)
 	$(call BANNER,fix · ruff)
-	@uv run ruff check --fix src tests
+	@uv run ruff check --fix src tests tools
 	@for obsolete in $(OBSOLETE_LOCAL_PATHS); do \
 		if [ -L "$$obsolete" ]; then \
 			echo "refusing symlinked local cache: $$obsolete" >&2; exit 1; \
@@ -111,13 +129,26 @@ fix: ## apply canonical corrections; requires APPLY=Y
 		fi; \
 	done
 
+mod-check: ## test ast-grep rules and reject structural migration residue
+	$(call BANNER,mod-check · ast-grep tests + strict structural scan)
+	@$(MISE_EXEC) ast-grep test --config "$(CURDIR)/sgconfig.yml" --skip-snapshot-tests
+	@$(MISE_EXEC) ast-grep scan --config "$(CURDIR)/sgconfig.yml" --error "$(CURDIR)/evals"
+
+mod: ## apply tested structural migrations; requires APPLY=Y
+	$(call REQUIRE_APPLY)
+	$(call BANNER,mod · ast-grep structural rewrite)
+	@$(MISE_EXEC) ast-grep test --config "$(CURDIR)/sgconfig.yml" --skip-snapshot-tests
+	@$(MISE_EXEC) ast-grep scan --config "$(CURDIR)/sgconfig.yml" --update-all "$(CURDIR)/evals"
+	@$(MAKE) mod-check
+	@$(MAKE) audit
+
 shell: ## validate shell scripts and GitHub workflows
 	$(call BANNER,shell · actionlint)
 	@$(MISE_EXEC) actionlint .github/workflows/*.yml
 
 duplication: ## enforce zero strict duplication in canonical Python source
 	$(call BANNER,duplication · jscpd)
-	@$(MISE_EXEC) jscpd src tests --config $(CURDIR)/.jscpd.json --exit-code 1
+	@$(MISE_EXEC) jscpd src tests tools --config $(CURDIR)/.jscpd.json --exit-code 1
 
 build: ## build source and wheel artifacts; requires APPLY=Y
 	$(call REQUIRE_APPLY)

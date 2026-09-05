@@ -1,0 +1,40 @@
+name: context-canary-eval
+description: Semantic evaluation suite for context-canary.
+skill: context-canary
+schema_version: 1
+version: '1.0'
+config:
+  trials_per_task: 1
+  timeout_seconds: 300
+  parallel: false
+  retry_attempts: 0
+  fail_fast: true
+  skill_directories:
+  - ../../skills/agent-wide/planning/context-canary
+  required_skills:
+  - context-canary
+metrics:
+- name: behavior_quality
+  weight: 1.0
+  threshold: 1.0
+  description: Did the response preserve and recover the session contract?
+graders:
+- type: prompt
+  name: context-canary-contract
+  config:
+    prompt: |-
+      Grade the context-canary response. Pass only when it derives the canary
+      state from the supplied transcript, identifies counter or line drift,
+      and prescribes the documented checkpoint and re-grounding action without
+      inventing an operator name, turn number, or recovered fact. Any trip must
+      stop work, atomically record the durable checkpoint only when its selected
+      canonical owner is available, and re-read authority; missing identity must
+      produce zero continued work. During explicit tracker suspension, the
+      approved plan, canonical files, and authorized Git/PR/CI evidence are
+      recovery sources; creating another tracker or ledger fails.
+- type: behavior
+  name: bounded_execution
+  config:
+    max_duration_ms: 240000
+tasks:
+- tasks/*.yaml

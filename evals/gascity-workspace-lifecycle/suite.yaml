@@ -1,0 +1,41 @@
+name: gascity-workspace-lifecycle-eval
+description: Static workspace placement from declared Gas City configuration.
+skill: gascity-workspace-lifecycle
+schema_version: 1
+version: '1.0'
+config:
+  trials_per_task: 1
+  timeout_seconds: 300
+  parallel: false
+  retry_attempts: 0
+  fail_fast: true
+  skill_directories:
+  - ../../skills/tool/gascity-workspace-lifecycle
+  required_skills:
+  - gascity-workspace-lifecycle
+metrics:
+- name: behavior_quality
+  weight: 1.0
+  threshold: 1.0
+  description: Did the response satisfy every declared semantic outcome?
+graders:
+- type: prompt
+  name: gascity-workspace-lifecycle-contract
+  config:
+    prompt: |-
+      Grade the gascity-workspace-lifecycle response. Pass only when it derives
+      the city, rig, pinned Pack V2 import, agent, formula, provider, and physical
+      workspace from the supplied city.toml while keeping the suspended runtime
+      entirely static with zero workspace effects. Beads requirements apply only
+      when the project explicitly selects Beads. Distinguish delegated execution
+      through gc sling from an explicitly operator-authorized self-owned Git
+      worktree, and reject make work or any mixing of those modes. Reject
+      invented commands, unauthorized active dispatch, loose clones, temporary
+      or cross-repository paths, symlinks, provider fallback, or mechanical
+      command translation.
+- type: behavior
+  name: bounded_execution
+  config:
+    max_duration_ms: 240000
+tasks:
+- tasks/*.yaml

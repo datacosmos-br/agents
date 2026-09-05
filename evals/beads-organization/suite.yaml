@@ -1,0 +1,37 @@
+name: beads-organization-eval
+description: Beads deduplication gate, hierarchy alignment, and orphan resolution.
+skill: beads-organization
+schema_version: 1
+version: '1.0'
+config:
+  trials_per_task: 1
+  timeout_seconds: 300
+  parallel: false
+  retry_attempts: 0
+  fail_fast: true
+  skill_directories:
+  - ../../skills/tool/beads-organization
+  required_skills:
+  - beads-organization
+metrics:
+- name: behavior_quality
+  weight: 1.0
+  threshold: 1.0
+  description: Did the response satisfy every declared semantic outcome?
+graders:
+- type: prompt
+  name: beads-organization-contract
+  config:
+    prompt: |-
+      Grade the beads-organization response. Pass only when the deduplication
+      gate runs before any external push, closes carry descriptive SUPERSEDED,
+      OBSOLETE, or DONE reasons, metadata-proven legitimate triads are
+      adjudicated instead of blindly closed, labels follow the priority and
+      domain convention, and no open child keeps a closed parent. Reject
+      invented commands, bulk creation above the limit without a reviewed
+      dry-run, substitute trackers, or fake closure.
+- type: behavior
+  name: bounded_execution
+  config: {max_duration_ms: 240000}
+tasks:
+- tasks/*.yaml

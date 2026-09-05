@@ -1,0 +1,38 @@
+name: eval-harness-eval
+description: Semantic evaluation suite for eval-harness.
+skill: eval-harness
+schema_version: 1
+version: '1.0'
+config:
+  trials_per_task: 1
+  timeout_seconds: 300
+  parallel: false
+  retry_attempts: 0
+  fail_fast: true
+  skill_directories:
+  - ../../skills/project-wide/testing/eval-harness
+  required_skills:
+  - eval-harness
+metrics:
+- name: behavior_quality
+  weight: 1.0
+  threshold: 1.0
+  description: Did the eval definition provide executable capability, regression, fail-closed, and non-activation proof?
+graders:
+- type: prompt
+  name: eval-harness-contract
+  config:
+    prompt: |-
+      Grade the eval-harness response. Pass only if it turns the supplied
+      observable behavior into capability and regression evals, uses concrete
+      deterministic graders where possible, states pass@k and pass^k targets,
+      identifies artifacts and baselines, and requires the first causal failure,
+      zero effects, and absence of fallback. Reject retries, alternate graders or
+      models, partial reports, fabricated baselines, and success without executed
+      evidence.
+- type: behavior
+  name: bounded_execution
+  config:
+    max_duration_ms: 240000
+tasks:
+- tasks/*.yaml

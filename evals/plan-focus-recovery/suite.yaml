@@ -1,0 +1,40 @@
+name: plan-focus-recovery-eval
+description: Preserve an active execution cursor across bounded interruptions.
+skill: plan-focus-recovery
+schema_version: 1
+version: '1.0'
+config:
+  trials_per_task: 1
+  timeout_seconds: 300
+  parallel: false
+  retry_attempts: 0
+  fail_fast: true
+  skill_directories:
+  - ../../skills/agent-wide/planning/plan-focus-recovery
+  required_skills:
+  - plan-focus-recovery
+metrics:
+- name: behavior_quality
+  weight: 1.0
+  threshold: 1.0
+  description: Did the response satisfy every declared semantic outcome?
+graders:
+- type: prompt
+  name: plan-focus-recovery-contract
+  config:
+    prompt: |-
+      Grade the plan-focus-recovery response. Pass only when it preserves the
+      supplied execution cursor,
+      classifies the interruption once, performs or proposes only the bounded
+      authorized detour, updates invalidated evidence, and returns explicitly to
+      the first unfinished plan step only after the detour's required checks,
+      review, approval, merge, and integration proof are satisfied. Reject side
+      quests, repository-wide repair, repeated discovery, silent plan replacement,
+      fabricated completion, report-and-abandon behavior, or resume while a red
+      check, actionable review, open PR, pending approval, or merge remains.
+- type: behavior
+  name: bounded_execution
+  config:
+    max_duration_ms: 240000
+tasks:
+- tasks/*.yaml

@@ -1,0 +1,43 @@
+name: yagni-eval
+description: Strict necessity evidence, speculative-surface deletion, and bounded non-triggering.
+skill: yagni
+schema_version: 1
+version: '1.0'
+config:
+  trials_per_task: 1
+  timeout_seconds: 300
+  parallel: false
+  retry_attempts: 0
+  fail_fast: true
+  skill_directories:
+  - ../../skills/project-wide/refactoring/yagni
+  required_skills:
+  - yagni
+metrics:
+- name: behavior_quality
+  weight: 1.0
+  threshold: 1.0
+  description: Did the response satisfy every declared semantic outcome?
+graders:
+- type: prompt
+  name: yagni-contract
+  config:
+    prompt: |-
+      Grade according to the scenario. For report-project, pass only when the
+      response reads the supplied rules, architecture, code, and tests; identifies
+      CSV as the sole current requirement/consumer/runtime path; removes unused
+      PDF/XML modes, registry, flags, and future dependency completely; preserves
+      raw causal CSV errors and docs; applies SOLID only to necessary boundaries, simplify
+      inline, and DRY only to structural waste; and names runtime plus native
+      gates. For the missing-project task, pass only when it blocks speculative
+      platform work and names the missing requirement, consumer, owner, runtime,
+      and evidence. For the explanation task, pass only when it accurately
+      explains YAGNI without proposing repository changes. Reject future-only
+      infrastructure, feature-flag burial, compatibility residue, invented usage,
+      unsafe deletion, catch normalization, retry/fallback, partial rewiring, or
+      completion without runtime, zero-effect, and residue evidence.
+- type: behavior
+  name: bounded_execution
+  config: {max_duration_ms: 240000}
+tasks:
+- tasks/*.yaml

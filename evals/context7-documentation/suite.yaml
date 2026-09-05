@@ -1,0 +1,37 @@
+name: context7-documentation-eval
+description: Semantic evaluation suite for context7-documentation.
+skill: context7-documentation
+schema_version: 1
+version: '1.0'
+config:
+  trials_per_task: 1
+  timeout_seconds: 300
+  parallel: false
+  retry_attempts: 0
+  fail_fast: true
+  skill_directories:
+  - ../../skills/tool/context7-documentation
+  required_skills:
+  - context7-documentation
+metrics:
+- name: behavior_quality
+  weight: 1.0
+  threshold: 1.0
+  description: Did lookup resolve and use the correct current documentation?
+graders:
+- type: prompt
+  name: context7-documentation-contract
+  config:
+    prompt: |-
+      Grade the context7-documentation response. Pass only if it preflights the
+      package/import/version identity, resolves one official version-compatible
+      Context7 ID before fetching, and returns a material answer grounded in the
+      fetched documentation with library, version, and source evidence. Reject
+      secret-bearing queries, remembered APIs, retries, alternate providers or
+      versions, partial snippets, and any tool call when identity is missing.
+- type: behavior
+  name: bounded_execution
+  config:
+    max_duration_ms: 240000
+tasks:
+- tasks/*.yaml
