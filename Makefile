@@ -18,6 +18,7 @@ OBSOLETE_LOCAL_PATHS := \
 	$(CURDIR)/src/agents_governance/__pycache__ \
 	$(CURDIR)/tests/__pycache__
 override export TESTMON_DATAFILE := $(TESTMON_DATAFILE)
+override export COVERAGE_CORE := ctrace
 override export ARTIFACT_STATE_ROOT := $(ARTIFACT_STATE_ROOT)
 override export PYTHONDONTWRITEBYTECODE := 1
 override export PYRIGHT_PYTHON_CACHE_DIR := $(PYRIGHT_CACHE_ROOT)
