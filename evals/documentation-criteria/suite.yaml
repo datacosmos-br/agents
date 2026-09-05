@@ -1,5 +1,4 @@
-
-description: Semantic evaluation suite for documentation-criteria.
+description: Authority-ordered documentation impact classification and placement.
 prompt: |-
   Grade the documentation-criteria response. Pass only if it applies the
   semantic-impact and authority criteria to the supplied change, selects every

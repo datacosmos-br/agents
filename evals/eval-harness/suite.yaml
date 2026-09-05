@@ -1,5 +1,4 @@
-
-description: Semantic evaluation suite for eval-harness.
+description: Observable capability evaluation with deterministic regression graders.
 prompt: |-
   Grade the eval-harness response. Pass only if it turns the supplied
   observable behavior into capability and regression evals, uses concrete

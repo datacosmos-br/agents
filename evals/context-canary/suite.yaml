@@ -1,5 +1,4 @@
-
-description: Semantic evaluation suite for context-canary.
+description: Transcript-grounded context drift detection and recovery checkpoints.
 prompt: |-
   Grade the context-canary response. Pass only when it derives the canary
   state from the supplied transcript, identifies counter or line drift,

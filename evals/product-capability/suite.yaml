@@ -1,4 +1,3 @@
-
 description: Product intent, constraints, contracts, and implementation handoff.
 prompt: |-
   Grade the product-capability response. Pass only when it derives the actor,

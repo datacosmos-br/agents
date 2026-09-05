@@ -1,4 +1,3 @@
-
 description: Complete configured-repository PR triage without bypass or orchestration.
 prompt: |-
   Grade the pr-sheriff response. Pass only when it uses the explicitly

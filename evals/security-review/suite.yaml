@@ -1,4 +1,3 @@
-
 description: Reproduction, owner correction, scanner evidence, and strict closure.
 prompt: |-
   Grade the security-review response. Pass only when it reproduces the named

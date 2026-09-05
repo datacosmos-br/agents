@@ -1,4 +1,3 @@
-
 description: C and C++ ownership, build, and verification decisions.
 prompt: |-
   Grade the cpp-development response. Pass only when it traces ownership in the supplied C++ fixture,

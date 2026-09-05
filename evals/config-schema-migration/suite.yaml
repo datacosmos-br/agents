@@ -1,4 +1,3 @@
-
 description: Atomic configuration-schema cutover decisions.
 prompt: |-
   Grade the config-schema-migration response. Pass only when it defines one final schema, names producers and

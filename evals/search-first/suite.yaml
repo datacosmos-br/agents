@@ -1,4 +1,3 @@
-
 description: Project discovery, bounded reuse decisions, inline simplification, and conditional structural DRY.
 prompt: |-
   Grade according to the task's role.

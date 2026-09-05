@@ -1,4 +1,3 @@
-
 description: Silent-failure diagnosis, owner repair, and failover extermination.
 prompt: |-
   Grade the fail-fast response. Pass only when it identifies the ignored

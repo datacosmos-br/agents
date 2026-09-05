@@ -1,11 +1,9 @@
 """Strict registry-free discovery of canonical engineering rules."""
 
-from __future__ import annotations
-
+import dataclasses
 import json
 import re
 import stat
-from dataclasses import dataclass
 from enum import StrEnum
 from pathlib import Path, PurePosixPath
 from typing import cast
@@ -40,7 +38,7 @@ class RuleDistribution(StrEnum):
     BOTH = "both"
 
 
-@dataclass(frozen=True)
+@dataclasses.dataclass(frozen=True)
 class RuleSpec:
     path: Path
     identity: str

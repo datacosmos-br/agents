@@ -1,4 +1,3 @@
-
 description: Static tracker and documentation-drift classification with evidence.
 prompt: |-
   Grade the governance-audit response. Pass only when it audits every supplied

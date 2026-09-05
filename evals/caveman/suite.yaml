@@ -1,4 +1,3 @@
-
 description: Concise evidence-preserving operator communication.
 prompt: |-
   Grade the caveman response. Pass only when it puts the supplied failure first, preserves command, cwd,

@@ -1,4 +1,3 @@
-
 description: Managing Gas City rigs.
 prompt: |-
   Grade the gc-rigs response. Pass only when it uses gc rigs through the

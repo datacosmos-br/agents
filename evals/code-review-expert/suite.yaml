@@ -1,4 +1,3 @@
-
 description: Evidence-backed severity review of current changes.
 prompt: |-
   Grade the code-review-expert response. Pass only when it reviews the supplied patch without editing, reports

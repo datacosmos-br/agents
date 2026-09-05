@@ -1,4 +1,3 @@
-
 description: Managing Gas City agents.
 prompt: |-
   Grade the gc-agents response. Pass only when it uses gc agents through the

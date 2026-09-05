@@ -1,14 +1,14 @@
 id: gascity-docs-happy-001
-name: Happy path gascity-docs
-description: Exercise canonical gascity docs workflow.
+name: Document worker drain and restart behavior
+description: Update the correct guide and reference pages from the runtime owner.
 tags: [gas-city, gascity-docs, happy-path]
 inputs:
   prompt: >-
-    Demonstrate the canonical gascity-docs workflow using gascity docs against the
-    current project. Preflight the city/rig context, run the primary command
-    via the project's declared facade, and report exact command, cwd, exit
-    code, and decisive output without bypass or fallback.
+    Read scenario.yaml and document worker drain/restart behavior without copying
+    configuration defaults. Place task guidance and key-only reference material
+    in the existing information architecture, link the runtime owner, update
+    navigation if required, and prove the canonical docs gate.
   files:
   - path: scenario.yaml
 expected:
-  output_contains: [project docs, writing conventions, IA structure, verification gates, gascity, docs]
+  output_contains: [getting-started, operations, reference, config/agents.yaml, navigation, make docs APPLY=Y]

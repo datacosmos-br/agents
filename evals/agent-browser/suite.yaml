@@ -1,4 +1,3 @@
-
 description: Snapshot-ref browser interaction and evidence.
 prompt: |-
   Grade the agent-browser response. Pass only when it preflights the current

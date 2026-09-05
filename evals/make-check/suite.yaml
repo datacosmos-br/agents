@@ -1,4 +1,3 @@
-
 description: Native Make-gate selection and evidence without raw-tool bypasses.
 prompt: |-
   Grade the make-check response. Pass only when it inspects the supplied

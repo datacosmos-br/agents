@@ -1,4 +1,3 @@
-
 description: Gas City city lifecycle.
 prompt: |-
   Grade the gc-city response. Pass only when it treats managed state as the

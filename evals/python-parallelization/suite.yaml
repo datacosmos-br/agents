@@ -1,4 +1,3 @@
-
 description: Python workload classification, bounded concurrency, and measured proof.
 prompt: |-
   Grade the python-parallelization response. Pass only when it classifies the supplied workload, uses the

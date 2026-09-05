@@ -1,4 +1,3 @@
-
 description: Structural deduplication, god-pattern removal, efficiency evidence, and readable compactness.
 prompt: |-
   Grade according to the scenario. For the order-project task, pass only when

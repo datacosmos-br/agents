@@ -1,4 +1,3 @@
-
 description: Allowed lane command forms and precise denials for chaining and output loss.
 prompt: |-
   Grade bash-guard-lane-execution. Pass only when the response replaces `cd`,

@@ -1,4 +1,3 @@
-
 description: Go cancellation, error, race, ownership, and native-gate decisions.
 prompt: |-
   Grade the go-development response. Pass only when it cites the supplied Go

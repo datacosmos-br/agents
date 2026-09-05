@@ -1,4 +1,3 @@
-
 description: Binary residue audit, integration runtime, PR merge, and tracker closure.
 prompt: |-
   Grade the sprint-closure response. Pass only when it treats every residue

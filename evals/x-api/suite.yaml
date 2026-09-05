@@ -1,4 +1,3 @@
-
 description: Authorized X operations, correct auth context, rate limits, and secret safety.
 prompt: |-
   Grade the x-api response. Pass only when it derives the single-post method,

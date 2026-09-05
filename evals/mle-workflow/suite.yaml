@@ -1,4 +1,3 @@
-
 description: Point-in-time ML contracts, baselines, artifacts, rollout, and monitoring.
 prompt: |-
   Grade the mle-workflow response. Pass only when it derives the prediction

@@ -1,4 +1,3 @@
-
 description: Gas City inter-agent mail.
 prompt: |-
   Grade the gc-mail response. Pass only when it uses gc mail through the

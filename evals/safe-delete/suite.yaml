@@ -1,4 +1,3 @@
-
 description: Atomic source cutover, exact artifact retirement, preservation, and recovery.
 prompt: |-
   Grade the safe-delete response. Pass only when it resolves exact targets,

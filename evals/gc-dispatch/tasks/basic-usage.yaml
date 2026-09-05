@@ -1,14 +1,14 @@
 id: gc-dispatch-happy-001
-name: Happy path gc-dispatch
-description: Exercise canonical gc sling workflow.
+name: Sling an indexed migration formula
+description: Resolve the target role and formula variables before dispatch.
 tags: [gas-city, gc-dispatch, happy-path]
 inputs:
   prompt: >-
-    Demonstrate the canonical gc-dispatch workflow using gc sling against the
-    current project. Preflight the city/rig context, run the primary command
-    via the project's declared facade, and report exact command, cwd, exit
-    code, and decisive output without bypass or fallback.
+    Read scenario.yaml, verify that search/worker and indexed-migration exist,
+    validate both required variables, then sling bead search-118 to the role on
+    that formula. Report exact discovery and dispatch commands, cwd, exit code,
+    convoy/order identity, and decisive output.
   files:
   - path: scenario.yaml
 expected:
-  output_contains: [dispatch, sling routing, formula workflow, convoy orders, gc, sling]
+  output_contains: [search/worker, indexed-migration, products-v3, dev, gc sling, search-118, exit code]

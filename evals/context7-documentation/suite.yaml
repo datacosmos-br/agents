@@ -1,5 +1,4 @@
-
-description: Semantic evaluation suite for context7-documentation.
+description: Version-bound official library documentation retrieval and citation.
 prompt: |-
   Grade the context7-documentation response. Pass only if it preflights the
   package/import/version identity, resolves one official version-compatible

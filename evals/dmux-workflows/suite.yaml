@@ -1,5 +1,4 @@
-
-description: Semantic evaluation suite for dmux-workflows.
+description: Independent pane delegation with serial dependency synthesis.
 prompt: |-
   Grade the dmux-workflows response. Pass only if it identifies genuinely
   independent work, assigns complete non-overlapping read-only pane

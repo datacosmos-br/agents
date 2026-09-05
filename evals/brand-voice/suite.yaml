@@ -1,4 +1,3 @@
-
 description: Source-derived reusable voice-profile construction.
 prompt: |-
   Grade the brand-voice response. Pass only when its VOICE PROFILE follows the canonical schema and every

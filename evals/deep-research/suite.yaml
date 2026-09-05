@@ -1,5 +1,4 @@
-
-description: Semantic evaluation suite for deep-research.
+description: Multi-source decision research with citations and bounded inference.
 prompt: |-
   Grade the deep-research response. Pass only if it follows the supplied
   decision brief, decomposes the question, searches and deep-reads multiple

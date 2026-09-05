@@ -1,5 +1,4 @@
-
-description: Semantic evaluation suite for dispatch-agent.
+description: Roster-grounded specialist routing with non-overlapping task contracts.
 prompt: |-
   Grade the dispatch-agent response. Pass only if it uses the supplied
   current roster, compares trigger overlap and confidence, selects the

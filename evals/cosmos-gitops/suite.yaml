@@ -1,4 +1,3 @@
-
 description: Enforce declarative Cosmos GitOps delivery and sequential promotion.
 prompt: |-
   Grade the cosmos-gitops response. Pass only when it distinguishes repository from cluster

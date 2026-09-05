@@ -1,14 +1,15 @@
 id: gc-city-happy-001
-name: Happy path gc-city
-description: Exercise canonical gc city workflow.
+name: Start an initialized city supervisor
+description: Preview and start one stopped city before proving supervisor state.
 tags: [gas-city, gc-city, happy-path]
 inputs:
   prompt: >-
-    Demonstrate the canonical gc-city workflow using gc city against the
-    current project. Preflight the city/rig context, run the primary command
-    via the project's declared facade, and report exact command, cwd, exit
-    code, and decisive output without bypass or fallback.
+    Read scenario.yaml, verify city harbor is initialized and stopped, run the
+    canonical start dry-run, then start it and prove supervisor status. Do not
+    initialize again, stop it afterward, or perform teardown. Report command,
+    cwd, exit code, and decisive output for every transition.
   files:
   - path: scenario.yaml
 expected:
-  output_contains: [gas city, lifecycle, city init, start stop, supervisor status, gc, city]
+  output_contains: [harbor, gc start --dry-run, gc start, gc status, supervisor, exit code]
+  output_not_contains: [gc init, gc stop, teardown]

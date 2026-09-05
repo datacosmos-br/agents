@@ -1,4 +1,3 @@
-
 description: TypeScript boundary, module, and asynchronous-runtime decisions.
 prompt: |-
   Grade the typescript-development response. Pass only when it uses the supplied TypeScript fixture, treats

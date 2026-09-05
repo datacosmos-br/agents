@@ -1,4 +1,3 @@
-
 description: Version-evidenced MCP schemas, errors, transports, and ownership.
 prompt: |-
   Grade the mcp-server-patterns response. Pass only when it uses the pinned SDK

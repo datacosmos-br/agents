@@ -1,4 +1,3 @@
-
 description: Fact-preserving prose revision without generic AI mannerisms.
 prompt: |-
   Grade the human-writing-style response. Pass only when it preserves every

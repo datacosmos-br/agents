@@ -1,4 +1,3 @@
-
 description: Agent-loop failure capture, diagnosis, and contained recovery.
 prompt: |-
   Grade the agent-introspection-debugging response. Pass only when it captures the concrete repeated failure,

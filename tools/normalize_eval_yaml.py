@@ -12,7 +12,7 @@ def main() -> None:
         if path.is_symlink() or not path.is_file():
             raise ValueError(f"evaluation YAML must be a physical file: {path}")
         source = path.read_text(encoding="utf-8")
-        normalized = f"{source.rstrip()}\n"
+        normalized = f"{source.strip()}\n"
         if source != normalized:
             path.write_text(normalized, encoding="utf-8")
 

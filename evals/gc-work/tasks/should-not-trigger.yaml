@@ -1,11 +1,10 @@
 id: gc-work-negative-001
-name: Should not trigger gc-work
-description: Do not force gc-work onto unrelated work.
+name: Explain personal task prioritization
+description: Keep general productivity advice outside the canonical bead tracker.
 tags: [gas-city, gc-work, anti-trigger]
 inputs:
   prompt: >-
-    Write a short product announcement for a new feature. Do not use gc work
-    or Gas City orchestration in the response; the requested output is prose,
-    not an agent workflow.
+    Suggest a lightweight way for one person to prioritize household chores for
+    the weekend using urgency and effort.
 expected:
   output_not_contains: [gc work, Gas City]

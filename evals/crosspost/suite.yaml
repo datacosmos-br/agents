@@ -1,5 +1,4 @@
-
-description: Semantic evaluation suite for crosspost.
+description: Fact-preserving platform-native adaptation with distinct channel drafts.
 prompt: |-
   Grade the crosspost response. Pass only if it preserves the supplied
   voice and facts while producing distinct, platform-native versions for

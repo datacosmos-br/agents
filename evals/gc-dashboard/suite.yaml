@@ -1,4 +1,3 @@
-
 description: Gas City dashboard.
 prompt: |-
   Grade the gc-dashboard response. Pass only when it uses gc dashboard through the

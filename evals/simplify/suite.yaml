@@ -1,4 +1,3 @@
-
 description: Inline complete-code generation, fail-closed evidence, and bounded non-triggering.
 version: '2.0'
 prompt: |-

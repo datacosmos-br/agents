@@ -1,5 +1,4 @@
-
-description: Semantic evaluation suite for exa-search.
+description: Schema-matched bounded search with decisive primary-source reading.
 prompt: |-
   Grade the exa-search response. Pass only if it chooses the current Exa
   operation whose schema matches every supplied constraint, executes the

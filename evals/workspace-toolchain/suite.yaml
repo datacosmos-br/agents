@@ -1,4 +1,3 @@
-
 description: Binary ownership, layer routing, generated workspace surfaces, and runtime proof.
 prompt: |-
   Grade the workspace-toolchain response. Pass only when it selects the one

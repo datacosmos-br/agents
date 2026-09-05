@@ -1,14 +1,15 @@
 id: gc-agents-happy-001
-name: Happy path gc-agents
-description: Exercise canonical gc agents workflow.
+name: Reconcile one draining agent pool
+description: Restore declared capacity without disrupting the healthy session.
 tags: [gas-city, gc-agents, happy-path]
 inputs:
   prompt: >-
-    Demonstrate the canonical gc-agents workflow using gc agents against the
-    current project. Preflight the city/rig context, run the primary command
-    via the project's declared facade, and report exact command, cwd, exit
-    code, and decisive output without bypass or fallback.
+    Use scenario.yaml to reconcile the api-worker pool to capacity three. Prove
+    the running, draining, and absent session states; preserve api-worker-1,
+    complete the drain handshake for api-worker-2, and let the declared owner
+    materialize the replacement. Report exact commands and post-state evidence.
   files:
   - path: scenario.yaml
 expected:
-  output_contains: [gas city agents, session lifecycle, pool capacity, drain restart, reconciliation, gc, agents]
+  output_contains: [api-worker-1, api-worker-2, capacity, drain, reconciliation, post-state, exit code]
+  output_not_contains: [kill api-worker-1, manual tmux]

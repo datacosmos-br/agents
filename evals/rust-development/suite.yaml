@@ -1,4 +1,3 @@
-
 description: Rust contracts, ownership, error semantics, safety, and native gates.
 prompt: |-
   Grade the rust-development response. Pass only when it preserves the public

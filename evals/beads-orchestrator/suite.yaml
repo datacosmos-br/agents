@@ -1,4 +1,3 @@
-
 description: Tracker semantic consolidation and conflict convergence.
 prompt: |-
   Grade the beads-orchestrator response. Pass only when it classifies every

@@ -1,4 +1,3 @@
-
 description: Python engineering, debugging, and concurrency decisions.
 prompt: |-
   Grade the python-development response. Pass only when it uses evidence from the supplied Python fixture,

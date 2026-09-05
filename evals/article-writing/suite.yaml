@@ -1,4 +1,3 @@
-
 description: Source-backed long-form technical writing.
 prompt: |-
   Grade the article-writing response. Pass only when the article leads with the supplied benchmark, explains

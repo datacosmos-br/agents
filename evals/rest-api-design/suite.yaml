@@ -1,4 +1,3 @@
-
 description: REST resource, status, error, authorization, and pagination contracts.
 prompt: |-
   Grade the rest-api-design response. Pass only when it derives a plural resource contract from the supplied API

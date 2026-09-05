@@ -1,4 +1,3 @@
-
 description: Version-specific Next.js bundler and cache diagnosis.
 prompt: |-
   Grade the nextjs-turbopack response. Pass only when it uses the supplied

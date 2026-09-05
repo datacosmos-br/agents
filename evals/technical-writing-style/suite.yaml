@@ -1,4 +1,3 @@
-
 description: Direct technical prose, evidence, preserved meaning, and human tone.
 prompt: |-
   Grade the technical-writing-style response. Pass only when it leads with the

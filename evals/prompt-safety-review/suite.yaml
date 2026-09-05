@@ -1,4 +1,3 @@
-
 description: Fail-closed prompt safety, secret, injection, and governed-execution review.
 prompt: |-
   Grade the prompt-safety-review response. Pass only when it identifies the supplied prompt's

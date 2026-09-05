@@ -1,4 +1,3 @@
-
 description: Bun-owned install, run, test, and build decisions.
 prompt: |-
   Grade the bun-runtime response. Pass only when it derives the runtime, package manager, lockfile, scripts,

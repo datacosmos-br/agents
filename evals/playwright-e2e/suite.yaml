@@ -1,5 +1,4 @@
-
-description: Semantic evaluation suite for playwright-e2e.
+description: Project-native browser flows with exact selector and network evidence.
 prompt: |-
   Grade the playwright-e2e response. Pass only if it preflights the declared
   environment, derives selectors and network behavior from the fixture,

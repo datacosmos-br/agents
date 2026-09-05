@@ -1,14 +1,14 @@
 id: gc-dashboard-happy-001
-name: Happy path gc-dashboard
-description: Exercise canonical gc dashboard workflow.
+name: Start and verify the city dashboard
+description: Prove the configured dashboard API and web surface after startup.
 tags: [gas-city, gc-dashboard, happy-path]
 inputs:
   prompt: >-
-    Demonstrate the canonical gc-dashboard workflow using gc dashboard against the
-    current project. Preflight the city/rig context, run the primary command
-    via the project's declared facade, and report exact command, cwd, exit
-    code, and decisive output without bypass or fallback.
+    From scenario.yaml, preflight city harbor and the configured dashboard
+    address, start the stopped dashboard through its declared gc facade, then
+    prove both API health and web UI status at 127.0.0.1:7337. Report exact
+    commands, cwd, exit codes, and decisive output.
   files:
   - path: scenario.yaml
 expected:
-  output_contains: [dashboard, API server, web UI, realtime monitoring, gc]
+  output_contains: [harbor, 127.0.0.1:7337, API, web UI, gc dashboard, exit code]

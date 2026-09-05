@@ -1,5 +1,4 @@
-
-description: Semantic evaluation suite for doc-drift.
+description: Canonical-owner comparison and complete stale-document correction.
 prompt: |-
   Grade the doc-drift response. Pass only if it compares each documented
   command and runtime claim with the supplied canonical owner, identifies

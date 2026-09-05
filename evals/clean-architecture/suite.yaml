@@ -1,3 +1,2 @@
-
 description: Profile-aware inward dependency enforcement without ceremonial layers.
 prompt: Grade clean-architecture. Pass only when internal code points dependencies inward through typed ports and one composition root, missing evidence fails before effects, and a third-party fork is left to upstream without local architectural modernization.

@@ -1,5 +1,4 @@
-
-description: Semantic evaluation suite for gascity-change-lifecycle.
+description: Authority-resolved Gas City change execution through integration.
 prompt: |-
   Grade the gascity-change-lifecycle response. Pass only if it resolves the
   supplied city, rig, agent, formula, work, and integration identities;

@@ -1,5 +1,4 @@
-
-description: Semantic evaluation suite for fal-ai-media.
+description: Owner-derived media generation with cost and artifact evidence.
 prompt: |-
   Grade the fal-ai-media response. Pass only if it derives both model IDs and
   operation schemas from the supplied current owner snapshot, preserves

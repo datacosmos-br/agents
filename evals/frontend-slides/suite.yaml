@@ -1,5 +1,4 @@
-
-description: Semantic evaluation suite for frontend-slides.
+description: Accessible zero-dependency HTML decks with viewport validation.
 prompt: |-
   Grade the frontend-slides response. Pass only if it follows the supplied
   outline and chosen preset, produces a zero-dependency semantic HTML deck,

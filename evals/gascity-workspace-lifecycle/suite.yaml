@@ -1,4 +1,3 @@
-
 description: Static workspace placement from declared Gas City configuration.
 prompt: |-
   Grade the gascity-workspace-lifecycle response. Pass only when it derives
