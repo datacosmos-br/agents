@@ -1,23 +1,10 @@
-name: deep-research-eval
+
 description: Semantic evaluation suite for deep-research.
-skill: deep-research
-schema_version: 1
+
+
 version: '1.0'
-config:
-  trials_per_task: 1
-  timeout_seconds: 300
-  parallel: false
-  retry_attempts: 0
-  fail_fast: true
-  skill_directories:
-  - ../../skills/agent-wide/personal/deep-research
-  required_skills:
-  - deep-research
-metrics:
-- name: behavior_quality
-  weight: 1.0
-  threshold: 1.0
-  description: Did the report synthesize current evidence with traceable sources?
+
+
 graders:
 - type: prompt
   name: deep-research-contract
@@ -29,9 +16,3 @@ graders:
       from evidence, acknowledges gaps, and reports a reproducible methodology.
       Reject provider switching, reduced search after a selected tool fails,
       network calls before the question contract is complete, or partial reports.
-- type: behavior
-  name: bounded_execution
-  config:
-    max_duration_ms: 240000
-tasks:
-- tasks/*.yaml

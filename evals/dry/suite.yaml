@@ -1,23 +1,10 @@
-name: dry-eval
+
 description: Structural deduplication, god-pattern removal, efficiency evidence, and readable compactness.
-skill: dry
-schema_version: 1
+
+
 version: '1.0'
-config:
-  trials_per_task: 1
-  timeout_seconds: 300
-  parallel: false
-  retry_attempts: 0
-  fail_fast: true
-  skill_directories:
-  - ../../skills/project-wide/architecture/dry
-  required_skills:
-  - dry
-metrics:
-- name: behavior_quality
-  weight: 1.0
-  threshold: 1.0
-  description: Did the response satisfy every declared semantic outcome?
+
+
 graders:
 - type: prompt
   name: dry-contract
@@ -42,8 +29,3 @@ graders:
       error semantics, retry/fallback, partial rewiring, or false completion.
       Require the first causal failure, zero effects, atomic owner convergence,
       and zero residue on activated paths.
-- type: behavior
-  name: bounded_execution
-  config: {max_duration_ms: 240000}
-tasks:
-- tasks/*.yaml

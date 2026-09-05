@@ -1,23 +1,10 @@
-name: search-first-eval
+
 description: Project discovery, bounded reuse decisions, inline simplification, and conditional structural DRY.
-skill: search-first
-schema_version: 1
+
+
 version: '1.0'
-config:
-  trials_per_task: 1
-  timeout_seconds: 300
-  parallel: false
-  retry_attempts: 0
-  fail_fast: true
-  skill_directories:
-  - ../../skills/project-wide/refactoring/search-first
-  required_skills:
-  - search-first
-metrics:
-- name: behavior_quality
-  weight: 1.0
-  threshold: 1.0
-  description: Did the response satisfy every declared semantic outcome?
+
+
 graders:
 - type: prompt
   name: search-first-contract
@@ -47,8 +34,3 @@ graders:
       decision based on filenames or one keyword search. Require first-failure
       propagation and zero implementation effects when preflight is incomplete;
       the negative path must not activate or fall back to technical discovery.
-- type: behavior
-  name: bounded_execution
-  config: {max_duration_ms: 240000}
-tasks:
-- tasks/*.yaml

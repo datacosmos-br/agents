@@ -1,0 +1,18 @@
+id: no-local-eval-execution-inline-defaults
+language: Yaml
+severity: error
+message: Inline evaluation execution defaults belong only to config/evals.json.
+rule:
+  pattern: |-
+    config:
+      trials_per_task: 1
+      timeout_seconds: 300
+      parallel: false
+      retry_attempts: 0
+      fail_fast: true
+      skill_directories: [$DIRECTORY]
+      required_skills: [$SKILL]
+fix: |-
+  config:
+    skill_directories: [$DIRECTORY]
+    required_skills: [$SKILL]

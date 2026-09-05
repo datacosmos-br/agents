@@ -1,23 +1,10 @@
-name: verification-loop-eval
+
 description: Ordered fresh gates, real surface, fixed point, and evidence scope.
-skill: verification-loop
-schema_version: 1
+
+
 version: '1.0'
-config:
-  trials_per_task: 1
-  timeout_seconds: 300
-  parallel: false
-  retry_attempts: 0
-  fail_fast: true
-  skill_directories:
-  - ../../skills/agent-wide/verification/verification-loop
-  required_skills:
-  - verification-loop
-metrics:
-- name: behavior_quality
-  weight: 1.0
-  threshold: 1.0
-  description: Did the response satisfy every declared semantic outcome?
+
+
 graders:
 - type: prompt
   name: verification-loop-contract
@@ -44,8 +31,3 @@ graders:
       External-token workflows excluded before invocation must be recorded as
       NOT EXECUTED and never treated as green or as a landing blocker; once
       invoked, their missing credential or runtime failure remains red.
-- type: behavior
-  name: bounded_execution
-  config: {max_duration_ms: 240000}
-tasks:
-- tasks/*.yaml

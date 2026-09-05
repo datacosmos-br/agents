@@ -1,0 +1,10 @@
+id: no-local-eval-block-owner-config
+valid:
+  - "description: Skill-specific evaluation contract."
+invalid:
+  - |-
+    config:
+      skill_directories:
+      - ../../skills/tool/example
+      required_skills:
+      - example

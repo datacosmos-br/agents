@@ -30,16 +30,18 @@ security runner, compatibility alias, or second loading path in this package.
 ```text
 make help
 make setup APPLY=Y
-make audit
+make audit APPLY=Y
 make check APPLY=Y
 make runtime APPLY=Y
-make waza
-make static
-make conform
+make waza APPLY=Y
+make static APPLY=Y
+make conform APPLY=Y
 make fmt APPLY=Y
 make fix APPLY=Y
-make shell
-make duplication
+make mod-check APPLY=Y
+make mod APPLY=Y
+make shell APPLY=Y
+make duplication APPLY=Y
 make build APPLY=Y
 make validate-wheel APPLY=Y
 make test APPLY=Y

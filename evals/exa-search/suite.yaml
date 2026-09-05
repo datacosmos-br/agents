@@ -1,23 +1,10 @@
-name: exa-search-eval
+
 description: Semantic evaluation suite for exa-search.
-skill: exa-search
-schema_version: 1
+
+
 version: '1.0'
-config:
-  trials_per_task: 1
-  timeout_seconds: 300
-  parallel: false
-  retry_attempts: 0
-  fail_fast: true
-  skill_directories:
-  - ../../skills/tool/exa-search
-  required_skills:
-  - exa-search
-metrics:
-- name: behavior_quality
-  weight: 1.0
-  threshold: 1.0
-  description: Did Exa selection and retrieval match the bounded search request?
+
+
 graders:
 - type: prompt
   name: exa-search-contract
@@ -30,9 +17,3 @@ graders:
       sourced answer. On unavailable MCP or secret-bearing input, require the
       first cause and zero calls. Reject retries, broadened constraints,
       alternate operations/providers, remembered facts, or partial answers.
-- type: behavior
-  name: bounded_execution
-  config:
-    max_duration_ms: 240000
-tasks:
-- tasks/*.yaml

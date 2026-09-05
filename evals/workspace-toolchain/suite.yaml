@@ -1,23 +1,10 @@
-name: workspace-toolchain-eval
+
 description: Binary ownership, layer routing, generated workspace surfaces, and runtime proof.
-skill: workspace-toolchain
-schema_version: 1
+
+
 version: '1.0'
-config:
-  trials_per_task: 1
-  timeout_seconds: 300
-  parallel: false
-  retry_attempts: 0
-  fail_fast: true
-  skill_directories:
-  - ../../skills/project-wide/configuration/workspace-toolchain
-  required_skills:
-  - workspace-toolchain
-metrics:
-- name: behavior_quality
-  weight: 1.0
-  threshold: 1.0
-  description: Did the response satisfy every declared semantic outcome?
+
+
 graders:
 - type: prompt
   name: workspace-toolchain-contract
@@ -30,8 +17,3 @@ graders:
       pin for a project-only tool, a manual user-bin write, an undeclared PATH
       alias, an editable checkout substitute, a partial install, or an
       unevidenced completion claim.
-- type: behavior
-  name: bounded_execution
-  config: {max_duration_ms: 240000}
-tasks:
-- tasks/*.yaml

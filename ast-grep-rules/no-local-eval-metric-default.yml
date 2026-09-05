@@ -1,0 +1,12 @@
+id: no-local-eval-metric-default
+language: Yaml
+severity: error
+message: The evaluation metric belongs only to config/evals.json.
+rule:
+  pattern: |-
+    metrics:
+    - name: behavior_quality
+      weight: 1.0
+      threshold: 1.0
+      description: $DESCRIPTION
+fix: ""

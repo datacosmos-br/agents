@@ -50,10 +50,10 @@ proof.
 ## Bundle contract
 
 Create one kebab-case directory containing a compact `SKILL.md` router. Its
-frontmatter has the matching name and at least 150 characters of precise routing
-metadata: `USE FOR:` triggers, `DO NOT USE FOR:` boundaries, `INVOKES:` owner,
-and `FOR SINGLE OPERATIONS:` guidance. Descriptions are discovery contracts,
-not provenance or generic keyword lists.
+frontmatter has the matching name and a short comma-separated list of unique
+lowercase discovery terms. Keep routing triggers, non-triggers, invoked owners,
+and single-operation guidance in the body; the description is not prose or
+provenance.
 
 Keep activation, non-activation, and routing in `SKILL.md`. Put detailed procedure,
 examples, schemas, or templates under the same bundle's `references/`, `scripts/`,
@@ -81,10 +81,11 @@ roles as one atomic bundle change. Do not publish a router with partial evals.
 
 Run `make runtime APPLY=Y` to validate the installed bundle, then
 `make check APPLY=Y`, `make test APPLY=Y`, and `make test-full APPLY=Y`. The
-official Waza readiness inspection is part of the check owner and must emit no
-warning, low compliance, missing suite, schema error, or empty report. Never
-invoke Waza, pytest, or another underlying tool directly. If the skill changes
-the public semantic contract, migrate all AI Hub consumers in the same cutover;
+official Waza spec verifier is part of the check owner and validates every
+projected skill/evaluation pair offline at the exact threshold. Readiness
+advisories and live model execution are not semantic authorities. Never invoke
+Waza, pytest, or another underlying tool directly. If the skill changes the
+public semantic contract, migrate all AI Hub consumers in the same cutover;
 AI Hub owns downstream generation.
 
 Before adding, removing, or renaming a skill, search migration maps, category

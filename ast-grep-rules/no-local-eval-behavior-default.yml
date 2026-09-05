@@ -1,0 +1,10 @@
+id: no-local-eval-behavior-default
+language: Yaml
+severity: error
+message: The bounded execution grader belongs only to config/evals.json.
+rule:
+  pattern: |-
+    - type: behavior
+      name: bounded_execution
+      config: {max_duration_ms: 240000}
+fix: ""

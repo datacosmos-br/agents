@@ -1,0 +1,7 @@
+id: no-legacy-eval-schema-version
+language: Yaml
+severity: error
+message: Provider-neutral evaluation suites use schema_version.
+rule:
+  pattern: "schemaVersion: $VERSION"
+fix: "schema_version: 1"

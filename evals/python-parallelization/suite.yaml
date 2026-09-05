@@ -1,23 +1,10 @@
-name: python-parallelization-eval
+
 description: Python workload classification, bounded concurrency, and measured proof.
-skill: python-parallelization
-schema_version: 1
+
+
 version: '1.0'
-config:
-  trials_per_task: 1
-  timeout_seconds: 300
-  parallel: false
-  retry_attempts: 0
-  fail_fast: true
-  skill_directories:
-  - ../../skills/technology/python-parallelization
-  required_skills:
-  - python-parallelization
-metrics:
-- name: behavior_quality
-  weight: 1.0
-  threshold: 1.0
-  description: Did the response satisfy every declared semantic outcome?
+
+
 graders:
 - type: prompt
   name: python-parallelization-contract
@@ -30,8 +17,3 @@ graders:
       ordered publication, zero effects, and zero worker residue. Reject an
       unbounded executor, unevidenced primitive, retry/fallback, partial results,
       or generic Python refactor.
-- type: behavior
-  name: bounded_execution
-  config: {max_duration_ms: 240000}
-tasks:
-- tasks/*.yaml

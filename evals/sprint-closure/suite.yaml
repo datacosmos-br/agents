@@ -1,23 +1,10 @@
-name: sprint-closure-eval
+
 description: Binary residue audit, integration runtime, PR merge, and tracker closure.
-skill: sprint-closure
-schema_version: 1
+
+
 version: '1.0'
-config:
-  trials_per_task: 1
-  timeout_seconds: 300
-  parallel: false
-  retry_attempts: 0
-  fail_fast: true
-  skill_directories:
-  - ../../skills/agent-wide/governance/sprint-closure
-  required_skills:
-  - sprint-closure
-metrics:
-- name: behavior_quality
-  weight: 1.0
-  threshold: 1.0
-  description: Did the response satisfy every declared semantic outcome?
+
+
 graders:
 - type: prompt
   name: sprint-closure-contract
@@ -38,8 +25,3 @@ graders:
       exclusion applies only to that workflow: independently observed alerts or
       findings remain blocking, and a response may not declare completion while
       listing them as pending.
-- type: behavior
-  name: bounded_execution
-  config: {max_duration_ms: 240000}
-tasks:
-- tasks/*.yaml

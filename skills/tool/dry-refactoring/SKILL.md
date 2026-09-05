@@ -1,7 +1,7 @@
 ---
 name: dry-refactoring
 description: 'jscpd clones, copy-paste duplication, extract function, refactoring workflow'
-allowed-tools: 'Bash(make duplication)'
+allowed-tools: 'Bash(make duplication APPLY=Y)'
 metadata:
   aihub.tags: '["activation:opt-in","decision:ADR-0008","detect:opt-in:dry-refactoring","effective:2026-09-03","provenance:agents-owned","route:agent","route:project","tool:dry-refactoring","updates:manual","usage:on-demand"]'
   version: 1.3.0
@@ -14,7 +14,7 @@ Guided workflow to eliminate copy-paste duplication detected by jscpd.
 ## Detect clones
 
 ```bash
-make duplication
+make duplication APPLY=Y
 ```
 
 Eight lines is the comparison floor. A project may change flags only through

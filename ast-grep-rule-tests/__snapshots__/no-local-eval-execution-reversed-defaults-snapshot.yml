@@ -1,0 +1,34 @@
+id: no-local-eval-execution-reversed-defaults
+snapshots:
+  ? |-
+    config:
+      trials_per_task: 1
+      timeout_seconds: 300
+      parallel: false
+      retry_attempts: 0
+      fail_fast: true
+      required_skills:
+      - example
+      skill_directories:
+      - ../../skills/tool/example
+  : fixed: |-
+      config:
+        required_skills:
+        - example
+        skill_directories:
+        - ../../skills/tool/example
+    labels:
+    - source: |-
+        config:
+          trials_per_task: 1
+          timeout_seconds: 300
+          parallel: false
+          retry_attempts: 0
+          fail_fast: true
+          required_skills:
+          - example
+          skill_directories:
+          - ../../skills/tool/example
+      style: primary
+      start: 0
+      end: 189

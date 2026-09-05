@@ -1,0 +1,15 @@
+id: no-local-eval-behavior-default
+snapshots:
+  ? |-
+    - type: behavior
+      name: bounded_execution
+      config: {max_duration_ms: 240000}
+  : fixed: ''
+    labels:
+    - source: |-
+        - type: behavior
+          name: bounded_execution
+          config: {max_duration_ms: 240000}
+      style: primary
+      start: 0
+      end: 78

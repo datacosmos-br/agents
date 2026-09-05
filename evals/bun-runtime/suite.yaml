@@ -1,23 +1,10 @@
-name: bun-runtime-eval
+
 description: Bun-owned install, run, test, and build decisions.
-skill: bun-runtime
-schema_version: 1
+
+
 version: '1.0'
-config:
-  trials_per_task: 1
-  timeout_seconds: 300
-  parallel: false
-  retry_attempts: 0
-  fail_fast: true
-  skill_directories:
-  - ../../skills/technology/bun-runtime
-  required_skills:
-  - bun-runtime
-metrics:
-- name: behavior_quality
-  weight: 1.0
-  threshold: 1.0
-  description: Did the response satisfy every declared semantic outcome?
+
+
 graders:
 - type: prompt
   name: bun-runtime-contract
@@ -29,8 +16,3 @@ graders:
       or commands that ignore the declared package owner. Require complete
       preflight, the material build output, raw first-command failure, zero
       effects on invalid evidence, and no retry/fallback or residue.
-- type: behavior
-  name: bounded_execution
-  config: {max_duration_ms: 240000}
-tasks:
-- tasks/*.yaml

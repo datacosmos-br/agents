@@ -1,0 +1,9 @@
+id: no-local-eval-schema-owner
+snapshots:
+  'schema_version: 1':
+    fixed: ''
+    labels:
+    - source: 'schema_version: 1'
+      style: primary
+      start: 0
+      end: 17

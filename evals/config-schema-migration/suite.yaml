@@ -1,23 +1,10 @@
-name: config-schema-migration-eval
+
 description: Atomic configuration-schema cutover decisions.
-skill: config-schema-migration
-schema_version: 1
+
+
 version: '1.0'
-config:
-  trials_per_task: 1
-  timeout_seconds: 300
-  parallel: false
-  retry_attempts: 0
-  fail_fast: true
-  skill_directories:
-  - ../../skills/project-wide/configuration/config-schema-migration
-  required_skills:
-  - config-schema-migration
-metrics:
-- name: behavior_quality
-  weight: 1.0
-  threshold: 1.0
-  description: Did the response satisfy every declared semantic outcome?
+
+
 graders:
 - type: prompt
   name: config-schema-migration-contract
@@ -35,8 +22,3 @@ graders:
       require preservation in place plus an operator decision packet with
       provenance, normalized delta, consumers, impact, disposition, recovery,
       and fixed-point proof. Reject authorization by sampling or superficial shape.
-- type: behavior
-  name: bounded_execution
-  config: {max_duration_ms: 240000}
-tasks:
-- tasks/*.yaml

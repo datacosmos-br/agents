@@ -1,23 +1,10 @@
-name: dmux-workflows-eval
+
 description: Semantic evaluation suite for dmux-workflows.
-skill: dmux-workflows
-schema_version: 1
+
+
 version: '1.0'
-config:
-  trials_per_task: 1
-  timeout_seconds: 300
-  parallel: false
-  retry_attempts: 0
-  fail_fast: true
-  skill_directories:
-  - ../../skills/tool/dmux-workflows
-  required_skills:
-  - dmux-workflows
-metrics:
-- name: behavior_quality
-  weight: 1.0
-  threshold: 1.0
-  description: Did the pane plan respect independence, ownership, and runtime state?
+
+
 graders:
 - type: prompt
   name: dmux-workflows-contract
@@ -29,9 +16,3 @@ graders:
       suspension with zero orchestration effects. Reject provider, model, or
       harness fallback; retries; partial synthesis; branches, worktrees, runs,
       or write-capable panes. The first pane failure must remain causal.
-- type: behavior
-  name: bounded_execution
-  config:
-    max_duration_ms: 240000
-tasks:
-- tasks/*.yaml

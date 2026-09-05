@@ -1,23 +1,10 @@
-name: fal-ai-media-eval
+
 description: Semantic evaluation suite for fal-ai-media.
-skill: fal-ai-media
-schema_version: 1
+
+
 version: '1.0'
-config:
-  trials_per_task: 1
-  timeout_seconds: 300
-  parallel: false
-  retry_attempts: 0
-  fail_fast: true
-  skill_directories:
-  - ../../skills/tool/fal-ai-media
-  required_skills:
-  - fal-ai-media
-metrics:
-- name: behavior_quality
-  weight: 1.0
-  threshold: 1.0
-  description: Did the response prove the exact authorized generation and material artifacts?
+
+
 graders:
 - type: prompt
   name: fal-ai-media-contract
@@ -31,9 +18,3 @@ graders:
       recommendations, parameter defaults, keyring or profiles, retries,
       resubmission, alternate provider/model fallback, partial artifacts, or any
       invented URL, credential, job, cost, checksum, or completion.
-- type: behavior
-  name: bounded_execution
-  config:
-    max_duration_ms: 240000
-tasks:
-- tasks/*.yaml

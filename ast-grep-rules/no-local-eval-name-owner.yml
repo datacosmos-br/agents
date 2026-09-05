@@ -1,0 +1,9 @@
+id: no-local-eval-name-owner
+language: Yaml
+severity: error
+message: Evaluation name is derived from its physical suite path.
+rule:
+  all:
+  - kind: block_mapping_pair
+  - regex: '^name: [a-z0-9-]+-eval$'
+fix: ""

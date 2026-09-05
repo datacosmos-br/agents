@@ -1,23 +1,10 @@
-name: yagni-eval
+
 description: Strict necessity evidence, speculative-surface deletion, and bounded non-triggering.
-skill: yagni
-schema_version: 1
+
+
 version: '1.0'
-config:
-  trials_per_task: 1
-  timeout_seconds: 300
-  parallel: false
-  retry_attempts: 0
-  fail_fast: true
-  skill_directories:
-  - ../../skills/project-wide/refactoring/yagni
-  required_skills:
-  - yagni
-metrics:
-- name: behavior_quality
-  weight: 1.0
-  threshold: 1.0
-  description: Did the response satisfy every declared semantic outcome?
+
+
 graders:
 - type: prompt
   name: yagni-contract
@@ -36,8 +23,3 @@ graders:
       infrastructure, feature-flag burial, compatibility residue, invented usage,
       unsafe deletion, catch normalization, retry/fallback, partial rewiring, or
       completion without runtime, zero-effect, and residue evidence.
-- type: behavior
-  name: bounded_execution
-  config: {max_duration_ms: 240000}
-tasks:
-- tasks/*.yaml

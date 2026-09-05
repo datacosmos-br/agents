@@ -1,23 +1,10 @@
-name: gc-city-eval
+
 description: Gas City city lifecycle.
-skill: gc-city
-schema_version: 1
+
+
 version: '1.0'
-config:
-  trials_per_task: 1
-  timeout_seconds: 300
-  parallel: false
-  retry_attempts: 0
-  fail_fast: true
-  skill_directories:
-  - ../../skills/domain/gascity/gc-city
-  required_skills:
-  - gc-city
-metrics:
-- name: behavior_quality
-  weight: 1.0
-  threshold: 1.0
-  description: Did the response satisfy every declared semantic outcome?
+
+
 graders:
 - type: prompt
   name: gc-city-contract
@@ -30,8 +17,3 @@ graders:
       and proves supervisor availability with systemctl, gc order check,
       supervisor log, and dolt runtime publication. Reject pgrep-only conclusions,
       signal-to-MainPID effects, bypass, fallback, hardcode, or unobserved success.
-- type: behavior
-  name: bounded_execution
-  config: {max_duration_ms: 240000}
-tasks:
-- tasks/*.yaml

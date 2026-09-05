@@ -1,0 +1,10 @@
+id: no-local-eval-inline-owner-config
+language: Yaml
+severity: error
+message: Inline evaluation skill ownership is derived from the public catalog.
+rule:
+  pattern: |-
+    config:
+      skill_directories: [$DIRECTORY]
+      required_skills: [$SKILL]
+fix: ""

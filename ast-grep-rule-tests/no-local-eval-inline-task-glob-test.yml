@@ -1,0 +1,5 @@
+id: no-local-eval-inline-task-glob
+valid:
+  - "description: Skill-specific evaluation contract."
+invalid:
+  - "tasks: [tasks/*.yaml]"

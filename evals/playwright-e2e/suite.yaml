@@ -1,23 +1,10 @@
-name: playwright-e2e-eval
+
 description: Semantic evaluation suite for playwright-e2e.
-skill: playwright-e2e
-schema_version: 1
+
+
 version: '1.0'
-config:
-  trials_per_task: 1
-  timeout_seconds: 300
-  parallel: false
-  retry_attempts: 0
-  fail_fast: true
-  skill_directories:
-  - ../../skills/tool/playwright-e2e
-  required_skills:
-  - playwright-e2e
-metrics:
-- name: behavior_quality
-  weight: 1.0
-  threshold: 1.0
-  description: Did the Playwright design prove observable user behavior reliably?
+
+
 graders:
 - type: prompt
   name: playwright-e2e-contract
@@ -30,9 +17,3 @@ graders:
       the requested screenshot before publication. Reject invented base URLs,
       page objects/config/CI not required by the fixture, sleeps, skips, retries,
       catches, fallback, production effects, or partial artifacts.
-- type: behavior
-  name: bounded_execution
-  config:
-    max_duration_ms: 240000
-tasks:
-- tasks/*.yaml

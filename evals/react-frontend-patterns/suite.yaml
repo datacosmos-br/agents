@@ -1,23 +1,10 @@
-name: react-frontend-patterns-eval
+
 description: Semantic evaluation suite for react-frontend-patterns.
-skill: react-frontend-patterns
-schema_version: 1
+
+
 version: '1.0'
-config:
-  trials_per_task: 1
-  timeout_seconds: 300
-  parallel: false
-  retry_attempts: 0
-  fail_fast: true
-  skill_directories:
-  - ../../skills/framework/react-frontend-patterns
-  required_skills:
-  - react-frontend-patterns
-metrics:
-- name: behavior_quality
-  weight: 1.0
-  threshold: 1.0
-  description: Did the React refactor produce stable state, effect ownership, privacy, and accessibility?
+
+
 graders:
 - type: prompt
   name: react-frontend-patterns-contract
@@ -31,9 +18,3 @@ graders:
       material tests without new dependencies. Reject local catch normalization,
       retry/fallback, speculative memoization, partial rewiring, or missing
       zero-effect/unmount/residue proof.
-- type: behavior
-  name: bounded_execution
-  config:
-    max_duration_ms: 240000
-tasks:
-- tasks/*.yaml

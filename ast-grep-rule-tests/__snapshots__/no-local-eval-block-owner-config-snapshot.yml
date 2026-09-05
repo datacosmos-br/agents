@@ -1,0 +1,19 @@
+id: no-local-eval-block-owner-config
+snapshots:
+  ? |-
+    config:
+      skill_directories:
+      - ../../skills/tool/example
+      required_skills:
+      - example
+  : fixed: ''
+    labels:
+    - source: |-
+        config:
+          skill_directories:
+          - ../../skills/tool/example
+          required_skills:
+          - example
+      style: primary
+      start: 0
+      end: 89

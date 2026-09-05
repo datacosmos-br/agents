@@ -1,23 +1,10 @@
-name: openspec-verify-change-eval
+
 description: Evidence-mapped OpenSpec completeness, correctness, and coherence review.
-skill: openspec-verify-change
-schema_version: 1
+
+
 version: '1.0'
-config:
-  trials_per_task: 1
-  timeout_seconds: 300
-  parallel: false
-  retry_attempts: 0
-  fail_fast: true
-  skill_directories:
-  - ../../skills/tool/openspec-verify-change
-  required_skills:
-  - openspec-verify-change
-metrics:
-- name: behavior_quality
-  weight: 1.0
-  threshold: 1.0
-  description: Did the response satisfy every declared semantic outcome?
+
+
 graders:
 - type: prompt
   name: openspec-verify-change-contract
@@ -30,9 +17,3 @@ graders:
       blocking failure. Reject keyword-only conformance, inferred target
       selection, warnings/findings/suggestions, aggregation after the first
       defect, artifact mutation, task edits, or a partial verified claim.
-- type: behavior
-  name: bounded_execution
-  config:
-    max_duration_ms: 240000
-tasks:
-- tasks/*.yaml

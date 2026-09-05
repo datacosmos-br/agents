@@ -1,23 +1,10 @@
-name: anti-hardcode-eval
+
 description: Operational-value ownership, migration, and loud configuration failure.
-skill: anti-hardcode
-schema_version: 1
+
+
 version: '1.0'
-config:
-  trials_per_task: 1
-  timeout_seconds: 300
-  parallel: false
-  retry_attempts: 0
-  fail_fast: true
-  skill_directories:
-  - ../../skills/project-wide/configuration/anti-hardcode
-  required_skills:
-  - anti-hardcode
-metrics:
-- name: behavior_quality
-  weight: 1.0
-  threshold: 1.0
-  description: Did the response satisfy every declared semantic outcome?
+
+
 graders:
 - type: prompt
   name: anti-hardcode-owner-contract
@@ -32,8 +19,3 @@ graders:
       keyring, profiles, compatibility aliases, fallback values, catch/manual
       exit normalization, or lexical deletion of a protocol invariant. Missing
       configuration must cause the first failure and zero effects.
-- type: behavior
-  name: bounded_execution
-  config: {max_duration_ms: 240000}
-tasks:
-- tasks/*.yaml

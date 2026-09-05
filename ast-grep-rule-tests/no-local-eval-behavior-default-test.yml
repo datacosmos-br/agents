@@ -1,0 +1,12 @@
+id: no-local-eval-behavior-default
+valid:
+  - |-
+    - type: prompt
+      name: example-contract
+      config:
+        prompt: Grade the result.
+invalid:
+  - |-
+    - type: behavior
+      name: bounded_execution
+      config: {max_duration_ms: 240000}

@@ -18,24 +18,19 @@ from .frontmatter import (
 
 _EVAL_FIELDS = frozenset(
     {
-        "config",
         "description",
         "graders",
-        "metrics",
-        "name",
-        "schema_version",
-        "skill",
-        "tasks",
         "version",
     }
 )
-_CONFIG_FIELDS = frozenset(
+_DEFAULT_FIELDS = frozenset(
+    {"behavior_grader", "execution", "metric", "tasks", "version"}
+)
+_EXECUTION_FIELDS = frozenset(
     {
         "fail_fast",
         "parallel",
-        "required_skills",
         "retry_attempts",
-        "skill_directories",
         "timeout_seconds",
         "trials_per_task",
     }
@@ -47,9 +42,11 @@ _METRIC_FIELDS = frozenset({"description", "name", "threshold", "weight"})
 _EXPECTED_FIELDS = frozenset({"outcomes", "output_contains", "output_not_contains"})
 _OUTCOME_FIELDS = frozenset({"type"})
 _TASK_FIELDS = frozenset({"description", "expected", "id", "inputs", "name", "tags"})
-_TASK_FILES = frozenset(
-    {"basic-usage.yaml", "edge-case.yaml", "should-not-trigger.yaml"}
-)
+_TASK_ROLES = {
+    "fail_closed": "tasks/edge-case.yaml",
+    "happy_path": "tasks/basic-usage.yaml",
+    "non_trigger": "tasks/should-not-trigger.yaml",
+}
 
 
 def _trimmed_text(value: object, context: str) -> str:
@@ -89,19 +86,18 @@ def _physical_tree(directory: Path) -> None:
             raise ValueError(f"unsupported evaluation resource type: {path}")
 
 
-def _task_files(suite: Path, declared: object) -> tuple[Path, ...]:
-    if string_array(declared, f"{suite / 'suite.yaml'}: tasks") != ("tasks/*.yaml",):
-        raise ValueError(f"{suite / 'suite.yaml'}: tasks must equal ['tasks/*.yaml']")
+def _task_files(suite: Path, declared: dict[str, str]) -> tuple[tuple[Path, str], ...]:
     task_root = suite / "tasks"
     if task_root.is_symlink() or not task_root.is_dir():
         raise ValueError(f"evaluation task root must be physical: {task_root}")
     task_files = tuple(sorted(task_root.iterdir()))
-    if {path.name for path in task_files} != _TASK_FILES:
-        raise ValueError(f"{task_root}: tasks must be exactly {sorted(_TASK_FILES)}")
+    expected = {Path(relative).name for relative in declared.values()}
+    if {path.name for path in task_files} != expected:
+        raise ValueError(f"{task_root}: tasks must be exactly {sorted(expected)}")
     for path in task_files:
         if path.is_symlink() or not path.is_file() or path.suffix != ".yaml":
             raise ValueError(f"evaluation tasks support only physical YAML: {path}")
-    return task_files
+    return tuple((suite / relative, role) for role, relative in declared.items())
 
 
 def _audit_inputs(path: Path, value: object, fixtures: set[Path]) -> str:
@@ -135,11 +131,17 @@ def _audit_inputs(path: Path, value: object, fixtures: set[Path]) -> str:
     return prompt
 
 
-def _audit_expected(path: Path, value: object) -> None:
+def _audit_expected(path: Path, value: object, role: str) -> None:
     expected = cast_mapping(value, f"{path}: expected")
     fields = frozenset(expected)
     if not fields or not fields <= _EXPECTED_FIELDS:
         raise ValueError(f"{path}: expected contains unsupported or no assertions")
+    if not fields & {"output_contains", "output_not_contains"}:
+        raise ValueError(f"{path}: expected requires a material output assertion")
+    if role in {"happy_path", "fail_closed"} and "output_contains" not in fields:
+        raise ValueError(f"{path}: {role} requires output_contains")
+    if role in {"fail_closed", "non_trigger"} and "output_not_contains" not in fields:
+        raise ValueError(f"{path}: {role} requires output_not_contains")
     for field in ("output_contains", "output_not_contains"):
         if field in expected:
             string_array(expected[field], f"{path}: expected.{field}")
@@ -157,6 +159,7 @@ def _audit_expected(path: Path, value: object) -> None:
 
 def _audit_task(
     path: Path,
+    role: str,
     identifiers: set[str],
     prompts: set[str],
     fixtures: set[Path],
@@ -175,18 +178,14 @@ def _audit_task(
     if prompt in prompts:
         raise ValueError(f"{path}: evaluation prompt is duplicated")
     prompts.add(prompt)
-    _audit_expected(path, task["expected"])
+    _audit_expected(path, task["expected"], role)
 
 
-def _audit_graders(
-    source: Path, value: object, skill: SkillRecord, timeout_seconds: int
-) -> None:
-    if not isinstance(value, list) or len(value) != 2:
-        raise TypeError(f"{source}: graders must contain prompt and behavior")
+def _audit_graders(source: Path, value: object, skill: SkillRecord) -> None:
+    if not isinstance(value, list) or len(value) != 1:
+        raise TypeError(f"{source}: graders must contain one prompt contract")
     prompt_grader = cast_mapping(value[0], f"{source}: graders[0]")
-    behavior_grader = cast_mapping(value[1], f"{source}: graders[1]")
     require_exact_fields(prompt_grader, _GRADER_FIELDS, f"{source}: graders[0]")
-    require_exact_fields(behavior_grader, _GRADER_FIELDS, f"{source}: graders[1]")
     prompt_name = _trimmed_text(prompt_grader["name"], f"{source}: graders[0].name")
     if (
         prompt_grader["type"] != "prompt"
@@ -201,24 +200,55 @@ def _audit_graders(
         prompt_config, frozenset({"prompt"}), f"{source}: graders[0].config"
     )
     _nonempty_text(prompt_config["prompt"], f"{source}: graders[0].config.prompt")
-    if (
-        behavior_grader["type"] != "behavior"
-        or behavior_grader["name"] != "bounded_execution"
-    ):
-        raise ValueError(f"{source}: second grader must be bounded_execution behavior")
+
+
+def _audit_defaults(path: Path) -> dict[str, str]:
+    defaults = _mapping(path)
+    require_exact_fields(defaults, _DEFAULT_FIELDS, str(path))
+    if defaults["version"] != 1:
+        raise ValueError(f"{path}: version must equal 1")
+    execution = cast_mapping(defaults["execution"], f"{path}: execution")
+    require_exact_fields(execution, _EXECUTION_FIELDS, f"{path}: execution")
+    if execution["trials_per_task"] != 1:
+        raise ValueError(f"{path}: trials_per_task must equal 1")
+    timeout_seconds = execution["timeout_seconds"]
+    if type(timeout_seconds) is not int or not 0 < timeout_seconds <= 60:
+        raise ValueError(f"{path}: timeout_seconds must be in 1..60")
+    if execution["retry_attempts"] != 0:
+        raise ValueError(f"{path}: retry_attempts must equal 0")
+    if execution["parallel"] is not False or execution["fail_fast"] is not True:
+        raise ValueError(f"{path}: execution must be serial and fail fast")
+    metric = cast_mapping(defaults["metric"], f"{path}: metric")
+    require_exact_fields(metric, _METRIC_FIELDS, f"{path}: metric")
+    if metric["name"] != "behavior_quality":
+        raise ValueError(f"{path}: metric must equal behavior_quality")
+    if metric["weight"] != 1.0 or metric["threshold"] != 1.0:
+        raise ValueError(f"{path}: metric weight and threshold must equal 1.0")
+    _trimmed_text(metric["description"], f"{path}: metric.description")
+    behavior = cast_mapping(defaults["behavior_grader"], f"{path}: behavior_grader")
+    require_exact_fields(behavior, _GRADER_FIELDS, f"{path}: behavior_grader")
+    if behavior["type"] != "behavior" or behavior["name"] != "bounded_execution":
+        raise ValueError(f"{path}: behavior_grader must be bounded_execution")
     behavior_config = cast_mapping(
-        behavior_grader["config"], f"{source}: graders[1].config"
+        behavior["config"], f"{path}: behavior_grader.config"
     )
     require_exact_fields(
         behavior_config,
         frozenset({"max_duration_ms"}),
-        f"{source}: graders[1].config",
+        f"{path}: behavior_grader.config",
     )
     duration = behavior_config["max_duration_ms"]
     if type(duration) is not int or duration <= 0 or duration >= timeout_seconds * 1000:
-        raise ValueError(
-            f"{source}: bounded execution duration must be positive and below timeout"
-        )
+        raise ValueError(f"{path}: max_duration_ms must be positive and below timeout")
+    tasks = cast_mapping(defaults["tasks"], f"{path}: tasks")
+    require_exact_fields(tasks, frozenset(_TASK_ROLES), f"{path}: tasks")
+    parsed = {
+        role: _trimmed_text(tasks[role], f"{path}: tasks.{role}")
+        for role in sorted(_TASK_ROLES)
+    }
+    if parsed != _TASK_ROLES:
+        raise ValueError(f"{path}: task role paths are not canonical")
+    return parsed
 
 
 def _audit_suite(
@@ -226,6 +256,7 @@ def _audit_suite(
     skill: SkillRecord,
     identifiers: set[str],
     prompts: set[str],
+    task_roles: dict[str, str],
 ) -> None:
     _physical_tree(suite)
     children = {path.name for path in suite.iterdir()}
@@ -238,12 +269,6 @@ def _audit_suite(
     source = suite / "suite.yaml"
     evaluation = _mapping(source)
     require_exact_fields(evaluation, _EVAL_FIELDS, str(source))
-    if evaluation["skill"] != skill.name:
-        raise ValueError(f"{source}: skill must equal {skill.name!r}")
-    if evaluation["name"] != f"{skill.name}-eval":
-        raise ValueError(f"{source}: name must equal {skill.name!r}-eval")
-    if evaluation["schema_version"] != 1:
-        raise ValueError(f"{source}: schema_version must equal 1")
     version = _trimmed_text(evaluation["version"], f"{source}: version")
     version_parts = version.split(".")
     if (
@@ -253,61 +278,10 @@ def _audit_suite(
     ):
         raise ValueError(f"{source}: version must be a positive major.minor value")
     _trimmed_text(evaluation["description"], f"{source}: description")
-    config = cast_mapping(evaluation["config"], f"{source}: config")
-    require_exact_fields(config, _CONFIG_FIELDS, f"{source}: config")
-    for field in ("trials_per_task", "timeout_seconds"):
-        value = config[field]
-        if type(value) is not int or value <= 0:
-            raise TypeError(f"{source}: config.{field} must be a positive integer")
-    if config["retry_attempts"] != 0:
-        raise ValueError(f"{source}: config.retry_attempts must equal 0")
-    if config["parallel"] is not False or config["fail_fast"] is not True:
-        raise ValueError(
-            f"{source}: config must disable parallel execution and fail fast"
-        )
-    directories = string_array(
-        config.get("skill_directories"), f"{source}: config.skill_directories"
-    )
-    if len(directories) != 1:
-        raise ValueError(f"{source}: exactly one skill directory is required")
-    resolved = (suite / directories[0]).resolve(strict=True)
-    if resolved != skill.directory.resolve(strict=True):
-        raise ValueError(f"{source}: skill directory does not resolve to its owner")
-    if string_array(
-        config.get("required_skills"), f"{source}: config.required_skills"
-    ) != (skill.name,):
-        raise ValueError(f"{source}: required_skills must contain only {skill.name!r}")
-    metrics = evaluation["metrics"]
-    if not isinstance(metrics, list) or len(metrics) != 1:
-        raise TypeError(f"{source}: metrics must contain behavior_quality")
-    total_weight = 0.0
-    for index, raw_metric in enumerate(metrics):
-        metric = cast_mapping(raw_metric, f"{source}: metrics[{index}]")
-        require_exact_fields(metric, _METRIC_FIELDS, f"{source}: metrics[{index}]")
-        name = metric["name"]
-        description = metric["description"]
-        if name != "behavior_quality":
-            raise ValueError(f"{source}: metric must equal behavior_quality")
-        _trimmed_text(description, f"{source}: metrics[{index}].description")
-        weight = metric["weight"]
-        threshold = metric["threshold"]
-        if (
-            isinstance(weight, bool)
-            or not isinstance(weight, (int, float))
-            or weight <= 0
-        ):
-            raise TypeError(f"{source}: metrics[{index}].weight must be positive")
-        if threshold != 1.0:
-            raise ValueError(f"{source}: metrics[{index}].threshold must equal 1.0")
-        total_weight += float(weight)
-    if abs(total_weight - 1.0) > 1e-9:
-        raise ValueError(f"{source}: metric weights must total 1.0")
-    timeout_seconds = config["timeout_seconds"]
-    assert isinstance(timeout_seconds, int)
-    _audit_graders(source, evaluation["graders"], skill, timeout_seconds)
+    _audit_graders(source, evaluation["graders"], skill)
     fixtures: set[Path] = set()
-    for task in _task_files(suite, evaluation["tasks"]):
-        _audit_task(task, identifiers, prompts, fixtures)
+    for task, role in _task_files(suite, task_roles):
+        _audit_task(task, role, identifiers, prompts, fixtures)
     fixture_root = suite / "fixtures"
     physical_fixtures = (
         {
@@ -326,6 +300,7 @@ def audit_skill_evals(root: Path, skills: tuple[SkillRecord, ...]) -> None:
     """Require one complete physical semantic evaluation suite per skill."""
 
     repository = root.resolve(strict=True)
+    task_roles = _audit_defaults(repository / "config" / "evals.json")
     eval_root = repository / "evals"
     if eval_root.is_symlink() or not eval_root.is_dir():
         raise ValueError(f"skill evaluation root must be physical: {eval_root}")
@@ -343,7 +318,7 @@ def audit_skill_evals(root: Path, skills: tuple[SkillRecord, ...]) -> None:
     prompts: set[str] = set()
     for suite in entries:
         skill = by_name[suite.name]
-        _audit_suite(suite, skill, identifiers, prompts)
+        _audit_suite(suite, skill, identifiers, prompts, task_roles)
 
 
 __all__ = ("audit_skill_evals",)

@@ -1,23 +1,10 @@
-name: gc-work-eval
+
 description: Gas City work items (beads).
-skill: gc-work
-schema_version: 1
+
+
 version: '1.0'
-config:
-  trials_per_task: 1
-  timeout_seconds: 300
-  parallel: false
-  retry_attempts: 0
-  fail_fast: true
-  skill_directories:
-  - ../../skills/domain/gascity/gc-work
-  required_skills:
-  - gc-work
-metrics:
-- name: behavior_quality
-  weight: 1.0
-  threshold: 1.0
-  description: Did the response satisfy every declared semantic outcome?
+
+
 graders:
 - type: prompt
   name: gc-work-contract
@@ -31,8 +18,3 @@ graders:
       same four-source checkpoint, and use mail only as notification. Reject
       bypass, fallback, parallel roots, mail-only status, hardcode, or
       unobserved success.
-- type: behavior
-  name: bounded_execution
-  config: {max_duration_ms: 240000}
-tasks:
-- tasks/*.yaml

@@ -1,0 +1,7 @@
+id: no-legacy-eval-attempts
+language: Yaml
+severity: error
+message: Provider-neutral evaluation suites declare zero retry attempts.
+rule:
+  pattern: "max_attempts: $ATTEMPTS"
+fix: "retry_attempts: 0"

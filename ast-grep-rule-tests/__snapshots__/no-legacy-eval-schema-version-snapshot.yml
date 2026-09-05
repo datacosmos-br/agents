@@ -1,0 +1,9 @@
+id: no-legacy-eval-schema-version
+snapshots:
+  'schemaVersion: ''1.2''':
+    fixed: 'schema_version: 1'
+    labels:
+    - source: 'schemaVersion: ''1.2'''
+      style: primary
+      start: 0
+      end: 20

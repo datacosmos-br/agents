@@ -1,0 +1,9 @@
+id: no-local-eval-skill-owner
+snapshots:
+  'skill: example':
+    fixed: ''
+    labels:
+    - source: 'skill: example'
+      style: primary
+      start: 0
+      end: 14

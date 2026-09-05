@@ -1,0 +1,20 @@
+id: no-local-eval-execution-defaults
+valid:
+  - |-
+    config:
+      skill_directories:
+      - ../../skills/tool/example
+      required_skills:
+      - example
+invalid:
+  - |-
+    config:
+      trials_per_task: 1
+      timeout_seconds: 300
+      parallel: false
+      retry_attempts: 0
+      fail_fast: true
+      skill_directories:
+      - ../../skills/tool/example
+      required_skills:
+      - example

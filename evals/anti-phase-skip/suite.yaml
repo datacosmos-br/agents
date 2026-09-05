@@ -1,23 +1,10 @@
-name: anti-phase-skip-eval
+
 description: Complete phase-cycle enforcement and runtime-backed closure.
-skill: anti-phase-skip
-schema_version: 1
+
+
 version: '1.0'
-config:
-  trials_per_task: 1
-  timeout_seconds: 300
-  parallel: false
-  retry_attempts: 0
-  fail_fast: true
-  skill_directories:
-  - ../../skills/agent-wide/governance/anti-phase-skip
-  required_skills:
-  - anti-phase-skip
-metrics:
-- name: behavior_quality
-  weight: 1.0
-  threshold: 1.0
-  description: Did the response satisfy every declared semantic outcome?
+
+
 graders:
 - type: prompt
   name: anti-phase-skip-cycle-contract
@@ -40,8 +27,3 @@ graders:
       effects. An absent external-token workflow recorded as NOT EXECUTED is not
       green but does not block the otherwise applicable phase cycle; failure
       after invocation remains red.
-- type: behavior
-  name: bounded_execution
-  config: {max_duration_ms: 240000}
-tasks:
-- tasks/*.yaml

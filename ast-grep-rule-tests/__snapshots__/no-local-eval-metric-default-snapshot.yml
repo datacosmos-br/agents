@@ -1,0 +1,19 @@
+id: no-local-eval-metric-default
+snapshots:
+  ? |-
+    metrics:
+    - name: behavior_quality
+      weight: 1.0
+      threshold: 1.0
+      description: Did the response satisfy every declared semantic outcome?
+  : fixed: ''
+    labels:
+    - source: |-
+        metrics:
+        - name: behavior_quality
+          weight: 1.0
+          threshold: 1.0
+          description: Did the response satisfy every declared semantic outcome?
+      style: primary
+      start: 0
+      end: 137

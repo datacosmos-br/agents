@@ -5,7 +5,6 @@ CACHE_HOME := $(if $(XDG_CACHE_HOME),$(XDG_CACHE_HOME),$(HOME)/.cache)
 PYRIGHT_CACHE_ROOT := $(CACHE_HOME)/agents-governance/pyright
 TEST_STATE_ROOT := $(CACHE_HOME)/agents-governance/pytest
 TESTMON_DATAFILE := $(TEST_STATE_ROOT)/.testmondata
-PYTEST_SCRATCH := $(TEST_STATE_ROOT)/scratch
 WHEEL_SMOKE := $(CACHE_HOME)/agents-governance/wheel-smoke
 WAZA_PROJECTION_ROOT := $(CACHE_HOME)/agents-governance/waza-projection
 OBSOLETE_LOCAL_PATHS := \
@@ -42,8 +41,7 @@ define REJECT_APPLY
 endef
 
 define RUN_TESTMON
-	@install -d -m 700 "$(TEST_STATE_ROOT)" "$(PYTEST_SCRATCH)"
-	@uv run pytest --basetemp "$(PYTEST_SCRATCH)" --testmon $(1)
+	@TESTMON_MODE=$(1) uv run python tools/testmon_gate.py
 endef
 
 help: ## show the complete selector-free development surface
@@ -157,6 +155,7 @@ mod: ## apply tested structural migrations; requires APPLY=Y
 	$(call BANNER,mod · ast-grep structural rewrite)
 	@$(MISE_EXEC) ast-grep test --config "$(CURDIR)/sgconfig.yml" --update-all
 	@$(MISE_EXEC) ast-grep scan --config "$(CURDIR)/sgconfig.yml" --update-all "$(CURDIR)/evals"
+	@uv run python tools/normalize_eval_yaml.py
 	@$(MAKE) mod-check APPLY=Y
 	@$(MAKE) audit APPLY=Y
 
@@ -194,13 +193,13 @@ runtime: ## build, install, and load the public wheel; requires APPLY=Y
 test: ## run affected tests through the shared testmon cache; requires APPLY=Y
 	$(call REQUIRE_APPLY)
 	$(call BANNER,test · pytest-testmon affected selection)
-	$(call RUN_TESTMON,)
+	$(call RUN_TESTMON,incremental)
 
 test-full: ## run incremental then all tests through the same cache; requires APPLY=Y
 	$(call REQUIRE_APPLY)
 	@$(MAKE) test APPLY=Y
 	$(call BANNER,test-full · pytest-testmon no-selection)
-	$(call RUN_TESTMON,--testmon-noselect)
+	$(call RUN_TESTMON,full)
 
 ## complete offline composition
 ci: ## run every gate in runtime-first order; requires APPLY=Y

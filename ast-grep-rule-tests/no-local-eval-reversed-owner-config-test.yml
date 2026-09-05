@@ -1,0 +1,10 @@
+id: no-local-eval-reversed-owner-config
+valid:
+  - "description: Skill-specific evaluation contract."
+invalid:
+  - |-
+    config:
+      required_skills:
+      - example
+      skill_directories:
+      - ../../skills/tool/example

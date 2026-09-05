@@ -1,23 +1,10 @@
-name: dispatch-agent-eval
+
 description: Semantic evaluation suite for dispatch-agent.
-skill: dispatch-agent
-schema_version: 1
+
+
 version: '1.0'
-config:
-  trials_per_task: 1
-  timeout_seconds: 300
-  parallel: false
-  retry_attempts: 0
-  fail_fast: true
-  skill_directories:
-  - ../../skills/agent-wide/dispatch/dispatch-agent
-  required_skills:
-  - dispatch-agent
-metrics:
-- name: behavior_quality
-  weight: 1.0
-  threshold: 1.0
-  description: Did delegation select the best available specialist with context?
+
+
 graders:
 - type: prompt
   name: dispatch-agent-contract
@@ -39,9 +26,3 @@ graders:
       written change or green gate, pass only when the worker returns the exact
       denial and options instead of idling, changing checkout, or claiming
       progress.
-- type: behavior
-  name: bounded_execution
-  config:
-    max_duration_ms: 240000
-tasks:
-- tasks/*.yaml

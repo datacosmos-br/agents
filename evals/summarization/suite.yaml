@@ -1,23 +1,10 @@
-name: summarization-eval
+
 description: Accurate compression, audience fit, metrics, decisions, and uncertainty.
-skill: summarization
-schema_version: 1
+
+
 version: '1.0'
-config:
-  trials_per_task: 1
-  timeout_seconds: 300
-  parallel: false
-  retry_attempts: 0
-  fail_fast: true
-  skill_directories:
-  - ../../skills/agent-wide/personal/summarization
-  required_skills:
-  - summarization
-metrics:
-- name: behavior_quality
-  weight: 1.0
-  threshold: 1.0
-  description: Did the response satisfy every declared semantic outcome?
+
+
 graders:
 - type: prompt
   name: summarization-contract
@@ -28,8 +15,3 @@ graders:
       from proof, records the two decisions plus owner and date, and omits unsupported
       detail. Reject altered numbers, invented causality, generic filler, or missing
       action ownership.
-- type: behavior
-  name: bounded_execution
-  config: {max_duration_ms: 240000}
-tasks:
-- tasks/*.yaml

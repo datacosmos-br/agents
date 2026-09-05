@@ -1,0 +1,22 @@
+id: no-local-eval-execution-reversed-defaults
+language: Yaml
+severity: error
+message: Reordered evaluation execution defaults belong only to config/evals.json.
+rule:
+  pattern: |-
+    config:
+      trials_per_task: 1
+      timeout_seconds: 300
+      parallel: false
+      retry_attempts: 0
+      fail_fast: true
+      required_skills:
+      - $SKILL
+      skill_directories:
+      - $DIRECTORY
+fix: |-
+  config:
+    required_skills:
+    - $SKILL
+    skill_directories:
+    - $DIRECTORY

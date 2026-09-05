@@ -1,0 +1,11 @@
+id: no-local-eval-behavior-block-default
+language: Yaml
+severity: error
+message: Block-form bounded execution belongs only to config/evals.json.
+rule:
+  pattern: |-
+    - type: behavior
+      name: bounded_execution
+      config:
+        max_duration_ms: $DURATION
+fix: ""

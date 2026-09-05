@@ -39,23 +39,32 @@ only-include = [
   "AGENTS.md",
   "Makefile",
   "README.md",
+  ".jscpd.json",
+  ".mise.toml",
   ".waza.yaml",
   "agents",
+  "ast-grep-rule-tests",
+  "ast-grep-rules",
   "commands",
   "config",
+  ".github/workflows/eval.yml",
+  ".github/workflows/release.yml",
   "docs/adr",
   "docs/security/security-triage.md",
   "evals",
+  "mise.lock",
   "pyproject.toml",
   "rules",
   "skills",
   "src",
   "tests",
+  "tools",
   "uv.lock",
+  "sgconfig.yml",
 ]
 
 [tool.pytest.ini_options]
-addopts = "-q -p no:cacheprovider"
+addopts = "-p no:cacheprovider --strict-config --strict-markers"
 testpaths = ["tests"]
 tmp_path_retention_policy = "none"
 
