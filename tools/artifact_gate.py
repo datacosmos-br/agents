@@ -5,11 +5,12 @@ from __future__ import annotations
 import fcntl
 import hashlib
 import os
-import subprocess
 import tempfile
 import tomllib
 from pathlib import Path
 from typing import Literal, cast
+
+from strict_subprocess import run_strict
 
 _IGNORED_DIST_FILES = frozenset({".gitignore"})
 
@@ -63,7 +64,7 @@ def _build(repository: Path) -> tuple[Path, Path]:
         if entry.is_symlink() or not entry.is_file():
             raise ValueError(f"refusing unsupported distribution residue: {entry}")
         entry.unlink()
-    subprocess.run(("uv", "build"), cwd=repository, check=True)
+    run_strict(("uv", "build"), repository, "ARTIFACT build")
     return _artifacts(dist)
 
 
@@ -82,13 +83,13 @@ def _smoke(artifact: Path, cache_root: Path, version: str) -> None:
     ) as temporary:
         smoke = Path(temporary)
         environment_path = smoke / "venv"
-        subprocess.run(
+        run_strict(
             ("uv", "venv", str(environment_path)),
-            cwd=smoke,
-            env=environment,
-            check=True,
+            smoke,
+            f"ARTIFACT create environment for {artifact.name}",
+            environment,
         )
-        subprocess.run(
+        run_strict(
             (
                 "uv",
                 "pip",
@@ -97,9 +98,9 @@ def _smoke(artifact: Path, cache_root: Path, version: str) -> None:
                 str(environment_path / "bin" / "python"),
                 str(artifact),
             ),
-            cwd=smoke,
-            env=environment,
-            check=True,
+            smoke,
+            f"ARTIFACT install {artifact.name}",
+            environment,
         )
         proof = "\n".join(
             (
@@ -111,11 +112,11 @@ def _smoke(artifact: Path, cache_root: Path, version: str) -> None:
                 "print('ARTIFACT', __version__, bundle.schema_version, len(bundle.skills))",
             )
         )
-        subprocess.run(
+        run_strict(
             (str(environment_path / "bin" / "python"), "-c", proof),
-            cwd=smoke,
-            env=environment,
-            check=True,
+            smoke,
+            f"ARTIFACT public load {artifact.name}",
+            environment,
         )
 
 
@@ -161,7 +162,7 @@ def _publish(repository: Path, cache_root: Path) -> None:
     artifacts = _build(repository)
     _validate(repository, cache_root)
     manifest = _manifest(repository / "dist", artifacts)
-    subprocess.run(
+    run_strict(
         (
             "gh",
             "release",
@@ -171,8 +172,8 @@ def _publish(repository: Path, cache_root: Path) -> None:
             "--generate-notes",
             *(str(path) for path in (*artifacts, manifest)),
         ),
-        cwd=repository,
-        check=True,
+        repository,
+        f"ARTIFACT publish {tag}",
     )
 
 

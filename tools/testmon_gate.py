@@ -7,13 +7,14 @@ import importlib
 import json
 import os
 import sqlite3
-import subprocess
 import sys
 import tempfile
 from contextlib import closing
 from dataclasses import dataclass
 from pathlib import Path
 from typing import cast
+
+from strict_subprocess import run_strict
 
 _DATABASE_TABLES = frozenset(
     {"environment", "file_fp", "test_execution", "test_execution_file_fp"}
@@ -183,7 +184,7 @@ def _run(mode: str, repository: Path, datafile: Path) -> int:
             arguments.append("--testmon-noselect")
         environment = dict(os.environ)
         environment["TESTMON_AUDIT_PATH"] = str(audit_path)
-        subprocess.run(arguments, cwd=repository, env=environment, check=True)
+        run_strict(tuple(arguments), repository, "TESTMON pytest", environment)
         audit = _audit_report(audit_path)
     _validate_sidecars(datafile)
     after = _database_state(datafile)

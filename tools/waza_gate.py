@@ -4,13 +4,12 @@ from __future__ import annotations
 
 import fcntl
 import os
-import re
-import subprocess
 import sys
 import tempfile
 from pathlib import Path
 
-_WARNING = re.compile(r"\bwarn(?:ing)?\b", re.IGNORECASE)
+from strict_subprocess import run_strict
+
 _WAZA = ("mise", "exec", "--", "waza")
 
 
@@ -20,26 +19,7 @@ def _run(
     label: str,
     environment: dict[str, str] | None = None,
 ) -> str:
-    print(f"WAZA {label}", flush=True)
-    completed = subprocess.run(
-        command,
-        cwd=cwd,
-        env=environment,
-        check=False,
-        capture_output=True,
-        text=True,
-    )
-    sys.stdout.write(completed.stdout)
-    sys.stdout.flush()
-    sys.stderr.write(completed.stderr)
-    sys.stderr.flush()
-    completed.check_returncode()
-    output = f"{completed.stdout}\n{completed.stderr}"
-    if not output.strip():
-        raise RuntimeError(f"Waza produced no evidence for {label}")
-    if _WARNING.search(output):
-        raise RuntimeError(f"Waza emitted a forbidden warning for {label}")
-    return output
+    return run_strict(command, cwd, f"WAZA {label}", environment)
 
 
 def _state_root(repository: Path) -> Path:
