@@ -7,3 +7,4 @@
 | `ADR-0006` | 2026-08-28 | Accepted | Historical governance is reduced to current behavior and then removed, never archived. |
 | `ADR-0007` | 2026-08-30 | Accepted | A selected running tracker is verified against registered, Git, measured, and integrated reality. |
 | `ADR-0008` | 2026-09-03 | Accepted | `GovernanceBundle` is the sole read-only semantic package boundary; AI Hub owns every runtime effect. |
+| `ADR-0011` | 2026-09-05 | Accepted | Session history is harvested into typed findings, routed by guarantees to owner artifacts, and landed by city formulas up to an administrative merge. |
