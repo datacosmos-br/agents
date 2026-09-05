@@ -72,7 +72,6 @@ def _smoke_environment() -> dict[str, str]:
     environment = dict(os.environ)
     for variable in ("PYTHONPATH", "UV_PROJECT_ENVIRONMENT", "VIRTUAL_ENV"):
         environment.pop(variable, None)
-    environment["PYTHONDONTWRITEBYTECODE"] = "1"
     return environment
 
 

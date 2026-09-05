@@ -7,20 +7,9 @@ TEST_STATE_ROOT := $(CACHE_HOME)/agents-governance/pytest
 TESTMON_DATAFILE := $(TEST_STATE_ROOT)/.testmondata
 ARTIFACT_STATE_ROOT := $(CACHE_HOME)/agents-governance/artifacts
 WAZA_STATE_ROOT := $(CACHE_HOME)/agents-governance/waza
-OBSOLETE_LOCAL_PATHS := \
-	$(CURDIR)/.testmondata \
-	$(CURDIR)/.pytest-scratch \
-	$(CURDIR)/.pytest_cache \
-	$(CURDIR)/.test-tmp \
-	$(CURDIR)/.reports \
-	$(CURDIR)/.waza-cache \
-	$(CURDIR)/results \
-	$(CURDIR)/src/agents_governance/__pycache__ \
-	$(CURDIR)/tests/__pycache__
 override export TESTMON_DATAFILE := $(TESTMON_DATAFILE)
 override export COVERAGE_CORE := ctrace
 override export ARTIFACT_STATE_ROOT := $(ARTIFACT_STATE_ROOT)
-override export PYTHONDONTWRITEBYTECODE := 1
 override export PYRIGHT_PYTHON_CACHE_DIR := $(PYRIGHT_CACHE_ROOT)
 override export WAZA_STATE_ROOT := $(WAZA_STATE_ROOT)
 override export UV_PROJECT_ENVIRONMENT := $(CURDIR)/.venv
@@ -76,9 +65,6 @@ docs: ## validate documentation through the public bundle contract; requires APP
 audit: ## print the complete public semantic inventory; requires APPLY=Y
 	$(call REQUIRE_APPLY)
 	$(call BANNER,audit · GovernanceBundle.load)
-	@for obsolete in $(OBSOLETE_LOCAL_PATHS); do \
-		test ! -e "$$obsolete" || { echo "obsolete local cache: $$obsolete" >&2; exit 1; }; \
-	done
 	@if [ -e "$(TESTMON_DATAFILE)" ]; then \
 		test "$$(sqlite3 "$(TESTMON_DATAFILE)" 'PRAGMA quick_check;')" = ok; \
 	fi
@@ -114,17 +100,6 @@ fix: ## apply canonical corrections; requires APPLY=Y
 	$(call BANNER,fix · ruff)
 	@uv run ruff check --fix src tests tools
 	@TESTMON_MODE=repair uv run python tools/testmon_gate.py
-	@for obsolete in $(OBSOLETE_LOCAL_PATHS); do \
-		if [ -L "$$obsolete" ]; then \
-			echo "refusing symlinked local cache: $$obsolete" >&2; exit 1; \
-		elif [ -f "$$obsolete" ]; then \
-			rm -- "$$obsolete"; \
-		elif [ -d "$$obsolete" ]; then \
-			rm -r -- "$$obsolete"; \
-		elif [ -e "$$obsolete" ]; then \
-			echo "refusing special local cache: $$obsolete" >&2; exit 1; \
-		fi; \
-	done
 
 mod-check: ## test ast-grep rules and reject structural migration residue; requires APPLY=Y
 	$(call REQUIRE_APPLY)

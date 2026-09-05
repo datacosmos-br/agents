@@ -228,6 +228,10 @@
       "command:pr-list",
       "rule:coordination/operator-precedence"
     ],
+    "python-bytecode-cache": [
+      "rule:python",
+      "skill:python-development"
+    ],
     "repository-authority": [
       "document:README.md",
       "rule:architecture/engineering-core"

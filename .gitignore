@@ -3,6 +3,26 @@
 /dist/*
 !/dist/.gitignore
 
+# Python and tool artifacts are normal disposable caches. Repository discovery
+# and cleanliness use Git ignore semantics instead of disabling or deleting them.
+**/__pycache__/
+**/*.py[cod]
+.mypy_cache/
+.eggs/
+.pytest-scratch/
+.pytest_cache/
+.ruff_cache/
+.test-tmp/
+.testmondata
+.waza-cache/
+.reports/
+build/
+htmlcov/
+node_modules/
+results/
+target/
+*.egg-info/
+
 # AI Hub owns provider/runtime materialization. These paths are never semantic
 # package input and every generated file must carry the AI Hub owner marker.
 /.agents/
