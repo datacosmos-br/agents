@@ -16,7 +16,7 @@ bundle = GovernanceBundle.load()
 ```
 
 The returned frozen snapshot exposes `root`, `schema_version`,
-`distribution_version`, `config`, `skills`, `skill_metadata`, `commands`,
+`distribution_version`, `config`, `eval_policy`, `skills`, `skill_metadata`, `commands`,
 `agents`, `rules`, and `law`. Loading is read-only and fails on the first
 catalog, evaluation-resource, approval, ownership, metadata, profile, command,
 rule, or strict-prelude defect.

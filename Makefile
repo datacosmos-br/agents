@@ -6,7 +6,7 @@ PYRIGHT_CACHE_ROOT := $(CACHE_HOME)/agents-governance/pyright
 TEST_STATE_ROOT := $(CACHE_HOME)/agents-governance/pytest
 TESTMON_DATAFILE := $(TEST_STATE_ROOT)/.testmondata
 ARTIFACT_STATE_ROOT := $(CACHE_HOME)/agents-governance/artifacts
-WAZA_PROJECTION_ROOT := $(CACHE_HOME)/agents-governance/waza-projection
+WAZA_STATE_ROOT := $(CACHE_HOME)/agents-governance/waza
 OBSOLETE_LOCAL_PATHS := \
 	$(CURDIR)/.testmondata \
 	$(CURDIR)/.pytest-scratch \
@@ -21,7 +21,7 @@ override export TESTMON_DATAFILE := $(TESTMON_DATAFILE)
 override export ARTIFACT_STATE_ROOT := $(ARTIFACT_STATE_ROOT)
 override export PYTHONDONTWRITEBYTECODE := 1
 override export PYRIGHT_PYTHON_CACHE_DIR := $(PYRIGHT_CACHE_ROOT)
-override export WAZA_PROJECTION_ROOT := $(WAZA_PROJECTION_ROOT)
+override export WAZA_STATE_ROOT := $(WAZA_STATE_ROOT)
 override export UV_PROJECT_ENVIRONMENT := $(CURDIR)/.venv
 override export VIRTUAL_ENV := $(CURDIR)/.venv
 
@@ -112,6 +112,7 @@ fix: ## apply canonical corrections; requires APPLY=Y
 	$(call REQUIRE_APPLY)
 	$(call BANNER,fix · ruff)
 	@uv run ruff check --fix src tests tools
+	@TESTMON_MODE=repair uv run python tools/testmon_gate.py
 	@for obsolete in $(OBSOLETE_LOCAL_PATHS); do \
 		if [ -L "$$obsolete" ]; then \
 			echo "refusing symlinked local cache: $$obsolete" >&2; exit 1; \

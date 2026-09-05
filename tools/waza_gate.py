@@ -7,17 +7,24 @@ import os
 import re
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 _WARNING = re.compile(r"\bwarn(?:ing)?\b", re.IGNORECASE)
 _WAZA = ("mise", "exec", "--", "waza")
 
 
-def _run(command: tuple[str, ...], cwd: Path, label: str) -> str:
+def _run(
+    command: tuple[str, ...],
+    cwd: Path,
+    label: str,
+    environment: dict[str, str] | None = None,
+) -> str:
     print(f"WAZA {label}", flush=True)
     completed = subprocess.run(
         command,
         cwd=cwd,
+        env=environment,
         check=False,
         capture_output=True,
         text=True,
@@ -35,19 +42,19 @@ def _run(command: tuple[str, ...], cwd: Path, label: str) -> str:
     return output
 
 
-def _projection_root(repository: Path) -> Path:
-    configured = os.environ.get("WAZA_PROJECTION_ROOT")
+def _state_root(repository: Path) -> Path:
+    configured = os.environ.get("WAZA_STATE_ROOT")
     if configured is None:
-        raise ValueError("WAZA_PROJECTION_ROOT is required")
+        raise ValueError("WAZA_STATE_ROOT is required")
     raw = Path(configured)
     if not raw.is_absolute() or raw.is_relative_to(repository):
-        raise ValueError("WAZA_PROJECTION_ROOT must be an absolute external path")
-    if raw.name != "waza-projection" or raw.parent.name != "agents-governance":
-        raise ValueError(f"refusing unexpected Waza projection root: {raw}")
+        raise ValueError("WAZA_STATE_ROOT must be an absolute external path")
+    if raw.name != "waza" or raw.parent.name != "agents-governance":
+        raise ValueError(f"refusing unexpected Waza state root: {raw}")
     for ancestor in (raw, *raw.parents):
         if ancestor.exists() and ancestor.is_symlink():
-            raise ValueError(f"Waza projection ancestry must be physical: {ancestor}")
-    raw.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
+            raise ValueError(f"Waza state ancestry must be physical: {ancestor}")
+    raw.mkdir(mode=0o700, parents=True, exist_ok=True)
     return raw.resolve()
 
 
@@ -55,10 +62,13 @@ def _verify(repository: Path, projection: Path) -> None:
     version = _run((*_WAZA, "--version"), repository, "version")
     if version.strip() != "waza version 0.38.7":
         raise ValueError(f"unexpected Waza version: {version.strip()!r}")
+    environment = dict(os.environ)
+    environment["WAZA_PROJECTION_ROOT"] = str(projection)
     _run(
         (sys.executable, "tools/render_waza_projection.py"),
         repository,
         "projection fixed point",
+        environment,
     )
     _run(
         (*_WAZA, "tokens", "check", "./skills", "--strict", "--no-update-check"),
@@ -110,13 +120,14 @@ def _verify(repository: Path, projection: Path) -> None:
 
 def main() -> None:
     repository = Path(__file__).resolve().parents[1]
-    projection = _projection_root(repository)
-    lock_path = projection.parent / "waza.lock"
+    state = _state_root(repository)
+    lock_path = state / "waza.lock"
     if lock_path.is_symlink() or (lock_path.exists() and not lock_path.is_file()):
         raise ValueError(f"Waza lock must be a physical file: {lock_path}")
     with lock_path.open("a+b") as lock:
         fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
-        _verify(repository, projection)
+        with tempfile.TemporaryDirectory(prefix="gate-", dir=state) as temporary:
+            _verify(repository, Path(temporary) / "waza-projection")
 
 
 if __name__ == "__main__":

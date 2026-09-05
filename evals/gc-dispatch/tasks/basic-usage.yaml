@@ -8,6 +8,8 @@ inputs:
     validate both required variables, then sling bead search-118 to the role on
     that formula. Report exact discovery and dispatch commands, cwd, exit code,
     convoy/order identity, and decisive output.
+    Prove Gas City dispatch, sling routing, formula workflow, and convoy orders
+    without substituting a direct session command.
   files:
   - path: scenario.yaml
 expected:

@@ -8,6 +8,8 @@ inputs:
     the running, draining, and absent session states; preserve api-worker-1,
     complete the drain handshake for api-worker-2, and let the declared owner
     materialize the replacement. Report exact commands and post-state evidence.
+    This must exercise Gas City agents session lifecycle, pool capacity,
+    drain/restart, and reconciliation as observable behavior.
   files:
   - path: scenario.yaml
 expected:

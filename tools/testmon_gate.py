@@ -4,48 +4,21 @@ from __future__ import annotations
 
 import fcntl
 import importlib
+import json
 import os
 import sqlite3
+import subprocess
+import sys
 import tempfile
-from dataclasses import dataclass, field
+from contextlib import closing
+from dataclasses import dataclass
 from pathlib import Path
-from typing import Protocol, cast
-
-import pytest
+from typing import cast
 
 _DATABASE_TABLES = frozenset(
     {"environment", "file_fp", "test_execution", "test_execution_file_fp"}
 )
 _SIDECAR_SUFFIXES = ("-journal", "-shm", "-wal")
-
-
-class TestmonSettings(Protocol):
-    """Settings surfaced by the active pytest-testmon plugin."""
-
-    collect: bool
-    select: bool
-    tmnet: bool
-
-
-class TestmonPytestConfig(Protocol):
-    """Typed pytest extension installed by pytest-testmon."""
-
-    testmon_config: TestmonSettings
-
-
-class TestmonSelectPlugin(Protocol):
-    """Selection evidence surfaced by pytest-testmon."""
-
-    deselected_tests: set[str]
-
-
-class WarningMessage(Protocol):
-    """Warning record supplied by pytest's public hook."""
-
-    message: Warning
-    category: type[Warning]
-    filename: str
-    lineno: int
 
 
 def _testmon_data_version() -> int:
@@ -69,72 +42,24 @@ class DatabaseState:
     dependency_edges: int
 
 
-@dataclass
+@dataclass(frozen=True)
 class PytestAudit:
-    """Observe pytest/testmon without changing its execution semantics."""
+    """One validated accounting report emitted by the pytest child."""
 
-    mode: str
-    config: pytest.Config | None = None
-    selected: set[str] = field(default_factory=set)
-    executed: set[str] = field(default_factory=set)
-    warnings: int = 0
-    skips: int = 0
-    xfails: int = 0
-
-    @pytest.hookimpl(trylast=True)
-    def pytest_configure(self, config: pytest.Config) -> None:
-        tm_conf = cast(TestmonPytestConfig, config).testmon_config
-        expected_select = self.mode == "incremental"
-        if (
-            not tm_conf.collect
-            or tm_conf.select is not expected_select
-            or tm_conf.tmnet
-        ):
-            raise RuntimeError(
-                "testmon mode is not canonical: "
-                f"collect={tm_conf.collect} select={tm_conf.select} tmnet={tm_conf.tmnet}"
-            )
-        for plugin in ("TestmonCollect", "TestmonSelect"):
-            if not config.pluginmanager.hasplugin(plugin):
-                raise RuntimeError(f"required testmon plugin is absent: {plugin}")
-        self.config = config
-
-    @pytest.hookimpl(trylast=True)
-    def pytest_collection_modifyitems(self, items: list[pytest.Item]) -> None:
-        self.selected = {item.nodeid for item in items}
-
-    def pytest_runtest_logreport(self, report: pytest.TestReport) -> None:
-        if report.when == "call":
-            self.executed.add(report.nodeid)
-        if report.skipped:
-            self.skips += 1
-        if hasattr(report, "wasxfail"):
-            self.xfails += 1
-
-    def pytest_warning_recorded(
-        self,
-        warning_message: WarningMessage,
-        when: str,
-        nodeid: str,
-        location: tuple[str, int, str] | None,
-    ) -> None:
-        del warning_message, when, nodeid, location
-        self.warnings += 1
-
-    def deselected(self) -> frozenset[str]:
-        if self.config is None:
-            raise RuntimeError("pytest did not configure the testmon audit")
-        plugin = self.config.pluginmanager.get_plugin("TestmonSelect")
-        if plugin is None or not hasattr(plugin, "deselected_tests"):
-            raise TypeError("TestmonSelect plugin has an unexpected type")
-        return frozenset(cast(TestmonSelectPlugin, plugin).deselected_tests)
+    executed: frozenset[str]
+    deselected: frozenset[str]
+    warnings: int
+    skips: int
+    xfails: int
 
 
 def _database_state(path: Path) -> DatabaseState:
     metadata = path.lstat()
     if path.is_symlink() or not path.is_file():
         raise ValueError(f"testmon database must be a physical file: {path}")
-    with sqlite3.connect(f"{path.as_uri()}?mode=ro", uri=True) as connection:
+    with closing(
+        sqlite3.connect(f"{path.as_uri()}?mode=ro&immutable=1", uri=True)
+    ) as connection:
         quick = tuple(row[0] for row in connection.execute("PRAGMA quick_check"))
         if quick != ("ok",):
             raise ValueError(f"testmon quick_check failed: {quick}")
@@ -193,15 +118,55 @@ def _validate_path(repository: Path, datafile: Path) -> None:
             raise ValueError(f"testmon cache ancestry must be physical: {parent}")
 
 
+def _audit_report(path: Path) -> PytestAudit:
+    if path.is_symlink() or not path.is_file():
+        raise ValueError(f"pytest did not emit a physical audit report: {path}")
+    raw: object = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(raw, dict) or not all(isinstance(key, str) for key in raw):
+        raise TypeError("pytest audit report must be a string-keyed mapping")
+    report = cast(dict[str, object], raw)
+    expected = frozenset({"deselected", "executed", "skips", "warnings", "xfails"})
+    if frozenset(report) != expected:
+        raise ValueError("pytest audit report fields are not canonical")
+
+    def nodeids(field: str) -> frozenset[str]:
+        value = report[field]
+        if not isinstance(value, list) or not all(
+            isinstance(item, str) and item for item in value
+        ):
+            raise TypeError(f"pytest audit {field} must contain nodeid strings")
+        values = cast(list[str], value)
+        if len(values) != len(set(values)):
+            raise ValueError(f"pytest audit {field} contains duplicate nodeids")
+        return frozenset(values)
+
+    def count(field: str) -> int:
+        value = report[field]
+        if type(value) is not int or value < 0:
+            raise TypeError(f"pytest audit {field} must be a non-negative integer")
+        return value
+
+    return PytestAudit(
+        executed=nodeids("executed"),
+        deselected=nodeids("deselected"),
+        warnings=count("warnings"),
+        skips=count("skips"),
+        xfails=count("xfails"),
+    )
+
+
 def _run(mode: str, repository: Path, datafile: Path) -> int:
     existed = datafile.exists()
     if mode == "full" and not existed:
         raise ValueError("full testmon execution requires a seeded cache")
-    before = _database_state(datafile) if existed else None
     _validate_sidecars(datafile)
-    audit = PytestAudit(mode)
+    before = _database_state(datafile) if existed else None
     with tempfile.TemporaryDirectory(prefix="scratch-", dir=datafile.parent) as scratch:
+        audit_path = Path(scratch) / "audit.json"
         arguments = [
+            sys.executable,
+            "-m",
+            "pytest",
             "--basetemp",
             scratch,
             "--testmon",
@@ -211,14 +176,17 @@ def _run(mode: str, repository: Path, datafile: Path) -> int:
             "error",
             "--strict-config",
             "--strict-markers",
+            "-p",
+            "tools.testmon_pytest_plugin",
         ]
         if mode == "full":
             arguments.append("--testmon-noselect")
-        result = int(pytest.main(arguments, plugins=[audit]))
-    if result != 0:
-        return result
-    after = _database_state(datafile)
+        environment = dict(os.environ)
+        environment["TESTMON_AUDIT_PATH"] = str(audit_path)
+        subprocess.run(arguments, cwd=repository, env=environment, check=True)
+        audit = _audit_report(audit_path)
     _validate_sidecars(datafile)
+    after = _database_state(datafile)
     if before is not None and (before.device, before.inode) != (
         after.device,
         after.inode,
@@ -237,11 +205,7 @@ def _run(mode: str, repository: Path, datafile: Path) -> int:
             "pytest emitted a forbidden outcome: "
             f"warnings={audit.warnings} skips={audit.skips} xfails={audit.xfails}"
         )
-    deselected = audit.deselected()
-    if audit.executed != audit.selected:
-        raise RuntimeError(
-            f"pytest selected {len(audit.selected)} tests but executed {len(audit.executed)}"
-        )
+    deselected = audit.deselected
     if mode == "full":
         if deselected or audit.executed != after.tests:
             raise RuntimeError(
@@ -264,11 +228,57 @@ def _run(mode: str, repository: Path, datafile: Path) -> int:
     return 0
 
 
+def _repair(datafile: Path) -> int:
+    obsolete_scratch = datafile.parent / "scratch"
+    if obsolete_scratch.is_symlink() or (
+        obsolete_scratch.exists() and not obsolete_scratch.is_dir()
+    ):
+        raise ValueError(
+            f"obsolete test scratch must be a physical directory: {obsolete_scratch}"
+        )
+    if obsolete_scratch.exists():
+        if any(obsolete_scratch.iterdir()):
+            raise ValueError(
+                f"obsolete test scratch must be empty before removal: {obsolete_scratch}"
+            )
+        obsolete_scratch.rmdir()
+    if not datafile.exists():
+        _validate_sidecars(datafile)
+        print("TESTMON repair cache=absent sidecars=0", flush=True)
+        return 0
+    if datafile.is_symlink() or not datafile.is_file():
+        raise ValueError(f"testmon database must be a physical file: {datafile}")
+    for suffix in _SIDECAR_SUFFIXES:
+        sidecar = Path(f"{datafile}{suffix}")
+        if sidecar.is_symlink() or (sidecar.exists() and not sidecar.is_file()):
+            raise ValueError(f"testmon SQLite sidecar must be physical: {sidecar}")
+    with closing(sqlite3.connect(datafile, timeout=0)) as connection:
+        checkpoint = connection.execute("PRAGMA wal_checkpoint(TRUNCATE)").fetchone()
+        if checkpoint != (0, 0, 0):
+            raise RuntimeError(f"testmon WAL checkpoint failed: {checkpoint}")
+        quick = tuple(row[0] for row in connection.execute("PRAGMA quick_check"))
+        if quick != ("ok",):
+            raise ValueError(f"testmon quick_check failed during repair: {quick}")
+        foreign_keys = tuple(connection.execute("PRAGMA foreign_key_check"))
+        if foreign_keys:
+            raise ValueError(
+                f"testmon foreign_key_check failed during repair: {foreign_keys[0]}"
+            )
+    _validate_sidecars(datafile)
+    state = _database_state(datafile)
+    print(
+        f"TESTMON repair cache=present tests={len(state.tests)} "
+        "sidecars=0 integrity=ok",
+        flush=True,
+    )
+    return 0
+
+
 def main() -> int:
     repository = Path(__file__).resolve().parents[1]
     mode = os.environ.get("TESTMON_MODE")
-    if mode not in {"full", "incremental"}:
-        raise ValueError("TESTMON_MODE must equal incremental or full")
+    if mode not in {"full", "incremental", "repair"}:
+        raise ValueError("TESTMON_MODE must equal full, incremental, or repair")
     configured = os.environ.get("TESTMON_DATAFILE")
     if configured is None:
         raise ValueError("TESTMON_DATAFILE is required")
@@ -280,7 +290,9 @@ def main() -> int:
         raise ValueError(f"testmon lock must be a physical file: {lock_path}")
     with lock_path.open("a+b") as lock:
         fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
-        return _run(mode, repository, datafile)
+        return (
+            _repair(datafile) if mode == "repair" else _run(mode, repository, datafile)
+        )
 
 
 if __name__ == "__main__":

@@ -8,6 +8,8 @@ inputs:
     thread, and reply to billing/reviewer with the exact red gate evidence.
     Preserve the linked bead and report each gc mail command, cwd, exit code,
     and decisive output; do not archive or delete the message.
+    Exercise Gas City mail as inter-agent messaging through bead threads and the
+    canonical inbox.
   files:
   - path: scenario.yaml
 expected:

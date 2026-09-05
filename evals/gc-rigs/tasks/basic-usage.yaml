@@ -8,6 +8,8 @@ inputs:
     resume only the suspended docs rig through the declared gc rig facade.
     Report the exact preflight, mutation, post-state command, cwd, exit code,
     and decisive output; do not recreate the rig or touch the running api rig.
+    Cover Gas City rigs, rig registration, bead scoping, and suspend/resume
+    ownership in the resulting evidence.
   files:
   - path: scenario.yaml
 expected:

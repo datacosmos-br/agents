@@ -31,7 +31,7 @@ def _dist(repository: Path) -> Path:
     dist = repository / "dist"
     if dist.is_symlink() or (dist.exists() and not dist.is_dir()):
         raise ValueError(f"distribution root must be a physical directory: {dist}")
-    dist.mkdir()
+    dist.mkdir(exist_ok=True)
     return dist
 
 
@@ -101,13 +101,15 @@ def _smoke(artifact: Path, cache_root: Path, version: str) -> None:
             env=environment,
             check=True,
         )
-        proof = (
-            "from agents_governance import GovernanceBundle, __version__; "
-            f"expected={version!r}; "
-            "bundle=GovernanceBundle.load(); "
-            "(__version__ == expected and bundle.distribution_version == expected) "
-            "or (_ for _ in ()).throw(ValueError('installed version mismatch')); "
-            "print('ARTIFACT', __version__, bundle.schema_version, len(bundle.skills))"
+        proof = "\n".join(
+            (
+                "from agents_governance import GovernanceBundle, __version__",
+                f"expected = {version!r}",
+                "bundle = GovernanceBundle.load()",
+                "if __version__ != expected or bundle.distribution_version != expected:",
+                "    raise ValueError('installed version mismatch')",
+                "print('ARTIFACT', __version__, bundle.schema_version, len(bundle.skills))",
+            )
         )
         subprocess.run(
             (str(environment_path / "bin" / "python"), "-c", proof),

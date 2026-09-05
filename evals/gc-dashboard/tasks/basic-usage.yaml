@@ -8,6 +8,8 @@ inputs:
     address, start the stopped dashboard through its declared gc facade, then
     prove both API health and web UI status at 127.0.0.1:7337. Report exact
     commands, cwd, exit codes, and decisive output.
+    Exercise the Gas City dashboard API server, web UI, and realtime monitoring
+    contract through those observable checks.
   files:
   - path: scenario.yaml
 expected:

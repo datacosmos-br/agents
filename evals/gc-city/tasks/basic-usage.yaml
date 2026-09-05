@@ -8,6 +8,8 @@ inputs:
     canonical start dry-run, then start it and prove supervisor status. Do not
     initialize again, stop it afterward, or perform teardown. Report command,
     cwd, exit code, and decisive output for every transition.
+    Cover the Gas City lifecycle contract: city init state, start/stop authority,
+    and supervisor status, without executing the unauthorized stop.
   files:
   - path: scenario.yaml
 expected:
