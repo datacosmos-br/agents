@@ -3,23 +3,57 @@
 from __future__ import annotations
 
 import fcntl
+import importlib
 import os
 import sqlite3
 import tempfile
-import warnings
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import cast
+from typing import Protocol, cast
 
 import pytest
-from testmon.configure import TmConf
-from testmon.db import DATA_VERSION
-from testmon.pytest_testmon import TestmonSelect
 
 _DATABASE_TABLES = frozenset(
     {"environment", "file_fp", "test_execution", "test_execution_file_fp"}
 )
 _SIDECAR_SUFFIXES = ("-journal", "-shm", "-wal")
+
+
+class TestmonSettings(Protocol):
+    """Settings surfaced by the active pytest-testmon plugin."""
+
+    collect: bool
+    select: bool
+    tmnet: bool
+
+
+class TestmonPytestConfig(Protocol):
+    """Typed pytest extension installed by pytest-testmon."""
+
+    testmon_config: TestmonSettings
+
+
+class TestmonSelectPlugin(Protocol):
+    """Selection evidence surfaced by pytest-testmon."""
+
+    deselected_tests: set[str]
+
+
+class WarningMessage(Protocol):
+    """Warning record supplied by pytest's public hook."""
+
+    message: Warning
+    category: type[Warning]
+    filename: str
+    lineno: int
+
+
+def _testmon_data_version() -> int:
+    module = importlib.import_module("testmon.db")
+    value: object = getattr(module, "DATA_VERSION", None)
+    if type(value) is not int:
+        raise TypeError("testmon.db.DATA_VERSION must be an integer")
+    return value
 
 
 @dataclass(frozen=True)
@@ -49,7 +83,7 @@ class PytestAudit:
 
     @pytest.hookimpl(trylast=True)
     def pytest_configure(self, config: pytest.Config) -> None:
-        tm_conf = cast(TmConf, getattr(config, "testmon_config"))
+        tm_conf = cast(TestmonPytestConfig, config).testmon_config
         expected_select = self.mode == "incremental"
         if (
             not tm_conf.collect
@@ -79,7 +113,7 @@ class PytestAudit:
 
     def pytest_warning_recorded(
         self,
-        warning_message: warnings.WarningMessage,
+        warning_message: WarningMessage,
         when: str,
         nodeid: str,
         location: tuple[str, int, str] | None,
@@ -91,9 +125,9 @@ class PytestAudit:
         if self.config is None:
             raise RuntimeError("pytest did not configure the testmon audit")
         plugin = self.config.pluginmanager.get_plugin("TestmonSelect")
-        if not isinstance(plugin, TestmonSelect):
+        if plugin is None or not hasattr(plugin, "deselected_tests"):
             raise TypeError("TestmonSelect plugin has an unexpected type")
-        return frozenset(plugin.deselected_tests)
+        return frozenset(cast(TestmonSelectPlugin, plugin).deselected_tests)
 
 
 def _database_state(path: Path) -> DatabaseState:
@@ -108,9 +142,11 @@ def _database_state(path: Path) -> DatabaseState:
         if foreign_keys:
             raise ValueError(f"testmon foreign_key_check failed: {foreign_keys[0]}")
         version = connection.execute("PRAGMA user_version").fetchone()
-        if version != (DATA_VERSION,):
+        expected_version = _testmon_data_version()
+        if version != (expected_version,):
             raise ValueError(
-                f"testmon schema {version[0] if version else None} != {DATA_VERSION}"
+                f"testmon schema {version[0] if version else None} "
+                f"!= {expected_version}"
             )
         tables = frozenset(
             row[0]
