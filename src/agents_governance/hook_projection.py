@@ -6,13 +6,13 @@ import hashlib
 import json
 import os
 import re
-import shlex
 import stat
 import tempfile
 from collections.abc import Mapping
 from dataclasses import dataclass
 from functools import partial
 from pathlib import Path
+from types import MappingProxyType
 from typing import cast
 
 from .agent_profiles import AgentProvider
@@ -279,8 +279,57 @@ def _event_names(cell_events: object) -> tuple[str, ...]:
     )
 
 
-def _command(path: Path) -> str:
-    return f"python3 {shlex.quote(str(path))}"
+# Why (ag-o08): generated hook commands must never carry a machine-absolute
+# destination path. Each (provider, context) pair resolves its script from the
+# provider's own root token, verified against the provider documentation:
+# Claude expands ${CLAUDE_PROJECT_DIR} (quoted); Cursor exports
+# CURSOR_PROJECT_DIR; Gemini exports GEMINI_PROJECT_DIR; Codex has no project
+# variable and documents `$(git rev-parse --show-toplevel)`; Copilot resolves
+# `cwd` relative to the repository root, so its project hooks pin cwd "." and
+# reference the script relative to that root. Personal-context scripts live in
+# the home boundary and reuse the ${HOME} placeholder projection_config emits.
+_HOME_TOKEN = "${HOME}"
+_SCRIPT_ROOTS: Mapping[tuple[AgentProvider, ProjectionContext], str] = MappingProxyType(
+    {
+        (AgentProvider.CLAUDE, ProjectionContext.PERSONAL): _HOME_TOKEN,
+        (AgentProvider.CLAUDE, ProjectionContext.PROJECT): "${CLAUDE_PROJECT_DIR}",
+        (AgentProvider.CODEX, ProjectionContext.PERSONAL): _HOME_TOKEN,
+        (AgentProvider.CODEX, ProjectionContext.PROJECT): (
+            "$(git rev-parse --show-toplevel)"
+        ),
+        (AgentProvider.GEMINI, ProjectionContext.PERSONAL): _HOME_TOKEN,
+        (AgentProvider.GEMINI, ProjectionContext.PROJECT): "${GEMINI_PROJECT_DIR}",
+        (AgentProvider.CURSOR, ProjectionContext.PERSONAL): _HOME_TOKEN,
+        (AgentProvider.CURSOR, ProjectionContext.PROJECT): "${CURSOR_PROJECT_DIR}",
+        (AgentProvider.COPILOT, ProjectionContext.PERSONAL): _HOME_TOKEN,
+        (AgentProvider.COPILOT, ProjectionContext.PROJECT): ".",
+        (AgentProvider.ANTIGRAVITY, ProjectionContext.PERSONAL): _HOME_TOKEN,
+        (AgentProvider.ANTIGRAVITY, ProjectionContext.PROJECT): (
+            "$(git rev-parse --show-toplevel)"
+        ),
+    }
+)
+_SAFE_RELATIVE = re.compile(r"[A-Za-z0-9._/-]+")
+
+
+def _portable_script_reference(
+    provider: AgentProvider,
+    context: ProjectionContext,
+    boundary: Path,
+    path: Path,
+) -> str:
+    """Return the shell command that runs *path* from the provider root token."""
+    root = _SCRIPT_ROOTS.get((provider, context))
+    if root is None:
+        raise ValueError(
+            f"hook command root is undefined: {provider.value}/{context.value}"
+        )
+    relative = path.relative_to(boundary).as_posix()
+    if _SAFE_RELATIVE.fullmatch(relative) is None:
+        raise ValueError(
+            f"hook script path is not shell-safe inside double quotes: {relative}"
+        )
+    return f'python3 "{root}/{relative}"'
 
 
 def _nested_config(
@@ -338,7 +387,7 @@ def _nested_config(
 def _cursor_config(
     current: dict[str, object],
     events: tuple[str, ...],
-    scripts: dict[str, Path],
+    commands: dict[str, str],
     previous_entries: Mapping[str, object],
 ) -> tuple[dict[str, object], dict[str, object]]:
     result = dict(current)
@@ -356,7 +405,7 @@ def _cursor_config(
         previous = previous_entries.get(event)
         kept = [entry for entry in existing if entry != previous]
         entry = {
-            "command": _command(scripts[event]),
+            "command": commands[event],
             "failClosed": True,
             "timeout": 10,
         }
@@ -368,16 +417,23 @@ def _cursor_config(
 
 
 def _owned_json(
-    provider: AgentProvider, events: tuple[str, ...], scripts: dict[str, Path]
+    provider: AgentProvider,
+    context: ProjectionContext,
+    events: tuple[str, ...],
+    commands: dict[str, str],
 ) -> dict[str, object]:
     if provider is AgentProvider.COPILOT:
+        handler_base: dict[str, object] = (
+            {"cwd": "."} if context is ProjectionContext.PROJECT else {}
+        )
         return {
             "version": 1,
             "hooks": {
                 event: [
                     {
                         "type": "command",
-                        "bash": _command(scripts[event]),
+                        "bash": commands[event],
+                        **handler_base,
                         "timeoutSec": 10,
                     }
                 ]
@@ -390,7 +446,7 @@ def _owned_json(
                 "PreInvocation": [
                     {
                         "type": "command",
-                        "command": _command(scripts["PreInvocation"]),
+                        "command": commands["PreInvocation"],
                         "timeout": 10,
                     }
                 ]
@@ -402,10 +458,12 @@ def _owned_json(
 def _antigravity_project_config(
     current: dict[str, object],
     events: tuple[str, ...],
-    scripts: dict[str, Path],
+    commands: dict[str, str],
 ) -> tuple[dict[str, object], dict[str, object]]:
     result = dict(current)
-    owned = _owned_json(AgentProvider.ANTIGRAVITY, events, scripts)["aihub-governance"]
+    owned = _owned_json(
+        AgentProvider.ANTIGRAVITY, ProjectionContext.PROJECT, events, commands
+    )["aihub-governance"]
     result["aihub-governance"] = owned
     return result, {"aihub-governance": owned}
 
@@ -438,7 +496,10 @@ def _read_json(path: Path) -> dict[str, object]:
         return {}
     if path.is_symlink() or not path.is_file():
         raise ValueError(f"hook config must be a physical file: {path}")
-    return cast_mapping(json.loads(path.read_text(encoding="utf-8")), str(path))
+    content = path.read_text(encoding="utf-8")
+    if not content.strip():
+        return {}
+    return cast_mapping(json.loads(content), str(path))
 
 
 def _manifest_path(config: Path) -> Path:
@@ -450,7 +511,10 @@ def _read_manifest(path: Path, expected_version: int) -> dict[str, object] | Non
         return None
     if path.is_symlink() or not path.is_file():
         raise ValueError(f"hook manifest must be a physical file: {path}")
-    payload = cast_mapping(json.loads(path.read_text(encoding="utf-8")), str(path))
+    content = path.read_text(encoding="utf-8")
+    if not content.strip():
+        return None
+    payload = cast_mapping(json.loads(content), str(path))
     expected = {
         "config",
         "context",
@@ -702,7 +766,12 @@ class HookProjector:
                 path: (_script(provider, event, capsule), 0o755)
                 for event, path in scripts.items()
             }
-            commands = {event: _command(scripts[event]) for event in events}
+            commands = {
+                event: _portable_script_reference(
+                    provider, context, boundary, scripts[event]
+                )
+                for event in events
+            }
             exact = dict(desired)
             entries = {}
             merged_provider = provider in {
@@ -741,7 +810,7 @@ class HookProjector:
             elif provider is AgentProvider.CURSOR:
                 assert current is not None
                 rendered, entries = _cursor_config(
-                    current, events, scripts, previous_entries
+                    current, events, commands, previous_entries
                 )
             elif (
                 provider is AgentProvider.ANTIGRAVITY
@@ -749,10 +818,10 @@ class HookProjector:
             ):
                 assert current is not None
                 rendered, entries = _antigravity_project_config(
-                    current, events, scripts
+                    current, events, commands
                 )
             else:
-                rendered = _owned_json(provider, events, scripts)
+                rendered = _owned_json(provider, context, events, commands)
             desired[config] = (_render_json(rendered), config_mode)
             if not merged_provider:
                 exact[config] = desired[config]
