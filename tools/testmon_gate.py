@@ -49,7 +49,7 @@ class PytestAudit:
 
     @pytest.hookimpl(trylast=True)
     def pytest_configure(self, config: pytest.Config) -> None:
-        tm_conf = cast(TmConf, config.testmon_config)
+        tm_conf = cast(TmConf, getattr(config, "testmon_config"))
         expected_select = self.mode == "incremental"
         if (
             not tm_conf.collect
