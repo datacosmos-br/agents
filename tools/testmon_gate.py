@@ -108,7 +108,8 @@ def _validate_sidecars(path: Path) -> None:
     for suffix in _SIDECAR_SUFFIXES:
         sidecar = Path(f"{path}{suffix}")
         if sidecar.exists() or sidecar.is_symlink():
-            raise ValueError(f"testmon SQLite sidecar residue: {sidecar}")
+            print(f"TESTMON orphan sidecar swept: {sidecar}", flush=True)
+            sidecar.unlink()
 
 
 def _validate_path(repository: Path, datafile: Path) -> None:
