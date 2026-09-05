@@ -20,10 +20,8 @@ You are an expert refactoring specialist focused on code cleanup and consolidati
 ## Detection Commands
 
 ```bash
-npx knip                                    # Unused files, exports, dependencies
-npx depcheck                                # Unused npm dependencies
-npx ts-prune                                # Unused TypeScript exports
-npx eslint . --report-unused-disable-directives  # Unused eslint directives
+make audit
+make check APPLY=Y
 ```
 
 ## Workflow

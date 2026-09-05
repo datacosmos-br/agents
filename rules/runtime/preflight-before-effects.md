@@ -1,7 +1,7 @@
 ---
 description: Complete workflow validation before the first external effect.
 metadata:
-  aihub.tags: '["decision:ADR-0004","effective:2026-08-30","route:both"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-08-30","route:both"]'
 ---
 
 # Validate the complete workflow before effects

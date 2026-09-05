@@ -2,7 +2,7 @@
 name: opencode-session-handoff
 description: 'opencode session export, cursor reconstruction, codex handoff'
 metadata:
-  aihub.tags: '["decision:plan-00","effective:2026-09-01","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","policy:zero-residue","provenance:agents-owned","role:continuity","updates:manual","usage:on-demand"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-09-01","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","policy:zero-residue","provenance:agents-owned","role:continuity","updates:manual","usage:on-demand"]'
 ---
 
 # OpenCode Session Handoff

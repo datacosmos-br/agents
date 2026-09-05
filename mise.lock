@@ -7,20 +7,217 @@ version = "1.7.7"
 backend = "aqua:rhysd/actionlint"
 specifiers = ["1.7.7"]
 
+[tools.actionlint."platforms.linux-arm64"]
+checksum = "sha256:401942f9c24ed71e4fe71b76c7d638f66d8633575c4016efd2977ce7c28317d0"
+url = "https://github.com/rhysd/actionlint/releases/download/v1.7.7/actionlint_1.7.7_linux_arm64.tar.gz"
+url_api = "https://api.github.com/repos/rhysd/actionlint/releases/assets/221573255"
+
+[tools.actionlint."platforms.linux-arm64-musl"]
+checksum = "sha256:401942f9c24ed71e4fe71b76c7d638f66d8633575c4016efd2977ce7c28317d0"
+url = "https://github.com/rhysd/actionlint/releases/download/v1.7.7/actionlint_1.7.7_linux_arm64.tar.gz"
+url_api = "https://api.github.com/repos/rhysd/actionlint/releases/assets/221573255"
+
+[tools.actionlint."platforms.linux-x64"]
+checksum = "sha256:023070a287cd8cccd71515fedc843f1985bf96c436b7effaecce67290e7e0757"
+url = "https://github.com/rhysd/actionlint/releases/download/v1.7.7/actionlint_1.7.7_linux_amd64.tar.gz"
+url_api = "https://api.github.com/repos/rhysd/actionlint/releases/assets/221573254"
+
+[tools.actionlint."platforms.linux-x64-musl"]
+checksum = "sha256:023070a287cd8cccd71515fedc843f1985bf96c436b7effaecce67290e7e0757"
+url = "https://github.com/rhysd/actionlint/releases/download/v1.7.7/actionlint_1.7.7_linux_amd64.tar.gz"
+url_api = "https://api.github.com/repos/rhysd/actionlint/releases/assets/221573254"
+
+[tools.actionlint."platforms.macos-arm64"]
+checksum = "sha256:2693315b9093aeacb4ebd91a993fea54fc215057bf0da2659056b4bc033873db"
+url = "https://github.com/rhysd/actionlint/releases/download/v1.7.7/actionlint_1.7.7_darwin_arm64.tar.gz"
+url_api = "https://api.github.com/repos/rhysd/actionlint/releases/assets/221573250"
+
+[tools.actionlint."platforms.macos-x64"]
+checksum = "sha256:28e5de5a05fc558474f638323d736d822fff183d2d492f0aecb2b73cc44584f5"
+url = "https://github.com/rhysd/actionlint/releases/download/v1.7.7/actionlint_1.7.7_darwin_amd64.tar.gz"
+url_api = "https://api.github.com/repos/rhysd/actionlint/releases/assets/221573249"
+
+[tools.actionlint."platforms.windows-x64"]
+checksum = "sha256:7f12f1801bca3d480d67aaf7774f4c2a6359a3ca8eebe382c95c10c9704aa731"
+url = "https://github.com/rhysd/actionlint/releases/download/v1.7.7/actionlint_1.7.7_windows_amd64.zip"
+url_api = "https://api.github.com/repos/rhysd/actionlint/releases/assets/221573260"
+
 [[tools.bun]]
 version = "1.4.0"
 backend = "core:bun"
 specifiers = ["1.4.0"]
+
+[tools.bun."platforms.linux-arm64"]
+checksum = "sha256:4b1a332ee861983eb93bcfe6f770fff94e3e31b2c388bdaea3c8ed35e58eed0e"
+url = "https://github.com/oven-sh/bun/releases/download/bun-v1.4.0/bun-linux-aarch64.zip"
+
+[tools.bun."platforms.linux-arm64-musl"]
+checksum = "sha256:576300ce33ff16ffcd455bf178c2f095f9df845c6cc3d0284ba1c96ca0e80473"
+url = "https://github.com/oven-sh/bun/releases/download/bun-v1.4.0/bun-linux-aarch64-musl.zip"
+
+[tools.bun."platforms.linux-x64"]
+checksum = "sha256:2d03fb5fb83ac8b567aca0a281b2ce1a1a19d488f56c2968d88c3f25e92fe452"
+url = "https://github.com/oven-sh/bun/releases/download/bun-v1.4.0/bun-linux-x64.zip"
+
+[tools.bun."platforms.linux-x64-baseline"]
+checksum = "sha256:184fb4595f0d401a217cf7c78c1bc430ba83314dab7a8b94805babbf7fa7097f"
+url = "https://github.com/oven-sh/bun/releases/download/bun-v1.4.0/bun-linux-x64-baseline.zip"
+
+[tools.bun."platforms.linux-x64-musl"]
+checksum = "sha256:83b5f12fd258dd8d4fdcaea65ede954366aa717dab399e20093ecab280d54e7a"
+url = "https://github.com/oven-sh/bun/releases/download/bun-v1.4.0/bun-linux-x64-musl.zip"
+
+[tools.bun."platforms.linux-x64-musl-baseline"]
+checksum = "sha256:618c4bc1f94b02337ee210003c0b7c066f11548a8cdc5109df10db043dc47ca2"
+url = "https://github.com/oven-sh/bun/releases/download/bun-v1.4.0/bun-linux-x64-musl-baseline.zip"
+
+[tools.bun."platforms.macos-arm64"]
+checksum = "sha256:c669e97f6164e1c96e0701748db98dfa77492908cbd8394c7557134a735de381"
+url = "https://github.com/oven-sh/bun/releases/download/bun-v1.4.0/bun-darwin-aarch64.zip"
+
+[tools.bun."platforms.macos-x64"]
+checksum = "sha256:1d0211b8f1dc991182344687ad15e72ee86f154845a5f7fa477994cd341dd9b0"
+url = "https://github.com/oven-sh/bun/releases/download/bun-v1.4.0/bun-darwin-x64.zip"
+
+[tools.bun."platforms.macos-x64-baseline"]
+checksum = "sha256:da9b9f1b4ba766c6f299711f38dfaa98623e1ed9c40896aa53db803c52ec1fa0"
+url = "https://github.com/oven-sh/bun/releases/download/bun-v1.4.0/bun-darwin-x64-baseline.zip"
+
+[tools.bun."platforms.windows-x64"]
+checksum = "sha256:e6f093d39da486b20262ca8cdd5ed6a9e8bc9c2f275b78e6d3a0c5b28cc95901"
+url = "https://github.com/oven-sh/bun/releases/download/bun-v1.4.0/bun-windows-x64.zip"
+
+[tools.bun."platforms.windows-x64-baseline"]
+checksum = "sha256:b929c54a9badb104a16dedd23aab6152c86793ae653d4e6b13983ffd0c882a66"
+url = "https://github.com/oven-sh/bun/releases/download/bun-v1.4.0/bun-windows-x64-baseline.zip"
 
 [[tools."github:kucherenko/jscpd"]]
 version = "5.1.2"
 backend = "github:kucherenko/jscpd"
 specifiers = ["5.1.2"]
 
+[tools."github:kucherenko/jscpd"."platforms.linux-arm64"]
+checksum = "sha256:0640d64a8233e159ac700ec8da31e46cdf170e1a7eba34f598440cde0858301f"
+url = "https://github.com/kucherenko/jscpd/releases/download/v5.1.2/jscpd-linux-arm64-gnu.tar.gz"
+url_api = "https://api.github.com/repos/kucherenko/jscpd/releases/assets/542470857"
+provenance = "github-attestations"
+
+[tools."github:kucherenko/jscpd"."platforms.linux-arm64-musl"]
+checksum = "sha256:9fb715e4fb587d647701602e0f5464f08852496045c7f52993989cd88a2a6b93"
+url = "https://github.com/kucherenko/jscpd/releases/download/v5.1.2/jscpd-linux-arm64-musl.tar.gz"
+url_api = "https://api.github.com/repos/kucherenko/jscpd/releases/assets/542470858"
+provenance = "github-attestations"
+
+[tools."github:kucherenko/jscpd"."platforms.linux-x64"]
+checksum = "sha256:937eebaaa569e8a631300edb853108fcfbc6bad1242b3930b8022c20100440b9"
+url = "https://github.com/kucherenko/jscpd/releases/download/v5.1.2/jscpd-linux-x64-gnu.tar.gz"
+url_api = "https://api.github.com/repos/kucherenko/jscpd/releases/assets/542470856"
+provenance = "github-attestations"
+provenance_verified = true
+
+[tools."github:kucherenko/jscpd"."platforms.linux-x64-musl"]
+checksum = "sha256:5cdad02dd2b5c4d56cfce26dd46e7d2be13fdb37d532199fa9ba9fafe1f9f0d5"
+url = "https://github.com/kucherenko/jscpd/releases/download/v5.1.2/jscpd-linux-x64-musl.tar.gz"
+url_api = "https://api.github.com/repos/kucherenko/jscpd/releases/assets/542470863"
+provenance = "github-attestations"
+
+[tools."github:kucherenko/jscpd"."platforms.macos-arm64"]
+checksum = "sha256:6bf5a3795a5ccf4a126c84951d19b66d49c729a1e637392af53c86e2accccd80"
+url = "https://github.com/kucherenko/jscpd/releases/download/v5.1.2/jscpd-darwin-arm64.tar.gz"
+url_api = "https://api.github.com/repos/kucherenko/jscpd/releases/assets/542470855"
+provenance = "github-attestations"
+
+[tools."github:kucherenko/jscpd"."platforms.macos-x64"]
+checksum = "sha256:8dcf687f203eba556c24c6fed0b66c9cd8820c7bc169527a9f9e09be3d944b61"
+url = "https://github.com/kucherenko/jscpd/releases/download/v5.1.2/jscpd-darwin-x64.tar.gz"
+url_api = "https://api.github.com/repos/kucherenko/jscpd/releases/assets/542470854"
+provenance = "github-attestations"
+
+[tools."github:kucherenko/jscpd"."platforms.windows-x64"]
+checksum = "sha256:40a9e7498e5e50b57f9776dcd9e03d7753a41bd5c8da9d432c3feecd63baab95"
+url = "https://github.com/kucherenko/jscpd/releases/download/v5.1.2/jscpd-windows-x64-msvc.tar.gz"
+url_api = "https://api.github.com/repos/kucherenko/jscpd/releases/assets/542470867"
+provenance = "github-attestations"
+
+[[tools."github:microsoft/waza"]]
+version = "0.38.7"
+backend = "github:microsoft/waza"
+specifiers = ["0.38.7"]
+
+[tools."github:microsoft/waza"."platforms.linux-arm64"]
+checksum = "sha256:142ea836bbc8324154f52d3278cb7c9a9fa4e1be7480b44d3841309b56f7b039"
+url = "https://github.com/microsoft/waza/releases/download/v0.38.7/waza-linux-arm64"
+url_api = "https://api.github.com/repos/microsoft/waza/releases/assets/520984886"
+
+[tools."github:microsoft/waza"."platforms.linux-arm64-musl"]
+checksum = "sha256:142ea836bbc8324154f52d3278cb7c9a9fa4e1be7480b44d3841309b56f7b039"
+url = "https://github.com/microsoft/waza/releases/download/v0.38.7/waza-linux-arm64"
+url_api = "https://api.github.com/repos/microsoft/waza/releases/assets/520984886"
+
+[tools."github:microsoft/waza"."platforms.linux-x64"]
+checksum = "sha256:e227cd884173de796bc28c6cb1828498f250297e0e606a4e4504d14465ff879f"
+url = "https://github.com/microsoft/waza/releases/download/v0.38.7/waza-linux-amd64"
+url_api = "https://api.github.com/repos/microsoft/waza/releases/assets/520984881"
+
+[tools."github:microsoft/waza"."platforms.linux-x64-musl"]
+checksum = "sha256:e227cd884173de796bc28c6cb1828498f250297e0e606a4e4504d14465ff879f"
+url = "https://github.com/microsoft/waza/releases/download/v0.38.7/waza-linux-amd64"
+url_api = "https://api.github.com/repos/microsoft/waza/releases/assets/520984881"
+
+[tools."github:microsoft/waza"."platforms.macos-arm64"]
+checksum = "sha256:82a4f44c7d95b13e54607ab0bb9da618bb134c51c94a64be73bedbf7bcd4e778"
+url = "https://github.com/microsoft/waza/releases/download/v0.38.7/waza-darwin-arm64"
+url_api = "https://api.github.com/repos/microsoft/waza/releases/assets/520984880"
+
+[tools."github:microsoft/waza"."platforms.macos-x64"]
+checksum = "sha256:e282ae6cc2f819125e8e5aaf2351caf8e066c74a853c7cdf1591cd4fb4657a1a"
+url = "https://github.com/microsoft/waza/releases/download/v0.38.7/waza-darwin-amd64"
+url_api = "https://api.github.com/repos/microsoft/waza/releases/assets/520984885"
+
+[tools."github:microsoft/waza"."platforms.windows-x64"]
+checksum = "sha256:451d05c510341019e71c8e94d2ff4ed9f809f8f198bcf5fc31ab31038c5076c9"
+url = "https://github.com/microsoft/waza/releases/download/v0.38.7/waza-windows-amd64.exe"
+url_api = "https://api.github.com/repos/microsoft/waza/releases/assets/520984898"
+
 [[tools.gitleaks]]
 version = "8.30.1"
 backend = "aqua:gitleaks/gitleaks"
 specifiers = ["8.30.1"]
+
+[tools.gitleaks."platforms.linux-arm64"]
+checksum = "sha256:e4a487ee7ccd7d3a7f7ec08657610aa3606637dab924210b3aee62570fb4b080"
+url = "https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_linux_arm64.tar.gz"
+url_api = "https://api.github.com/repos/gitleaks/gitleaks/releases/assets/378332057"
+
+[tools.gitleaks."platforms.linux-arm64-musl"]
+checksum = "sha256:e4a487ee7ccd7d3a7f7ec08657610aa3606637dab924210b3aee62570fb4b080"
+url = "https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_linux_arm64.tar.gz"
+url_api = "https://api.github.com/repos/gitleaks/gitleaks/releases/assets/378332057"
+
+[tools.gitleaks."platforms.linux-x64"]
+checksum = "sha256:551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb"
+url = "https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_linux_x64.tar.gz"
+url_api = "https://api.github.com/repos/gitleaks/gitleaks/releases/assets/378332058"
+
+[tools.gitleaks."platforms.linux-x64-musl"]
+checksum = "sha256:551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb"
+url = "https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_linux_x64.tar.gz"
+url_api = "https://api.github.com/repos/gitleaks/gitleaks/releases/assets/378332058"
+
+[tools.gitleaks."platforms.macos-arm64"]
+checksum = "sha256:b40ab0ae55c505963e365f271a8d3846efbc170aa17f2607f13df610a9aeb6a5"
+url = "https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_darwin_arm64.tar.gz"
+url_api = "https://api.github.com/repos/gitleaks/gitleaks/releases/assets/378332059"
+
+[tools.gitleaks."platforms.macos-x64"]
+checksum = "sha256:dfe101a4db2255fc85120ac7f3d25e4342c3c20cf749f2c20a18081af1952709"
+url = "https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_darwin_x64.tar.gz"
+url_api = "https://api.github.com/repos/gitleaks/gitleaks/releases/assets/378332053"
+
+[tools.gitleaks."platforms.windows-x64"]
+checksum = "sha256:d29144deff3a68aa93ced33dddf84b7fdc26070add4aa0f4513094c8332afc4e"
+url = "https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_windows_x64.zip"
+url_api = "https://api.github.com/repos/gitleaks/gitleaks/releases/assets/378333178"
 
 [[tools.semgrep]]
 version = "1.174.0"
@@ -32,7 +229,77 @@ version = "0.11.0"
 backend = "aqua:koalaman/shellcheck"
 specifiers = ["0.11.0"]
 
+[tools.shellcheck."platforms.linux-arm64"]
+checksum = "sha256:12b331c1d2db6b9eb13cfca64306b1b157a86eb69db83023e261eaa7e7c14588"
+url = "https://github.com/koalaman/shellcheck/releases/download/v0.11.0/shellcheck-v0.11.0.linux.aarch64.tar.xz"
+url_api = "https://api.github.com/repos/koalaman/shellcheck/releases/assets/279056934"
+
+[tools.shellcheck."platforms.linux-arm64-musl"]
+checksum = "sha256:12b331c1d2db6b9eb13cfca64306b1b157a86eb69db83023e261eaa7e7c14588"
+url = "https://github.com/koalaman/shellcheck/releases/download/v0.11.0/shellcheck-v0.11.0.linux.aarch64.tar.xz"
+url_api = "https://api.github.com/repos/koalaman/shellcheck/releases/assets/279056934"
+
+[tools.shellcheck."platforms.linux-x64"]
+checksum = "sha256:8c3be12b05d5c177a04c29e3c78ce89ac86f1595681cab149b65b97c4e227198"
+url = "https://github.com/koalaman/shellcheck/releases/download/v0.11.0/shellcheck-v0.11.0.linux.x86_64.tar.xz"
+url_api = "https://api.github.com/repos/koalaman/shellcheck/releases/assets/279056942"
+
+[tools.shellcheck."platforms.linux-x64-musl"]
+checksum = "sha256:8c3be12b05d5c177a04c29e3c78ce89ac86f1595681cab149b65b97c4e227198"
+url = "https://github.com/koalaman/shellcheck/releases/download/v0.11.0/shellcheck-v0.11.0.linux.x86_64.tar.xz"
+url_api = "https://api.github.com/repos/koalaman/shellcheck/releases/assets/279056942"
+
+[tools.shellcheck."platforms.macos-arm64"]
+checksum = "sha256:56affdd8de5527894dca6dc3d7e0a99a873b0f004d7aabc30ae407d3f48b0a79"
+url = "https://github.com/koalaman/shellcheck/releases/download/v0.11.0/shellcheck-v0.11.0.darwin.aarch64.tar.xz"
+url_api = "https://api.github.com/repos/koalaman/shellcheck/releases/assets/279056932"
+
+[tools.shellcheck."platforms.macos-x64"]
+checksum = "sha256:3c89db4edcab7cf1c27bff178882e0f6f27f7afdf54e859fa041fca10febe4c6"
+url = "https://github.com/koalaman/shellcheck/releases/download/v0.11.0/shellcheck-v0.11.0.darwin.x86_64.tar.xz"
+url_api = "https://api.github.com/repos/koalaman/shellcheck/releases/assets/279056930"
+
+[tools.shellcheck."platforms.windows-x64"]
+checksum = "sha256:8a4e35ab0b331c85d73567b12f2a444df187f483e5079ceffa6bda1faa2e740e"
+url = "https://github.com/koalaman/shellcheck/releases/download/v0.11.0/shellcheck-v0.11.0.zip"
+url_api = "https://api.github.com/repos/koalaman/shellcheck/releases/assets/279056944"
+
 [[tools.snyk]]
 version = "1.1306.4"
 backend = "aqua:snyk/cli"
 specifiers = ["1.1306.4"]
+
+[tools.snyk."platforms.linux-arm64"]
+checksum = "sha256:d970aef55c25dc3cb5986853e69643aac7e20acf8c56ffbd304218f41470a7d2"
+url = "https://github.com/snyk/cli/releases/download/v1.1306.4/snyk-linux-arm64"
+url_api = "https://api.github.com/repos/snyk/cli/releases/assets/513130066"
+
+[tools.snyk."platforms.linux-arm64-musl"]
+checksum = "sha256:72aef488d0134231846dce8152973e14a4e9c2f07eb52a950c9aa0ba065da29e"
+url = "https://github.com/snyk/cli/releases/download/v1.1306.4/snyk-alpine-arm64"
+url_api = "https://api.github.com/repos/snyk/cli/releases/assets/513130047"
+
+[tools.snyk."platforms.linux-x64"]
+checksum = "sha256:78a83f57a16cb660879cb29f75fcb4a6c1ba07791dceb41e2b840fb89741c95c"
+url = "https://github.com/snyk/cli/releases/download/v1.1306.4/snyk-linux"
+url_api = "https://api.github.com/repos/snyk/cli/releases/assets/513130050"
+
+[tools.snyk."platforms.linux-x64-musl"]
+checksum = "sha256:4177ff271cb6a434ea6f9613d8c6e7e0d7d66e4dd00e726d57371a2a50de9059"
+url = "https://github.com/snyk/cli/releases/download/v1.1306.4/snyk-alpine"
+url_api = "https://api.github.com/repos/snyk/cli/releases/assets/513130052"
+
+[tools.snyk."platforms.macos-arm64"]
+checksum = "sha256:c9f0ef8c4b555f3ac4eb6d3d874d2d06260a58d39e91dbcac4008cfb74c9ecbb"
+url = "https://github.com/snyk/cli/releases/download/v1.1306.4/snyk-macos-arm64"
+url_api = "https://api.github.com/repos/snyk/cli/releases/assets/513130179"
+
+[tools.snyk."platforms.macos-x64"]
+checksum = "sha256:f902dbc0be77cd3778d2a7119cc7235e220cf2ef809171b17b95e295b2e23d35"
+url = "https://github.com/snyk/cli/releases/download/v1.1306.4/snyk-macos"
+url_api = "https://api.github.com/repos/snyk/cli/releases/assets/513130078"
+
+[tools.snyk."platforms.windows-x64"]
+checksum = "sha256:45e0a8f6f451b471e86e7d94ed9622e53b66f92b7e2bcc1a0680d3306f256296"
+url = "https://github.com/snyk/cli/releases/download/v1.1306.4/snyk-win.exe"
+url_api = "https://api.github.com/repos/snyk/cli/releases/assets/513130185"

@@ -29,5 +29,6 @@ semantic_residue:
 concurrent_wip:
   - src/billing/tax_rounding.py
 gates:
-  focused: uv run pytest tests/notifications
-  full: make ci
+  runtime: make runtime APPLY=Y
+  affected: make test APPLY=Y
+  full: make test-full APPLY=Y

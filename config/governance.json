@@ -30,6 +30,9 @@
     "atomic-effects": [
       "rule:runtime/atomic-effects"
     ],
+    "bead-verification": [
+      "rule:coordination/beads-verification"
+    ],
     "canonical-command-surface": [
       "rule:workflow/canonical-commands"
     ],
@@ -114,6 +117,10 @@
       "rule:coordination/fix-forward-collaboration",
       "skill:fix-forward-collaboration"
     ],
+    "flext-strict-architecture": [
+      "rule:architecture/internal-clean-architecture",
+      "skill:flext-development"
+    ],
     "gas-city-operations": [
       "command:gc-session-triage",
       "rule:coordination/gascity",
@@ -133,6 +140,9 @@
     ],
     "generated-boundaries": [
       "rule:python/config-settings-ssot",
+      "rule:workflow/generators-not-projections"
+    ],
+    "generated-ownership": [
       "rule:workflow/generators-not-projections"
     ],
     "github-issue-transparency": [
@@ -167,6 +177,10 @@
     ],
     "living-documentation": [
       "rule:workflow/living-documentation"
+    ],
+    "make-only-no-selectors": [
+      "rule:workflow/canonical-commands",
+      "skill:make-check"
     ],
     "memory-is-not-authority": [
       "document:AGENTS.md",
@@ -243,6 +257,10 @@
       "rule:security/scanner-closure",
       "skill:governance-audit"
     ],
+    "semantic-bundle-boundary": [
+      "document:docs/adr/ADR-0008-governance-bundle-as-public-facade.md",
+      "rule:architecture/governance-artifact-composition"
+    ],
     "separated-roles": [
       "document:AGENTS.md",
       "skill:dispatch-agent"
@@ -270,6 +288,10 @@
     "strict-typing": [
       "rule:python/flext-typing"
     ],
+    "testmon-cache-integrity": [
+      "rule:testing/observable-runtime",
+      "rule:workflow/runtime-is-reality"
+    ],
     "topic-monopoly": [
       "rule:coordination/plan-topic-monopoly"
     ],
@@ -277,8 +299,8 @@
       "document:AGENTS.md",
       "rule:workflow/beads-traceability"
     ],
-    "bead-verification": [
-      "rule:coordination/beads-verification"
+    "zero-backup-archive": [
+      "rule:runtime/zero-residue"
     ]
   }
 }

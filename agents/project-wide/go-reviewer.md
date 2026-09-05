@@ -63,12 +63,10 @@ When invoked:
 ## Diagnostic Commands
 
 ```bash
-go vet ./...
-staticcheck ./...
-golangci-lint run
-go build -race ./...
-go test -race ./...
-govulncheck ./...
+make runtime APPLY=Y
+make check APPLY=Y
+make security APPLY=Y
+make test APPLY=Y
 ```
 
 ## Approval Criteria

@@ -1,8 +1,8 @@
-"""Typed approval-authority tags: effective dates and dated docs/ references.
+"""Typed approval-authority tags: effective dates and ADR references.
 
-``docs/`` is the only approval authority for ``decision:`` lineage. ADR and
-plan documents are discovered physically at validation time; nothing
-hand-maintained enumerates approvals.
+``docs/adr`` is the only approval authority for ``decision:`` lineage. ADR
+documents are discovered physically at validation time; nothing hand-maintained
+enumerates approvals.
 
 ``supersedes:`` carries two forms. A document reference records approval
 lineage and resolves into ``docs/``. An artifact identity — the same
@@ -11,8 +11,7 @@ this artifact replaced another one, and :func:`audit_precedence` requires the
 named artifact to be absent from the active inventory. Old and new coexisting
 is the residue defect the recency law exists to forbid.
 
-``effective:`` is a UTC calendar date. It is rendered into every projection so
-the surface that consumes composed governance can order two artifacts by
+``effective:`` is a UTC calendar date used to order semantic artifacts by
 recency at the point of use.
 
 A malformed, impossible, future-dated, or unresolvable reference fails loud.
@@ -29,14 +28,13 @@ from pathlib import Path
 _EFFECTIVE_TAG = re.compile(r"effective:(\d{4})-(\d{2})-(\d{2})\Z")
 _DECISION_TAG = re.compile(r"decision:(.+)\Z")
 _SUPERSEDES_TAG = re.compile(r"supersedes:(.+)\Z")
-_APPROVAL_REFERENCE = re.compile(r"(?:ADR-\d{4}|plan-\d{2})\Z")
+_APPROVAL_REFERENCE = re.compile(r"ADR-\d{4}\Z")
 _SLUG = r"[a-z0-9]+(?:-[a-z0-9]+)*"
 _ARTIFACT_IDENTITY = re.compile(
     rf"(?:rule:{_SLUG}(?:/{_SLUG})*|(?:skill|command):{_SLUG})\Z"
 )
 
 _ADR_DIRECTORY = Path("docs") / "adr"
-_PLAN_DIRECTORY = Path("docs") / "execution" / "master-v7"
 
 APPROVAL_NAMESPACES = frozenset({"decision", "effective", "supersedes"})
 _APPROVAL_PREFIXES = tuple(f"{namespace}:" for namespace in sorted(APPROVAL_NAMESPACES))
@@ -92,13 +90,8 @@ def validate_supersedes_tag(tag: str) -> str:
 def resolve_reference(root: Path, reference: str) -> Path:
     """Resolve one approval reference to exactly one physical docs/ document."""
 
-    if reference.startswith("ADR-"):
-        directory = _ADR_DIRECTORY
-        pattern = f"{reference}-*.md"
-    else:
-        plan = reference.removeprefix("plan-")
-        directory = _PLAN_DIRECTORY
-        pattern = f"{plan}-*.md"
+    directory = _ADR_DIRECTORY
+    pattern = f"{reference}-*.md"
     matches = tuple(sorted((root / directory).glob(pattern)))
     if len(matches) != 1:
         raise ValueError(
@@ -126,20 +119,6 @@ def resolve_approval_tags(root: Path, tags: tuple[str, ...], source: Path) -> No
             reference = validate_supersedes_tag(tag)
             if supersedes_identity(tag) is None:
                 resolve_reference(root, reference)
-
-
-def approval_note(tags: tuple[str, ...]) -> str:
-    """Render the dated approval provenance as one provider-neutral comment.
-
-    Every projected surface appends the same marker, so a consumer reading
-    composed governance can order two artifacts by their ``effective:`` date
-    at the point of use.
-    """
-
-    approval = approval_tags(tags)
-    if not approval:
-        return ""
-    return "\n\n<!-- aihub.approval: " + "; ".join(approval) + " -->"
 
 
 @dataclass(frozen=True)
@@ -235,7 +214,6 @@ def approval_tags(tags: tuple[str, ...]) -> tuple[str, ...]:
 __all__ = (
     "APPROVAL_NAMESPACES",
     "ApprovedArtifact",
-    "approval_note",
     "approval_tags",
     "audit_precedence",
     "core_tags",

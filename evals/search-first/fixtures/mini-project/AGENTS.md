@@ -5,5 +5,6 @@ Keep HTTP orchestration in `src/shop/api.py`, order-list behavior in
 `src/shop/pagination.py:PageTokenCodec`. Reuse declared dependencies; do not add a
 second token codec or utility module.
 
-The public runtime check is `python -m shop.api list-orders`. The focused native
-gate is `pytest tests/test_orders.py`.
+The public runtime check is `make runtime APPLY=Y`. The affected native gate is
+`make test APPLY=Y`; the full gate is `make test-full APPLY=Y` after the shared
+testmon cache has been populated by that affected run.

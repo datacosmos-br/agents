@@ -1,9 +1,8 @@
-"""Canonical strict-prelude content and its generated manifest."""
+"""Canonical strict-prelude semantic source."""
 
 from __future__ import annotations
 
 import hashlib
-import json
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -13,7 +12,7 @@ PRELUDE_END = "<!-- /AIHUB-INVIOLABLE-LAW-PRELUDE -->"
 
 @dataclass(frozen=True)
 class LawSurface:
-    """Exact Agents-owned prelude projected into instruction documents."""
+    """Exact Agents-owned prelude exposed to a delivery consumer."""
 
     prelude: str
     digest: str
@@ -36,23 +35,6 @@ class LawSurface:
                 f"canonical law prelude must be followed by one blank line: {source}"
             )
         return cls(prelude, hashlib.sha256(prelude.encode()).hexdigest())
-
-    def manifest(self) -> str:
-        return (
-            json.dumps(
-                {
-                    "digest": self.digest,
-                    "owner": "agents-governance",
-                    "prelude": self.prelude,
-                    "prelude_end": PRELUDE_END,
-                    "prelude_start": PRELUDE_START,
-                    "version": 1,
-                },
-                indent=2,
-                sort_keys=True,
-            )
-            + "\n"
-        )
 
 
 __all__ = ("PRELUDE_END", "PRELUDE_START", "LawSurface")

@@ -1,5 +1,5 @@
 {
-  "//": "Agents-owned strict duplication gate for canonical Python runtime source.",
+  "//": "Agents-owned strict duplication gate for the semantic package source.",
   "absolute": true,
   "no-tips": true,
   "no-colors": true,
@@ -8,9 +8,6 @@
     "**/__pycache__/**",
     "**/target/**",
     "**/*.pyc",
-    "**/*.bak",
-    "**/*.tmp",
-    "**/*.orig",
     "**/.venv/**",
     "**/node_modules/**",
     "**/dist/**",
@@ -18,10 +15,6 @@
     "**/.eggs/**",
     "**/__init__.py",
     "**/.github/**",
-    "**/.claude/**",
-    "**/.agents/**",
-    "**/.cursor/**",
-    "**/.codex/**",
     "**/skills/**",
     "Makefile",
     "LICENSE.md"

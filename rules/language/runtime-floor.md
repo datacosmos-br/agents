@@ -1,7 +1,7 @@
 ---
 description: Internal code uses precise typing and the full declared runtime language level.
 metadata:
-  aihub.tags: '["decision:plan-00","effective:2026-09-04","route:project"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-09-04","route:project"]'
 ---
 
 # Runtime floor and language level

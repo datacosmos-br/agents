@@ -2,7 +2,7 @@
 name: beads-organization
 description: 'beads organization, deduplication, feature hierarchy, jira alignment'
 metadata:
-  aihub.tags: '["activation:opt-in","decision:plan-00","detect:opt-in:beads-organization","effective:2026-09-02","policy:atomic-effects","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","policy:zero-residue","provenance:agents-owned","route:agent","tool:beads","updates:manual","usage:router"]'
+  aihub.tags: '["activation:opt-in","decision:ADR-0008","detect:opt-in:beads-organization","effective:2026-09-02","policy:atomic-effects","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","policy:zero-residue","provenance:agents-owned","route:agent","tool:beads","updates:manual","usage:router"]'
 ---
 
 # Beads Organization
@@ -38,7 +38,7 @@ operator review. Orphan query and zero-residue checklist:
 Every `bd close` carries a descriptive `--reason`: `SUPERSEDED:`,
 `OBSOLETE:`, or `DONE:` with an explanation.
 
-## External Reference Discipline
+## External References
 
 Set `--external-ref` right after creation; a bead closed with its external
 issue open (or the reverse) fails the next sync audit.

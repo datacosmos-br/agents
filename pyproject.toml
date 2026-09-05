@@ -1,15 +1,9 @@
 [project]
 name = "agents-governance"
-version = "0.2.5"
-description = "Canonical validation and projection engine for ~/.agents"
+version = "0.3.0"
+description = "Provider-neutral semantic governance bundle"
 requires-python = ">=3.13"
 dependencies = ["PyYAML>=6.0.2,<7"]
-
-[project.scripts]
-agentsctl = "agents_governance.cli:main"
-
-[tool.agents-governance.security]
-fixture-roots = ["evals"]
 
 [dependency-groups]
 dev = [
@@ -35,20 +29,14 @@ packages = ["src/agents_governance"]
 "commands" = "agents_governance/_data/commands"
 "evals" = "agents_governance/_data/evals"
 "agents" = "agents_governance/_data/agents"
-"workflows" = "agents_governance/_data/workflows"
 "docs/adr" = "agents_governance/_data/docs/adr"
-"docs/execution/master-v7" = "agents_governance/_data/docs/execution/master-v7"
-"docs/security/security-triage.md" = "agents_governance/_data/docs/security/security-triage.md"
 "AGENTS.md" = "agents_governance/_data/AGENTS.md"
-"CLAUDE.md" = "agents_governance/_data/CLAUDE.md"
-".waza.yaml" = "agents_governance/_data/.waza.yaml"
-"Makefile" = "agents_governance/_data/Makefile"
 "README.md" = "agents_governance/_data/README.md"
+"docs/security/security-triage.md" = "agents_governance/_data/docs/security/security-triage.md"
 
 [tool.hatch.build.targets.sdist]
 only-include = [
   "AGENTS.md",
-  "CLAUDE.md",
   "Makefile",
   "README.md",
   ".waza.yaml",
@@ -56,7 +44,6 @@ only-include = [
   "commands",
   "config",
   "docs/adr",
-  "docs/execution/master-v7",
   "docs/security/security-triage.md",
   "evals",
   "pyproject.toml",
@@ -69,7 +56,7 @@ only-include = [
 ]
 
 [tool.pytest.ini_options]
-addopts = "-q --basetemp=.pytest-scratch --testmon"
+addopts = "-q -p no:cacheprovider"
 testpaths = ["tests"]
 tmp_path_retention_policy = "none"
 

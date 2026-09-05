@@ -23,10 +23,9 @@ You are an expert Kotlin/Gradle build error resolution specialist. Your mission 
 Run these in order:
 
 ```bash
-./gradlew build 2>&1
-./gradlew detekt 2>&1 || echo "detekt not configured"
-./gradlew ktlintCheck 2>&1 || echo "ktlint not configured"
-./gradlew dependencies --configuration runtimeClasspath 2>&1 | head -100
+make build APPLY=Y
+make check APPLY=Y
+
 ```
 
 ## Resolution Workflow
@@ -58,22 +57,22 @@ Run these in order:
 
 ```bash
 # Check dependency tree for conflicts
-./gradlew dependencies --configuration runtimeClasspath
+make check APPLY=Y
 
 # Force refresh dependencies
-./gradlew build --refresh-dependencies
+make build APPLY=Y
 
 # Rebuild without reusing the project build cache
-./gradlew clean build --no-build-cache
+make build APPLY=Y
 
 # Check Gradle version compatibility
-./gradlew --version
+make check APPLY=Y
 
 # Run with debug output
-./gradlew build --debug 2>&1 | tail -50
+make build APPLY=Y
 
 # Check for dependency conflicts
-./gradlew dependencyInsight --dependency <name> --configuration runtimeClasspath
+make check APPLY=Y
 ```
 
 ## Kotlin Compiler Flags

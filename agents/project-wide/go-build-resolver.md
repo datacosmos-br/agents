@@ -23,23 +23,20 @@ You are an expert Go build error resolution specialist. Your mission is to fix G
 Run these in order:
 
 ```bash
-go build ./...
-go vet ./...
-staticcheck ./... 2>/dev/null || echo "staticcheck not installed"
-golangci-lint run 2>/dev/null || echo "golangci-lint not installed"
-go mod verify
-go mod tidy -v
+make audit
+make check APPLY=Y
+make build APPLY=Y
 ```
 
 ## Resolution Workflow
 
 ```text
-1. go build ./...     -> Parse error message
+1. make check APPLY=Y -> Parse the causal diagnostic
 2. Read affected file -> Understand context
 3. Apply minimal fix  -> Only what's needed
-4. go build ./...     -> Verify fix
-5. go vet ./...       -> Check for warnings
-6. go test ./...      -> Ensure nothing broke
+4. make check APPLY=Y -> Verify fix and warnings
+5. make build APPLY=Y -> Verify the artifact
+6. make test APPLY=Y  -> Ensure nothing broke
 ```
 
 ## Common Fix Patterns
@@ -61,7 +58,7 @@ go mod tidy -v
 
 ```bash
 grep "replace" go.mod              # Check local replaces
-go mod why -m package              # Why a version is selected
+make build APPLY=Y
 go get package@v1.2.3              # Pin specific version
 go clean -modcache && go mod download  # Fix checksum issues
 ```

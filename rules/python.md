@@ -2,7 +2,7 @@
 globs: ["*.py", "**/*.py", "pyproject.toml"]
 description: Python rules
 metadata:
-  aihub.tags: '["decision:plan-00","effective:2026-08-28","route:both"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-08-28","route:both"]'
 ---
 
 # Python rules
@@ -19,8 +19,7 @@ or architecture rules. The stricter internal guidance below applies only to
 
 ## Validation
 
-1. Discover native commands from `make help` or the repository's declared
-   equivalent.
+1. Use only selector-free verbs from the repository root Makefile.
 2. Run the real Python entry point or public API before adapting tests.
 3. Run every declared lint, format, type, test, build, security, and packaging
    gate affected by the change.
@@ -29,7 +28,7 @@ or architecture rules. The stricter internal guidance below applies only to
    Git/PR/CI evidence.
 
 Do not replace a missing canonical command with an ad hoc raw invocation. Fix
-the owner or report the exact blocker.
+the root Make/codegen owner and rerun its public verb.
 
 ## Language and typing
 

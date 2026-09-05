@@ -4,33 +4,19 @@ description: Admit authorized parallelism only across distinct evidence owners.
 tags: [agent, agent-delegation, bounded-work, happy-path, parallelism]
 inputs:
   prompt: |
-    The approved plan explicitly authorizes three concurrent read-only audits:
-    runtime failure causality, secret-exposure boundaries, and documentation
-    authority drift. Perform agent delegation and specialist selection from the
-    active roster, keeping each bounded work contract explicit. Preserve branch
-    and read-only scope, state trigger confidence, keep every write and the Git
-    index with the coordinator, and declare how the evidence is integrated before
-    any implementation. Do not invent a tracker, worktree, model, provider, or
-    additional agent.
-    Then draft one separate implementation handoff for a single sonnet worker in
-    /repo/worktrees/feature editing only src/payment.py and tests/test_payment.py.
-    It must run env -C /repo/worktrees/feature make check FILE=tests/test_payment.py
-    and make test FILE=tests/test_payment.py, and carry the allowed shell forms.
+    The approved plan authorizes three concurrent read-only audits: runtime
+    failure causality, secret-exposure boundaries, and documentation authority
+    drift. Select specialists from the active roster and keep each contract
+    bounded. Preserve branch and read-only scope, trigger confidence, coordinator
+    ownership of all writes, and evidence integration. Invent no tracker,
+    worktree, model, provider, or additional agent.
+    Then draft one implementation handoff for a worker in
+    /repo/worktrees/feature editing only the declared payment owner and its
+    public regression. It must validate via selector-free root Make verbs.
   files:
   - path: parallel-roster.json
 expected:
   outcomes:
   - type: task_completed
-  output_contains:
-  - runtime-debugger
-  - security-reviewer
-  - documentation-reviewer
-  - read-only
-  - confidence
-  - integration
-  - coordinator
-  - env -C /repo/worktrees/feature make check FILE=tests/test_payment.py
-  output_not_contains:
-  - substitute tracker
-  - separate worktree
-  - delegation completed after failure
+  output_contains: [runtime-debugger, security-reviewer, documentation-reviewer, read-only, confidence, integration, coordinator, env -C /repo/worktrees/feature make check APPLY=Y]
+  output_not_contains: [substitute tracker, separate worktree, delegation completed after failure]

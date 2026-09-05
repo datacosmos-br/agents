@@ -7,7 +7,7 @@ globs:
   - "rules/**/*.md"
   - "skills/**"
 metadata:
-  aihub.tags: '["decision:ADR-0005","effective:2026-08-29","route:project"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-08-29","route:project"]'
 ---
 
 # Compose governance through one owner per behavior
@@ -17,8 +17,9 @@ Classify every surviving statement before editing it:
 - a mandatory invariant belongs to one rule;
 - a model-selected conditional procedure belongs to one skill;
 - an explicitly invoked workflow and its arguments belong to one command;
-- deterministic validation, discovery, or publication belongs to typed runtime;
-- provider-specific output is a generated projection.
+- deterministic semantic validation belongs to `GovernanceBundle`;
+- project discovery, provider adaptation, publication, and generated output
+  belong to AI Hub.
 
 Reference the selected owner instead of copying its contract into adjacent
 artifacts. A mixed source is split by responsibility; its historical filename,
@@ -31,11 +32,11 @@ overlap with canonical owners. Extend the current owner when it already covers
 the behavior. A distinct identity requires an independently recurring outcome
 and material semantic evaluation.
 
-Reject foreign updaters and runtimes, fallback, retry, compatibility, partial
-execution, copied projections, private paths, and behavior with no current
-consumer. After convergence, update the ownership map, evaluations, inventory,
-documentation, and projections through their canonical owners and prove a
-second generation makes no change.
+Reject foreign publishers, fallback, retry, compatibility, partial execution,
+copied generated output, private paths, and behavior with no current consumer.
+After convergence, update the ownership map, evaluations, inventory, and
+documentation here; then AI Hub regenerates every delivery and proves a
+zero-change second generation.
 
 ## Retire a declaration whose subject the governed process consumed
 

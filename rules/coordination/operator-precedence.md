@@ -12,7 +12,7 @@ capsule_summary: |
   re-preflight and continue. Ask only when the effect expands beyond it, or when
   two evidenced current intentions genuinely conflict.
 metadata:
-  aihub.tags: '["decision:plan-12","effective:2026-08-30","route:both"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-08-30","route:both"]'
 ---
 
 # Authority order and recency precedence
