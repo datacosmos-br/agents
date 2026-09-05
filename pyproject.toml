@@ -16,6 +16,7 @@ dev = [
   "mypy>=1.17,<3",
   "pyright>=1.1.404,<2",
   "pytest>=8.3,<10",
+  "pytest-testmon>=2.0,<3",
   "ruff>=0.12,<1",
   "types-PyYAML>=6.0.12,<7",
 ]
@@ -68,7 +69,7 @@ only-include = [
 ]
 
 [tool.pytest.ini_options]
-addopts = "-q --basetemp=.pytest-scratch"
+addopts = "-q --basetemp=.pytest-scratch --testmon"
 testpaths = ["tests"]
 tmp_path_retention_policy = "none"
 

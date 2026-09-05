@@ -213,6 +213,9 @@ source.
 - Destinations contain independent physical files. No symlink, bind mount,
   cross-repository include, absolute source path, or runtime source lookup is
   allowed.
+- Generated hook commands never embed an absolute destination path; each
+  provider/context pair resolves its script from that provider's documented
+  root token, and an undefined pair fails the projection.
 - One physical copy implementation owns staging and publication. Failure raises;
   no second strategy is attempted.
 - Every managed output records source type, slug, digest, adapter version, and

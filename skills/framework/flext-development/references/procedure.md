@@ -34,22 +34,29 @@ above: zero effects, no fallback to `main` or a same-named catalog entry.
 
 ## Preserve the architecture
 
-- Use Python 3.13 and Pydantic 2 from the manifest. The canonical structural
-  facets are `c` constants, `t` types, `m` models, `p` protocols, and `u` pure
-  utilities. Typed `settings` own external input and typed `config` owns
-  validated derivation. `base` contains only minimal shared foundations,
-  `services/` owns use cases receiving `p` dependencies, `api.py` is the
-  programmatic facade and composition root, and `cli.py` is a thin process
-  adapter only for a declared CLI capability.
-- `c/t/m/p/settings/config` never import `base`, `u`, `services`, `api`, or
+- Use Python 3.13 and Pydantic 2 from the manifest. The strict dependency chain
+  is `settings → config → c → t → p → m → u → base → services/*.py → api.py →
+  cli.py`: typed `settings` own external input, typed `config` owns validated
+  derivation, and the canonical structural facets follow in order — `c`
+  constants, `t` types, `p` protocols, `m` models, `u` pure utilities. `base`
+  contains only minimal shared foundations, `services/` owns use cases receiving
+  `p` dependencies, `api.py` is the programmatic facade and composition root,
+  and `cli.py` is a thin process adapter only for a declared CLI capability.
+- `c/t/p/m/settings/config` never import `base`, `u`, `services`, `api`, or
   `cli`; `base/u` depend only inward; services depend on typed ports; API and CLI
   assemble the graph. Type-only reverse references stay under `TYPE_CHECKING`.
+- Every module consumes the typed objects published by `settings`, `config`,
+  and the facet namespaces directly through their owning imports. Redeclaring,
+  local-aliasing, re-deriving, or copying owner-owned values into a leaf module
+  is a violation: rewire the consumer to the owner instead.
 - Use the `flext-core` container primitive only at the executable composition
   root. Business services receive dependencies explicitly and never resolve
   globals, string keys, shared containers, or introspected registrations.
-- Keep one thin package API/MRO facade and one generated lazy package root. Do not
-  create an eager export path, custom import router, compatibility alias, renamed
-  service base, parallel namespace, or duplicate facade.
+- Keep one thin package API/MRO facade and one generated lazy package root. The
+  facade module composes its entire `_<module>/*.py` family — starting at
+  `base.py` — through explicit inheritance; the MRO is the facade. Do not
+  create an eager export path, custom import router, compatibility alias,
+  renamed service base, parallel namespace, or duplicate facade.
 - Keep configuration and typed settings at the dependency foundation. Read their
   validated public namespaces; leaf modules do not reread environment or files.
 - Represent project-owned structured boundary data with its declared Pydantic 2
@@ -76,10 +83,18 @@ class introduced only to merge two base lists, a star-unpacked base tuple
 typing for every consumer), and a `TYPE_CHECKING`/runtime pair of the same
 class all count. Extras become MRO mixins in their own module under the
 facade tree (`_constants/_typings/_protocols/_models/_utilities`); every
-public symbol nests inside its facade family. A lazy class-level attribute
+public symbol nests inside its facade family, and the facade module imports
+the family explicitly and composes it through that inheritance. A lazy
+class-level attribute
 uses the flext-core owner (`flext_core.lazy`, `lazy.attribute` /
 `FlextLazyAttribute`), never a local descriptor; a heavy third-party import
 defers inside the owning operation, never at module scope.
+
+Finding any violation of this architecture — wrong layer order, a local
+alias, a redeclared owner value, a second facade, a direct dependency
+bypassing a typed port — is corrected at its owner by complete rewire and
+revalidated through the full gate round in the same session; "pre-existing"
+is never an exemption, and no violation is deferred.
 
 ## Change sources and migrate atomically
 

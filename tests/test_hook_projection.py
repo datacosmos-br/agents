@@ -269,9 +269,10 @@ def test_generated_hook_executes_and_malformed_input_fails_loudly(
     projector.apply(project)
     settings = _json(_home / ".claude" / "settings.json")
     command = settings["hooks"]["SessionStart"][-1]["hooks"][0]["command"]  # type: ignore[index]
-    assert command == str(
-        "python3 " + str(_home / ".claude" / "aihub-hooks" / "claude-sessionstart.py")
-    )
+    # Why (ag-o08): the personal command anchors on the ${HOME} placeholder the
+    # projection config already emits; the physical home never appears.
+    assert command == 'python3 "${HOME}/.claude/aihub-hooks/claude-sessionstart.py"'
+    assert str(_home) not in command
 
     accepted = subprocess.run(
         command,
@@ -514,3 +515,137 @@ def test_central_source_never_merges_capsules_into_its_own_law(
     assert any(
         root / ".agents" / "law-surface.json" in plan.desired for plan in central_plans
     )
+
+
+def _first_command(config: Path, *keys: str | int) -> str:
+    node = cast(object, _json(config))
+    for key in keys:
+        if isinstance(key, int):
+            assert isinstance(node, list)
+            node = node[key]
+        else:
+            assert isinstance(node, dict)
+            node = node[key]
+    assert isinstance(node, str)
+    return node
+
+
+def _run_hook(command: str, *, env: dict[str, str], cwd: Path) -> dict[str, object]:
+    completed = subprocess.run(
+        command,
+        shell=True,
+        env=env,
+        cwd=cwd,
+        input="{}",
+        text=True,
+        capture_output=True,
+        check=True,
+    )
+    return cast(dict[str, object], json.loads(completed.stdout))
+
+
+def test_project_hook_commands_resolve_from_provider_root_tokens(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Why (ag-o08): project hooks anchor on provider root tokens, never on the
+    physical checkout path, so the same tracked file works on every machine."""
+    root, home, project = _hook_project(tmp_path, monkeypatch)
+    subprocess.run(["git", "init", "-q"], cwd=project, check=True)
+    _projector(root).apply(project)
+    base = {**os.environ, "HOME": str(home)}
+
+    gemini = _first_command(
+        project / ".gemini" / "settings.json",
+        "hooks",
+        "SessionStart",
+        -1,
+        "hooks",
+        0,
+        "command",
+    )
+    assert (
+        gemini
+        == 'python3 "${GEMINI_PROJECT_DIR}/.gemini/aihub-hooks/gemini-sessionstart.py"'
+    )
+    _run_hook(gemini, env={**base, "GEMINI_PROJECT_DIR": str(project)}, cwd=tmp_path)
+
+    cursor = _first_command(
+        project / ".cursor" / "hooks.json", "hooks", "sessionStart", -1, "command"
+    )
+    assert (
+        cursor
+        == 'python3 "${CURSOR_PROJECT_DIR}/.cursor/aihub-hooks/cursor-sessionstart.py"'
+    )
+    _run_hook(cursor, env={**base, "CURSOR_PROJECT_DIR": str(project)}, cwd=tmp_path)
+
+    codex = _first_command(
+        project / ".codex" / "hooks.json",
+        "hooks",
+        "SessionStart",
+        -1,
+        "hooks",
+        0,
+        "command",
+    )
+    assert codex == (
+        'python3 "$(git rev-parse --show-toplevel)/.codex/aihub-hooks/codex-sessionstart.py"'
+    )
+    nested = project / "nested"
+    nested.mkdir()
+    _run_hook(codex, env=base, cwd=nested)
+
+    copilot_config = project / ".github" / "hooks" / "aihub-governance.json"
+    copilot_entry = cast(
+        dict[str, object],
+        cast(
+            list[object],
+            cast(dict[str, object], _json(copilot_config)["hooks"])["sessionStart"],
+        )[0],
+    )
+    assert (
+        copilot_entry["bash"]
+        == 'python3 "./.github/hooks/aihub-hooks/copilot-sessionstart.py"'
+    )
+    assert copilot_entry["cwd"] == "."
+    _run_hook(cast(str, copilot_entry["bash"]), env=base, cwd=project)
+
+
+def test_emitted_hook_artifacts_never_embed_physical_boundaries(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    root, home, project = _hook_project(tmp_path, monkeypatch)
+    _projector(root).apply(project)
+
+    offenders = sorted(
+        str(path)
+        for boundary in (home, project)
+        for path in boundary.rglob("*")
+        if path.is_file()
+        and not path.is_symlink()
+        and (
+            str(home).encode() in path.read_bytes()
+            or str(project).encode() in path.read_bytes()
+        )
+    )
+    assert offenders == []
+
+
+def test_hook_command_root_is_required_for_every_planned_cell(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from agents_governance.agent_profiles import AgentProvider
+    from agents_governance.hook_projection import _portable_script_reference
+    from agents_governance.projection_config import ProjectionContext
+
+    _root, _home, project = _hook_project(tmp_path, monkeypatch)
+    with pytest.raises(ValueError, match="hook command root is undefined"):
+        _portable_script_reference(
+            AgentProvider.OPENCODE,
+            ProjectionContext.PROJECT,
+            project,
+            project / ".opencode" / "aihub-hooks" / "x.py",
+        )
+    with pytest.raises(ValueError):
+        _portable_script_reference(
+            AgentProvider.CLAUDE, ProjectionContext.PROJECT, project, tmp_path / "x.py"
+        )

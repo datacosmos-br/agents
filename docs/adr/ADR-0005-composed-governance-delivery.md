@@ -41,6 +41,11 @@ existing or concurrent work.
 Static instructions are the standing guarantee. Hooks only refresh the same
 generated capsule. Managed regions preserve surrounding operator/project text;
 manifests preserve foreign hook entries and reject edits to owned artifacts.
+Generated hook commands reference their script through the provider's own
+root token (`${HOME}` for personal targets; `${CLAUDE_PROJECT_DIR}`,
+`${CURSOR_PROJECT_DIR}`, `${GEMINI_PROJECT_DIR}`, `$(git rev-parse
+--show-toplevel)`, or a repository-root `cwd` for project targets), so a
+tracked projection never embeds a machine-absolute destination path.
 There is no daemon, repository Git hook, network bridge, hook verb, private
 runtime entry point, retry, fallback, or compatibility projection.
 
