@@ -7,7 +7,5 @@ inputs:
   files:
   - path: project-contract.md
 expected:
-  outcomes:
-  - type: task_completed
   output_contains: [project, generator]
   output_not_contains: [managed-artifact, mise.lock, installation plan, PATH alias]

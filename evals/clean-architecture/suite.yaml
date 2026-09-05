@@ -1,12 +1,3 @@
 
 description: Profile-aware inward dependency enforcement without ceremonial layers.
-
-
-version: '1.0'
-
-
-graders:
-- type: prompt
-  name: clean-architecture-contract
-  config:
-    prompt: Grade clean-architecture. Pass only when internal code points dependencies inward through typed ports and one composition root, missing evidence fails before effects, and a third-party fork is left to upstream without local architectural modernization.
+prompt: Grade clean-architecture. Pass only when internal code points dependencies inward through typed ports and one composition root, missing evidence fails before effects, and a third-party fork is left to upstream without local architectural modernization.

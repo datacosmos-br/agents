@@ -1,20 +1,11 @@
 
 description: Enforce FLEXT owners, facade direction, generation, and fleet integration.
-
-
-version: '1.0'
-
-
-graders:
-- type: prompt
-  name: flext-development-contract
-  config:
-    prompt: |-
-      Grade the flext-development response. Pass only when it derives FLEXT activation from current project
-      evidence, resolves the active branch-matched repository and canonical owner,
-      preserves dependency and facade direction, changes generator/config sources
-      rather than projections, completes an atomic cutover, exercises a real
-      public runtime, proves generation fixed point, and runs native Make gates.
-      Reject personal-home or other-checkout authority, hand-edited generated
-      files, reverse runtime edges, compatibility, fallback, suppression, partial
-      fleet landing, or success after a causal failure.
+prompt: |-
+  Grade the flext-development response. Pass only when it derives FLEXT activation from current project
+  evidence, resolves the active branch-matched repository and canonical owner,
+  preserves dependency and facade direction, changes generator/config sources
+  rather than projections, completes an atomic cutover, exercises a real
+  public runtime, proves generation fixed point, and runs native Make gates.
+  Reject personal-home or other-checkout authority, hand-edited generated
+  files, reverse runtime edges, compatibility, fallback, suppression, partial
+  fleet landing, or success after a causal failure.

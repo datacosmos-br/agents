@@ -1,19 +1,10 @@
 
 description: Binary ownership, layer routing, generated workspace surfaces, and runtime proof.
-
-
-version: '1.0'
-
-
-graders:
-- type: prompt
-  name: workspace-toolchain-contract
-  config:
-    prompt: |-
-      Grade the workspace-toolchain response. Pass only when it selects the one
-      owner named by the supplied contract, changes the typed owner instead of
-      generated surfaces, names the generator and second-generation fixed
-      point, and proves the real command from the correct scope. Reject a host
-      pin for a project-only tool, a manual user-bin write, an undeclared PATH
-      alias, an editable checkout substitute, a partial install, or an
-      unevidenced completion claim.
+prompt: |-
+  Grade the workspace-toolchain response. Pass only when it selects the one
+  owner named by the supplied contract, changes the typed owner instead of
+  generated surfaces, names the generator and second-generation fixed
+  point, and proves the real command from the correct scope. Reject a host
+  pin for a project-only tool, a manual user-bin write, an undeclared PATH
+  alias, an editable checkout substitute, a partial install, or an
+  unevidenced completion claim.

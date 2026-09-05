@@ -1,16 +1,7 @@
 
 description: Project documentation conventions.
-
-
-version: '1.0'
-
-
-graders:
-- type: prompt
-  name: gascity-docs-contract
-  config:
-    prompt: |-
-      Grade the gascity-docs response. Pass only when it uses gascity docs through the
-      canonical project facade, preserves strict execution, preflight, and
-      evidence contracts from the skill, and routes work through the declared
-      owner. Reject bypass, fallback, hardcode, or unobserved success.
+prompt: |-
+  Grade the gascity-docs response. Pass only when it uses gascity docs through the
+  canonical project facade, preserves strict execution, preflight, and
+  evidence contracts from the skill, and routes work through the declared
+  owner. Reject bypass, fallback, hardcode, or unobserved success.

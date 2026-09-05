@@ -1,19 +1,10 @@
 
 description: Semantic evaluation suite for eval-harness.
-
-
-version: '1.0'
-
-
-graders:
-- type: prompt
-  name: eval-harness-contract
-  config:
-    prompt: |-
-      Grade the eval-harness response. Pass only if it turns the supplied
-      observable behavior into capability and regression evals, uses concrete
-      deterministic graders where possible, states pass@k and pass^k targets,
-      identifies artifacts and baselines, and requires the first causal failure,
-      zero effects, and absence of fallback. Reject retries, alternate graders or
-      models, partial reports, fabricated baselines, and success without executed
-      evidence.
+prompt: |-
+  Grade the eval-harness response. Pass only if it turns the supplied
+  observable behavior into capability and regression evals, uses concrete
+  deterministic graders where possible, states pass@k and pass^k targets,
+  identifies artifacts and baselines, and requires the first causal failure,
+  zero effects, and absence of fallback. Reject retries, alternate graders or
+  models, partial reports, fabricated baselines, and success without executed
+  evidence.

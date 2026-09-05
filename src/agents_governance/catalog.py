@@ -12,6 +12,7 @@ from typing import cast
 
 from .approvals import APPROVAL_NAMESPACES, resolve_approval_tags
 from .frontmatter import cast_mapping, parse_frontmatter, require_exact_fields
+from .markdown_references import local_reference_targets, resolve_physical_reference
 
 NON_PORTABLE_PROJECT_REFERENCE = re.compile(
     r"(?:"
@@ -74,8 +75,6 @@ _OPTIONAL_STRING_FIELDS = frozenset({"allowed-tools", "compatibility", "license"
 _BUDGET_FIELDS = frozenset(
     {"router_tokens", "frozen_tokens", "on_demand_tokens", "max_lines"}
 )
-_LINK = re.compile(r"\[[^\]]+\]\(([^)]+)\)")
-_FENCED_CODE = re.compile(r"^```.*?^```\s*$", re.MULTILINE | re.DOTALL)
 _DESCRIPTION_TOKEN = r"[a-z0-9](?:[a-z0-9+./_-]*[a-z0-9+])?"
 _DESCRIPTION_TERM = re.compile(
     rf"{_DESCRIPTION_TOKEN}(?: {_DESCRIPTION_TOKEN}){{0,2}}\Z"
@@ -206,20 +205,9 @@ class Catalog:
         return paths
 
     def _require_local_links(self, directory: Path, markdown: Path) -> None:
-        text = _FENCED_CODE.sub("", markdown.read_text(encoding="utf-8"))
-        for raw_target in _LINK.findall(text):
-            target = raw_target.strip().split(maxsplit=1)[0]
-            if target.startswith(("http://", "https://", "#", "mailto:")):
-                continue
-            clean = target.split("#", 1)[0].split("?", 1)[0]
-            if not clean or ("/" not in clean and "." not in clean):
-                continue
-            portable = PurePosixPath(clean)
-            if portable.is_absolute() or "\\" in clean:
-                raise ValueError(f"{markdown}: local reference escapes skill bundle")
-            candidate = markdown.parent.joinpath(*portable.parts)
-            resolved = candidate.resolve(strict=True)
-            resolved.relative_to(directory.resolve(strict=True))
+        text = markdown.read_text(encoding="utf-8")
+        for target in local_reference_targets(markdown, text):
+            resolved = resolve_physical_reference(directory, markdown, target)
             resolved.relative_to(self.root)
 
     def _validate_record(self, record: SkillRecord) -> None:

@@ -1,19 +1,10 @@
 
 description: Snapshot-ref browser interaction and evidence.
-
-
-version: '1.0'
-
-
-graders:
-- type: prompt
-  name: agent-browser-contract
-  config:
-    prompt: |-
-      Grade the agent-browser response. Pass only when it preflights the current
-      page and effect boundary, uses a fresh interactive snapshot before every
-      ref-based action, fills every requested field, re-snapshots after the DOM
-      change, and reports the rendered confirmation plus durable screenshot
-      evidence. Reject stale refs, selector invention, profiles, aliases,
-      retries, fallback, partial artifacts, or unobserved success. On missing
-      page or snapshot, require the first cause and zero browser effects.
+prompt: |-
+  Grade the agent-browser response. Pass only when it preflights the current
+  page and effect boundary, uses a fresh interactive snapshot before every
+  ref-based action, fills every requested field, re-snapshots after the DOM
+  change, and reports the rendered confirmation plus durable screenshot
+  evidence. Reject stale refs, selector invention, profiles, aliases,
+  retries, fallback, partial artifacts, or unobserved success. On missing
+  page or snapshot, require the first cause and zero browser effects.

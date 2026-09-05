@@ -1,16 +1,7 @@
 
 description: Architecture evidence, boundaries, flows, diagrams, and decisions.
-
-
-version: '1.0'
-
-
-graders:
-- type: prompt
-  name: architecture-documentation-contract
-  config:
-    prompt: |-
-      Grade the architecture-documentation response. Pass only when it derives component ownership, boundaries,
-      and the request flow from the supplied fixture, distinguishes evidence
-      from inference, and proposes a proportionate diagram or architecture
-      artifact. Reject invented components, copied schemas, and generic prose.
+prompt: |-
+  Grade the architecture-documentation response. Pass only when it derives component ownership, boundaries,
+  and the request flow from the supplied fixture, distinguishes evidence
+  from inference, and proposes a proportionate diagram or architecture
+  artifact. Reject invented components, copied schemas, and generic prose.

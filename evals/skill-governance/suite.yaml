@@ -1,21 +1,12 @@
 
 description: Search-first skill design, compact routing, references, and non-duplication.
-
-
-version: '1.0'
-
-
-graders:
-- type: prompt
-  name: skill-governance-contract
-  config:
-    prompt: |-
-      Grade the skill-governance response. Pass only when it treats the historical
-      corpus as read-only evidence, classifies behavior instead of copying structure,
-      proves the capability is absent from the current inventory, proposes one
-      kebab-case router with a short keyword description, places detailed procedure
-      in a local reference, defines activation plus non-activation boundaries and
-      validation, and migrates every current count/map/fixture/lock consumer
-      atomically while preserving historical evidence. Reject a new schema-diff command,
-      duplicate skills, count drift, documentation follow-ups, prose descriptions,
-      copied templates, provider artifacts, foreign runtime, or external paths.
+prompt: |-
+  Grade the skill-governance response. Pass only when it treats the historical
+  corpus as read-only evidence, classifies behavior instead of copying structure,
+  proves the capability is absent from the current inventory, proposes one
+  kebab-case router with a short keyword description, places detailed procedure
+  in a local reference, defines activation plus non-activation boundaries and
+  validation, and migrates every current count/map/fixture/lock consumer
+  atomically while preserving historical evidence. Reject a new schema-diff command,
+  duplicate skills, count drift, documentation follow-ups, prose descriptions,
+  copied templates, provider artifacts, foreign runtime, or external paths.

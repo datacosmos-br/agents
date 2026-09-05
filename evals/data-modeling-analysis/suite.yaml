@@ -1,16 +1,7 @@
 
 description: Data boundary, mutation, and serialization analysis.
-
-
-version: '1.0'
-
-
-graders:
-- type: prompt
-  name: data-modeling-analysis-contract
-  config:
-    prompt: |-
-      Grade the data-modeling-analysis response. Pass only when it traces the supplied model across validation,
-      mutation, and serialization boundaries, distinguishes evidence from
-      inference, and reports a concrete owner-level risk. Reject language-library
-      assumptions and generic data-modeling advice.
+prompt: |-
+  Grade the data-modeling-analysis response. Pass only when it traces the supplied model across validation,
+  mutation, and serialization boundaries, distinguishes evidence from
+  inference, and reports a concrete owner-level risk. Reject language-library
+  assumptions and generic data-modeling advice.

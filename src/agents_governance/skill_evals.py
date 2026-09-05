@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import stat
+from dataclasses import dataclass
 from pathlib import Path
 
 import yaml
@@ -16,15 +17,18 @@ from .frontmatter import (
     string_array,
 )
 
-_EVAL_FIELDS = frozenset(
-    {
-        "description",
-        "graders",
-        "version",
-    }
-)
+_EVAL_FIELDS = frozenset({"description", "prompt", "version"})
+_REQUIRED_EVAL_FIELDS = frozenset({"description", "prompt"})
 _DEFAULT_FIELDS = frozenset(
-    {"behavior_grader", "execution", "metric", "tasks", "version"}
+    {
+        "behavior_grader",
+        "default_suite_version",
+        "execution",
+        "metric",
+        "tasks",
+        "version",
+        "waza_schema_version",
+    }
 )
 _EXECUTION_FIELDS = frozenset(
     {
@@ -39,14 +43,69 @@ _GRADER_FIELDS = frozenset({"config", "name", "type"})
 _INPUT_FIELDS = frozenset({"files", "prompt"})
 _INPUT_FILE_FIELDS = frozenset({"path"})
 _METRIC_FIELDS = frozenset({"description", "name", "threshold", "weight"})
-_EXPECTED_FIELDS = frozenset({"outcomes", "output_contains", "output_not_contains"})
-_OUTCOME_FIELDS = frozenset({"type"})
+_EXPECTED_FIELDS = frozenset({"output_contains", "output_not_contains"})
 _TASK_FIELDS = frozenset({"description", "expected", "id", "inputs", "name", "tags"})
 _TASK_ROLES = {
     "fail_closed": "tasks/edge-case.yaml",
     "happy_path": "tasks/basic-usage.yaml",
     "non_trigger": "tasks/should-not-trigger.yaml",
 }
+
+
+@dataclass(frozen=True)
+class EvalExecutionPolicy:
+    """Canonical execution policy for every semantic suite."""
+
+    trials_per_task: int
+    timeout_seconds: int
+    parallel: bool
+    retry_attempts: int
+    fail_fast: bool
+
+
+@dataclass(frozen=True)
+class EvalMetricPolicy:
+    """Canonical strict metric projected into every Waza suite."""
+
+    name: str
+    weight: float
+    threshold: float
+    description: str
+
+
+@dataclass(frozen=True)
+class EvalBehaviorGraderPolicy:
+    """Canonical bounded-execution grader projected into every Waza suite."""
+
+    type: str
+    name: str
+    max_duration_ms: int
+
+
+@dataclass(frozen=True)
+class EvalPolicy:
+    """One immutable owner for shared semantic evaluation policy."""
+
+    version: int
+    default_suite_version: str
+    waza_schema_version: str
+    execution: EvalExecutionPolicy
+    metric: EvalMetricPolicy
+    behavior_grader: EvalBehaviorGraderPolicy
+    tasks: tuple[tuple[str, str], ...]
+
+    @property
+    def task_glob(self) -> str:
+        """Derive Waza's glob from the canonical task paths."""
+
+        paths = tuple(Path(path) for _, path in self.tasks)
+        return (paths[0].parent / f"*{paths[0].suffix}").as_posix()
+
+    @property
+    def task_suffix(self) -> str:
+        """Return the validated common task suffix."""
+
+        return Path(self.tasks[0][1]).suffix
 
 
 def _trimmed_text(value: object, context: str) -> str:
@@ -86,18 +145,20 @@ def _physical_tree(directory: Path) -> None:
             raise ValueError(f"unsupported evaluation resource type: {path}")
 
 
-def _task_files(suite: Path, declared: dict[str, str]) -> tuple[tuple[Path, str], ...]:
+def _task_files(
+    suite: Path, declared: tuple[tuple[str, str], ...]
+) -> tuple[tuple[Path, str], ...]:
     task_root = suite / "tasks"
     if task_root.is_symlink() or not task_root.is_dir():
         raise ValueError(f"evaluation task root must be physical: {task_root}")
     task_files = tuple(sorted(task_root.iterdir()))
-    expected = {Path(relative).name for relative in declared.values()}
+    expected = {Path(relative).name for _, relative in declared}
     if {path.name for path in task_files} != expected:
         raise ValueError(f"{task_root}: tasks must be exactly {sorted(expected)}")
     for path in task_files:
         if path.is_symlink() or not path.is_file() or path.suffix != ".yaml":
             raise ValueError(f"evaluation tasks support only physical YAML: {path}")
-    return tuple((suite / relative, role) for role, relative in declared.items())
+    return tuple((suite / relative, role) for role, relative in declared)
 
 
 def _audit_inputs(path: Path, value: object, fixtures: set[Path]) -> str:
@@ -136,25 +197,12 @@ def _audit_expected(path: Path, value: object, role: str) -> None:
     fields = frozenset(expected)
     if not fields or not fields <= _EXPECTED_FIELDS:
         raise ValueError(f"{path}: expected contains unsupported or no assertions")
-    if not fields & {"output_contains", "output_not_contains"}:
-        raise ValueError(f"{path}: expected requires a material output assertion")
     if role in {"happy_path", "fail_closed"} and "output_contains" not in fields:
         raise ValueError(f"{path}: {role} requires output_contains")
     if role in {"fail_closed", "non_trigger"} and "output_not_contains" not in fields:
         raise ValueError(f"{path}: {role} requires output_not_contains")
-    for field in ("output_contains", "output_not_contains"):
-        if field in expected:
-            string_array(expected[field], f"{path}: expected.{field}")
-    outcomes = expected.get("outcomes")
-    if outcomes is not None:
-        if not isinstance(outcomes, list) or not outcomes:
-            raise TypeError(f"{path}: expected.outcomes must be a non-empty array")
-        for index, raw_outcome in enumerate(outcomes):
-            context = f"{path}: expected.outcomes[{index}]"
-            outcome = cast_mapping(raw_outcome, context)
-            require_exact_fields(outcome, _OUTCOME_FIELDS, context)
-            if outcome["type"] != "task_completed":
-                raise ValueError(f"{context}.type must equal 'task_completed'")
+    for field in sorted(fields):
+        string_array(expected[field], f"{path}: expected.{field}")
 
 
 def _audit_task(
@@ -166,8 +214,7 @@ def _audit_task(
 ) -> None:
     task = _mapping(path)
     require_exact_fields(task, _TASK_FIELDS, str(path))
-    identifier = task["id"]
-    identifier = _trimmed_text(identifier, f"{path}: id")
+    identifier = _trimmed_text(task["id"], f"{path}: id")
     if identifier in identifiers:
         raise ValueError(f"evaluation task id is duplicated: {identifier}")
     identifiers.add(identifier)
@@ -181,32 +228,31 @@ def _audit_task(
     _audit_expected(path, task["expected"], role)
 
 
-def _audit_graders(source: Path, value: object, skill: SkillRecord) -> None:
-    if not isinstance(value, list) or len(value) != 1:
-        raise TypeError(f"{source}: graders must contain one prompt contract")
-    prompt_grader = cast_mapping(value[0], f"{source}: graders[0]")
-    require_exact_fields(prompt_grader, _GRADER_FIELDS, f"{source}: graders[0]")
-    prompt_name = _trimmed_text(prompt_grader["name"], f"{source}: graders[0].name")
+def _suite_version(value: object, context: str) -> str:
+    version = _trimmed_text(value, context)
+    parts = version.split(".")
     if (
-        prompt_grader["type"] != "prompt"
-        or not prompt_name.startswith(f"{skill.name}-")
-        or not prompt_name.endswith("-contract")
+        len(parts) != 2
+        or not all(part.isdigit() for part in parts)
+        or int(parts[0]) < 1
     ):
-        raise ValueError(f"{source}: first grader must own the skill prompt contract")
-    prompt_config = cast_mapping(
-        prompt_grader["config"], f"{source}: graders[0].config"
-    )
-    require_exact_fields(
-        prompt_config, frozenset({"prompt"}), f"{source}: graders[0].config"
-    )
-    _nonempty_text(prompt_config["prompt"], f"{source}: graders[0].config.prompt")
+        raise ValueError(f"{context} must be a positive major.minor value")
+    return version
 
 
-def _audit_defaults(path: Path) -> dict[str, str]:
+def _audit_defaults(path: Path) -> EvalPolicy:
     defaults = _mapping(path)
     require_exact_fields(defaults, _DEFAULT_FIELDS, str(path))
     if defaults["version"] != 1:
         raise ValueError(f"{path}: version must equal 1")
+    default_version = _suite_version(
+        defaults["default_suite_version"], f"{path}: default_suite_version"
+    )
+    waza_schema_version = _trimmed_text(
+        defaults["waza_schema_version"], f"{path}: waza_schema_version"
+    )
+    if waza_schema_version != "1.2":
+        raise ValueError(f"{path}: waza_schema_version must equal 1.2")
     execution = cast_mapping(defaults["execution"], f"{path}: execution")
     require_exact_fields(execution, _EXECUTION_FIELDS, f"{path}: execution")
     if execution["trials_per_task"] != 1:
@@ -224,7 +270,9 @@ def _audit_defaults(path: Path) -> dict[str, str]:
         raise ValueError(f"{path}: metric must equal behavior_quality")
     if metric["weight"] != 1.0 or metric["threshold"] != 1.0:
         raise ValueError(f"{path}: metric weight and threshold must equal 1.0")
-    _trimmed_text(metric["description"], f"{path}: metric.description")
+    metric_description = _trimmed_text(
+        metric["description"], f"{path}: metric.description"
+    )
     behavior = cast_mapping(defaults["behavior_grader"], f"{path}: behavior_grader")
     require_exact_fields(behavior, _GRADER_FIELDS, f"{path}: behavior_grader")
     if behavior["type"] != "behavior" or behavior["name"] != "bounded_execution":
@@ -242,21 +290,49 @@ def _audit_defaults(path: Path) -> dict[str, str]:
         raise ValueError(f"{path}: max_duration_ms must be positive and below timeout")
     tasks = cast_mapping(defaults["tasks"], f"{path}: tasks")
     require_exact_fields(tasks, frozenset(_TASK_ROLES), f"{path}: tasks")
-    parsed = {
-        role: _trimmed_text(tasks[role], f"{path}: tasks.{role}")
+    parsed_tasks = tuple(
+        (role, _trimmed_text(tasks[role], f"{path}: tasks.{role}"))
         for role in sorted(_TASK_ROLES)
-    }
-    if parsed != _TASK_ROLES:
+    )
+    if dict(parsed_tasks) != _TASK_ROLES:
         raise ValueError(f"{path}: task role paths are not canonical")
-    return parsed
+    paths = tuple(Path(relative) for _, relative in parsed_tasks)
+    if (
+        len({item.parent for item in paths}) != 1
+        or len({item.suffix for item in paths}) != 1
+    ):
+        raise ValueError(f"{path}: task paths require one directory and suffix")
+    return EvalPolicy(
+        version=1,
+        default_suite_version=default_version,
+        waza_schema_version=waza_schema_version,
+        execution=EvalExecutionPolicy(
+            trials_per_task=1,
+            timeout_seconds=timeout_seconds,
+            parallel=False,
+            retry_attempts=0,
+            fail_fast=True,
+        ),
+        metric=EvalMetricPolicy(
+            name="behavior_quality",
+            weight=1.0,
+            threshold=1.0,
+            description=metric_description,
+        ),
+        behavior_grader=EvalBehaviorGraderPolicy(
+            type="behavior",
+            name="bounded_execution",
+            max_duration_ms=duration,
+        ),
+        tasks=parsed_tasks,
+    )
 
 
 def _audit_suite(
     suite: Path,
-    skill: SkillRecord,
     identifiers: set[str],
     prompts: set[str],
-    task_roles: dict[str, str],
+    policy: EvalPolicy,
 ) -> None:
     _physical_tree(suite)
     children = {path.name for path in suite.iterdir()}
@@ -268,19 +344,20 @@ def _audit_suite(
         raise ValueError(f"{suite}: unsupported or missing suite resources")
     source = suite / "suite.yaml"
     evaluation = _mapping(source)
-    require_exact_fields(evaluation, _EVAL_FIELDS, str(source))
-    version = _trimmed_text(evaluation["version"], f"{source}: version")
-    version_parts = version.split(".")
-    if (
-        len(version_parts) != 2
-        or not all(part.isdigit() for part in version_parts)
-        or int(version_parts[0]) < 1
-    ):
-        raise ValueError(f"{source}: version must be a positive major.minor value")
+    fields = frozenset(evaluation)
+    if not _REQUIRED_EVAL_FIELDS <= fields or not fields <= _EVAL_FIELDS:
+        raise ValueError(
+            f"{source}: fields must be description, prompt, and optional version"
+        )
     _trimmed_text(evaluation["description"], f"{source}: description")
-    _audit_graders(source, evaluation["graders"], skill)
+    _nonempty_text(evaluation["prompt"], f"{source}: prompt")
+    version = _suite_version(
+        evaluation.get("version", policy.default_suite_version), f"{source}: version"
+    )
+    if "version" in evaluation and version == policy.default_suite_version:
+        raise ValueError(f"{source}: default version must be omitted")
     fixtures: set[Path] = set()
-    for task, role in _task_files(suite, task_roles):
+    for task, role in _task_files(suite, policy.tasks):
         _audit_task(task, role, identifiers, prompts, fixtures)
     fixture_root = suite / "fixtures"
     physical_fixtures = (
@@ -296,11 +373,11 @@ def _audit_suite(
         raise ValueError(f"{suite}: fixtures must exactly equal referenced files")
 
 
-def audit_skill_evals(root: Path, skills: tuple[SkillRecord, ...]) -> None:
+def audit_skill_evals(root: Path, skills: tuple[SkillRecord, ...]) -> EvalPolicy:
     """Require one complete physical semantic evaluation suite per skill."""
 
     repository = root.resolve(strict=True)
-    task_roles = _audit_defaults(repository / "config" / "evals.json")
+    policy = _audit_defaults(repository / "config" / "evals.json")
     eval_root = repository / "evals"
     if eval_root.is_symlink() or not eval_root.is_dir():
         raise ValueError(f"skill evaluation root must be physical: {eval_root}")
@@ -309,16 +386,16 @@ def audit_skill_evals(root: Path, skills: tuple[SkillRecord, ...]) -> None:
         raise ValueError(
             f"skill evaluation root supports only physical directories: {eval_root}"
         )
-    by_name = {skill.name: skill for skill in skills}
-    if {path.name for path in entries} != set(by_name):
+    skill_names = {skill.name for skill in skills}
+    if {path.name for path in entries} != skill_names:
         raise ValueError(
             "skill evaluation suites must exactly equal the skill inventory"
         )
     identifiers: set[str] = set()
     prompts: set[str] = set()
     for suite in entries:
-        skill = by_name[suite.name]
-        _audit_suite(suite, skill, identifiers, prompts, task_roles)
+        _audit_suite(suite, identifiers, prompts, policy)
+    return policy
 
 
-__all__ = ("audit_skill_evals",)
+__all__ = ("EvalPolicy", "audit_skill_evals")

@@ -3,20 +3,18 @@
 from __future__ import annotations
 
 import json
-import os
 import re
 import stat
 from dataclasses import dataclass
 from enum import StrEnum
 from pathlib import Path, PurePosixPath
 from typing import cast
-from urllib.parse import unquote, urlsplit
 
 from .approvals import APPROVAL_NAMESPACES, resolve_approval_tags
 from .frontmatter import parse_frontmatter
+from .markdown_references import local_reference_targets, resolve_physical_reference
 
 _SLUG = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*\Z")
-_LINK = re.compile(r"!?\[[^\]\n]*\]\(([^)\n]+)\)")
 _SCHEME = re.compile(r"[A-Za-z][A-Za-z0-9+.-]*:")
 _FRONTMATTER_FIELDS = frozenset(
     {
@@ -209,48 +207,15 @@ def _metadata(
     return description, globs, tags, summary
 
 
-def _link_target(raw: str) -> str:
-    candidate = raw.strip()
-    if candidate.startswith("<"):
-        closing = candidate.find(">", 1)
-        return candidate[1:closing] if closing > 0 else candidate
-    return candidate.split(maxsplit=1)[0] if candidate else candidate
-
-
-def _local_reference(root: Path, rules: Path, source: Path, target: str) -> str | None:
-    if not target or target.startswith("#"):
-        return None
-    if _SCHEME.match(target):
-        if urlsplit(target).scheme.lower() == "file":
-            raise ValueError(f"{source}: file URI references are forbidden")
-        return None
-    decoded = unquote(target).split("#", 1)[0].split("?", 1)[0]
-    if not decoded:
-        return None
-    if decoded.startswith(("/", "//", "~")) or "\\" in decoded or "$" in decoded:
-        raise ValueError(f"{source}: reference must remain inside rules/: {target!r}")
-    local = Path(
-        os.path.normpath(source.parent.joinpath(*PurePosixPath(decoded).parts))
-    )
-    lexical_parts = local.relative_to(rules).parts
-    cursor = rules
-    for part in lexical_parts:
-        cursor /= part
-        if cursor.is_symlink():
-            raise ValueError(f"{source}: reference target is symlinked: {target!r}")
-    canonical = local.resolve(strict=True)
-    canonical.relative_to(rules)
-    if canonical.suffix != ".md" or not stat.S_ISREG(canonical.lstat().st_mode):
-        raise ValueError(f"{source}: reference must target a physical Markdown rule")
-    return canonical.relative_to(root).as_posix()
-
-
 def _references(root: Path, rules: Path, source: Path, body: str) -> tuple[str, ...]:
     references: set[str] = set()
-    for match in _LINK.finditer(body):
-        reference = _local_reference(root, rules, source, _link_target(match.group(1)))
-        if reference is not None:
-            references.add(reference)
+    for target in local_reference_targets(source, body):
+        reference = resolve_physical_reference(rules, source, target)
+        if reference.suffix != ".md" or not stat.S_ISREG(reference.lstat().st_mode):
+            raise ValueError(
+                f"{source}: reference must target a physical Markdown rule"
+            )
+        references.add(reference.relative_to(root).as_posix())
     return tuple(sorted(references))
 
 

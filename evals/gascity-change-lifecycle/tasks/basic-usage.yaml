@@ -13,8 +13,6 @@ inputs:
   files:
   - path: declared-change.md
 expected:
-  outcomes:
-  - type: task_completed
   output_contains:
   - no orchestration command
   - integration branch

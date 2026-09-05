@@ -1,17 +1,8 @@
 
 description: Source-backed long-form technical writing.
-
-
-version: '1.0'
-
-
-graders:
-- type: prompt
-  name: article-writing-contract
-  config:
-    prompt: |-
-      Grade the article-writing response. Pass only when the article leads with the supplied benchmark, explains
-      the concrete cache mechanism accurately, keeps one useful job per section,
-      and limits claims to the release-note evidence. Reject generic AI framing,
-      hype, invented customers, filler conclusions, unsupported numbers, or a
-      partial article after a required source fails preflight.
+prompt: |-
+  Grade the article-writing response. Pass only when the article leads with the supplied benchmark, explains
+  the concrete cache mechanism accurately, keeps one useful job per section,
+  and limits claims to the release-note evidence. Reject generic AI framing,
+  hype, invented customers, filler conclusions, unsupported numbers, or a
+  partial article after a required source fails preflight.

@@ -1,19 +1,10 @@
 
 description: Semantic evaluation suite for exa-search.
-
-
-version: '1.0'
-
-
-graders:
-- type: prompt
-  name: exa-search-contract
-  config:
-    prompt: |-
-      Grade the exa-search response. Pass only if it chooses the current Exa
-      operation whose schema matches every supplied constraint, executes the
-      bounded search once, deep-reads the decisive primary result once,
-      distinguishes snippets from fetched evidence, and returns a material
-      sourced answer. On unavailable MCP or secret-bearing input, require the
-      first cause and zero calls. Reject retries, broadened constraints,
-      alternate operations/providers, remembered facts, or partial answers.
+prompt: |-
+  Grade the exa-search response. Pass only if it chooses the current Exa
+  operation whose schema matches every supplied constraint, executes the
+  bounded search once, deep-reads the decisive primary result once,
+  distinguishes snippets from fetched evidence, and returns a material
+  sourced answer. On unavailable MCP or secret-bearing input, require the
+  first cause and zero calls. Reject retries, broadened constraints,
+  alternate operations/providers, remembered facts, or partial answers.

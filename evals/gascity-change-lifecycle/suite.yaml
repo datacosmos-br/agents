@@ -1,18 +1,9 @@
 
 description: Semantic evaluation suite for gascity-change-lifecycle.
-
-
-version: '1.0'
-
-
-graders:
-- type: prompt
-  name: gascity-change-lifecycle-contract
-  config:
-    prompt: |-
-      Grade the gascity-change-lifecycle response. Pass only if it resolves the
-      supplied city, rig, agent, formula, work, and integration identities;
-      assigns orchestration and repository landing to their declared owners;
-      applies Beads semantics only when explicitly selected;
-      rejects copied or invented commands; and produces a material static
-      lifecycle assessment with zero runtime effects while suspended.
+prompt: |-
+  Grade the gascity-change-lifecycle response. Pass only if it resolves the
+  supplied city, rig, agent, formula, work, and integration identities;
+  assigns orchestration and repository landing to their declared owners;
+  applies Beads semantics only when explicitly selected;
+  rejects copied or invented commands; and produces a material static
+  lifecycle assessment with zero runtime effects while suspended.

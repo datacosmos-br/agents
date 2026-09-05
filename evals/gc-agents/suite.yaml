@@ -1,16 +1,7 @@
 
 description: Managing Gas City agents.
-
-
-version: '1.0'
-
-
-graders:
-- type: prompt
-  name: gc-agents-contract
-  config:
-    prompt: |-
-      Grade the gc-agents response. Pass only when it uses gc agents through the
-      canonical project facade, preserves strict execution, preflight, and
-      evidence contracts from the skill, and routes work through the declared
-      owner. Reject bypass, fallback, hardcode, or unobserved success.
+prompt: |-
+  Grade the gc-agents response. Pass only when it uses gc agents through the
+  canonical project facade, preserves strict execution, preflight, and
+  evidence contracts from the skill, and routes work through the declared
+  owner. Reject bypass, fallback, hardcode, or unobserved success.

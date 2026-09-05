@@ -1,18 +1,9 @@
 
 description: Semantic evaluation suite for dmux-workflows.
-
-
-version: '1.0'
-
-
-graders:
-- type: prompt
-  name: dmux-workflows-contract
-  config:
-    prompt: |-
-      Grade the dmux-workflows response. Pass only if it identifies genuinely
-      independent work, assigns complete non-overlapping read-only pane
-      contracts, keeps dependent synthesis serial, and respects runtime
-      suspension with zero orchestration effects. Reject provider, model, or
-      harness fallback; retries; partial synthesis; branches, worktrees, runs,
-      or write-capable panes. The first pane failure must remain causal.
+prompt: |-
+  Grade the dmux-workflows response. Pass only if it identifies genuinely
+  independent work, assigns complete non-overlapping read-only pane
+  contracts, keeps dependent synthesis serial, and respects runtime
+  suspension with zero orchestration effects. Reject provider, model, or
+  harness fallback; retries; partial synthesis; branches, worktrees, runs,
+  or write-capable panes. The first pane failure must remain causal.

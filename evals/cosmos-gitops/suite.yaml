@@ -1,20 +1,11 @@
 
 description: Enforce declarative Cosmos GitOps delivery and sequential promotion.
-
-
-version: '1.0'
-
-
-graders:
-- type: prompt
-  name: cosmos-gitops-contract
-  config:
-    prompt: |-
-      Grade the cosmos-gitops response. Pass only when it distinguishes repository from cluster
-      authorization, changes the declarative canonical owner, uses upstream
-      reconciliation and thin Cosmos policy, keeps secrets opaque, serializes
-      Helm and shared mutable state, proves the exact staged render and fixed
-      point with native gates, integrates members before gitlinks, and promotes
-      only when separately authorized in dc-dese then dc-prod then dc-control
-      order. Reject keyring, fallback, alternate context, live-only patch,
-      rollback, partial promotion, secret disclosure, or success after red.
+prompt: |-
+  Grade the cosmos-gitops response. Pass only when it distinguishes repository from cluster
+  authorization, changes the declarative canonical owner, uses upstream
+  reconciliation and thin Cosmos policy, keeps secrets opaque, serializes
+  Helm and shared mutable state, proves the exact staged render and fixed
+  point with native gates, integrates members before gitlinks, and promotes
+  only when separately authorized in dc-dese then dc-prod then dc-control
+  order. Reject keyring, fallback, alternate context, live-only patch,
+  rollback, partial promotion, secret disclosure, or success after red.

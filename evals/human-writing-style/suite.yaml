@@ -1,18 +1,9 @@
 
 description: Fact-preserving prose revision without generic AI mannerisms.
-
-
-version: '1.0'
-
-
-graders:
-- type: prompt
-  name: human-writing-style-contract
-  config:
-    prompt: |-
-      Grade the human-writing-style response. Pass only when it preserves every
-      concrete fact and the direct technical voice in the supplied draft while
-      removing generic praise, AI vocabulary clusters, heavy transitions, and
-      -ing tails. Reject invented specifics, flattened voice, lost measurements,
-      a style critique without the requested rewritten artifact, or use of an
-      absent reference as a substitute source.
+prompt: |-
+  Grade the human-writing-style response. Pass only when it preserves every
+  concrete fact and the direct technical voice in the supplied draft while
+  removing generic praise, AI vocabulary clusters, heavy transitions, and
+  -ing tails. Reject invented specifics, flattened voice, lost measurements,
+  a style critique without the requested rewritten artifact, or use of an
+  absent reference as a substitute source.

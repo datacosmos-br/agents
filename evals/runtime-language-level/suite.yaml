@@ -1,12 +1,3 @@
 
 description: Manifest-derived modern language and typing enforcement for internal projects.
-
-
-version: '1.0'
-
-
-graders:
-- type: prompt
-  name: runtime-language-level-contract
-  config:
-    prompt: Grade runtime-language-level. Pass only when the runtime floor comes from the manifest, every tool target agrees, precise native typing replaces downlevel compatibility for internal code, and third-party forks remain governed by upstream.
+prompt: Grade runtime-language-level. Pass only when the runtime floor comes from the manifest, every tool target agrees, precise native typing replaces downlevel compatibility for internal code, and third-party forks remain governed by upstream.

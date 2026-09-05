@@ -1,17 +1,8 @@
 
 description: Logical context boundaries, durable state, and safe continuation.
-
-
-version: '1.0'
-
-
-graders:
-- type: prompt
-  name: strategic-compact-contract
-  config:
-    prompt: |-
-      Grade the strategic-compact response. Pass only when it recommends compaction
-      at a genuine phase boundary, identifies the durable contract that survives,
-      lists what the next phase must reload, and confirms no operation or partial
-      edit is in flight. Reject harness-specific paths, invented persistence, or
-      compaction during implementation.
+prompt: |-
+  Grade the strategic-compact response. Pass only when it recommends compaction
+  at a genuine phase boundary, identifies the durable contract that survives,
+  lists what the next phase must reload, and confirms no operation or partial
+  edit is in flight. Reject harness-specific paths, invented persistence, or
+  compaction during implementation.

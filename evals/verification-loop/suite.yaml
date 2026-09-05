@@ -1,33 +1,24 @@
 
 description: Ordered fresh gates, real surface, fixed point, and evidence scope.
-
-
-version: '1.0'
-
-
-graders:
-- type: prompt
-  name: verification-loop-contract
-  config:
-    prompt: |-
-      Grade the verification-loop response. Pass only when it records each fresh
-      command, exit code, decisive output and scope in order, distinguishes tests
-      from real-surface proof, includes generated fixed point, and limits the claim
-      to the covered projection slice. When runtime ownership applies, require
-      deployment or reconciliation from the merged integration SHA. Reject skipped
-      stages, warnings, stale output,
-      broad or split completion claims, workflow edits without workflow-source
-      trigger coverage, duplicate CI workflows, self-referential scanners,
-      unpinned actions, `|| true`, CI jobs that do not execute `make ci`, or
-      reporting a red result as a handoff. A failed stage
-      must stop that invocation, drive owner correction, and rerun invalidated
-      stages in the same phase without an unchanged retry or alternate gate.
-      A detector result is valid only for its exact threshold, mode, ignores,
-      reviewed-file set, and baseline; changing any of them invalidates prior
-      overlapping evidence and requires rerun after deliberate rebaselining.
-      A composite command with successful prefix output and final exit 1 is red
-      as a whole; substeps cannot make it green or justify later proof, and a
-      native Make owner cannot be replaced by its underlying test runner.
-      External-token workflows excluded before invocation must be recorded as
-      NOT EXECUTED and never treated as green or as a landing blocker; once
-      invoked, their missing credential or runtime failure remains red.
+prompt: |-
+  Grade the verification-loop response. Pass only when it records each fresh
+  command, exit code, decisive output and scope in order, distinguishes tests
+  from real-surface proof, includes generated fixed point, and limits the claim
+  to the covered projection slice. When runtime ownership applies, require
+  deployment or reconciliation from the merged integration SHA. Reject skipped
+  stages, warnings, stale output,
+  broad or split completion claims, workflow edits without workflow-source
+  trigger coverage, duplicate CI workflows, self-referential scanners,
+  unpinned actions, `|| true`, CI jobs that do not execute `make ci`, or
+  reporting a red result as a handoff. A failed stage
+  must stop that invocation, drive owner correction, and rerun invalidated
+  stages in the same phase without an unchanged retry or alternate gate.
+  A detector result is valid only for its exact threshold, mode, ignores,
+  reviewed-file set, and baseline; changing any of them invalidates prior
+  overlapping evidence and requires rerun after deliberate rebaselining.
+  A composite command with successful prefix output and final exit 1 is red
+  as a whole; substeps cannot make it green or justify later proof, and a
+  native Make owner cannot be replaced by its underlying test runner.
+  External-token workflows excluded before invocation must be recorded as
+  NOT EXECUTED and never treated as green or as a landing blocker; once
+  invoked, their missing credential or runtime failure remains red.

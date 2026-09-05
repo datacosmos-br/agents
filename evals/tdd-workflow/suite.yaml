@@ -1,19 +1,10 @@
 
 description: Observable RED, minimal owner correction, GREEN, and refactor evidence.
-
-
-version: '1.0'
-
-
-graders:
-- type: prompt
-  name: tdd-workflow-contract
-  config:
-    prompt: |-
-      Grade the tdd-workflow response. Pass only when it derives observable cases
-      from the supplied public contract, starts with a test that reproduces the 0
-      defect as RED, changes only parse_limit minimally, reruns the same command to
-      GREEN, and refactors only while behavior remains green. Reject implementation-
-      detail tests, arbitrary coverage targets, fallbacks, or editing tests to match
-      broken runtime. Require unexpected command failure to remain causal, failed
-      preflight to leave zero effects, atomic consumer rewiring, and residue proof.
+prompt: |-
+  Grade the tdd-workflow response. Pass only when it derives observable cases
+  from the supplied public contract, starts with a test that reproduces the 0
+  defect as RED, changes only parse_limit minimally, reruns the same command to
+  GREEN, and refactors only while behavior remains green. Reject implementation-
+  detail tests, arbitrary coverage targets, fallbacks, or editing tests to match
+  broken runtime. Require unexpected command failure to remain causal, failed
+  preflight to leave zero effects, atomic consumer rewiring, and residue proof.

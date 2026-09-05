@@ -1,20 +1,11 @@
 
 description: Semantic evaluation suite for react-frontend-patterns.
-
-
-version: '1.0'
-
-
-graders:
-- type: prompt
-  name: react-frontend-patterns-contract
-  config:
-    prompt: |-
-      Grade the react-frontend-patterns response. Pass only if it fixes the supplied
-      React component's unstable request dependency with one query-keyed effect
-      and AbortController cleanup; renders loading, empty, results, and the
-      supplied typed rejected outcome; lets thrown search failures remain raw;
-      adds accessible live/alert semantics; removes query logging; and defines
-      material tests without new dependencies. Reject local catch normalization,
-      retry/fallback, speculative memoization, partial rewiring, or missing
-      zero-effect/unmount/residue proof.
+prompt: |-
+  Grade the react-frontend-patterns response. Pass only if it fixes the supplied
+  React component's unstable request dependency with one query-keyed effect
+  and AbortController cleanup; renders loading, empty, results, and the
+  supplied typed rejected outcome; lets thrown search failures remain raw;
+  adds accessible live/alert semantics; removes query logging; and defines
+  material tests without new dependencies. Reject local catch normalization,
+  retry/fallback, speculative memoization, partial rewiring, or missing
+  zero-effect/unmount/residue proof.

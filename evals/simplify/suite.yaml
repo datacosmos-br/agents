@@ -1,28 +1,20 @@
 
 description: Inline complete-code generation, fail-closed evidence, and bounded non-triggering.
-
-
 version: '2.0'
-
-
-graders:
-- type: prompt
-  name: simplify-inline-contract
-  config:
-    prompt: |-
-      Grade according to the task's role. For the happy-path contract, pass only
-      when the response supplies a complete implementation of both typed public
-      functions, covers every declared output, applies YAGNI to add no unsupported
-      behavior, finds no new SOLID boundary, simplifies each generated unit in the
-      same pass, declares each canonical typed default once, omits equal values
-      from the supplied function call, preserves explicit overrides,
-      avoids unnecessary helpers and code golf, and names a real behavioral check.
-      For the missing-evidence task, pass an explicit refusal
-      that identifies ownership, contract, consumer or runtime evidence needed;
-      do not require code or a completion claim. For the diagnosis anti-trigger,
-      pass a useful runtime-evidence plan that does not generate, change, or
-      simplify code before behavior is established. Reject empty or nonresponsive
-      output, partial behavior, placeholders, weakened tests, hidden failures,
-      retry/fallback, broad rewrites, recursive skill loops, or false completion.
-      Missing preflight must leave zero code effects and activated execution must
-      preserve the first causal failure and zero residue.
+prompt: |-
+  Grade according to the task's role. For the happy-path contract, pass only
+  when the response supplies a complete implementation of both typed public
+  functions, covers every declared output, applies YAGNI to add no unsupported
+  behavior, finds no new SOLID boundary, simplifies each generated unit in the
+  same pass, declares each canonical typed default once, omits equal values
+  from the supplied function call, preserves explicit overrides,
+  avoids unnecessary helpers and code golf, and names a real behavioral check.
+  For the missing-evidence task, pass an explicit refusal
+  that identifies ownership, contract, consumer or runtime evidence needed;
+  do not require code or a completion claim. For the diagnosis anti-trigger,
+  pass a useful runtime-evidence plan that does not generate, change, or
+  simplify code before behavior is established. Reject empty or nonresponsive
+  output, partial behavior, placeholders, weakened tests, hidden failures,
+  retry/fallback, broad rewrites, recursive skill loops, or false completion.
+  Missing preflight must leave zero code effects and activated execution must
+  preserve the first causal failure and zero residue.

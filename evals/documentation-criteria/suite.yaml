@@ -1,18 +1,9 @@
 
 description: Semantic evaluation suite for documentation-criteria.
-
-
-version: '1.0'
-
-
-graders:
-- type: prompt
-  name: documentation-criteria-contract
-  config:
-    prompt: |-
-      Grade the documentation-criteria response. Pass only if it applies the
-      semantic-impact and authority criteria to the supplied change, selects every
-      required document in the correct order, assigns each concern to the
-      proper document scope, and names measurable structural and approval gates
-      without producing unnecessary documentation, default paths, placeholders,
-      or dependent drafts before upstream approval.
+prompt: |-
+  Grade the documentation-criteria response. Pass only if it applies the
+  semantic-impact and authority criteria to the supplied change, selects every
+  required document in the correct order, assigns each concern to the
+  proper document scope, and names measurable structural and approval gates
+  without producing unnecessary documentation, default paths, placeholders,
+  or dependent drafts before upstream approval.

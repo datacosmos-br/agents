@@ -1,20 +1,11 @@
 
 description: Python engineering, debugging, and concurrency decisions.
-
-
-version: '1.0'
-
-
-graders:
-- type: prompt
-  name: python-development-contract
-  config:
-    prompt: |-
-      Grade the python-development response. Pass only when it uses evidence from the supplied Python fixture,
-      identifies the concrete correctness or ownership risk, preserves the
-      project-owned toolchain, provides a material typed owner correction, and
-      gives an observable validation path. Reject generic Python advice,
-      catch/translation, unjustified concurrency, retry/fallback, Make/Testmon
-      assumptions, disabling Testmon or globally clearing its cache when it is
-      project-owned, partial behavior, or success without raw first-failure,
-      zero-effect, bounded targeted invalidation, and residue proof.
+prompt: |-
+  Grade the python-development response. Pass only when it uses evidence from the supplied Python fixture,
+  identifies the concrete correctness or ownership risk, preserves the
+  project-owned toolchain, provides a material typed owner correction, and
+  gives an observable validation path. Reject generic Python advice,
+  catch/translation, unjustified concurrency, retry/fallback, Make/Testmon
+  assumptions, disabling Testmon or globally clearing its cache when it is
+  project-owned, partial behavior, or success without raw first-failure,
+  zero-effect, bounded targeted invalidation, and residue proof.

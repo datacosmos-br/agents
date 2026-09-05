@@ -1,19 +1,10 @@
 
 description: Product intent, constraints, contracts, and implementation handoff.
-
-
-version: '1.0'
-
-
-graders:
-- type: prompt
-  name: product-capability-contract
-  config:
-    prompt: |-
-      Grade the product-capability response. Pass only when it derives the actor,
-      visible promise, authorization boundary, lifecycle constraints, explicit
-      non-goals, unresolved retention question, and an honest implementation
-      handoff from the supplied intent. Reject invented product decisions and
-      implementation detail presented as approved policy. Require the one
-      project-owned capability artifact, complete evidence preflight, and no
-      fallback scope or artifact when product truth is missing.
+prompt: |-
+  Grade the product-capability response. Pass only when it derives the actor,
+  visible promise, authorization boundary, lifecycle constraints, explicit
+  non-goals, unresolved retention question, and an honest implementation
+  handoff from the supplied intent. Reject invented product decisions and
+  implementation detail presented as approved policy. Require the one
+  project-owned capability artifact, complete evidence preflight, and no
+  fallback scope or artifact when product truth is missing.

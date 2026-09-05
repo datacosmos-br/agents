@@ -1,21 +1,12 @@
 
 description: Guided jscpd-driven elimination of copy-paste duplication.
-
-
-version: '1.0'
-
-
-graders:
-- type: prompt
-  name: dry-refactoring-contract
-  config:
-    prompt: |-
-      Grade the dry-refactoring response. Pass only when it runs jscpd at the
-      selected strict eight-line baseline first, reads both duplicated fragments
-      before designing shared extraction, classifies each candidate rather than
-      treating textual similarity as proof, updates every call site, re-runs the
-      identical configuration, and proves zero new clones. Reject an unowned gate,
-      threshold without an explicit baseline, unreviewed
-      rebaselining, refactors without a re-run, extracted abstractions with
-      unclear names, deleting tests to silence clones, or a consolidated copy
-      that keeps the duplicated original in place.
+prompt: |-
+  Grade the dry-refactoring response. Pass only when it runs jscpd at the
+  selected strict eight-line baseline first, reads both duplicated fragments
+  before designing shared extraction, classifies each candidate rather than
+  treating textual similarity as proof, updates every call site, re-runs the
+  identical configuration, and proves zero new clones. Reject an unowned gate,
+  threshold without an explicit baseline, unreviewed
+  rebaselining, refactors without a re-run, extracted abstractions with
+  unclear names, deleting tests to silence clones, or a consolidated copy
+  that keeps the duplicated original in place.

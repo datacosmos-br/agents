@@ -1,12 +1,3 @@
 
 description: Immutable staged deployment for internal projects and managed forks.
-
-
-version: '1.0'
-
-
-graders:
-- type: prompt
-  name: deployment-lifecycle-contract
-  config:
-    prompt: Grade deployment-lifecycle. Pass only for integrated-SHA immutable artifacts, digest, staging, native acceptance, atomic activation, installed-runtime proof, causal failure, and upstream build ownership for forks.
+prompt: Grade deployment-lifecycle. Pass only for integrated-SHA immutable artifacts, digest, staging, native acceptance, atomic activation, installed-runtime proof, causal failure, and upstream build ownership for forks.

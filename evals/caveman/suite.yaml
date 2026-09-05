@@ -1,17 +1,8 @@
 
 description: Concise evidence-preserving operator communication.
-
-
-version: '1.0'
-
-
-graders:
-- type: prompt
-  name: caveman-contract
-  config:
-    prompt: |-
-      Grade the caveman response. Pass only when it puts the supplied failure first, preserves command, cwd,
-      exit code, decisive output, and unrun gates exactly, and does so in no more
-      than three plain sentences without filler. Reject softened status,
-      adjectives, implementation detail, omitted evidence, or a success claim
-      after the first required evidence item is absent.
+prompt: |-
+  Grade the caveman response. Pass only when it puts the supplied failure first, preserves command, cwd,
+  exit code, decisive output, and unrun gates exactly, and does so in no more
+  than three plain sentences without filler. Reject softened status,
+  adjectives, implementation detail, omitted evidence, or a success claim
+  after the first required evidence item is absent.

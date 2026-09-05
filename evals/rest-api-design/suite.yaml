@@ -1,19 +1,10 @@
 
 description: REST resource, status, error, authorization, and pagination contracts.
-
-
-version: '1.0'
-
-
-graders:
-- type: prompt
-  name: rest-api-design-contract
-  config:
-    prompt: |-
-      Grade the rest-api-design response. Pass only when it derives a plural resource contract from the supplied API
-      requirements, selects stable cursor pagination for the stated workload,
-      specifies semantic status and error responses, and preserves authentication,
-      ownership authorization, rate limits, and singular schema ownership. It must
-      require complete preflight before effects and causal, zero-effect failure.
-      Reject generic REST advice, arbitrary defaults, retry/fallback, partial
-      mutation, or old/new compatibility paths.
+prompt: |-
+  Grade the rest-api-design response. Pass only when it derives a plural resource contract from the supplied API
+  requirements, selects stable cursor pagination for the stated workload,
+  specifies semantic status and error responses, and preserves authentication,
+  ownership authorization, rate limits, and singular schema ownership. It must
+  require complete preflight before effects and causal, zero-effect failure.
+  Reject generic REST advice, arbitrary defaults, retry/fallback, partial
+  mutation, or old/new compatibility paths.

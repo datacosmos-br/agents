@@ -1,18 +1,9 @@
 
 description: Personalized investor messages with concrete proof and asks.
-
-
-version: '1.0'
-
-
-graders:
-- type: prompt
-  name: investor-outreach-contract
-  config:
-    prompt: |-
-      Grade the investor-outreach response. Pass only when it uses the supplied
-      partner thesis and portfolio fit, states the company and concrete proof,
-      makes one low-friction ask, stays concise, and avoids the skill's banned
-      phrases and generic praise. Reject invented personalization, a message that
-      could target any investor, vague adjectives, a soft closing question,
-      invented cadence, partial outbound set, or generic-voice fallback.
+prompt: |-
+  Grade the investor-outreach response. Pass only when it uses the supplied
+  partner thesis and portfolio fit, states the company and concrete proof,
+  makes one low-friction ask, stays concise, and avoids the skill's banned
+  phrases and generic praise. Reject invented personalization, a message that
+  could target any investor, vague adjectives, a soft closing question,
+  invented cadence, partial outbound set, or generic-voice fallback.

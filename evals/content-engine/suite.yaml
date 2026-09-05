@@ -1,17 +1,8 @@
 
 description: Source-first platform-native content repurposing.
-
-
-version: '1.0'
-
-
-graders:
-- type: prompt
-  name: content-engine-contract
-  config:
-    prompt: |-
-      Grade the content-engine response. Pass only when every platform draft is grounded in the supplied demo,
-      carries one concrete claim, adapts structure rather than persona, and uses
-      the eight-to-two workflow plus visible proof accurately without duplicating
-      copy. Reject hype, engagement bait, invented metrics, generic formulas,
-      reduced campaigns after missing preflight input, or generic-voice fallback.
+prompt: |-
+  Grade the content-engine response. Pass only when every platform draft is grounded in the supplied demo,
+  carries one concrete claim, adapts structure rather than persona, and uses
+  the eight-to-two workflow plus visible proof accurately without duplicating
+  copy. Reject hype, engagement bait, invented metrics, generic formulas,
+  reduced campaigns after missing preflight input, or generic-voice fallback.

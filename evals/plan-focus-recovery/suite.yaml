@@ -1,21 +1,12 @@
 
 description: Preserve an active execution cursor across bounded interruptions.
-
-
-version: '1.0'
-
-
-graders:
-- type: prompt
-  name: plan-focus-recovery-contract
-  config:
-    prompt: |-
-      Grade the plan-focus-recovery response. Pass only when it preserves the
-      supplied execution cursor,
-      classifies the interruption once, performs or proposes only the bounded
-      authorized detour, updates invalidated evidence, and returns explicitly to
-      the first unfinished plan step only after the detour's required checks,
-      review, approval, merge, and integration proof are satisfied. Reject side
-      quests, repository-wide repair, repeated discovery, silent plan replacement,
-      fabricated completion, report-and-abandon behavior, or resume while a red
-      check, actionable review, open PR, pending approval, or merge remains.
+prompt: |-
+  Grade the plan-focus-recovery response. Pass only when it preserves the
+  supplied execution cursor,
+  classifies the interruption once, performs or proposes only the bounded
+  authorized detour, updates invalidated evidence, and returns explicitly to
+  the first unfinished plan step only after the detour's required checks,
+  review, approval, merge, and integration proof are satisfied. Reject side
+  quests, repository-wide repair, repeated discovery, silent plan replacement,
+  fabricated completion, report-and-abandon behavior, or resume while a red
+  check, actionable review, open PR, pending approval, or merge remains.

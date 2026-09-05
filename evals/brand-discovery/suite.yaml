@@ -1,23 +1,14 @@
 
 description: Evidence-backed stakeholder interviews, identity synthesis, and persistence boundaries.
-
-
-version: '1.0'
-
-
-graders:
-- type: prompt
-  name: brand-discovery-contract
-  config:
-    prompt: |-
-      Grade the brand-discovery response according to the scenario. For the stakeholder-notes task, pass only
-      when the response preserves attributed evidence, keeps Ana and Rui's
-      positioning conflict explicit, produces purpose, audience, positioning,
-      personality, narrative, founder/organization boundary, open decisions,
-      and separate handoffs to market-research and brand-voice without claiming
-      external validation. For the missing-participants task, require the brand,
-      decision purpose, participants, and authority before interviewing or
-      writing, with zero durable effects. For the copy-style task, route corpus
-      analysis to brand-voice and do not start identity discovery. Reject an
-      invented destination, generic archetype, averaged disagreement, completed
-      brandbook claim, or interview preference presented as market fact.
+prompt: |-
+  Grade the brand-discovery response according to the scenario. For the stakeholder-notes task, pass only
+  when the response preserves attributed evidence, keeps Ana and Rui's
+  positioning conflict explicit, produces purpose, audience, positioning,
+  personality, narrative, founder/organization boundary, open decisions,
+  and separate handoffs to market-research and brand-voice without claiming
+  external validation. For the missing-participants task, require the brand,
+  decision purpose, participants, and authority before interviewing or
+  writing, with zero durable effects. For the copy-style task, route corpus
+  analysis to brand-voice and do not start identity discovery. Reject an
+  invented destination, generic archetype, averaged disagreement, completed
+  brandbook claim, or interview preference presented as market fact.
