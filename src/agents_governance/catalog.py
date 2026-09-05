@@ -332,6 +332,7 @@ class Catalog:
     def records(self) -> tuple[SkillRecord, ...]:
         return self._records
 
+
 __all__ = (
     "NON_PORTABLE_PROJECT_REFERENCE",
     "Catalog",
