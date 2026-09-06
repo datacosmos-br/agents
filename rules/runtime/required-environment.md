@@ -16,7 +16,7 @@ from the current process environment. A variable that is absent, empty, whitespa
 conflicting with another owner, contains an unexpanded placeholder, violates
 its schema, or is unauthorized raises immediately before effects.
 
-Do not load a missing value from a file, shell profile, keyring, service,
+Do not load a missing value from a file, shell profile, OS keyring, service,
 alternate name, inherited compatibility alias, prompt, or error-triggered default.
 Do not silently trim, coerce, repair, or substitute it. Never print secret
 values, derived fingerprints, or full environments in failure evidence.
@@ -49,9 +49,10 @@ correct behavior, not a defect to route around with a default, a cached
 secret, or an environment-variable fallback: fix the unit file, never the
 service's startup check.
 
-OS keyring remains prohibited (`rules/runtime/no-keyring.md`); the encrypted
-credential store is a distinct, systemd-owned mechanism and is never
-substituted with a keyring access path or treated as equivalent to one.
+A service never reads the OS keyring (`rules/runtime/no-keyring.md`): that
+store belongs to the operator's login session, and the encrypted credential
+store is a distinct, systemd-owned mechanism that is never substituted with a
+keyring access path or treated as equivalent to one.
 
 ## Session-bus variables belong to the login session
 
