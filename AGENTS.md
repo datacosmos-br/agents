@@ -36,8 +36,11 @@
     raw traceback escape unchanged.
 <!-- /AIHUB-INVIOLABLE-LAW-PRELUDE -->
 
-# AGENTS.md — agents-governance
+# AGENTS.md — agents
 
+> Packaged governance `agents-governance` `0.3.0` owns the capability indexes: 62 agents, 50 rules, 102 skills. Consume them through `GovernanceBundle`; do not copy their bodies here.
+
+<!-- AIHUB-AGENTS-SCOPE-LOCAL-BEGIN -->
 This repository is the single writable authority for provider-neutral rules,
 skills, commands, agent profiles, and their semantic evaluation resources. It
 publishes the read-only `agents-governance` package. AI Hub alone discovers
@@ -105,3 +108,4 @@ checkout; invoke no Gas City or Beads mutation and create no substitute ledger.
 Stop at `dev` unless the operator explicitly authorizes promotion. No increment
 is DONE without required gates, reviewed merge-commit landing, post-merge public
 runtime proof, and canonical tracker closure.
+<!-- AIHUB-AGENTS-SCOPE-LOCAL-END -->

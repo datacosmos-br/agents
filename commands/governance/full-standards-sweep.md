@@ -54,6 +54,11 @@ there.
    their standardized header. Commits carry zero garbage; stage by explicit
    paths only; fix forward without destructive git operations; update docs in
    the same change as behavior.
+9. Runtime boundary. Keep portable primitives in their reusable library and
+   host indexes, daemons, forge clients, language/refactor services, hooks, and
+   MCP in the runtime control plane. Cross that boundary only through a public
+   command/hook/MCP. Absence of an optional unselected host is not an error and
+   never authorizes a substitute; failure of a selected capability propagates.
 
 ## Phase B — align governance
 

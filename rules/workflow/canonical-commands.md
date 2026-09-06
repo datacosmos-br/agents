@@ -23,14 +23,22 @@ Every command inventory honors the repository `.gitignore` through the shared
 Git-aware owner. It does not disable language caches, delete ignored caches in
 ordinary flows, bypass standard ignores, or maintain a parallel artifact list.
 
-Before a non-trivial refactor, the declared CRG verb resolves symbols,
-relationships, consumers, and blast radius from its current index, then the LSP
-verb confirms language-owned definitions and references. Repeated structural
-wiring changes execute through `make mod APPLY=Y` and tested ast-grep rules;
-manual file-by-file rewiring is forbidden. A missing or stale index, unavailable
-LSP, absent `mod` verb, failed codemod test, unexpected match cardinality, or
-non-idempotent rewrite is RED and is corrected at its toolchain owner without a
-textual-search or manual-edit fallback.
+Before a non-trivial refactor, use the repository's declared structural
+capabilities. Repeated wiring changes execute through `make mod APPLY=Y` and
+tested ast-grep rules; manual file-by-file rewiring is forbidden. When the host
+runtime has selected CRG or LSP, its public command/hook/MCP resolves symbols,
+relationships, consumers, definitions, and references. A portable library must
+not import that host, produce its index, or fail merely because the optional
+runtime is absent. An available selected runtime that fails, an absent `mod`
+verb, failed codemod test, unexpected match cardinality, or non-idempotent
+rewrite is RED and is corrected at its owner without a manual fallback.
+
+The host runtime that owns an indexed tool also owns initial build, incremental
+update, storage, and readiness. Directory existence, an empty database, or a
+file left by failed initialization is not proof of a usable index. Consumers
+query only the public runtime contract; they never infer readiness from private
+artifacts. Never attempt update and retry as build, create placeholder state,
+or normalize an incomplete index.
 
 The public incremental test verb always activates pytest-testmon and its shared
 external persistent database. The public full-test verb first invokes that
