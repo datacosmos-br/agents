@@ -20,7 +20,7 @@ from .governance_config import (
     audit_governance_config,
     load_governance_config,
 )
-from .hook_projection import HookProjector
+from .instruction_projection import InstructionProjector
 from .native_evals import evaluate_native
 from .projection import Projector
 from .projection_authorization import load_project_authorization
@@ -148,7 +148,7 @@ def sync(root: Path) -> None:
     )
     project = projector.project_root()
     authorization = load_project_authorization(project)
-    hooks = HookProjector(
+    instructions = InstructionProjector(
         inventory.governance,
         projection,
         inventory.commands,
@@ -157,7 +157,7 @@ def sync(root: Path) -> None:
     run_atomic_publications(
         (
             *projector.publications(authorization),
-            *hooks.publications(authorization),
+            *instructions.publications(authorization),
         )
     )
     if authorization.selected:

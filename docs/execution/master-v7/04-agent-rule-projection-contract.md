@@ -209,10 +209,10 @@ activation evidence, logical digest, physical digest, and adapter version.
   their destination filesystem before publication. A later target failure
   rolls earlier publications back and re-raises the original exception with
   any rollback failure attached.
-- Provider hooks are generated delivery adapters, never policy owners or public
-  commands. Exact, equivalent, advisory, and unsupported lifecycle boundaries,
-  native event names, and client scope are typed in the matrix and recorded in
-  hook manifests.
+- Provider hooks are not this owner's surface. A hook executes a runtime, so it
+  belongs to that runtime's own deploy and reaches only the agent's own home;
+  this owner projects instructions and never writes a lifecycle artifact
+  (`ADR-0007` (doc file)).
 
 Project content is portable and generic. It must not teach development workflows
 specific to this repository, AI Hub, Beads, Gas City, or a foreign repository.

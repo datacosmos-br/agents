@@ -5,6 +5,10 @@
 - **Scope:** Standing agent law, provider instructions, lifecycle refresh, concurrent work, and synchronization
 - **Relates to:** ADR-0003 and ADR-0004
 - **Supersedes:** One monolithic universal-law document and project-only projection
+- **Superseded in part by:** `ADR-0007` (doc file), which moves lifecycle-hook
+  delivery to the runtime each hook executes. The lifecycle coverage table, the
+  provider hook references, and every hook clause below are historical evidence
+  for a contract this owner no longer holds; the rest of this record stands.
 
 ## Context
 

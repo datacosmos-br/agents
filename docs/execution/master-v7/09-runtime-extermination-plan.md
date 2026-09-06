@@ -63,9 +63,9 @@ composition; all agent-domain behavior belongs to these verbs.
 `sync` is the complete selected-projection workflow. It derives one physical Git
 root from cwd and the current process home. Invocation selects personal
 surfaces; the strict project-owned selection additionally authorizes project
-surfaces. It preflights every selected surface and publishes directory,
-instruction, and lifecycle-hook artifacts atomically. It has no personal mode
-or hook subcommand.
+surfaces. It preflights every selected surface and publishes directory and
+instruction artifacts atomically. It has no personal mode, no hook subcommand,
+and no lifecycle-hook surface.
 
 ## Enforcement and landing
 

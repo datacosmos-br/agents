@@ -8,6 +8,7 @@
 | `ADR-0004` (doc file) | Accepted | Agent runtime uses one optionless fail-loud `agentsctl` facade and no keyring. |
 | `ADR-0005` (doc file) | Accepted | Governance composes typed owners and projects through provider-native instructions and lifecycle surfaces. |
 | `ADR-0006` (doc file) | Accepted | Historical governance is synthesized by behavior into current owners, never copied by structure. |
+| `ADR-0007` (doc file) | Accepted | Hook delivery belongs to the runtime each hook executes; `sync` owns content and projects instructions only. |
 
 Implementation order, runtime evidence, and landing state belong to the active
 `master v7 execution package` (doc file), not to these

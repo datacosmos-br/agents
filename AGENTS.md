@@ -30,8 +30,8 @@
 > **Project execution law:** [`AGENTS.md`](https://github.com/datacosmos-br/ai-hub/blob/dev/AGENTS.md).
 > Composed governance: `config/governance.json` selects canonical `rules/`,
 > `skills/`, `commands/`, and this project scope. `agentsctl sync` projects the
-> composition through provider-native instructions and lifecycle hooks. Do not
-> re-embed canonical rule or skill procedures here.
+> composition through provider-native instructions. Do not re-embed canonical
+> rule or skill procedures here.
 >
 > **Standalone / independent mode:** when the canonical remote file does not resolve, pin the raw URL to the same branch or release as this package (never the protected branch).
 
@@ -126,8 +126,9 @@ The composed governance owners define closure. Local delta only:
 - Gas City configuration owns orchestration identity; ai-hub owns living runtime registration for tools, CRG, LSP/observer state, and maintenance daemons.
 - Rules and MCP inventory are SSOT under `config/`; an unattributable foreign
   agent runtime is a blocking ownership violation. Agent-domain behavior runs
-  only through optionless `agentsctl` verbs. Repository Git hooks are extinct;
-  provider-native lifecycle hooks are generated artifacts owned by `sync`.
+  only through optionless `agentsctl` verbs. Repository Git hooks are extinct,
+  and provider-native lifecycle hooks are owned by the runtime each hook
+  executes, never by `sync`.
 - Every declared workspace must reconstruct dependencies locally; cross-repository dependency links are prohibited.
 - CI runs the complete `make ci` owner. `check`, `static`, and `test` remain
   separate blocking stages; setting `CI=Y` never authorizes omitting them.

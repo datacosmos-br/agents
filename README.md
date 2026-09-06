@@ -16,7 +16,7 @@ no legacy package, command, rule, projection, or synchronization surface remains
 - `config/skills.json`: skill BPE and line-budget policy; recursive paths and
   frontmatter own classification and distribution.
 - `config/projections.json`: complete provider/context/surface capability
-  classification, hook fidelity, and personal/project destinations.
+  classification and personal/project destinations.
 - `src/agents_governance/`: strict validation, discovery, orchestration, and
   provider-native projection behind the sole `agentsctl` runtime facade.
 - `.waza.yaml` and `evals/`: Waza gates and behavioral evaluation.
@@ -25,8 +25,10 @@ When `agentsctl sync` is invoked, the nearest ancestor that owns a physical
 `.git/` directory is the candidate project. Personal surfaces are selected by
 the invocation; a physical project-owned `.agents/projection.json` additionally
 authorizes project surfaces. Selected surfaces are fully preflighted and
-published as one transaction. Provider-native instructions and hooks refresh the
-composed governance capsule without becoming policy owners or public commands.
+published as one transaction. Provider-native instructions refresh the composed
+governance capsule without becoming policy owners or public commands. Lifecycle
+hooks are not this owner's surface: a hook executes a runtime, so it belongs to
+that runtime's own deploy and reaches only the agent's own home.
 Managed regions and manifests preserve foreign content and reject modified owned
 content. Symbolic links, cross-repository local-path references, and shared
 mutable skill directories are forbidden.

@@ -586,7 +586,7 @@ interconexão de governança deve se coordenar.
 - Systemd services: `ai-hub-watch.service` (incremental CRG), `ai-hub-maintain.service` (manutenção), `ai-hub-hooks.service` (daemon de hooks), `ai-hub-mcp.service` (gateway MCP)
 
 **Sistema 2 — agentsctl projection** (`~/agents/projections.json` + `src/agents_governance/projection.py`):
-- 7 providers (claude, codex, cursor, copilot, gemini, opencode, antigravity) × 2 contexts (personal, project) × 5 surfaces (skills, commands, agents, rules, hooks)
+- 7 providers (claude, codex, cursor, copilot, gemini, opencode, antigravity) × 2 contexts (personal, project) × 4 surfaces (skills, commands, agents, rules)
 - `agentsctl sync` projeta de `~/agents/` para paths específicas de cada provider
 - Personal: `${HOME}/.claude/skills/`, etc.
 - Project: `.claude/skills/`, etc. (relativo ao project root)

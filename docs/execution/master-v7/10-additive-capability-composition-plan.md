@@ -22,7 +22,7 @@ from:
 - a short `AGENTS.md` bootstrap;
 - always-on rules and routed skills;
 - `config/governance.json` as the typed composition map;
-- a generated governance capsule and provider-native hook projections;
+- a generated governance capsule and provider-native instruction projections;
 - exactly eight optionless `agentsctl` verbs;
 - atomic personal-plus-authorized-current-project publication owned by
   `agentsctl sync`.
@@ -66,7 +66,7 @@ flowchart LR
 ### Phase 0 — Accept and preserve the concurrent cutover
 
 - Verify every semantic guarantee resolves to an owner, the
-  capsule derives from the typed map, and focused governance/projection/hook
+  capsule derives from the typed map, and focused governance/projection
   tests pass.
 - Re-read every shared owner immediately before editing and preserve all
   compatible concurrent changes by fix-forward.

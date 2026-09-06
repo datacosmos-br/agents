@@ -29,7 +29,7 @@ _PROVIDERS = (
     "opencode",
     "antigravity",
 )
-_SURFACES = ("skills", "commands", "agents", "rules", "hooks")
+_SURFACES = ("skills", "commands", "agents", "rules")
 
 
 def _skill(
@@ -166,28 +166,7 @@ def _config(root: Path, supported: dict[tuple[str, str], str]) -> None:
                     {
                         "status": "SUPPORTED",
                         "path": path,
-                        **(
-                            {
-                                "events": {
-                                    logical: {
-                                        "status": "SUPPORTED",
-                                        "native": [native],
-                                        "coverage": "exact",
-                                        "clients": ["local"],
-                                    }
-                                    for logical, native in {
-                                        "context_refresh": "ContextRefresh",
-                                        "prompt_submit": "PromptSubmit",
-                                        "session_start": "SessionStart",
-                                        "subagent_start": "SubagentStart",
-                                    }.items()
-                                },
-                            }
-                            if surface == "hooks"
-                            else {"layout": "directory"}
-                            if surface == "rules"
-                            else {}
-                        ),
+                        **({"layout": "directory"} if surface == "rules" else {}),
                     }
                     if path is not None
                     else {
@@ -200,8 +179,8 @@ def _config(root: Path, supported: dict[tuple[str, str], str]) -> None:
     (config / "projections.json").write_text(
         json.dumps(
             {
-                "version": 6,
-                "manifest_versions": {"hooks": 3, "projection": 5},
+                "version": 7,
+                "manifest_versions": {"projection": 5},
                 "providers": providers,
             }
         ),

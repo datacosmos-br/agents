@@ -46,8 +46,8 @@ home. Invocation selects every supported personal surface. A physical
 project-owned `.agents/projection.json` v1 document additionally selects tracked
 project surfaces; absence is a non-target and creates no project output. It
 preflights and atomically publishes every selected provider-native instruction
-and lifecycle-hook artifact. This is one workflow: there is no hook verb,
-personal mode, hidden runtime path, or second CLI.
+artifact. This is one workflow: there is no hook verb, personal mode, hidden
+runtime path, or second CLI.
 
 The same v1 authorization permits `sync` to discover validated
 `skills/**/SKILL.md` sources and their evals only inside the invocation project.

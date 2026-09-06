@@ -344,7 +344,26 @@ def _physical_project(cwd: Path) -> Path:
                     stdout=subprocess.PIPE,
                 ).stdout.strip()
                 if not raw_superproject:
-                    if "worktrees" in git_directory.parts:
+                    # Git itself decides whether this is a linked worktree. A
+                    # path component merely spelled "worktrees" proves nothing:
+                    # under a checkout that carries one, that spelling accepted
+                    # every external and borrowed-submodule Git directory.
+                    common = (
+                        project
+                        / subprocess.run(
+                            (
+                                "git",
+                                "-C",
+                                str(project),
+                                "rev-parse",
+                                "--git-common-dir",
+                            ),
+                            check=True,
+                            text=True,
+                            stdout=subprocess.PIPE,
+                        ).stdout.strip()
+                    ).resolve(strict=True)
+                    if git_directory.parent == common / "worktrees":
                         if project == Path("/tmp") or Path("/tmp") in project.parents:
                             raise ValueError(
                                 f"repositories under /tmp are prohibited: {project}"
@@ -847,7 +866,6 @@ class Projector:
                     for cell in self.config.cells.values()
                     if cell.context is ProjectionContext.PROJECT
                     and cell.status is ProjectionStatus.SUPPORTED
-                    and cell.surface is not ProjectionSurface.HOOKS
                 },
                 key=str,
             )
@@ -1107,8 +1125,6 @@ class Projector:
                 )
             for provider in AgentProvider:
                 for surface in ProjectionSurface:
-                    if surface is ProjectionSurface.HOOKS:
-                        continue
                     cell = self.config.cell(provider, context, surface)
                     if cell.status is ProjectionStatus.UNSUPPORTED:
                         continue

@@ -23,8 +23,8 @@ produce a false green:
 - agents/rules: prove delegation and mandatory-rule behavior;
 - projection: invoke `agentsctl sync` from isolated physical root and contained
   submodule projects, inspect supported personal and project loaders where
-  available, execute representative hook adapters, then prove the second
-  invocation changes nothing;
+  available, prove the managed instruction region merges without disturbing
+  foreign text, then prove the second invocation changes nothing;
 - temp/storage: use `agentsctl doctor`, `agentsctl check`, and `agentsctl clean`
   against the configured physical checkout and an isolated generated tree;
 - credentials: execute from Bash, Zsh, Fish, and a direct subprocess using only
@@ -99,8 +99,7 @@ retries a task, or publishes a partial corpus.
 from the current process home. Invocation selects every supported personal
 surface. A physical project-owned `.agents/projection.json` additionally
 selects tracked project surfaces; absence writes nothing to the project. All
-selected static instructions and native lifecycle hooks publish as one
-transaction. The verb accepts no CLI or environment target selection and has no
+selected static instructions publish as one transaction. The verb accepts no CLI or environment target selection and has no
 personal mode.
 Authorization also enables local skill/eval discovery inside that same physical
 project. Central and local sources are validated before planning and publish in
@@ -146,7 +145,7 @@ first; a required rewrite is reviewed as an explicit source change.
 | Skills | Every discovered canonical source matches the generated inventory; BPE budgets, short descriptions, semantic scenarios, and no command syntax. |
 | Commands | Every discovered flat source has complete provider render and an independent size gate; no skill conversion. |
 | Agents/rules | Distribution paths and tags agree; universal rules compose once; no model declaration. |
-| Projection | Atomic personal plus authorized-project physical copies from a root clone or contained submodule; unselected project loads no local source and writes nothing; ownership-safe cleanup; provider-native instructions/hooks; second apply changes nothing. |
+| Projection | Atomic personal plus authorized-project physical copies from a root clone or contained submodule; unselected project loads no local source and writes nothing; ownership-safe cleanup; provider-native instructions; second apply changes nothing. |
 | Temp/storage | Exact manifest; physical registered checkout; `/tmp`, overlap, residue, symlink, special-file, and unknown deletion rejection. |
 | Credentials | Process environment only; required values fail immediately; no keyring code, 401, or secret output. |
 | Security | Deterministic tracked manifest inventory; selected scanners exit zero; absent-token workflows are `NOT EXECUTED`. |

@@ -67,17 +67,16 @@ def test_additive_capability_rule_is_in_the_generated_session_capsule(
         encoding="utf-8",
     )
     monkeypatch.setenv("HOME", str(home))
-    hooks = runtime.HookProjector(
+    instructions = runtime.InstructionProjector(
         inventory.governance,
         runtime.load_projection_config(ROOT),
         inventory.commands,
         inventory.rules,
     )
 
-    hooks.apply(project)
+    instructions.apply(project)
 
-    script = next((project / ".codex" / "aihub-hooks").glob("*.py"))
-    rendered = script.read_text(encoding="utf-8")
+    rendered = (project / "AGENTS.md").read_text(encoding="utf-8")
     assert "Auxiliary tracking" in rendered
     assert "strict execution" in rendered
     assert "[strict execution](" not in rendered
@@ -137,8 +136,8 @@ def test_sync_selects_projection_without_live_or_security(
 
     runtime.sync(ROOT)
 
-    assert (home / ".codex" / "hooks.json").is_file()
-    assert (project / ".codex" / "hooks.json").is_file()
+    assert (home / ".codex" / "AGENTS.md").is_file()
+    assert (project / "AGENTS.md").is_file()
     assert events == ["authorization", "publication"]
     assert capsys.readouterr().out == (
         f"sync: personal and project projections converged at {project}\n"
@@ -183,7 +182,7 @@ def test_sync_reuses_one_project_authorization_snapshot(
 
     runtime.sync(ROOT)
 
-    assert (project / ".codex" / "hooks.json").is_file()
+    assert (project / "AGENTS.md").is_file()
 
 
 def test_sync_reports_an_unselected_project_as_a_non_target(
@@ -209,8 +208,8 @@ def test_sync_reports_an_unselected_project_as_a_non_target(
 
     runtime.sync(ROOT)
 
-    assert (home / ".codex" / "hooks.json").is_file()
-    assert not (project / ".codex").exists()
+    assert (home / ".codex" / "AGENTS.md").is_file()
+    assert not (project / "AGENTS.md").exists()
     assert capsys.readouterr().out == (
         f"sync: personal projections converged; project not selected at {project}\n"
     )
