@@ -39,7 +39,8 @@ owner when invalid or the receiver when it conforms. Never alter a correct
 adjacent owner for an invalid consumer; symptom workarounds are defects.
 
 Hardcodes, normalized failure, failover, retry, fallback, compatibility,
-partial execution, keyring, and unevidenced success are defects. Typed owners
+partial execution, application keyring reads, and unevidenced success are
+defects. Typed owners
 keep defaults. The first exception escapes its CLI with traceback and cause.
 
 Git, runtime, build, and tests are baseline. Every other executable is an
