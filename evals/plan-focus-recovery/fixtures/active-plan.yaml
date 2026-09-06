@@ -12,5 +12,5 @@ incoming_request:
   requirement: Correct the testmon owner, pass runtime-first gates, review, land on dev, verify the integration SHA, then resume FLEXT.
 detour_state:
   pull_request: 9
-  required_check: Run Evaluations is red
+  required_check: Runtime-first governance validation is red
   review: approval missing
