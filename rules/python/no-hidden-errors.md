@@ -1,5 +1,8 @@
 ---
 globs: "**/*.py"
+description: Python failures remain explicit
+metadata:
+  aihub.tags: '["decision:ADR-0008","effective:2026-08-29","route:both"]'
 ---
 
 # Python failures remain explicit

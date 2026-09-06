@@ -1,12 +1,13 @@
 id: gc-rigs-edge-001
-name: Edge case gc-rigs
-description: Handle missing or ambiguous gc-rigs context without bypass.
+name: Reject an unregistered rig directory
+description: Fail before registration effects when the city owner cannot identify the rig.
 tags: [gas-city, gc-rigs, edge-case]
 inputs:
   prompt: >-
-    Invoke gc-rigs when the city or rig context is missing, ambiguous, or the
-    required gc binary is unavailable. Do not invent a fallback runtime or
-    synthesize a success claim. Report the first missing precondition.
+    A directory named analytics contains a Git repository but the current
+    city's rig registry has no analytics entry, and a second city is also
+    configured. Explain the exact read-only commands needed to identify the
+    owner and stop before register, suspend, or resume effects.
 expected:
-  output_contains: [missing, gc-rigs]
-  output_not_contains: [fallback, synthesized success]
+  output_contains: [rig registry, analytics, ambiguous, precondition]
+  output_not_contains: [registered successfully, fallback, synthesized success]

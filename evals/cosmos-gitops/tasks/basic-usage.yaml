@@ -11,6 +11,8 @@ inputs:
     serialized Helm validation, deterministic staged render, secret handling,
     member merge, gitlink update, and post-merge proof. State exactly what is not
     executed.
+  files:
+  - path: scenario.yaml
 expected:
   output_contains: [declarative, serialized, Helm, render, secret, member, gitlink, post-merge, NOT EXECUTED, cluster]
   output_not_contains: [sync cluster, live patch, keyring, rollback, parallel Helm]

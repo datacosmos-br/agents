@@ -3,7 +3,7 @@ name: rust-development
 description: 'rust, cargo development, toolchain detection'
 license: MIT
 metadata:
-  aihub.tags: '["activation:detected","detect:marker:Cargo.toml","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","policy:zero-residue","provenance:agents-owned","route:project","technology:rust","updates:manual","usage:router"]'
+  aihub.tags: '["activation:detected","decision:ADR-0008","detect:marker:Cargo.toml","effective:2026-08-28","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","policy:zero-residue","provenance:agents-owned","route:project","technology:rust","updates:manual","usage:router"]'
   version: 1.0.0
 ---
 

@@ -1,0 +1,10 @@
+service: order-allocation
+domain_module: domain/orders.py
+composition_root: cli.py
+current_dependency:
+  construction: domain/orders.py creates PostgresOrderStore
+  adapter_module: adapters/postgres.py
+required_behavior:
+  - allocate an order through a typed storage port
+  - preserve the database error as the causal failure
+public_probe: cli allocate --order ord-104

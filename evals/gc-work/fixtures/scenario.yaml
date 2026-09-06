@@ -1,0 +1,14 @@
+objective: coordinated invoice cancellation
+shared_root:
+  id: city-41
+  children: [city-42, city-43]
+rig_work:
+  - rig: billing
+    local_bead: billing-72
+    shared_child: city-42
+  - rig: gateway
+    local_bead: gateway-31
+    shared_child: city-43
+checkpoint:
+  state: implementation
+  evidence_sources: [registered_state, git_history, measured_reality, integrated_code]

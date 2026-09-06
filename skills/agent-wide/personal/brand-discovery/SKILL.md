@@ -2,7 +2,7 @@
 name: brand-discovery
 description: 'brand discovery, identity interviews, positioning brief'
 metadata:
-  aihub.tags: '["policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","policy:zero-residue","provenance:agents-owned","role:discovery","updates:manual","usage:on-demand"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-08-29","policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","policy:zero-residue","provenance:agents-owned","role:discovery","updates:manual","usage:on-demand"]'
 ---
 
 # Brand Discovery

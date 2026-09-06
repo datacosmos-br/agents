@@ -2,5 +2,6 @@
 
 - Follow `docs/architecture.md` and preserve typed authorization errors.
 - Add providers through the existing composition root, never inside domain policy.
-- Run `python -m payments.cli smoke`, then the project `pytest`, Ruff, and type gates.
+- Run `make runtime APPLY=Y`, then the selector-free root `make check APPLY=Y`,
+  `make test APPLY=Y`, and `make test-full APPLY=Y` gates.
 - Remove superseded construction and provider-selection paths in the same change.

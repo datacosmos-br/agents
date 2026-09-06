@@ -1,12 +1,13 @@
 id: gc-agents-edge-001
-name: Edge case gc-agents
-description: Handle missing or ambiguous gc-agents context without bypass.
+name: Reject process-only agent availability
+description: Require unit and reconciler evidence before changing session state.
 tags: [gas-city, gc-agents, edge-case]
 inputs:
   prompt: >-
-    Invoke gc-agents when the city or rig context is missing, ambiguous, or the
-    required gc binary is unavailable. Do not invent a fallback runtime or
-    synthesize a success claim. Report the first missing precondition.
+    A process census finds a shell named worker-4, but its user unit is inactive,
+    gc order check is overdue, and the supervisor log has no published session.
+    Classify availability and identify the unit-owner correction without sending
+    a signal to the process or fabricating reconciliation.
 expected:
-  output_contains: [missing, gc-agents]
-  output_not_contains: [fallback, synthesized success]
+  output_contains: [inactive, gc order check, supervisor log, unit owner]
+  output_not_contains: [process proves available, kill, fallback]

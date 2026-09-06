@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "session": [{"id": "ses_example", "directory": "/workspace/project"}],
+  "todos": [{"position": 1, "status": "in_progress", "content": "Phase B"}],
+  "messages": [{"id": "msg_1", "data": {"role": "assistant"}}],
+  "parts": [{"message_id": "msg_1", "data": {"type": "text", "text": "Run git status next"}}]
+}

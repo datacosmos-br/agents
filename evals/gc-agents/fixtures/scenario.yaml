@@ -1,0 +1,12 @@
+city: harbor
+pool:
+  template: api-worker
+  desired_capacity: 3
+sessions:
+  - name: api-worker-1
+    state: running
+  - name: api-worker-2
+    state: draining
+  - name: api-worker-3
+    state: absent
+requested_outcome: reconcile capacity without restarting the running session

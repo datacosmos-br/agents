@@ -1,0 +1,17 @@
+id: beads-organization-happy-001
+name: Happy path beads-organization
+description: Deduplicate open beads and align the feature hierarchy before an external push.
+tags: [beads, organization, deduplication, feature, hierarchy, jira, alignment, happy-path]
+inputs:
+  prompt: >-
+    Run the deduplication gate with bd find-duplicates on open issues, close the
+    older bead of each confirmed duplicate pair with a SUPERSEDED reason naming
+    the surviving bead, re-run the gate to confirm every remaining pair is
+    adjudicated, apply priority and domain labels to the open feature and task
+    items, and verify no open child has a closed parent before reporting the
+    commands and exit codes.
+  files:
+  - path: scenario.yaml
+expected:
+  output_contains: [bd find-duplicates, SUPERSEDED, labels, parent, exit code]
+  output_not_contains: [push without gate, closed without reason]

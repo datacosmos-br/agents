@@ -1,12 +1,13 @@
 id: gc-dashboard-edge-001
-name: Edge case gc-dashboard
-description: Handle missing or ambiguous gc-dashboard context without bypass.
+name: Reject a foreign listener on the dashboard port
+description: Preserve the unrelated process and stop before dashboard startup.
 tags: [gas-city, gc-dashboard, edge-case]
 inputs:
   prompt: >-
-    Invoke gc-dashboard when the city or rig context is missing, ambiguous, or the
-    required gc binary is unavailable. Do not invent a fallback runtime or
-    synthesize a success claim. Report the first missing precondition.
+    The configured dashboard port is already bound, but system ownership and
+    the process command show that a foreign development server owns it. Explain
+    the decisive read-only checks and fail before killing the listener, choosing
+    another port, or claiming the dashboard is healthy.
 expected:
-  output_contains: [missing, gc-dashboard]
-  output_not_contains: [fallback, synthesized success]
+  output_contains: [port, foreign, ownership, precondition]
+  output_not_contains: [kill, alternate port, healthy, fallback]

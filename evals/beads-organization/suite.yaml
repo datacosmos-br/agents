@@ -1,0 +1,9 @@
+description: Beads deduplication gate, hierarchy alignment, and orphan resolution.
+prompt: |-
+  Grade the beads-organization response. Pass only when the deduplication
+  gate runs before any external push, closes carry descriptive SUPERSEDED,
+  OBSOLETE, or DONE reasons, metadata-proven legitimate triads are
+  adjudicated instead of blindly closed, labels follow the priority and
+  domain convention, and no open child keeps a closed parent. Reject
+  invented commands, bulk creation above the limit without a reviewed
+  dry-run, substitute trackers, or fake closure.

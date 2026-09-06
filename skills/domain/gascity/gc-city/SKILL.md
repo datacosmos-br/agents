@@ -3,37 +3,39 @@ name: gc-city
 description: 'gas city lifecycle, city init, start stop, supervisor status'
 allowed-tools: Bash(gc *)
 metadata:
-  aihub.tags: '["activation:opt-in", "detect:opt-in:gc-city", "domain:gas-city", "policy:atomic-effects", "policy:causal-subprocess", "policy:fail-loud", "policy:no-fallback", "policy:preflight-before-effects", "policy:strict-execution", "provenance:agents-owned", "route:agent", "technology:gas-city", "updates:manual", "usage:on-demand"]'
+  aihub.tags: '["activation:opt-in","decision:ADR-0008","detect:opt-in:gc-city","domain:gas-city","effective:2026-08-30","policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","provenance:agents-owned","route:agent","route:project","technology:gas-city","updates:manual","usage:on-demand"]'
 ---
+## Verification (mandatory)
+
+Before acting on any bead, run the four-source cross-check in
+`rules/coordination/beads-verification.md` and attach its evidence.
 
 # City Lifecycle
 
-A city is a directory containing `city.toml` and `.gc/` runtime state.
+A city is a directory with `city.toml` and `.gc/` runtime state.
 
 ## Initialization
 
 ```
-gc init                                # Initialize city in current directory
-gc init <path>                         # Initialize city at path
+gc init [path]                         # Initialize here or at path
 ```
 
-## Starting and stopping
+## Start and stop
 
 ```
-gc start                               # Start city under the supervisor
-gc start <path>                        # Start city at path under the supervisor
-gc supervisor run                      # Run the supervisor in the foreground
+gc start [path]                        # Start the city (here or at path)
+gc supervisor run                      # Foreground supervisor
 gc start --dry-run                     # Preview what would start
-gc stop                                # Stop the current city
+gc stop                                # Stop the city
 gc restart                             # Stop then start
 ```
 
-`gc init` and `gc start` register the city with the machine supervisor, ensure it is running, and trigger an immediate reconcile. Interactive sessions are created separately with `gc session new <template>`.
+`gc init` and `gc start` register the city and reconcile immediately. Interactive sessions: `gc session new <template>`. One supervisor hosts one reconciliation runtime per city, lock-enforced. Tick timing and `[daemon]` keys: `references/reconciliation-timing.md`.
 
 ## Status
 
 ```
-gc status                              # City-wide overview
+gc status                              # Overview; unit owner
 gc session list                        # Session / agent status
 gc rig status <name>                   # Rig status
 ```
@@ -41,34 +43,20 @@ gc rig status <name>                   # Rig status
 ## Suspending
 
 ```
-gc suspend                             # Suspend entire city
+gc suspend                             # Suspend the city
 gc resume                              # Resume suspended city
 ```
 
-## Configuration
+## Configuration and events
 
 ```
 gc config show                         # Show resolved configuration
-gc config explain                      # Show config layering and provenance
-gc doctor                              # Run health checks
-```
-
-## Events
-
-```
+gc config explain                      # Show config provenance
+gc doctor                              # Health checks
 gc events                              # Tail the event log
-gc event emit <type> [data]            # Emit a custom event
+gc event emit <type> [data]            # Emit event
 ```
 
-## Dashboard
+## Dashboard and packs
 
-See the gc-dashboard skill for full dashboard reference.
-
-## Packs
-
-Packs extend Gas City with additional commands, prompts, formulas, and doctor checks. Pack commands appear as top-level `gc <pack> <command>` subcommands.
-
-```
-gc pack list                           # List installed packs
-gc pack fetch                          # Fetch remote packs
-```
+Dashboard: the gc-dashboard skill. Packs add `gc <pack> <command>` subcommands and doctor checks — `gc pack list`, `gc pack fetch`.

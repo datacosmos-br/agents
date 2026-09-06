@@ -28,10 +28,12 @@ All evidence must describe the same merged integration SHA:
    directory, exit code, decisive output, and covered scope, plus each excluded
    external-token workflow recorded as `NOT EXECUTED`;
 2. material use through the shipped public runtime surface;
-3. completed independent review and merged change record;
-4. canonical tracker closure when its runtime is available;
-5. removal of the increment's lane workspace after landing;
-6. net line change for a replacement, or an explicit additive-capability
+3. deployment or reconciliation of the shipped runtime from the same merged
+   integration SHA when the repository owns that runtime;
+4. completed independent review and merged change record;
+5. canonical tracker closure when its runtime is available;
+6. removal of the increment's lane workspace after landing;
+7. net line change for a replacement, or an explicit additive-capability
    classification when nothing was superseded.
 
 Do not treat local or branch-only green, an open review, a pushed commit, or an

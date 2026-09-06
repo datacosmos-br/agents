@@ -1,8 +1,15 @@
 ---
 globs: ["*.ts", "*.tsx", "**/*.ts", "**/*.tsx", "tsconfig.json"]
+description: TypeScript rules
+metadata:
+  aihub.tags: '["decision:ADR-0008","effective:2026-08-28","route:both"]'
 ---
 
 # TypeScript rules
+
+Apply local typing and language-modernization requirements only to `internal`
+and `internal_flext`. A `third_party_fork` follows its upstream TypeScript,
+JavaScript, runtime, and toolchain contract.
 
 Use the project's declared runtime, TypeScript version, module system, package
 manager, framework, and canonical command facade. Never impose a repository-

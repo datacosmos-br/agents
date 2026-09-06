@@ -1,0 +1,10 @@
+id: mayor-negative-001
+name: Should not trigger mayor
+description: Do not turn ordinary implementation requests into mayor workflows.
+tags: [gas-city, mayor, anti-trigger]
+inputs:
+  prompt: >-
+    Fix a typo in one README sentence. No planning artifacts, bead creation, or
+    formula launch is requested; the change is a single direct edit.
+expected:
+  output_not_contains: [gc formula, gc sling, bead creation payload]

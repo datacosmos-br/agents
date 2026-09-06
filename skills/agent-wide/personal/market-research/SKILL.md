@@ -2,7 +2,7 @@
 name: market-research
 description: 'market analysis, competitor research, commercial evidence'
 metadata:
-  aihub.tags: '["domain:market-research","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","provenance:agents-owned","role:research","updates:manual","usage:on-demand"]'
+  aihub.tags: '["decision:ADR-0008","domain:market-research","effective:2026-08-29","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","provenance:agents-owned","role:research","updates:manual","usage:on-demand"]'
 ---
 
 # Market Research

@@ -3,7 +3,7 @@ name: ghi-list
 description: List GitHub issues with explicit filters and an evidence-preserving terminal table.
 argument-hint: "<repository and optional gh issue list filters>"
 metadata:
-  aihub.tags: '["intent:inspection","risk:external","route:agent"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-08-29","intent:inspection","risk:external","route:agent"]'
 ---
 
 # GitHub issue list

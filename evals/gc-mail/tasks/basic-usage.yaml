@@ -1,12 +1,17 @@
 id: gc-mail-happy-001
-name: Happy path gc-mail
-description: Exercise canonical gc mail workflow.
+name: Reply to one unread bead thread
+description: Read a linked agent message and preserve its bead-backed conversation.
 tags: [gas-city, gc-mail, happy-path]
 inputs:
   prompt: >-
-    Demonstrate the canonical gc-mail workflow using gc mail against the
-    current project. Preflight the city/rig context, run the primary command
-    via the project's declared facade, and report exact command, cwd, exit
-    code, and decisive output without bypass or fallback.
+    Use scenario.yaml to inspect the unread count, read msg-184, view its full
+    thread, and reply to billing/reviewer with the exact red gate evidence.
+    Preserve the linked bead and report each gc mail command, cwd, exit code,
+    and decisive output; do not archive or delete the message.
+    Exercise Gas City mail as inter-agent messaging through bead threads and the
+    canonical inbox.
+  files:
+  - path: scenario.yaml
 expected:
-  output_contains: [mail, inter-agent messaging, bead threads, inbox, gc]
+  output_contains: [gc mail inbox, msg-184, gc mail thread, gc mail reply, billing-72, exit code]
+  output_not_contains: [archive, delete]

@@ -28,7 +28,10 @@ must not create a dual-tracking period.
    dependency, validator, test, facade, or adjacent layer because it is easier
    to change than the causal owner.
 2. Resolve precedence. A newer operator rule replaces conflicting lower or older
-   guidance. Two current operator rules that materially conflict require one
+   guidance. Reconcile every affected skill, rule, decision, document, tracker
+   item, plan, template, projection, and generated consumer; none may remain as
+   an active exception or reinterpret the operator's requested outcome. Two
+   current operator rules that materially conflict require one
    precise question before mutation. A prior exact operator authorization remains
    authoritative across interruption, state divergence, and red gates. Re-preflight
    and continue without asking again unless the effect expands beyond its approved
@@ -88,8 +91,66 @@ done. State release behaviour only where the release enforces it; state the rest
 as operator discipline and say so, especially when the release permits the
 opposite.
 
+A conditional restriction never proves that its condition is currently true.
+Before applying a restriction whose trigger is mutable operational state, read
+that state from its current declared authority and preserve the decisive
+evidence. Attributing an unproven state to the operator or runtime — including
+declaring an active orchestrator suspended — is a maximum-severity integrity
+failure of the same class as fabricated gate evidence. Fail closed on the
+dependent decision, retract the false attribution, correct every dependent
+conclusion, and add a material semantic regression. Once the authority proves
+the trigger false, applying the conditional restriction is itself prohibited;
+continue through the authorized active owner without inventing a suspension,
+permission boundary, or substitute workflow.
+
 ## Checkpoint cadence
 
 At each checkpoint, compare new operator corrections with changes since the prior
 checkpoint. An unreconciled correction pauses the affected feature work until
 owners and consumers agree.
+
+When a correction governs Git checkpoint cadence, elect the branch/PR rule as
+the invariant owner. Persist each coherent increment as an explicitly marked
+`[WIP]` checkpoint through repository-owned hooks without `--no-verify`. Keep
+its PR Draft and WIP-labelled; no local or external validation is selected,
+including attestations, Actions, CodeQL, Copilot and review agents. WIP heads
+never enter integration. The agent declares only one maintained PR and any
+finite number `N >= 1` of source Drafts. Automation discovers their state,
+records every PR/branch/head/bead, performs ordered `--no-ff` merges and the
+first push, comments the transfer on every source and closes it. The maintained
+PR may be any kind and may remain Draft; no count or kind limit is permitted.
+When it enters Review, run the complete local matrix once on the aggregate head
+and transparently publish its attestation. An empty
+promotion commit is permitted as the typed transition into Review. Require all
+external validation and independent approval only there, merge the exact head
+by merge commit, close source Drafts as aggregated, and revalidate integration.
+The first failing gate stops with its original exit status and preserves the
+aggregate lane for fix-forward correction; it performs no rollback, cleanup,
+retry, fallback, attestation, or further Review transition.
+Never use `[skip ci]`,
+`[ci skip]`, or `--no-verify`.
+
+When the canonical tracker is selected, make its work item and the GitHub PR one
+state machine: each WIP checkpoint records branch, exact head OID, Draft/WIP
+state, validation `NOT SELECTED`, and next action with the required cross-checks.
+Promotion fails closed if tracker and GitHub disagree. Landing records the merge
+SHA and post-merge proof in the same item before closure; never create a second
+ledger for this relationship.
+
+When Review local gates replace identical managed CI work, the canonical pipeline
+automatically derives and publishes a signed attestation owned by the project
+workflow and bound to exact repository, commit SHA, bead, commands, toolchain,
+and results. Agents never hand-author its JSON or invoke a second attestation
+step. The promotion tracker item and Review PR reference that immutable
+proof. CI verifies signer and exact predicate coverage before omitting a gate;
+invalid or incomplete proof never becomes green evidence. Do not call a local
+signature a GitHub Artifact Attestation when it lacks GitHub Actions OIDC, and
+do not project a managed trust policy into external forks.
+
+At every skill exit, inspect the measured run for a reusable decision or
+procedure defect. When one exists, correct the narrowest canonical skill owner
+and one material semantic evaluation role in the same landing cycle; a
+project-specific incident is expressed through generic owner primitives. When
+no reusable defect exists, record no governance change. Never manufacture a
+cosmetic edit, duplicate a project rule globally, or turn continuous improvement
+into an unbounded mutation loop.

@@ -1,5 +1,23 @@
 ---
 description: Apply the mandatory engineering decision and delivery sequence.
+capsule_summary: |
+  Every implementation: research the owner first, cut scope without a current
+  consumer, elect one writable authority and make every other copy a generated
+  projection, implement through the owner, remove duplication, then exercise
+  runtime behavior and run every applicable gate before changing phase.
+
+  At a cross-boundary failure, prove the producer's contract and fix whichever
+  side is wrong — never bend a correct owner for an invalid consumer.
+
+  Hardcodes, normalized failure, failover, retry, fallback, partial execution
+  and unevidenced success are defects. The first exception escapes with its
+  traceback and cause.
+
+  A managed repository keeps its exact declared-identity remote. A broken alias
+  never authorizes the generic form, and an agent never writes the operator's SSH
+  configuration or keys — identity is corrected in git, or reported.
+metadata:
+  aihub.tags: '["decision:ADR-0008","effective:2026-08-29","route:both"]'
 ---
 
 # Engineering core
@@ -21,14 +39,26 @@ owner when invalid or the receiver when it conforms. Never alter a correct
 adjacent owner for an invalid consumer; symptom workarounds are defects.
 
 Hardcodes, normalized failure, failover, retry, fallback, compatibility,
-partial execution, keyring, and unevidenced success are defects. Typed owners
+partial execution, application keyring reads, and unevidenced success are
+defects. Typed owners
 keep defaults. The first exception escapes its CLI with traceback and cause.
 
-Git, runtime, build, and tests are baseline. Auxiliary tracking is a capability.
-Auxiliary capabilities apply only when authorized and selected; installation
-never selects. Do not load, probe, or gate dormant capabilities. Invalid
-selected authorization, configuration, readiness, or result fails without
-fallback. Require only non-derivable values.
+Git, runtime, build, and tests are baseline. Every other executable is an
+authorized, selected capability; installation or PATH presence never selects
+it. Do not load, locate, probe, or gate dormant capabilities. A selected invalid
+capability fails without fallback and requires only non-derivable values.
+
+Remote access follows the repository's current Git and forge configuration.
+Never rewrite protocols, create identity aliases, or mutate user SSH
+configuration as a prerequisite for ordinary Git operations.
+
+A broken account alias never authorizes the generic form. When the declared
+identity stops resolving, the remote stays declared and the alias is restored by
+its owner; migrating repositories to a generic remote to regain access converts
+one outage into a standing violation. The operator's SSH client configuration and
+keys are never written by an agent — not to repair identity, not to deploy a
+fragment, not to restore access. Identity is corrected in git; anything that
+requires editing SSH configuration is reported to the operator instead.
 
 An external token validation without its token is not executed and is recorded
 as `NOT EXECUTED`, never green; it does not block offline gates, landing, or

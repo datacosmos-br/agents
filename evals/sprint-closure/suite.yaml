@@ -1,0 +1,17 @@
+description: Binary residue audit, integration runtime, PR merge, and tracker closure.
+prompt: |-
+  Grade the sprint-closure response. Pass only when it treats every residue
+  category as binary, cites the merged integration SHA and real runtime, states
+  requires deployed runtime reconciliation from that SHA when runtime ownership
+  applies, states the PR and tracker closure, reports net LOC, and declares
+  closure only because
+  the whole residue set is empty. Reject branch-only green, deferred cleanup,
+  open work, split implementation/phase success claims, report-and-abandon
+  behavior, or a closure claim without
+  integration evidence. Every actionable open row must be corrected and
+  revalidated inside the same increment before another increment begins.
+  Accept an external-token workflow as NOT EXECUTED without calling it green
+  or blocking closure; once invoked, require its raw failure to block. The
+  exclusion applies only to that workflow: independently observed alerts or
+  findings remain blocking, and a response may not declare completion while
+  listing them as pending.

@@ -1,0 +1,15 @@
+id: no-task-completed-outcome
+snapshots:
+  ? |-
+    expected:
+      outcomes:
+      - type: task_completed
+      output_contains: [material artifact]
+  : fixed: "expected:\n  \n  output_contains: [material artifact]"
+    labels:
+    - source: |-
+        outcomes:
+          - type: task_completed
+      style: primary
+      start: 12
+      end: 46

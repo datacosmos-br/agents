@@ -1,0 +1,12 @@
+objective: add idempotent invoice cancellation
+rig: billing
+operator_approved: true
+plan_root: plans/invoice-cancellation
+artifacts:
+  - requirements.md
+  - implementation.md
+  - create-beads.sh
+formula_catalog:
+  - name: feature-delivery
+    required_vars: [plan, integration_branch]
+integration_branch: dev

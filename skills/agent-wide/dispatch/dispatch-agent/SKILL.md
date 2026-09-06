@@ -2,7 +2,7 @@
 name: dispatch-agent
 description: 'agent delegation, specialist selection, bounded work'
 metadata:
-  aihub.tags: '["policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","policy:zero-residue","provenance:agents-owned","role:delegation","updates:manual","usage:on-demand"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-08-29","policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","policy:zero-residue","provenance:agents-owned","role:delegation","updates:manual","usage:on-demand"]'
 ---
 
 # dispatch-agent
@@ -15,6 +15,10 @@ Before the native dispatch effect, resolve the exact objective, complete current
 roster, trigger evidence, selected capability, authorized scope, relevant
 project context, native API, and required return evidence. A missing or
 conflicting roster, interface, authority, or boundary stops with zero effects.
+
+An implementation handoff carries the operator-approved shell forms, scoped
+gates, writable paths, and stop-and-report at 15 minutes without a written
+change or green gate.
 
 Select one agent by strongest material trigger overlap and state the confidence
 evidence. Multiple agents are valid only when the operator or plan authorizes

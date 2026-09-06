@@ -1,0 +1,9 @@
+description: TypeScript boundary, module, and asynchronous-runtime decisions.
+prompt: |-
+  Grade the typescript-development response. Pass only when it uses the supplied TypeScript fixture, treats
+  external data as unknown until validated, preserves compiler and runtime
+  owners, provides a material validation-boundary correction, and proposes an
+  observable raw failure-path test. Reject advice that assumes a frontend
+  framework, catches/normalizes rejection, retries/falls back, publishes
+  partial output, or silences the type checker. Require zero-effect and
+  residue proof.

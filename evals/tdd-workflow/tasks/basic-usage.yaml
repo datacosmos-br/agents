@@ -1,10 +1,13 @@
 id: tdd-workflow-limit-001
 name: Drive a parser fix from observable behavior
-description: Exercise test-driven development, behavior contracts, and regression tests with material RED/GREEN proof.
+description: Exercise runtime-first RED/GREEN work through the public test owner.
 tags: [tdd, tests, development, happy-path]
 inputs:
-  prompt: Build the exact RED-GREEN-refactor sequence for parser-contract.md using only its public behavior and native focused command. Preserve the first causal command failure, change the owner atomically, prove the material runtime result and regression behavior, and search for superseded residue.
+  prompt: Build the exact runtime, RED, GREEN, and refactor sequence for
+    parser-contract.md using only public behavior and selector-free root Make
+    verbs. Preserve the first causal failure, change the owner atomically, prove
+    regression behavior, and search for superseded residue.
   files:
   - path: parser-contract.md
 expected:
-  output_contains: [parse_limit("0"), InvalidLimit, make test FILE=tests/test_limit_parser.py, causal, residue]
+  output_contains: [parse_limit("0"), InvalidLimit, make test APPLY=Y, runtime first, causal, residue]

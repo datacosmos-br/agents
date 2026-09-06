@@ -1,3 +1,9 @@
+---
+description: Python environments are physical and checkout-local
+metadata:
+  aihub.tags: '["decision:ADR-0008","effective:2026-08-30","route:both"]'
+---
+
 # Python environments are physical and checkout-local
 
 Use the repository's declared setup owner and interpreter. Each authorized
@@ -20,3 +26,5 @@ checkout reconstructs its own physical environment.
   workspace.
 - Missing or stale environment state is red. Repair it through the repository's
   canonical setup surface only when that mutation is authorized.
+
+See also: `strict-execution.md` (rule file) — aggregate parent policy.

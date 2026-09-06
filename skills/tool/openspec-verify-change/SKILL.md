@@ -4,7 +4,7 @@ description: 'openspec, change verification, specification evidence'
 license: MIT
 compatibility: Requires openspec CLI.
 metadata:
-  aihub.tags: '["activation:detected","detect:marker:openspec","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","policy:zero-residue","provenance:agents-owned","route:project","tool:openspec","updates:manual","usage:on-demand"]'
+  aihub.tags: '["activation:detected","decision:ADR-0008","detect:marker:openspec","effective:2026-08-28","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","policy:zero-residue","provenance:agents-owned","route:project","tool:openspec","updates:manual","usage:on-demand"]'
   author: openspec
   version: '1.0'
   generatedBy: 1.1.1

@@ -11,7 +11,5 @@ inputs:
   files:
   - path: project-contract.md
 expected:
-  outcomes:
-  - type: task_completed
   output_contains: [project-only, conflicting owner, refuse, no installation, no generated edit]
   output_not_contains: [install it globally, copy into user bin, fallback]

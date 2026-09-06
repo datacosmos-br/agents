@@ -72,27 +72,15 @@ When invoked:
 ## Diagnostic Commands
 
 ```bash
-mypy .                                     # Type checking
-ruff check .                               # Fast linting
-black --check .                            # Format check
-bandit -r .                                # Security scan
-pytest --cov=app --cov-report=term-missing # Test coverage
+make runtime APPLY=Y
+make check APPLY=Y
+make test APPLY=Y
 ```
 
-## Review Output Format
+## Review Output and Approval
 
-```text
-[SEVERITY] Issue title
-File: path/to/file.py:42
-Issue: Description
-Fix: What to change
-```
-
-## Approval Criteria
-
-- **Approve**: No CRITICAL or HIGH issues
-- **Warning**: MEDIUM issues only (can merge with caution)
-- **Block**: CRITICAL or HIGH issues found
+Use `docs/review-output-contract.md` with the
+`medium-caution` approval policy.
 
 ## Framework Checks
 

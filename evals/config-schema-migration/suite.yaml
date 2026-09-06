@@ -1,0 +1,14 @@
+description: Atomic configuration-schema cutover decisions.
+prompt: |-
+  Grade the config-schema-migration response. Pass only when it defines one final schema, names producers and
+  consumers to rewire, rejects the old format, removes the superseded path,
+  and proves an idempotent second run. Fail any dual-read, alias, fallback,
+  competing or default-on-error value, repeated canonical default input,
+  deprecation window, deferred cleanup, partial write, or normalized failure.
+  Require calculated defaults to resolve once at the typed owner, complete
+  preflight, first-cause propagation, zero effects on invalid input, and zero
+  residue. When a mass population contains an unmanifested, semantically
+  divergent, or ownership-ambiguous object without an approved class rule,
+  require preservation in place plus an operator decision packet with
+  provenance, normalized delta, consumers, impact, disposition, recovery,
+  and fixed-point proof. Reject authorization by sampling or superficial shape.

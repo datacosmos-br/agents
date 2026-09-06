@@ -1,21 +1,16 @@
 [project]
 name = "agents-governance"
-version = "0.2.1"
-description = "Canonical validation and projection engine for ~/.agents"
+version = "0.3.0"
+description = "Provider-neutral semantic governance bundle"
 requires-python = ">=3.13"
 dependencies = ["PyYAML>=6.0.2,<7"]
 
-[project.scripts]
-agentsctl = "agents_governance.cli:main"
-
-[tool.agents-governance.security]
-fixture-roots = ["evals"]
-
 [dependency-groups]
 dev = [
-  "mypy>=1.17,<2",
+  "mypy>=1.17,<3",
   "pyright>=1.1.404,<2",
   "pytest>=8.3,<10",
+  "pytest-testmon>=2.0,<3",
   "ruff>=0.12,<1",
   "types-PyYAML>=6.0.12,<7",
 ]
@@ -34,39 +29,49 @@ packages = ["src/agents_governance"]
 "commands" = "agents_governance/_data/commands"
 "evals" = "agents_governance/_data/evals"
 "agents" = "agents_governance/_data/agents"
-"workflows" = "agents_governance/_data/workflows"
+"docs/adr" = "agents_governance/_data/docs/adr"
 "AGENTS.md" = "agents_governance/_data/AGENTS.md"
-"CLAUDE.md" = "agents_governance/_data/CLAUDE.md"
-".waza.yaml" = "agents_governance/_data/.waza.yaml"
-"Makefile" = "agents_governance/_data/Makefile"
 "README.md" = "agents_governance/_data/README.md"
+"docs/security/security-triage.md" = "agents_governance/_data/docs/security/security-triage.md"
 
 [tool.hatch.build.targets.sdist]
 only-include = [
   "AGENTS.md",
-  "CLAUDE.md",
   "Makefile",
   "README.md",
+  ".jscpd.json",
+  ".mise.toml",
   ".waza.yaml",
   "agents",
+  "ast-grep-rule-tests",
+  "ast-grep-rules",
   "commands",
   "config",
+  ".github/workflows/eval.yml",
+  ".github/workflows/release.yml",
+  "docs/adr",
+  "docs/security/security-triage.md",
   "evals",
+  "mise.lock",
   "pyproject.toml",
   "rules",
   "skills",
   "src",
   "tests",
+  "tools",
   "uv.lock",
-  "workflows",
+  "sgconfig.yml",
 ]
 
 [tool.pytest.ini_options]
-addopts = "-q"
+addopts = "-p no:cacheprovider --strict-config --strict-markers"
 testpaths = ["tests"]
 tmp_path_retention_policy = "none"
 
+[tool.coverage.run]
+core = "ctrace"
+
 [tool.pyright]
-include = ["src", "tests"]
+include = ["src", "tests", "tools"]
 venvPath = "."
 venv = ".venv"

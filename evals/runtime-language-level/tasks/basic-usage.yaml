@@ -1,0 +1,10 @@
+id: runtime-language-python313-001
+name: Enforce Python 3.13
+description: Enforce the runtime floor with precise typing and modern language capabilities.
+tags: [happy-path, internal, python313, typing]
+inputs:
+  prompt: An internal pyproject declares Python >=3.13,<3.14 but lint targets py310 and code retains old typing compatibility. Align all owners, use precise Python 3.13 typing, remove the obsolete path, and define runtime proof.
+  files:
+  - path: scenario.yaml
+expected:
+  output_contains: [pyproject, Python 3.13, typing, remove, runtime]

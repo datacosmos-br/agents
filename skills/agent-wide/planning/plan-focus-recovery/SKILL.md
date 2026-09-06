@@ -3,7 +3,7 @@ name: plan-focus-recovery
 description: 'execution plan continuity, interruption triage, bounded detour recovery'
 license: MIT
 metadata:
-  aihub.tags: '["policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","policy:zero-residue","provenance:agents-owned","role:continuity","updates:manual","usage:router"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-08-29","policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","policy:zero-residue","provenance:agents-owned","role:continuity","updates:manual","usage:router"]'
   version: 1.0.0
 ---
 
@@ -30,7 +30,8 @@ work. Classify the incoming request once:
 Do not turn a local blocker into a repository-wide repair, repeat discovery whose
 owner evidence is still current, or treat a useful adjacent defect as permission
 to change it. A detour inherits the active authorization; it does not broaden it.
-Newest operator intent still wins over the saved cursor.
+Newest operator intent wins over the saved cursor.
+Across runtimes, use `plan-handoff`.
 
 Resume only after stating the integrated detour outcome, exact evidence, plan
 adjustment, invalidated gates, and the concrete next command for the restored
