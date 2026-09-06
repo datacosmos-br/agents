@@ -10,3 +10,4 @@
 | `ADR-0009` | 2026-09-05 | Accepted | Structural migration rules are generalized and propagate hierarchically through project dependencies. |
 | `ADR-0010` | 2026-09-05 | Accepted | Portable libraries consume optional host automation only through public process boundaries. |
 | `ADR-0011` | 2026-09-06 | Accepted | Fork versions are local versions of the measured upstream release; invented versions are defects. |
+| `ADR-0012` | 2026-09-06 | Accepted | Phases admit only with zero pending; fleet adoption precedes new work; commands are validated against law. |
