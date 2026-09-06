@@ -1,0 +1,13 @@
+---
+name: gc-work
+description: 'gas city work, bead lifecycle, claim close, hook ready'
+allowed-tools: Bash(gc *)
+metadata:
+  aihub.tags: '["activation:opt-in", "detect:opt-in:gc-work", "domain:gas-city", "policy:atomic-effects", "policy:causal-subprocess", "policy:fail-loud", "policy:no-fallback", "policy:preflight-before-effects", "policy:strict-execution", "provenance:agents-owned", "route:agent", "technology:gas-city", "updates:manual", "usage:on-demand"]'
+---
+
+# Work Items (Beads)
+
+Everything in Gas City is a bead — tasks, messages, molecules, convoys. The `gc bd` CLI is the primary interface for bead CRUD. Follow the complete
+`router procedure` (skill file) and preserve its owners,
+evidence contracts, failure propagation, and required output standard.

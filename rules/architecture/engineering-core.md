@@ -35,8 +35,8 @@ as `NOT EXECUTED`, never green; it does not block offline gates, landing, or
 post-merge proof. Direct invocation selects it: the token becomes required and
 any failure escapes without skip, catch, fallback, or normalization.
 
-Compose with [generalized ownership](generalized-abstraction.md),
-[strict execution](../runtime/strict-execution.md),
-[runtime evidence](../workflow/runtime-is-reality.md),
-[storage isolation](../storage.md),
-[security closure](../security/scanner-closure.md).
+Compose with `generalized ownership` (rule file),
+`strict execution` (rule file),
+`runtime evidence` (rule file),
+`storage isolation` (rule file),
+`security closure` (rule file).

@@ -318,6 +318,10 @@ def _render_frontmatter(metadata: dict[str, object], body: str) -> str:
 
 
 def _body(profile: AgentProfile, prompt_defense: str) -> str:
+    if prompt_defense.lstrip().startswith("---"):
+        raise AgentRenderError(
+            "prompt-defense composition source must be body text, not frontmatter"
+        )
     if not prompt_defense.strip():
         raise AgentRenderError("prompt-defense composition source is empty")
     return f"{prompt_defense.rstrip()}\n\n{profile.instructions.lstrip()}"

@@ -19,6 +19,10 @@
 12. Phase closure: keep the phase active through check repair, review resolution,
     independent approval, merge into the configured integration branch, and
     post-merge proof. Only then, with its Bead closed with evidence, is it DONE.
+    When the operator states that no independent reviewer exists and authorizes
+    an administrative merge, that authorization replaces the approval row alone;
+    every other row stays mandatory and closure records the approval as
+    operator-authorized, never as satisfied.
 <!-- /AIHUB-INVIOLABLE-LAW-PRELUDE -->
 
 # AGENTS.md — ai-hub
@@ -44,7 +48,7 @@
 
 ## Change lifecycle
 
-Gas City configuration owns orchestration identity and dispatch; the repository owns Git, native gates, PR review, and landing. The canonical static contract is `rules/gascity.md`. Gas City runtime is currently suspended, so no orchestration command may be invoked or inferred. Work in the existing checkout and stop at the configured integration branch unless the operator explicitly asks to promote.
+Gas City configuration owns orchestration identity and dispatch; the repository owns Git, native gates, PR review, and landing. The canonical contract is `rules/gascity.md`, which owns how a city's activation state is resolved: read it from that city's own authority at preflight and invoke no orchestration command outside the scope that authority has explicitly activated. Work in the existing checkout and stop at the configured integration branch unless the operator explicitly asks to promote.
 
 ## Clone and temporary-filesystem law
 
@@ -110,6 +114,13 @@ The composed governance owners define closure. Local delta only:
 
 ## Learned Workspace Facts
 
+- This checkout keeps its Beads identity and `agents` database in local
+  `.beads/metadata.json`, while `.envrc` inherits the single managed Dolt
+  endpoint published by Gas City in
+  `$HOME/gc/.gc/runtime/packs/dolt/dolt-state.json`. Do not set `BEADS_DIR` to
+  `$HOME/gc/.beads` for this project: that selects Gas City's root identity and
+  `hq`, not this project's `agents` ledger. Preflight `bd context --json`,
+  `bd ping --json`, and a stdin dry run before imports.
 - ai-hub Beads/Dolt is the shared user database on the primary checkout (`config.AiHub.paths.ai_hub`), not a per-worktree private DB.
 - Related multi-repo set for shared doc/policy work is declared in configuration.
 - Gas City configuration owns orchestration identity; ai-hub owns living runtime registration for tools, CRG, LSP/observer state, and maintenance daemons.

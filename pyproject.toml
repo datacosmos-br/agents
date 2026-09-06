@@ -1,6 +1,6 @@
 [project]
 name = "agents-governance"
-version = "0.1.0"
+version = "0.2.1"
 description = "Canonical validation and projection engine for ~/.agents"
 requires-python = ">=3.13"
 dependencies = ["PyYAML>=6.0.2,<7"]
@@ -27,15 +27,38 @@ build-backend = "hatchling.build"
 [tool.hatch.build.targets.wheel]
 packages = ["src/agents_governance"]
 
+[tool.hatch.build.targets.wheel.force-include]
+"config" = "agents_governance/_data/config"
+"skills" = "agents_governance/_data/skills"
+"rules" = "agents_governance/_data/rules"
+"commands" = "agents_governance/_data/commands"
+"evals" = "agents_governance/_data/evals"
+"agents" = "agents_governance/_data/agents"
+"workflows" = "agents_governance/_data/workflows"
+"AGENTS.md" = "agents_governance/_data/AGENTS.md"
+"CLAUDE.md" = "agents_governance/_data/CLAUDE.md"
+".waza.yaml" = "agents_governance/_data/.waza.yaml"
+"Makefile" = "agents_governance/_data/Makefile"
+"README.md" = "agents_governance/_data/README.md"
+
 [tool.hatch.build.targets.sdist]
 only-include = [
+  "AGENTS.md",
+  "CLAUDE.md",
   "Makefile",
   "README.md",
+  ".waza.yaml",
+  "agents",
+  "commands",
   "config",
+  "evals",
   "pyproject.toml",
+  "rules",
+  "skills",
   "src",
   "tests",
   "uv.lock",
+  "workflows",
 ]
 
 [tool.pytest.ini_options]

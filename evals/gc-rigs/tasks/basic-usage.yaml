@@ -1,0 +1,12 @@
+id: gc-rigs-happy-001
+name: Happy path gc-rigs
+description: Exercise canonical gc rigs workflow.
+tags: [gas-city, gc-rigs, happy-path]
+inputs:
+  prompt: >-
+    Demonstrate the canonical gc-rigs workflow using gc rigs against the
+    current project. Preflight the city/rig context, run the primary command
+    via the project's declared facade, and report exact command, cwd, exit
+    code, and decisive output without bypass or fallback.
+expected:
+  output_contains: [rigs, rig registration, bead scoping, suspend resume, gc]

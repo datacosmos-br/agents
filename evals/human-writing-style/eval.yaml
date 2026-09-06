@@ -12,7 +12,7 @@ config:
   executor: copilot-sdk
   model: aihub-primary
   skill_directories:
-  - ../../skills/agent-wide/human-writing-style
+  - ../../skills/agent-wide/personal/human-writing-style
   required_skills:
   - human-writing-style
 graders:

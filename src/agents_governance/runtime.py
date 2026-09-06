@@ -2,18 +2,14 @@
 
 from __future__ import annotations
 
-import json
 import os
 import shutil
 import subprocess
 from collections.abc import Callable, Sequence
 from dataclasses import dataclass
-from importlib.metadata import distribution
 from pathlib import Path
-from urllib.parse import unquote, urlparse
 
 from .agent_profiles import AgentProfile, audit_agent_profiles
-from .atomic_io import text_publication
 from .catalog import Catalog
 from .cleanup import clean_generated, run_atomic_publications
 from .command_evals import audit_command_evals
@@ -29,6 +25,7 @@ from .native_evals import evaluate_native
 from .projection import Projector
 from .projection_authorization import load_project_authorization
 from .projection_config import load_projection_config
+from .provenance import version as provenance_version
 from .rules import RuleSpec, audit_rule_specs
 from .security import ScannerRoute
 from .security import audit as audit_security_evidence
@@ -54,35 +51,8 @@ class RuntimeInventory:
     rules: tuple[RuleSpec, ...]
 
 
-def repository_root() -> Path:
-    """Return the physical source root that owns this installed runtime."""
-
-    direct_url_text = distribution("agents-governance").read_text("direct_url.json")
-    if direct_url_text is None:
-        raise ValueError("agents-governance installation has no direct_url.json")
-    direct_url = json.loads(direct_url_text)
-    directory_info = direct_url.get("dir_info")
-    if (
-        not isinstance(directory_info, dict)
-        or directory_info.get("editable") is not True
-    ):
-        raise ValueError(
-            "agents-governance must be installed from an editable source checkout"
-        )
-    parsed = urlparse(direct_url["url"])
-    if parsed.scheme != "file":
-        raise ValueError("agents-governance editable source must use a file URL")
-    root = Path(unquote(parsed.path)).resolve(strict=True)
-    if not (root / ".git").is_dir():
-        raise ValueError(
-            f"agents-governance source is not a physical Git checkout: {root}"
-        )
-    return root
-
-
 def _catalog(root: Path) -> Catalog:
     catalog = Catalog(root)
-    catalog.require_inventory_lock()
     return catalog
 
 
@@ -96,7 +66,7 @@ def _inventory(root: Path) -> RuntimeInventory:
 def _inventory_from_catalog(root: Path, catalog: Catalog) -> RuntimeInventory:
     """Load validated inventory from one already-discovered catalog snapshot."""
 
-    require_repository_storage(root)
+    provenance_version()
     commands = audit_command_specs(
         root, (directory.name for directory in catalog.skill_dirs())
     )
@@ -184,10 +154,8 @@ def sync(root: Path) -> None:
         inventory.commands,
         inventory.rules,
     )
-    lock = text_publication(root / "skills.lock.json", catalog.render_inventory())
     run_atomic_publications(
         (
-            *((lock,) if lock is not None else ()),
             *projector.publications(authorization),
             *hooks.publications(authorization),
         )
@@ -214,6 +182,22 @@ def _skill_suites(root: Path) -> tuple[EvalSuiteSpec, ...]:
     return tuple(load_eval_suite(directory) for directory in eval_directories)
 
 
+def _waza_token_audit(root: Path, executable: str) -> None:
+    """Run Waza token-ceiling checks across skills, rules, and commands."""
+
+    for label, path in (
+        ("skills", root / "skills"),
+        ("rules", root / "rules"),
+        ("commands", root / "commands"),
+    ):
+        print(f"waza tokens · {label} ({path})")
+        subprocess.run(
+            (executable, "tokens", "check", str(path), "--strict", "--no-update-check"),
+            cwd=root,
+            check=True,
+        )
+
+
 def evaluate(root: Path) -> None:
     inventory = _inventory(root)
     projection = load_projection_config(root)
@@ -227,12 +211,10 @@ def evaluate(root: Path) -> None:
         inventory.rules,
     )
     suites = _skill_suites(root)
-    commands: list[tuple[str, ...]] = [
-        (executable, "tokens", "check", str(root / "skills"), "--strict")
-    ]
+    _waza_token_audit(root, executable)
     for suite in suites:
         skill = inventory.catalog.record(suite.skill).directory
-        commands.append(
+        subprocess.run(
             (
                 executable,
                 "spec",
@@ -242,12 +224,13 @@ def evaluate(root: Path) -> None:
                 "--eval",
                 str(suite.path),
                 "--fail",
-            )
+            ),
+            cwd=root,
+            check=True,
         )
-    for command in commands:
-        subprocess.run(command, cwd=root, check=True)
     print(
-        f"evaluate: {len(suites)} skill specifications and {native.commands} command, "
+        f"evaluate: Waza token ceilings checked for skills, rules, and commands; "
+        f"{len(suites)} skill specifications and {native.commands} command, "
         f"{native.agents} agent, and {native.rules} rule artifacts verified offline"
     )
 
@@ -359,4 +342,4 @@ WORKFLOWS = {
 }
 
 
-__all__ = ("WORKFLOWS", "repository_root")
+__all__ = ("WORKFLOWS",)

@@ -393,7 +393,7 @@ def test_repository_eval_specs_disable_waza_retry_and_enable_fail_fast() -> None
     paths = [root / "config" / "waza" / "preflight" / "eval.yaml"]
     paths.extend(sorted((root / "evals").glob("*/eval.yaml")))
 
-    assert len(paths) == 1 + len(tuple((root / "skills").glob("*/*/SKILL.md")))
+    assert len(paths) == 1 + len(tuple((root / "skills").rglob("SKILL.md")))
     for path in paths:
         config = yaml.safe_load(path.read_text(encoding="utf-8"))["config"]
         assert config["max_attempts"] == 0, path

@@ -1,0 +1,12 @@
+id: gc-work-edge-001
+name: Edge case gc-work
+description: Handle missing or ambiguous gc-work context without bypass.
+tags: [gas-city, gc-work, edge-case]
+inputs:
+  prompt: >-
+    Invoke gc-work when the city or rig context is missing, ambiguous, or the
+    required gc binary is unavailable. Do not invent a fallback runtime or
+    synthesize a success claim. Report the first missing precondition.
+expected:
+  output_contains: [missing, gc-work]
+  output_not_contains: [fallback, synthesized success]

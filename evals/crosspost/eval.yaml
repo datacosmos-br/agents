@@ -12,7 +12,7 @@ config:
   executor: copilot-sdk
   model: aihub-primary
   skill_directories:
-  - ../../skills/agent-wide/crosspost
+  - ../../skills/agent-wide/personal/crosspost
   required_skills:
   - crosspost
 metrics:

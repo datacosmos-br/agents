@@ -3,7 +3,7 @@
 - **Status:** Approved; predecessor-gated
 - **Operator decision:** 2026-08-28 multi-repository skill synchronization and semantic-fusion correction
 - **Observed central base:** `origin/main` at `4995bb4eb131d35c05ef50de950be8aa6e569afd`; execution must fetch and re-prove the then-current SHA
-- **Design authority:** [ADR-0002](../../adr/ADR-0002-skill-distribution-paths-and-tags.md), [ADR-0003](../../adr/ADR-0003-provider-native-physical-projections.md), [ADR-0004](../../adr/ADR-0004-optionless-fail-loud-cli.md), this plan, and the Phase 1 decision updates
+- **Design authority:** `ADR-0002` (doc file), `ADR-0003` (doc file), `ADR-0004` (doc file), this plan, and the Phase 1 decision updates
 - **Owner:** `agents` governance catalog and runtime
 - **Work item:** canonical tracker suspended; no substitute tracker or ledger; Git, PR, review, checks, and CI are the only execution evidence
 
@@ -55,12 +55,12 @@ source corpus into a tracker or evidence archive.
 
 The operator has fixed these decisions:
 
-- create four dedicated recursive root clones under
-  `${HOME}/workspaces/agents-skill-sync`: `agents`, `flext`, `cosmos-docgen`,
-  and `cosmos-main`;
-- preserve every existing checkout, including dirty content under `~/.agents`,
-  `gc/.gc/target-checkouts`, and `gt/*`, except for the separately authorized
-  plan publication in `~/.agents`;
+- execute in the operator's declared workspace roots — one physical root per
+  repository directly under the home directory — and create no additional clone,
+  worktree, bind mount, or alternate checkout for this increment;
+- preserve every existing checkout, including dirty content in retired
+  orchestration and provenance trees, and adopt it by fix-forward instead of
+  discarding it;
 - centralize reusable capability ownership in `agents`;
 - retain only `dcdoc-thin-code` as a local skill in `cosmos-docgen`, and only
   `cosmos-command-development` and `cosmos-main-standards` as local skills in
@@ -236,9 +236,9 @@ alias, or moving unreviewed prose into `references/` is a failed fusion.
 
 Every resulting central or local bundle is judged as a new current skill. Its
 historical acceptance does not grandfather it. The review starts from the
-[engineering core](../../../rules/architecture/engineering-core.md),
-[strict execution](../../../rules/runtime/strict-execution.md), and
-[skill-governance](../../../skills/agent-wide/skill-governance/SKILL.md) owners,
+`engineering core` (doc file),
+`strict execution` (doc file), and
+`skill-governance` (doc file) owners,
 then applies their current YAGNI, SSOT, SOLID-at-the-changed-boundary, DRY,
 simplification, fail-loud, no-fallback, atomic-effects, causal-subprocess,
 required-environment, anti-hardcode, security, safe-deletion, zero-residue,
@@ -375,19 +375,18 @@ first-sync snapshot.
 
 ## Workspace preflight
 
-Before creating the dedicated root, prove the exact resolved path equals
-`${HOME}/workspaces/agents-skill-sync`, is not a symlink, is not `/`, `${HOME}`,
-`~/.agents`, a Gas City/Town path, an existing dirty checkout, or a registered
-worktree, and contains no unattributed object. Stop for operator adjudication if
-it exists with any unknown content.
+Resolve each workspace root from the operator's declared workspace contract, and
+prove the resolved path is physical, is not a symlink, is not `/` or `${HOME}`,
+is not a retired orchestration or provenance tree, owns a real `.git` directory,
+and carries no unattributed object. Stop for operator adjudication when a root
+holds unknown content.
 
-Create exactly four recursive root clones. Do not create a fifth root clone,
-manual worktree, bind mount, symlink, alternate dependency checkout, or link one
-root clone to another. Validate remotes, default branches, `.gitmodules`, member
-URLs, paths, lane names, and the derived 31/5/12 member counts before creating a
-feature branch or authorization file.
+Do not create an additional root clone, manual worktree, bind mount, symlink,
+alternate dependency checkout, or link one root to another. Validate remotes,
+default branches, `.gitmodules`, member URLs, paths, lane names, and the derived
+31/5/12 member counts before creating a feature branch or authorization file.
 
-In the central clone:
+In the central root:
 
 1. fetch `origin/dev` and `origin/main` and prove `origin/main` contains the
    concurrent predecessor changes and green landing evidence;
@@ -397,9 +396,9 @@ In the central clone:
 5. publish the plan checkpoint as the first coherent WIP commit before any
    runtime implementation handoff.
 
-The current `~/.agents` checkout is evidence and the authorized owner for this
-plan publication only. No dirty byte is copied into the dedicated clone; the
-clone consumes only reachable remote commits.
+The central root is the authorized owner for this plan publication. No dirty
+byte is copied between roots; every root consumes only reachable remote commits
+plus the changes its own landing cycle produces.
 
 ## Dependency graph
 
@@ -714,13 +713,14 @@ After the central owner, all 48 members, and all three umbrellas are integrated:
    identities, aliases, symlinks, external references, and compatibility paths;
 7. record the maximum state as `LANDED_VERIFIED`, never `DONE`, while canonical
    tracker closure remains suspended;
-8. resolve and validate the exact dedicated-root path again and prove it
-   contains no dirty, untracked, unpushed, unreachable, or open-PR work;
-9. remove only `${HOME}/workspaces/agents-skill-sync` through the safe-deletion
+8. resolve and validate every retired skill-sync clone, orchestration tree, and
+   provenance checkout again and prove each contains no dirty, untracked,
+   unpushed, unreachable, or open-PR work;
+9. remove only those proven-empty execution residues through the safe-deletion
    owner; and
-10. recheck that `~/.agents`, `gc/.gc/target-checkouts`, `gt/*`, and all other
-    pre-existing checkouts remain intact.
+10. recheck that every declared workspace root remains intact and clean at its
+    integration branch.
 
 Deletion is prohibited if any reachability, cleanliness, ownership, path, PR,
-check, or publication proof is missing. The dedicated root is execution
-residue, not a retained second owner.
+check, or publication proof is missing. A skill-sync clone is execution residue,
+not a retained second owner.

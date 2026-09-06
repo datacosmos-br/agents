@@ -11,7 +11,7 @@ Activate when project selection declares `flext` or a manifest depends on
 `flext-core`, and the task changes FLEXT architecture, generation, packaging, or
 fleet behavior. Do not activate for generic Python work without FLEXT evidence.
 
-Read the [development procedure](references/procedure.md). Resolve the active
+Read the `development procedure` (skill file). Resolve the active
 repository's manifest, branch-matched owners, generated boundaries, dependency
 graph, public consumers, and native Make gates before effects. Preserve the
 canonical facade direction, typed boundary, single generated projection path,

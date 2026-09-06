@@ -1,0 +1,11 @@
+id: gc-rigs-negative-001
+name: Should not trigger gc-rigs
+description: Do not force gc-rigs onto unrelated work.
+tags: [gas-city, gc-rigs, anti-trigger]
+inputs:
+  prompt: >-
+    Write a short product announcement for a new feature. Do not use gc rigs
+    or Gas City orchestration in the response; the requested output is prose,
+    not an agent workflow.
+expected:
+  output_not_contains: [gc rigs, Gas City]

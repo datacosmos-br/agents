@@ -12,7 +12,7 @@ config:
   executor: copilot-sdk
   model: aihub-primary
   skill_directories:
-  - ../../skills/agent-wide/sprint-closure
+  - ../../skills/agent-wide/governance/sprint-closure
   required_skills:
   - sprint-closure
 graders:

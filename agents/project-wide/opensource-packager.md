@@ -100,7 +100,7 @@ Configuration follows the project-owned schema:
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md).
+See `CONTRIBUTING.md` (project file).
 ```
 
 **Agent-instruction rules:**
@@ -205,7 +205,7 @@ adapter. Render the exact text and invocation from that adapter.
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md)
+See `CONTRIBUTING.md` (project file)
 ```
 
 **README Rules:**

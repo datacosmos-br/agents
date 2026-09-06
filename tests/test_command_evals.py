@@ -14,7 +14,7 @@ from agents_governance.commands import (
 
 
 def _command(root: Path, name: str = "feature-development") -> CommandSpec:
-    path = root / "commands" / f"{name}.md"
+    path = root / "commands" / "implementation" / f"{name}.md"
     path.parent.mkdir(parents=True)
     path.write_text("command\n", encoding="utf-8")
     return CommandSpec(
@@ -53,7 +53,7 @@ def _eval_text(command: str = "feature-development") -> str:
 
 
 def _write_eval(root: Path, command: str = "feature-development") -> Path:
-    path = root / "evals" / "commands" / command / "eval.yaml"
+    path = root / "evals" / "commands" / "implementation" / command / "eval.yaml"
     path.parent.mkdir(parents=True)
     path.write_text(_eval_text(command), encoding="utf-8")
     return path

@@ -12,7 +12,7 @@ config:
   executor: copilot-sdk
   model: aihub-primary
   skill_directories:
-  - ../../skills/agent-wide/content-engine
+  - ../../skills/agent-wide/personal/content-engine
   required_skills:
   - content-engine
 graders:

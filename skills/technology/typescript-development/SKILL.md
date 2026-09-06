@@ -7,7 +7,7 @@ metadata:
 
 # TypeScript Development
 
-Read [the procedure](references/procedure.md) for TypeScript packages and
+Read `the procedure` (skill file) for TypeScript packages and
 applications. Frontend framework behavior belongs to its detected framework
 skill; this bundle owns language and runtime boundaries.
 

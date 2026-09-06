@@ -7,7 +7,7 @@ metadata:
 
 # Flutter Development
 
-Read [the procedure](references/procedure.md) for Dart packages and Flutter
+Read `the procedure` (skill file) for Dart packages and Flutter
 applications detected through their package manifest.
 
 Follow the declared Dart and Flutter SDK constraints, package manager, analysis

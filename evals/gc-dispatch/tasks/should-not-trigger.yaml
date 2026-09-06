@@ -1,0 +1,11 @@
+id: gc-dispatch-negative-001
+name: Should not trigger gc-dispatch
+description: Do not force gc-dispatch onto unrelated work.
+tags: [gas-city, gc-dispatch, anti-trigger]
+inputs:
+  prompt: >-
+    Write a short product announcement for a new feature. Do not use gc sling
+    or Gas City orchestration in the response; the requested output is prose,
+    not an agent workflow.
+expected:
+  output_not_contains: [gc sling, Gas City]

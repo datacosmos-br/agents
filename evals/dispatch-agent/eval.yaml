@@ -12,7 +12,7 @@ config:
   executor: copilot-sdk
   model: aihub-primary
   skill_directories:
-  - ../../skills/agent-wide/dispatch-agent
+  - ../../skills/agent-wide/dispatch/dispatch-agent
   required_skills:
   - dispatch-agent
 metrics:

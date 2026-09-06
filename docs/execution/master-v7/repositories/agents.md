@@ -4,12 +4,11 @@
 
 | Field | Value |
 |---|---|
-| Predecessor source | Existing `/home/marlonsc/.agents` checkout, preserved after publication |
-| Governed successor source | Dedicated physical `agents` clone under `${HOME}/workspaces/agents-skill-sync` |
+| Canonical source | `~/agents`, the physical owner declared by the operator workspace contract |
+| Retired sources | The predecessor dotted checkout and every dedicated skill-sync clone; neither may be resolved by a consumer |
 | Integration branch | `dev` |
-| Future canonical source | `/home/marlonsc/agents` after final physical cutover |
-| Accepted migration baseline | 85 flat skills, one canonical command, flat agents |
-| Current work-lane inventory | Strictly discovered skills, commands, agents, rules, and their owned evaluations; counts are runtime output |
+| Accepted migration baseline | 85 flat skills, one canonical command, flat agents (historical start of the v7 migration; not the current count) |
+| Current work-lane inventory | Strictly discovered skills, commands, agents, rules, and their owned evaluations; current physical discovery is 91 skill bundles / 39 rules / 8 commands (re-derive, do not trust this snapshot) |
 | Remaining target | Complete provider/runtime proof and full landing cycle |
 | External imports | Only the scope and semantic protocol authorized by the governed project-skill distribution successor |
 | Tracker/orchestration runtime | Suspended; no invocation or substitute |
@@ -80,14 +79,14 @@ use a live model to make offline/unit/integration gates pass.
 Prove personal and isolated-project fixed points and run complete offline gates.
 When its external token is present and the workflow is selected, use exact
 `aihub-primary` for the live gate; otherwise record it as `NOT EXECUTED`, never
-green. Complete authorized review and merge-commit landing. The physical move
-to `~/agents` belongs to a separately approved future increment and is
-prohibited here.
+green. Complete authorized review and merge-commit landing. The physical owner is
+`~/agents`; retiring the predecessor path is part of this increment's zero-residue
+closure, not a later one.
 
 ## Required repository gates
 
 The complete accepted gate set is listed in
-[Validation and landing](../06-validation-and-landing.md). Runtime evidence uses
+`Validation and landing` (doc file). Runtime evidence uses
 the public `agentsctl` verbs; Make composes development gates only. At minimum,
 the final evidence covers:
 
@@ -109,5 +108,5 @@ the final evidence covers:
 Do not operate another repository, destination home, Git branch, PR, or runtime
 without the authority required by the current phase. Foreign provider files are
 read-only evidence until the ownership manifest proves this repository created
-them. A new session follows [Session protocol](../07-session-protocol.md) and
+them. A new session follows `Session protocol` (doc file) and
 derives current state rather than copying stale command output into this runbook.

@@ -1,0 +1,12 @@
+id: gc-work-happy-001
+name: Happy path gc-work
+description: Exercise canonical gc work workflow.
+tags: [gas-city, gc-work, happy-path]
+inputs:
+  prompt: >-
+    Demonstrate the canonical gc-work workflow using gc work against the
+    current project. Preflight the city/rig context, run the primary command
+    via the project's declared facade, and report exact command, cwd, exit
+    code, and decisive output without bypass or fallback.
+expected:
+  output_contains: [work, bead lifecycle, claim close, hook ready, gc]

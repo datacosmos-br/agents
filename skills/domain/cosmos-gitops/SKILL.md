@@ -12,7 +12,7 @@ charts, Argo CD declarations, GitOps reconciliation, secret delivery, environmen
 promotion, or their gitlinks. Do not activate for generic deployment work or treat
 repository authorization as permission to mutate a cluster.
 
-Read the [delivery procedure](references/procedure.md). Resolve the independent
+Read the `delivery procedure` (skill file). Resolve the independent
 repository owner, exact staged revision, declared environment, required review,
 credentials, native gates, and live-action authority before effects. Prefer
 declarative owners and upstream controllers, keep Cosmos-specific policy thin,

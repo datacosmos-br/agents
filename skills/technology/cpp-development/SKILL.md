@@ -7,7 +7,7 @@ metadata:
 
 # C++ Development
 
-Read [the procedure](references/procedure.md) before changing C or C++ source,
+Read `the procedure` (skill file) before changing C or C++ source,
 headers, build definitions, ABI, ownership, concurrency, or native tests.
 
 Use the standard, toolchain, dependency manager, build graph, formatter, static

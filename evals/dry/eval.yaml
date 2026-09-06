@@ -12,7 +12,7 @@ config:
   executor: copilot-sdk
   model: aihub-primary
   skill_directories:
-  - ../../skills/project-wide/dry
+  - ../../skills/project-wide/architecture/dry
   required_skills:
   - dry
 graders:

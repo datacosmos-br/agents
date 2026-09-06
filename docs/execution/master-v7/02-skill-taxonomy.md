@@ -82,7 +82,7 @@ aliases.
 ### Convert to commands
 
 These six artifacts expose explicit command invocation, argument, scaffold, or
-terminal-output behavior and move to `commands/<slug>.md`:
+terminal-output behavior and move to `commands/<category>/<slug>.md`:
 
 - `add-language-rules`
 - `database-migration`
@@ -92,7 +92,7 @@ terminal-output behavior and move to `commands/<slug>.md`:
 - `ralph-loop`
 
 The migration preserves useful workflow content but rewrites it against the
-[command contract](03-command-contract.md). No same-name skill survives.
+`command contract` (doc file). No same-name skill survives.
 
 ### Remove as skills
 

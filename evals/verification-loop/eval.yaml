@@ -12,7 +12,7 @@ config:
   executor: copilot-sdk
   model: aihub-primary
   skill_directories:
-  - ../../skills/agent-wide/verification-loop
+  - ../../skills/agent-wide/verification/verification-loop
   required_skills:
   - verification-loop
 graders:

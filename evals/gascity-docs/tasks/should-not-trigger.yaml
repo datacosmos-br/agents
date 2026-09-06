@@ -1,0 +1,11 @@
+id: gascity-docs-negative-001
+name: Should not trigger gascity-docs
+description: Do not force gascity-docs onto unrelated work.
+tags: [gas-city, gascity-docs, anti-trigger]
+inputs:
+  prompt: >-
+    Write a short product announcement for a new feature. Do not use gascity docs
+    or Gas City orchestration in the response; the requested output is prose,
+    not an agent workflow.
+expected:
+  output_not_contains: [gascity docs, Gas City]

@@ -23,7 +23,6 @@ on:
       - 'AGENTS.md'
       - 'CLAUDE.md'
       - 'README.md'
-      - 'skills.lock.json'
       - 'pyproject.toml'
       - 'uv.lock'
   pull_request:
@@ -48,7 +47,6 @@ on:
       - 'AGENTS.md'
       - 'CLAUDE.md'
       - 'README.md'
-      - 'skills.lock.json'
       - 'pyproject.toml'
       - 'uv.lock'
 
@@ -65,6 +63,21 @@ jobs:
       - uses: jdx/mise-action@c2a87611a18de5b3828c5652fe268e992400cb5c # v4.3.0
       - name: Prepare canonical shell storage
         run: install -d -m 700 "$HOME/tmp"
+      - name: Reject committed merge-conflict markers
+        run: |
+          status=0
+          markers=$(git grep -l -e '^<<<<<<< ' -e '^>>>>>>> ' -- . ':(exclude).venv' ':(exclude)dist') || status=$?
+          if [ "$status" -gt 1 ]; then
+            echo "::error::merge-marker search failed with status $status"
+            exit "$status"
+          fi
+          if [ -n "$markers" ]; then
+            echo "::error::Merge conflict markers found in tracked files:"
+            printf '%s\n' "$markers"
+            exit 1
+          fi
+          echo "No conflict markers found."
+
       - name: Install pinned Waza
         run: |
           install -d -m 700 "$HOME/bin"

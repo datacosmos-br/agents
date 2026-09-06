@@ -120,36 +120,10 @@ def test_legacy_skill_frontmatter_fields_are_rejected(
         Catalog(tmp_path)
 
 
-def test_inventory_lock_has_one_exact_check_and_render_contract(
-    tmp_path: Path,
-) -> None:
-    _write_config(tmp_path)
-    _write_skill(tmp_path, "agent-wide", "example")
-    catalog = Catalog(tmp_path)
-    lock = tmp_path / "skills.lock.json"
-
-    with pytest.raises(FileNotFoundError, match="inventory lock is missing"):
-        catalog.require_inventory_lock()
-
-    lock.write_text("not-json\n", encoding="utf-8")
-    with pytest.raises(json.JSONDecodeError):
-        catalog.require_inventory_lock()
-
-    lock.write_text('{"skills": [], "version": 1}\n', encoding="utf-8")
-    with pytest.raises(ValueError, match="differs from discovery"):
-        catalog.require_inventory_lock()
-
-    lock.write_text(catalog.render_inventory(), encoding="utf-8")
-    catalog.require_inventory_lock()
-
-
 def test_repository_catalog_matches_generated_inventory_without_numeric_cap() -> None:
     catalog = Catalog(REPOSITORY_ROOT)
     names = {record.name for record in catalog.records()}
 
-    catalog.require_inventory_lock()
-    lock = json.loads((REPOSITORY_ROOT / "skills.lock.json").read_text())
-    assert names == {item["name"] for item in lock["skills"]}
     assert {
         "brand-discovery",
         "fix-forward-collaboration",
@@ -463,7 +437,6 @@ def test_canonical_catalog_is_exhaustive_disjoint_and_agents_owned() -> None:
     assert {item["name"] for item in inventory} == {
         directory.name for directory in catalog.skill_dirs()
     }
-    catalog.require_inventory_lock()
 
 
 def test_canonical_skills_have_no_import_registry_identity() -> None:

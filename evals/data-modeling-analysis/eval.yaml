@@ -12,7 +12,7 @@ config:
   executor: copilot-sdk
   model: aihub-primary
   skill_directories:
-  - ../../skills/project-wide/data-modeling-analysis
+  - ../../skills/project-wide/product/data-modeling-analysis
   required_skills:
   - data-modeling-analysis
 graders:

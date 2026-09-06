@@ -12,7 +12,7 @@ config:
   executor: copilot-sdk
   model: aihub-primary
   skill_directories:
-  - ../../skills/project-wide/fail-fast
+  - ../../skills/project-wide/security/fail-fast
   required_skills:
   - fail-fast
 graders:

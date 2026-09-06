@@ -1,0 +1,12 @@
+id: gc-city-happy-001
+name: Happy path gc-city
+description: Exercise canonical gc city workflow.
+tags: [gas-city, gc-city, happy-path]
+inputs:
+  prompt: >-
+    Demonstrate the canonical gc-city workflow using gc city against the
+    current project. Preflight the city/rig context, run the primary command
+    via the project's declared facade, and report exact command, cwd, exit
+    code, and decisive output without bypass or fallback.
+expected:
+  output_contains: [gas city, lifecycle, city init, start stop, supervisor status, gc, city]

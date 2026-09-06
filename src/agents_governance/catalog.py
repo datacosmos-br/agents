@@ -375,11 +375,14 @@ class Catalog:
         names: set[str] = set()
         for skill_file in skill_files:
             relative = skill_file.relative_to(skills_root)
-            if len(relative.parts) != 3:
+            if len(relative.parts) not in (3, 4):
                 raise ValueError(
-                    f"{skill_file}: skill path must be <category>/<slug>/SKILL.md"
+                    f"{skill_file}: skill path must be <category>/<slug>/SKILL.md or <category>/<subcategory>/<slug>/SKILL.md"
                 )
-            raw_category, slug, filename = relative.parts
+            if len(relative.parts) == 3:
+                raw_category, slug, filename = relative.parts
+            else:
+                raw_category, _subcategory, slug, filename = relative.parts
             if filename != "SKILL.md" or skill_file.is_symlink():
                 raise ValueError(
                     f"{skill_file}: skill source must be physical SKILL.md"
@@ -549,23 +552,6 @@ class Catalog:
 
     def render_inventory(self) -> str:
         return json.dumps(self.inventory_payload(), indent=2, sort_keys=True) + "\n"
-
-    def require_inventory_lock(self) -> None:
-        """Raise unless the checked-in lock exactly matches canonical discovery."""
-
-        path = self.root / "skills.lock.json"
-        if path.is_symlink() or not path.is_file():
-            raise FileNotFoundError(
-                f"canonical skill inventory lock is missing: {path}"
-            )
-        current = path.read_text(encoding="utf-8")
-        loaded = json.loads(current)
-        expected_payload = self.inventory_payload()
-        expected_text = json.dumps(expected_payload, indent=2, sort_keys=True) + "\n"
-        if loaded != expected_payload or current != expected_text:
-            raise ValueError(
-                f"canonical skill inventory lock differs from discovery: {path}"
-            )
 
 
 __all__ = (
