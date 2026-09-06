@@ -1,5 +1,7 @@
 ---
 description: Prohibition of error-triggered alternates, retries, and partial execution.
+metadata:
+  aihub.tags: '["decision:ADR-0008","effective:2026-08-29","route:both"]'
 ---
 
 # One authorized path or failure
@@ -17,3 +19,5 @@ typed absence in the canonical schema; it cannot be inferred from a failure.
 A deterministic default resolved and validated by the typed owner before any
 failure is normal SSOT behavior, not fallback. Consumers omit equal environment
 variables, settings, parameters, and arguments; only overrides remain explicit.
+
+See also: `strict-execution.md` (rule file) — aggregate parent policy.

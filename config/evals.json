@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "default_suite_version": "1.0",
+  "waza_schema_version": "1.2",
+  "execution": {
+    "trials_per_task": 1,
+    "timeout_seconds": 60,
+    "parallel": false,
+    "retry_attempts": 0,
+    "fail_fast": true
+  },
+  "metric": {
+    "name": "behavior_quality",
+    "weight": 1.0,
+    "threshold": 1.0,
+    "description": "Did the response satisfy every declared semantic outcome?"
+  },
+  "behavior_grader": {
+    "type": "behavior",
+    "name": "bounded_execution",
+    "config": {
+      "max_duration_ms": 48000
+    }
+  },
+  "tasks": {
+    "happy_path": "tasks/basic-usage.yaml",
+    "fail_closed": "tasks/edge-case.yaml",
+    "non_trigger": "tasks/should-not-trigger.yaml"
+  }
+}

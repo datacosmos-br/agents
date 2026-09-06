@@ -1,0 +1,17 @@
+id: gc-city-happy-001
+name: Start an initialized city supervisor
+description: Preview and start one stopped city before proving supervisor state.
+tags: [gas-city, gc-city, happy-path]
+inputs:
+  prompt: >-
+    Read scenario.yaml, verify city harbor is initialized and stopped, run the
+    canonical start dry-run, then start it and prove supervisor status. Do not
+    initialize again, stop it afterward, or perform teardown. Report command,
+    cwd, exit code, and decisive output for every transition.
+    Cover the Gas City lifecycle contract: city init state, start/stop authority,
+    and supervisor status, without executing the unauthorized stop.
+  files:
+  - path: scenario.yaml
+expected:
+  output_contains: [harbor, gc start --dry-run, gc start, gc status, supervisor, exit code]
+  output_not_contains: [gc init, gc stop, teardown]

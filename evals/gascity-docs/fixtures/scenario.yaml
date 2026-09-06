@@ -1,0 +1,9 @@
+project: harbor-api
+documentation_root: docs
+current_pages:
+  - guides/getting-started.md
+  - operations/runtime.md
+  - reference/configuration.md
+change: document worker drain and restart behavior
+runtime_owner: config/agents.yaml
+verification_owner: make docs APPLY=Y

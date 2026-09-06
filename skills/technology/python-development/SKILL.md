@@ -2,7 +2,7 @@
 name: python-development
 description: 'python, package development, toolchain detection'
 metadata:
-  aihub.tags: '["activation:detected","detect:marker:poetry.lock","detect:marker:pyproject.toml","detect:marker:requirements-dev.txt","detect:marker:requirements.txt","detect:marker:uv.lock","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","policy:zero-residue","provenance:agents-owned","route:project","technology:python","updates:manual","usage:router"]'
+  aihub.tags: '["activation:detected","decision:ADR-0008","detect:marker:poetry.lock","detect:marker:pyproject.toml","detect:marker:requirements-dev.txt","detect:marker:requirements.txt","detect:marker:uv.lock","effective:2026-08-29","extends:solid","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","policy:zero-residue","provenance:agents-owned","route:project","technology:python","updates:manual","usage:router"]'
 ---
 
 # Python Development
@@ -10,7 +10,10 @@ metadata:
 Apply the active project's Python version, dependency owner, public contracts,
 and canonical commands.
 
-Read the [single owner procedure](references/procedure.md) for implementation,
+For responsibility, abstraction, or dependency-direction changes, apply
+`$solid` first and keep only the Python-specific delta here.
+
+Read the `single owner procedure` (skill file) for implementation,
 debugging, testing, packaging, and native-gate evidence.
 
 Use the distinct `python-parallelization` skill for async, thread, process,

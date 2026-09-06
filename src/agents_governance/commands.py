@@ -1,20 +1,18 @@
-"""Strict canonical-command validation and provider-native rendering."""
+"""Strict provider-neutral command discovery."""
 
 from __future__ import annotations
 
 import json
 import re
 import stat
-from collections.abc import Callable, Iterable
-from dataclasses import dataclass, field
+from collections.abc import Iterable
+from dataclasses import dataclass
 from enum import StrEnum
-from pathlib import Path, PurePosixPath
+from pathlib import Path
 from typing import cast
 
-import yaml
-from yaml.nodes import MappingNode, Node, SequenceNode
-
-from .tokens import bpe_content
+from .approvals import APPROVAL_NAMESPACES, core_tags, resolve_approval_tags
+from .frontmatter import parse_frontmatter
 
 _SLUG = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*\Z")
 _DESCRIPTION_LIMIT = 160
@@ -43,16 +41,6 @@ class CommandRisk(StrEnum):
     EXTERNAL = "external"
 
 
-class CommandProvider(StrEnum):
-    CLAUDE = "claude"
-    GEMINI = "gemini"
-    OPENCODE = "opencode"
-    CURSOR = "cursor"
-    COPILOT = "copilot"
-    CODEX = "codex"
-    ANTIGRAVITY = "antigravity"
-
-
 @dataclass(frozen=True)
 class CommandSpec:
     path: Path
@@ -71,54 +59,6 @@ class CommandSpec:
     @property
     def uses_arguments(self) -> bool:
         return _ARGUMENTS in self.body
-
-
-@dataclass(frozen=True)
-class CommandArtifact:
-    provider: CommandProvider
-    slug: str
-    destination: PurePosixPath
-    content: str
-    manual_only: bool
-    tokens: int
-    max_tokens: int | None
-
-
-class CommandRenderError(ValueError):
-    """A provider adapter rejected the requested complete command."""
-
-
-@dataclass(frozen=True)
-class CommandTokenBudget:
-    max_tokens: int | None
-    counter: Callable[[str], int] = field(repr=False, compare=False)
-
-    def __post_init__(self) -> None:
-        if self.max_tokens is not None and (
-            type(self.max_tokens) is not int or self.max_tokens <= 0
-        ):
-            raise ValueError("command max_tokens must be a positive integer")
-        if not callable(self.counter):
-            raise TypeError("command token counter must be callable")
-
-    def measure(self, content: str) -> int:
-        measured = self.counter(content)
-        if type(measured) is not int or measured < 0:
-            raise CommandRenderError(
-                "command token counter must return a non-negative integer"
-            )
-        return measured
-
-
-def waza_bpe_counter(root: Path) -> Callable[[str], int]:
-    """Return the canonical in-memory full-text BPE counter."""
-
-    authority = root.resolve(strict=True)
-
-    def count(content: str) -> int:
-        return bpe_content(content, authority)
-
-    return count
 
 
 def _short_sentence(value: str) -> bool:
@@ -170,50 +110,10 @@ def _validate_spec(spec: CommandSpec) -> None:
     }
     if len(spec.tags) != len(set(spec.tags)) or tuple(sorted(spec.tags)) != spec.tags:
         raise ValueError("command tags must be unique and sorted")
-    if set(spec.tags) != expected:
+    if set(core_tags(spec.tags)) != expected:
         raise ValueError(
             "command tags must contain only typed route, intent, and risk values"
         )
-
-
-def _duplicate_key(node: Node) -> str | None:
-    if isinstance(node, MappingNode):
-        seen: set[str] = set()
-        for key_node, value_node in node.value:
-            key = str(getattr(key_node, "value", "<non-scalar>"))
-            if key in seen:
-                return key
-            seen.add(key)
-            duplicate = _duplicate_key(value_node)
-            if duplicate is not None:
-                return duplicate
-    elif isinstance(node, SequenceNode):
-        for child in node.value:
-            duplicate = _duplicate_key(child)
-            if duplicate is not None:
-                return duplicate
-    return None
-
-
-def _frontmatter(path: Path) -> tuple[dict[str, object], str]:
-    text = path.read_text(encoding="utf-8")
-    if not text.startswith("---\n"):
-        raise ValueError(f"{path}: missing YAML frontmatter")
-    marker = text.find("\n---\n", 4)
-    if marker < 0:
-        raise ValueError(f"{path}: unterminated YAML frontmatter")
-    source = text[4:marker]
-    node = yaml.compose(source, Loader=yaml.SafeLoader)
-    loaded = yaml.safe_load(source)
-    if not isinstance(node, MappingNode) or not isinstance(loaded, dict):
-        raise TypeError(f"{path}: frontmatter must be a mapping")
-    duplicate = _duplicate_key(node)
-    if duplicate is not None:
-        raise ValueError(f"{path}: frontmatter key is duplicated: {duplicate}")
-    raw = cast(dict[object, object], loaded)
-    if not all(isinstance(key, str) for key in raw):
-        raise TypeError(f"{path}: frontmatter keys must be strings")
-    return cast(dict[str, object], raw), text[marker + 5 :].removeprefix("\n")
 
 
 def _tags(
@@ -229,8 +129,14 @@ def _tags(
     tags = tuple(cast(list[str], decoded))
     if len(tags) != len(set(tags)) or tags != tuple(sorted(tags)):
         raise ValueError(f"{path}: command tags must be unique and sorted")
-    if any(not tag.startswith(("route:", "intent:", "risk:")) for tag in tags):
-        raise ValueError(f"{path}: command tags support only route, intent, and risk")
+    if any(
+        not tag.startswith(("route:", "intent:", "risk:"))
+        and tag.split(":", 1)[0] not in APPROVAL_NAMESPACES
+        for tag in tags
+    ):
+        raise ValueError(
+            f"{path}: command tags support only route, intent, risk, and approval"
+        )
     route_values = tuple(
         tag.removeprefix("route:") for tag in tags if tag.startswith("route:")
     )
@@ -253,7 +159,7 @@ def _tags(
 
 
 def _load_command(path: Path) -> CommandSpec:
-    payload, body = _frontmatter(path)
+    payload, body = parse_frontmatter(path)
     unknown = frozenset(payload) - _TOP_LEVEL_FIELDS
     if unknown:
         raise ValueError(
@@ -305,13 +211,21 @@ def audit_command_specs(
         raise ValueError(f"command root must be a physical directory: {command_root}")
     collisions = frozenset(skill_names)
     commands: list[CommandSpec] = []
-    for path in sorted(command_root.iterdir(), key=lambda item: item.name):
+    for path in sorted(command_root.rglob("*.md"), key=lambda item: item.name):
         metadata = path.lstat()
         if path.is_symlink() or not stat.S_ISREG(metadata.st_mode):
             raise ValueError(f"command must be a physical regular file: {path}")
-        if path.suffix != ".md" or _SLUG.fullmatch(path.stem) is None:
-            raise ValueError(f"command must use flat commands/<slug>.md layout: {path}")
+        rel = path.relative_to(command_root)
+        if (
+            not _SLUG.fullmatch(rel.parent.name)
+            or path.suffix != ".md"
+            or _SLUG.fullmatch(path.stem) is None
+        ):
+            raise ValueError(
+                f"command must use commands/<category>/<slug>.md layout: {path}"
+            )
         spec = _load_command(path)
+        resolve_approval_tags(root, spec.tags, path)
         if spec.name in collisions:
             raise ValueError(
                 f"{path}: command slug collides with canonical skill: {spec.name}"
@@ -322,113 +236,10 @@ def audit_command_specs(
     return tuple(commands)
 
 
-def _quoted(value: str) -> str:
-    return json.dumps(value, ensure_ascii=False)
-
-
-def _claude_markdown(spec: CommandSpec) -> str:
-    header = ["---", f"description: {_quoted(spec.description)}"]
-    if spec.argument_hint is not None:
-        header.append(f"argument-hint: {_quoted(spec.argument_hint)}")
-    header.extend(("disable-model-invocation: true", "---", ""))
-    return "\n".join((*header, spec.body))
-
-
-def _opencode_markdown(spec: CommandSpec) -> str:
-    return "\n".join(
-        ("---", f"description: {_quoted(spec.description)}", "---", "", spec.body)
-    )
-
-
-def _reject_interpolation(spec: CommandSpec, provider: CommandProvider) -> None:
-    if "$(" in spec.body or "${" in spec.body:
-        raise CommandRenderError(
-            f"{provider.value}/{spec.name}: shell interpolation is forbidden"
-        )
-    if provider is CommandProvider.GEMINI and any(
-        marker in spec.body for marker in ("!{", "@{", "{{")
-    ):
-        raise CommandRenderError(
-            f"{provider.value}/{spec.name}: provider interpolation is forbidden"
-        )
-    if provider is CommandProvider.OPENCODE and re.search(r"!\s*`", spec.body):
-        raise CommandRenderError(
-            f"{provider.value}/{spec.name}: shell interpolation is forbidden"
-        )
-
-
-def render_command(
-    spec: CommandSpec,
-    provider: CommandProvider | str,
-    *,
-    token_budget: CommandTokenBudget | None = None,
-    reserved_slugs: Iterable[str] = (),
-) -> CommandArtifact:
-    """Render one complete supported command or raise immediately."""
-
-    selected = CommandProvider(provider)
-    if selected is CommandProvider.CODEX:
-        raise CommandRenderError("UNSUPPORTED: Codex has no canonical command adapter")
-    if selected is CommandProvider.ANTIGRAVITY:
-        raise CommandRenderError("UNSUPPORTED: Antigravity has no command contract")
-    if selected is CommandProvider.COPILOT:
-        raise CommandRenderError(
-            "UNSUPPORTED: Copilot has no provider-owned command contract"
-        )
-    if selected is CommandProvider.CURSOR and spec.route is not CommandRoute.PROJECT:
-        raise CommandRenderError("UNSUPPORTED: Cursor supports project commands only")
-    if spec.name in frozenset(reserved_slugs):
-        raise CommandRenderError(
-            f"{selected.value}/{spec.name}: command slug is reserved by the provider"
-        )
-    if token_budget is None:
-        raise CommandRenderError(
-            f"{selected.value}/{spec.name}: provider token budget is required"
-        )
-
-    _reject_interpolation(spec, selected)
-    if selected is CommandProvider.CLAUDE:
-        content = _claude_markdown(spec)
-        destination = PurePosixPath(".claude", "commands", f"{spec.name}.md")
-    elif selected is CommandProvider.GEMINI:
-        prompt = spec.body.replace(_ARGUMENTS, "{{args}}")
-        content = (
-            f"description = {_quoted(spec.description)}\nprompt = {_quoted(prompt)}\n"
-        )
-        destination = PurePosixPath(".gemini", "commands", f"{spec.name}.toml")
-    elif selected is CommandProvider.OPENCODE:
-        content = _opencode_markdown(spec)
-        destination = PurePosixPath(f"{spec.name}.md")
-    else:
-        content = spec.body
-        destination = PurePosixPath(".cursor", "commands", f"{spec.name}.md")
-    measured = token_budget.measure(content)
-    if token_budget.max_tokens is not None and measured > token_budget.max_tokens:
-        raise CommandRenderError(
-            f"{selected.value}/{spec.name}: rendered command uses {measured} tokens; "
-            f"provider limit is {token_budget.max_tokens}"
-        )
-    return CommandArtifact(
-        selected,
-        spec.name,
-        destination,
-        content,
-        True,
-        measured,
-        token_budget.max_tokens,
-    )
-
-
 __all__ = (
-    "CommandArtifact",
     "CommandIntent",
-    "CommandProvider",
-    "CommandRenderError",
     "CommandRisk",
     "CommandRoute",
     "CommandSpec",
-    "CommandTokenBudget",
     "audit_command_specs",
-    "render_command",
-    "waza_bpe_counter",
 )

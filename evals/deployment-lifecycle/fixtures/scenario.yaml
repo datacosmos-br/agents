@@ -1,0 +1,10 @@
+project: invoice-worker
+integration:
+  branch: dev
+  commit: 71b9e2c
+release:
+  artifact: invoice_worker-2.4.0-py3-none-any.whl
+  digest: sha256:7aa8c2d1f6c24342913058f353e529193eb1a9cd72357253882c8fcf75cd4f77
+staging_probe: invoice-worker health --release 2.4.0
+activation: pending
+runtime_receipt: absent

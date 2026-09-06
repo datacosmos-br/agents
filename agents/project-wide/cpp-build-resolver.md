@@ -23,8 +23,8 @@ You are an expert C++ build error resolution specialist. Your mission is to fix 
 Run these in order:
 
 ```bash
-cmake --build build 2>&1 | head -100
-cmake -B build -S . 2>&1 | tail -30
+make build APPLY=Y
+
 clang-tidy src/*.cpp -- -std=c++17 2>/dev/null || echo "clang-tidy not available"
 cppcheck --enable=all src/ 2>/dev/null || echo "cppcheck not available"
 ```
@@ -57,9 +57,8 @@ cppcheck --enable=all src/ 2>/dev/null || echo "cppcheck not available"
 ## CMake Troubleshooting
 
 ```bash
-cmake -B build -S . -DCMAKE_VERBOSE_MAKEFILE=ON
-cmake --build build --verbose
-cmake --build build --clean-first
+make build APPLY=Y
+
 ```
 
 ## Key Principles

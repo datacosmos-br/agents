@@ -1,3 +1,9 @@
+---
+description: Adopt the current worktree and never discard it with Git
+metadata:
+  aihub.tags: '["decision:ADR-0008","effective:2026-08-29","route:both"]'
+---
+
 # Adopt the current worktree and never discard it with Git
 
 Two `git reset` runs wiped multi-agent worktrees and endangered shared state.
@@ -13,3 +19,5 @@ management operations:
 - Apply `rules/coordination/fix-forward-collaboration.md`; recover evidence from
   `git reflog` only when authorized, never by replacing the adopted current state.
 - Commit often so the combined work survives a lane or process failure.
+
+See also: `operator-precedence.md` (rule file) — integration authority.

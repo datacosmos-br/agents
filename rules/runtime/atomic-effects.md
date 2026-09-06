@@ -1,5 +1,7 @@
 ---
 description: Complete publication or attributable rollback with no partial success.
+metadata:
+  aihub.tags: '["decision:ADR-0008","effective:2026-08-29","route:both"]'
 ---
 
 # Effects publish atomically
@@ -16,3 +18,5 @@ Rollback may remove or restore only effects attributable to the current
 invocation and only from already validated recovery data. Rollback failure is
 attached to the original exception, which remains the exception re-raised.
 Never delete unknown, foreign, live, dirty, or ownership-ambiguous state.
+
+See also: `strict-execution.md` (rule file) — aggregate parent policy.

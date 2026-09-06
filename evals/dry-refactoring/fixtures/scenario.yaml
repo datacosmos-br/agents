@@ -1,0 +1,12 @@
+duplication_report:
+  threshold_lines: 8
+  fragments:
+    - module: billing/receipt.py
+      lines: 31-41
+      behavior: normalize and hash an invoice identifier
+    - module: refunds/receipt.py
+      lines: 18-28
+      behavior: normalize and hash an invoice identifier
+consumers: [issue_receipt, issue_refund]
+canonical_gate: make duplication APPLY=Y
+behavioral_gate: make test APPLY=Y

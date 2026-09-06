@@ -1,5 +1,7 @@
 ---
 description: Complete workflow validation before the first external effect.
+metadata:
+  aihub.tags: '["decision:ADR-0008","effective:2026-08-30","route:both"]'
 ---
 
 # Validate the complete workflow before effects
@@ -38,3 +40,24 @@ ownership and provenance evidence, normalized semantic delta, affected consumers
 and blast radius, proposed disposition, destructive effects, recovery contract,
 and fixed-point validation plan. Do not overwrite, delete, quarantine, back up,
 stash, roll back, or silently promote it to a source while that decision is open.
+
+See also: `strict-execution.md` (rule file) — aggregate parent policy.
+
+## Two producers reaching one conclusion collapse; two disagreeing stop
+
+Independent producers legitimately reach the same object. One derives it from
+what a previous run left behind, another from what this run planned; each is
+correct on its own, and neither is redundant, because either can be the only
+one that sees a given case.
+
+Declare the identity key that makes them the same conclusion, and collapse on
+it: the effect carries the object once. A consumer that accepts an object only
+once refuses the whole batch over a repeat, so a duplicate is not cosmetic.
+
+Identical key with divergent payload is not a duplicate. It means the producers
+disagree about what the conclusion is, and that is an operator adjudication:
+fail with both payloads and the key. Never take the first, the last, the
+newest, or the merge — a rule that silently picks makes the disagreement
+invisible exactly when it matters.
+
+See also: `strict-execution.md` (rule file) — aggregate parent policy.

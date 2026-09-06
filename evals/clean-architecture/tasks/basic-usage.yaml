@@ -1,0 +1,10 @@
+id: clean-architecture-internal-001
+name: Correct an internal service boundary
+description: Enforce inward dependencies through ports and adapters at one composition root.
+tags: [clean-architecture, happy-path, internal]
+inputs:
+  prompt: "An internal order service constructs its database client inside domain code. Enforce Clean Architecture and inward dependencies: define the minimum typed port, inject it, wire the concrete adapter at the CLI composition root, remove the old construction, and specify import-graph and runtime proof."
+  files:
+  - path: scenario.yaml
+expected:
+  output_contains: [typed port, inject, composition root, import, runtime]

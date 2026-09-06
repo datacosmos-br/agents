@@ -1,0 +1,11 @@
+id: no-task-completed-outcome
+valid:
+  - |-
+      expected:
+        output_contains: [material artifact]
+invalid:
+  - |-
+      expected:
+        outcomes:
+        - type: task_completed
+        output_contains: [material artifact]

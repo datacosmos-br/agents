@@ -12,8 +12,6 @@ inputs:
   files:
   - path: review-brief.md
 expected:
-  outcomes:
-  - type: task_completed
   output_contains:
   - Pane 1
   - Pane 2

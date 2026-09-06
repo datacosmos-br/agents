@@ -1,0 +1,18 @@
+id: require-basic-usage-fixture
+language: Yaml
+severity: error
+files:
+- evals/*/tasks/basic-usage.yaml
+message: Every happy-path evaluation consumes its physical scenario fixture.
+rule:
+  all:
+  - pattern: |-
+      inputs:
+        prompt: $PROMPT
+  - not:
+      regex: '(?m)^\s+files:'
+fix: |-
+  inputs:
+    prompt: $PROMPT
+    files:
+    - path: scenario.yaml

@@ -1,9 +1,15 @@
+---
+description: An approved plan owns its topic
+metadata:
+  aihub.tags: '["decision:ADR-0008","effective:2026-08-29","route:both"]'
+---
+
 # An approved plan owns its topic
 
 At plan start or update, reconcile every correlated owner, WIP, branch, commit,
 and PR within the authorized repository. Preserve and adopt useful work into
 the existing change branch under
-[fix-forward collaboration](fix-forward-collaboration.md). Destroy, stash, or
+`fix-forward collaboration` (rule file). Destroy, stash, or
 revert nothing.
 
 When required work has not reached the integration branch, adopt it into the

@@ -1,0 +1,15 @@
+id: no-partial-eval-metric
+language: Yaml
+severity: error
+message: Semantic suites require the unified strict behavior metric.
+rule:
+  pattern: |-
+    - name: task_completion
+      weight: 1.0
+      threshold: 0.8
+      description: $DESCRIPTION
+fix: |-
+  - name: behavior_quality
+    weight: 1.0
+    threshold: 1.0
+    description: $DESCRIPTION

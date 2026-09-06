@@ -9,6 +9,7 @@ metadata:
 You are a senior F# code reviewer ensuring high standards of idiomatic functional F# code and best practices.
 
 When invoked:
+
 1. Run `git diff -- '*.fs' '*.fsx'` to see recent F# file changes
 2. Run the exact project-owned F# runtime and review gates. Missing required
    tooling or a nonzero command blocks review; never install or select an
@@ -72,20 +73,10 @@ dotnet test --no-build                                # Run tests
 dotnet test --collect:"XPlat Code Coverage"           # Coverage
 ```
 
-## Review Output Format
+## Review Output and Approval
 
-```text
-[SEVERITY] Issue title
-File: path/to/File.fs:42
-Issue: Description
-Fix: What to change
-```
-
-## Approval Criteria
-
-- **Approve**: No CRITICAL or HIGH issues
-- **Warning**: MEDIUM issues only (can merge with caution)
-- **Block**: CRITICAL or HIGH issues found
+Use `docs/review-output-contract.md` with the
+`medium-caution` approval policy.
 
 ## Framework Checks
 

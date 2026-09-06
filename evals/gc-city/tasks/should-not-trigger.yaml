@@ -1,0 +1,10 @@
+id: gc-city-negative-001
+name: Plan a weekend city itinerary
+description: Keep urban travel planning outside supervisor lifecycle management.
+tags: [gas-city, gc-city, anti-trigger]
+inputs:
+  prompt: >-
+    Plan a walkable two-day itinerary in Curitiba focused on parks, architecture,
+    and local food, with one indoor option for rain.
+expected:
+  output_not_contains: [gc city, Gas City]

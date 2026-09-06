@@ -1,0 +1,11 @@
+umbrella: platform-delivery
+member: charts/ledger-api
+member_branch: fix/readiness-probe
+integration_branch: dev
+chart:
+  values_file: values/staging.yaml
+  secret_references: [ledger-db-credentials]
+validation:
+  serialized_helm: required
+  staged_render: required
+cluster_authority: false

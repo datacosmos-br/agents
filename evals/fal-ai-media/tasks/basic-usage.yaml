@@ -13,8 +13,6 @@ inputs:
   files:
   - path: launch-image-brief.yaml
 expected:
-  outcomes:
-  - type: task_completed
   output_contains:
   - estimate_cost
   - fal-ai/nano-banana-pro

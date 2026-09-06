@@ -1,0 +1,13 @@
+id: no-partial-eval-metric
+valid:
+  - |-
+      - name: behavior_quality
+        weight: 1.0
+        threshold: 1.0
+        description: Complete behavior.
+invalid:
+  - |-
+      - name: task_completion
+        weight: 1.0
+        threshold: 0.8
+        description: Partial completion.

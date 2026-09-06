@@ -1,0 +1,9 @@
+city: harbor
+root: city/harbor
+state: initialized
+supervisor: stopped
+rigs:
+  registered: 3
+  running: 0
+requested_transition: start then report supervisor status
+teardown_authorized: false

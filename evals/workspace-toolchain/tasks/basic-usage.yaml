@@ -1,0 +1,15 @@
+id: workspace-toolchain-project-binary-001
+name: Install a project-only binary through its owner
+description: Route a project-scoped tool to the managed-artifact owner and prove generated output.
+tags: [toolchain, project, owner, generator, happy-path]
+inputs:
+  prompt: |
+    Add the project-only binary named by project-contract.md to this governed
+    project. Resolve the correct layer and owner, state the typed file and
+    generator, and prove the generated workspace surfaces and command identity
+    without touching a host inventory or user bin.
+  files:
+  - path: project-contract.md
+expected:
+  output_contains: [project-specific, managed-artifact, generator, .mise.toml, mise.lock, bin/mise, second generation, command identity]
+  output_not_contains: [user bin, host inventory, PATH alias]

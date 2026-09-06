@@ -1,0 +1,15 @@
+open_issues:
+  - id: app-41
+    title: Add invoice cancellation endpoint
+    type: feature
+    parent: app-10
+  - id: app-57
+    title: Implement invoice cancellation API
+    type: task
+    parent: app-10
+  - id: app-62
+    title: Validate invoice cancellation endpoint
+    type: task
+    parent: app-41
+closed_parents: [app-10]
+duplicate_candidates: [[app-41, app-57]]

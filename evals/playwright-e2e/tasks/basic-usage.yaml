@@ -12,8 +12,6 @@ inputs:
   files:
   - path: search-ui-contract.md
 expected:
-  outcomes:
-  - type: task_completed
   output_contains:
   - '[data-testid="search-input"]'
   - waitForResponse

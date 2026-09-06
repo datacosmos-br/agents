@@ -2,7 +2,7 @@
 name: bun-runtime
 description: 'bun runtime, javascript tooling, project detection'
 metadata:
-  aihub.tags: '["activation:detected","detect:marker:bun.lock","detect:marker:bun.lockb","policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","policy:zero-residue","provenance:agents-owned","route:project","technology:bun","updates:manual","usage:on-demand"]'
+  aihub.tags: '["activation:detected","decision:ADR-0008","detect:marker:bun.lock","detect:marker:bun.lockb","effective:2026-08-28","policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","policy:zero-residue","provenance:agents-owned","route:project","technology:bun","updates:manual","usage:on-demand"]'
 ---
 
 # Bun Runtime

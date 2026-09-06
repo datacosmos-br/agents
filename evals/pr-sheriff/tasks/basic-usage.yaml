@@ -3,8 +3,18 @@ name: Triage every configured PR
 description: Exercise pull-request review triage in the configured GitHub workflow.
 tags: [pull-request, triage, review, checks, threads, integration, happy-path]
 inputs:
-  prompt: Perform pull-request review triage for the GitHub workflow in pr-inventory.yaml for the one configured repository. Account for every PR and classify it from checks, reviews, threads, merge state, diff identity, and integration reachability. Recommend next actions only; Gas City and tracker runtime remain suspended, so do not invoke or propose them.
+  prompt: >-
+    Perform pull-request review triage for the GitHub workflow in
+    pr-inventory.yaml for the one configured private datacosmos-br repository.
+    Account for every PR and classify it from checks, reviews, threads, merge
+    state, diff identity, and integration reachability. Before any remote effect,
+    use the repository's current git and gh configuration directly; AI Hub may
+    supply association metadata but must not impose an SSH or credential gate.
+    State the exact fail-closed commands required before landing. Recommend next
+    actions only; Gas City and tracker runtime remain suspended, so do not invoke
+    or propose them.
   files:
   - path: pr-inventory.yaml
 expected:
-  output_contains: ['#14', ready, '#15', blocked, duplicate CI owner, self-referential, unpinned, '|| true', make ci, '#16', superseded]
+  output_contains: ['#14', ready, gh, git remote get-url, git ls-remote, --match-head-commit, '#15', blocked, duplicate CI owner, self-referential, unpinned, '|| true', make ci, '#16', superseded]
+  output_not_contains: [forge-resolve, forge-doctor, core.sshCommand, edit ~/.ssh/config]

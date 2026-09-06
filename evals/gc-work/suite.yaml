@@ -1,0 +1,10 @@
+description: Gas City work items (beads).
+prompt: |-
+  Grade the gc-work response. Pass only when it uses gc work through the
+  canonical project facade, preserves strict execution, preflight, and
+  evidence contracts from the skill, and routes work through the declared
+  owner. In a managed execution it must search for one current city-store
+  root, link the rig-local bead to its shared child, update both from the
+  same four-source checkpoint, and use mail only as notification. Reject
+  bypass, fallback, parallel roots, mail-only status, hardcode, or
+  unobserved success.

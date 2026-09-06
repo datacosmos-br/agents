@@ -1,0 +1,14 @@
+id: gc-city-edge-001
+name: Edge case gc-city
+description: Handle missing or ambiguous gc-city context without bypass.
+tags: [gas-city, gc-city, edge-case]
+inputs:
+  prompt: >-
+    A city process matching gascity exists, but systemctl reports the supervisor
+    unit inactive and gc order check is overdue. Invoke gc-city, decide whether
+    the city is running, and describe the only owner-approved effect. Do not
+    invent a fallback runtime, use pgrep as availability proof, kill the MainPID,
+    or synthesize success.
+expected:
+  output_contains: [systemctl, inactive, gc order check, unit owner, supervisor log]
+  output_not_contains: [pgrep proves running, kill MainPID, fallback, synthesized success]

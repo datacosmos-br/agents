@@ -1,0 +1,16 @@
+id: gascity-docs-happy-001
+name: Document worker drain and restart behavior
+description: Update project docs guides and reference pages from the runtime owner in the existing IA structure, and prove the docs verification gate.
+tags: [gas-city, gascity-docs, docs, writing, ia-structure, verification-gates, happy-path]
+inputs:
+  prompt: >-
+    Read scenario.yaml and document worker drain/restart behavior without copying
+    configuration defaults. Place task guidance and key-only reference material
+    in the existing information architecture, link the runtime owner, update
+    navigation if required, and prove the canonical docs gate.
+    Apply project docs writing conventions, IA structure, and verification gates
+    to the same change.
+  files:
+  - path: scenario.yaml
+expected:
+  output_contains: [getting-started, operations, reference, config/agents.yaml, navigation, make docs APPLY=Y]

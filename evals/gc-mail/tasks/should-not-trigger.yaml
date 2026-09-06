@@ -1,0 +1,10 @@
+id: gc-mail-negative-001
+name: Draft a customer support email
+description: Keep ordinary external correspondence outside bead-backed agent mail.
+tags: [gas-city, gc-mail, anti-trigger]
+inputs:
+  prompt: >-
+    Draft a polite email telling a customer that their replacement keyboard
+    shipped today and will arrive within three business days.
+expected:
+  output_not_contains: [gc mail, Gas City]

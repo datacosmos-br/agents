@@ -1,6 +1,6 @@
 ---
 metadata:
-  aihub.tags: '["route:personal"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-08-29","route:personal"]'
 ---
 
 # Selected canonical tracker and Git preserve the execution record
@@ -10,7 +10,42 @@ selects Beads. Installation or detection never selects tracking. Before effects,
 validate its identity, authority, configuration, and runtime; the first defect
 ends the selected workflow.
 
-Tracker runtime is suspended. Invoke no tracker/database command and create no
-alternate database, tracker, ledger, issue, or closure claim. Separately
-authorized Git, PR, review, checks, and CI preserve evidence. Tracker state stays
-unresolved, so the phase cannot be `DONE`.
+## Tracker mode is resolved, never assumed
+
+Read the active repository instructions for the scope under work and resolve one
+mode before any tracker action:
+
+- **Available:** record and query execution state only through the declared
+  tracker owner, verified through its documented interface. Never select an
+  endpoint, database, or prefix by inference.
+- **Explicitly suspended:** invoke no tracker command and create no alternate
+  database, tracker, ledger, issue, or closure claim. Separately authorized Git,
+  PR, review, checks, and CI preserve evidence; tracker state stays unresolved,
+  so the phase cannot be `DONE`.
+
+Never restate the current mode as a durable rule, and never infer it from an
+installed binary, a reachable endpoint, a running process, or another scope.
+
+## Tracking capability and bead data are different subjects
+
+Suspension governs Beads as the execution tracker of the current work. It does
+not govern bead records that an authorized workflow owns as its own data — a
+migration, import, export, or audit whose target store the operator declared.
+That workflow writes only through its declared owner, at its declared endpoint,
+within its stated authorization, and never becomes a substitute tracker for the
+work that performs it.
+
+## Provenance is written, never inferred on read
+
+A tool that writes records and later reads them back sees three populations it
+must never conflate: what it imported from a source, what it authored itself to
+satisfy its own contract, and what something else created directly in the
+destination. They are indistinguishable by shape — a record the tool authored
+has no source and can never carry source provenance, which is exactly what a
+record whose provenance was lost looks like.
+
+Write the class as a typed attribute at creation, and classify on read by that
+attribute alone. Never infer it from a missing field, a title, a timestamp, or
+a count, and never accept a claimed class without proving the marker is one the
+writer could have produced. A record whose class cannot be established is a
+failure, not a default.

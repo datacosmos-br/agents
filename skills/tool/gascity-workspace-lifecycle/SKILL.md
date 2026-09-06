@@ -2,8 +2,16 @@
 name: gascity-workspace-lifecycle
 description: 'gas city, workspace lifecycle, runtime orchestration'
 metadata:
-  aihub.tags: '["activation:opt-in","detect:opt-in:gascity","policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:no-keyring","policy:preflight-before-effects","policy:required-environment","policy:strict-execution","policy:zero-residue","provenance:agents-owned","route:agent","tool:gascity","updates:manual","usage:on-demand"]'
+  aihub.tags: '["activation:opt-in","decision:ADR-0008","detect:opt-in:gascity","effective:2026-08-30","policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:no-keyring","policy:preflight-before-effects","policy:required-environment","policy:strict-execution","policy:zero-residue","provenance:agents-owned","route:agent","tool:gascity","updates:manual","usage:on-demand"]'
 ---
+## Verification (mandatory)
+
+Before bead effects, apply the four-source cross-check in
+`rules/coordination/beads-verification.md`. Record command, working directory,
+exit code, and decisive output. Close a retired premise as obsolete with
+evidence; never execute it.
+
+
 
 # Gas City Workspace Lifecycle
 
@@ -20,6 +28,8 @@ no workspace or runtime effect. A missing or conflicting declaration is the
 first cause; do not invent a path, use a loose clone, worktree, temporary or
 cross-repository location, translate another runtime's command, or substitute a
 provider.
+
+Before effects read `execution modes`; never mix modes or use `make work`.
 
 After explicit restoration, validate the complete placement graph, current
 owner interface, authority, and non-derivable current-process credentials before

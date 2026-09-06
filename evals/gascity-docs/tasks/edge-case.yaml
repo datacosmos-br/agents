@@ -1,0 +1,13 @@
+id: gascity-docs-edge-001
+name: Reject a hand-edit to generated reference docs
+description: Locate the generator owner before changing a managed projection.
+tags: [gas-city, gascity-docs, edge-case]
+inputs:
+  prompt: >-
+    A requested wording change targets docs/reference/commands.md, whose header
+    says it is generated, but the repository contains two plausible templates
+    and no declared regeneration command in the request. Explain the owner search
+    and stop before editing the projection or inventing a generator.
+expected:
+  output_contains: [generated, owner, template, regeneration, precondition]
+  output_not_contains: [hand-edit, invented generator, synthesized success]

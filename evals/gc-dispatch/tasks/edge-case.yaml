@@ -1,0 +1,13 @@
+id: gc-dispatch-edge-001
+name: Reject a formula with a missing variable
+description: Stop before sling when catalog input cannot satisfy the formula contract.
+tags: [gas-city, gc-dispatch, edge-case]
+inputs:
+  prompt: >-
+    The catalog contains schema-migration requiring database and target_version,
+    but the dispatch request provides only database. The target role is valid.
+    Show the catalog/role preflight and reject the sling before any order or
+    convoy is created.
+expected:
+  output_contains: [target_version, required variable, preflight, no order]
+  output_not_contains: [gc sling, convoy created, fallback]

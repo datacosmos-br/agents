@@ -2,7 +2,7 @@
 name: cosmos-gitops
 description: 'cosmos gitops, helm delivery, argocd reconciliation, environment promotion'
 metadata:
-  aihub.tags: '["activation:detected","detect:selected-tag:cosmos-gitops","domain:cosmos-gitops","policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:no-keyring","policy:preflight-before-effects","policy:required-environment","policy:strict-execution","policy:zero-residue","provenance:agents-owned","route:project","tool:argocd","tool:helm","updates:manual","usage:router"]'
+  aihub.tags: '["activation:detected","decision:ADR-0008","detect:selected-tag:cosmos-gitops","domain:cosmos-gitops","effective:2026-08-29","policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:no-keyring","policy:preflight-before-effects","policy:required-environment","policy:strict-execution","policy:zero-residue","provenance:agents-owned","route:project","tool:argocd","tool:helm","updates:manual","usage:router"]'
 ---
 
 # Cosmos GitOps
@@ -12,7 +12,7 @@ charts, Argo CD declarations, GitOps reconciliation, secret delivery, environmen
 promotion, or their gitlinks. Do not activate for generic deployment work or treat
 repository authorization as permission to mutate a cluster.
 
-Read the [delivery procedure](references/procedure.md). Resolve the independent
+Read the `delivery procedure` (skill file). Resolve the independent
 repository owner, exact staged revision, declared environment, required review,
 credentials, native gates, and live-action authority before effects. Prefer
 declarative owners and upstream controllers, keep Cosmos-specific policy thin,

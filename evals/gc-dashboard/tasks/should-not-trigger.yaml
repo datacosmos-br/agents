@@ -1,0 +1,10 @@
+id: gc-dashboard-negative-001
+name: Sketch a sales analytics dashboard
+description: Keep product UI design outside the Gas City monitoring runtime.
+tags: [gas-city, gc-dashboard, anti-trigger]
+inputs:
+  prompt: >-
+    Suggest a compact dashboard layout for weekly revenue, conversion rate,
+    refund volume, and regional performance.
+expected:
+  output_not_contains: [gc dashboard, Gas City]

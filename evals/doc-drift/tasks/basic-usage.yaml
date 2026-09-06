@@ -12,8 +12,6 @@ inputs:
   files:
   - path: command-contract.md
 expected:
-  outcomes:
-  - type: task_completed
   output_contains:
   - orchestrator finish
   - orchestrator dispatch

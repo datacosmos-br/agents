@@ -1,0 +1,9 @@
+id: no-task-completed-outcome
+language: Yaml
+severity: error
+message: Material assertions replace the redundant task_completed outcome.
+rule:
+  pattern: |-
+    outcomes:
+    - type: task_completed
+fix: ""

@@ -1,27 +1,51 @@
-results/
-.waza-cache/
-coverage.txt
-*.exe
 .env.local
-__pycache__/
-.skills-archive/
-agents.bkp/
-.agents.bkp/
-.archive/
-.test-tmp/
-/.pytest_cache/
-.cache/
-/$HOME/
+/.venv/
+/dist/*
+!/dist/.gitignore
 
-# Existing checkout runtime/ephemeral state only; symlink adoption is prohibited.
-# (gt town-level mayor/refinery/witness live in ~/gt, NOT here, so not ignored here):
-/.beads/
-/.beads.gate.lock
+# Python and tool artifacts are normal disposable caches. Repository discovery
+# and cleanliness use Git ignore semantics instead of disabling or deleting them.
+**/__pycache__/
+**/*.py[cod]
+.mypy_cache/
+.eggs/
+.pytest-scratch/
+.pytest_cache/
+.ruff_cache/
+.test-tmp/
+.testmondata
+.waza-cache/
+.reports/
+build/
+htmlcov/
+node_modules/
+results/
+target/
+*.egg-info/
+
+# AI Hub owns provider/runtime materialization. These paths are never semantic
+# package input and every generated file must carry the AI Hub owner marker.
+/.agents/
+/.claude/
+/.codex/
+/.cursor/
+/.gemini/
+/.opencode/
+/.github/agents/
+/.github/hooks/
+/.github/instructions/
+/.github/skills/
+/GEMINI.md
+
+# Gas City and the selected tracker own their suspended runtime state.
+/.gc/
 /crew/
 /polecats/
-
-# Beads / Dolt files (added by bd init)
-.dolt/
+/worktrees/
+/.dolt/
+/.beads/*
+!/.beads/identity.toml
 *.db
 .beads-credential-key
-.beads/proxieddb/
+.gqlout.json
+.poolside/

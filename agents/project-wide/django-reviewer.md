@@ -11,6 +11,7 @@ You are a senior Django code reviewer ensuring production-grade quality, securit
 **Note**: This agent focuses on Django-specific concerns. Ensure `python-reviewer` has been invoked for general Python quality checks before or after this review.
 
 When invoked:
+
 1. Run `git diff -- '*.py'` to see recent Python file changes
 2. Run `python manage.py check` if a Django project is present
 3. Run the exact project-owned Django/Python runtime and review gates. Missing
@@ -41,7 +42,7 @@ When invoked:
       print(order.user.email)  # N+1
 
   # Good
-  for order in Order.objects.select_related('user').all():
+  for order in Order.objects.select_related("user").all():
       print(order.user.email)
   ```
 - **Missing `atomic()` for multi-step writes**: Use `transaction.atomic()` for any sequence of DB writes
@@ -97,7 +98,7 @@ When invoked:
 
   # Good
   user.last_active = now()
-  user.save(update_fields=['last_active'])
+  user.save(update_fields=["last_active"])
   ```
 
 ### MEDIUM — Best Practices
@@ -121,28 +122,15 @@ When invoked:
 ## Diagnostic Commands
 
 ```bash
-python manage.py check               # Django system check
-python manage.py makemigrations --check  # Detect missing migrations
-ruff check .                         # Fast linter
-mypy . --ignore-missing-imports      # Type checking
-bandit -r . -ll                      # Security scan (medium+)
-pytest --cov=apps --cov-report=term-missing -q  # Tests + coverage
+make runtime APPLY=Y
+make check APPLY=Y
+make test APPLY=Y
 ```
 
-## Review Output Format
+## Review Output and Approval
 
-```text
-[SEVERITY] Issue title
-File: apps/orders/views.py:42
-Issue: Description of the problem
-Fix: What to change and why
-```
-
-## Approval Criteria
-
-- **Approve**: No CRITICAL or HIGH issues
-- **Warning**: MEDIUM issues only (can merge with caution)
-- **Block**: CRITICAL or HIGH issues found
+Use `docs/review-output-contract.md` with the
+`medium-caution` approval policy.
 
 ## Framework-Specific Checks
 

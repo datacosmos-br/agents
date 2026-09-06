@@ -1,0 +1,13 @@
+id: gc-dashboard-edge-001
+name: Reject a foreign listener on the dashboard port
+description: Preserve the unrelated process and stop before dashboard startup.
+tags: [gas-city, gc-dashboard, edge-case]
+inputs:
+  prompt: >-
+    The configured dashboard port is already bound, but system ownership and
+    the process command show that a foreign development server owns it. Explain
+    the decisive read-only checks and fail before killing the listener, choosing
+    another port, or claiming the dashboard is healthy.
+expected:
+  output_contains: [port, foreign, ownership, precondition]
+  output_not_contains: [kill, alternate port, healthy, fallback]

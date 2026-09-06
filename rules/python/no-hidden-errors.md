@@ -1,5 +1,8 @@
 ---
 globs: "**/*.py"
+description: Python failures remain explicit
+metadata:
+  aihub.tags: '["decision:ADR-0008","effective:2026-08-29","route:both"]'
 ---
 
 # Python failures remain explicit
@@ -20,3 +23,5 @@ operation.
   before failure is normal owner behavior.
 - Tests prove the material error, cancellation, timeout, and should-not-trigger
   behavior through the public surface.
+
+See also: `config-settings-ssot.md` (rule file) — configuration authority owner.

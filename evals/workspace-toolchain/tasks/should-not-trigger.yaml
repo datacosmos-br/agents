@@ -1,0 +1,11 @@
+id: workspace-toolchain-non-technical-summary-001
+name: Summarize a non-technical note
+description: Avoid tool ownership discovery for a supplied-text summary.
+tags: [anti-trigger, writing, summary]
+inputs:
+  prompt: Summarize project-contract.md in one sentence for a nontechnical reader without performing tool installation analysis or changing any workspace surface.
+  files:
+  - path: project-contract.md
+expected:
+  output_contains: [project, generator]
+  output_not_contains: [managed-artifact, mise.lock, installation plan, PATH alias]

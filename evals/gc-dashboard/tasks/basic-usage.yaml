@@ -1,0 +1,16 @@
+id: gc-dashboard-happy-001
+name: Start and verify the city dashboard
+description: Prove the configured dashboard API and web surface after startup.
+tags: [gas-city, gc-dashboard, happy-path]
+inputs:
+  prompt: >-
+    From scenario.yaml, preflight city harbor and the configured dashboard
+    address, start the stopped dashboard through its declared gc facade, then
+    prove both API health and web UI status at 127.0.0.1:7337. Report exact
+    commands, cwd, exit codes, and decisive output.
+    Exercise the Gas City dashboard API server, web UI, and realtime monitoring
+    contract through those observable checks.
+  files:
+  - path: scenario.yaml
+expected:
+  output_contains: [harbor, 127.0.0.1:7337, API, web UI, gc dashboard, exit code]

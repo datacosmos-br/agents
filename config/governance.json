@@ -3,13 +3,12 @@
   "bootstrap": {
     "rules": [
       "architecture/engineering-core",
-      "coordination/fix-forward-collaboration",
+      "coordination/beads-verification",
       "coordination/operator-precedence",
       "coordination/session-governance",
       "ethics/professional-integrity",
-      "runtime/strict-execution",
-      "workflow/canonical-commands",
-      "workflow/runtime-is-reality"
+      "git/gitflow-branch-pr",
+      "runtime/strict-execution"
     ],
     "skills": [
       "caveman",
@@ -24,54 +23,292 @@
     ]
   },
   "guarantees": {
-    "configuration-driven-tests": ["rule:python/config-settings-ssot", "rule:workflow/runtime-is-reality"],
-    "strict-execution": ["rule:runtime/strict-execution"],
-    "evidence-backed-truth": ["document:AGENTS.md", "rule:ethics/professional-integrity"],
-    "repository-research": ["document:AGENTS.md", "rule:architecture/engineering-core"],
-    "active-intent": ["rule:coordination/plan-topic-monopoly", "skill:plan-focus-recovery"],
-    "root-owner": ["rule:architecture/engineering-core", "rule:runtime/zero-residue"],
-    "fix-forward-collaboration": ["rule:coordination/fix-forward-collaboration", "skill:fix-forward-collaboration"],
-    "generated-boundaries": ["rule:python/config-settings-ssot", "rule:workflow/generators-not-projections"],
-    "governance-artifact-composition": ["rule:architecture/governance-artifact-composition", "skill:skill-governance"],
-    "continuous-green": ["rule:workflow/runtime-is-reality", "skill:verification-loop"],
-    "tracker-evidence": ["document:AGENTS.md", "rule:workflow/beads-traceability"],
-    "separated-roles": ["document:AGENTS.md", "skill:dispatch-agent"],
-    "execution-persistence": ["skill:anti-phase-skip", "skill:verification-loop"],
-    "history-evidence": ["rule:coordination/fix-forward-collaboration", "rule:git/destructive-git-guard"],
-    "evidence-backed-blocker": ["rule:coordination/operator-precedence", "skill:anti-phase-skip"],
-    "short-integration-slices": ["rule:git/gitflow-branch-pr", "skill:verification-loop"],
-    "living-documentation": ["rule:workflow/living-documentation"],
-    "legacy-source-adjudication": ["command:synthesize-governance", "rule:architecture/governance-artifact-composition", "skill:governance-audit", "skill:skill-governance"],
-    "runtime-first": ["rule:testing/observable-runtime", "rule:workflow/runtime-is-reality"],
-    "configuration-authority": ["rule:python/config-settings-ssot", "rule:workflow/generators-not-projections"],
-    "canonical-command-surface": ["rule:workflow/canonical-commands"],
-    "serialized-shared-state": ["document:AGENTS.md"],
-    "no-hidden-code": ["rule:architecture/engineering-core"],
-    "concurrent-work-adoption": ["rule:coordination/fix-forward-collaboration"],
-    "finish-through-closure": ["skill:anti-phase-skip", "skill:sprint-closure"],
-    "small-batches": ["skill:verification-loop"],
-    "canonical-first": ["rule:architecture/engineering-core"],
-    "current-tracker-state": ["rule:workflow/beads-traceability"],
-    "session-heartbeat": ["skill:plan-focus-recovery"],
-    "evidence-for-uncertainty": ["rule:architecture/engineering-core", "rule:coordination/operator-precedence"],
-    "complete-cutover": ["rule:runtime/zero-residue"],
-    "memory-is-not-authority": ["document:AGENTS.md", "rule:coordination/operator-precedence"],
-    "sprint-closure": ["skill:sprint-closure"],
-    "immediate-removal": ["rule:runtime/zero-residue", "skill:safe-delete"],
-    "stage-gate": ["skill:sprint-closure", "skill:verification-loop"],
-    "operator-precedence": ["document:AGENTS.md", "rule:coordination/operator-precedence"],
-    "topic-monopoly": ["rule:coordination/plan-topic-monopoly"],
-    "lane-ownership": ["rule:coordination/fix-forward-collaboration", "rule:git/gitflow-branch-pr"],
-    "owner-reuse": ["rule:architecture/engineering-core", "rule:architecture/generalized-abstraction"],
-    "correction-learning": ["skill:operator-correction-learning"],
-    "exact-execution": ["rule:coordination/operator-precedence"],
-    "professional-integrity": ["rule:ethics/professional-integrity"],
-    "observable-tests": ["rule:testing/observable-runtime"],
-    "project-law": ["document:AGENTS.md"],
-    "concise-communication": ["rule:communication/caveman", "skill:caveman"],
-    "context-lifecycle": ["rule:coordination/session-governance", "skill:context-canary", "skill:strategic-compact"],
-    "execution-traceability": ["rule:git/gitflow-branch-pr", "rule:workflow/beads-traceability"],
-    "cli-usability": ["rule:workflow/canonical-commands"],
-    "safe-deletion": ["rule:runtime/zero-residue", "skill:safe-delete"]
+    "active-intent": [
+      "rule:coordination/plan-topic-monopoly",
+      "skill:plan-focus-recovery"
+    ],
+    "atomic-effects": [
+      "rule:runtime/atomic-effects"
+    ],
+    "bead-verification": [
+      "rule:coordination/beads-verification"
+    ],
+    "canonical-command-surface": [
+      "rule:workflow/canonical-commands"
+    ],
+    "causal-subprocess": [
+      "rule:runtime/causal-subprocess"
+    ],
+    "complete-cutover": [
+      "rule:runtime/zero-residue"
+    ],
+    "concise-communication": [
+      "rule:communication/caveman",
+      "skill:caveman"
+    ],
+    "configuration-authority": [
+      "rule:python/config-settings-ssot",
+      "rule:workflow/generators-not-projections"
+    ],
+    "configuration-driven-tests": [
+      "rule:python/config-settings-ssot",
+      "rule:workflow/runtime-is-reality"
+    ],
+    "context-lifecycle": [
+      "rule:coordination/session-governance",
+      "skill:context-canary",
+      "skill:strategic-compact"
+    ],
+    "continuous-green": [
+      "rule:workflow/runtime-is-reality",
+      "skill:verification-loop"
+    ],
+    "correction-learning": [
+      "skill:operator-correction-learning"
+    ],
+    "cross-runtime-session-handoff": [
+      "rule:coordination/session-governance",
+      "skill:opencode-session-handoff"
+    ],
+    "database-migration": [
+      "command:database-migration",
+      "rule:runtime/atomic-effects"
+    ],
+    "delivery-iteration": [
+      "command:ralph-loop",
+      "skill:anti-phase-skip"
+    ],
+    "evidence-backed-blocker": [
+      "rule:coordination/operator-precedence",
+      "skill:anti-phase-skip"
+    ],
+    "evidence-backed-truth": [
+      "document:AGENTS.md",
+      "rule:ethics/professional-integrity"
+    ],
+    "evidence-for-uncertainty": [
+      "rule:architecture/engineering-core",
+      "rule:coordination/operator-precedence"
+    ],
+    "execution-persistence": [
+      "skill:anti-phase-skip",
+      "skill:verification-loop"
+    ],
+    "execution-traceability": [
+      "rule:git/gitflow-branch-pr",
+      "rule:workflow/beads-traceability"
+    ],
+    "fail-loud": [
+      "rule:runtime/fail-loud"
+    ],
+    "feature-development": [
+      "command:feature-development",
+      "skill:search-first"
+    ],
+    "file-owned-handoff": [
+      "command:plan-handoff",
+      "skill:plan-focus-recovery"
+    ],
+    "finish-through-closure": [
+      "skill:anti-phase-skip",
+      "skill:sprint-closure"
+    ],
+    "fix-forward-collaboration": [
+      "rule:coordination/fix-forward-collaboration",
+      "skill:fix-forward-collaboration"
+    ],
+    "flext-strict-architecture": [
+      "rule:architecture/internal-clean-architecture",
+      "skill:flext-development"
+    ],
+    "gas-city-operations": [
+      "command:gc-session-triage",
+      "rule:coordination/gascity",
+      "skill:gascity-change-lifecycle",
+      "skill:gascity-docs",
+      "skill:gascity-workspace-lifecycle",
+      "skill:gc-agents",
+      "skill:gc-city",
+      "skill:gc-dashboard",
+      "skill:gc-dispatch",
+      "skill:gc-mail",
+      "skill:gc-rigs",
+      "skill:gc-work"
+    ],
+    "gate-budget": [
+      "rule:workflow/gate-budget"
+    ],
+    "generated-boundaries": [
+      "rule:python/config-settings-ssot",
+      "rule:workflow/generators-not-projections"
+    ],
+    "generated-ownership": [
+      "rule:workflow/generators-not-projections"
+    ],
+    "github-issue-transparency": [
+      "command:ghi-list",
+      "rule:coordination/operator-precedence"
+    ],
+    "governance-artifact-composition": [
+      "rule:architecture/governance-artifact-composition",
+      "skill:skill-governance"
+    ],
+    "history-evidence": [
+      "rule:coordination/fix-forward-collaboration",
+      "rule:git/destructive-git-guard"
+    ],
+    "immediate-removal": [
+      "rule:runtime/zero-residue",
+      "skill:safe-delete"
+    ],
+    "lane-ownership": [
+      "rule:coordination/fix-forward-collaboration",
+      "rule:git/gitflow-branch-pr"
+    ],
+    "language-rule-authoring": [
+      "command:add-language-rules",
+      "rule:architecture/governance-artifact-composition"
+    ],
+    "legacy-source-adjudication": [
+      "command:synthesize-governance",
+      "rule:architecture/governance-artifact-composition",
+      "skill:governance-audit",
+      "skill:skill-governance"
+    ],
+    "living-documentation": [
+      "rule:workflow/living-documentation"
+    ],
+    "make-only-no-selectors": [
+      "rule:workflow/canonical-commands",
+      "skill:make-check"
+    ],
+    "memory-is-not-authority": [
+      "document:AGENTS.md",
+      "rule:coordination/operator-precedence"
+    ],
+    "no-fallback": [
+      "rule:runtime/no-fallback"
+    ],
+    "no-hidden-code": [
+      "rule:architecture/engineering-core"
+    ],
+    "no-keyring": [
+      "rule:runtime/no-keyring"
+    ],
+    "observable-tests": [
+      "rule:testing/observable-runtime"
+    ],
+    "operator-precedence": [
+      "document:AGENTS.md",
+      "rule:coordination/operator-precedence"
+    ],
+    "owner-reuse": [
+      "rule:architecture/engineering-core",
+      "rule:architecture/generalized-abstraction"
+    ],
+    "preflight-before-effects": [
+      "rule:runtime/preflight-before-effects"
+    ],
+    "production-readiness": [
+      "rule:workflow/production-readiness",
+      "skill:sprint-closure",
+      "skill:verification-loop"
+    ],
+    "professional-integrity": [
+      "rule:ethics/professional-integrity"
+    ],
+    "project-law": [
+      "document:AGENTS.md",
+      "rule:coordination/fix-forward-collaboration"
+    ],
+    "provenance-before-conclusion": [
+      "rule:coordination/provenance-before-conclusion"
+    ],
+    "pull-request-transparency": [
+      "command:pr-list",
+      "rule:coordination/operator-precedence"
+    ],
+    "python-bytecode-cache": [
+      "rule:python",
+      "skill:python-development"
+    ],
+    "repository-authority": [
+      "document:README.md",
+      "rule:architecture/engineering-core"
+    ],
+    "repository-research": [
+      "document:AGENTS.md",
+      "rule:architecture/engineering-core"
+    ],
+    "required-environment": [
+      "rule:runtime/required-environment"
+    ],
+    "root-owner": [
+      "rule:architecture/engineering-core",
+      "rule:runtime/zero-residue"
+    ],
+    "runtime-first": [
+      "rule:testing/observable-runtime",
+      "rule:workflow/runtime-is-reality"
+    ],
+    "security-evidence-authority": [
+      "document:docs/security/security-triage.md",
+      "rule:security/scanner-closure",
+      "skill:security-review"
+    ],
+    "security-triage-closure": [
+      "command:security-triage",
+      "rule:security/scanner-closure",
+      "skill:governance-audit"
+    ],
+    "semantic-bundle-boundary": [
+      "document:docs/adr/ADR-0008-governance-bundle-as-public-facade.md",
+      "rule:architecture/governance-artifact-composition"
+    ],
+    "separated-roles": [
+      "document:AGENTS.md",
+      "skill:dispatch-agent"
+    ],
+    "session-heartbeat": [
+      "skill:plan-focus-recovery"
+    ],
+    "short-integration-slices": [
+      "rule:git/gitflow-branch-pr",
+      "skill:verification-loop"
+    ],
+    "skill-specialization-hierarchy": [
+      "rule:architecture/governance-artifact-composition",
+      "skill:skill-governance"
+    ],
+    "small-batches": [
+      "skill:verification-loop"
+    ],
+    "sprint-closure": [
+      "skill:sprint-closure"
+    ],
+    "stage-gate": [
+      "skill:sprint-closure",
+      "skill:verification-loop"
+    ],
+    "strict-execution": [
+      "rule:runtime/strict-execution"
+    ],
+    "strict-typing": [
+      "rule:python/flext-typing"
+    ],
+    "testmon-cache-integrity": [
+      "rule:testing/observable-runtime",
+      "rule:workflow/runtime-is-reality"
+    ],
+    "topic-monopoly": [
+      "rule:coordination/plan-topic-monopoly"
+    ],
+    "tracker-evidence": [
+      "document:AGENTS.md",
+      "rule:workflow/beads-traceability"
+    ],
+    "zero-backup-archive": [
+      "rule:runtime/zero-residue"
+    ]
   }
 }

@@ -1,5 +1,7 @@
 ---
 description: Raw exception propagation and first-defect validation.
+metadata:
+  aihub.tags: '["decision:ADR-0008","effective:2026-08-29","route:both"]'
 ---
 
 # Fail loud on the first defect
@@ -18,3 +20,5 @@ Only cleanup and rollback may catch an exception. They must retain the original
 exception as the one re-raised, attach any cleanup/rollback exception to its
 causal evidence, and never replace the original failure with cleanup success or
 failure.
+
+See also: `strict-execution.md` (rule file) — aggregate parent policy.

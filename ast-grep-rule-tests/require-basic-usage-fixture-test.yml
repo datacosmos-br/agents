@@ -1,0 +1,15 @@
+id: require-basic-usage-fixture
+valid:
+- |-
+    inputs:
+      prompt: Review the attached scenario.
+      files:
+      - path: scenario.yaml
+invalid:
+- |-
+    inputs:
+      prompt: Review the attached scenario.
+- |-
+    inputs:
+      prompt: >-
+        Review the attached scenario and preserve its owner.

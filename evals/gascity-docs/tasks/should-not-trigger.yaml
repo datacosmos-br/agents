@@ -1,0 +1,10 @@
+id: gascity-docs-negative-001
+name: Summarize an external standards document
+description: Keep source summarization outside project documentation mutation.
+tags: [gas-city, gascity-docs, anti-trigger]
+inputs:
+  prompt: >-
+    Summarize the attached public accessibility standard into five study notes.
+    No project repository, documentation page, or navigation change is requested.
+expected:
+  output_not_contains: [gascity docs, Gas City]

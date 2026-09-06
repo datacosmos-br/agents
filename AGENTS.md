@@ -15,115 +15,93 @@
 8. Divergence: FF push rejected → integrate by cooperation: `git merge --no-ff` the integration base into your lane, resolve conflicts, revalidate, land. Never rebase or force-push an authorized change or integration branch; adopt all current worktree state and fix it forward.
 9. Escalation: impossible rule → exact error. Rule conflict → present both with numbers. Unclear → one targeted question. Never guess.
 10. Precedence: NEWEST > OLDEST. USER REQUEST > BEADS > ADRs > SKILLs > DOCS > default. Adjust lower/older to higher/newer. Doubt → ASK USER FIRST.
-11. Workspace placement: follow the declared Gas City city/rig/Pack V2 contract in `rules/gascity.md`. While its runtime is suspended, operate only in the existing checkout and create no clone, worktree, city, rig, agent, formula, run, or session. Staging and backups stay on the destination filesystem, never `/tmp`.
+11. Workspace placement: follow the declared Gas City city/rig/Pack V2 contract in `rules/coordination/gascity.md`. While its runtime is suspended, operate only in the existing checkout and create no clone, worktree, city, rig, agent, formula, run, or session. Staging stays on the destination filesystem, never `/tmp`; backup and archive copies are prohibited.
 12. Phase closure: keep the phase active through check repair, review resolution,
     independent approval, merge into the configured integration branch, and
     post-merge proof. Only then, with its Bead closed with evidence, is it DONE.
+    When the operator states that no independent reviewer exists and authorizes
+    an administrative merge, that authorization replaces the approval row alone;
+    every other row stays mandatory and closure records the approval as
+    operator-authorized, never as satisfied.
+13. Root Make only: diagnostics, validation, generation, tests, Waza,
+    publication, and deployment run only through selector-free verbs in the
+    repository root Makefile. `APPLY=Y` is mandatory for `fix`, `fmt`, `check`,
+    and every test verb. A full suite has its own verb, first runs the
+    incremental verb, and uses the same persistent external testmon database.
+14. Red means red: a warning, skip, empty output, missing tool, missing report,
+    zero collection, caught exception, retry, or normalized failure is RED. The
+    only acceptable zero-execution test result is a typed incremental testmon
+    cache hit with an integrity-checked database and complete deselection
+    accounting; it is never reported as tests passed. The first exception and
+    raw traceback escape unchanged.
 <!-- /AIHUB-INVIOLABLE-LAW-PRELUDE -->
 
-# AGENTS.md — ai-hub
+# AGENTS.md — agents-governance
 
-> **Project execution law:** [`AGENTS.md`](https://github.com/datacosmos-br/ai-hub/blob/dev/AGENTS.md).
-> Composed governance: `config/governance.json` selects canonical `rules/`,
-> `skills/`, `commands/`, and this project scope. `agentsctl sync` projects the
-> composition through provider-native instructions and lifecycle hooks. Do not
-> re-embed canonical rule or skill procedures here.
->
-> **Standalone / independent mode:** when the canonical remote file does not resolve, pin the raw URL to the same branch or release as this package (never the protected branch).
+This repository is the single writable authority for provider-neutral rules,
+skills, commands, agent profiles, and their semantic evaluation resources. It
+publishes the read-only `agents-governance` package. AI Hub alone discovers
+projects, adapts providers, generates hooks and instruction artifacts, deploys,
+and reconciles runtime state.
 
-## Navigation Map
+## Public contract
 
-- **Repository overview:** `README.md`
-- **Active execution package:** `docs/execution/master-v7/README.md`
-- **Decision records:** `docs/adr/README.md`
-- **Security evidence:** `docs/security/security-triage.md`
-- **Skills index:** `skills/README.md`
+- `from agents_governance import GovernanceBundle` is the supported API.
+- `GovernanceBundle.load()` loads packaged resources; an explicit physical root
+  is accepted for source validation.
+- Loading validates the complete catalog, semantic skill evaluations, approval
+  lineage, governance ownership map, metadata, agent profiles, commands, rules,
+  and strict prelude before returning one frozen snapshot.
+- This package has no CLI, daemon, hook, publisher, projector, sync, cleanup,
+  provider-home writer, fallback loader, or compatibility API.
+- Consumer delivery is a transaction owned by AI Hub. A consumer may transform
+  bundle records but may never edit this source or treat generated output as an
+  authority.
 
-<!-- AIHUB-AGENTS-SCOPE-LOCAL-BEGIN -->
-<!-- project-specific notes below -->
+## Repository development
 
-## Change lifecycle
+Read [README.md](README.md), [rules](rules), [skills](skills), and
+[ADRs](docs/adr/README.md) before mutation. Use only selector-free root Make
+verbs and run `make setup APPLY=Y` before development gates. `setup`, `fix`,
+`fmt`, `check`, and every test verb require exactly `APPLY=Y`; raw-tool and
+inline substitutes are prohibited.
 
-Gas City configuration owns orchestration identity and dispatch; the repository owns Git, native gates, PR review, and landing. The canonical static contract is `rules/gascity.md`. Gas City runtime is currently suspended, so no orchestration command may be invoked or inferred. Work in the existing checkout and stop at the configured integration branch unless the operator explicitly asks to promote.
+Prove changed behavior through the public bundle load before adapting tests.
+Every Python test invocation, including focused, full, and CI, must keep the
+same external persistent testmon database active. The public full verb first
+runs incremental selection, then uses testmon's official no-selection mode; it
+never bypasses or clears the cache. Tests exercise public roots with typed
+fixtures and no mocks, monkeypatching, private imports, or hardcoded owner
+values. Warning, skip, empty output, missing tool/report, or zero collection is
+RED. Zero execution is acceptable only for a typed incremental testmon cache
+hit with an integrity-checked database and complete deselection accounting, and
+must never be reported as tests passed.
 
-## Clone and temporary-filesystem law
+Generated files carry an owner and exact regeneration instruction. Change their
+source, regenerate through the declared Make owner, prove a zero-change second
+generation, rewire all consumers, and delete the old code, test, fixture,
+document, alias, backup, and archive in the same cutover.
 
-- New workspace placement is defined declaratively by the Gas City city, rig, and Pack V2 configuration.
-- While runtime is suspended, creating or registering any workspace is prohibited.
-- Raw clones, manual worktrees, symlinks, cross-repository references, and loose checkouts are prohibited for project work.
-- `/tmp` is not a workspace, clone staging area, backup destination, build cache, or report store. Storage and scratch follow `rules/storage.md`; `agentsctl clean` owns runtime cleanup and validation.
+## FLEXT project law
 
-## Strict runtime protocol
+For `internal_flext`, apply the complete strict contract in the
+`flext-development` skill and `rules/architecture/internal-clean-architecture.md`.
+The structural MRO is `c → t → p → m → u`; operational facades are `r`, `e`,
+`x`, `h`, `d`, and `s`. Each family lives under `_<module>/`, starts with
+`base.py`, and is composed by explicit inheritance. Public `api.py` is the only
+composition root and `cli.py` is a thin adapter. Modules have at most 200
+logical lines and one top-level class; declarations are pure. Boundary input
+and output use Pydantic 2, type aliases live only in `t`, protocols only in `p`,
+and contracts never use `Any`, `object`, `Optional`, or `dict`. Domain and
+application layers import no I/O, adapter, or framework. Local aliases,
+redeclared owner values, concrete service dependencies, parallel facades, and
+handwritten generated roots are blocking violations. `third_party_fork` retains
+its upstream architecture.
 
-- `agentsctl` is the only runtime facade. Its complete public surface is
-  `help`, `doctor`, `check`, `sync`, `evaluate`, `secure`, `clean`, and `live`.
-- Every verb is optionless and accepts no positional arguments, modes, aliases,
-  or compatibility syntax. Make remains development support and gate
-  composition; it does not call private runtime functions.
-- Before the first effect, load and validate every input and prerequisite.
-  Derive canonical defaults once at their typed owner and require environment
-  variables, settings, parameters, or arguments only for non-derivable external
-  values. A genuinely required value raises immediately when missing, empty,
-  conflicting, unexpanded, or invalid.
-- The first exception ends execution with its raw traceback and causal chain.
-  CLI and orchestrators do not catch workflow failures. Validators stop at the
-  first defect and never aggregate independent errors.
-- Errors never become findings, warnings, skips, neutral values, empty results,
-  retries, fallbacks, alternate providers, undeclared, competing, or
-  error-triggered defaults,
-  compatibility, partial execution, or manually chosen exit codes.
-- Only cleanup and rollback may catch. They attach any secondary failure and
-  re-raise the original cause. Child nonzero exit, timeout, signal, or
-  incomplete publication propagates unchanged.
-- Keyring code and integration are prohibited. Required credentials come only
-  from the current process environment and fail immediately when invalid.
+## Lifecycle
 
-## Sprint closure
-
-The composed governance owners define closure. Local delta only:
-
-- Integration lane is where an increment must be running to count as closed.
-- The closure surface must leave no lane worktree, no open PR, and no open tracker item for the increment.
-- Zero residue at increment end: dead code, compat shims, un-rewired consumers/tests are defects, never carry-over.
-<!-- AIHUB-AGENTS-SCOPE-LOCAL-END -->
-
-## Learned User Preferences
-
-- Stop landing at `dev`; promote to `main` only when the operator explicitly asks.
-- Finish PRs, tracker items, worktrees, branches, and CI/lint/test failures through the integration lane.
-- During multi-lane work, continuously fast-forward absorb `origin/dev` so landed features stay integrated.
-- Never dismiss any violation as pre-existing or cosmetic; always fix it at its root cause before declaring done.
-- Leave no optional work behind: absorb, correct, and validate through the canonical execution path before closing a tracker item.
-- Fix generated config at config/SSOT or overlays, never by hand-editing generated projections.
-- Regenerate generated config via the project generator; doctor/inspect/compare generated config before restarting and watching logs.
-- MCP/stdio bridges must not hang indefinitely; daemon restarts must keep the stdio bridge usable (virtualize/preserve session identity across restarts).
-- After MCP or daemon deploy changes, validate in-process (for example via opencode) then ask the operator to restart the Cursor MCP client before claiming Cursor-side green.
-- Unit/integration and propagate gates must not require auth API keys or live LLM model calls; model-dependent coverage stays minimal.
-- Validation workflows that require unavailable external tokens are excluded
-  before invocation and recorded as `NOT EXECUTED`, never green; their absence
-  does not block offline gates, landing, or post-merge proof. If invoked, they
-  retain strict fail-loud credential and runtime semantics.
-- Prefer config-key-only documentation (reference config keys, not hardcoded default paths).
-- Prefer owner-first reuse and simplification over local reimplementation; structure large work as epic plus sub-epics with separate enforcement/validation tracker items and incremental deliveries.
-- Plans and multi-phase work must align docs, tracker, worktrees/branches/PRs with runtime reality before later phases.
-- Close a bead only after proving the feature on canonical execution paths in all supported forms.
-
-## Learned Workspace Facts
-
-- ai-hub Beads/Dolt is the shared user database on the primary checkout (`config.AiHub.paths.ai_hub`), not a per-worktree private DB.
-- Related multi-repo set for shared doc/policy work is declared in configuration.
-- Gas City configuration owns orchestration identity; ai-hub owns living runtime registration for tools, CRG, LSP/observer state, and maintenance daemons.
-- Rules and MCP inventory are SSOT under `config/`; an unattributable foreign
-  agent runtime is a blocking ownership violation. Agent-domain behavior runs
-  only through optionless `agentsctl` verbs. Repository Git hooks are extinct;
-  provider-native lifecycle hooks are generated artifacts owned by `sync`.
-- Every declared workspace must reconstruct dependencies locally; cross-repository dependency links are prohibited.
-- CI runs the complete `make ci` owner. `check`, `static`, and `test` remain
-  separate blocking stages; setting `CI=Y` never authorizes omitting them.
-- Workspace/worktree watch is incremental and state-driven from the canonical
-  observer/MCP owner; first use builds or copies from the parent workspace.
-- Rope/LSP activation shares the same observer/MCP funnel; any Git-stored LSP
-  artifacts come from project generator templates.
-- Cursor Shared MCP must resolve the active workspace/worktree across multiple Cursor sessions; its context wiring differs from other agents.
-- MCP routing must virtualize session identity so bridges survive daemon restarts without breaking clients.
-- In umbrella workspaces, member-repo push does not require fixing workspace gitlinks first; push from the member repo, then roll up gitlinks in the umbrella after those commits are on the remote.
+Gas City runtime is suspended for this repository. Work only in this existing
+checkout; invoke no Gas City or Beads mutation and create no substitute ledger.
+Stop at `dev` unless the operator explicitly authorizes promotion. No increment
+is DONE without required gates, reviewed merge-commit landing, post-merge public
+runtime proof, and canonical tracker closure.

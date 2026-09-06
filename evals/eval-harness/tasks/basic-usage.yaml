@@ -13,8 +13,6 @@ inputs:
   files:
   - path: csv-validator-contract.md
 expected:
-  outcomes:
-  - type: task_completed
   output_contains:
   - CAPABILITY EVAL
   - REGRESSION EVAL

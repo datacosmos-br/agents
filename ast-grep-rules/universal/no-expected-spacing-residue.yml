@@ -1,0 +1,13 @@
+id: no-expected-spacing-residue
+language: Yaml
+severity: error
+message: Expected assertion mappings contain no deletion whitespace residue.
+rule:
+  all:
+  - pattern: |-
+      expected:
+        $$$ASSERTIONS
+  - regex: '^expected:\n(?:[ \t]*\n)+[ \t]+output_'
+fix: |-
+  expected:
+    $$$ASSERTIONS
