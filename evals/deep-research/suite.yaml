@@ -1,0 +1,8 @@
+description: Multi-source decision research with citations and bounded inference.
+prompt: |-
+  Grade the deep-research response. Pass only if it follows the supplied
+  decision brief, decomposes the question, searches and deep-reads multiple
+  credible current sources, cites every factual claim, separates inference
+  from evidence, acknowledges gaps, and reports a reproducible methodology.
+  Reject provider switching, reduced search after a selected tool fails,
+  network calls before the question contract is complete, or partial reports.

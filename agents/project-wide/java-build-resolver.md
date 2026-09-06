@@ -16,9 +16,7 @@ You DO NOT refactor or rewrite code — you fix the build error only.
 
 Before attempting any fix, determine the framework:
 
-```bash
-cat pom.xml 2>/dev/null || cat build.gradle 2>/dev/null || cat build.gradle.kts 2>/dev/null
-```
+Use `make audit` to report the typed framework and build owner.
 
 - If the build file contains `quarkus` → apply **[QUARKUS]** rules
 - If the build file contains `spring-boot` → apply **[SPRING]** rules
@@ -38,13 +36,10 @@ cat pom.xml 2>/dev/null || cat build.gradle 2>/dev/null || cat build.gradle.kts 
 Run these in order:
 
 ```bash
-./mvnw compile -q 2>&1 || mvn compile -q 2>&1
-./mvnw test -q 2>&1 || mvn test -q 2>&1
-./gradlew build 2>&1
-./mvnw dependency:tree 2>&1 | head -100
-./gradlew dependencies --configuration runtimeClasspath 2>&1 | head -100
-./mvnw checkstyle:check 2>&1 || echo "checkstyle not configured"
-./mvnw spotbugs:check 2>&1 || echo "spotbugs not configured"
+make audit
+make check APPLY=Y
+make test APPLY=Y
+make build APPLY=Y
 ```
 
 ## Resolution Workflow
@@ -109,25 +104,25 @@ Run these in order:
 
 ```bash
 # Check dependency tree for conflicts
-./mvnw dependency:tree -Dverbose
+make check APPLY=Y
 
 # Force update snapshots and re-download
-./mvnw clean install -U
+make build APPLY=Y
 
 # Analyse dependency conflicts
-./mvnw dependency:analyze
+make check APPLY=Y
 
 # Check effective POM (resolved inheritance)
-./mvnw help:effective-pom
+make check APPLY=Y
 
 # Debug annotation processors
-./mvnw compile -X 2>&1 | grep -i "processor\|lombok\|mapstruct"
+make build APPLY=Y
 
 # Compile through Maven's compile phase; test gates remain mandatory afterward
-./mvnw compile
+make build APPLY=Y
 
 # Check Java version in use
-./mvnw --version
+make check APPLY=Y
 java -version
 ```
 
@@ -135,38 +130,38 @@ java -version
 
 ```bash
 # Check dependency tree for conflicts
-./gradlew dependencies --configuration runtimeClasspath
+make check APPLY=Y
 
 # Force refresh dependencies
-./gradlew build --refresh-dependencies
+make build APPLY=Y
 
 # Rebuild without reusing the project build cache
-./gradlew clean build --no-build-cache
+make build APPLY=Y
 
 # Run with debug output
-./gradlew build --debug 2>&1 | tail -50
+make build APPLY=Y
 
 # Check dependency insight
-./gradlew dependencyInsight --dependency <name> --configuration runtimeClasspath
+make check APPLY=Y
 
 # Check Java toolchain
-./gradlew -q javaToolchains
+make check APPLY=Y
 ```
 
 ## [SPRING] Spring Boot Specific Commands
 
 ```bash
 # Verify application context loads
-./mvnw spring-boot:run -Dspring-boot.run.arguments="--spring.profiles.active=test"
+make test APPLY=Y
 
 # Check for missing beans or circular dependencies
-./mvnw test -Dtest=*ContextLoads* -q
+make test APPLY=Y
 
 # Verify Lombok is configured as annotation processor (not just dependency)
 grep -A5 "annotationProcessorPaths\|annotationProcessor" pom.xml build.gradle
 
 # Check Spring Boot version alignment
-./mvnw dependency:tree | grep "org.springframework.boot"
+make check APPLY=Y
 ```
 
 ## [QUARKUS] Quarkus Specific Commands
@@ -175,47 +170,47 @@ grep -A5 "annotationProcessorPaths\|annotationProcessor" pom.xml build.gradle
 
 ```bash
 # Verify Quarkus build augmentation
-./mvnw quarkus:build -q
+make build APPLY=Y
 
 # Run in dev mode to surface runtime errors
-./mvnw quarkus:dev
+make check APPLY=Y
 
 # List installed extensions
-./mvnw quarkus:list-extensions -q 2>&1 | grep "✓\|installed"
+make build APPLY=Y
 
 # Add a missing extension
-./mvnw quarkus:add-extension -Dextensions="<extension-name>"
+make check APPLY=Y
 
 # Check Quarkus BOM version alignment
-./mvnw dependency:tree | grep "io.quarkus"
+make check APPLY=Y
 
 # Verify native build prerequisites (GraalVM)
-./mvnw package -Pnative 2>&1 | head -50
+make build APPLY=Y
 
 # Debug build-time augmentation failures
-./mvnw compile -X 2>&1 | grep -i "augment\|build step\|extension"
+make build APPLY=Y
 ```
 
 ### Gradle
 
 ```bash
 # Verify Quarkus build augmentation
-./gradlew quarkusBuild
+make build APPLY=Y
 
 # Run in dev mode to surface runtime errors
-./gradlew quarkusDev
+make check APPLY=Y
 
 # List installed extensions
-./gradlew listExtensions
+make check APPLY=Y
 
 # Add a missing extension
-./gradlew addExtension --extensions="<extension-name>"
+make check APPLY=Y
 
 # Check Quarkus dependency alignment
-./gradlew dependencies --configuration runtimeClasspath | grep "io.quarkus"
+make check APPLY=Y
 
 # Verify native build prerequisites (GraalVM)
-./gradlew build -Dquarkus.native.enabled=true -x test 2>&1 | head -50
+make test APPLY=Y
 ```
 
 ### Common (both build tools)

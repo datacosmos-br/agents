@@ -1,11 +1,10 @@
 id: gc-dispatch-negative-001
-name: Should not trigger gc-dispatch
-description: Do not force gc-dispatch onto unrelated work.
+name: Design a courier dispatch heuristic
+description: Keep logistics optimization outside agent workflow routing.
 tags: [gas-city, gc-dispatch, anti-trigger]
 inputs:
   prompt: >-
-    Write a short product announcement for a new feature. Do not use gc sling
-    or Gas City orchestration in the response; the requested output is prose,
-    not an agent workflow.
+    Propose a heuristic for assigning bicycle couriers to restaurant pickups
+    using distance, promised delivery time, and current payload.
 expected:
   output_not_contains: [gc sling, Gas City]

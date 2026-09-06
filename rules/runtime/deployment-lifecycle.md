@@ -1,7 +1,7 @@
 ---
 description: Associated projects deploy immutable integrated artifacts through staged atomic activation.
 metadata:
-  aihub.tags: '["decision:plan-00","effective:2026-09-04","route:project"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-09-04","route:project"]'
 ---
 
 # Project deployment lifecycle

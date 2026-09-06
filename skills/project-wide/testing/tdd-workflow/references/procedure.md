@@ -11,14 +11,20 @@ contract define the target; tests do not invent or rewrite that contract.
    focused test command.
 2. Observe the real behavior before changing a test. If the intended behavior
    is unresolved, stop with the missing decision.
-3. Add the smallest test that reproduces one observable requirement or defect.
-   Assert outputs, effects, errors, ordering, or durable artifacts rather than
-   implementation structure.
+3. Add the smallest test through the supported public interface that reproduces
+   one observable requirement or defect. Assert outputs, effects, errors,
+   ordering, or durable artifacts rather than implementation structure. Reuse
+   the project-owned typed test builders, fixtures, and suite configuration;
+   never hardcode product-owned values or introduce local setup copies.
 4. Run the native focused command and capture the expected RED with command,
    working directory, exit code, and decisive output. A test that passes before
    the correction does not prove the defect. Preserve any unexpected nonzero,
    timeout, signal, exception, and causal chain; do not retry or select another
    command to obtain the expected failure.
+   Every Python focused, full, and CI invocation keeps the same project-owned
+   testmon cache active. Full execution uses the official no-selection mode so
+   it still records dependencies; bypassing, clearing, or replacing the cache is
+   prohibited.
 5. Correct the canonical owner with the minimum complete implementation. Do not
    add fallback behavior, dual paths, hardcoded results, or weakened assertions.
 6. Rerun the same focused command to GREEN, then run affected integration and
@@ -33,8 +39,11 @@ contract define the target; tests do not invent or rewrite that contract.
 - Integration tests cover real component contracts and persistence boundaries.
 - End-to-end tests cover critical user or operator journeys through the public
   surface.
-- Use test doubles only at a genuine external boundary and assert the observable
-  contract, never internal calls.
+- Do not use mocks, monkeypatching, patched construction, or private imports.
+  Provision a real boundary through the project-owned typed fixture and exercise
+  its public contract.
+- In `internal_flext`, reuse `flext-tests` public `tm`, `c`, `t`, `p`, `m`, and
+  `u` facets plus the shared conftest; never copy that machinery locally.
 - Coverage reports reveal missing paths; an arbitrary percentage is not proof
   of correctness.
 

@@ -10,7 +10,12 @@ inputs:
     package root and managed project sections are generated, flext-infra owns the
     generator, and the runtime dependency is flext-core. Explain the owner-correct
     change, c/t/p/m/u and typed-data boundaries, member-before-gitlink order, real
-    public probe, fixed point, and native Make gates.
+    public probe, fixed point, and native Make gates. Compose
+    $python-development and its $solid parent; move shared dependency ordering
+    to the existing u.Infra owner, rewire consumers directly, and delete the
+    obsolete codemod/discovery.py adapter without adding another wrapper.
+  files:
+  - path: scenario.yaml
 expected:
-  output_contains: [flext-infra, flext-core, c, t, p, m, u, generated, member, gitlink, fixed point, Make, runtime]
+  output_contains: [solid, python-development, flext-infra, flext-core, c, t, p, m, u.Infra, codemod/discovery.py, generated, member, gitlink, fixed point, Make, runtime]
   output_not_contains: [hand-edit, fallback, compatibility alias, personal home, reverse runtime import]

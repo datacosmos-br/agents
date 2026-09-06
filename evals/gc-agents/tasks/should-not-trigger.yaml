@@ -1,11 +1,10 @@
 id: gc-agents-negative-001
-name: Should not trigger gc-agents
-description: Do not force gc-agents onto unrelated work.
+name: Explain software agent concepts
+description: Keep a conceptual architecture answer outside live session management.
 tags: [gas-city, gc-agents, anti-trigger]
 inputs:
   prompt: >-
-    Write a short product announcement for a new feature. Do not use gc agents
-    or Gas City orchestration in the response; the requested output is prose,
-    not an agent workflow.
+    Explain the difference between reflex, goal-based, and learning agents for
+    an introductory software architecture class.
 expected:
   output_not_contains: [gc agents, Gas City]

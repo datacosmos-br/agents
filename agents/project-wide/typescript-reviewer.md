@@ -100,11 +100,10 @@ You DO NOT refactor or rewrite code — you report findings only.
 ## Diagnostic Commands
 
 ```bash
-npm run <declared-typecheck-script>  # Exact owner command from package.json/project instructions
-eslint . --ext .ts,.tsx,.js,.jsx    # Linting
-prettier --check .                  # Format check
-npm audit                           # Dependency vulnerabilities (or the equivalent yarn/pnpm/bun audit command)
-npm run <declared-test-script>      # Exact project-owned test command
+make runtime APPLY=Y
+make check APPLY=Y
+make security APPLY=Y
+make test APPLY=Y
 ```
 
 ## Approval Criteria

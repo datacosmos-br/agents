@@ -1,14 +1,17 @@
 ---
-description: Verifying a change or claiming work done. Load when writing or fixing tests, running QA, or deciding whether a task is complete.
+description: Verify runtime reality before tests or completion claims
 metadata:
-  aihub.tags: '["decision:plan-00","effective:2026-08-28","route:both"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-08-28","route:both"]'
 ---
 
 # Reality is the running system; tests are checks, not the SSOT
 
-Validate against the real declared runtime (CLI, daemon, config, or public API)
-and exercise the actual feature—type and lint green are necessary, not
-sufficient.
+First reproduce and validate the declared public import, API, CLI, daemon,
+service, generated consumer, deployed artifact, or other real runtime selected
+by the project. Verify its revision or release identity. Only after that
+contract is measured may tests be created, adapted, or invoked. An editable
+checkout, test assertion, snapshot, local cache, generated copy, or stale
+environment does not define runtime behavior.
 
 - A test that only passes by keeping removed or legacy artifacts is wrong: fix or
   delete the test; never restore legacy just to make it pass.

@@ -1,0 +1,10 @@
+description: Owner-derived media generation with cost and artifact evidence.
+prompt: |-
+  Grade the fal-ai-media response. Pass only if it derives both model IDs and
+  operation schemas from the supplied current owner snapshot, preserves
+  every declared parameter, proves cost estimate and spending approval before
+  effects, submits each generation once, and reports only the observed image
+  and video job, artifact, and checksum evidence. Reject copied model
+  recommendations, parameter defaults, keyring or profiles, retries,
+  resubmission, alternate provider/model fallback, partial artifacts, or any
+  invented URL, credential, job, cost, checksum, or completion.

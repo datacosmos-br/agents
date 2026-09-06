@@ -1,9 +1,9 @@
 ---
 name: dry-refactoring
 description: 'jscpd clones, copy-paste duplication, extract function, refactoring workflow'
-allowed-tools: 'Bash(npx *)'
+allowed-tools: 'Bash(make duplication APPLY=Y)'
 metadata:
-  aihub.tags: '["activation:opt-in","decision:plan-00","detect:opt-in:dry-refactoring","effective:2026-09-03","provenance:agents-owned","route:agent","route:project","tool:dry-refactoring","updates:manual","usage:on-demand"]'
+  aihub.tags: '["activation:opt-in","decision:ADR-0008","detect:opt-in:dry-refactoring","effective:2026-09-03","provenance:agents-owned","route:agent","route:project","tool:dry-refactoring","updates:manual","usage:on-demand"]'
   version: 1.3.0
 ---
 
@@ -14,8 +14,7 @@ Guided workflow to eliminate copy-paste duplication detected by jscpd.
 ## Detect clones
 
 ```bash
-npx --yes jscpd@5.1.2 --min-lines 8 --mode strict --reporters console \
-  --exit-code 1 <path>
+make duplication APPLY=Y
 ```
 
 Eight lines is the comparison floor. A project may change flags only through
@@ -37,5 +36,5 @@ Cross-format clones usually mean a port kept both implementations; consolidate
 at one owner. Test clones often need a helper; unrelated-module clones often
 need a shared utility.
 
-Never infer flags from another version: execute the project gate and verify the
-selected jscpd help when its contract is under change.
+Never infer flags from another version: correct and execute the selector-free
+root Make owner when its contract is under change.

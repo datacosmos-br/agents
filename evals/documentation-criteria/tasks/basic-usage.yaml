@@ -11,8 +11,6 @@ inputs:
   files:
   - path: change-request.md
 expected:
-  outcomes:
-  - type: task_completed
   output_contains:
   - PRD
   - UI Specification

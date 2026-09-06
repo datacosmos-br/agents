@@ -2,7 +2,7 @@
 globs: "**/*.py"
 description: FLEXT typing is strict; Any and object are grave violations
 metadata:
-  aihub.tags: '["decision:plan-00","effective:2026-09-04","route:both"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-09-04","route:both"]'
 ---
 
 # FLEXT typing: strict always — `Any` and `object` are grave violations

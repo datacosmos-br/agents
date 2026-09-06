@@ -10,8 +10,8 @@ You are a senior Rust code reviewer ensuring high standards of safety, idiomatic
 
 When invoked:
 
-1. Run `cargo check`, `cargo clippy -- -D warnings`, `cargo fmt --check`, and `cargo test` — if any fail, stop and report
-2. Run `git diff HEAD~1 -- '*.rs'` (or `git diff main...HEAD -- '*.rs'` for PR review) to see recent Rust file changes
+1. Run `make check APPLY=Y` and `make test APPLY=Y` — if either fails, stop and report
+2. Use the repository's root Make review verb to obtain the current Rust diff
 3. Focus on modified `.rs` files
 4. If the project has CI or merge requirements, note that review assumes a green CI and resolved merge conflicts where applicable; call out if the diff suggests otherwise.
 5. Begin review
@@ -79,12 +79,10 @@ When invoked:
 ## Diagnostic Commands
 
 ```bash
-cargo clippy -- -D warnings
-cargo fmt --check
-cargo test
-if command -v cargo-audit >/dev/null; then cargo audit; else echo "cargo-audit not installed"; fi
-if command -v cargo-deny >/dev/null; then cargo deny check; else echo "cargo-deny not installed"; fi
-cargo build --release 2>&1 | head -50
+make runtime APPLY=Y
+make check APPLY=Y
+make security APPLY=Y
+make test APPLY=Y
 ```
 
 ## Approval Criteria

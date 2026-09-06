@@ -19,6 +19,7 @@ __all__ = (
     "detect_duplicate_key",
     "parse_frontmatter",
     "require_exact_fields",
+    "string_array",
 )
 
 
@@ -98,6 +99,31 @@ def cast_mapping(value: object, context: str) -> dict[str, object]:
     if not isinstance(value, dict) or not all(isinstance(key, str) for key in value):
         raise TypeError(f"{context} must be an object with string keys")
     return cast(dict[str, object], value)
+
+
+def string_array(
+    value: object,
+    context: str,
+    *,
+    require_unique: bool = True,
+    require_sorted: bool = False,
+) -> tuple[str, ...]:
+    """Return one non-empty array of trimmed strings under explicit invariants."""
+
+    if (
+        not isinstance(value, list)
+        or not value
+        or not all(
+            isinstance(item, str) and item and item == item.strip() for item in value
+        )
+    ):
+        raise TypeError(f"{context} must be a non-empty array of trimmed strings")
+    strings = tuple(cast(list[str], value))
+    if require_unique and len(strings) != len(set(strings)):
+        raise ValueError(f"{context} values must be unique")
+    if require_sorted and strings != tuple(sorted(strings)):
+        raise ValueError(f"{context} values must be sorted")
+    return strings
 
 
 def require_exact_fields(

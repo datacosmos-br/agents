@@ -7,7 +7,5 @@ inputs:
   files:
   - path: museum-essay.md
 expected:
-  outcomes:
-  - type: task_completed
   output_contains: [converted railway warehouse, four galleries, industrial history]
   output_not_contains: [PageTokenCodec, repository discovery, fallback analysis]

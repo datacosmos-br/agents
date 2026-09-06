@@ -1,0 +1,15 @@
+integration_branch: dev
+operator_authorization: rename deployment receipt to activation receipt
+lanes:
+  agent_a:
+    owns: [.github/workflows/ci.yml, tests/test_ci_contract.py]
+    head: 82c914f
+  agent_b:
+    owns: [skills/deployment/SKILL.md, docs/deployment.md]
+    head: c61d7a2
+external_output:
+  path: provider-export/session.md
+  adoption_rule: absent
+tracker:
+  shared_root: city-41
+  local_beads: [rig-a-12, rig-b-08]

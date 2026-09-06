@@ -12,6 +12,8 @@ inputs:
     close, including the hook ready/claim result and close preconditions.
     Use mail only to notify collaborators. Report exact commands, cwd, exit
     codes and decisive output without bypass or fallback.
+  files:
+  - path: scenario.yaml
 expected:
   output_contains: [shared root, local bead, gc.shared_epic, gc.shared_child, four-source, bead lifecycle, hook ready, claim, close, mail, notification, gc]
   output_not_contains: [parallel root, mail as ledger]

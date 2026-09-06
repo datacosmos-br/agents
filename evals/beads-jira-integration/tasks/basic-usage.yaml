@@ -10,6 +10,8 @@ inputs:
     created bead, and use the FLEXT epic-link service as the only custom step
     to set the Jira parent on unparented issues before reporting commands and
     exit codes.
+  files:
+  - path: scenario.yaml
 expected:
   output_contains: [bd jira status, dry-run, external_ref, epic, exit code]
   output_not_contains: [urllib.request, direct REST call]

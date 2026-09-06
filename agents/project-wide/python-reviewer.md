@@ -72,11 +72,9 @@ When invoked:
 ## Diagnostic Commands
 
 ```bash
-mypy .                                     # Type checking
-ruff check .                               # Fast linting
-black --check .                            # Format check
-bandit -r .                                # Security scan
-pytest --cov=app --cov-report=term-missing # Test coverage
+make runtime APPLY=Y
+make check APPLY=Y
+make test APPLY=Y
 ```
 
 ## Review Output and Approval

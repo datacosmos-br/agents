@@ -3,7 +3,7 @@ name: dry
 description: 'semantic duplication, god patterns, structural remediation'
 license: MIT
 metadata:
-  aihub.tags: '["decision:plan-00","effective:2026-09-03","policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","policy:zero-residue","provenance:agents-owned","role:refactoring","updates:manual","usage:router"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-09-03","policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","policy:zero-residue","provenance:agents-owned","role:refactoring","updates:manual","usage:router"]'
   version: 1.2.0
 ---
 

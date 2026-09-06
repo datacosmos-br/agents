@@ -1,24 +1,18 @@
-"""Strict canonical-command validation and provider-native rendering."""
+"""Strict provider-neutral command discovery."""
 
 from __future__ import annotations
 
 import json
 import re
 import stat
-from collections.abc import Callable, Iterable
-from dataclasses import dataclass, field
+from collections.abc import Iterable
+from dataclasses import dataclass
 from enum import StrEnum
-from pathlib import Path, PurePosixPath
+from pathlib import Path
 from typing import cast
 
-from .approvals import (
-    APPROVAL_NAMESPACES,
-    approval_note,
-    core_tags,
-    resolve_approval_tags,
-)
+from .approvals import APPROVAL_NAMESPACES, core_tags, resolve_approval_tags
 from .frontmatter import parse_frontmatter
-from .tokens import bpe_content
 
 _SLUG = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*\Z")
 _DESCRIPTION_LIMIT = 160
@@ -47,16 +41,6 @@ class CommandRisk(StrEnum):
     EXTERNAL = "external"
 
 
-class CommandProvider(StrEnum):
-    CLAUDE = "claude"
-    GEMINI = "gemini"
-    OPENCODE = "opencode"
-    CURSOR = "cursor"
-    COPILOT = "copilot"
-    CODEX = "codex"
-    ANTIGRAVITY = "antigravity"
-
-
 @dataclass(frozen=True)
 class CommandSpec:
     path: Path
@@ -75,54 +59,6 @@ class CommandSpec:
     @property
     def uses_arguments(self) -> bool:
         return _ARGUMENTS in self.body
-
-
-@dataclass(frozen=True)
-class CommandArtifact:
-    provider: CommandProvider
-    slug: str
-    destination: PurePosixPath
-    content: str
-    manual_only: bool
-    tokens: int
-    max_tokens: int | None
-
-
-class CommandRenderError(ValueError):
-    """A provider adapter rejected the requested complete command."""
-
-
-@dataclass(frozen=True)
-class CommandTokenBudget:
-    max_tokens: int | None
-    counter: Callable[[str], int] = field(repr=False, compare=False)
-
-    def __post_init__(self) -> None:
-        if self.max_tokens is not None and (
-            type(self.max_tokens) is not int or self.max_tokens <= 0
-        ):
-            raise ValueError("command max_tokens must be a positive integer")
-        if not callable(self.counter):
-            raise TypeError("command token counter must be callable")
-
-    def measure(self, content: str) -> int:
-        measured = self.counter(content)
-        if type(measured) is not int or measured < 0:
-            raise CommandRenderError(
-                "command token counter must return a non-negative integer"
-            )
-        return measured
-
-
-def waza_bpe_counter(root: Path) -> Callable[[str], int]:
-    """Return the canonical in-memory full-text BPE counter."""
-
-    authority = root.resolve(strict=True)
-
-    def count(content: str) -> int:
-        return bpe_content(content, authority)
-
-    return count
 
 
 def _short_sentence(value: str) -> bool:
@@ -300,119 +236,10 @@ def audit_command_specs(
     return tuple(commands)
 
 
-def _quoted(value: str) -> str:
-    return json.dumps(value, ensure_ascii=False)
-
-
-def _claude_markdown(spec: CommandSpec) -> str:
-    header = ["---", f"description: {_quoted(spec.description)}"]
-    if spec.argument_hint is not None:
-        header.append(f"argument-hint: {_quoted(spec.argument_hint)}")
-    header.extend(("disable-model-invocation: true", "---", ""))
-    return "\n".join((*header, spec.body + approval_note(spec.tags)))
-
-
-def _opencode_markdown(spec: CommandSpec) -> str:
-    return "\n".join(
-        (
-            "---",
-            f"description: {_quoted(spec.description)}",
-            "---",
-            "",
-            spec.body + approval_note(spec.tags),
-        )
-    )
-
-
-def _reject_interpolation(spec: CommandSpec, provider: CommandProvider) -> None:
-    if "$(" in spec.body or "${" in spec.body:
-        raise CommandRenderError(
-            f"{provider.value}/{spec.name}: shell interpolation is forbidden"
-        )
-    if provider is CommandProvider.GEMINI and any(
-        marker in spec.body for marker in ("!{", "@{", "{{")
-    ):
-        raise CommandRenderError(
-            f"{provider.value}/{spec.name}: provider interpolation is forbidden"
-        )
-    if provider is CommandProvider.OPENCODE and re.search(r"!\s*`", spec.body):
-        raise CommandRenderError(
-            f"{provider.value}/{spec.name}: shell interpolation is forbidden"
-        )
-
-
-def render_command(
-    spec: CommandSpec,
-    provider: CommandProvider | str,
-    *,
-    token_budget: CommandTokenBudget | None = None,
-    reserved_slugs: Iterable[str] = (),
-) -> CommandArtifact:
-    """Render one complete supported command or raise immediately."""
-
-    selected = CommandProvider(provider)
-    if selected is CommandProvider.CODEX:
-        raise CommandRenderError("UNSUPPORTED: Codex has no canonical command adapter")
-    if selected is CommandProvider.ANTIGRAVITY:
-        raise CommandRenderError("UNSUPPORTED: Antigravity has no command contract")
-    if selected is CommandProvider.COPILOT:
-        raise CommandRenderError(
-            "UNSUPPORTED: Copilot has no provider-owned command contract"
-        )
-    if selected is CommandProvider.CURSOR and spec.route is not CommandRoute.PROJECT:
-        raise CommandRenderError("UNSUPPORTED: Cursor supports project commands only")
-    if spec.name in frozenset(reserved_slugs):
-        raise CommandRenderError(
-            f"{selected.value}/{spec.name}: command slug is reserved by the provider"
-        )
-    if token_budget is None:
-        raise CommandRenderError(
-            f"{selected.value}/{spec.name}: provider token budget is required"
-        )
-
-    _reject_interpolation(spec, selected)
-    if selected is CommandProvider.CLAUDE:
-        content = _claude_markdown(spec)
-        destination = PurePosixPath(".claude", "commands", f"{spec.name}.md")
-    elif selected is CommandProvider.GEMINI:
-        prompt = spec.body.replace(_ARGUMENTS, "{{args}}") + approval_note(spec.tags)
-        content = (
-            f"description = {_quoted(spec.description)}\nprompt = {_quoted(prompt)}\n"
-        )
-        destination = PurePosixPath(".gemini", "commands", f"{spec.name}.toml")
-    elif selected is CommandProvider.OPENCODE:
-        content = _opencode_markdown(spec)
-        destination = PurePosixPath(f"{spec.name}.md")
-    else:
-        content = spec.body + approval_note(spec.tags)
-        destination = PurePosixPath(".cursor", "commands", f"{spec.name}.md")
-    measured = token_budget.measure(content)
-    if token_budget.max_tokens is not None and measured > token_budget.max_tokens:
-        raise CommandRenderError(
-            f"{selected.value}/{spec.name}: rendered command uses {measured} tokens; "
-            f"provider limit is {token_budget.max_tokens}"
-        )
-    return CommandArtifact(
-        selected,
-        spec.name,
-        destination,
-        content,
-        True,
-        measured,
-        token_budget.max_tokens,
-    )
-
-
 __all__ = (
-    "CommandArtifact",
     "CommandIntent",
-    "CommandProvider",
-    "CommandRenderError",
     "CommandRisk",
     "CommandRoute",
     "CommandSpec",
-    "CommandTokenBudget",
     "audit_command_specs",
-    "render_command",
-    "waza_bpe_counter",
 )

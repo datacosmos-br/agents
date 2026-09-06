@@ -1,6 +1,6 @@
 ---
 metadata:
-  aihub.tags: '["decision:plan-00","effective:2026-08-30","route:personal"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-08-30","route:personal"]'
 ---
 
 # Gas City boundary

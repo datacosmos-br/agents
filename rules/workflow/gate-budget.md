@@ -1,7 +1,7 @@
 ---
 description: A PR gate stays inside its offline time budget.
 metadata:
-  aihub.tags: '["decision:ADR-0004","effective:2026-09-03","route:both"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-09-03","route:both"]'
 ---
 
 # Gate budget and offline generation

@@ -31,5 +31,6 @@ After any beads reorganization:
 
 - No `/tmp` staging files remain.
 - No ad-hoc scripts that bypass the `bd` CLI.
-- No `__pycache__` or build artifacts in tracked directories.
+- Git-visible status contains no generated artifact; ignored caches remain outside
+  the inventory by the repository `.gitignore` contract.
 - `git status --short` shows only the expected changes.

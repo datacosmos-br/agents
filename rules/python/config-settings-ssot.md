@@ -2,7 +2,7 @@
 globs: "**/*.py"
 description: Read configuration through the project's typed owner
 metadata:
-  aihub.tags: '["decision:plan-00","effective:2026-08-28","route:both"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-08-28","route:both"]'
 ---
 
 # Read configuration through the project's typed owner
@@ -24,3 +24,6 @@ lookups.
   owner.
 - When the schema changes, migrate every consumer atomically, reject the old
   format, delete superseded fixtures/docs, and prove second-run fixed point.
+- In `internal_flext`, every module consumes the canonical `settings`, `config`,
+  `c`, `t`, `p`, `m`, and `u` namespaces through their public owners. A local
+  alias, duplicate class, copied scalar, or re-derived default is a violation.

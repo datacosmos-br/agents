@@ -1,0 +1,13 @@
+city: harbor
+current_rig: api
+registered_rigs:
+  - name: api
+    repository: services/api
+    state: running
+  - name: docs
+    repository: sites/docs
+    state: suspended
+requested_change:
+  rig: docs
+  operation: resume
+owner_command: gc rig

@@ -2,15 +2,16 @@
 
 - **Status:** Accepted
 - **Date:** 2026-08-30
-- **Scope:** Mandatory four-source cross-check for every bead at creation, update, and close
-- **Relates to:** Plan 12 (`12-recency-precedence-and-provider-validation-plan.md`), `rules/coordination/beads-verification.md`, Gas City surface law
-- **Records:** The operator-authored bead verification law landed through the merge of PR #52 (commit `2c792da`, 2026-08-30) without a decision record. This ADR documents that existing approval; it introduces no new decision.
+- **Scope:** Evidence required when a selected tracker is available
 
 ## Decision
 
-Every bead is the hypothesis; reality is the proof. Closing a bead requires a
-critical cross-check against four independent sources — registered state
-records, git history, measured reality, and the intent of the most recent
-integrated code — with command, working directory, exit code, and decisive
-output attached. A bead whose premise the current code retired is closed
-obsolete with evidence, never executed as written.
+Every bead is a hypothesis and reality is the proof. When a canonical tracker
+is selected and running, creating, updating, or closing a bead requires a
+critical cross-check against registered state, integration-lane Git history,
+measured reality, and the most recent integrated code. Attach the command,
+working directory, exit code, and decisive output. Close a premise retired by
+current code as obsolete with evidence; never execute stale intent.
+
+When the tracker runtime is explicitly suspended, create no substitute tracker
+or local ledger and make no tracker-backed closure claim.

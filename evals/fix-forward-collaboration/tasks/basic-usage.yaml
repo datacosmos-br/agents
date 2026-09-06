@@ -17,6 +17,8 @@ inputs:
     one shared HQ root and linked local beads for both executing rigs, explain
     their distinct evidence ownership, and coordinate producer-SHA adoption and
     combined revalidation through that graph rather than through mail alone.
+  files:
+  - path: scenario.yaml
 expected:
   output_contains: [ownership, reread, current, preserve, adopt, integration, combined, revalidate, Git, manifest, authorized, fresh preflight, continue, shared root, local bead, producer SHA]
   output_not_contains: [stash, reset, force-push, discard, rollback code, promote external, substitute tracker, replacement ledger, parallel root, mail as ledger, severe conflict, ask again, another actor]

@@ -1,25 +1,20 @@
 ---
-description: Bash Guard Lane Execution
+description: Execute lane work only through selector-free root Make verbs
 metadata:
-  aihub.tags: '["decision:plan-00","effective:2026-09-03","route:both"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-09-03","route:both"]'
 ---
 
-# Bash Guard Lane Execution
+# Execute a lane through its root Makefile
 
-Lane commands must preserve the isolated checkout and expose output for evidence.
-Use these owner-directed forms instead of changing process directories:
+From outside an authorized lane, use
+`env -C <worktree> make <public-verb>` so the selected root remains explicit.
+Pass only the exact `APPLY=Y` acknowledgement when the verb requires it. Do not
+change directory, use `make -C`, pass a selector, call an underlying tool, or
+substitute Git/provider/package CLIs for a root Make diagnostic, validation,
+generation, test, publication, or deployment verb.
 
-- `git -C <worktree> <git-verb>`;
-- `env -C <worktree> make <verb> [FILE=<path>] [WHAT=<target>]`;
-- `bun run --cwd <package-dir> <script>`;
-- `gh`, `systemctl --user`, and other provider-selected CLIs from the current city root.
-
-The only allowed directory-changing prefix is `export NAME=value;` before exactly one
-governed command. Redirecting stdout or stderr to `/dev/null` is denied: write gate
-output to the session scratchpad or let it escape, and preserve the exact command,
-working directory, exit code, and decisive output.
-
-A scoped `make check FILE=`/`make test FILE=` refusal is repaired at its scope owner and
-rerun. Only when the same command text is denied after that repair may the operator
-repeat that identical bare `make check`/`make test` command once as a deliberate guard
-experiment; record the denial and do not use it as a gate substitute.
+Preserve the exact command, worktree, exit code, decisive stdout, warning, and
+stderr. Never redirect evidence away, chain a recovery command, retry a denial,
+or reinterpret partial output as success. A guard refusal is RED: repair the
+root Make/codegen owner, then invoke the same public verb once through that
+owner. The first exception and raw traceback escape.

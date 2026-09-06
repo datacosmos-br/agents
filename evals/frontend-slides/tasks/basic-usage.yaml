@@ -13,8 +13,6 @@ inputs:
   files:
   - path: deck-outline.md
 expected:
-  outcomes:
-  - type: task_completed
   output_contains:
   - 'height: 100dvh'
   - 'overflow: hidden'

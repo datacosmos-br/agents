@@ -27,42 +27,15 @@ This agent owns **React build / bundler / runtime hydration** failures. For pure
 
 ## Build System Detection
 
-Run in order, stop at first match:
-
-```bash
-test -f next.config.js -o -f next.config.ts -o -f next.config.mjs   # Next.js
-test -f vite.config.js -o -f vite.config.ts -o -f vite.config.mjs   # Vite
-test -f rsbuild.config.js -o -f rsbuild.config.ts                   # Rsbuild
-grep -l "react-scripts" package.json                                # CRA
-test -f webpack.config.js -o -f webpack.config.ts                   # webpack
-{ test -f .parcelrc || grep -q '"parcel"' package.json; }          # Parcel
-{ test -f bunfig.toml && grep -q '"bun"' package.json; }           # Bun
-```
+Use `make audit` to obtain the typed build-system classification. Do not probe
+manifest files through ad hoc shell commands.
 
 ## Diagnostic Commands
 
 ```bash
-# Run the project's build script first — respect what's configured
-npm run build --if-present
-pnpm build 2>/dev/null
-yarn build 2>/dev/null
-bun run build 2>/dev/null
-
-# Typecheck independently of the bundler — only when TypeScript is configured
-# (skips cleanly for JavaScript-only projects)
-# Uses `npx --no-install` to honor the project's pinned TypeScript version;
-# never auto-install an unpinned compiler, which would produce non-reproducible
-# typecheck results across machines.
-npm run typecheck --if-present
-test -f tsconfig.json && npx --no-install tsc --noEmit -p tsconfig.json
-
-# Bundler-specific
-next build                          # Next.js
-vite build                          # Vite
-react-scripts build                 # CRA
-webpack --mode=production           # webpack
-parcel build src/index.html         # Parcel
-bun build ./src/index.tsx --outdir=dist
+make runtime APPLY=Y
+make check APPLY=Y
+make build APPLY=Y
 ```
 
 ## Resolution Workflow

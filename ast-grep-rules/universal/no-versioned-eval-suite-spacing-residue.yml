@@ -1,0 +1,15 @@
+id: no-versioned-eval-suite-spacing-residue
+language: Yaml
+severity: error
+message: Versioned suite manifests contain no deletion whitespace residue.
+rule:
+  all:
+  - pattern: |-
+      description: $DESCRIPTION
+      version: $VERSION
+      prompt: $PROMPT
+  - regex: '^description:[^\n]*\n(?:[ \t]*\n)+version:[^\n]*\n(?:[ \t]*\n)+prompt:'
+fix: |-
+  description: $DESCRIPTION
+  version: $VERSION
+  prompt: $PROMPT

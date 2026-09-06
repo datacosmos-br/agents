@@ -25,7 +25,7 @@ capsule_summary: |
   the local branch, the remote branch and the worktree. Retire only after
   `git merge-base --is-ancestor` exits 0 against a just-fetched base.
 metadata:
-  aihub.tags: '["decision:plan-00","effective:2026-08-29","route:personal"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-08-29","route:personal"]'
 ---
 
 # Branch and PR — integration by merge commit

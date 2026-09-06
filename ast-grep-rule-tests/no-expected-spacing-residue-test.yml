@@ -1,0 +1,10 @@
+id: no-expected-spacing-residue
+valid:
+  - |-
+      expected:
+        output_contains: [material artifact]
+invalid:
+  - |-
+      expected:
+
+        output_contains: [material artifact]

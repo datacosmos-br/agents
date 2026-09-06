@@ -1,0 +1,6 @@
+description: Backend ownership, query, authorization, and failure-path design.
+prompt: |-
+  Grade the backend-patterns response. Pass only when it traces the supplied service's N+1 query and tenant
+  boundary, proposes the smallest repository/service correction with bounded
+  pagination and observable failure behavior, and preserves the project's
+  existing stack. Reject a framework rewrite or unevidenced cache layer.

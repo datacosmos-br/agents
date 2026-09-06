@@ -3,7 +3,7 @@ name: deployment-lifecycle
 description: 'project association, development lifecycle, immutable release, runtime deployment'
 license: MIT
 metadata:
-  aihub.tags: '["activation:detected","decision:plan-00","detect:selected-tag:internal","detect:selected-tag:third-party-fork","domain:deployment","effective:2026-09-04","policy:atomic-effects","policy:fail-loud","policy:no-fallback","policy:strict-execution","provenance:agents-owned","route:project","updates:manual","usage:router"]'
+  aihub.tags: '["activation:detected","decision:ADR-0008","detect:selected-tag:internal","detect:selected-tag:third-party-fork","domain:deployment","effective:2026-09-04","policy:atomic-effects","policy:fail-loud","policy:no-fallback","policy:strict-execution","provenance:agents-owned","route:project","updates:manual","usage:router"]'
 ---
 
 # Deployment lifecycle

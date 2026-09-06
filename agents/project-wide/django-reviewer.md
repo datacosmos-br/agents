@@ -122,12 +122,9 @@ When invoked:
 ## Diagnostic Commands
 
 ```bash
-python manage.py check               # Django system check
-python manage.py makemigrations --check  # Detect missing migrations
-ruff check .                         # Fast linter
-mypy . --ignore-missing-imports      # Type checking
-bandit -r . -ll                      # Security scan (medium+)
-pytest --cov=apps --cov-report=term-missing -q  # Tests + coverage
+make runtime APPLY=Y
+make check APPLY=Y
+make test APPLY=Y
 ```
 
 ## Review Output and Approval

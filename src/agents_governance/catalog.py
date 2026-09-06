@@ -2,17 +2,17 @@
 
 from __future__ import annotations
 
-import hashlib
 import json
 import re
 import stat
 from dataclasses import dataclass
 from enum import StrEnum
 from pathlib import Path, PurePosixPath
-from typing import Any, cast
+from typing import cast
 
 from .approvals import APPROVAL_NAMESPACES, resolve_approval_tags
 from .frontmatter import cast_mapping, parse_frontmatter, require_exact_fields
+from .markdown_references import local_reference_targets, resolve_physical_reference
 
 NON_PORTABLE_PROJECT_REFERENCE = re.compile(
     r"(?:"
@@ -34,6 +34,7 @@ _TAG_NAMESPACES = (
             "activation",
             "detect",
             "domain",
+            "extends",
             "framework",
             "lens",
             "mode",
@@ -75,7 +76,26 @@ _OPTIONAL_STRING_FIELDS = frozenset({"allowed-tools", "compatibility", "license"
 _BUDGET_FIELDS = frozenset(
     {"router_tokens", "frozen_tokens", "on_demand_tokens", "max_lines"}
 )
-_INVENTORY_VERSION = 1
+_DESCRIPTION_TOKEN = r"[a-z0-9](?:[a-z0-9+./_-]*[a-z0-9+])?"
+_DESCRIPTION_TERM = re.compile(
+    rf"{_DESCRIPTION_TOKEN}(?: {_DESCRIPTION_TOKEN}){{0,2}}\Z"
+)
+_PROSE_MARKERS = frozenset(
+    {
+        "after",
+        "because",
+        "before",
+        "during",
+        "if",
+        "then",
+        "that",
+        "when",
+        "where",
+        "which",
+        "while",
+        "whose",
+    }
+)
 
 
 class SkillCategory(StrEnum):
@@ -108,21 +128,7 @@ class SkillRecord:
     activation: str | None
     subjects: tuple[str, ...]
     detectors: tuple[str, ...]
-
-
-@dataclass(frozen=True)
-class SkillPolicy:
-    """Resolved policy for one canonical skill."""
-
-    name: str
-    class_name: str
-    provenance: str
-    updates: str
-    max_tokens: int
-    max_lines: int
-    distributions: tuple[str, ...]
-    category: SkillCategory
-    tags: tuple[str, ...]
+    parents: tuple[str, ...]
 
 
 class Catalog:
@@ -130,50 +136,12 @@ class Catalog:
 
     def __init__(self, root: Path) -> None:
         self.root = root.resolve(strict=True)
-        self.config = self._load_policy(self.root / "config" / "skills.json")
-        self.owner = "agents"
-        self.project_local = False
-        self._records = self._discover(require_inventory=True)
-        self._directories = tuple(record.directory for record in self._records)
+        self._policy = self._load_policy(self.root / "config" / "skills.json")
+        self._records = self._discover()
+        self._validate_hierarchy()
+        self._validate_tree()
         for record in self._records:
             resolve_approval_tags(self.root, record.tags, record.directory / "SKILL.md")
-
-    @classmethod
-    def project(cls, root: Path, authority: Catalog) -> Catalog:
-        """Discover an authorized project's private skills under central policy."""
-
-        catalog = cls.__new__(cls)
-        catalog.root = root.resolve(strict=True)
-        catalog.config = authority.config
-        catalog.owner = "project"
-        catalog.project_local = True
-        if catalog.root == authority.root:
-            # The authorized project is the central source itself: no skill of
-            # its tree is project-local, so the local population is empty.
-            catalog._records = ()
-        else:
-            catalog._records = catalog._discover(require_inventory=False)
-        catalog._directories = tuple(record.directory for record in catalog._records)
-        for record in catalog._records:
-            resolve_approval_tags(
-                catalog.root, record.tags, record.directory / "SKILL.md"
-            )
-            if record.provenance != "project-owned":
-                raise ValueError(
-                    f"{record.directory / 'SKILL.md'}: project-local skill requires "
-                    "provenance:project-owned"
-                )
-            if record.category is SkillCategory.AGENT_WIDE:
-                raise ValueError(
-                    f"{record.directory / 'SKILL.md'}: project-local agent-wide "
-                    "skill is forbidden"
-                )
-            if record.category.conditional and "project" not in record.routes:
-                raise ValueError(
-                    f"{record.directory / 'SKILL.md'}: project-local conditional "
-                    "skill requires route:project"
-                )
-        return catalog
 
     @staticmethod
     def _load_policy(path: Path) -> dict[str, object]:
@@ -207,6 +175,104 @@ class Catalog:
             if not isinstance(value, str) or not value or value != value.strip():
                 raise TypeError(f"{path}: {field} must be a non-empty trimmed string")
         return frontmatter
+
+    @staticmethod
+    def _require_description(value: object, path: Path) -> None:
+        if not isinstance(value, str) or not value:
+            raise ValueError(f"{path}: description is required")
+        if value != value.strip() or "\n" in value or "\r" in value:
+            raise ValueError(f"{path}: description must be one trimmed line")
+        if not 12 <= len(value) <= 96 or value != value.casefold():
+            raise ValueError(f"{path}: description must be 12-96 lowercase characters")
+        if re.search(r",(?! )| ,", value):
+            raise ValueError(f"{path}: description terms require comma-space")
+        terms = value.split(", ")
+        if not 3 <= len(terms) <= 10 or len(terms) != len(set(terms)):
+            raise ValueError(f"{path}: description requires 3-10 unique terms")
+        if any(marker in term.split() for term in terms for marker in _PROSE_MARKERS):
+            raise ValueError(f"{path}: description must be terms, not prose")
+        if any(_DESCRIPTION_TERM.fullmatch(term) is None for term in terms):
+            raise ValueError(f"{path}: description contains an invalid term")
+
+    @staticmethod
+    def _physical_tree(directory: Path) -> tuple[Path, ...]:
+        if directory.is_symlink() or not directory.is_dir():
+            raise ValueError(f"skill bundle must be a physical directory: {directory}")
+        paths = tuple(sorted(directory.rglob("*")))
+        for path in paths:
+            mode = path.lstat().st_mode
+            if stat.S_ISLNK(mode):
+                raise ValueError(f"symlink forbidden in skill bundle: {path}")
+            if not stat.S_ISDIR(mode) and not stat.S_ISREG(mode):
+                raise ValueError(f"unsupported skill resource type: {path}")
+        return paths
+
+    def _require_local_links(self, directory: Path, markdown: Path) -> None:
+        text = markdown.read_text(encoding="utf-8")
+        for target in local_reference_targets(markdown, text):
+            resolved = resolve_physical_reference(directory, markdown, target)
+            resolved.relative_to(self.root)
+
+    def _validate_record(self, record: SkillRecord) -> None:
+        directory = record.directory
+        resources = self._physical_tree(directory)
+        skill_file = directory / "SKILL.md"
+        frontmatter = self._frontmatter(skill_file)
+        self._require_description(frontmatter.get("description"), skill_file)
+        budgets = cast(dict[str, int], self._policy["budgets"])
+        if (
+            len(skill_file.read_text(encoding="utf-8").splitlines())
+            > budgets["max_lines"]
+        ):
+            raise ValueError(f"{skill_file}: skill exceeds max_lines")
+        project_distributed = record.category is SkillCategory.PROJECT_WIDE or (
+            record.category.conditional
+            and "project" in record.routes
+            and record.activation != "opt-in"
+        )
+        for path in resources:
+            if not path.is_file():
+                continue
+            text = path.read_text(encoding="utf-8")
+            if project_distributed and NON_PORTABLE_PROJECT_REFERENCE.search(text):
+                raise ValueError(f"project-distributed skill is not portable: {path}")
+            if path.suffix == ".md":
+                self._require_local_links(directory, path)
+
+    def _validate_tree(self) -> None:
+        skills_root = self.root / "skills"
+        allowed_root_files = {skills_root / "README.md"}
+        category_roots = {skills_root / category.value for category in SkillCategory}
+        for entry in skills_root.iterdir():
+            if entry in allowed_root_files:
+                if entry.is_symlink() or not entry.is_file():
+                    raise ValueError(f"skill root document must be physical: {entry}")
+                continue
+            if entry not in category_roots:
+                raise ValueError(f"unknown skill root entry: {entry}")
+        owners = tuple(
+            record.directory.resolve(strict=True) for record in self._records
+        )
+        for category_root in sorted(category_roots):
+            if category_root.is_symlink() or not category_root.is_dir():
+                raise ValueError(f"skill category must be physical: {category_root}")
+            for path in sorted(category_root.rglob("*")):
+                mode = path.lstat().st_mode
+                if stat.S_ISLNK(mode):
+                    raise ValueError(f"symlink forbidden in skills tree: {path}")
+                if stat.S_ISDIR(mode):
+                    if not any(path.iterdir()):
+                        raise ValueError(f"empty skill directory is forbidden: {path}")
+                    continue
+                if not stat.S_ISREG(mode):
+                    raise ValueError(f"unsupported skill resource type: {path}")
+                resolved = path.resolve(strict=True)
+                if not any(resolved.is_relative_to(owner) for owner in owners):
+                    raise ValueError(
+                        f"orphan skill resource has no SKILL.md owner: {path}"
+                    )
+        for record in self._records:
+            self._validate_record(record)
 
     @staticmethod
     def _one_tag(
@@ -304,6 +370,13 @@ class Catalog:
         route_tags = tuple(tag for tag in tags if tag.startswith("route:"))
         activation_tags = tuple(tag for tag in tags if tag.startswith("activation:"))
         detectors = tuple(tag for tag in tags if tag.startswith("detect:"))
+        parents = tuple(
+            tag.split(":", 1)[1] for tag in tags if tag.startswith("extends:")
+        )
+        if any(_NAME.fullmatch(parent) is None for parent in parents):
+            raise ValueError(f"{skill_file}: invalid extends:* skill name")
+        if name in parents:
+            raise ValueError(f"{skill_file}: a skill cannot extend itself")
         subjects = tuple(
             tag.split(":", 1)[1] for tag in tags if tag.startswith(f"{category.value}:")
         )
@@ -354,20 +427,15 @@ class Catalog:
             activation,
             subjects,
             detectors,
+            parents,
         )
 
-    def _discover(self, *, require_inventory: bool) -> tuple[SkillRecord, ...]:
+    def _discover(self) -> tuple[SkillRecord, ...]:
         skills_root = self.root / "skills"
-        if not skills_root.exists() and not skills_root.is_symlink():
-            if require_inventory:
-                raise ValueError(
-                    f"skills root must be a physical directory: {skills_root}"
-                )
-            return ()
         if skills_root.is_symlink() or not skills_root.is_dir():
             raise ValueError(f"skills root must be a physical directory: {skills_root}")
         skill_files = tuple(sorted(skills_root.rglob("SKILL.md")))
-        if require_inventory and not skill_files:
+        if not skill_files:
             raise ValueError(f"skill inventory is empty: {skills_root}")
         records: list[SkillRecord] = []
         names: set[str] = set()
@@ -393,169 +461,62 @@ class Catalog:
             records.append(record)
         return tuple(sorted(records, key=lambda record: record.name))
 
+    def _validate_hierarchy(self) -> None:
+        """Validate the explicit general-to-specialized skill dependency DAG."""
+        by_name = {record.name: record for record in self._records}
+        ranks = {
+            SkillCategory.AGENT_WIDE: 0,
+            SkillCategory.PROJECT_WIDE: 0,
+            SkillCategory.TECHNOLOGY: 1,
+            SkillCategory.FRAMEWORK: 2,
+            SkillCategory.TOOL: 2,
+            SkillCategory.DOMAIN: 2,
+        }
+        for record in self._records:
+            router = (record.directory / "SKILL.md").read_text(encoding="utf-8")
+            for parent_name in record.parents:
+                parent = by_name.get(parent_name)
+                if parent is None:
+                    raise ValueError(
+                        f"{record.directory / 'SKILL.md'}: unknown parent skill: {parent_name}"
+                    )
+                if ranks[parent.category] > ranks[record.category]:
+                    raise ValueError(
+                        f"{record.directory / 'SKILL.md'}: parent {parent_name!r} is "
+                        "more specialized than its child"
+                    )
+                if f"${parent_name}" not in router:
+                    raise ValueError(
+                        f"{record.directory / 'SKILL.md'}: parent ${parent_name} must "
+                        "be referenced explicitly"
+                    )
+
+        visited: set[str] = set()
+        active: list[str] = []
+
+        def visit(name: str) -> None:
+            if name in visited:
+                return
+            if name in active:
+                start = active.index(name)
+                cycle = " -> ".join((*active[start:], name))
+                raise ValueError(f"cyclic skill hierarchy: {cycle}")
+            active.append(name)
+            for parent_name in by_name[name].parents:
+                visit(parent_name)
+            active.pop()
+            visited.add(name)
+
+        for name in sorted(by_name):
+            visit(name)
+
     def records(self) -> tuple[SkillRecord, ...]:
         return self._records
-
-    def skill_dirs(self) -> tuple[Path, ...]:
-        return self._directories
-
-    def record(self, name: str) -> SkillRecord:
-        selected = tuple(record for record in self._records if record.name == name)
-        if len(selected) != 1:
-            raise KeyError(f"unknown canonical skill: {name}")
-        return selected[0]
-
-    @staticmethod
-    def _distributions(record: SkillRecord) -> tuple[str, ...]:
-        if record.updates == "forbidden":
-            return ()
-        if record.category is SkillCategory.AGENT_WIDE:
-            return ("personal",)
-        if record.category is SkillCategory.PROJECT_WIDE:
-            return ("project-generic",)
-        capabilities = tuple(
-            f"{route}-capability:{record.category.value}:{subject}"
-            for route in record.routes
-            for subject in record.subjects
-        )
-        return ("personal", *capabilities) if "agent" in record.routes else capabilities
-
-    def _policy(self, record: SkillRecord) -> SkillPolicy:
-        budgets = cast(dict[str, int], self.config["budgets"])
-        if record.updates == "forbidden":
-            max_tokens = budgets["frozen_tokens"]
-        elif record.usage == "router":
-            max_tokens = budgets["router_tokens"]
-        else:
-            max_tokens = budgets["on_demand_tokens"]
-        return SkillPolicy(
-            record.name,
-            record.usage.replace("-", "_"),
-            record.provenance,
-            record.updates,
-            max_tokens,
-            budgets["max_lines"],
-            self._distributions(record),
-            record.category,
-            record.tags,
-        )
-
-    def policy(self, name: str) -> SkillPolicy:
-        return self._policy(self.record(name))
-
-    def policy_for(self, directory: Path) -> SkillPolicy:
-        canonical = directory.resolve(strict=True)
-        selected = tuple(
-            record
-            for record in self._records
-            if record.directory.resolve(strict=True) == canonical
-        )
-        if len(selected) != 1:
-            raise KeyError(f"unknown canonical skill directory: {directory}")
-        return self._policy(selected[0])
-
-    def names_for(self, distribution: str) -> frozenset[str]:
-        return frozenset(
-            record.name
-            for record in self._records
-            if distribution in self._distributions(record)
-        )
-
-    @staticmethod
-    def physical_tree_contract(directory: Path) -> str:
-        digest = hashlib.sha256()
-        root_metadata = directory.lstat()
-        paths: tuple[Path, ...]
-        if stat.S_ISLNK(root_metadata.st_mode):
-            raise ValueError(f"symlink forbidden in physical bundle: {directory}")
-        if stat.S_ISREG(root_metadata.st_mode):
-            paths = (directory,)
-            root_is_file = True
-        elif stat.S_ISDIR(root_metadata.st_mode):
-            paths = (directory, *sorted(directory.rglob("*")))
-            root_is_file = False
-        else:
-            raise ValueError(f"unsupported file type in physical bundle: {directory}")
-        for path in paths:
-            metadata = path.lstat()
-            if stat.S_ISLNK(metadata.st_mode):
-                raise ValueError(f"symlink forbidden in physical bundle: {path}")
-            if stat.S_ISREG(metadata.st_mode):
-                entry_type = "file"
-            elif stat.S_ISDIR(metadata.st_mode):
-                entry_type = "directory"
-            else:
-                raise ValueError(f"unsupported file type in physical bundle: {path}")
-            relative = (
-                "."
-                if root_is_file or path == directory
-                else path.relative_to(directory).as_posix()
-            )
-            digest.update(entry_type.encode())
-            digest.update(b"\0")
-            digest.update(relative.encode())
-            digest.update(b"\0")
-            digest.update(f"{stat.S_IMODE(metadata.st_mode):04o}".encode())
-            digest.update(b"\0")
-            if entry_type == "file":
-                digest.update(path.read_bytes())
-                digest.update(b"\0")
-        return digest.hexdigest()
-
-    @staticmethod
-    def digest_tree(directory: Path) -> str:
-        Catalog.physical_tree_contract(directory)
-        digest = hashlib.sha256()
-        paths = (
-            (directory,)
-            if directory.is_file()
-            else tuple(sorted(item for item in directory.rglob("*") if item.is_file()))
-        )
-        for path in paths:
-            relative = (
-                path.name
-                if directory.is_file()
-                else path.relative_to(directory).as_posix()
-            )
-            digest.update(relative.encode())
-            digest.update(b"\0")
-            digest.update(path.read_bytes())
-            digest.update(b"\0")
-        return digest.hexdigest()
-
-    def inventory(self) -> list[dict[str, Any]]:
-        entries: list[dict[str, Any]] = []
-        for record in self._records:
-            policy = self._policy(record)
-            entries.append(
-                {
-                    "name": record.name,
-                    "owner": self.owner,
-                    "category": record.category.value,
-                    "class": policy.class_name,
-                    "provenance": policy.provenance,
-                    "updates": policy.updates,
-                    "max_tokens": policy.max_tokens,
-                    "max_lines": policy.max_lines,
-                    "distributions": list(policy.distributions),
-                    "tags": list(record.tags),
-                    "path": record.directory.relative_to(self.root).as_posix(),
-                    "digest": self.digest_tree(record.directory),
-                }
-            )
-        return entries
-
-    def inventory_payload(self) -> dict[str, Any]:
-        return {"version": _INVENTORY_VERSION, "skills": self.inventory()}
-
-    def render_inventory(self) -> str:
-        return json.dumps(self.inventory_payload(), indent=2, sort_keys=True) + "\n"
 
 
 __all__ = (
     "NON_PORTABLE_PROJECT_REFERENCE",
     "Catalog",
     "SkillCategory",
-    "SkillPolicy",
     "SkillRecord",
 )

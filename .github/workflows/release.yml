@@ -23,31 +23,18 @@ jobs:
           fetch-depth: 0
       - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
       - uses: jdx/mise-action@c2a87611a18de5b3828c5652fe268e992400cb5c # v4.3.0
-      - name: Prepare canonical shell storage
-        run: install -d -m 700 "$HOME/tmp"
-      - name: Install pinned Waza
-        run: |
-          install -d -m 700 "$HOME/bin"
-          install -d -m 700 "$HOME/.local/state/waza-install"
-          curl --fail --location \
-            --output "$HOME/.local/state/waza-install/waza-linux-amd64" \
-            https://github.com/microsoft/waza/releases/download/v0.38.7/waza-linux-amd64
-          curl --fail --location \
-            --output "$HOME/.local/state/waza-install/checksums.txt" \
-            https://github.com/microsoft/waza/releases/download/v0.38.7/checksums.txt
-          cd "$HOME/.local/state/waza-install"
-          grep ' waza-linux-amd64$' checksums.txt | sha256sum --check --strict -
-          install -m 755 waza-linux-amd64 "$HOME/bin/waza"
-          echo "$HOME/bin" >> "$GITHUB_PATH"
-      - name: Run complete offline pipeline
-        run: |
-          uv sync --all-groups
-          make ci
-      - name: Build release artifacts
-        run: uv build
-      - name: Write checksums
-        run: cd dist && sha256sum ./* > SHA256SUMS
-      - name: Publish release
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.cache/agents-governance/pytest/.testmondata
+          key: release-testmon-${{ runner.os }}-${{ hashFiles('uv.lock') }}-${{ github.sha }}
+          restore-keys: |
+            release-testmon-${{ runner.os }}-${{ hashFiles('uv.lock') }}-
+            release-testmon-${{ runner.os }}-
+      - name: Provision declared tools and environment
+        run: make setup APPLY=Y
+      - name: Run complete runtime-first pipeline
+        run: make ci APPLY=Y
+      - name: Publish validated immutable release
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release create "$GITHUB_REF_NAME" --verify-tag --generate-notes dist/*
+        run: make publish APPLY=Y

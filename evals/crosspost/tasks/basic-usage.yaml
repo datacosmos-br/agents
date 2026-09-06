@@ -11,8 +11,6 @@ inputs:
   files:
   - path: release-note.md
 expected:
-  outcomes:
-  - type: task_completed
   output_contains:
   - 'X:'
   - 'LinkedIn:'

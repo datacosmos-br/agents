@@ -2,14 +2,9 @@
 
 | ADR | Date | Status | Decision |
 |---|---|---|---|
-| `ADR-0001` (doc file) | 2026-08-27 | Accepted | Skills, commands, agents, and rules retain distinct canonical types. |
-| `ADR-0002` (doc file) | 2026-08-27 | Accepted | Skill paths own distribution/primary group; tags own orthogonal semantics. |
-| `ADR-0003` (doc file) | 2026-08-27 | Accepted | Provider outputs are typed, provider-native physical projections. |
-| `ADR-0004` (doc file) | 2026-08-28 | Accepted | Agent runtime uses one optionless fail-loud `agentsctl` facade and no keyring. |
-| `ADR-0005` (doc file) | 2026-08-28 | Accepted | Governance composes typed owners and projects through provider-native instructions and lifecycle surfaces. |
-| `ADR-0006` (doc file) | 2026-08-28 | Accepted | Historical governance is synthesized by behavior into current owners, never copied by structure. |
-| `ADR-0007` (doc file) | 2026-08-30 | Accepted | Every bead is verified against four independent sources with attached evidence before it is created, updated, or closed. |
-
-Implementation order, runtime evidence, and landing state belong to the active
-`master v7 execution package` (doc file), not to these
-decision records.
+| `ADR-0001` | 2026-08-27 | Accepted | Skills, commands, agents, and rules retain distinct semantic types. |
+| `ADR-0002` | 2026-08-27 | Accepted | Recursive skill paths own identity and primary group; validated tags own orthogonal semantics. |
+| `ADR-0006` | 2026-08-28 | Accepted | Historical governance is reduced to current behavior and then removed, never archived. |
+| `ADR-0007` | 2026-08-30 | Accepted | A selected running tracker is verified against registered, Git, measured, and integrated reality. |
+| `ADR-0008` | 2026-09-03 | Accepted | `GovernanceBundle` is the sole read-only semantic package boundary; AI Hub owns every runtime effect. |
+| `ADR-0011` | 2026-09-05 | Accepted | Session history is harvested into typed findings, routed by guarantees to owner artifacts, and landed by city formulas up to an administrative merge. |

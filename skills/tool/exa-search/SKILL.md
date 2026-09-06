@@ -2,7 +2,7 @@
 name: exa-search
 description: 'exa search, web research, source discovery'
 metadata:
-  aihub.tags: '["activation:opt-in","decision:plan-00","detect:opt-in:exa","effective:2026-08-28","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:no-keyring","policy:preflight-before-effects","policy:required-environment","policy:strict-execution","policy:zero-residue","provenance:agents-owned","route:agent","tool:exa","updates:manual","usage:on-demand"]'
+  aihub.tags: '["activation:opt-in","decision:ADR-0008","detect:opt-in:exa","effective:2026-08-28","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:no-keyring","policy:preflight-before-effects","policy:required-environment","policy:strict-execution","policy:zero-residue","provenance:agents-owned","route:agent","tool:exa","updates:manual","usage:on-demand"]'
 ---
 
 # Exa Search

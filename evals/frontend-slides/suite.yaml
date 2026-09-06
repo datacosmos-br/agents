@@ -1,0 +1,9 @@
+description: Accessible zero-dependency HTML decks with viewport validation.
+prompt: |-
+  Grade the frontend-slides response. Pass only if it follows the supplied
+  outline and chosen preset, produces a zero-dependency semantic HTML deck,
+  applies mandatory viewport and density constraints, implements keyboard,
+  wheel, touch, reveal, progress, and reduced-motion behavior, and reports
+  validation at all requested viewport classes without hiding overflow.
+  Reject undeclared remote dependencies, deferred preview cleanup, or
+  publication before complete viewport validation.

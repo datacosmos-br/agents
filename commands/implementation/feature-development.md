@@ -3,7 +3,7 @@ name: feature-development
 description: Implement one approved feature through project owners, consumers, runtime, and gates.
 argument-hint: "<approved feature contract or specification>"
 metadata:
-  aihub.tags: '["decision:plan-00","effective:2026-08-29","intent:implementation","risk:write","route:project"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-08-29","intent:implementation","risk:write","route:project"]'
 ---
 
 # Feature development

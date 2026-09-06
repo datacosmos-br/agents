@@ -1,19 +1,14 @@
-"""Strict provider-neutral agent-profile discovery and rendering."""
+"""Strict provider-neutral agent-profile discovery."""
 
 from __future__ import annotations
 
 import json
 import re
 import stat
-from collections.abc import Mapping
 from dataclasses import dataclass
-from enum import StrEnum
 from pathlib import Path, PurePosixPath
-from typing import Never, cast
+from typing import cast
 
-import yaml
-
-from .artifact_contract import validate_relative_physical_artifact
 from .catalog import NON_PORTABLE_PROJECT_REFERENCE
 from .frontmatter import parse_frontmatter
 
@@ -44,22 +39,6 @@ _CANONICAL_CAPABILITIES = frozenset(
 )
 
 
-class AgentProvider(StrEnum):
-    CLAUDE = "claude"
-    CODEX = "codex"
-    CURSOR = "cursor"
-    COPILOT = "copilot"
-    GEMINI = "gemini"
-    OPENCODE = "opencode"
-    ANTIGRAVITY = "antigravity"
-    POOL = "pool"
-
-
-class AgentContext(StrEnum):
-    PERSONAL = "personal"
-    PROJECT = "project"
-
-
 @dataclass(frozen=True)
 class AgentProfile:
     path: Path
@@ -74,22 +53,6 @@ class AgentProfile:
     role: str
     detectors: tuple[str, ...]
     instructions: str
-
-
-@dataclass(frozen=True)
-class AgentArtifact:
-    provider: AgentProvider
-    context: AgentContext
-    name: str
-    destination: PurePosixPath
-    content: str
-
-    def __post_init__(self) -> None:
-        validate_relative_physical_artifact(self.destination, self.content, "agent")
-
-
-class AgentRenderError(ValueError):
-    """The selected provider cannot preserve the complete agent contract."""
 
 
 def _frontmatter(path: Path) -> tuple[dict[str, object], str]:
@@ -299,196 +262,7 @@ def audit_agent_profiles(root: Path) -> tuple[AgentProfile, ...]:
     return tuple(profiles)
 
 
-def _render_frontmatter(metadata: dict[str, object], body: str) -> str:
-    dumped = yaml.safe_dump(
-        metadata, allow_unicode=True, default_flow_style=False, sort_keys=False
-    ).removesuffix("\n")
-    return f"---\n{dumped}\n---\n\n{body}"
-
-
-def _body(profile: AgentProfile, prompt_defense: str) -> str:
-    if prompt_defense.lstrip().startswith("---"):
-        raise AgentRenderError(
-            "prompt-defense composition source must be body text, not frontmatter"
-        )
-    if not prompt_defense.strip():
-        raise AgentRenderError("prompt-defense composition source is empty")
-    return f"{prompt_defense.rstrip()}\n\n{profile.instructions.lstrip()}"
-
-
-def _unsupported(
-    profile: AgentProfile, provider: AgentProvider, context: AgentContext, reason: str
-) -> Never:
-    raise AgentRenderError(
-        f"UNSUPPORTED: {provider.value}/{context.value}/{profile.name}: {reason}"
-    )
-
-
-_CLAUDE_TOOLS = {
-    "filesystem:glob": ("Glob",),
-    "filesystem:grep": ("Grep",),
-    "filesystem:read": ("Read",),
-    "filesystem:write": ("Edit", "Write"),
-    "shell:execute": ("Bash",),
-    "web:fetch": ("WebFetch",),
-    "web:search": ("WebSearch",),
-}
-_GEMINI_TOOLS = {
-    "filesystem:glob": ("glob",),
-    "filesystem:grep": ("grep_search",),
-    "filesystem:read": ("read_file",),
-    "filesystem:write": ("replace", "write_file"),
-    "shell:execute": ("run_shell_command",),
-    "web:fetch": ("web_fetch",),
-    "web:search": ("google_web_search",),
-}
-_OPENCODE_TOOLS = {
-    "filesystem:glob": ("glob",),
-    "filesystem:grep": ("grep",),
-    "filesystem:read": ("read",),
-    "filesystem:write": ("edit",),
-    "shell:execute": ("bash",),
-    "web:fetch": ("webfetch",),
-    "web:search": ("websearch",),
-}
-_COPILOT_TOOLS = {
-    "filesystem:glob": ("search",),
-    "filesystem:grep": ("search",),
-    "filesystem:read": ("read",),
-    "filesystem:write": ("edit",),
-    "shell:execute": ("execute",),
-    "web:fetch": ("web",),
-    "web:search": ("web",),
-}
-
-
-def _mapped_tools(
-    profile: AgentProfile,
-    provider: AgentProvider,
-    context: AgentContext,
-    mapping: Mapping[str, tuple[str, ...]],
-    mcp_style: str,
-) -> tuple[str, ...]:
-    rendered: list[str] = []
-    for capability in profile.tools:
-        if capability in mapping:
-            rendered.extend(mapping[capability])
-        else:
-            mcp = _MCP_CAPABILITY.fullmatch(capability)
-            if mcp is None:
-                _unsupported(
-                    profile, provider, context, f"unmapped capability {capability}"
-                )
-            rendered.append(mcp_style.format(server=mcp["server"], tool=mcp["tool"]))
-    return tuple(dict.fromkeys(rendered))
-
-
-def render_agent(
-    profile: AgentProfile,
-    provider: AgentProvider | str,
-    context: AgentContext | str,
-    *,
-    prompt_defense: str,
-) -> AgentArtifact:
-    """Render one complete supported agent or raise immediately."""
-
-    selected_provider = AgentProvider(provider)
-    selected_context = AgentContext(context)
-    if selected_provider in {
-        AgentProvider.CURSOR,
-        AgentProvider.CODEX,
-        AgentProvider.ANTIGRAVITY,
-        AgentProvider.POOL,
-    }:
-        _unsupported(
-            profile,
-            selected_provider,
-            selected_context,
-            "complete capability allowlist is not proven",
-        )
-    body = _body(profile, prompt_defense)
-    if selected_provider is AgentProvider.CLAUDE:
-        mapped = _mapped_tools(
-            profile,
-            selected_provider,
-            selected_context,
-            _CLAUDE_TOOLS,
-            "mcp__{server}__{tool}",
-        )
-        metadata: dict[str, object] = {
-            "name": profile.name,
-            "description": profile.description,
-        }
-        metadata["tools"] = list(mapped)
-        destination = PurePosixPath(".claude", "agents", f"{profile.name}.md")
-    elif selected_provider is AgentProvider.COPILOT:
-        mapped = _mapped_tools(
-            profile,
-            selected_provider,
-            selected_context,
-            _COPILOT_TOOLS,
-            "{server}/{tool}",
-        )
-        metadata = {
-            "name": profile.name,
-            "description": profile.description,
-            "target": "github-copilot",
-            "tools": list(mapped),
-        }
-        destination = (
-            PurePosixPath(".copilot", "agents", f"{profile.name}.agent.md")
-            if selected_context is AgentContext.PERSONAL
-            else PurePosixPath(".github", "agents", f"{profile.name}.agent.md")
-        )
-    elif selected_provider is AgentProvider.GEMINI:
-        mapped = _mapped_tools(
-            profile,
-            selected_provider,
-            selected_context,
-            _GEMINI_TOOLS,
-            "mcp_{server}_{tool}",
-        )
-        metadata = {
-            "name": profile.name,
-            "description": profile.description,
-            "kind": "local",
-            "tools": list(mapped),
-        }
-        destination = PurePosixPath(".gemini", "agents", f"{profile.name}.md")
-    else:
-        mapped = _mapped_tools(
-            profile,
-            selected_provider,
-            selected_context,
-            _OPENCODE_TOOLS,
-            "{server}_{tool}",
-        )
-        permissions = {"*": "deny", **dict.fromkeys(mapped, "allow")}
-        metadata = {
-            "description": profile.description,
-            "mode": "subagent",
-            "permission": permissions,
-        }
-        destination = (
-            PurePosixPath(".config", "opencode", "agents", f"{profile.name}.md")
-            if selected_context is AgentContext.PERSONAL
-            else PurePosixPath(".opencode", "agents", f"{profile.name}.md")
-        )
-    return AgentArtifact(
-        selected_provider,
-        selected_context,
-        profile.name,
-        destination,
-        _render_frontmatter(metadata, body),
-    )
-
-
 __all__ = (
-    "AgentArtifact",
-    "AgentContext",
     "AgentProfile",
-    "AgentProvider",
-    "AgentRenderError",
     "audit_agent_profiles",
-    "render_agent",
 )

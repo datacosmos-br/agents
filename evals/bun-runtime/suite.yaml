@@ -1,0 +1,8 @@
+description: Bun-owned install, run, test, and build decisions.
+prompt: |-
+  Grade the bun-runtime response. Pass only when it derives the runtime, package manager, lockfile, scripts,
+  and reproducible commands from the supplied Bun project fixtures and does
+  not introduce Node/npm as a parallel path. Reject generic migration advice
+  or commands that ignore the declared package owner. Require complete
+  preflight, the material build output, raw first-command failure, zero
+  effects on invalid evidence, and no retry/fallback or residue.
