@@ -1,4 +1,4 @@
-# ADR-0011: Fork versions derive from measured upstream releases
+# ADR-0013: Fork versions derive from measured upstream releases
 
 Date: 2026-09-06
 Status: Accepted

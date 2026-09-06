@@ -3,7 +3,7 @@ description: Mandatory fail-loud execution protocol for every project workflow.
 capsule_summary: |
   Every project applies all of these together: fail loud, no fallback, preflight
   before effects, required environment, atomic effects, causal subprocess
-  propagation, no keyring, zero residue.
+  propagation, no application keyring read, zero residue.
 
   A project rule may reject more inputs; it can never relax, catch, normalize,
   skip, defer or route around any of them. Existing opposing behavior is a
@@ -22,7 +22,7 @@ Every project and projected agent applies all of these policies together:
 - `required environment` (rule file);
 - `atomic effects` (rule file);
 - `causal subprocess propagation` (rule file);
-- `no keyring` (rule file);
+- `no application keyring read` (rule file);
 - `zero residue` (rule file).
 
 A project rule may make them narrower or reject

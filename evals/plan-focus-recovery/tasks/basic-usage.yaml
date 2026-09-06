@@ -10,5 +10,5 @@ inputs:
   files:
   - path: active-plan.yaml
 expected:
-  output_contains: [Run Evaluations, approval, merge, integration SHA, pytest_runner.py]
+  output_contains: [Runtime-first governance validation, approval, merge, integration SHA, pytest_runner.py]
   output_not_contains: [repository-wide expansion, resume now, DONE]

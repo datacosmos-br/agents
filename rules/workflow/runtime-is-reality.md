@@ -13,19 +13,24 @@ contract is measured may tests be created, adapted, or invoked. An editable
 checkout, test assertion, snapshot, local cache, generated copy, or stale
 environment does not define runtime behavior.
 
-A test that preserves removed behavior, copied configuration, private shape, or
-a hardcoded owner value is defective and is rewritten or deleted. Use the
-public root and typed shared fixtures. Missing public constants and invalid
-dependency wiring are exercised through the actual import and call path.
-
-Every test path uses its selector-free root Make verb with `APPLY=Y`, the same
-external persistent testmon database, and the observable-test rule. The full
-verb runs incremental selection first and no-selection second without clearing
-the database. Warning, skip, empty output, missing tool/report, zero collection,
-catch, retry, or normalization is RED. A typed incremental testmon cache hit may
-execute zero tests only with database integrity and complete deselection
-accounting; it is reported as a cache hit, never as tests passed.
-
-The newest declared tool version owns its diagnostics. Do not cap, downgrade,
-substitute, suppress, or relabel a result. Correct the owner and rerun the same
-root Make verb; the first exception and raw traceback remain causal.
+- A test that only passes by keeping removed or legacy artifacts is wrong: fix or
+  delete the test; never restore legacy just to make it pass.
+- A config/settings test that breaks when a valid SSOT value changes is defective.
+  Test contracts and derivations across arbitrary valid inputs; goldens may lock
+  generated structure, never mutable config-owned values.
+- A missing facade constant fails only at runtime — import and run the real path.
+- A test run that executes zero tests is not evidence, whatever its exit code.
+  Impact selection (testmon) that does not select the test of the change
+  (`3 deselected / 0 selected`, or a template/Makefile edit no Python test
+  claims) and a runner that reports `no tests ran` with exit 0 after a
+  collection error are both false greens: name the test that asserts the
+  change and prove it ran.
+- Before concluding root cause, prove the running or installed artifact matches
+  the declared authoritative revision or release. An editable checkout, local
+  cache, generated copy, or stale environment is not evidence of remote/runtime
+  behavior until identity is verified.
+- Use the newest released version of every required tool. Every diagnostic it
+  emits is blocking. A cap, downgrade, substitution, suppression, compatibility
+  classification, or false-positive classification requires prior operator
+  discussion, reproducible evidence, and explicit authorization; without all
+  three, correct the owner and rerun that released version.
