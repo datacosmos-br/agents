@@ -2,7 +2,7 @@
 name: mcp-server-patterns
 description: 'mcp servers, protocol integration, sdk patterns'
 metadata:
-  aihub.tags: '["activation:detected","decision:ADR-0008","detect:dependency:npm:@modelcontextprotocol/sdk","detect:dependency:python:mcp","effective:2026-08-28","policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:no-keyring","policy:preflight-before-effects","policy:required-environment","policy:strict-execution","policy:zero-residue","provenance:agents-owned","route:project","tool:mcp","updates:manual","usage:on-demand"]'
+  aihub.tags: '["activation:detected","decision:ADR-0008","detect:dependency:npm:@modelcontextprotocol/sdk","detect:dependency:python:mcp","effective:2026-08-28","route:project","subject:mcp","usage:on-demand"]'
 ---
 
 # MCP Server Patterns

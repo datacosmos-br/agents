@@ -2,7 +2,7 @@
 name: beads-jira-integration
 description: 'beads jira sync, epic link, flext service, native cli only'
 metadata:
-  aihub.tags: '["activation:opt-in","decision:ADR-0008","detect:opt-in:beads-jira","effective:2026-09-02","framework:flext","policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","policy:zero-residue","provenance:agents-owned","route:agent","tool:beads","updates:manual","usage:router"]'
+  aihub.tags: '["activation:opt-in","decision:ADR-0008","detect:opt-in:beads-jira","effective:2026-09-02","route:agent","subject:beads","subject:flext","usage:router"]'
 ---
 
 # Beads Jira Integration

@@ -3,7 +3,7 @@ name: dry-refactoring
 description: 'jscpd clones, copy-paste duplication, extract function, refactoring workflow'
 allowed-tools: 'Bash(make duplication APPLY=Y)'
 metadata:
-  aihub.tags: '["activation:opt-in","decision:ADR-0008","detect:opt-in:dry-refactoring","effective:2026-09-03","provenance:agents-owned","route:agent","route:project","tool:dry-refactoring","updates:manual","usage:on-demand"]'
+  aihub.tags: '["activation:opt-in","decision:ADR-0008","detect:opt-in:dry-refactoring","effective:2026-09-03","route:agent","route:project","subject:dry","usage:on-demand"]'
   version: 1.3.0
 ---
 

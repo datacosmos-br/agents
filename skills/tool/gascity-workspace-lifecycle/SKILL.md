@@ -2,7 +2,7 @@
 name: gascity-workspace-lifecycle
 description: 'gas city, workspace lifecycle, runtime orchestration'
 metadata:
-  aihub.tags: '["activation:opt-in","decision:ADR-0008","detect:opt-in:gascity","effective:2026-08-30","policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:no-keyring","policy:preflight-before-effects","policy:required-environment","policy:strict-execution","policy:zero-residue","provenance:agents-owned","route:agent","tool:gascity","updates:manual","usage:on-demand"]'
+  aihub.tags: '["activation:opt-in","decision:ADR-0008","detect:opt-in:gascity","effective:2026-08-30","route:agent","subject:gascity","usage:on-demand"]'
 ---
 ## Verification (mandatory)
 

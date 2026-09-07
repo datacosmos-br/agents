@@ -3,7 +3,7 @@ name: workspace-toolchain
 description: 'tool layers, binary owners, workspace generators, host boundaries'
 license: MIT
 metadata:
-  aihub.tags: '["decision:ADR-0008","effective:2026-08-29","policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","policy:zero-residue","provenance:agents-owned","role:configuration","updates:manual","usage:router"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-08-29","usage:router"]'
   version: 1.0.0
 ---
 

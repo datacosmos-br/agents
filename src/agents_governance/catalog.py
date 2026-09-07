@@ -33,40 +33,66 @@ _TAG_NAMESPACES = (
         {
             "activation",
             "detect",
-            "domain",
             "extends",
-            "framework",
-            "lens",
-            "mode",
-            "policy",
-            "provenance",
-            "role",
             "route",
-            "technology",
-            "tool",
-            "updates",
+            "subject",
             "usage",
         }
     )
     | APPROVAL_NAMESPACES
 )
 _USAGE_TAGS = frozenset({"usage:frozen", "usage:on-demand", "usage:router"})
-_UPDATES_TAGS = frozenset({"updates:forbidden", "updates:manual"})
 _ROUTE_TAGS = frozenset({"route:agent", "route:project"})
 _ACTIVATION_TAGS = frozenset(
     {"activation:detected", "activation:detected-or-opt-in", "activation:opt-in"}
 )
-_POLICY_TAGS = frozenset(
+_SUBJECTS = frozenset(
     {
-        "policy:atomic-effects",
-        "policy:causal-subprocess",
-        "policy:fail-loud",
-        "policy:no-fallback",
-        "policy:no-keyring",
-        "policy:preflight-before-effects",
-        "policy:required-environment",
-        "policy:strict-execution",
-        "policy:zero-residue",
+        "agent-browser",
+        "agents",
+        "architecture",
+        "argocd",
+        "beads",
+        "bun",
+        "context7",
+        "cosmos-gitops",
+        "cpp",
+        "dart",
+        "deployment",
+        "dmux",
+        "dry",
+        "exa",
+        "fal-ai",
+        "flext",
+        "flutter",
+        "frontend",
+        "fundraising",
+        "gascity",
+        "git",
+        "github",
+        "go",
+        "helm",
+        "jvm",
+        "language",
+        "market-research",
+        "mcp",
+        "mle",
+        "nextjs",
+        "openspec",
+        "playwright",
+        "pydantic",
+        "python",
+        "react",
+        "rust",
+        "schema",
+        "scope",
+        "ts",
+        "turbopack",
+        "upstream",
+        "vault",
+        "video",
+        "web",
+        "x-api",
     }
 )
 _FRONTMATTER_FIELDS = frozenset(
@@ -122,8 +148,6 @@ class SkillRecord:
     directory: Path
     tags: tuple[str, ...]
     usage: str
-    updates: str
-    provenance: str
     routes: tuple[str, ...]
     activation: str | None
     subjects: tuple[str, ...]
@@ -350,22 +374,8 @@ class Catalog:
                 raise ValueError(f"{skill_file}: invalid tag: {tag}")
             if tag.split(":", 1)[0] not in _TAG_NAMESPACES:
                 raise ValueError(f"{skill_file}: unsupported tag namespace: {tag}")
-            if tag.startswith("policy:") and tag not in _POLICY_TAGS:
-                raise ValueError(f"{skill_file}: unsupported tag: {tag}")
 
         usage = self._one_tag(skill_file, tags, "usage", _USAGE_TAGS)
-        updates = self._one_tag(skill_file, tags, "updates", _UPDATES_TAGS)
-        provenance_tags = tuple(tag for tag in tags if tag.startswith("provenance:"))
-        if len(provenance_tags) != 1:
-            raise ValueError(
-                f"{skill_file}: expected exactly one provenance:* tag; "
-                f"got {len(provenance_tags)}"
-            )
-        provenance = provenance_tags[0].split(":", 1)[1]
-        if (usage == "frozen") != (updates == "forbidden"):
-            raise ValueError(
-                f"{skill_file}: usage:frozen and updates:forbidden must coexist"
-            )
 
         route_tags = tuple(tag for tag in tags if tag.startswith("route:"))
         activation_tags = tuple(tag for tag in tags if tag.startswith("activation:"))
@@ -378,7 +388,7 @@ class Catalog:
         if name in parents:
             raise ValueError(f"{skill_file}: a skill cannot extend itself")
         subjects = tuple(
-            tag.split(":", 1)[1] for tag in tags if tag.startswith(f"{category.value}:")
+            tag.split(":", 1)[1] for tag in tags if tag.startswith("subject:")
         )
         routes: tuple[str, ...] = ()
         activation: str | None = None
@@ -393,7 +403,14 @@ class Catalog:
             activation = self._one_tag(skill_file, tags, "activation", _ACTIVATION_TAGS)
             if not subjects:
                 raise ValueError(
-                    f"{skill_file}: {category.value}:* category tag is required"
+                    f"{skill_file}: conditional skill requires at least one "
+                    f"subject:* tag"
+                )
+            unknown_subjects = frozenset(subjects) - _SUBJECTS
+            if unknown_subjects:
+                raise ValueError(
+                    f"{skill_file}: unsupported subjects: "
+                    + ", ".join(sorted(unknown_subjects))
                 )
             requires_runtime = activation in {"detected", "detected-or-opt-in"}
             if requires_runtime and not any(
@@ -410,7 +427,7 @@ class Catalog:
                 )
             for detector in detectors:
                 self._validate_detector(skill_file, detector)
-        elif route_tags or activation_tags or detectors:
+        elif route_tags or activation_tags or detectors or subjects:
             raise ValueError(
                 f"{skill_file}: {category.value} distribution is path-owned"
             )
@@ -421,8 +438,6 @@ class Catalog:
             skill_file.parent,
             tags,
             usage,
-            updates,
-            provenance,
             routes,
             activation,
             subjects,

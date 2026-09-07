@@ -2,7 +2,7 @@
 name: react-frontend-patterns
 description: 'react, ui architecture, component patterns'
 metadata:
-  aihub.tags: '["activation:detected","decision:ADR-0008","detect:dependency:npm:react","effective:2026-08-29","framework:react","policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","policy:zero-residue","provenance:agents-owned","route:project","updates:manual","usage:on-demand"]'
+  aihub.tags: '["activation:detected","decision:ADR-0008","detect:dependency:npm:react","effective:2026-08-29","route:project","subject:react","usage:on-demand"]'
 ---
 
 # React Frontend Patterns

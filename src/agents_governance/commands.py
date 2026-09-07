@@ -26,21 +26,6 @@ class CommandRoute(StrEnum):
     PROJECT = "project"
 
 
-class CommandIntent(StrEnum):
-    PLANNING = "planning"
-    IMPLEMENTATION = "implementation"
-    INSPECTION = "inspection"
-    VERIFICATION = "verification"
-    LANDING = "landing"
-    GOVERNANCE = "governance"
-
-
-class CommandRisk(StrEnum):
-    READ = "read"
-    WRITE = "write"
-    EXTERNAL = "external"
-
-
 @dataclass(frozen=True)
 class CommandSpec:
     path: Path
@@ -49,8 +34,6 @@ class CommandSpec:
     argument_hint: str | None
     tags: tuple[str, ...]
     route: CommandRoute
-    intents: tuple[CommandIntent, ...]
-    risk: CommandRisk
     body: str
 
     def __post_init__(self) -> None:
@@ -95,30 +78,16 @@ def _validate_spec(spec: CommandSpec) -> None:
         raise ValueError("command argument-hint is required with $ARGUMENTS")
     if not isinstance(spec.route, CommandRoute):
         raise TypeError("command route must be typed")
-    if not spec.intents or not all(
-        isinstance(intent, CommandIntent) for intent in spec.intents
-    ):
-        raise TypeError("command intents must contain approved typed values")
-    if tuple(sorted(spec.intents, key=lambda item: item.value)) != spec.intents:
-        raise ValueError("command intents must be sorted")
-    if not isinstance(spec.risk, CommandRisk):
-        raise TypeError("command risk must be typed")
-    expected = {
-        f"route:{spec.route.value}",
-        f"risk:{spec.risk.value}",
-        *(f"intent:{intent.value}" for intent in spec.intents),
-    }
+    expected = {f"route:{spec.route.value}"}
     if len(spec.tags) != len(set(spec.tags)) or tuple(sorted(spec.tags)) != spec.tags:
         raise ValueError("command tags must be unique and sorted")
     if set(core_tags(spec.tags)) != expected:
         raise ValueError(
-            "command tags must contain only typed route, intent, and risk values"
+            "command tags must contain only the typed route value and approval tags"
         )
 
 
-def _tags(
-    path: Path, raw: object
-) -> tuple[tuple[str, ...], CommandRoute, tuple[CommandIntent, ...], CommandRisk]:
+def _tags(path: Path, raw: object) -> tuple[tuple[str, ...], CommandRoute]:
     if not isinstance(raw, str):
         raise TypeError(f"{path}: metadata.aihub.tags must be a JSON string")
     decoded = json.loads(raw)
@@ -130,12 +99,11 @@ def _tags(
     if len(tags) != len(set(tags)) or tags != tuple(sorted(tags)):
         raise ValueError(f"{path}: command tags must be unique and sorted")
     if any(
-        not tag.startswith(("route:", "intent:", "risk:"))
-        and tag.split(":", 1)[0] not in APPROVAL_NAMESPACES
+        not tag.startswith("route:") and tag.split(":", 1)[0] not in APPROVAL_NAMESPACES
         for tag in tags
     ):
         raise ValueError(
-            f"{path}: command tags support only route, intent, risk, and approval"
+            f"{path}: command tags support only route and approval namespaces"
         )
     route_values = tuple(
         tag.removeprefix("route:") for tag in tags if tag.startswith("route:")
@@ -143,19 +111,7 @@ def _tags(
     if len(route_values) != 1:
         raise ValueError(f"{path}: command requires exactly one route")
     route = CommandRoute(route_values[0])
-    risk_values = tuple(
-        tag.removeprefix("risk:") for tag in tags if tag.startswith("risk:")
-    )
-    if len(risk_values) != 1:
-        raise ValueError(f"{path}: command requires exactly one risk")
-    risk = CommandRisk(risk_values[0])
-    intent_values = tuple(
-        tag.removeprefix("intent:") for tag in tags if tag.startswith("intent:")
-    )
-    if not intent_values:
-        raise ValueError(f"{path}: command requires at least one intent")
-    intents = tuple(CommandIntent(value) for value in intent_values)
-    return tags, route, intents, risk
+    return tags, route
 
 
 def _load_command(path: Path) -> CommandSpec:
@@ -195,10 +151,8 @@ def _load_command(path: Path) -> CommandSpec:
     typed_metadata = cast(dict[str, object], metadata)
     if frozenset(typed_metadata) != _METADATA_FIELDS:
         raise ValueError(f"{path}: command metadata fields must equal aihub.tags")
-    tags, route, intents, risk = _tags(path, typed_metadata["aihub.tags"])
-    return CommandSpec(
-        path, name, description, argument_hint, tags, route, intents, risk, body
-    )
+    tags, route = _tags(path, typed_metadata["aihub.tags"])
+    return CommandSpec(path, name, description, argument_hint, tags, route, body)
 
 
 def audit_command_specs(
@@ -237,8 +191,6 @@ def audit_command_specs(
 
 
 __all__ = (
-    "CommandIntent",
-    "CommandRisk",
     "CommandRoute",
     "CommandSpec",
     "audit_command_specs",

@@ -3,7 +3,7 @@ name: swift-build-resolver
 description: Swift/Xcode build, compilation, and dependency error resolution specialist. Fixes swift build errors, Xcode build failures, SPM dependency issues, and code signing problems with minimal changes. Use when Swift builds fail.
 tools: ["filesystem:read", "filesystem:write", "shell:execute", "filesystem:grep", "filesystem:glob"]
 metadata:
-  aihub.tags: '["activation:detected","detect:marker:Package.swift","mode:debug","role:build-resolver"]'
+  aihub.tags: '["activation:detected","detect:marker:Package.swift","mode:debug"]'
 ---
 
 # Swift Build Error Resolver

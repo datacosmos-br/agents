@@ -2,7 +2,7 @@
 name: flext-development
 description: 'flext framework, facade architecture, generated ownership, fleet development'
 metadata:
-  aihub.tags: '["activation:detected","decision:ADR-0008","detect:dependency:python:flext-core","detect:selected-tag:flext","effective:2026-08-29","extends:python-development","framework:flext","policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:no-keyring","policy:preflight-before-effects","policy:required-environment","policy:strict-execution","policy:zero-residue","provenance:agents-owned","route:project","technology:python","updates:manual","usage:router"]'
+  aihub.tags: '["activation:detected","decision:ADR-0008","detect:dependency:python:flext-core","detect:selected-tag:flext","effective:2026-08-29","extends:python-development","route:project","subject:flext","subject:python","usage:router"]'
 ---
 
 # FLEXT development

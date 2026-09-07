@@ -3,7 +3,7 @@ name: bash-guard-lane-execution
 description: 'lane command forms, gate evidence, output preservation, guard repetition'
 license: MIT
 metadata:
-  aihub.tags: '["decision:ADR-0008","effective:2026-09-03","policy:atomic-effects","policy:fail-loud","policy:preflight-before-effects","policy:strict-execution","policy:zero-residue","provenance:agents-owned","role:governance","updates:manual","usage:router"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-09-03","usage:router"]'
   version: 1.0.0
 ---
 

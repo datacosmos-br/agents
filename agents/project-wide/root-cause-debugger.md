@@ -3,7 +3,7 @@ name: root-cause-debugger
 description: Debugs issues using scientific method with structured hypothesis testing and observability-first approach. Use when investigating bugs, regressions, unexpected behavior, or system failures.
 tools: ["filesystem:read", "filesystem:write", "shell:execute", "filesystem:grep", "filesystem:glob"]
 metadata:
-  aihub.tags: '["activation:opt-in","mode:debug","role:debugger"]'
+  aihub.tags: '["activation:opt-in","mode:debug"]'
 ---
 
 <role>

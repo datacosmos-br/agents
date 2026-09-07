@@ -3,7 +3,7 @@ name: upstream-fork-maintenance
 description: 'third-party forks, upstream style, delta provenance'
 license: MIT
 metadata:
-  aihub.tags: '["activation:detected","decision:ADR-0008","detect:selected-tag:third-party-fork","domain:upstream","effective:2026-09-04","policy:fail-loud","policy:no-fallback","policy:strict-execution","provenance:agents-owned","route:project","updates:manual","usage:router"]'
+  aihub.tags: '["activation:detected","decision:ADR-0008","detect:selected-tag:third-party-fork","effective:2026-09-04","route:project","subject:upstream","usage:router"]'
 ---
 
 # Upstream fork maintenance

@@ -3,7 +3,7 @@ name: runtime-language-level
 description: 'runtime floor, precise typing, modern language capabilities'
 license: MIT
 metadata:
-  aihub.tags: '["activation:detected","decision:ADR-0008","detect:selected-tag:internal","domain:language","effective:2026-09-04","policy:fail-loud","policy:no-fallback","policy:strict-execution","provenance:agents-owned","route:project","updates:manual","usage:router"]'
+  aihub.tags: '["activation:detected","decision:ADR-0008","detect:selected-tag:internal","effective:2026-09-04","route:project","subject:language","usage:router"]'
 ---
 
 # Runtime language level

@@ -3,7 +3,7 @@ name: harmonyos-reviewer
 description: HarmonyOS reviewer for V2 state management, Navigation, API compatibility, resources, and performance.
 tools: ["filesystem:read", "shell:execute", "filesystem:grep", "filesystem:glob"]
 metadata:
-  aihub.tags: '["activation:detected","detect:marker:module.json5","mode:review","role:reviewer"]'
+  aihub.tags: '["activation:detected","detect:marker:module.json5","mode:review"]'
 ---
 
 # HarmonyOS Reviewer
