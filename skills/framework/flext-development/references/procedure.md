@@ -15,6 +15,23 @@
    ambiguous, or mismatched owner stops before effects; never fall back to a
    protected branch or another checkout.
 
+## Keep host automation outside portable libraries
+
+The portable tooling package owns Git primitives and standalone Make, codegen,
+and gate behavior. The selected host runtime owns live forge integration, code
+graph indexes, language/refactor services, hooks, MCP, and automation daemons.
+Static forge templates remain codegen data in the portable package; contacting
+the forge or maintaining host analysis state does not.
+
+A portable package may augment an operation through an installed host public
+command, hook, or MCP capability. It never imports the host application, links
+it as a language dependency, reads its private index, or reproduces its daemon.
+If that runtime is absent and unselected, continue the complete standalone
+operation without an error and without a substitute. If an available capability
+is explicitly selected, propagate its first failure. The host daemon owns graph
+build, incremental update, storage, and readiness; a managed project only
+activates its workspace and queries the public runtime contract.
+
 ## Preserve Clean Architecture and strict DI
 
 Apply `$python-development` and its `$solid` parent before this FLEXT delta.

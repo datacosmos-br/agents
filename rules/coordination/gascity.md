@@ -91,13 +91,17 @@ Work reaches an agent through the city's own surface: create the item in the
 target rig's store, route it to a configured agent, and observe through the
 city's status, session, and convoy surfaces.
 
-Routing places the session in the rig's own checkout. Gas City is a router, not
-a lane owner: it does not create the branch or the worktree, and it does not own
-a merge queue. Resolve roles and formulas from the city (`gc agent list`,
-`gc formula list`) instead of naming them from memory; a name that no longer
-resolves is drift, not a typo.
+Routing places the session in the rig's own checkout. Gas City is a router,
+not a merge queue: routing itself creates no branch or worktree. Workspace
+provisioning when a lane needs one goes through the city's transactional
+worktree owner (`gc worktree ensure|verify|cleanup`, provenance-recorded,
+single-registration and merge-gated cleanup — shipped since the 1.4.x
+series), driven by formulas or explicit callers; ad-hoc `git worktree`
+provisioning beside it is drift. Resolve roles and formulas from the city
+(`gc agent list`, `gc formula list`) instead of naming them from memory; a
+name that no longer resolves is drift, not a typo.
 
-Branch creation, worktree layout when a lane needs one, repository Git, native
+Branch ownership, repository Git, native
 gates, PR review, and merge-commit landing remain local
 responsibilities. Stop at the rig's declared integration lane; promotion beyond
 it requires an explicit operator request.

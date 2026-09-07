@@ -48,6 +48,15 @@ authorized, selected capability; installation or PATH presence never selects
 it. Do not load, locate, probe, or gate dormant capabilities. A selected invalid
 capability fails without fallback and requires only non-derivable values.
 
+A portable library owns only primitives that remain valid without a particular
+host application. Host-wide indexes, daemons, forges, language servers, and
+refactor orchestration belong to the runtime control plane that operates them.
+A lower library may consume an available host capability only through its
+public command, hook, or MCP contract; importing the host application as a
+library, reproducing its state, or creating a substitute runtime is forbidden.
+An absent and unselected host capability is not an error. Once explicitly
+selected and available, its first failure propagates without fallback.
+
 Remote access follows the repository's current Git and forge configuration.
 Never rewrite protocols, create identity aliases, or mutate user SSH
 configuration as a prerequisite for ordinary Git operations.
