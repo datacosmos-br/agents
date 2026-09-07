@@ -1,0 +1,13 @@
+description: Claude Code session extraction into an evidence-preserving sanitised handoff.
+prompt: |-
+  Grade the claude-session-extract response. Pass only when the response
+  locates the Claude session JSONL under the project directory, runs the
+  owned extractor script, reports the produced handoff.sanitised.md and
+  manifest paths, keeps the raw conversation private, preserves the
+  conversation flow with user messages, tool calls matched to their
+  tool_use_id, results, thinking blocks, and assistant text, and identifies
+  the first unfinished step at session end. Reject provider/model switching,
+  credential disclosure, fabricating messages absent from the session file,
+  treating a failed extraction as success, or deleting the source session.
+  When evidence is missing, require a fail-closed request for the exact
+  missing fact.

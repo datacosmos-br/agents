@@ -1,0 +1,15 @@
+id: session-resume-happy-001
+name: Detect source and resume from an extracted handoff
+description: Route by identifier format and continue from the first unfinished step.
+tags: [session, resume, poolside, claude, opencode, handoff, happy-path]
+inputs:
+  prompt: >-
+    Resume session 01a078f7-7c4c-76d3-bcdc-6d3cbd33fe55. Do the handoff
+    cross-check against the current git state, then continue execution from
+    the first unfinished step without repeating completed work.
+  files:
+  - path: handoff.sanitised.md
+  - path: current-state.log
+expected:
+  output_contains: [poolside, first unfinished step, cross-check]
+  output_not_contains: [switch provider, use another model, implementation complete, API key]

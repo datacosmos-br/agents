@@ -1,0 +1,10 @@
+id: session-resume-negative-001
+name: Continue work already in context
+description: Keep ordinary in-context continuation outside cross-runtime resume.
+tags: [session-resume, anti-trigger]
+inputs:
+  prompt: >-
+    Continue the refactor we just discussed in this conversation. There is no
+    foreign session, identifier, export, or handoff involved.
+expected:
+  output_not_contains: [extract_poolside_session.py, extract_claude_session.py, source detection]

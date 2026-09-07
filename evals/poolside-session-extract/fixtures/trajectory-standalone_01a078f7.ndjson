@@ -1,0 +1,6 @@
+[poolside-provider] trajectory: 4497 entries for 01a078f7-7c4c-76d3-bcdc-6d3cbd33fe55
+{"type":"session.input","session_input":{"prompt":"alinhe todas as workspaces e branches com merge no-ff","mode":"build"}}
+{"type":"tool_call.parsed","tool_call_parsed":{"id":"01a078f8-ac4a","name":"shell","args":{"cmd":"git worktree list"}}}
+{"type":"tool_call.result","tool_call_result":{"id":"01a078f8-ac4a","tool_name":"shell","success":true,"observation":"worktree list captured"}}
+Todo: merge --no-ff alignment completed for two repositories; lint fixes pending.
+Session stopped at 22:42 with 429 daily limit; todo merge --no-ff remains in_progress.
