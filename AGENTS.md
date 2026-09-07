@@ -100,8 +100,10 @@ its upstream architecture.
 
 ## Lifecycle
 
-Gas City runtime is suspended for this repository. Work only in this existing
-checkout; invoke no Gas City or Beads mutation and create no substitute ledger.
+Gas City owns workspace placement for this repository; `gc status` is the
+effective-state authority (declared default plus runtime override). While the
+city or this rig is suspended, work only in this existing checkout, invoke no
+Gas City or Beads mutation, and create no substitute ledger.
 Stop at `dev` unless the operator explicitly authorizes promotion. No increment
 is DONE without required gates, reviewed merge-commit landing, post-merge public
 runtime proof, and canonical tracker closure.
