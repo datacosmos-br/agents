@@ -18,7 +18,7 @@ Measured on 2026-09-05 and re-measured on 2026-09-06 against `dev`:
   `config/governance.json` maps 74 guarantees to `rule:`, `skill:`,
   `command:`, and `document:` owners; every skill owns a waza suite with three
   roles; `make waza APPLY=Y` verifies suites offline on every PR. The skills
-  `operator-correction-learning`, `governance-audit`, and `skill-governance`
+  `op-learning`, `governance-audit`, and `skill-governance`
   describe the loop, and nothing triggers them mechanically.
 - Since ADR-0008 this distribution has no executable: `GovernanceBundle.load()`
   is its only public surface, and AI Hub alone owns runtime effects. Model-backed

@@ -3,7 +3,7 @@ name: django-build-resolver
 description: Django/Python build, migration, and dependency error resolution specialist. Fixes pip/Poetry errors, migration conflicts, import errors, Django configuration issues, and collectstatic failures with minimal changes. Use when Django setup or startup fails.
 tools: ["filesystem:read", "filesystem:write", "shell:execute", "filesystem:grep", "filesystem:glob"]
 metadata:
-  aihub.tags: '["activation:detected","detect:dependency:django","mode:debug","role:build-resolver"]'
+  aihub.tags: '["activation:detected","detect:dependency:django","mode:debug"]'
 ---
 
 # Django Build Error Resolver
@@ -244,6 +244,6 @@ Remaining errors: 0
 
 Final: `Django Status: OK/FAILED | Errors Fixed: N | Files Modified: list`
 
-Use `python-development`, `backend-patterns`, and `security-review` only when
+Use `py-dev`, `backend-patterns`, and `security-review` only when
 their detected/requested scopes apply. Repository-specific Django behavior remains
 owned by the active project's manifests and instructions.

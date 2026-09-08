@@ -1,8 +1,0 @@
-description: C and C++ ownership, build, and verification decisions.
-prompt: |-
-  Grade the cpp-development response. Pass only when it traces ownership in the supplied C++ fixture,
-  preserves the project build contract, proposes a concrete RAII correction,
-  removes the race through bounded ownership, and names focused runtime plus
-  sanitizer evidence. Reject framework mandates, generic style summaries,
-  catch/retry/fallback, partial rewiring, or a claim without material patch,
-  first-failure, zero-effect, and residue proof.

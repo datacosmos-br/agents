@@ -1,0 +1,10 @@
+id: grilling-interview-001
+name: Grill a migration plan
+description: Stress-test a plan through sequenced questions.
+tags: [grilling, planning, interviewing, happy-path]
+inputs:
+  prompt: Grill me on my plan to migrate the storage layer to a new engine until we reach shared understanding; ask one question at a time with your recommended answer.
+  files:
+  - path: scenario.yaml
+expected:
+  output_contains: [question, recommend]

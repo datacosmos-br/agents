@@ -1,0 +1,10 @@
+id: mcp-builder-python-001
+name: Scaffold a python MCP server
+description: Build a FastMCP server with typed tools.
+tags: [mcp, fastmcp, scaffolding, happy-path]
+inputs:
+  prompt: Scaffold an MCP server in Python exposing two typed tools for weather lookup using fastmcp.
+  files:
+  - path: scenario.yaml
+expected:
+  output_contains: [fastmcp, tool, transport]

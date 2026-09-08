@@ -1,0 +1,10 @@
+id: artifacts-build-001
+name: Build a dashboard artifact
+description: Create a multi-component artifact.
+tags: [artifacts, react, shadcn, happy-path]
+inputs:
+  prompt: Build an HTML artifact with a sidebar, a sortable table, and client-side routing for a small inventory app.
+  files:
+  - path: scenario.yaml
+expected:
+  output_contains: [sidebar, routing, artifact]

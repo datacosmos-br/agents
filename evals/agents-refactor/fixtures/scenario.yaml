@@ -1,0 +1,6 @@
+scenario: refactor instruction file
+target: CLAUDE.md
+lines: 240
+contradictions:
+- 'use semicolons' vs 'no semicolons'
+sections: [code-style, testing, typescript, git-workflow]

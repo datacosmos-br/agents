@@ -1,0 +1,16 @@
+id: rtk-failure-recovery-001
+name: Failed verbose command reads tee recovery instead of re-executing
+description: Failure evidence comes from the referenced tee file, exit code preserved.
+tags: [rtk, tee-recovery, failure, evidence, edge-case]
+inputs:
+  prompt: |
+    Run a command that fails with very verbose output, then explain how you
+    recover the full original output without executing the command again, and
+    whether the failure can ever be reported as a pass.
+expected:
+  output_contains:
+  - tee
+  - exit
+  - failure
+  output_not_contains:
+  - re-execut

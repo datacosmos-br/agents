@@ -1,0 +1,9 @@
+id: agents-refactor-negative-001
+name: Ignore unrelated refactor
+description: Do not activate for source-code refactoring.
+tags: [anti-trigger, refactoring]
+inputs:
+  prompt: Refactor the payment module for clarity. No instruction files are involved.
+expected:
+  output_contains: [refactor]
+  output_not_contains: [progressive disclosure, linked topic files]

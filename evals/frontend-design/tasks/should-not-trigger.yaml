@@ -1,0 +1,9 @@
+id: frontend-design-negative-001
+name: Ignore backend styling
+description: Do not activate for non-UI work.
+tags: [anti-trigger, backend]
+inputs:
+  prompt: Design the database schema for orders and invoices. No user interface is requested.
+expected:
+  output_contains: [schema]
+  output_not_contains: [typography, signature element]

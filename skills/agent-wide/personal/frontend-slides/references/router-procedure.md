@@ -173,7 +173,7 @@ Use these maxima unless the user explicitly asks for denser slides and readabili
 
 ## Related Skills
 
-- `react-frontend-patterns` for component and interaction patterns around the deck
+- `react-patterns` for component and interaction patterns around the deck
 - `playwright-e2e` if you need automated browser verification for the final deck
 
 ## Deliverable Checklist

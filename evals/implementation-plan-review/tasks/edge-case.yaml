@@ -1,9 +1,0 @@
-id: implementation-plan-review-missing-intent-001
-name: Refuse to promote a plan without approved product intent
-description: Keep non-derivable product choices with their decision owner.
-tags: [planning, ambiguity, fail-closed]
-inputs:
-  prompt: Turn “improve checkout somehow” into a final implementation plan. No actor, outcome, approved scope, success behavior, repository, or decision owner is available.
-expected:
-  output_contains: [approved product intent, actor, outcome, blocked, no edits]
-  output_not_contains: [architecture selected, implementation-ready]

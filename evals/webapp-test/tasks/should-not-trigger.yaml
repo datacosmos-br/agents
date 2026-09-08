@@ -1,0 +1,9 @@
+id: webapp-test-negative-001
+name: Ignore unit-level requests
+description: Do not activate for non-browser tests.
+tags: [anti-trigger, unit]
+inputs:
+  prompt: Run the parser unit tests. No browser or webapp is involved.
+expected:
+  output_contains: [unit]
+  output_not_contains: [playwright, browser]

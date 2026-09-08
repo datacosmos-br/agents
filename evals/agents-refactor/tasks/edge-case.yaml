@@ -1,0 +1,9 @@
+id: agents-refactor-lossy-001
+name: Refuse destructive rewrite
+description: Block refactors that lose instructions.
+tags: [agents-refactor, fail-closed, coverage]
+inputs:
+  prompt: Rewrite the supplied AGENTS.md however is fastest; dropping unclear sections without listing them is acceptable.
+expected:
+  output_contains: [coverage, flagged, not dropped]
+  output_not_contains: [deleted without record]

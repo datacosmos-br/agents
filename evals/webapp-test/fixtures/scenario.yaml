@@ -1,0 +1,4 @@
+app: local webapp
+base_url: http://127.0.0.1:8000
+flows: [login, logout]
+console_capture: required

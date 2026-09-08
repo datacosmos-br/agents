@@ -3,7 +3,7 @@ name: rust-build-resolver
 description: Rust build, compilation, and dependency error resolution specialist. Fixes cargo build errors, borrow checker issues, and Cargo.toml problems with minimal changes. Use when Rust builds fail.
 tools: ["filesystem:read", "filesystem:write", "shell:execute", "filesystem:grep", "filesystem:glob"]
 metadata:
-  aihub.tags: '["activation:detected","detect:marker:Cargo.toml","mode:debug","role:build-resolver"]'
+  aihub.tags: '["activation:detected","detect:marker:Cargo.toml","mode:debug"]'
 ---
 
 # Rust Build Error Resolver
@@ -131,5 +131,5 @@ Remaining errors: 3
 
 Final: `Build Status: SUCCESS/FAILED | Errors Fixed: N | Files Modified: list`
 
-Use `rust-development` for detected Rust language rules and the active project's
+Use `rust-dev` for detected Rust language rules and the active project's
 own build contract for repository-specific error patterns.

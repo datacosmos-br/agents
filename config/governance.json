@@ -13,10 +13,10 @@
     "skills": [
       "caveman",
       "context-canary",
-      "fix-forward-collaboration",
+      "fix-forward",
+      "focus-recovery",
       "governance-audit",
-      "operator-correction-learning",
-      "plan-focus-recovery",
+      "op-learning",
       "sprint-closure",
       "strategic-compact",
       "verification-loop"
@@ -25,7 +25,7 @@
   "guarantees": {
     "active-intent": [
       "rule:coordination/plan-topic-monopoly",
-      "skill:plan-focus-recovery"
+      "skill:focus-recovery"
     ],
     "atomic-effects": [
       "rule:runtime/atomic-effects"
@@ -64,11 +64,11 @@
       "skill:verification-loop"
     ],
     "correction-learning": [
-      "skill:operator-correction-learning"
+      "skill:op-learning"
     ],
     "cross-runtime-session-handoff": [
       "rule:coordination/session-governance",
-      "skill:opencode-session-handoff"
+      "skill:opencode-handoff"
     ],
     "database-migration": [
       "command:database-migration",
@@ -107,15 +107,15 @@
     ],
     "file-owned-handoff": [
       "command:plan-handoff",
-      "skill:plan-focus-recovery"
+      "skill:focus-recovery"
     ],
     "finish-through-closure": [
       "skill:anti-phase-skip",
       "skill:sprint-closure"
     ],
-    "fix-forward-collaboration": [
+    "fix-forward": [
       "rule:coordination/fix-forward-collaboration",
-      "skill:fix-forward-collaboration"
+      "skill:fix-forward"
     ],
     "flext-strict-architecture": [
       "rule:architecture/internal-clean-architecture",
@@ -124,16 +124,16 @@
     "gas-city-operations": [
       "command:gc-session-triage",
       "rule:coordination/gascity",
-      "skill:gascity-change-lifecycle",
       "skill:gascity-docs",
-      "skill:gascity-workspace-lifecycle",
       "skill:gc-agents",
+      "skill:gc-change",
       "skill:gc-city",
       "skill:gc-dashboard",
       "skill:gc-dispatch",
       "skill:gc-mail",
       "skill:gc-rigs",
-      "skill:gc-work"
+      "skill:gc-work",
+      "skill:ws-lifecycle"
     ],
     "gate-budget": [
       "rule:workflow/gate-budget"
@@ -150,7 +150,7 @@
       "rule:coordination/operator-precedence"
     ],
     "governance-artifact-composition": [
-      "rule:architecture/governance-artifact-composition",
+      "rule:architecture/artifact-composition",
       "skill:skill-governance"
     ],
     "history-evidence": [
@@ -167,11 +167,11 @@
     ],
     "language-rule-authoring": [
       "command:add-language-rules",
-      "rule:architecture/governance-artifact-composition"
+      "rule:architecture/artifact-composition"
     ],
     "legacy-source-adjudication": [
       "command:synthesize-governance",
-      "rule:architecture/governance-artifact-composition",
+      "rule:architecture/artifact-composition",
       "skill:governance-audit",
       "skill:skill-governance"
     ],
@@ -222,7 +222,7 @@
       "rule:coordination/fix-forward-collaboration"
     ],
     "provenance-before-conclusion": [
-      "rule:coordination/provenance-before-conclusion"
+      "rule:coordination/provenance-first"
     ],
     "pull-request-transparency": [
       "command:pr-list",
@@ -230,7 +230,7 @@
     ],
     "python-bytecode-cache": [
       "rule:python",
-      "skill:python-development"
+      "skill:py-dev"
     ],
     "repository-authority": [
       "document:README.md",
@@ -263,21 +263,21 @@
     ],
     "semantic-bundle-boundary": [
       "document:docs/adr/ADR-0008-governance-bundle-as-public-facade.md",
-      "rule:architecture/governance-artifact-composition"
+      "rule:architecture/artifact-composition"
     ],
     "separated-roles": [
       "document:AGENTS.md",
       "skill:dispatch-agent"
     ],
     "session-heartbeat": [
-      "skill:plan-focus-recovery"
+      "skill:focus-recovery"
     ],
     "short-integration-slices": [
       "rule:git/gitflow-branch-pr",
       "skill:verification-loop"
     ],
     "skill-specialization-hierarchy": [
-      "rule:architecture/governance-artifact-composition",
+      "rule:architecture/artifact-composition",
       "skill:skill-governance"
     ],
     "small-batches": [

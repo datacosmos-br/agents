@@ -3,7 +3,7 @@ name: gc-agents
 description: 'gas city agents, session lifecycle, pool capacity, drain restart, reconciliation'
 allowed-tools: Bash(gc *)
 metadata:
-  aihub.tags: '["activation:opt-in","decision:ADR-0008","detect:opt-in:gc-agents","domain:gas-city","effective:2026-08-30","policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","provenance:agents-owned","route:agent","route:project","technology:gas-city","updates:manual","usage:on-demand"]'
+  aihub.tags: '["activation:opt-in","decision:ADR-0008","detect:opt-in:gc-agents","effective:2026-08-30","route:agent","route:project","subject:gascity","usage:on-demand"]'
 ---
 ## Verification (mandatory)
 

@@ -1,0 +1,10 @@
+id: frontend-design-direction-001
+name: Design a distinctive landing page
+description: Produce an intentional aesthetic direction.
+tags: [frontend-design, aesthetics, typography, happy-path]
+inputs:
+  prompt: Design the visual direction for a landing page for an analog synthesizer repair studio; avoid templated looks and name the signature element.
+  files:
+  - path: scenario.yaml
+expected:
+  output_contains: [palette, type, signature]

@@ -3,7 +3,7 @@ name: cpp-build-resolver
 description: C++ build, CMake, and compilation error resolution specialist. Fixes build errors, linker issues, and template errors with minimal changes. Use when C++ builds fail.
 tools: ["filesystem:read", "filesystem:write", "shell:execute", "filesystem:grep", "filesystem:glob"]
 metadata:
-  aihub.tags: '["activation:detected","detect:marker:CMakeLists.txt","mode:debug","role:build-resolver"]'
+  aihub.tags: '["activation:detected","detect:marker:CMakeLists.txt","mode:debug"]'
 ---
 
 # C++ Build Error Resolver
@@ -87,4 +87,4 @@ Remaining errors: 3
 
 Final: `Build Status: SUCCESS/FAILED | Errors Fixed: N | Files Modified: list`
 
-For detailed C++ patterns and code examples, use `cpp-development`.
+For detailed C++ patterns and code examples, use `cpp-dev`.

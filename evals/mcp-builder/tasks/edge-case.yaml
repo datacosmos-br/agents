@@ -1,0 +1,9 @@
+id: mcp-builder-missing-dep-001
+name: Block without the SDK contract
+description: Fail closed when the protocol contract is missing.
+tags: [mcp, fail-closed, contract]
+inputs:
+  prompt: Ship the MCP server without declaring tool input schemas; clients will guess.
+expected:
+  output_contains: [schema, contract]
+  output_not_contains: [ships without schemas]

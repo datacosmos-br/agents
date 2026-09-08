@@ -3,7 +3,7 @@ name: prompt-engineer
 description: Analyzes and rewrites explicit prompt-authoring requests against current project constraints and provider behavior.
 tools: ["filesystem:read", "shell:execute", "filesystem:grep", "filesystem:glob"]
 metadata:
-  aihub.tags: '["activation:always","mode:execute","role:prompt-engineer"]'
+  aihub.tags: '["activation:always","mode:execute"]'
 ---
 
 # Prompt Engineer

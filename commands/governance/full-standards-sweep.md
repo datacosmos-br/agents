@@ -3,7 +3,7 @@ name: full-standards-sweep
 description: Sweep the hosted project to full governance standards and land the conformance result on the integration branch.
 argument-hint: "<optional focus, scope, or project path>"
 metadata:
-  aihub.tags: '["decision:ADR-0008","effective:2026-09-05","intent:governance","intent:implementation","intent:inspection","intent:verification","risk:write","route:project"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-09-05","route:project"]'
 ---
 
 # Full-standards cleanup and conformance sweep

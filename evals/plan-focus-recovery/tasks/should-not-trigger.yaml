@@ -1,9 +1,0 @@
-id: plan-focus-recovery-no-active-plan-001
-name: One-off request without an execution cursor
-description: Do not manufacture plan recovery for an ordinary isolated request.
-tags: [anti-trigger]
-inputs:
-  prompt: Translate this one-sentence release note to Portuguese. There is no
-    active implementation plan or interrupted work.
-expected:
-  output_not_contains: [execution cursor, bounded detour, resume plan, invalidated gates]

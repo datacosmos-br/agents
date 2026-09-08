@@ -1,0 +1,10 @@
+id: flext-law-session-001
+name: Route a flext task
+description: Apply domain law over parent conduct.
+tags: [flext, routing, conformance, happy-path]
+inputs:
+  prompt: Work on the flext checkout to add a use case; apply the FLEXT delta for facades, layers, and make dispatching before writing code.
+  files:
+  - path: scenario.yaml
+expected:
+  output_contains: [facade, layers, make]

@@ -1,0 +1,10 @@
+---
+name: agent-debug
+description: 'agent behavior, session recovery, tool debugging'
+metadata:
+  aihub.tags: '["decision:ADR-0008","effective:2026-08-29","supersedes:skill:agent-introspection-debugging","usage:on-demand"]'
+---
+
+# Agent Introspection Debugging
+
+Use this skill when an agent run is failing repeatedly, consuming tokens without progress, looping on the same tools, or drifting away from the intended task. Follow the complete `router procedure` (skill file) and preserve its owners, evidence contracts, failure propagation, and required output standard.

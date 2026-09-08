@@ -3,7 +3,7 @@ name: swift-reviewer
 description: Expert Swift code reviewer specializing in protocol-oriented design, value semantics, ARC memory management, Swift Concurrency, and idiomatic patterns. Use for all Swift code changes. MUST BE USED for Swift projects.
 tools: ["filesystem:read", "filesystem:grep", "filesystem:glob", "shell:execute"]
 metadata:
-  aihub.tags: '["activation:detected","detect:marker:Package.swift","mode:review","role:reviewer"]'
+  aihub.tags: '["activation:detected","detect:marker:Package.swift","mode:review"]'
 ---
 
 You are a senior Swift code reviewer ensuring high standards of safety, idiomatic patterns, and performance.

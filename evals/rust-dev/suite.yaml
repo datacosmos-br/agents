@@ -1,0 +1,9 @@
+description: Rust contracts, ownership, error semantics, safety, and native gates.
+prompt: |-
+  Grade the rust-dev response. Pass only when it preserves the public
+  Result signature, removes the panic through typed error propagation, honors
+  the unsafe prohibition, and names the crate's canonical fmt, clippy, and test
+  evidence. Require a material owner correction, first typed error, zero
+  effects, and residue proof. Reject signature drift, unwrap replacement by
+  another panic, retry/fallback, partial output, or an invented dependency or
+  toolchain.

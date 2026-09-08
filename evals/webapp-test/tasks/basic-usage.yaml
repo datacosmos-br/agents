@@ -1,0 +1,10 @@
+id: webapp-test-flow-001
+name: Test a login flow
+description: Automate a web flow end to end.
+tags: [webapp-test, playwright, flows, happy-path]
+inputs:
+  prompt: Test the login and logout flow of the local webapp with playwright, capturing console errors.
+  files:
+  - path: scenario.yaml
+expected:
+  output_contains: [playwright, console, login]

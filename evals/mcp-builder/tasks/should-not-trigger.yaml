@@ -1,0 +1,9 @@
+id: mcp-builder-negative-001
+name: Ignore plain web APIs
+description: Do not activate for ordinary REST services.
+tags: [anti-trigger, rest]
+inputs:
+  prompt: Build a REST endpoint for weather lookup. No MCP server is requested.
+expected:
+  output_contains: [rest]
+  output_not_contains: [fastmcp, MCP server]

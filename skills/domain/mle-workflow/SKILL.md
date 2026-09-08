@@ -2,7 +2,7 @@
 name: mle-workflow
 description: 'machine learning, model lifecycle, production operations'
 metadata:
-  aihub.tags: '["activation:detected-or-opt-in","decision:ADR-0008","detect:marker:MLproject","detect:marker:dvc.lock","detect:marker:dvc.yaml","detect:opt-in:machine-learning","domain:mle","effective:2026-08-28","policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:no-keyring","policy:preflight-before-effects","policy:required-environment","policy:strict-execution","policy:zero-residue","provenance:agents-owned","route:project","updates:manual","usage:on-demand"]'
+  aihub.tags: '["activation:detected-or-opt-in","decision:ADR-0008","detect:marker:MLproject","detect:marker:dvc.lock","detect:marker:dvc.yaml","detect:opt-in:machine-learning","effective:2026-08-28","route:project","subject:mle","usage:on-demand"]'
 ---
 
 # Machine Learning Engineering
