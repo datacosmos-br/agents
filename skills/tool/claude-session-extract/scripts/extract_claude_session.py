@@ -54,7 +54,10 @@ def _clip(value: Any, limit: int = 1500) -> Any:
     )
     if len(serialized) <= limit:
         return redacted
-    return {"excerpt": serialized[:limit], "truncated_characters": len(serialized) - limit}
+    return {
+        "excerpt": serialized[:limit],
+        "truncated_characters": len(serialized) - limit,
+    }
 
 
 def _digest(content: bytes) -> str:
@@ -146,27 +149,35 @@ def _extract_conversation(entries: list[dict[str, Any]]) -> list[dict[str, Any]]
                             result_content = item.get("content", "")
                             if tc_id in pending_tool_calls:
                                 pending_tool_calls[tc_id]["result"] = {
-                                    "content": _clip(_extract_text(result_content), 1000),
+                                    "content": _clip(
+                                        _extract_text(result_content), 1000
+                                    ),
                                 }
                                 conversation.append(pending_tool_calls.pop(tc_id))
                             else:
-                                conversation.append({
-                                    "role": "tool_result",
-                                    "tool_id": tc_id,
-                                    "result": {
-                                        "content": _clip(_extract_text(result_content), 1000),
-                                    },
-                                    "timestamp": entry.get("timestamp"),
-                                })
+                                conversation.append(
+                                    {
+                                        "role": "tool_result",
+                                        "tool_id": tc_id,
+                                        "result": {
+                                            "content": _clip(
+                                                _extract_text(result_content), 1000
+                                            ),
+                                        },
+                                        "timestamp": entry.get("timestamp"),
+                                    }
+                                )
                     continue
 
             text = _clip(_extract_text(content), 2000)
             if text:
-                conversation.append({
-                    "role": "user",
-                    "content": text,
-                    "timestamp": entry.get("timestamp"),
-                })
+                conversation.append(
+                    {
+                        "role": "user",
+                        "content": text,
+                        "timestamp": entry.get("timestamp"),
+                    }
+                )
 
         elif entry_type == "assistant":
             msg = entry.get("message", {})
@@ -195,20 +206,24 @@ def _extract_conversation(entries: list[dict[str, Any]]) -> list[dict[str, Any]]
                 elif item.get("type") == "thinking":
                     thinking = item.get("thinking", "")
                     if thinking.strip():
-                        conversation.append({
-                            "role": "reasoning",
-                            "content": _clip(thinking, 1500),
-                            "timestamp": entry.get("timestamp"),
-                        })
+                        conversation.append(
+                            {
+                                "role": "reasoning",
+                                "content": _clip(thinking, 1500),
+                                "timestamp": entry.get("timestamp"),
+                            }
+                        )
 
                 elif item.get("type") == "text":
                     text = item.get("text", "")
                     if text.strip():
-                        conversation.append({
-                            "role": "assistant",
-                            "content": _clip(text, 2000),
-                            "timestamp": entry.get("timestamp"),
-                        })
+                        conversation.append(
+                            {
+                                "role": "assistant",
+                                "content": _clip(text, 2000),
+                                "timestamp": entry.get("timestamp"),
+                            }
+                        )
 
     return conversation
 
@@ -225,17 +240,21 @@ def _generate_handoff(
     ]
 
     if history:
-        lines.extend([
-            f"- Display: {history.get('display', 'N/A')}",
-            f"- Project: {history.get('project', 'N/A')}",
-            f"- Timestamp: {history.get('timestamp', 'N/A')}",
-        ])
+        lines.extend(
+            [
+                f"- Display: {history.get('display', 'N/A')}",
+                f"- Project: {history.get('project', 'N/A')}",
+                f"- Timestamp: {history.get('timestamp', 'N/A')}",
+            ]
+        )
 
-    lines.extend([
-        f"- Project hash: {project_hash}",
-        f"- Conversation turns: {len(conversation)}",
-        "",
-    ])
+    lines.extend(
+        [
+            f"- Project hash: {project_hash}",
+            f"- Conversation turns: {len(conversation)}",
+            "",
+        ]
+    )
 
     # Conversation flow
     if conversation:
@@ -264,7 +283,9 @@ def _generate_handoff(
                     elif "skill" in tool_input:
                         lines.append(f"Skill: `{tool_input['skill']}`")
                     else:
-                        lines.append(f"```json\n{json.dumps(tool_input, indent=2, ensure_ascii=False)}\n```")
+                        lines.append(
+                            f"```json\n{json.dumps(tool_input, indent=2, ensure_ascii=False)}\n```"
+                        )
                 if result:
                     content = result.get("content", "")
                     lines.append(f"Result: {content}")
@@ -286,13 +307,15 @@ def _generate_handoff(
                 lines.append(turn.get("content", ""))
                 lines.append("")
 
-    lines.extend([
-        "## Resume Command",
-        "",
-        "```bash",
-        f"claude --resume {session_id}",
-        "```",
-    ])
+    lines.extend(
+        [
+            "## Resume Command",
+            "",
+            "```bash",
+            f"claude --resume {session_id}",
+            "```",
+        ]
+    )
 
     return "\n".join(str(line) for line in lines)
 
@@ -340,7 +363,9 @@ def main() -> None:
     conversation = _extract_conversation(entries)
     handoff = _generate_handoff(session_id, history, conversation, project_hash)
 
-    output_dir = args.output_dir or (Path.home() / ".local/state/claude/exports" / session_id)
+    output_dir = args.output_dir or (
+        Path.home() / ".local/state/claude/exports" / session_id
+    )
     output_dir.mkdir(parents=True, exist_ok=True)
 
     handoff_file = output_dir / "handoff.sanitised.md"
@@ -367,11 +392,15 @@ def main() -> None:
 
     print(f"Handoff: {handoff_file}")
     print(f"Manifest: {manifest_file}")
-    print(json.dumps({
-        "destination": str(output_dir),
-        "entries": len(entries),
-        "conversation_turns": len(conversation),
-    }))
+    print(
+        json.dumps(
+            {
+                "destination": str(output_dir),
+                "entries": len(entries),
+                "conversation_turns": len(conversation),
+            }
+        )
+    )
 
 
 if __name__ == "__main__":
