@@ -1,4 +1,4 @@
-# ADR-0014 — rtk is the fleet command and output economy layer
+# ADR-0016 — rtk is the fleet command and output economy layer
 
 - **Status:** Accepted
 - **Date:** 2026-09-07
@@ -22,7 +22,7 @@ catalog correctly rejected.
 ## Decision
 
 The bundle ships `skills/tool/rtk/` with an `evals/rtk/` suite, tagged
-`decision:ADR-0014`. The skill teaches: prefer the daemon automatic rewrite
+`decision:ADR-0016`. The skill teaches: prefer the daemon automatic rewrite
 path; use the manual `rtk <command>` prefix only for registry gaps and the
 deferred constructs (heredocs, command substitution, file redirects); recover
 failures through the referenced tee file; treat filtered failures as failures;
