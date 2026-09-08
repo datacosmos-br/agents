@@ -1,0 +1,10 @@
+id: claude-session-extract-negative-001
+name: Discuss Claude Code without extracting a session
+description: Keep ordinary Claude Code discussion outside session extraction.
+tags: [claude-session-extract, anti-trigger]
+inputs:
+  prompt: >-
+    Explain how Claude Code stores subagent metadata next to a session. There
+    is no session to extract and no export request.
+expected:
+  output_not_contains: [extract_claude_session.py, handoff.sanitised.md, projects directory scan]

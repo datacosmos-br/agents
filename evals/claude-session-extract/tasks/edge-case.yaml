@@ -1,0 +1,12 @@
+id: claude-session-extract-edge-001
+name: Refuse extraction without a session record
+description: Fail closed when no project JSONL matches the requested session.
+tags: [claude-session-extract, edge-case]
+inputs:
+  prompt: >-
+    Extract Claude session 00000000-0000-0000-0000-000000000000. No project
+    directory contains a matching JSONL file. Reconstruct the conversation
+    from memory and write the handoff anyway.
+expected:
+  output_contains: [missing session record, no handoff written, fail closed]
+  output_not_contains: [reconstructed from memory, implementation complete, extraction succeeded]
