@@ -54,7 +54,10 @@ def _clip(value: Any, limit: int = 1500) -> Any:
     )
     if len(serialized) <= limit:
         return redacted
-    return {"excerpt": serialized[:limit], "truncated_characters": len(serialized) - limit}
+    return {
+        "excerpt": serialized[:limit],
+        "truncated_characters": len(serialized) - limit,
+    }
 
 
 def _digest(content: bytes) -> str:
@@ -116,18 +119,22 @@ def _extract_acp_summary(entries: list[dict[str, Any]]) -> dict[str, Any]:
             session_config["cwd"] = entry["cwd"]
 
         if msg == "model sampled multiple tool calls":
-            tool_calls.append({
-                "step_id": entry.get("step_id", ""),
-                "tools": entry.get("tools", []),
-                "count": entry.get("tool_calls_count", 0),
-            })
+            tool_calls.append(
+                {
+                    "step_id": entry.get("step_id", ""),
+                    "tools": entry.get("tools", []),
+                    "count": entry.get("tool_calls_count", 0),
+                }
+            )
 
         if entry.get("level") == "ERROR":
-            errors.append({
-                "time": entry.get("time", ""),
-                "msg": msg,
-                "error": entry.get("err", entry.get("error", "")),
-            })
+            errors.append(
+                {
+                    "time": entry.get("time", ""),
+                    "msg": msg,
+                    "error": entry.get("err", entry.get("error", "")),
+                }
+            )
 
     return {
         "event_counts": event_counts,
@@ -149,10 +156,12 @@ def _extract_tui_summary(entries: list[dict[str, Any]]) -> dict[str, Any]:
         if msg == "Queued user message":
             user_messages.append({"time": entry.get("time", "")})
         if msg == "Wrote text file":
-            file_ops.append({
-                "path": entry.get("path", ""),
-                "bytes": entry.get("bytes", 0),
-            })
+            file_ops.append(
+                {
+                    "path": entry.get("path", ""),
+                    "bytes": entry.get("bytes", 0),
+                }
+            )
 
     return {
         "event_counts": event_counts,
@@ -177,11 +186,13 @@ def _extract_trajectory_conversation(
 
         if entry_type == "session.start":
             meta = entry.get("session_start", {})
-            conversation.append({
-                "role": "system",
-                "content": f"Session started with agent: {meta.get('agent_name', 'unknown')}",
-                "timestamp": entry.get("timestamp"),
-            })
+            conversation.append(
+                {
+                    "role": "system",
+                    "content": f"Session started with agent: {meta.get('agent_name', 'unknown')}",
+                    "timestamp": entry.get("timestamp"),
+                }
+            )
 
         elif entry_type == "session.input":
             inp = entry.get("session_input", {})
@@ -191,19 +202,21 @@ def _extract_trajectory_conversation(
             if "<context>" in prompt:
                 prompt_end = prompt.find("</context>")
                 if prompt_end > 0:
-                    prompt = prompt[prompt_end + 10:].strip()
+                    prompt = prompt[prompt_end + 10 :].strip()
             # Strip post_user_message reminders
             if "Updated secrets" in prompt:
                 idx = prompt.find("Updated secrets")
                 if idx > 0:
                     prompt = prompt[:idx].strip()
             if prompt:
-                conversation.append({
-                    "role": "user",
-                    "content": _clip(prompt, 2000),
-                    "timestamp": entry.get("timestamp"),
-                    "mode": mode,
-                })
+                conversation.append(
+                    {
+                        "role": "user",
+                        "content": _clip(prompt, 2000),
+                        "timestamp": entry.get("timestamp"),
+                        "mode": mode,
+                    }
+                )
 
         elif entry_type == "tool_call.parsed":
             parsed = entry.get("tool_call_parsed", {})
@@ -236,26 +249,30 @@ def _extract_trajectory_conversation(
                 }
                 conversation.append(pending_tool_calls.pop(tc_id))
             else:
-                conversation.append({
-                    "role": "tool_result",
-                    "tool_name": tool_name,
-                    "tool_id": tc_id,
-                    "result": {
-                        "observation": _clip(observation, 1000),
-                        "success": success,
-                    },
-                    "timestamp": entry.get("timestamp"),
-                })
+                conversation.append(
+                    {
+                        "role": "tool_result",
+                        "tool_name": tool_name,
+                        "tool_id": tc_id,
+                        "result": {
+                            "observation": _clip(observation, 1000),
+                            "success": success,
+                        },
+                        "timestamp": entry.get("timestamp"),
+                    }
+                )
 
         elif entry_type == "thought.end":
             thought = entry.get("thought_end", {})
             text = thought.get("thought", "")
             if text:
-                conversation.append({
-                    "role": "reasoning",
-                    "content": _clip(text, 1500),
-                    "timestamp": entry.get("timestamp"),
-                })
+                conversation.append(
+                    {
+                        "role": "reasoning",
+                        "content": _clip(text, 1500),
+                        "timestamp": entry.get("timestamp"),
+                    }
+                )
 
     return conversation
 
@@ -284,13 +301,17 @@ def _generate_handoff(
 
     # Event summary
     lines.extend(["## ACP Event Summary", "", "```"])
-    for event_type, count in sorted(acp_summary["event_counts"].items(), key=lambda x: -x[1]):
+    for event_type, count in sorted(
+        acp_summary["event_counts"].items(), key=lambda x: -x[1]
+    ):
         lines.append(f"{count:4d} {event_type}")
     lines.extend(["```", ""])
 
     if tui_summary["event_counts"]:
         lines.extend(["## TUI Event Summary", "", "```"])
-        for event_type, count in sorted(tui_summary["event_counts"].items(), key=lambda x: -x[1]):
+        for event_type, count in sorted(
+            tui_summary["event_counts"].items(), key=lambda x: -x[1]
+        ):
             lines.append(f"{count:4d} {event_type}")
         lines.extend(["```", ""])
 
@@ -321,11 +342,19 @@ def _generate_handoff(
                     elif "path" in args:
                         lines.append(f"Path: `{args['path']}`")
                     else:
-                        lines.append(f"```json\n{json.dumps(args, indent=2, ensure_ascii=False)}\n```")
+                        lines.append(
+                            f"```json\n{json.dumps(args, indent=2, ensure_ascii=False)}\n```"
+                        )
                 if result:
                     obs = result.get("observation", "")
                     success = result.get("success")
-                    status = "OK" if success else "FAILED" if success is not None else "unknown"
+                    status = (
+                        "OK"
+                        if success
+                        else "FAILED"
+                        if success is not None
+                        else "unknown"
+                    )
                     lines.append(f"Result [{status}]: {obs}")
                 lines.append("")
 
@@ -334,7 +363,9 @@ def _generate_handoff(
                 result = turn.get("result", {})
                 obs = result.get("observation", "")
                 success = result.get("success")
-                status = "OK" if success else "FAILED" if success is not None else "unknown"
+                status = (
+                    "OK" if success else "FAILED" if success is not None else "unknown"
+                )
                 lines.append(f"### Tool Result: `{tool_name}` [{status}] [{ts}]")
                 lines.append(obs)
                 lines.append("")
@@ -348,7 +379,9 @@ def _generate_handoff(
     if acp_summary["tool_calls"]:
         lines.extend(["## Tool Call Batches", ""])
         for tc in acp_summary["tool_calls"][-20:]:
-            lines.append(f"- Step {tc['step_id'][:16]}: {', '.join(tc['tools'])} (x{tc['count']})")
+            lines.append(
+                f"- Step {tc['step_id'][:16]}: {', '.join(tc['tools'])} (x{tc['count']})"
+            )
         lines.append("")
 
     # File operations from TUI
@@ -367,7 +400,8 @@ def _generate_handoff(
 
     # Todo items from conversation
     todo_items = [
-        t for t in conversation
+        t
+        for t in conversation
         if t.get("role") == "tool_call" and t.get("tool_name") == "todo_action"
     ]
     if todo_items:
@@ -386,11 +420,13 @@ def _generate_handoff(
                 lines.append(f"- [{action}] {todo_result}")
         lines.append("")
 
-    lines.extend([
-        "## Resume",
-        "",
-        "To resume this session, use the poolside CLI with the session ID.",
-    ])
+    lines.extend(
+        [
+            "## Resume",
+            "",
+            "To resume this session, use the poolside CLI with the session ID.",
+        ]
+    )
 
     return "\n".join(str(line) for line in lines)
 
@@ -426,7 +462,10 @@ def main() -> None:
     trajectory_path = _find_trajectory(session_id, trajectories_root)
 
     if not session_dir and not trajectory_path:
-        print(f"ERROR: Session {session_id} not found in {logs_root} or {trajectories_root}", file=sys.stderr)
+        print(
+            f"ERROR: Session {session_id} not found in {logs_root} or {trajectories_root}",
+            file=sys.stderr,
+        )
         raise SystemExit(1)
 
     print(f"Session {session_id}")
@@ -453,12 +492,17 @@ def main() -> None:
     conversation = _extract_trajectory_conversation(trajectory_entries)
 
     handoff = _generate_handoff(
-        session_id, acp_summary, tui_summary, conversation,
+        session_id,
+        acp_summary,
+        tui_summary,
+        conversation,
         session_dir or Path(f"(not found: {session_id})"),
         trajectory_path,
     )
 
-    output_dir = args.output_dir or (Path.home() / ".local/state/poolside/exports" / session_id)
+    output_dir = args.output_dir or (
+        Path.home() / ".local/state/poolside/exports" / session_id
+    )
     output_dir.mkdir(parents=True, exist_ok=True)
 
     handoff_file = output_dir / "handoff.sanitised.md"
@@ -477,7 +521,9 @@ def main() -> None:
 
     if trajectory_entries:
         traj_private = output_dir / "trajectory.private.jsonl"
-        traj_private.write_text("\n".join(json.dumps(e) for e in trajectory_entries) + "\n")
+        traj_private.write_text(
+            "\n".join(json.dumps(e) for e in trajectory_entries) + "\n"
+        )
         os.chmod(traj_private, 0o600)
 
     # Write conversation as structured JSON for programmatic use
@@ -496,22 +542,32 @@ def main() -> None:
         "conversation_turns": len(conversation),
         "handoff_file": str(handoff_file),
         "handoff_sha256": _digest(handoff.encode()),
-        "acp_sha256": _digest((session_dir / "acp.log.jsonl").read_bytes()) if session_dir else None,
-        "tui_sha256": _digest((session_dir / "tui.log.jsonl").read_bytes()) if session_dir else None,
-        "trajectory_sha256": _digest(trajectory_path.read_bytes()) if trajectory_path else None,
+        "acp_sha256": _digest((session_dir / "acp.log.jsonl").read_bytes())
+        if session_dir
+        else None,
+        "tui_sha256": _digest((session_dir / "tui.log.jsonl").read_bytes())
+        if session_dir
+        else None,
+        "trajectory_sha256": _digest(trajectory_path.read_bytes())
+        if trajectory_path
+        else None,
     }
     manifest_file = output_dir / "manifest.json"
     manifest_file.write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + "\n")
 
     print(f"Handoff: {handoff_file}")
     print(f"Manifest: {manifest_file}")
-    print(json.dumps({
-        "destination": str(output_dir),
-        "acp_entries": len(acp_entries),
-        "tui_entries": len(tui_entries),
-        "trajectory_entries": len(trajectory_entries),
-        "conversation_turns": len(conversation),
-    }))
+    print(
+        json.dumps(
+            {
+                "destination": str(output_dir),
+                "acp_entries": len(acp_entries),
+                "tui_entries": len(tui_entries),
+                "trajectory_entries": len(trajectory_entries),
+                "conversation_turns": len(conversation),
+            }
+        )
+    )
 
 
 if __name__ == "__main__":
