@@ -56,6 +56,10 @@ aliases, `p` alone owns protocols, `m` owns Pydantic 2 models, and `u` owns pure
 utilities. All structured ingress and egress uses Pydantic 2. Public and DI
 contracts use neither `Any`, `object`, `Optional`, nor `dict`; model values
 precisely and express explicit null unions only where the domain allows them.
+Model classes always extend an `m.*` preset, declarations resolve strictly
+(never `model_rebuild`), and the complete Pydantic law — preset selection,
+`p`/`r` contracts, conversions, validation, serialization, removal catalog —
+is owned by `$pydantic-development`.
 
 Settings own external input and config owns validated derivation before the
 facade graph. Import and use their published objects directly. Never alias,

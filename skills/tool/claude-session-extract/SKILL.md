@@ -2,7 +2,7 @@
 name: claude-session-extract
 description: 'claude session extraction, conversation flow, sanitised handoff resume'
 metadata:
-  aihub.tags: '["activation:opt-in","decision:ADR-0008","detect:opt-in:claude","effective:2026-09-06","policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:no-keyring","policy:preflight-before-effects","policy:required-environment","policy:strict-execution","policy:zero-residue","provenance:agents-owned","route:agent","tool:claude","updates:manual","usage:router"]'
+  aihub.tags: '["activation:opt-in","decision:ADR-0008","detect:opt-in:claude","effective:2026-09-06","route:agent","subject:agents","usage:router"]'
 ---
 
 # Claude Session Extract

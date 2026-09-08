@@ -16,6 +16,10 @@ For responsibility, abstraction, or dependency-direction changes, apply
 Read the `single owner procedure` (skill file) for implementation,
 debugging, testing, packaging, and native-gate evidence.
 
+When the project declares `pydantic` or `pydantic-settings`, compose
+`$pydantic-development`: it owns the model MRO presets, `p`/`r` contracts,
+conversions, validation and serialization law, and the removal catalog.
+
 Use the distinct `py-parallel` skill for async, thread, process,
 vectorization, or throughput changes. Do not impose a tool, framework, or style
 threshold that the project has not selected. Runtime behavior and project-owned

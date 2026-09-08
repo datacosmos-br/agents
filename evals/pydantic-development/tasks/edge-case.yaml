@@ -1,0 +1,11 @@
+id: pydantic-dev-edge-002
+name: Reject normalization and rebuild shortcuts
+description: Handle a broken declaration and a validation failure the strict way.
+tags: [pydantic-dev, edge-case, failure]
+inputs:
+  prompt: A consumer model fails at import because a forward reference does not resolve, and a teammate proposes Model.model_rebuild(_types_namespace=...) plus a try/except ValidationError returning a default payload. Explain why both are violations, name the owner-side fixes (facade export, alias placement, scope hoist, r.Fail at the result boundary), and rewrite the boundary.
+  files:
+  - path: broken_node.py
+expected:
+  output_contains: [declaration, owner, facade, r.Fail, e.fail_validation, violation, strict]
+  output_not_contains: [model_rebuild, except ValidationError, default payload, fallback]
