@@ -51,8 +51,8 @@ def test_public_skill_hierarchy_composes_general_to_specialized(
     skills = {skill.name: skill for skill in governance_bundle.skills}
 
     assert skills["solid"].parents == ()
-    assert skills["python-development"].parents == ("solid",)
-    assert skills["flext-development"].parents == ("python-development",)
+    assert skills["py-dev"].parents == ("solid",)
+    assert skills["flext-development"].parents == ("py-dev",)
 
 
 def test_distribution_exposes_no_runtime_executable() -> None:

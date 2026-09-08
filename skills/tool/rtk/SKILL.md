@@ -2,7 +2,7 @@
 name: rtk
 description: 'rtk token economy, command output filtering, fleet routing'
 metadata:
-  aihub.tags: '["activation:opt-in","decision:ADR-0014","detect:opt-in:rtk","effective:2026-09-07","policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:no-keyring","policy:preflight-before-effects","policy:strict-execution","policy:zero-residue","provenance:agents-owned","route:agent","tool:rtk","updates:manual","usage:on-demand"]'
+  aihub.tags: '["activation:opt-in","decision:ADR-0016","detect:opt-in:rtk","effective:2026-09-07","route:agent","subject:mcp","usage:on-demand"]'
 ---
 
 # rtk
