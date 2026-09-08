@@ -34,7 +34,7 @@ activates its workspace and queries the public runtime contract.
 
 ## Preserve Clean Architecture and strict DI
 
-Apply `$python-development` and its `$solid` parent before this FLEXT delta.
+Apply `$py-dev` and its `$solid` parent before this FLEXT delta.
 
 Domain and application import no I/O, adapters, frameworks, process state,
 global registries, or concrete services. They depend on precise `p` ports.

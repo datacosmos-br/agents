@@ -2,7 +2,7 @@
 name: flext-development
 description: 'flext framework, facade architecture, generated ownership, fleet development'
 metadata:
-  aihub.tags: '["activation:detected","decision:ADR-0008","detect:dependency:python:flext-core","detect:selected-tag:flext","effective:2026-08-29","extends:python-development","route:project","subject:flext","subject:python","usage:router"]'
+  aihub.tags: '["activation:detected","decision:ADR-0008","detect:dependency:python:flext-core","detect:selected-tag:flext","effective:2026-08-29","extends:py-dev","route:project","subject:flext","subject:python","usage:router"]'
 ---
 
 # FLEXT development
@@ -13,7 +13,7 @@ fleet behavior. Do not activate for generic Python work without FLEXT evidence.
 Activation also requires the `internal_flext` project profile. A third-party
 fork follows upstream even when it exposes a FLEXT marker or dependency.
 
-Compose `$python-development` first; it already composes `$solid`. This skill
+Compose `$py-dev` first; it already composes `$solid`. This skill
 contains only the FLEXT-specific architecture and fleet delta.
 
 Read the `development procedure` (skill file). Resolve the active

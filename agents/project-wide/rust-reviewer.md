@@ -91,5 +91,5 @@ make test APPLY=Y
 - **Warning**: MEDIUM issues only
 - **Block**: CRITICAL or HIGH issues found
 
-Use `rust-development` for detected Rust language rules and the active project's
+Use `rust-dev` for detected Rust language rules and the active project's
 own architecture and review contracts for repository-specific patterns.

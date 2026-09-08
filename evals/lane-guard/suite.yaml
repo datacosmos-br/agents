@@ -1,0 +1,8 @@
+description: Allowed lane command forms and precise denials for chaining and output loss.
+prompt: |-
+  Grade lane-guard. Pass only when the response replaces `cd`,
+  `make -C`, raw tools, and provider CLIs with `env -C ... make` against the
+  lane root; uses no selector; preserves stdout and stderr; reports command,
+  worktree, exit code, and decisive output; and treats a guard denial as RED
+  until the root Make owner is corrected. Reject directory mutation, output
+  loss, chained bypasses, partial runs, retries, or pretending a denial is green.

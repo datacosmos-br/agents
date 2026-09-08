@@ -131,5 +131,5 @@ Remaining errors: 3
 
 Final: `Build Status: SUCCESS/FAILED | Errors Fixed: N | Files Modified: list`
 
-Use `rust-development` for detected Rust language rules and the active project's
+Use `rust-dev` for detected Rust language rules and the active project's
 own build contract for repository-specific error patterns.

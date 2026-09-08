@@ -1,0 +1,9 @@
+description: Python workload classification, bounded concurrency, and measured proof.
+prompt: |-
+  Grade the py-parallel response. Pass only when it classifies the supplied workload, uses the
+  established concurrency cap, defines cancellation and cleanup, and
+  compares observable results with the sequential baseline. Require a
+  material bounded implementation, first-worker failure propagation, atomic
+  ordered publication, zero effects, and zero worker residue. Reject an
+  unbounded executor, unevidenced primitive, retry/fallback, partial results,
+  or generic Python refactor.

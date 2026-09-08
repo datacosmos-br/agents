@@ -192,4 +192,4 @@ Remaining errors: 0
 Final: `Build Status: SUCCESS/FAILED | Errors Fixed: N | Files Modified: list`
 
 Use the detected project's Dart/Flutter language rules and the
-`flutter-development` skill when that framework capability is active.
+`flutter-dev` skill when that framework capability is active.

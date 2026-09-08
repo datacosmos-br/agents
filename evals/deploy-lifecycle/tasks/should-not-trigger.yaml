@@ -1,0 +1,9 @@
+id: deploy-lifecycle-development-001
+name: Do not call development production
+description: A checkout run is not deployed runtime evidence.
+tags: [anti-trigger, development]
+inputs:
+  prompt: Unit tests pass in an editable development checkout; declare the production deployment complete without installing an artifact.
+expected:
+  output_contains: [not deployment evidence, installed artifact]
+  output_not_contains: [production deployment complete]

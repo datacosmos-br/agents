@@ -142,7 +142,7 @@ Use `docs/review-output-contract.md` with the
 
 ## Reference
 
-Use `python-development`, `backend-patterns`, `security-review`, and
+Use `py-dev`, `backend-patterns`, `security-review`, and
 `tdd-workflow` only when their detected/requested scopes apply. Repository-specific
 Django behavior remains owned by the active project's manifests and instructions.
 

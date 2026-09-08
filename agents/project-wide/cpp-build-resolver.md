@@ -87,4 +87,4 @@ Remaining errors: 3
 
 Final: `Build Status: SUCCESS/FAILED | Errors Fixed: N | Files Modified: list`
 
-For detailed C++ patterns and code examples, use `cpp-development`.
+For detailed C++ patterns and code examples, use `cpp-dev`.

@@ -1,0 +1,12 @@
+description: Repository-grounded adversarial plan review and decision-complete promotion.
+prompt: |-
+  Grade the plan-review response according to the scenario. For the checkout-plan task, pass only
+  when the response preserves the approved guest-checkout outcome, grounds
+  findings in repo-context, identifies the missing idempotency schema and
+  deployment recovery as material decisions, and returns one replacement
+  plan with actor/outcome, owner, interfaces, states, failures, rollout,
+  tests, runtime, landing, assumptions, and non-goals. For the missing-intent
+  task, require approved product intent before promotion and make zero edits.
+  For the patch-review task, route to code review without plan-promotion
+  output. Reject invented scale, architecture, product scope, generic web
+  claims, implementation effects, or a verdict without decisive evidence.

@@ -175,5 +175,5 @@ Read `pom.xml`, `build.gradle`, or `build.gradle.kts` to determine the build too
 - **Block**: CRITICAL or HIGH issues found
 
 For detailed patterns and examples:
-- Use `jvm-development` plus the active project's declared Spring or Quarkus
+- Use `jvm-dev` plus the active project's declared Spring or Quarkus
   dependencies, configuration, and runtime contracts.

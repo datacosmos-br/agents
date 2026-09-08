@@ -1,0 +1,13 @@
+id: gc-change-should-not-trigger-001
+name: Draft a PR description for an existing branch
+description: Copywriting for an already-open PR does not require orchestration dispatch.
+tags:
+- anti-trigger
+- negative-test
+inputs:
+  prompt: Draft a concise pull-request description from the supplied diff summary; no dispatch or workspace change is requested.
+expected:
+  output_not_contains:
+  - gc sling
+  - formula
+  - Gas City run

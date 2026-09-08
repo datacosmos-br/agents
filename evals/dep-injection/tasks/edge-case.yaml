@@ -1,0 +1,9 @@
+id: dep-injection-pure-value-001
+name: Refuse a container for pure code
+description: Do not invent DI for a pure calculation.
+tags: [dep-injection, fail-closed, yagni]
+inputs:
+  prompt: Wrap a pure add(a, b) function in a global container, factory, registry, and string-key service locator even though it has no external dependency.
+expected:
+  output_contains: [refuse, pure, no external dependency, YAGNI]
+  output_not_contains: [global container]

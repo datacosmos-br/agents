@@ -26,6 +26,6 @@ change's blast radius is red or unresolved.
   merge; post-merge proof closes the increment.
 
 Compose with `rules/runtime/strict-execution.md`,
-`rules/coordination/fix-forward-collaboration.md`, and
+`rules/coordination/fix-forward.md`, and
 `rules/architecture/generalized-abstraction.md` (same-cutover pre-existing
 offender removal).

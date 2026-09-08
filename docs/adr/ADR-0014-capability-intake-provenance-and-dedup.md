@@ -12,7 +12,7 @@ Anthropic-origin Apache-2.0 bundles, one Vercel guideline, two flext-native
 skills, and seven individually authored customs, three of them without any
 license. Their frontmatter follows foreign formats (multi-line descriptions,
 `category: development`, no activation semantics), and several overlap with
-canonical owners: `mcp-builder` vs `tool/mcp-server-patterns`,
+canonical owners: `mcp-builder` vs `tool/mcp-patterns`,
 `webapp-testing` vs `tool/playwright-e2e` and `tool/agent-browser`,
 `skill-creator` vs `tool/skill-governance` plus an unmanaged external copy in
 `~/.claude/skills/`, `ponytail` vs `project-wide/refactoring/yagni`, and

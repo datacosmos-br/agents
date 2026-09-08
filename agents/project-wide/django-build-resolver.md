@@ -244,6 +244,6 @@ Remaining errors: 0
 
 Final: `Django Status: OK/FAILED | Errors Fixed: N | Files Modified: list`
 
-Use `python-development`, `backend-patterns`, and `security-review` only when
+Use `py-dev`, `backend-patterns`, and `security-review` only when
 their detected/requested scopes apply. Repository-specific Django behavior remains
 owned by the active project's manifests and instructions.

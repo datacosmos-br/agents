@@ -89,5 +89,5 @@ Remaining errors: 3
 
 Final: `Build Status: SUCCESS/FAILED | Errors Fixed: N | Files Modified: list`
 
-Use `go-development` for detected Go language rules and the active project's
+Use `go-dev` for detected Go language rules and the active project's
 own build contract for repository-specific error patterns.

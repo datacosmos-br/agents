@@ -73,4 +73,4 @@ make build APPLY=Y
 - **Warning**: MEDIUM issues only
 - **Block**: CRITICAL or HIGH issues found
 
-For detailed C++ coding standards and anti-patterns, use `cpp-development`.
+For detailed C++ coding standards and anti-patterns, use `cpp-dev`.

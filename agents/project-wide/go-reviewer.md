@@ -75,5 +75,5 @@ make test APPLY=Y
 - **Warning**: MEDIUM issues only
 - **Block**: CRITICAL or HIGH issues found
 
-Use `go-development` for detected Go language rules and the active project's
+Use `go-dev` for detected Go language rules and the active project's
 own architecture and review contracts for repository-specific patterns.

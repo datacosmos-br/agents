@@ -115,5 +115,5 @@ Remaining errors: 2
 
 Final: `Build Status: SUCCESS/FAILED | Errors Fixed: N | Files Modified: list`
 
-Use `jvm-development` for detected Kotlin/JVM language rules and the active
+Use `jvm-dev` for detected Kotlin/JVM language rules and the active
 project's own build contract for repository-specific patterns.

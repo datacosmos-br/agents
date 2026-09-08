@@ -1,8 +1,0 @@
-id: mcp-server-patterns-json-rpc-negative-001
-name: Review a non-MCP JSON-RPC endpoint
-description: Keep MCP registration guidance out of a generic protocol handler.
-tags: [json-rpc, http, anti-trigger]
-inputs:
-  prompt: Review a plain JSON-RPC 2.0 HTTP endpoint used only by an internal service. It has no MCP client, SDK, tools, resources, prompts, or MCP transport.
-expected:
-  output_not_contains: [McpServer, registerTool, Streamable HTTP]

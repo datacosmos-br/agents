@@ -114,8 +114,8 @@ make test APPLY=Y
 
 ## Reference
 
-Use `typescript-development` for TypeScript and JavaScript language guidance,
-plus `react-frontend-patterns` or `backend-patterns` based on the code being
+Use `ts-dev` for TypeScript and JavaScript language guidance,
+plus `react-patterns` or `backend-patterns` based on the code being
 reviewed.
 
 ---
