@@ -8,7 +8,7 @@ updates:
       default-days: 7
 
   - package-ecosystem: "npm"
-    directory: "/evals/mcp-server-patterns/fixtures"
+    directory: "/evals/mcp-patterns/fixtures"
     schedule:
       interval: "weekly"
     cooldown:

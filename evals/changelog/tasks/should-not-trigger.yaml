@@ -1,0 +1,9 @@
+id: changelog-negative-001
+name: Ignore unrelated writing
+description: Do not activate for generic writing requests.
+tags: [anti-trigger, writing]
+inputs:
+  prompt: Write a blog post announcing our company values. No git history is involved.
+expected:
+  output_contains: [values]
+  output_not_contains: [categorized commits, release notes]

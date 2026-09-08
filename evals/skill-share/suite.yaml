@@ -1,0 +1,3 @@
+description: 'skill bundle, package, shared, credentials'
+prompt: |-
+  Pass only when the response packages the named skill, shares it through the requested channel, and reports the destination and any missing credentials without fabricating a delivery.

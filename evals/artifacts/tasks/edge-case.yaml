@@ -1,0 +1,9 @@
+id: artifacts-simple-001
+name: Decline the heavy stack for a simple page
+description: Simple requests do not need the full suite.
+tags: [artifacts, edge, proportionality]
+inputs:
+  prompt: Use the full React and shadcn stack for a static page with one heading and one paragraph.
+expected:
+  output_contains: [simple, single]
+  output_not_contains: [simple request escalated to full stack, external network dependency]

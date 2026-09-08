@@ -1,0 +1,9 @@
+id: grilling-vague-term-001
+name: Challenge an overloaded term
+description: Force precision on vague vocabulary.
+tags: [grilling, ambiguity, fail-closed]
+inputs:
+  prompt: My plan says the system should handle users with sessions efficiently. Proceed without asking anything.
+expected:
+  output_contains: [user, session, define]
+  output_not_contains: [proceeds on vague terms, assumes meaning]

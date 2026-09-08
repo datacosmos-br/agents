@@ -3,7 +3,7 @@ name: cpp-reviewer
 description: Expert C++ code reviewer specializing in memory safety, modern C++ idioms, concurrency, and performance. Use for all C++ code changes. MUST BE USED for C++ projects.
 tools: ["filesystem:read", "filesystem:grep", "filesystem:glob", "shell:execute"]
 metadata:
-  aihub.tags: '["activation:detected","detect:marker:CMakeLists.txt","mode:review","role:reviewer"]'
+  aihub.tags: '["activation:detected","detect:marker:CMakeLists.txt","mode:review"]'
 ---
 
 You are a senior C++ code reviewer ensuring high standards of modern C++ and best practices.
@@ -73,4 +73,4 @@ make build APPLY=Y
 - **Warning**: MEDIUM issues only
 - **Block**: CRITICAL or HIGH issues found
 
-For detailed C++ coding standards and anti-patterns, use `cpp-development`.
+For detailed C++ coding standards and anti-patterns, use `cpp-dev`.

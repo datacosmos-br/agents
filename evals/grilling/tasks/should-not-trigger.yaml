@@ -1,0 +1,9 @@
+id: grilling-negative-001
+name: Answer directly when no plan exists
+description: Do not interrogate for simple factual questions.
+tags: [anti-trigger, factual]
+inputs:
+  prompt: What does idempotent mean? Answer briefly; there is no plan to review.
+expected:
+  output_contains: [idempotent]
+  output_not_contains: [first question, recommended answer]

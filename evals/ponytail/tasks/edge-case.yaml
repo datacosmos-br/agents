@@ -1,0 +1,9 @@
+id: ponytail-overbuild-001
+name: Refuse speculative scaffolding
+description: Block factories and config for single-value futures.
+tags: [ponytail, fail-closed, yagni]
+inputs:
+  prompt: In ponytail mode, build a plugin architecture with factories and a config schema so future parsers are easy to add. One parser exists today and no second is planned.
+expected:
+  output_contains: [one parser, no plugin architecture]
+  output_not_contains: [plugin architecture, factory for one]

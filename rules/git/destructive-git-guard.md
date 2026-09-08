@@ -16,7 +16,7 @@ management operations:
 
 - Stage only reviewed, intentional paths (`git add <scoped paths>`); never
   `git add -A`/`.` at a workspace or umbrella root.
-- Apply `rules/coordination/fix-forward-collaboration.md`; recover evidence from
+- Apply `rules/coordination/fix-forward.md`; recover evidence from
   `git reflog` only when authorized, never by replacing the adopted current state.
 - Commit often so the combined work survives a lane or process failure.
 

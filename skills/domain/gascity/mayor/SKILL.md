@@ -3,7 +3,7 @@ name: mayor
 description: 'gas city mayor, requirements, implementation plan, bead creation, formula workflow launch'
 allowed-tools: 'Bash(gc *), Bash(python3 *)'
 metadata:
-  aihub.tags: '["activation:opt-in","decision:ADR-0008","detect:opt-in:mayor","domain:gas-city","effective:2026-08-30","policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","provenance:agents-owned","route:agent","route:project","technology:gas-city","updates:manual","usage:on-demand"]'
+  aihub.tags: '["activation:opt-in","decision:ADR-0008","detect:opt-in:mayor","effective:2026-08-30","route:agent","route:project","subject:gascity","usage:on-demand"]'
 ---
 ## Verification (mandatory)
 

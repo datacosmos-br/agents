@@ -1,8 +1,0 @@
-id: gascity-workspace-lifecycle-git-layout-negative-001
-name: Ordinary repository layout question
-description: Keep Gas City placement out of a local Git organization question.
-tags: [git, layout, anti-trigger]
-inputs:
-  prompt: Suggest a clearer name for the existing docs/architecture directory in this repository. Do not change workspace placement.
-expected:
-  output_not_contains: [city.toml, Pack V2, gc sling]

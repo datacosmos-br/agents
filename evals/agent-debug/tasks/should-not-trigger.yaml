@@ -1,0 +1,11 @@
+id: agent-debug-negative-001
+name: Debug an ordinary application exception
+description: Route a deterministic source-code failure to normal technical debugging.
+tags: [agent-debug, anti-trigger]
+inputs:
+  prompt: >-
+    A Python function raises KeyError for one supplied input, and its source plus
+    traceback are available. Diagnose the application defect; the agent is not
+    looping or drifting.
+expected:
+  output_not_contains: [Agent Self-Debug Report, context pressure, token burn, fallback]

@@ -1,0 +1,8 @@
+id: human-style-verbatim-extraction-negative-001
+name: Extract text verbatim
+description: Do not rewrite an exact-transcription request.
+tags: [transcription, exact, anti-trigger]
+inputs:
+  prompt: Extract the three dates from this legal notice verbatim and preserve its original wording; do not revise style.
+expected:
+  output_not_contains: [AI tells, style rewrite, generic praise]

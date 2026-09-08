@@ -3,7 +3,7 @@ name: java-build-resolver
 description: Java/Maven/Gradle build, compilation, and dependency error resolution specialist. Automatically detects Spring Boot or Quarkus and applies framework-specific fixes. Fixes build errors, Java compiler errors, and Maven/Gradle issues with minimal changes. Use when Java builds fail.
 tools: ["filesystem:read", "filesystem:write", "shell:execute", "filesystem:grep", "filesystem:glob"]
 metadata:
-  aihub.tags: '["activation:detected","detect:marker:build.gradle","detect:marker:pom.xml","mode:debug","role:build-resolver"]'
+  aihub.tags: '["activation:detected","detect:marker:build.gradle","detect:marker:pom.xml","mode:debug"]'
 ---
 
 # Java Build Error Resolver
@@ -258,5 +258,5 @@ Remaining errors: 1
 Final: `Framework: X | Build Status: SUCCESS/FAILED | Errors Fixed: N | Files Modified: list`
 
 For detailed patterns and examples:
-- Use `jvm-development` plus the active project's declared Spring or Quarkus
+- Use `jvm-dev` plus the active project's declared Spring or Quarkus
   dependencies, configuration, and runtime contracts.

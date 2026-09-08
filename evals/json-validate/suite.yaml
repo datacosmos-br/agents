@@ -1,0 +1,3 @@
+description: 'json, schema, draft-07, violations'
+prompt: |-
+  Pass only when the response validates the supplied JSON against the named schema draft, reports concrete validation errors with codes, and distinguishes draft-specific behavior.

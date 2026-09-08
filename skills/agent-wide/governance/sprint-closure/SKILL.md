@@ -2,7 +2,7 @@
 name: sprint-closure
 description: 'increment closure, integration evidence, residue elimination'
 metadata:
-  aihub.tags: '["decision:ADR-0008","effective:2026-08-30","policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","policy:zero-residue","provenance:agents-owned","role:governance","updates:manual","usage:router"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-08-30","usage:router"]'
 ---
 
 # Sprint Closure

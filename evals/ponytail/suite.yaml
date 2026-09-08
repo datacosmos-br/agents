@@ -1,0 +1,3 @@
+description: 'minimal solution, stdlib, skipped, runnable check'
+prompt: |-
+  Pass only when the response picks the smallest working solution, prefers stdlib and existing dependencies over new ones, skips speculative abstractions with a one-line justification, and leaves one runnable check for non-trivial logic.

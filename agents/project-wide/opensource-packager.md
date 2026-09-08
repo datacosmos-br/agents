@@ -3,7 +3,7 @@ name: opensource-packager
 description: Generate project-owned open-source documentation, bootstrap, licensing, contribution guidance, and opt-in forge or agent-provider packaging for a sanitized tree.
 tools: ["filesystem:read", "filesystem:write", "shell:execute", "filesystem:grep", "filesystem:glob"]
 metadata:
-  aihub.tags: '["activation:opt-in","mode:execute","role:packager"]'
+  aihub.tags: '["activation:opt-in","mode:execute"]'
 ---
 
 # Open-Source Packager

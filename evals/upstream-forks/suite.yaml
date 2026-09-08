@@ -1,0 +1,2 @@
+description: Preserve upstream engineering style while governing fork provenance and deploy.
+prompt: Grade upstream-forks. Pass only when the verified upstream owns architecture, DI, typing, language, style, build, and tests; local policy owns only minimal delta provenance, artifact integrity, and runtime proof.

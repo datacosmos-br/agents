@@ -1,0 +1,4 @@
+schema_draft: draft-07
+payload: order sample
+violations_expected: 2
+validator: z-schema

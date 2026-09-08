@@ -3,7 +3,7 @@ name: silent-failure-hunter
 description: Review code for silent failures, swallowed errors, bad fallbacks, and missing error propagation.
 tools: ["filesystem:read", "filesystem:grep", "filesystem:glob", "shell:execute"]
 metadata:
-  aihub.tags: '["activation:opt-in","mode:review","role:auditor"]'
+  aihub.tags: '["activation:opt-in","mode:review"]'
 ---
 
 # Silent Failure Hunter Agent

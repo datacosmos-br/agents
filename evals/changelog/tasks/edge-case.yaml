@@ -1,0 +1,9 @@
+id: changelog-empty-range-001
+name: Handle an empty commit range
+description: Fail closed on an empty range.
+tags: [changelog, fail-closed, edge]
+inputs:
+  prompt: Generate a changelog for commits between v3.0.0 and v3.0.0. The range contains no commits.
+expected:
+  output_contains: [no commits, nothing to release]
+  output_not_contains: [invented]
