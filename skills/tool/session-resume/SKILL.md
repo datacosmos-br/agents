@@ -2,7 +2,7 @@
 name: session-resume
 description: 'session source detection, handoff cross-check, unfinished step resume'
 metadata:
-  aihub.tags: '["activation:opt-in","decision:ADR-0008","detect:opt-in:claude","detect:opt-in:opencode","detect:opt-in:poolside","effective:2026-09-06","policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:no-keyring","policy:preflight-before-effects","policy:required-environment","policy:strict-execution","policy:zero-residue","provenance:agents-owned","route:agent","tool:claude","tool:opencode","tool:poolside","updates:manual","usage:router"]'
+  aihub.tags: '["activation:opt-in","decision:ADR-0008","detect:opt-in:claude","detect:opt-in:opencode","detect:opt-in:poolside","effective:2026-09-06","route:agent","subject:agents","usage:router"]'
 ---
 
 # Session Resume

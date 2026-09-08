@@ -2,7 +2,7 @@
 name: poolside-session-extract
 description: 'poolside trajectory extraction, conversation flow, sanitised handoff resume'
 metadata:
-  aihub.tags: '["activation:opt-in","decision:ADR-0008","detect:opt-in:poolside","effective:2026-09-06","policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:no-keyring","policy:preflight-before-effects","policy:required-environment","policy:strict-execution","policy:zero-residue","provenance:agents-owned","route:agent","tool:poolside","updates:manual","usage:router"]'
+  aihub.tags: '["activation:opt-in","decision:ADR-0008","detect:opt-in:poolside","effective:2026-09-06","route:agent","subject:agents","usage:router"]'
 ---
 
 # Poolside Session Extract
