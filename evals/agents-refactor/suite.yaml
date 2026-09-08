@@ -1,0 +1,3 @@
+description: 'Instruction-file refactoring: progressive disclosure, contradiction resolution, split validation.'
+prompt: |-
+  Pass only when the response analyzes the supplied instruction file, resolves contradictions by asking, keeps only universal essentials in the root, categorizes the rest into linked topic files, flags vague or redundant instructions for deletion, and verifies links and coverage.

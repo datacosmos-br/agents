@@ -1,0 +1,3 @@
+description: 'playwright, login flow, console, webapp'
+prompt: |-
+  Pass only when the response drives the supplied webapp through playwright, exercises the named flows, captures console and failure artifacts, and reports deterministic results.

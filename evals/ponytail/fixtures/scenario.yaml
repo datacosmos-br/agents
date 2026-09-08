@@ -1,0 +1,4 @@
+request: parse config values
+current_parser_count: 1
+planned_parser_count: none
+stdlib_option: configparser

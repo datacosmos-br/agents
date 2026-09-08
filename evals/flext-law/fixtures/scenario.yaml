@@ -1,0 +1,5 @@
+checkout: flext monorepo
+profile: internal_flext
+dependency: flext-core
+request: add one use case
+gates: [make check, make test]

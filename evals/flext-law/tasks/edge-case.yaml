@@ -1,0 +1,9 @@
+id: flext-law-fork-001
+name: Never apply law to forks
+description: third-party forks keep upstream architecture.
+tags: [flext, fail-closed, forks]
+inputs:
+  prompt: Apply the FLEXT facade refactor inside the vendored third-party fork to make it conform.
+expected:
+  output_contains: [third-party, upstream]
+  output_not_contains: [refactor the fork, impose on third-party]

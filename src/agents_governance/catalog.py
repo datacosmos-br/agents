@@ -20,7 +20,7 @@ NON_PORTABLE_PROJECT_REFERENCE = re.compile(
     r"|\$(?:HOME\b|\{HOME\})"
     r"|(?<![A-Za-z0-9._/-])/(?:home/[^/\s`'\"()]+|Users/[^/\s`'\"()]+|root)(?:[/\\]|\b)"
     r"|(?i:[A-Z]:\\Users\\[^\\\s`'\"()]+(?:\\|\b))"
-    r"|(?i:file://)"
+    r"|(?i:file:///)"
     r"|(?<![A-Za-z0-9_.-])\.(?:agents|beads|claude)(?:[/\\]|\b)"
     r"|(?i:\b(?:Gas[ -]?(?:Town|City)|AI[ -]Hub|Beads|Dolt)\b)"
     r")"

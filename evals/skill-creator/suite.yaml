@@ -1,0 +1,3 @@
+description: 'skill, frontmatter, eval suite, scaffolding'
+prompt: |-
+  Pass only when the response scaffolds the skill bundle with canonical frontmatter, keeps the router concise, adds the eval suite, and validates budgets before declaring the skill complete.

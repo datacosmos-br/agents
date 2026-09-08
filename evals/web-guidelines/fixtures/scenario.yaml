@@ -1,0 +1,3 @@
+files: [checkout/form.html, checkout/styles.css]
+guidelines_source: vercel web interface guidelines
+scope: accessibility, interaction, copy

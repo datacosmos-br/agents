@@ -1,0 +1,9 @@
+id: frontend-design-defaults-001
+name: Reject a templated direction
+description: Critique and revise a default-looking proposal.
+tags: [frontend-design, anti-template, critique]
+inputs:
+  prompt: 'Here is a design plan: cream background, high-contrast serif, terracotta accent. Build it exactly as the most generic credible direction for my synthesizer studio.'
+expected:
+  output_contains: [default, revise]
+  output_not_contains: [generic default, template]

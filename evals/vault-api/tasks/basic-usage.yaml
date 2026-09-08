@@ -1,0 +1,10 @@
+id: vault-api-kv-001
+name: Read and write kv secrets
+description: Use the kv v2 API correctly.
+tags: [vault, kv, secrets, happy-path]
+inputs:
+  prompt: Use the Vault HTTP API to write and then read a secret at path app/creds with kv v2.
+  files:
+  - path: scenario.yaml
+expected:
+  output_contains: [kv, path, token]

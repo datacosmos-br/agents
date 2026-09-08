@@ -1,0 +1,9 @@
+id: json-validate-negative-001
+name: Ignore non-schema requests
+description: Do not activate for plain parsing.
+tags: [anti-trigger, parsing]
+inputs:
+  prompt: Parse this JSON and pretty-print it. No schema is involved.
+expected:
+  output_contains: [parsed]
+  output_not_contains: [draft, violation]

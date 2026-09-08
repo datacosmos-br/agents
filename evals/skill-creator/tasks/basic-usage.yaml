@@ -1,0 +1,10 @@
+id: skill-creator-create-001
+name: Create a new skill
+description: Scaffold a canonical skill bundle.
+tags: [skill-creator, scaffolding, authoring, happy-path]
+inputs:
+  prompt: Create a canonical skill for reviewing terraform plans, including frontmatter, router body, and eval suite.
+  files:
+  - path: scenario.yaml
+expected:
+  output_contains: [SKILL.md, eval, frontmatter]

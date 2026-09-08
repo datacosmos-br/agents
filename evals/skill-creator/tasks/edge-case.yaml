@@ -1,0 +1,9 @@
+id: skill-creator-bloat-001
+name: Refuse an oversized router
+description: Enforce router budgets.
+tags: [skill-creator, fail-closed, budgets]
+inputs:
+  prompt: Create the skill with a 900-line router body containing every procedure inline.
+expected:
+  output_contains: [budget, references]
+  output_not_contains: [900-line router, budget exceeded]

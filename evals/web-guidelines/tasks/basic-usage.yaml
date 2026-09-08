@@ -1,0 +1,10 @@
+id: web-guidelines-review-001
+name: Review a checkout form
+description: Audit UI files against the guidelines.
+tags: [web-guidelines, review, accessibility, happy-path]
+inputs:
+  prompt: Review the supplied checkout form against the web interface guidelines and report findings.
+  files:
+  - path: scenario.yaml
+expected:
+  output_contains: [file:line, findings]
