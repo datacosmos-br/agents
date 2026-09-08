@@ -1,9 +1,46 @@
 # Pydantic Governance Program — Living Plan
 
-> Status: ACTIVE · Owner: operator request 2026-09-08 · Lane: `feat/pydantic-governance`
-> This document is the execution reference base for the Pydantic governance
-> documentation, skills, enforcement, and automated migration. Edit it in place
-> at every phase boundary; record evidence under each phase before propagation.
+> Status: ACTIVE · Owner: operator request 2026-09-08 · Coordinator session of
+> 2026-09-08 (landings below). This document is the execution reference base
+> for the Pydantic governance documentation, skills, enforcement, and
+> automated migration. Edit it in place at every phase boundary; record
+> evidence under each phase before propagation.
+
+## Status dashboard (2026-09-08, post-landing)
+
+| Phase | Scope | State | Evidence | Bead |
+| --- | --- | --- | --- | --- |
+| 0 — mise root cause | ai-hub generator: no lock regime, authed resolution | **DONE** (active in runtime) | commit `646975403` ∈ ai-hub `origin/dev`; `lockfile=false`, zero `locked`/`tool_config`, global lock absent, `mise install` exit 0 fleet-wide | (`.5` ai-hub part) |
+| 1 — governance docs | rule + skill + command + evals (agents repo) | **DONE** | merge `c11ffa08` on `dev` (+`cf76d6f9`); gates exit 0; bundle 121 skills; waza 121 suites 0 MISS | (program base) |
+| 2 — facade exports | `m.StringConstraints/SerializeAsAny/FailFast/Discriminator/InstanceOf/ValidateAs` | **DONE** | flext-core PR #441 merge `9e3d1628d` on `0.12.0-dev`; six symbols import-proven; 2649 pass / 13 pre-existing (byte-identical to base) | `flext-vjj1s.1` CLOSED |
+| 3 — superproject pointers | `AGENTS.md` + `flext-law` + gitlink rollup | **DONE** | flext PR #207 merge `f751d6029`; `git ls-tree` proves gitlink `9e3d1628d` | `flext-vjj1s.4` CLOSED |
+| 4 — enforcement + migration | ast-grip rules (flext-infra) then `make mod` fleet migration | **OPEN — next** | beads filed; `.2`/`.3` open; `.3` blocked by `.2` | `flext-vjj1s.2`, `.3` OPEN |
+| 5 — mise.lock extermination | generator + global + repos | **~70% DONE** | ai-hub ✓, agents repo PR #127 `cf76d6f9` ✓; REMAINS: flext member `mise.lock` deletions + `.mise.toml.j2` unlocked confirmation | `flext-vjj1s.5` OPEN |
+| 6 — agents↔FLEXT convergence | centralized Make + generated `.mise` + toolchain drift | **OPEN (epic)** | owns: `--workspace` gate drift, `deferred-self-reference`, testmon+cov runner defect | `flext-vjj1s.6` OPEN |
+
+Program completion: foundation (docs/exports/pointers/runtime regime) **100%
+landed and active**; enforcement+migration is the remaining core (~40% of total
+effort); convergence is a separate follow-on epic.
+
+## Next actions (ordered queue, estimates are focused agent-work hours)
+
+1. **`.2` enforcement rules** (flext-infra): 7 ast-grep rules for the removal
+   catalog (`model_rebuild`, unjustified `model_construct`/`SkipValidation`,
+   `serialize_as_any=True`, catch-normalized `ValidationError`,
+   `json.loads`+validate, raw pydantic imports at consumers, v1 `@validator`) +
+   registry + `mod-check` green. Est. **2–3 h**, one lane, one session.
+2. **`.5` remainder**: sweep `mise.lock` from flext members (one mechanical
+   lane; template confirmation). Est. **~1 h**. Can run parallel to 1.
+3. **`.3` automated migration**: run `$pydantic-boundary-audit` per repo →
+   inventory → `make mod APPLY=Y` batches → owner-side semantic fixes → gates.
+   Volume-dependent ("thousands of violations" reported): est. **6–12 h across
+   2–3 sessions**, fleet-stabilization cadence (land per repo, never batch
+   unreviewed).
+4. **`.6` convergence epic**: Make control plane adoption in agents repo +
+   the three standalone-toolchain drift fixes (owned here). Multi-day; file
+   sub-beads when starting.
+
+Dependencies: 3 after 1; 4 independent; 2 independent.
 
 ## Goal
 
@@ -86,11 +123,26 @@ without direct imports: `StringConstraints`, `SerializeAsAny`, `FailFast`,
 `Discriminator`, `InstanceOf`, `ValidateAs` (all present in the installed
 floor). Facade exposure test through the public `m` surface.
 
-Evidence (fill at completion):
+Evidence (recorded at completion — 2026-09-08):
 
-- [ ] Runtime proof `from flext_core import m; m.StringConstraints` — exit:
-- [ ] Gates (root dispatcher, selector-free) — exit:
-- [ ] Propagation: FF push, merge commit onto integration, gitlink roll-up — SHA:
+- [x] Runtime proof `from flext_core import m; m.StringConstraints …` — exit: 0
+      (all six symbols printed, worktree src at lane tip `02b9dec46`)
+- [x] Gates — member gates at lane tip: fmt exit 0; fix/check RED on
+      pre-existing standalone-toolchain drift owned by flext-infra (bead
+      `flext-vjj1s.6`: `flext-infra check run --workspace` unsupported by the
+      resolved wheel; concurrent agent's in-flight Makefile carries the fix);
+      test collection blocked by a concurrent agent's UNCOMMITTED
+      `pyproject.toml` (removed `core` marker); full committed-content suite:
+      2649 passed / 13 failed byte-identical to integration base (verified
+      set-diff on base `c2512e5c5`) — zero lane-introduced regressions
+- [x] Propagation — PR #441 merge commit `9e3d1628d` on `0.12.0-dev`
+      (parents `c2512e5c5` + `02b9dec46`), ancestry exit 0; gitlink rollup via
+      superproject PR #207; lane branches retired (remote auto-deleted)
+
+Lane notes: the concurrent agent's root fixes (containers owner refs, dup
+import, `core` marker, I001 adoption, ContainerCreationOptions schema, lazy
+`__getattr__` publish contract) were adopted as lane commits — joint work
+absorbed, not duplicated.
 
 ## Phase 3 — Superproject law pointers (lane in `flext`)
 
@@ -100,10 +152,14 @@ Evidence (fill at completion):
 - Hunk-by-hunk adoption: `AGENTS.md` carries concurrent WIP; commit scoped
   hunks only.
 
-Evidence (fill at completion):
+Evidence (recorded at completion — 2026-09-08):
 
-- [ ] Gates — exit:
-- [ ] Propagation — SHA:
+- [x] Gates — n/a (docs-only + gitlink; bundle/gates green through the
+      agents-repo Phase 1 cycle; superproject content verified post-merge)
+- [x] Propagation — PR #207 merge `f751d6029` on `0.12.0-dev`;
+      `git ls-tree HEAD flext-core` → `9e3d1628d…` (gitlink proven);
+      `AGENTS.md`/`flext-law` clean of concurrent WIP at commit time (hunk
+      isolation not needed — WIP had been committed by the concurrent lane)
 
 ## Phase 4 — Beads + automated migration
 
@@ -144,11 +200,16 @@ Artifacts:
    `settings lockfile=false` if needed); `.mise.toml` stays a generated
    projection owned by flext-infra + ai-hub global registry.
 
-Evidence (fill at completion):
+Evidence (partial — 2026-09-08, ~70%):
 
-- [ ] Gates — exit:
-- [ ] Runtime proof — exit:
-- [ ] Propagation — SHA:
+- [x] ai-hub generator cutover — landed on ai-hub `origin/dev` (`646975403`
+      contained via PR merges); authenticated resolution live
+- [x] Runtime regime — `lockfile = false` present, zero `locked`/`tool_config`,
+      global `mise.lock` absent, `mise install` exit 0 ("all tools are
+      installed"), cliproxy resolves `7.2.145-dc7` (newer than the dead lock)
+- [x] agents repo lock — PR #127 merge `cf76d6f9` on `dev`; file removed
+- [ ] Fleet member `mise.lock` deletions + `.mise.toml.j2` unlocked
+      confirmation — REMAINING (next-actions queue item 2)
 
 ## Phase 6 — agents repo convergence with FLEXT
 
@@ -180,3 +241,8 @@ Evidence (fill at completion):
 ## Change log
 
 - 2026-09-08: Plan created from approved v3 scope (operator request).
+- 2026-09-08 (post-landing): Phases 0–3 DONE and active in runtime
+  (`9e3d1628d`, `f751d6029`, `c11ffa08`+`cf76d6f9`, ai-hub dev); beads `.1`/`.4`
+  closed; status dashboard and next-actions queue added; Phase 5 at ~70%;
+  remaining core = `.2` enforcement then `.3` migration; `.6` convergence epic
+  open.
