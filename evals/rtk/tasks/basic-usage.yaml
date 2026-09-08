@@ -1,0 +1,18 @@
+id: rtk-happy-path-001
+name: Economy-first command execution with manual prefix where deferred
+description: Auto-rewrite preference plus manual rtk forms for deferred constructs.
+tags: [rtk, token-economy, output-filtering, routing, happy-path]
+inputs:
+  prompt: |
+    Execute the supplied session scenario. Keep context consumption minimal
+    and state exactly which commands the hook daemon rewrote automatically and
+    which ones you wrapped manually, with reasons.
+  files:
+  - path: session-request.md
+expected:
+  output_contains:
+  - rtk git status
+  - rtk docker ps
+  - rtk grep
+  - manual
+  - deferred

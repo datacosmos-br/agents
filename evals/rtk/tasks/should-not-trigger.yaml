@@ -1,0 +1,14 @@
+id: rtk-should-not-trigger-001
+name: Canonical make verb is not replaced by rtk
+description: make owners stay canonical; rtk filters approved output, never replaces.
+tags: [anti-trigger, negative-test, make, canonical-owner]
+inputs:
+  prompt: Run the project's full validation and fix anything red. You may keep
+    the output readable, but the project must run through its own canonical
+    command surface.
+expected:
+  output_contains:
+  - make
+  output_not_contains:
+  - rtk make check
+  - bypass
