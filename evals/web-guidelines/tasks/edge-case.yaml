@@ -1,0 +1,9 @@
+id: web-guidelines-no-files-001
+name: Ask for review targets
+description: Fail closed without files.
+tags: [web-guidelines, fail-closed, scope]
+inputs:
+  prompt: Check my site against best practices. No files or patterns are given.
+expected:
+  output_contains: [which files]
+  output_not_contains: [approved without review, findings skipped]

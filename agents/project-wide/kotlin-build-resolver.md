@@ -3,7 +3,7 @@ name: kotlin-build-resolver
 description: Kotlin/Gradle build, compilation, and dependency error resolution specialist. Fixes build errors, Kotlin compiler errors, and Gradle issues with minimal changes. Use when Kotlin builds fail.
 tools: ["filesystem:read", "filesystem:write", "shell:execute", "filesystem:grep", "filesystem:glob"]
 metadata:
-  aihub.tags: '["activation:detected","detect:marker:build.gradle.kts","mode:debug","role:build-resolver"]'
+  aihub.tags: '["activation:detected","detect:marker:build.gradle.kts","mode:debug"]'
 ---
 
 # Kotlin Build Error Resolver
@@ -115,5 +115,5 @@ Remaining errors: 2
 
 Final: `Build Status: SUCCESS/FAILED | Errors Fixed: N | Files Modified: list`
 
-Use `jvm-development` for detected Kotlin/JVM language rules and the active
+Use `jvm-dev` for detected Kotlin/JVM language rules and the active
 project's own build contract for repository-specific patterns.

@@ -166,6 +166,30 @@ def _require_historical_identity(root: Path, identity: str, source: Path) -> Non
         )
 
 
+def _history_available(root: Path) -> bool:
+    """Return True only inside an authored Git work tree; fail loud otherwise.
+
+    The historical-presence proof needs Git history. The packaged distribution
+    is a history-free snapshot by design (ADR-0006), and its supersedes
+    assertions were already proven at authoring time; there the
+    active-inventory absence proof still applies in full.
+    """
+
+    probe = subprocess.run(
+        ("git", "-C", str(root), "rev-parse", "--is-inside-work-tree"),
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    if probe.returncode == 0:
+        if probe.stdout.strip() == "true":
+            return True
+        raise ValueError(f"approval history requires an authored work tree: {root}")
+    if "not a git repository" in probe.stderr:
+        return False
+    raise ValueError(f"git history probe failed for {root}: {probe.stderr.strip()}")
+
+
 def audit_precedence(root: Path, artifacts: tuple[ApprovedArtifact, ...]) -> None:
     """Require every superseded artifact to be retired from the active inventory.
 
@@ -173,6 +197,8 @@ def audit_precedence(root: Path, artifacts: tuple[ApprovedArtifact, ...]) -> Non
     that artifact. The assertion is machine-checkable exactly once: the named
     artifact must no longer be active. Keeping both is the old/new coexistence
     the recency law forbids, so it raises instead of being ordered silently.
+    Inside the authored work tree the named artifact must additionally resolve
+    through Git history; the packaged snapshot carries no history (ADR-0006).
     """
 
     active = {artifact.identity: artifact for artifact in artifacts}
@@ -183,6 +209,7 @@ def audit_precedence(root: Path, artifacts: tuple[ApprovedArtifact, ...]) -> Non
             if sum(one.identity == identity for one in artifacts) > 1
         )
         raise ValueError(f"duplicate artifact identity: {duplicated[0]}")
+    history = _history_available(root)
     for artifact in sorted(artifacts, key=lambda one: one.identity):
         for tag in artifact.tags:
             if not tag.startswith("supersedes:"):
@@ -196,7 +223,8 @@ def audit_precedence(root: Path, artifacts: tuple[ApprovedArtifact, ...]) -> Non
                     f"{artifact.source}: supersedes {identity!r}, which is still "
                     f"active at {superseded.source}; retire it in this change"
                 )
-            _require_historical_identity(root, identity, artifact.source)
+            if history:
+                _require_historical_identity(root, identity, artifact.source)
 
 
 def core_tags(tags: tuple[str, ...]) -> tuple[str, ...]:

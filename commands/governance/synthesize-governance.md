@@ -3,7 +3,7 @@ name: synthesize-governance
 description: Synthesize an external governance corpus into current canonical owners without copying its structure.
 argument-hint: "<source corpus and requested governance outcome>"
 metadata:
-  aihub.tags: '["decision:ADR-0008","effective:2026-08-29","intent:governance","intent:implementation","risk:write","route:project"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-08-29","route:project"]'
 ---
 
 # Synthesize governance

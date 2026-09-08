@@ -1,0 +1,10 @@
+id: ponytail-minimal-001
+name: Solve with the laziest working design
+description: Reach the shortest working diff.
+tags: [ponytail, minimalism, stdlib, happy-path]
+inputs:
+  prompt: In ponytail mode, add config-value parsing for the supplied project; use the smallest solution that works.
+  files:
+  - path: scenario.yaml
+expected:
+  output_contains: [stdlib, skipped]

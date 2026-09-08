@@ -1,0 +1,12 @@
+id: agent-debug-edge-001
+name: Refuse a diagnosis without failure state
+description: Separate missing evidence from a demonstrated agent root cause.
+tags: [agent-debug, edge-case]
+inputs:
+  prompt: >-
+    Diagnose why an agent failed and apply recovery. No objective, error,
+    transcript, tool call, environment state, or last successful step is
+    available. State the minimum capture required before choosing a cause.
+expected:
+  output_contains: [failure evidence, last failed tool, no recovery action]
+  output_not_contains: [reset agent state, 'Root cause: context overflow', try another check]

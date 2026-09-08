@@ -1,0 +1,14 @@
+id: doc-criteria-should-not-trigger-001
+name: Fix one README typo
+description: A one-line copy edit does not require planning documents.
+tags:
+- anti-trigger
+- negative-test
+inputs:
+  prompt: Correct one misspelled word in README.md; no behavior or contract changes.
+expected:
+  output_not_contains:
+  - PRD
+  - Work Plan
+  - Design Document
+  - documentation workflow activated

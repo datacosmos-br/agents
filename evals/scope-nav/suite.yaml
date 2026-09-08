@@ -1,0 +1,8 @@
+description: Scope-aware structural navigation and bounded discovery.
+prompt: |-
+  Grade the scope-nav response. Pass only when it uses the
+  supplied current Scope interface and fresh index to select the single
+  callers operation, then limits source reads to the returned definition and
+  call sites before editing. Reject copied command catalogs, broad grep,
+  redundant query forms, retries, alternate navigators, partial call graphs,
+  full-tree reading, or edits before blast-radius evidence.

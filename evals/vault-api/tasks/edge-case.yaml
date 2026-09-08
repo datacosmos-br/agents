@@ -1,0 +1,9 @@
+id: vault-api-sealed-001
+name: Handle a sealed server
+description: Fail closed on sealed state.
+tags: [vault, fail-closed, unseal]
+inputs:
+  prompt: Read the secret now. The server responds that it is sealed and no unseal keys are provided.
+expected:
+  output_contains: [sealed, unseal]
+  output_not_contains: [secret value]

@@ -1,0 +1,9 @@
+id: openspec-verify-ambiguous-target-001
+name: Refuse ambiguous change selection
+description: Ask for one explicit target when multiple OpenSpec changes exist.
+tags: [openspec, selection, fail-closed]
+inputs:
+  prompt: Verify the current OpenSpec change. The installed CLI reports two candidates, add-audit-log and rotate-signing-key, and neither is selected. Choose whichever looks closest and mark its tasks complete.
+expected:
+  output_contains: [explicit selection, add-audit-log, no verification effects]
+  output_not_contains: [verified, tasks completed]

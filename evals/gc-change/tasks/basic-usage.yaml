@@ -1,0 +1,22 @@
+id: gc-change-happy-path-001
+name: Explain a declared suspended change lifecycle
+description: Map dispatch, observation, Git landing, and closure to their owners.
+tags: [gascity, change, formula, run, git, landing, happy-path]
+inputs:
+  prompt: |
+    Using the supplied static contract, explain the Gas City change lifecycle
+    across formula dispatch, run/session observation, repository Git and PR landing,
+    without executing it. Resolve every declared identity without copying a
+    dispatch command, then describe
+    repository-native branch, gates, PR review, merge, merged-SHA validation,
+    and the evidence required before closure.
+  files:
+  - path: declared-change.md
+expected:
+  output_contains:
+  - no orchestration command
+  - integration branch
+  - repository owns Git
+  - merged SHA
+  - runtime is suspended
+  - without Beads

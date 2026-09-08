@@ -2,7 +2,7 @@
 name: dmux-workflows
 description: 'dmux, terminal orchestration, agent coordination'
 metadata:
-  aihub.tags: '["activation:opt-in","decision:ADR-0008","detect:opt-in:dmux","effective:2026-08-28","policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:no-keyring","policy:preflight-before-effects","policy:required-environment","policy:strict-execution","policy:zero-residue","provenance:agents-owned","route:agent","tool:dmux","updates:manual","usage:on-demand"]'
+  aihub.tags: '["activation:opt-in","decision:ADR-0008","detect:opt-in:dmux","effective:2026-08-28","route:agent","subject:dmux","usage:on-demand"]'
 ---
 
 # dmux Workflows

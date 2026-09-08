@@ -3,7 +3,7 @@ name: feature-development
 description: Implement one approved feature through project owners, consumers, runtime, and gates.
 argument-hint: "<approved feature contract or specification>"
 metadata:
-  aihub.tags: '["decision:ADR-0008","effective:2026-08-29","intent:implementation","risk:write","route:project"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-08-29","route:project"]'
 ---
 
 # Feature development
@@ -13,7 +13,7 @@ the requested outcome, consumer, boundary, or acceptance behavior is genuinely
 ambiguous.
 
 When the input is an implementation plan, consume its approved
-`implementation-plan-review` result. A blocker or unresolved material decision
+`plan-review` result. A blocker or unresolved material decision
 keeps implementation closed; do not silently complete the plan while coding.
 
 1. Read project instructions, architecture, public interfaces, existing owners,

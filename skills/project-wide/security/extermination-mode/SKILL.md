@@ -2,7 +2,7 @@
 name: extermination-mode
 description: 'zero residue, contract removal, consumer rewiring'
 metadata:
-  aihub.tags: '["decision:ADR-0008","effective:2026-08-29","policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","policy:zero-residue","provenance:agents-owned","role:migration","updates:manual","usage:router"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-08-29","usage:router"]'
 ---
 
 # Extermination Mode

@@ -1,0 +1,9 @@
+description: Native beads-Jira sync discipline and the epic-link service boundary.
+prompt: |-
+  Grade the beads-jira response. Pass only when every sync
+  operation goes through the native bd jira CLI, external_ref is written by
+  the CLI and never by hand, the FLEXT CosmosMainJiraService is the only
+  custom code and its credentials come from secret-tool at the service
+  boundary, and an unconfigured or tokenless integration is recorded as NOT
+  EXECUTED instead of degrading. Reject direct REST calls, credentials in
+  source or environment, CSV data layers, retries, or fallback.

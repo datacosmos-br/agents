@@ -1,0 +1,5 @@
+server: http://127.0.0.1:8200
+state: unsealed
+mount: secret kv v2
+path: app/creds
+token: test-root

@@ -1,0 +1,24 @@
+id: react-patterns-happy-path-001
+name: Repair an unstable accessible search component
+description: Exercise React UI architecture and component patterns through one material owner refactor.
+tags: [frontend, react, ui-architecture, component-patterns, state, performance, accessibility, happy-path]
+inputs:
+  prompt: |
+    Apply React UI architecture and component patterns to produce the complete
+    SearchPanel refactor. Replace the unstable function dependency with one effect
+    keyed by query and search, use AbortController cleanup, render loading, empty,
+    results, and the typed rejected outcome with accessible live/alert semantics,
+    remove query logging, and let thrown search failures remain raw without catch,
+    retry, or fallback. Include material behavior, unmount/zero-effect, privacy,
+    residue, and performance proof; add no dependency or speculative memoization.
+  files:
+  - path: SearchPanel.tsx
+expected:
+  output_contains:
+  - AbortController
+  - SearchOutcome
+  - aria-live
+  - loading
+  - rejected
+  output_not_contains:
+  - console.log(query)

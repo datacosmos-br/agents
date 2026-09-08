@@ -1,0 +1,9 @@
+id: json-validate-draft-mismatch-001
+name: Surface draft incompatibility
+description: Fail closed on draft mismatch.
+tags: [json, fail-closed, drafts]
+inputs:
+  prompt: Validate this payload with a draft-04 validator against a 2020-12 schema and report success.
+expected:
+  output_contains: [draft, incompatible]
+  output_not_contains: [reports success, draft ignored]

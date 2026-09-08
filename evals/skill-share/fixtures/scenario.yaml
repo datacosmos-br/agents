@@ -1,0 +1,4 @@
+skill: review-terraform-plans
+channel: team slack
+destination: workspace app
+credentials_configured: true

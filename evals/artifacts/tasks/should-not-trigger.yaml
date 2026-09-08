@@ -1,0 +1,9 @@
+id: artifacts-negative-001
+name: Ignore native app requests
+description: Do not activate for non-web deliverables.
+tags: [anti-trigger, native]
+inputs:
+  prompt: Scaffold a native Android activity for login. No web artifact is requested.
+expected:
+  output_contains: [android]
+  output_not_contains: [html artifact, shadcn]

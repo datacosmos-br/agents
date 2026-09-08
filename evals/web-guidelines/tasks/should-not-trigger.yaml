@@ -1,0 +1,9 @@
+id: web-guidelines-negative-001
+name: Ignore backend review
+description: Do not activate for backend code review.
+tags: [anti-trigger, backend]
+inputs:
+  prompt: Review this repository service layer for correctness. No UI is involved.
+expected:
+  output_contains: [service]
+  output_not_contains: [interface guidelines, accessibility]

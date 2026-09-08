@@ -3,7 +3,7 @@ name: security-triage
 description: Validate and close scanner findings from project-owned security triage reports.
 argument-hint: "<one or more explicit repository roots>"
 metadata:
-  aihub.tags: '["decision:ADR-0008","effective:2026-08-29","intent:verification","risk:write","route:agent"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-08-29","route:agent"]'
 ---
 
 # Security triage

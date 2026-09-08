@@ -3,7 +3,7 @@ name: mle-reviewer
 description: Production machine-learning engineering reviewer for data contracts, feature pipelines, training reproducibility, offline/online evaluation, model serving, monitoring, and rollback. Use when ML, MLOps, model training, inference, feature store, or evaluation code changes.
 tools: ["filesystem:read", "filesystem:grep", "filesystem:glob", "shell:execute"]
 metadata:
-  aihub.tags: '["activation:opt-in","mode:review","role:domain-reviewer"]'
+  aihub.tags: '["activation:opt-in","mode:review"]'
 ---
 
 # MLE Reviewer
@@ -38,7 +38,7 @@ MLE review should compose existing SWE review surfaces instead of replacing them
 - Use `e2e-runner` for product flows where predictions affect user-visible or business-critical behavior.
 - Use `accessibility-architect` when prediction explanations, confidence states, or fallback UI need to be accessible.
 - Use `documentation-maintainer` when new model contracts, promotion gates, dashboards, or rollback runbooks need durable project documentation.
-- Use `context7-documentation` before relying on evolving ML serving, vector DB, feature store, or eval-framework APIs.
+- Use `context7-docs` before relying on evolving ML serving, vector DB, feature store, or eval-framework APIs.
 
 ## Critical Review Areas
 

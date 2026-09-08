@@ -3,7 +3,7 @@
 from .agent_profiles import AgentProfile
 from .bundle import BUNDLE_SCHEMA_VERSION, GovernanceBundle
 from .catalog import SkillCategory, SkillRecord
-from .commands import CommandIntent, CommandRisk, CommandRoute, CommandSpec
+from .commands import CommandRoute, CommandSpec
 from .governance_config import GovernanceConfig
 from .law_surface import LawSurface
 from .provenance import version as _distribution_version
@@ -21,8 +21,6 @@ __version__ = _distribution_version()
 __all__ = (
     "BUNDLE_SCHEMA_VERSION",
     "AgentProfile",
-    "CommandIntent",
-    "CommandRisk",
     "CommandRoute",
     "CommandSpec",
     "EvalBehaviorGraderPolicy",

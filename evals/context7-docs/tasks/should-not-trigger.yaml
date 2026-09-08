@@ -1,0 +1,13 @@
+id: context7-docs-should-not-trigger-001
+name: Summarize a repository-owned README
+description: Closed local documentation does not require Context7.
+tags:
+- anti-trigger
+- negative-test
+inputs:
+  prompt: Summarize the supplied repository README section; no external library behavior is in question.
+expected:
+  output_not_contains:
+  - resolve-library-id
+  - query-docs
+  - Context7

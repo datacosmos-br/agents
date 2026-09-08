@@ -2,7 +2,7 @@
 name: governance-audit
 description: 'governance drift, authority conflicts, stale instructions'
 metadata:
-  aihub.tags: '["decision:ADR-0008","effective:2026-08-29","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","provenance:agents-owned","role:governance","updates:manual","usage:on-demand"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-08-29","usage:on-demand"]'
 ---
 
 # Governance Audit

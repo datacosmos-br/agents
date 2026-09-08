@@ -1,0 +1,5 @@
+request: inventory dashboard artifact
+components: [sidebar, sortable table]
+routing: client-side
+stack: react + tailwind + shadcn
+network_dependencies: none

@@ -3,7 +3,7 @@ name: dead-code-cleaner
 description: Dead code cleanup and consolidation specialist. Use PROACTIVELY for removing unused code, duplicates, and refactoring. Runs analysis tools (knip, depcheck, ts-prune) to identify dead code and safely removes it.
 tools: ["filesystem:read", "filesystem:write", "shell:execute", "filesystem:grep", "filesystem:glob"]
 metadata:
-  aihub.tags: '["activation:opt-in","mode:execute","role:cleaner"]'
+  aihub.tags: '["activation:opt-in","mode:execute"]'
 ---
 
 # Refactor & Dead Code Cleaner
