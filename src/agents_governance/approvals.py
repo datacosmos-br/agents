@@ -167,24 +167,25 @@ def _require_historical_identity(root: Path, identity: str, source: Path) -> Non
 
 
 def _history_available(root: Path) -> bool:
-    """Return True only inside an authored Git work tree; fail loud otherwise.
+    """Return True only when root is the authored Git repository itself.
 
-    The historical-presence proof needs Git history. The packaged distribution
-    is a history-free snapshot by design (ADR-0006), and its supersedes
-    assertions were already proven at authoring time; there the
-    active-inventory absence proof still applies in full.
+    The historical-presence proof needs Git history rooted at the authored
+    repository. The packaged distribution is a history-free snapshot by
+    design (ADR-0006): its ``_data`` root is not a repository, and merely
+    residing inside some unrelated work tree (a consumer's checkout) grants
+    no authority over this catalog's history. There the active-inventory
+    absence proof still applies in full; the history proof already ran at
+    authoring time.
     """
 
     probe = subprocess.run(
-        ("git", "-C", str(root), "rev-parse", "--is-inside-work-tree"),
+        ("git", "-C", str(root), "rev-parse", "--show-toplevel"),
         check=False,
         capture_output=True,
         text=True,
     )
     if probe.returncode == 0:
-        if probe.stdout.strip() == "true":
-            return True
-        raise ValueError(f"approval history requires an authored work tree: {root}")
+        return Path(probe.stdout.strip()).resolve() == root.resolve()
     if "not a git repository" in probe.stderr:
         return False
     raise ValueError(f"git history probe failed for {root}: {probe.stderr.strip()}")
