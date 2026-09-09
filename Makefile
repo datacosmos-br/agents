@@ -16,7 +16,7 @@ override export UV_PROJECT_ENVIRONMENT := $(CURDIR)/.venv
 override export VIRTUAL_ENV := $(CURDIR)/.venv
 
 .DEFAULT_GOAL := help
-.PHONY: help setup docs audit check runtime waza static conform fmt fix mod mod-check shell duplication build test test-full ci validate-artifacts publish
+.PHONY: help setup gen docs audit check runtime waza static conform fmt fix mod mod-check shell duplication build test test-full ci validate-artifacts publish
 .DELETE_ON_ERROR:
 
 define BANNER
@@ -126,7 +126,7 @@ duplication: ## enforce zero strict duplication in canonical source and evaluati
 	$(call BANNER,duplication · jscpd)
 	@$(MISE_EXEC) jscpd src tests tools evals --config $(CURDIR)/.jscpd.json --exit-code 1
 
-build: ## build source and wheel artifacts; requires APPLY=Y
+gen build: ## generate governance source and wheel artifacts; requires APPLY=Y
 	$(call REQUIRE_APPLY)
 	$(call BANNER,build · sdist + wheel)
 	@ARTIFACT_MODE=build uv run python tools/artifact_gate.py
