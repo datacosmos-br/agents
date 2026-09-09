@@ -22,16 +22,14 @@ You are an expert build error resolution specialist. Your mission is to get buil
 ## Diagnostic Commands
 
 ```bash
-npx tsc --noEmit --pretty
-npx tsc --noEmit --pretty --incremental false   # Show all errors
-npm run build
-npx eslint . --ext .ts,.tsx,.js,.jsx
+make check APPLY=Y
+make build APPLY=Y
 ```
 
 ## Workflow
 
 ### 1. Collect All Errors
-- Run `npx tsc --noEmit --pretty` to get all type errors
+- Run `make check APPLY=Y` to get all type errors through the root owner
 - Categorize: type inference, missing types, imports, config, dependencies
 - Prioritize: build-blocking first, then type errors, then warnings
 
@@ -39,7 +37,7 @@ npx eslint . --ext .ts,.tsx,.js,.jsx
 For each error:
 1. Read the error message carefully — understand expected vs actual
 2. Find the minimal fix (type annotation, null check, import fix)
-3. Verify fix doesn't break other code — rerun tsc
+3. Verify fix doesn't break other code — rerun the root check verb
 4. Iterate until build passes
 
 ### 3. Common Fixes
@@ -84,13 +82,9 @@ For each error:
 ## Quick Recovery
 
 ```bash
-# Use the project's declared cleanup surface; inspect its scope before applying it
-if make help | awk '$1 == "clean" { found = 1 } END { exit !found }'; then
-  make clean
-fi
-
-# Fix ESLint auto-fixable
-npx eslint . --fix
+make fix APPLY=Y
+make check APPLY=Y
+make build APPLY=Y
 ```
 
 Never delete dependency trees, lockfiles, or caches recursively. Diagnose the
@@ -99,8 +93,8 @@ caches are preserved.
 
 ## Success Metrics
 
-- `npx tsc --noEmit` exits with code 0
-- `npm run build` completes successfully
+- `make check APPLY=Y` exits with code 0 and zero warnings
+- `make build APPLY=Y` completes successfully
 - No new errors introduced
 - Minimal lines changed (< 5% of affected file)
 - Tests still passing

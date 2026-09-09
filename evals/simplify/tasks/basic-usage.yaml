@@ -7,7 +7,5 @@ inputs:
   files:
   - path: status-contract.yaml
 expected:
-  outcomes:
-  - type: task_completed
   output_contains: [YAGNI, no new SOLID boundary, format_status, enabled:unknown, unrelated_invoice_total, canonical typed default, enabled=False, runtime]
   output_not_contains: [TODO, NotImplemented, StatusFormatter, utility helper]

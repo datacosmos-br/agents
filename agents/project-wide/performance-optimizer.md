@@ -22,25 +22,9 @@ You are an expert performance specialist focused on identifying bottlenecks and 
 ## Analysis Commands
 
 ```bash
-# Bundle analysis
-npx bundle-analyzer
-npx source-map-explorer build/static/js/*.js
-
-# Lighthouse performance audit
-npx lighthouse https://your-app.com --view
-
-# Node.js profiling
-node --prof your-app.js
-node --prof-process isolate-*.log
-
-# Memory analysis
-node --inspect your-app.js  # Then use Chrome DevTools
-
-# React profiling (in browser)
-# React DevTools > Profiler tab
-
-# Network analysis
-npx webpack-bundle-analyzer
+make audit
+make runtime APPLY=Y
+make check APPLY=Y
 ```
 
 ## Performance Review Workflow
@@ -137,14 +121,8 @@ const sortedItems = useMemo(
 **Bundle Analysis Checklist:**
 
 ```bash
-# Analyze bundle composition
-npx webpack-bundle-analyzer build/static/js/*.js
-
-# Check for duplicate dependencies
-npx duplicate-package-checker-analyzer
-
-# Find largest files
-du -sh node_modules/* | sort -hr | head -20
+make audit
+make check APPLY=Y
 ```
 
 **Optimization Strategies:**
@@ -317,7 +295,7 @@ useEffect(() => {
 # 5. Look for detached DOM nodes, event listeners, closures
 
 # Node.js memory debugging
-node --inspect app.js
+make check APPLY=Y
 # Open chrome://inspect
 # Take heap snapshots and compare
 ```
@@ -327,14 +305,8 @@ node --inspect app.js
 ### Lighthouse Audits
 
 ```bash
-# Run full lighthouse audit
-npx lighthouse https://your-app.com --view --preset=desktop
-
-# CI mode for automated checks
-npx lighthouse https://your-app.com --output=json --output-path=./lighthouse.json
-
-# Check specific metrics
-npx lighthouse https://your-app.com --only-categories=performance
+make runtime APPLY=Y
+make check APPLY=Y
 ```
 
 ### Performance Budgets

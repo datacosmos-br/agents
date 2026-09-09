@@ -1,0 +1,17 @@
+id: no-expected-spacing-residue
+snapshots:
+  ? |-
+    expected:
+
+      output_contains: [material artifact]
+  : fixed: |-
+      expected:
+        output_contains: [material artifact]
+    labels:
+    - source: |-
+        expected:
+
+          output_contains: [material artifact]
+      style: primary
+      start: 0
+      end: 49

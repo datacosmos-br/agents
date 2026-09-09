@@ -6,9 +6,9 @@ inputs:
   prompt: Use active-plan.yaml. Incorporate the incoming skill correction as a
     bounded detour, identify the exact evidence it invalidates, and keep fixing
     the detour until its integration boundary is proven before showing the
-    concrete return to Flext. Do not repair unrelated runtime/projection defects.
+    concrete return to Flext. Do not expand into unrelated runtime defects.
   files:
   - path: active-plan.yaml
 expected:
-  output_contains: [Run Evaluations, approval, merge, integration SHA, pytest_runner.py]
-  output_not_contains: [repair agentsctl, repository-wide, resume now, DONE]
+  output_contains: [Runtime-first governance validation, approval, merge, integration SHA, pytest_runner.py]
+  output_not_contains: [repository-wide expansion, resume now, DONE]

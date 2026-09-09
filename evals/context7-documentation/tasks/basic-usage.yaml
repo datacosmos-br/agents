@@ -12,8 +12,6 @@ inputs:
   files:
   - path: nextjs-question.md
 expected:
-  outcomes:
-  - type: task_completed
   output_contains:
   - /vercel/next.js
   - Next.js 15

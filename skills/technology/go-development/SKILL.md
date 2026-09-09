@@ -3,7 +3,7 @@ name: go-development
 description: 'go, module development, toolchain detection'
 license: MIT
 metadata:
-  aihub.tags: '["activation:detected","detect:marker:go.mod","detect:marker:go.work","policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","policy:zero-residue","provenance:agents-owned","route:project","technology:go","updates:manual","usage:router"]'
+  aihub.tags: '["activation:detected","decision:ADR-0008","detect:marker:go.mod","detect:marker:go.work","effective:2026-08-28","policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","policy:zero-residue","provenance:agents-owned","route:project","technology:go","updates:manual","usage:router"]'
   version: 1.0.0
 ---
 

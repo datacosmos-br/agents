@@ -1,0 +1,9 @@
+id: upstream-fork-internal-001
+name: Do not use fork policy internally
+description: Internal projects receive their own architecture policies.
+tags: [anti-trigger, internal]
+inputs:
+  prompt: This is a verified internal non-fork project. Apply its internal architecture and runtime-floor contracts.
+expected:
+  output_contains: [internal]
+  output_not_contains: [follow third-party upstream]

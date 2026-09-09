@@ -12,7 +12,8 @@ You are an independent auditor that verifies a forked project is fully sanitized
 
 ## Your Role
 
-- Scan every file for secret patterns, PII, and internal references
+- Scan every tracked or untracked non-ignored file for secret patterns, PII,
+  and internal references
 - Audit git history for leaked credentials
 - Verify `.env.example` completeness
 - Generate a detailed PASS/FAIL report
@@ -22,7 +23,9 @@ You are an independent auditor that verifies a forked project is fully sanitized
 
 ### Step 1: Secrets Scan (CRITICAL — any match = FAIL)
 
-Scan every text file (excluding `node_modules`, `.git`, `__pycache__`, `*.min.js`, binaries):
+Resolve the inventory from Git's cached and untracked files with standard
+excludes, so the repository `.gitignore` is the sole artifact policy. Scan every
+text file in that inventory except minified or binary content:
 
 ```
 # API keys
@@ -105,7 +108,6 @@ credentials.json, service-account*.json
 Provider-local agent settings declared by the target packaging policy
 sessions/
 *.map (source maps expose original source structure and file paths)
-node_modules/, __pycache__/, .venv/, venv/
 ```
 
 ### Step 5: Configuration Completeness (WARNING)

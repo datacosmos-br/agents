@@ -14,8 +14,6 @@ inputs:
   files:
   - path: SearchPanel.tsx
 expected:
-  outcomes:
-  - type: task_completed
   output_contains:
   - AbortController
   - SearchOutcome

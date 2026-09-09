@@ -3,8 +3,19 @@ name: gc-rigs
 description: 'gas city rigs, rig registration, bead scoping, suspend resume'
 allowed-tools: Bash(gc *)
 metadata:
-  aihub.tags: '["activation:opt-in", "detect:opt-in:gc-rigs", "domain:gas-city", "policy:atomic-effects", "policy:causal-subprocess", "policy:fail-loud", "policy:no-fallback", "policy:preflight-before-effects", "policy:strict-execution", "provenance:agents-owned", "route:agent", "technology:gas-city", "updates:manual", "usage:on-demand"]'
+  aihub.tags: '["activation:opt-in","decision:ADR-0008","detect:opt-in:gc-rigs","domain:gas-city","effective:2026-08-30","policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","provenance:agents-owned","route:agent","route:project","technology:gas-city","updates:manual","usage:on-demand"]'
 ---
+## Verification (mandatory)
+
+Before acting on any bead, run the four-source cross-check defined in
+`rules/coordination/beads-verification.md` (project law): the registered state
+records, git history, measured reality, and the intent of the most recent
+code. Declare the check and attach evidence — command, working directory,
+exit code, decisive output — before closing. A bead whose premise the
+current code retired is closed obsolete with evidence, never executed as
+written.
+
+
 
 # Rig Management
 

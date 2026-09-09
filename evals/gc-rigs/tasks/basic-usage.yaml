@@ -1,12 +1,17 @@
 id: gc-rigs-happy-001
-name: Happy path gc-rigs
-description: Exercise canonical gc rigs workflow.
+name: Resume a registered suspended rig
+description: Resolve the city registry and resume one existing rig through its owner.
 tags: [gas-city, gc-rigs, happy-path]
 inputs:
   prompt: >-
-    Demonstrate the canonical gc-rigs workflow using gc rigs against the
-    current project. Preflight the city/rig context, run the primary command
-    via the project's declared facade, and report exact command, cwd, exit
-    code, and decisive output without bypass or fallback.
+    Read scenario.yaml, prove the current city and both rig registrations, then
+    resume only the suspended docs rig through the declared gc rig facade.
+    Report the exact preflight, mutation, post-state command, cwd, exit code,
+    and decisive output; do not recreate the rig or touch the running api rig.
+    Cover Gas City rigs, rig registration, bead scoping, and suspend/resume
+    ownership in the resulting evidence.
+  files:
+  - path: scenario.yaml
 expected:
-  output_contains: [rigs, rig registration, bead scoping, suspend resume, gc]
+  output_contains: [harbor, api, docs, suspended, resume, gc rig, exit code]
+  output_not_contains: [recreate, unregister, stop api]

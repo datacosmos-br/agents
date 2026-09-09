@@ -1,11 +1,10 @@
 id: gc-dashboard-negative-001
-name: Should not trigger gc-dashboard
-description: Do not force gc-dashboard onto unrelated work.
+name: Sketch a sales analytics dashboard
+description: Keep product UI design outside the Gas City monitoring runtime.
 tags: [gas-city, gc-dashboard, anti-trigger]
 inputs:
   prompt: >-
-    Write a short product announcement for a new feature. Do not use gc dashboard
-    or Gas City orchestration in the response; the requested output is prose,
-    not an agent workflow.
+    Suggest a compact dashboard layout for weekly revenue, conversion rate,
+    refund volume, and regional performance.
 expected:
   output_not_contains: [gc dashboard, Gas City]

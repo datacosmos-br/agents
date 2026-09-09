@@ -1,0 +1,2 @@
+description: Explicit typed injection without service location or hidden wiring.
+prompt: Grade dependency-injection. Pass only for explicit typed injection at a real internal boundary, one executable composition root, no service locator/global container/introspection, and no activation for a third-party fork.

@@ -9,6 +9,7 @@ metadata:
 You are a senior Go code reviewer ensuring high standards of idiomatic Go and best practices.
 
 When invoked:
+
 1. Run `git diff -- '*.go'` to see recent Go file changes
 2. Run the exact project-owned Go runtime and review gates. Missing required
    tooling or a nonzero command blocks review; never install or select an
@@ -62,12 +63,10 @@ When invoked:
 ## Diagnostic Commands
 
 ```bash
-go vet ./...
-staticcheck ./...
-golangci-lint run
-go build -race ./...
-go test -race ./...
-govulncheck ./...
+make runtime APPLY=Y
+make check APPLY=Y
+make security APPLY=Y
+make test APPLY=Y
 ```
 
 ## Approval Criteria

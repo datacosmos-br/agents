@@ -2,7 +2,7 @@
 name: typescript-development
 description: 'typescript, project development, toolchain detection'
 metadata:
-  aihub.tags: '["activation:detected","detect:marker:tsconfig.json","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","policy:zero-residue","provenance:agents-owned","route:project","technology:typescript","updates:manual","usage:router"]'
+  aihub.tags: '["activation:detected","decision:ADR-0008","detect:marker:tsconfig.json","effective:2026-08-29","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","policy:zero-residue","provenance:agents-owned","route:project","technology:typescript","updates:manual","usage:router"]'
 ---
 
 # TypeScript Development

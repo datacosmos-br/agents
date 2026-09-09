@@ -2,15 +2,15 @@
 name: fix-forward-collaboration
 description: 'concurrent work, integration adoption, anti-rollback coordination'
 metadata:
-  aihub.tags: '["policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","policy:zero-residue","provenance:agents-owned","role:governance","updates:manual","usage:router"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-08-29","policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","policy:zero-residue","provenance:agents-owned","role:governance","updates:manual","usage:router"]'
 ---
 
 # Fix-forward collaboration
 
 When adopting an overlapping lane's PR work, inventory its unresolved review
-threads and failing checks first with
-`skills/tool/pr-sheriff/scripts/pr_triage.py` (pr-sheriff), and answer them
-from the combined tree rather than from either lane's stale view.
+threads and failing checks first with `pr-sheriff`, using AI Hub forge resolution
+and direct GitHub evidence, and answer them from the combined tree rather than
+from either lane's stale view.
 Activate when work overlaps another agent or lane, integration has advanced, or
 a rollback, stash, reset, revert, rebase, force-push, or whole-file replacement
 is proposed.
@@ -27,3 +27,8 @@ If two evidenced current intentions cannot coexist under the active authority,
 stop before the conflicting effect and ask the operator one exact question.
 Never classify ordinary overlap, divergence, a failed gate, or required merge
 work as a severe conflict.
+
+Align a lane by integrating the declared integration branch with
+`git merge --no-ff`. Rebase, force-push, cherry-pick replacement, and branch
+rewriting are prohibited for authorized shared work; they destroy the merge
+history needed to prove which integration state was validated.

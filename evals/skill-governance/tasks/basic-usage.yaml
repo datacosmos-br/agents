@@ -8,8 +8,11 @@ inputs:
     copied command/provider structure, design the minimal canonical skill bundle,
     and define its three-role semantic evaluation plus the atomic derived-catalog,
     acceptance, fixture, inventory, validation, and zero-residue migration.
+    Classify its general-to-specialized layer, decide whether it has a real
+    parent, and use extends:<skill> plus an explicit $parent reference only when
+    that parent exists; never copy an ancestor contract into the child.
   files:
   - path: capability-inventory.md
 expected:
-  output_contains: [schema-diff, read-only evidence, SKILL.md, references, three, derived, acceptance, atomic]
+  output_contains: [schema-diff, read-only evidence, SKILL.md, references, three, hierarchy, extends, derived, acceptance, atomic]
   output_not_contains: [schema-diff command, copied provider, provisional skill, fallback router, partial eval]

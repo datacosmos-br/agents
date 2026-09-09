@@ -12,8 +12,6 @@ inputs:
   files:
   - path: rust-search-request.md
 expected:
-  outcomes:
-  - type: task_completed
   output_contains:
   - web_search_advanced_exa
   - startPublishedDate

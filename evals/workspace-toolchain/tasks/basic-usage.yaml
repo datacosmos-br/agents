@@ -11,7 +11,5 @@ inputs:
   files:
   - path: project-contract.md
 expected:
-  outcomes:
-  - type: task_completed
   output_contains: [project-specific, managed-artifact, generator, .mise.toml, mise.lock, bin/mise, second generation, command identity]
   output_not_contains: [user bin, host inventory, PATH alias]

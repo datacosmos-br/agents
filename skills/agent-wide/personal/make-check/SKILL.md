@@ -1,42 +1,29 @@
 ---
 name: make-check
-description: 'native gates, project validation, command discovery'
+description: 'native gates, root make verbs, runtime-first validation'
 license: MIT
 metadata:
-  aihub.tags: '["policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","provenance:agents-owned","role:verification","updates:manual","usage:router"]'
-  version: 2.0.0
+  aihub.tags: '["decision:ADR-0008","effective:2026-08-29","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","provenance:agents-owned","role:verification","updates:manual","usage:router"]'
+  version: 2.3.0
 ---
 
 # Make Check
 
-Discover and use the repository's canonical Make surface before running build,
-test, lint, format, generation, security, or release commands.
+1. Read the authorized repository law and root Makefile, then use its public
+   selector-free verbs only.
+2. Provision with `make setup APPLY=Y`. A stale generator, pin, downgrade, or
+   version guard that blocks the newest owner is RED.
+3. Exercise changed behavior through its real public runtime before tests.
+4. Run `make check APPLY=Y` and the smallest distinct public root verb that owns
+   each additional required gate. Never invoke a raw underlying tool or private
+   module.
+5. Every test verb uses `APPLY=Y`, pytest-testmon, and the same external
+   persistent database. The full verb first runs incremental selection and then
+   no-selection.
+6. Record verb, cwd, exit, decisive output, scope, warning, and cache accounting.
 
-## Procedure
-
-1. From the authorized repository root, read project law and run `make help`.
-2. Select the declared target that owns the requested behavior. Use its scoped or
-   changed-file option only when the help surface documents one.
-3. Exercise the real runtime before tests when behavior changes.
-4. Run the chosen target and record working directory, exit code, decisive output,
-   covered scope, and warnings.
-5. If a required target, dependency, or tool is missing or broken, stop that
-   invocation, correct its canonical owner, and rerun the native target. Keep the
-   same task active; request authority only when the required owner is materially
-   outside the approved scope. Never substitute a raw command.
-6. Verify the project's version owner resolves every required tool to its newest
-   released version. Treat every resulting diagnostic as blocking and repair its
-   owner through the native workflow.
-
-## Rules
-
-- Do not invent target names or copy another repository's Make contract.
-- Do not call destructive, deployment, release, or promotion targets without the
-  authority required by project law.
-- A warning, skip, empty report, or missing tool is red. Preserve its exact
-  output, correct the owner, and rerun only the invalidated native target.
-- Never cap, downgrade, override, substitute, or suppress the newest released
-  tool version or classify its diagnostic as compatibility or false positive
-  without prior operator discussion, reproducible evidence, and explicit
-  authorization.
-- Later edits invalidate earlier gate evidence for their affected scope.
+A warning, skip, empty output, missing tool/report, zero collection, cache
+corruption, retry, catch, or normalized failure is RED. Zero execution is valid
+only as a typed incremental testmon cache hit with integrity and complete
+deselection accounting; never call it tests passed. Correct a broken Make or
+codegen owner and rerun the same root verb.

@@ -3,8 +3,11 @@
   "bootstrap": {
     "rules": [
       "architecture/engineering-core",
+      "coordination/beads-verification",
       "coordination/operator-precedence",
+      "coordination/session-governance",
       "ethics/professional-integrity",
+      "git/gitflow-branch-pr",
       "runtime/strict-execution"
     ],
     "skills": [
@@ -26,6 +29,9 @@
     ],
     "atomic-effects": [
       "rule:runtime/atomic-effects"
+    ],
+    "bead-verification": [
+      "rule:coordination/beads-verification"
     ],
     "canonical-command-surface": [
       "rule:workflow/canonical-commands"
@@ -59,6 +65,10 @@
     ],
     "correction-learning": [
       "skill:operator-correction-learning"
+    ],
+    "cross-runtime-session-handoff": [
+      "rule:coordination/session-governance",
+      "skill:opencode-session-handoff"
     ],
     "database-migration": [
       "command:database-migration",
@@ -95,6 +105,10 @@
       "command:feature-development",
       "skill:search-first"
     ],
+    "file-owned-handoff": [
+      "command:plan-handoff",
+      "skill:plan-focus-recovery"
+    ],
     "finish-through-closure": [
       "skill:anti-phase-skip",
       "skill:sprint-closure"
@@ -103,8 +117,16 @@
       "rule:coordination/fix-forward-collaboration",
       "skill:fix-forward-collaboration"
     ],
+    "flext-strict-architecture": [
+      "rule:architecture/internal-clean-architecture",
+      "skill:flext-development"
+    ],
     "gas-city-operations": [
+      "command:gc-session-triage",
+      "rule:coordination/gascity",
+      "skill:gascity-change-lifecycle",
       "skill:gascity-docs",
+      "skill:gascity-workspace-lifecycle",
       "skill:gc-agents",
       "skill:gc-city",
       "skill:gc-dashboard",
@@ -113,8 +135,14 @@
       "skill:gc-rigs",
       "skill:gc-work"
     ],
+    "gate-budget": [
+      "rule:workflow/gate-budget"
+    ],
     "generated-boundaries": [
       "rule:python/config-settings-ssot",
+      "rule:workflow/generators-not-projections"
+    ],
+    "generated-ownership": [
       "rule:workflow/generators-not-projections"
     ],
     "github-issue-transparency": [
@@ -150,6 +178,10 @@
     "living-documentation": [
       "rule:workflow/living-documentation"
     ],
+    "make-only-no-selectors": [
+      "rule:workflow/canonical-commands",
+      "skill:make-check"
+    ],
     "memory-is-not-authority": [
       "document:AGENTS.md",
       "rule:coordination/operator-precedence"
@@ -177,15 +209,32 @@
     "preflight-before-effects": [
       "rule:runtime/preflight-before-effects"
     ],
+    "production-readiness": [
+      "rule:workflow/production-readiness",
+      "skill:sprint-closure",
+      "skill:verification-loop"
+    ],
     "professional-integrity": [
       "rule:ethics/professional-integrity"
     ],
     "project-law": [
-      "document:AGENTS.md"
+      "document:AGENTS.md",
+      "rule:coordination/fix-forward-collaboration"
+    ],
+    "provenance-before-conclusion": [
+      "rule:coordination/provenance-before-conclusion"
     ],
     "pull-request-transparency": [
       "command:pr-list",
       "rule:coordination/operator-precedence"
+    ],
+    "python-bytecode-cache": [
+      "rule:python",
+      "skill:python-development"
+    ],
+    "repository-authority": [
+      "document:README.md",
+      "rule:architecture/engineering-core"
     ],
     "repository-research": [
       "document:AGENTS.md",
@@ -202,17 +251,23 @@
       "rule:testing/observable-runtime",
       "rule:workflow/runtime-is-reality"
     ],
+    "security-evidence-authority": [
+      "document:docs/security/security-triage.md",
+      "rule:security/scanner-closure",
+      "skill:security-review"
+    ],
     "security-triage-closure": [
       "command:security-triage",
       "rule:security/scanner-closure",
       "skill:governance-audit"
     ],
+    "semantic-bundle-boundary": [
+      "document:docs/adr/ADR-0008-governance-bundle-as-public-facade.md",
+      "rule:architecture/governance-artifact-composition"
+    ],
     "separated-roles": [
       "document:AGENTS.md",
       "skill:dispatch-agent"
-    ],
-    "serialized-shared-state": [
-      "document:AGENTS.md"
     ],
     "session-heartbeat": [
       "skill:plan-focus-recovery"
@@ -220,6 +275,10 @@
     "short-integration-slices": [
       "rule:git/gitflow-branch-pr",
       "skill:verification-loop"
+    ],
+    "skill-specialization-hierarchy": [
+      "rule:architecture/governance-artifact-composition",
+      "skill:skill-governance"
     ],
     "small-batches": [
       "skill:verification-loop"
@@ -234,12 +293,22 @@
     "strict-execution": [
       "rule:runtime/strict-execution"
     ],
+    "strict-typing": [
+      "rule:python/flext-typing"
+    ],
+    "testmon-cache-integrity": [
+      "rule:testing/observable-runtime",
+      "rule:workflow/runtime-is-reality"
+    ],
     "topic-monopoly": [
       "rule:coordination/plan-topic-monopoly"
     ],
     "tracker-evidence": [
       "document:AGENTS.md",
       "rule:workflow/beads-traceability"
+    ],
+    "zero-backup-archive": [
+      "rule:runtime/zero-residue"
     ]
   }
 }

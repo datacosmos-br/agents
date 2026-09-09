@@ -1,0 +1,11 @@
+id: no-eval-suite-spacing-residue
+valid:
+  - |-
+      description: Skill-specific evaluation contract.
+      prompt: Grade the result.
+invalid:
+  - |-
+      description: Skill-specific evaluation contract.
+
+
+      prompt: Grade the result.

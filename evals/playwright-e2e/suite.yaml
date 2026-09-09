@@ -1,0 +1,9 @@
+description: Project-native browser flows with exact selector and network evidence.
+prompt: |-
+  Grade the playwright-e2e response. Pass only if it preflights the declared
+  environment, derives selectors and network behavior from the fixture,
+  builds the smallest project-native Playwright tests, waits on exact
+  observable conditions, asserts both result and empty states, and validates
+  the requested screenshot before publication. Reject invented base URLs,
+  page objects/config/CI not required by the fixture, sleeps, skips, retries,
+  catches, fallback, production effects, or partial artifacts.

@@ -1,11 +1,10 @@
 id: gc-rigs-negative-001
-name: Should not trigger gc-rigs
-description: Do not force gc-rigs onto unrelated work.
+name: Explain a camera shoulder rig
+description: Keep hardware rigging advice outside Gas City lifecycle tooling.
 tags: [gas-city, gc-rigs, anti-trigger]
 inputs:
   prompt: >-
-    Write a short product announcement for a new feature. Do not use gc rigs
-    or Gas City orchestration in the response; the requested output is prose,
-    not an agent workflow.
+    Compare a shoulder rig and a gimbal for filming a handheld documentary.
+    Discuss stabilization, setup time, payload, and operator fatigue.
 expected:
   output_not_contains: [gc rigs, Gas City]

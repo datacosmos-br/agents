@@ -1,0 +1,19 @@
+id: no-eval-suite-spacing-residue
+snapshots:
+  ? |-
+    description: Skill-specific evaluation contract.
+
+
+    prompt: Grade the result.
+  : fixed: |-
+      description: Skill-specific evaluation contract.
+      prompt: Grade the result.
+    labels:
+    - source: |-
+        description: Skill-specific evaluation contract.
+
+
+        prompt: Grade the result.
+      style: primary
+      start: 0
+      end: 76

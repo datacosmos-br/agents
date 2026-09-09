@@ -1,11 +1,10 @@
 id: gascity-docs-negative-001
-name: Should not trigger gascity-docs
-description: Do not force gascity-docs onto unrelated work.
+name: Summarize an external standards document
+description: Keep source summarization outside project documentation mutation.
 tags: [gas-city, gascity-docs, anti-trigger]
 inputs:
   prompt: >-
-    Write a short product announcement for a new feature. Do not use gascity docs
-    or Gas City orchestration in the response; the requested output is prose,
-    not an agent workflow.
+    Summarize the attached public accessibility standard into five study notes.
+    No project repository, documentation page, or navigation change is requested.
 expected:
   output_not_contains: [gascity docs, Gas City]

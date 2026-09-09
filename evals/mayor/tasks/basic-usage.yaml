@@ -1,0 +1,17 @@
+id: mayor-happy-001
+name: Happy path mayor
+description: Shape one approved objective into beads and launch its formula.
+tags: [gas-city, mayor, happy-path]
+inputs:
+  prompt: >-
+    The operator approved the implementation plan and tasks for one backend
+    objective in a Gas City rig. Inspect the repo, write the concrete artifact
+    set under the rig plan root, run the bead creation script in dry-run first
+    and then for real, discover the runnable formula through `gc formula
+    catalog`, sling it onto the created convoy with explicit vars, and report
+    bead IDs with the next observable checkpoint.
+  files:
+  - path: scenario.yaml
+expected:
+  output_contains: [dry-run, gc formula catalog, gc sling, convoy, bead IDs, checkpoint, artifact]
+  output_not_contains: [invented formula, reserved variable, approved without operator]

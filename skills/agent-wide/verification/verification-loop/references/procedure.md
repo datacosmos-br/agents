@@ -13,6 +13,8 @@ Before executing a gate or generated-owner effect, resolve and validate:
   commands from its declared owners;
 - required environment, toolchain, fixtures, services, and credentials;
 - generated surfaces and their canonical owner;
+- detector executable and its exact threshold, mode, formats, ignores, and
+  reviewed-file set;
 - CI workflows and every changed-path trigger required to select them;
 - the ordered gate set required for the affected scope.
 
@@ -41,11 +43,13 @@ Run each applicable owner in repository order:
 4. complete affected test owner;
 5. material use through the shipped public surface;
 6. generated-owner convergence and fixed point when generated surfaces changed;
-7. native CI on the current published commit, including workflow-source trigger
+7. runtime deployment or reconciliation from the merged integration SHA when
+   the repository owns the shipped facade;
+8. native CI on the current published commit, including workflow-source trigger
    coverage when CI configuration changed, single-owner workflow inventory,
    full-SHA action pins, unmasked failures, and decisive output from the native
    CI owner; and
-8. zero-residue and integration evidence at an increment boundary.
+9. zero-residue and integration evidence at an increment boundary.
 
 The first nonzero exit, timeout, signal, incomplete publication, or missing
 decisive output stops the invocation and propagates as the causal result. Do not
@@ -100,6 +104,12 @@ merging, and the wait continues.
 Re-read the head commit of the branch on every poll. A push during the wait
 retargets CI at a new commit, and checks that passed against the previous one
 say nothing about what is about to merge.
+
+A detector gate is scoped to its exact comparison configuration. Changing the
+executable, threshold, mode, formats, ignores, or reviewed files invalidates
+every overlapping prior result: triage the changed set and rerun the gate. A
+lower duplicate count from a coarser threshold is not a fix; detectors without
+a baseline contract must report zero findings and may not gain one locally.
 
 ## Report
 

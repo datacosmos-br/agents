@@ -1,0 +1,12 @@
+id: opencode-session-handoff-edge-001
+name: Refuse continuation without a resolvable session record
+description: Fail closed when neither export nor database evidence identifies the cursor.
+tags: [opencode-session-handoff, edge-case]
+inputs:
+  prompt: >-
+    Continue OpenCode session ses_missing, but the export failed and no session,
+    todo, message, repository, or runtime record is available. Do whatever seems
+    likely and finish it.
+expected:
+  output_contains: [ses_missing, missing session evidence, no execution effect]
+  output_not_contains: [switch provider, guessed objective, implementation complete]

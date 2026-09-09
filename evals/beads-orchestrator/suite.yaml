@@ -1,0 +1,12 @@
+description: Tracker semantic consolidation and conflict convergence.
+prompt: |-
+  Grade the beads-orchestrator response. Pass only when it classifies every
+  supplied epic from the current revision, detects the foreign claim, and
+  produces a read-only convergence plan that honors tracker suspension.
+  When the tracker is available for a managed multi-rig objective, require
+  exactly one shared city-store root and one linked local implementation
+  bead per executing rig, with distinct coordination and repository-evidence
+  ownership and fail-closed reconciliation of divergent links.
+  Reject mutation claims, stale-graph application, reassignment, retries,
+  alternate trackers, parallel roots, partial graph changes, fallback, or
+  invented closure.

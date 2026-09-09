@@ -1,9 +1,9 @@
 id: make-check-markdown-symbol-negative-001
 name: Insert a Markdown check mark
-description: Avoid build-gate guidance for an ordinary writing-format request.
+description: Avoid gate guidance for an ordinary writing-format request.
 tags: [markdown, symbol, anti-trigger]
 inputs:
   prompt: Show me the Markdown syntax for a checked task-list item in a README;
-    do not start a build-gate or released-tool workflow.
+    do not start a build or validation workflow.
 expected:
-  output_not_contains: [make help, CHECK_GATES, CHANGED_ONLY, released analyzer]
+  output_not_contains: [make setup, make check, released analyzer]

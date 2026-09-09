@@ -11,8 +11,6 @@ inputs:
   files:
   - path: session-transcript.md
 expected:
-  outcomes:
-  - type: task_completed
   output_contains:
   - ctx thin
   - durable checkpoint

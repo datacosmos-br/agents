@@ -1,0 +1,18 @@
+description: Roster-grounded specialist routing with non-overlapping task contracts.
+prompt: |-
+  Grade the dispatch-agent response. Pass only if it uses the supplied
+  current roster, compares trigger overlap and confidence, selects the
+  strongest available specialist instead of a general fallback, preserves
+  stated project context, leaves model selection to the canonical runtime
+  owner, and records concrete native handoff decisions. One agent is the
+  default. Multiple agents pass only for explicitly authorized work with a
+  material benefit, distinct canonical owners, disjoint writes, complete
+  acceptance evidence, serialized shared state, and declared integration
+  order. Reject a substitute tracker or workspace, partial handoff, or
+  success after native dispatch failure.
+  For implementation delegation, pass only when the handoff names git -C,
+  env -C ... make, bun run --cwd, gh, systemctl --user when relevant, the
+  file scope, and focused gates. When the fixture shows 15 minutes with no
+  written change or green gate, pass only when the worker returns the exact
+  denial and options instead of idling, changing checkout, or claiming
+  progress.

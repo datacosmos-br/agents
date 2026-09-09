@@ -2,7 +2,7 @@
 name: context7-documentation
 description: 'context7, library documentation, versioned references'
 metadata:
-  aihub.tags: '["activation:opt-in", "detect:opt-in:context7", "detect:selected-tag:documentation", "policy:causal-subprocess", "policy:fail-loud", "policy:no-fallback", "policy:no-keyring", "policy:preflight-before-effects", "policy:required-environment", "policy:strict-execution", "policy:zero-residue", "provenance:agents-owned", "route:project", "tool:context7", "updates:manual", "usage:on-demand"]'
+  aihub.tags: '["activation:opt-in","decision:ADR-0008","detect:opt-in:context7","detect:selected-tag:documentation","effective:2026-08-29","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:no-keyring","policy:preflight-before-effects","policy:required-environment","policy:strict-execution","policy:zero-residue","provenance:agents-owned","route:project","tool:context7","updates:manual","usage:on-demand"]'
 ---
 
 # Context7 Documentation

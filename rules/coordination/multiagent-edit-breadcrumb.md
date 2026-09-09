@@ -1,5 +1,8 @@
 ---
 globs: ["**/*.py", "**/*.md", "**/*.toml", "**/*.yaml", "**/*.yml"]
+description: Coordinate shared-file edits; never clobber WIP
+metadata:
+  aihub.tags: '["decision:ADR-0008","effective:2026-08-29","route:both"]'
 ---
 
 # Coordinate shared-file edits; never clobber WIP

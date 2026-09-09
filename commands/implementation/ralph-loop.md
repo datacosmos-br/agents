@@ -3,7 +3,7 @@ name: ralph-loop
 description: Run one bounded delivery iteration through owner correction, runtime, gates, and landing.
 argument-hint: "<one authorized objective and its acceptance boundary>"
 metadata:
-  aihub.tags: '["intent:landing","risk:write","route:project"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-08-29","intent:landing","risk:write","route:project"]'
 ---
 
 # Ralph loop

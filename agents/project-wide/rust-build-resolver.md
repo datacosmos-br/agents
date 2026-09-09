@@ -23,22 +23,20 @@ You are an expert Rust build error resolution specialist. Your mission is to fix
 Run these in order:
 
 ```bash
-cargo check 2>&1
-cargo clippy -- -D warnings 2>&1
-cargo fmt --check 2>&1
-cargo tree --duplicates 2>&1
-if command -v cargo-audit >/dev/null; then cargo audit; else echo "cargo-audit not installed"; fi
+make audit
+make check APPLY=Y
+make build APPLY=Y
 ```
 
 ## Resolution Workflow
 
 ```text
-1. cargo check          -> Parse error message and error code
+1. make check APPLY=Y   -> Parse error message and error code
 2. Read affected file   -> Understand ownership and lifetime context
 3. Apply minimal fix    -> Only what's needed
-4. cargo check          -> Verify fix
-5. cargo clippy         -> Check for warnings
-6. cargo test           -> Ensure nothing broke
+4. make check APPLY=Y   -> Verify fix and warnings
+5. make build APPLY=Y   -> Verify the artifact
+6. make test APPLY=Y    -> Ensure nothing broke
 ```
 
 ## Common Fix Patterns
@@ -86,21 +84,8 @@ let item = vec.swap_remove(index); // Takes ownership
 ## Cargo.toml Troubleshooting
 
 ```bash
-# Check dependency tree for conflicts
-cargo tree -d                          # Show duplicate dependencies
-cargo tree -i some_crate               # Invert — who depends on this?
-
-# Feature resolution
-cargo tree -f "{p} {f}"               # Show features enabled per crate
-cargo check --features "feat1,feat2"  # Test specific feature combination
-
-# Workspace issues
-cargo check --workspace               # Check all workspace members
-cargo check -p specific_crate         # Check single crate in workspace
-
-# Lock file issues
-cargo update -p specific_crate        # Update one dependency (preferred)
-cargo update                          # Full refresh (last resort — broad changes)
+make audit
+make check APPLY=Y
 ```
 
 ## Edition and MSRV Issues
@@ -123,7 +108,7 @@ grep "rust-version" Cargo.toml
 - **Never** add `#[allow(unused)]` without explicit approval
 - **Never** use `unsafe` to work around borrow checker errors
 - **Never** add `.unwrap()` to silence type errors — propagate with `?`
-- **Always** run `cargo check` after every fix attempt
+- **Always** run `make check APPLY=Y` after every fix attempt
 - Fix root cause over suppressing symptoms
 - Prefer the simplest fix that preserves the original intent
 

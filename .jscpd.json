@@ -1,0 +1,16 @@
+{
+  "//": "Agents-owned strict duplication gate for the semantic package source.",
+  "absolute": true,
+  "no-tips": true,
+  "no-colors": true,
+  "mode": "strict",
+  "ignore": [
+    "**/__init__.py",
+    "**/.github/**",
+    "**/skills/**",
+    "Makefile",
+    "LICENSE.md"
+  ],
+  "reporters": ["console"],
+  "min-lines": 8
+}

@@ -1,0 +1,6 @@
+repository=/workspace/project
+git status --short --branch
+## feature/session-handoff
+ M tests/unit/test_pipeline.py
+runtime service=inactive
+tracker phase_b=in_progress

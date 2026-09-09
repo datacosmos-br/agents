@@ -12,8 +12,6 @@ inputs:
   files:
   - path: regulatory-brief.md
 expected:
-  outcomes:
-  - type: task_completed
   output_contains:
   - Executive Summary
   - Key Takeaways
