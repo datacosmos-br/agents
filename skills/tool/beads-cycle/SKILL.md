@@ -15,7 +15,7 @@ and flags `--csv --beads --limits --apply --map --json-report`.
 
 ### 1. Regenerate CSV (source of truth)
 ```bash
-bd list --state open --json > ~/wip-beads-cosmos-open.json
+bd list --status open --flat --limit 0 --json > ~/wip-beads-cosmos-open.json
 python3 - <<'EOF'
 import json, csv, os
 data = json.load(open(os.path.expanduser('~/wip-beads-cosmos-open.json')))
@@ -64,10 +64,39 @@ EOF
 - If revalidation proves scope alive → remove deferred, add evidence note
 - If scope gone → close `OBSOLETE` with proof
 
-### 8. Validate (mandatory after each batch)
+### 8. Doctor deep-clean (test pollution + orphans)
 ```bash
-bd doctor --check=validate          # zero errors required
-bd find-duplicates --status open --limit 0 --json  # zero unadjudicated pairs
+bd doctor --check=validate --json
+bd doctor --check=pollution --json
+bd orphans --json
+```
+- **Test pollution**: `validate`/`pollution` reports a count but does not
+  identify IDs. Enumerate the complete ledger with
+  `bd list --all --flat --limit 0 --json`; locate candidates by title/
+  `external_ref` shape (`Testar ...`, `Test Issue`, `test:` refs, or
+  agent-created validation beads with no consumer), then inspect each with
+  `bd show <id> --json`. Close only proven artifacts, at most 20 per batch:
+  `bd close <id> --force --reason "OBSOLETE: test artifact; see bd show <id>"`.
+- **Orphans**: `bd orphans` reports commit-referenced issues that remain
+  open/in_progress; it is not itself a dependency-graph report. For each item,
+  inspect `bd show` and the referenced commit. If evidence exposes a graph
+  defect, fix the cause: `bd update <id> --parent <canonical>` for a missing or
+  incorrect parent, or `bd dep remove <id> <dead-id>` for a dead dependency.
+  Re-run `bd doctor --check=validate` and `bd orphans` until clean or each
+  exception is justified on the coordinator bead.
+
+### 9. Status-delta audit (blocked/open drift)
+After every batch, diff the pre-cycle CSV against a fresh
+`bd list --all --flat --limit 0 --json` snapshot. For every bead whose status
+changed, classify the delta as (i) external lane activity (check `updated_at`,
+owner, and evidence) or (ii) an unintended effect of this cycle. Record external
+activity; correct unintended cycle effects forward at their canonical owner.
+No unclassified drift.
+
+### 10. Validate (mandatory after each batch)
+```bash
+bd doctor --check=validate          # zero errors AND zero warnings required
+bd find-duplicates --status open --limit 50 --json  # output must be empty
 bd orphans                          # zero new orphans
 ```
 - Cap 20 closes per batch (`bd batch`)
@@ -87,6 +116,12 @@ bd orphans                          # zero new orphans
 6. **Workspace evidence first** — root+submodules+worktrees before any status write.
 7. **Subagent batch protocol**: coordinator generates CSV → splits via `--limits` →
    subagents dry-run per batch → coordinator reviews → `--apply` → evidence note per bead.
+
+## Performance law (SSOT fetch)
+One ledger fetch per mode, not per bead: load a single
+`bd list --all --flat --limit 0 --json` snapshot at mode start and index it by id.
+Per-bead `bd show` is a fallback only for ids missing from the snapshot
+(~6min/mode → <30s). Re-fetch the snapshot between modes, never reuse stale.
 
 ## Evidence format (bd note)
 ```

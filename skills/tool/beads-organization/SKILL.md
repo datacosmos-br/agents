@@ -50,3 +50,27 @@ evidence. Read the `complete procedure` (skill file) before any tracker write.
 Report the exact command, working directory, exit status, decisive output,
 reviewed IDs, and remote result for each applied batch. Never claim reconciliation
 from a dry-run, generated CSV, stale snapshot, partial batch, or local-only state.
+
+## Wave Protocol
+
+- Analysis is delegated to bounded read-only subagent waves; only the
+  coordinator applies reviewed mutation batches. Every worker returns one fixed
+  row contract: `id, action, target, labels_add, labels_remove, status,
+  evidence (<=15 words), exact command/SHA`, plus an explicit `undecided` list
+  when evidence is insufficient.
+- Each worker gets a precise row or file scope and disjoint file sets from its
+  peers. Workers extract evidence through bounded searches (grep with context,
+  line ranges) — never whole multi-thousand-line logs; a worker that exceeds
+  its context budget fails its wave and is re-scoped, not retried unchanged.
+- Gate each batch: before, `bd graph check --json`; after, `bd count
+  --by-status --json`, `bd find-duplicates --limit 20 --json`, and
+  `bd orphans --json`. Start every batch from a fresh read of its exact targets.
+- `bd create/update/close --json` emits a JSON list, not an object; parse
+  accordingly.
+- Coordinator edits on a shared working tree are clobberable by concurrent
+  lanes: scope every worker to disjoint paths, commit by explicit paths only,
+  and re-verify shared-file edits immediately before each commit.
+- When reconciliation touches generated-config floors, a committed SSOT
+  contract (constraint caps, "do not lift" decrees) outranks an uncommitted
+  mechanical rewrite. Restore the contract, revalidate, and file a defect bead
+  against the tool that emitted the violation with a `discovered-from` link.

@@ -16,7 +16,7 @@ Default = dry-run. Logs under `~/.local/state/wip-beads/`.
 ## Input CSV
 `~/wip-beads-cosmos-open.csv` — regenerate with:
 
-    bd list --state open --json > ~/wip-beads-cosmos-open.json
+    bd list --status open --flat --limit 0 --json > ~/wip-beads-cosmos-open.json
     python3 - <<'EOF'
     import json, csv, os
     data = json.load(open(os.path.expanduser('~/wip-beads-cosmos-open.json')))
@@ -46,6 +46,36 @@ Default = dry-run. Logs under `~/.local/state/wip-beads/`.
 9. Cap 20 closes per batch (`bd batch`); re-run dedup gate + `bd doctor --check=validate`
    + `bd orphans` after each batch.
 10. Never mutate beads of ACTIVE third-party lanes (from §0.7 + claims ≤24h).
+
+## Performance
+
+At the start of each mode, make one SSOT ledger fetch:
+`bd list --all --flat --limit 0 --json` (the required form of
+`bd list --all --flat --json`), index it by id, and reuse that snapshot for the
+whole mode. Call `bd show --json` for a bead only when its id is absent. Refresh
+between modes; never reuse a stale snapshot.
+
+## Deep-clean
+
+Run `bd doctor --check=validate --json`, `bd doctor --check=pollution --json`,
+and `bd orphans --json` after the batch.
+
+- **Test pollution**: doctor reports a count without listing IDs. Enumerate the
+  complete ledger with `bd list --all --flat --limit 0 --json`, locate candidates
+  by title/`external_ref` shape (for example `Testar ...`, `Test Issue`, `test:`
+  refs, or agent-created validation beads with no consumer), inspect each with
+  `bd show <id> --json`, and close only proven artifacts. Use
+  `bd close <id> --force --reason "OBSOLETE: test artifact; see bd show <id>"`;
+  cap 20 closes per batch.
+- **Orphans**: `bd orphans` identifies commit-referenced issues still
+  open/in_progress, not dependency-graph defects. Inspect the referenced commit
+  and `bd show`; repair the root cause with `bd update <id> --parent <canonical>`
+  or remove a dead edge with `bd dep remove <id> <dead-id>`, then rerun both
+  gates.
+- **Status-delta audit**: after each batch compare the pre-cycle CSV with a fresh
+  `bd list --all --flat --limit 0 --json` snapshot. Classify every status change
+  as external lane activity or an effect of this cycle; record external activity
+  and correct unintended cycle effects forward. No unclassified drift.
 
 ## Batch cycle loop
 1. Regenerate CSV (source of truth of current open set).
