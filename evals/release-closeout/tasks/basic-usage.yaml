@@ -1,12 +1,12 @@
 id: releasecloseout-basic-001
 name: Basic usage release-closeout
 description: Execute the core release-closeout contract.
-tags: [release, closeout, basic-usage]
+tags: [integration, closeout, push-sync, audit, superproject, merge, lane, commits, tracker, evidence, basic-usage]
 inputs:
   prompt: >-
-    execute release closeout: audit push sync, merge pr no-ff, rerun gates on merged sha, retire lane, record tracker evidence.
+    Execute integration closeout: run the push-sync audit across members, merge the superproject PR with a merge commit, record lane commits, rerun affected gates on the merged sha, retire the lane, record tracker evidence with four sources.
   files:
   - path: scenario.yaml
 expected:
-  output_contains: ['push', 'merge', 'no-ff', 'gates', 'retire', 'evidence']
+  output_contains: ['integration', 'closeout', 'push-sync', 'audit', 'superproject', 'merge', 'lane', 'commits', 'tracker', 'evidence']
   output_not_contains: ["invented command", "skipped gate"]

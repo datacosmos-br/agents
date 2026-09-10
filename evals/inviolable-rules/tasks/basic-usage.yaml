@@ -1,12 +1,12 @@
 id: inviolablerules-basic-001
 name: Basic usage inviolable-rules
 description: Execute the core inviolable-rules contract.
-tags: [inviolable, rules, basic-usage]
+tags: [mandatory, universal, governance, plan, edit, validate, merge, close, law, basic-usage]
 inputs:
   prompt: >-
-    list the inviolable rules that govern plan, edit, validate, merge and close phases with their evidence requirements.
+    State the mandatory universal governance law across every phase: plan, edit, validate, merge, close. Cite truth by command evidence, root-cause fixes, canonical tracker first, fail loud, zero residue.
   files:
   - path: scenario.yaml
 expected:
-  output_contains: ['truth', 'root cause', 'tracker', 'fail loud', 'zero residue']
+  output_contains: ['mandatory', 'universal', 'governance', 'plan', 'edit', 'validate', 'merge', 'close', 'law']
   output_not_contains: ["invented command", "skipped gate"]
