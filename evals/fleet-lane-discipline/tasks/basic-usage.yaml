@@ -1,0 +1,12 @@
+id: fleetlanediscipline-basic-001
+name: Basic usage fleet-lane-discipline
+description: Execute the core fleet-lane-discipline contract.
+tags: [fleet, lane, discipline, basic-usage]
+inputs:
+  prompt: >-
+    recover a diverged lane: absorb origin base with merge no-ff, keep concurrent commits, rerun gates, land by merge commit.
+  files:
+  - path: scenario.yaml
+expected:
+  output_contains: ['merge', '--no-ff', 'absorb', 'gates', 'merge commit']
+  output_not_contains: ["invented command", "skipped gate"]

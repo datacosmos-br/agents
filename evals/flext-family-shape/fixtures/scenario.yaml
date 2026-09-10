@@ -1,0 +1,3 @@
+skill: flext-family-shape
+state: canonical
+gates: [gen, check, waza]

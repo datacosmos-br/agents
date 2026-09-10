@@ -1,6 +1,6 @@
 ---
 name: flext-family-shape
-description: 'flext family part shape law, five private families, flat entity declarations, rope rules'
+description: 'flext family shape, five private families, flat entity declarations, rope rules'
 license: canonical flext law
 metadata:
   aihub.tags: '["activation:detected","decision:ADR-0014","detect:dependency:python:flext-core","detect:selected-tag:flext","effective:2026-09-09","route:project","subject:flext","usage:on-demand"]'

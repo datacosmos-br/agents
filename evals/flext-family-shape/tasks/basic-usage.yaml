@@ -1,0 +1,12 @@
+id: flextfamilyshape-basic-001
+name: Basic usage flext-family-shape
+description: Execute the core flext-family-shape contract.
+tags: [flext, family, shape, basic-usage]
+inputs:
+  prompt: >-
+    state the flext family shape law: five private families, flat declarations, base-first composition, api root, rope rules.
+  files:
+  - path: scenario.yaml
+expected:
+  output_contains: ['c', 't', 'p', 'm', 'u', 'base.py', 'api.py', 'cli.py', 'rope']
+  output_not_contains: ["invented command", "skipped gate"]

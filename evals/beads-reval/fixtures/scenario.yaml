@@ -1,0 +1,3 @@
+skill: beads-reval
+state: canonical
+gates: [gen, check, waza]

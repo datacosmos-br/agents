@@ -1,0 +1,4 @@
+description: Submodule ownership, lane recovery, fix-forward landing.
+prompt: |-
+  grade the fleet-lane-discipline response, pass only when it enforces submodule ownership by repo, lane recovery via merge no-ff absorption of origin base, concurrent-lane commit adoption without discarding other actor work, ci projection through canonical make verbs, fix-forward landing with green gates and merge commit.
+  Reject rebase, force-push, cherry-pick, discarding foreign work, landing red.

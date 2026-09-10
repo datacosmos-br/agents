@@ -2,7 +2,7 @@
 name: fleet-lane-discipline
 description: 'submodule ownership, lane recovery, ci projection, fix-forward landing'
 metadata:
-  aihub.tags: '["effective:2026-09-10","usage:router"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-09-10","usage:router"]'
   version: 1.0.0
 ---
 

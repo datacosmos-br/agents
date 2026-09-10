@@ -1,0 +1,12 @@
+id: flextfamilyshape-edge-001
+name: Edge case flext-family-shape
+description: Handle the material boundary case for flext-family-shape.
+tags: [flext, family, shape, edge-case]
+inputs:
+  prompt: >-
+    module wants a sixth family and a second top-level class; skill must reject and point to the five-family law and one-class rule.
+  files:
+  - path: scenario.yaml
+expected:
+  output_contains: ['five', 'families', 'one', 'class', 'reject']
+  output_not_contains: ["normalized failure"]

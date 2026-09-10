@@ -1,6 +1,6 @@
 ---
 name: release-closeout
-description: 'integration closeout, member push-sync audit, superproject PR merge, concurrent-lane commits, projection landing, beads evidence'
+description: 'integration closeout, push-sync audit, superproject merge, lane commits, tracker evidence'
 license: MIT
 metadata:
   aihub.tags: '["decision:ADR-0008","effective:2026-09-10","usage:router"]'

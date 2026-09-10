@@ -1,0 +1,3 @@
+skill: fleet-lane-discipline
+state: canonical
+gates: [gen, check, waza]

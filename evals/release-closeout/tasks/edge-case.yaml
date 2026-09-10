@@ -1,0 +1,12 @@
+id: releasecloseout-edge-001
+name: Edge case release-closeout
+description: Handle the material boundary case for release-closeout.
+tags: [release, closeout, edge-case]
+inputs:
+  prompt: >-
+    worktree still checked out on the lane at closeout; must list worktrees and block remote deletion until retired.
+  files:
+  - path: scenario.yaml
+expected:
+  output_contains: ['worktree', 'block', 'retired']
+  output_not_contains: ["normalized failure"]

@@ -26,8 +26,10 @@ evidence. Read the `complete procedure` (skill file) before any tracker write.
   reviewed slices go through `reconcile-inventory.sh` below.
 - Use `scripts/reconcile-inventory.sh --limit <n> --integration <ref>` with
   either `--dry-run` or `--output <file.csv>`. `--beads` may be repeated or hold
-  comma-separated IDs. The script queries `bd` and Git read-only, records
-  integration/worktree context, and never authorizes a tracker mutation.
+  comma-separated IDs; `--offset` resumes the sweep past already-reviewed rows,
+  and `--all` includes closed beads (excluded by default). The script queries
+  `bd` and Git read-only, records integration/worktree context, and never
+  authorizes a tracker mutation.
 - Treat every CSV row as an unreviewed candidate. A write requires explicit
   reviewed input identifying the bead, intended change, and supporting current
   evidence. Re-read that bead immediately before applying the reviewed change.

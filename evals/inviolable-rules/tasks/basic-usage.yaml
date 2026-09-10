@@ -1,0 +1,12 @@
+id: inviolablerules-basic-001
+name: Basic usage inviolable-rules
+description: Execute the core inviolable-rules contract.
+tags: [inviolable, rules, basic-usage]
+inputs:
+  prompt: >-
+    list the inviolable rules that govern plan, edit, validate, merge and close phases with their evidence requirements.
+  files:
+  - path: scenario.yaml
+expected:
+  output_contains: ['truth', 'root cause', 'tracker', 'fail loud', 'zero residue']
+  output_not_contains: ["invented command", "skipped gate"]

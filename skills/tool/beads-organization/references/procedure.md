@@ -29,6 +29,17 @@ skills/tool/beads-organization/scripts/reconcile-inventory.sh \
   --beads <id-1>,<id-2> --beads <id-3> --output <review.csv>
 ```
 
+Resume a long sweep past the rows already reviewed — the page offset keeps the
+batch bounded without re-exporting reviewed work:
+
+```bash
+skills/tool/beads-organization/scripts/reconcile-inventory.sh \
+  --limit 20 --offset 20 --integration <integration-ref> --output <review.csv>
+```
+
+Pass `--all` only when closed history is explicitly in scope; closed beads are
+excluded by default.
+
 The script obtains records only through `bd list`, rejects unknown selected IDs,
 and embeds repository, integration SHA, and current `git worktree` evidence in
 every row. It reports possible inconsistencies only. It does not call any Beads

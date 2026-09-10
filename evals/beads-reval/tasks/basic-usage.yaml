@@ -1,0 +1,12 @@
+id: beadsreval-basic-001
+name: Basic usage beads-reval
+description: Execute the core beads-reval contract.
+tags: [beads, reval, basic-usage]
+inputs:
+  prompt: >-
+    run a revalidation wave: export bd list to csv, tag wave, dedup gate limit 0, close obsolete premises with evidence, validate doctor.
+  files:
+  - path: scenario.yaml
+expected:
+  output_contains: ['csv', 'reval', 'find-duplicates', 'limit 0', 'obsolete', 'doctor']
+  output_not_contains: ["invented command", "skipped gate"]

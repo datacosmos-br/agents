@@ -1,8 +1,8 @@
 ---
 name: inviolable-rules
-description: Mandatory universal governance for plan, edit, validate, merge, close.
-bundle: governance
-scope: universal
+description: 'mandatory universal governance, plan edit validate, merge close law'
+metadata:
+  aihub.tags: '["decision:ADR-0008","effective:2026-09-10","usage:router"]'
 ---
 
 # Inviolable Rules

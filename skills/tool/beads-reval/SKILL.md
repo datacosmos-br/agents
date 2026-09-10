@@ -1,8 +1,8 @@
 ---
 name: beads-reval
-description: 'beads revalidation sweep, incremental reval tag waves, csv tracker, code-reality validation, owner-first extermination'
+description: 'beads revalidation sweep, reval tag waves, csv tracker, code-reality validation'
 metadata:
-  aihub.tags: '["activation:opt-in","decision:reval250909","detect:opt-in:beads-reval","effective:2026-09-10","route:agent","subject:beads","usage:router"]'
+  aihub.tags: '["activation:opt-in","decision:ADR-0008","detect:opt-in:beads-reval","effective:2026-09-10","route:agent","subject:beads","usage:router"]'
 ---
 
 # beads-reval — Incremental bead revalidation sweep

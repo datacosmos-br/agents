@@ -1,0 +1,3 @@
+skill: release-closeout
+state: canonical
+gates: [gen, check, waza]

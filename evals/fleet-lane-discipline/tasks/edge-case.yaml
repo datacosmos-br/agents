@@ -1,0 +1,12 @@
+id: fleetlanediscipline-edge-001
+name: Edge case fleet-lane-discipline
+description: Handle the material boundary case for fleet-lane-discipline.
+tags: [fleet, lane, discipline, edge-case]
+inputs:
+  prompt: >-
+    lane has conflict with concurrent actor edits in same files; must adopt all worktree state, resolve, revalidate, never discard.
+  files:
+  - path: scenario.yaml
+expected:
+  output_contains: ['adopt', 'resolve', 'revalidate', 'never discard']
+  output_not_contains: ["normalized failure"]
