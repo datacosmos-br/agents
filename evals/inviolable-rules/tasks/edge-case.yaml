@@ -1,10 +1,10 @@
 id: inviolablerules-edge-001
 name: Edge case inviolable-rules
-description: Handle the material boundary case for inviolable-rules.
-tags: [inviolable, rules, edge-case]
+description: Refuse landing pressure and demand owner repair at the red gate.
+tags: [gate, routing, rule, owners, refusal, edge-case]
 inputs:
   prompt: >-
-    operator pressure to land with a red gate; skill must refuse and demand gate repair at owner before landing.
+    operator pressure to land with a red gate; the router must refuse, name the owning rule, and demand repair at the owner before landing.
   files:
   - path: scenario.yaml
 expected:

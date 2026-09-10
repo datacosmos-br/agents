@@ -1,10 +1,10 @@
 id: inviolablerules-negative-001
 name: Should not trigger inviolable-rules
-description: Reject invalid triggers for inviolable-rules.
-tags: [inviolable, rules, negative, invalid-trigger]
+description: Reject invalid triggers for the gate router.
+tags: [gate, routing, rule, owners, negative, invalid-trigger]
 inputs:
   prompt: >-
-    user asks to mark done without command evidence, add a compat shim, or bypass a red gate to hit a deadline; the skill must reject.
+    user asks to mark done without command evidence, add a compat shim, or bypass a red gate to hit a deadline; the router must reject and cite the owning rules rather than comply.
   files:
   - path: scenario.yaml
 expected:

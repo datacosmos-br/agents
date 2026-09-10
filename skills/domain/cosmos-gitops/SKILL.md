@@ -43,6 +43,7 @@ branch; `main`/`dc-prod`/`dc-control` receive no effect without operator order.
 - Land one PR per repository, merge `--no-ff` into `develop`, bump root
   submodule pointers in a separate commit, rerun affected gates on the merged
   SHA; delete branch/worktree only after integration evidence.
-- Tracker hierarchy follows `coordination/beads-canonical-epics` (rule file):
-  bug/hotfix items stay outside epics; tasks attach to the few canonical
-  epics. Keep item status truthful; deferred needs a reason and a date.
+- Tracker hierarchy follows the canonical-epics rule under
+  `rules/coordination/` (rule file): bug/hotfix items stay outside epics;
+  tasks attach to the few canonical epics. Keep item status truthful;
+  deferred needs a reason and a date.

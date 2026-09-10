@@ -1,12 +1,12 @@
 id: inviolablerules-basic-001
 name: Basic usage inviolable-rules
-description: Execute the core inviolable-rules contract.
-tags: [mandatory, universal, governance, plan, edit, validate, merge, close, law, basic-usage]
+description: Route every session gate moment to its owning rule file.
+tags: [gate, routing, rule, owners, session, sequence, basic-usage]
 inputs:
   prompt: >-
-    State the mandatory universal governance law across every phase: plan, edit, validate, merge, close. Cite truth by command evidence, root-cause fixes, canonical tracker first, fail loud, zero residue.
+    List the gate sequence for a governance session (start, truth, execution, incident, refactor, tracker, close) and name the owning rule file for each moment instead of restating the law.
   files:
   - path: scenario.yaml
 expected:
-  output_contains: ['mandatory', 'universal', 'governance', 'plan', 'edit', 'validate', 'merge', 'close', 'law']
+  output_contains: ['gate', 'routing', 'rule', 'owners', 'session', 'sequence', 'runtime-is-reality', 'strict-execution']
   output_not_contains: ["invented command", "skipped gate"]

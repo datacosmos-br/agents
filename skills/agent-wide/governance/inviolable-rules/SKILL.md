@@ -1,6 +1,6 @@
 ---
 name: inviolable-rules
-description: 'gate routing at start, execution, incident, close; owners are the rules'
+description: 'gate routing, rule owners, session gate sequence'
 metadata:
   aihub.tags: '["decision:ADR-0008","effective:2026-09-10","usage:router"]'
 ---
