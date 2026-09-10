@@ -1,5 +1,6 @@
 ---
-description: Running security scanners or closing findings from security reports.
+metadata:
+  aihub.tags: '["decision:ADR-0008","effective:2026-09-10","route:personal"]'
 ---
 
 # Every reproducible security finding blocks closure

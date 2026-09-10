@@ -1,5 +1,6 @@
 ---
-description: Loading, storing, forwarding, or rotating credentials and tokens.
+metadata:
+  aihub.tags: '["decision:ADR-0008","effective:2026-09-10","route:personal"]'
 ---
 
 # Credentials come directly from the system keyring

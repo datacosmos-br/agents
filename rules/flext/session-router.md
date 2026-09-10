@@ -1,3 +1,8 @@
+---
+metadata:
+  aihub.tags: '["decision:ADR-0008","effective:2026-09-10","route:personal"]'
+---
+
 # FLEXT session router
 
 Compose these exact authorities in order:

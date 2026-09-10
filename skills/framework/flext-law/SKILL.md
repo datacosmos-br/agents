@@ -38,6 +38,12 @@ Read those skills and root `AGENTS.md`; this file adds only FLEXT domain law.
   owns reusable foundations, `services` owns use cases, `api` is the sole
   composition root, and `cli` is a thin transport adapter when the project
   declares a CLI. Do not create competing long-name or alias layers.
+- Family part shape (ADR-014, `$flext-family-shape`): the five private
+  families each begin with `base.py`; a part file nests entities directly
+  (models/enums/protocols/behavior, one level) — top-level orphan classes and
+  pure namespace-wrapper children are forbidden and repaired only through
+  `make mod APPLY=Y` Rope rules (one YAML per rule) replicating changes via
+  the shared `do(changes)` cycle wrapped in `FlextInfraUtilitiesSafety`.
 - Dependencies cross use-case boundaries through `p` protocols and are
   provided explicitly by `api`. A service may not construct infrastructure,
   read process-global configuration, or resolve a dependency by string,

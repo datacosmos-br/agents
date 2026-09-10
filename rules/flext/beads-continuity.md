@@ -1,5 +1,6 @@
 ---
-description: Continuous bead-governance bridge; auto-invoked at session start of any FLEXT workspace with beads.
+metadata:
+  aihub.tags: '["decision:ADR-0008","effective:2026-09-10","route:personal"]'
 ---
 
 # Session continuity for bead governance

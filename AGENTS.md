@@ -110,4 +110,22 @@ Gas City or Beads mutation, and create no substitute ledger.
 Stop at `dev` unless the operator explicitly authorizes promotion. No increment
 is DONE without required gates, reviewed merge-commit landing, post-merge public
 runtime proof, and canonical tracker closure.
+
+## Operator cycle lessons
+
+- **Fix-forward permanente:** never rebase, force-push, or cherry-pick an
+  authorized lane. Integrate the base with `git merge --no-ff`, revalidate the
+  combined state, then land.
+- **Pouso:** landing requires real validation (command + exit code + output),
+  zero warnings, and record on the integration branch at cycle end. A rejected
+  FF-push means `git merge --no-ff` the base into the lane.
+- **Coordenação:** the orchestrator runs parallel subagents per file owner. An
+  empty subagent result is not a claim — verify by diff before accepting.
+- **Resíduo zero:** untracked `.bak`/backup artifacts are defects, never carry-over.
+- **Gate bare:** a CI check invoked without the project environment must be
+  stdlib-only at its script owner; provisioning env in the workflow is a
+  workaround, not a fix. Prove the gate by running it exactly as CI does.
+- **Subagentes rápidos:** dispatch independent research/verification/
+  bookkeeping to fast parallel subagents; the main thread alone owns sequenced
+  effects (merge, land, bead closure with merge evidence).
 <!-- AIHUB-AGENTS-SCOPE-LOCAL-END -->
