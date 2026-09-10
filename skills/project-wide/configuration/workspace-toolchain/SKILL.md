@@ -24,3 +24,8 @@ Never write a generated tool surface by hand or add an undeclared PATH entry,
 alias, checkout dependency, keyring, retry, fallback, or duplicate installer.
 The first missing owner, conflicting owner, invalid pin, failed generator, or
 failed runtime check stops the workflow unchanged.
+
+- System-owned binaries vs mise (2026-09-09): `make`, `curl`, and `git` are
+  system package-manager binaries — never declare them as mise-managed tools.
+  Mise shims for them break bootstrap credential paths and PATH resolution;
+  the host package manager is their only owner.
