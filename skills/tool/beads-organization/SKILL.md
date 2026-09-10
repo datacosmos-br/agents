@@ -107,6 +107,13 @@ from a dry-run, generated CSV, stale snapshot, partial batch, or local-only stat
   plus an explicit `undecided` list when evidence is insufficient. The main
   thread retains all sequenced decisions: dedup gate, landing, and doubtful
   closures.
+- Analysis is delegated to bounded read-only subagent waves; only the
+  coordinator applies reviewed mutation batches. Every worker prompt embeds
+  the closure rules above and a fixed row contract: `id, action, target,
+  labels_add, labels_remove, status, evidence (<=15 words), exact command/SHA`,
+  plus an explicit `undecided` list when evidence is insufficient. The main
+  thread retains all sequenced decisions: dedup gate, landing, and doubtful
+  closures.
 - Each worker gets a precise row or file scope and disjoint file sets from its
   peers. Workers extract evidence through bounded searches (grep with context,
   line ranges) — never whole multi-thousand-line logs; a worker that exceeds
