@@ -38,6 +38,22 @@ the root Make/codegen owner and rerun its public verb.
   declared compatibility range.
 - Prefer precise types, protocols at public boundaries, built-in generics where
   supported, and explicit `X | None` semantics.
+- Compose paths only with `pathlib.Path`; never string concatenation or manual
+  separators. Create directories with `parents=True, exist_ok=True` through the
+  typed owner.
+- One logger per module via `logging.getLogger(__name__)`. Configure logging
+  only at entry points; library code never calls `basicConfig` or adds
+  handlers. Log with lazy formatting (`logger.info("... %s", value)`), never
+  eager f-strings in log calls.
+- Never declare mutable default arguments; use a `None` sentinel and construct
+  the default inside the call.
+- Import order is stdlib, third-party, local, separated by blank lines; no
+  wildcard imports.
+- Invoke subprocesses with an explicit argument list and an explicit success
+  requirement; never `shell=True` string composition. `runtime/
+  causal-subprocess` (rule file) owns the cross-language law.
+- Interpolate strings with f-strings; `%` formatting and `.format` remain only
+  in stored templates.
 - Avoid `Any`, `object`, unchecked casts, broad ignores, and untyped external
   input. A narrowly unavoidable third-party stub gap must follow project policy
   and retain its exact diagnostic code and rationale.
@@ -55,7 +71,8 @@ the root Make/codegen owner and rerun its public verb.
   are declared once in the repository `.gitignore`; discovery, cleanliness,
   duplication, packaging, and structural scans honor Git's standard ignore
   semantics.
-- CLI boundaries, validators, and orchestrators never catch workflow
+- Define one project base exception; specific errors inherit it. CLI
+  boundaries, validators, and orchestrators never catch workflow
   exceptions or translate them. The original traceback and causal chain escape.
 - Catch only inside cleanup or rollback. Retain the original exception as the
   one re-raised and attach every secondary cleanup/rollback failure to its
@@ -76,7 +93,14 @@ the root Make/codegen owner and rerun its public verb.
   in-scope consumer, delete superseded code/tests/docs, and prove no stale
   reference remains.
 - Prefer immutable data where practical and explicit dependency injection at
-  boundaries.
+  boundaries. Model fixed value sets with `enum.Enum`, never bare string
+  constants. Prefer stateless functions over single-method classes and
+  composition over inheritance for reuse.
+- Executable modules declare a `main()` entry point guarded by
+  `if __name__ == "__main__":`; import must never run side effects.
+- Expose an explicit minimal public surface: `__all__` in package
+  `__init__.py` lists only downstream-consumed names; package init stays
+  import-and-export only.
 - Tests assert observable behavior, including material failure and
   should-not-trigger cases; they do not assert private construction.
 

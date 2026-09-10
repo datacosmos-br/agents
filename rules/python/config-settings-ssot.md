@@ -13,6 +13,9 @@ receive validated typed values, never raw dictionaries or repeated environment
 lookups.
 
 - Fixed business rules and user-overridable settings have one owner each.
+- Model configuration as frozen typed value objects (immutable dataclasses or
+  the project's typed owner equivalent); never raw dictionaries, and never
+  sentinel values where `T | None` states optionality.
 - No product-specific import, tool-home helper, duplicated constant,
   consumer-level home discovery, or inherited-secret precedence in generic
   Python guidance. A typed owner may derive the platform home when that value is
