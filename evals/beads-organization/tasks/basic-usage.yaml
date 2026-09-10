@@ -1,17 +1,17 @@
 id: beads-organization-happy-001
 name: Happy path beads-organization
-description: Deduplicate open beads and align the feature hierarchy before an external push.
-tags: [beads, organization, deduplication, feature, hierarchy, jira, alignment, happy-path]
+description: Reconcile all open beads from integration evidence in bounded cycles.
+tags: [beads, organization, reconciliation, adjudication, hierarchy, repair, claims, deferred, sync, happy-path]
 inputs:
   prompt: >-
-    Run the deduplication gate with bd find-duplicates on open issues, close the
-    older bead of each confirmed duplicate pair with a SUPERSEDED reason naming
-    the surviving bead, re-run the gate to confirm every remaining pair is
-    adjudicated, apply priority and domain labels to the open feature and task
-    items, and verify no open child has a closed parent before reporting the
-    commands and exit codes.
+    Reconcile every open bead in batches of at most 20. Use explicit limits.
+    Correlate weak wip/fixes commit subjects with integration diffs, worktrees,
+    plans, ADRs, docs, and current code without rewriting published SHAs.
+    Release only proven stale claims, correct deferred state, keep bugs at root
+    with bugfix and hotfix only for P0/P1, repair feature links, run duplicate
+    and graph gates, then sync and restart from a fresh inventory.
   files:
   - path: scenario.yaml
 expected:
-  output_contains: [bd find-duplicates, SUPERSEDED, labels, parent, exit code]
-  output_not_contains: [push without gate, closed without reason]
+  output_contains: ["--limit", "20", SHA, integration, claim, deferred, bugfix, hotfix, "bd find-duplicates", sync, reconciliation, adjudication, repair, hierarchy]
+  output_not_contains: [force-push, push without gate, closed without reason]

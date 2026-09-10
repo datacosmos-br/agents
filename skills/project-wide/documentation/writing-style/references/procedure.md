@@ -20,6 +20,17 @@ style on fiction, poetry, legal text, academic style, or deliberate brand voice.
 6. Verify commands, links, identifiers, citations, and claims against their
    sources. Mark inference and missing evidence explicitly.
 
+## Commit records
+
+A commit summary names the affected capability and observable change. Its body
+records the reason, scope, and decisive validation when known. Derive both from
+the diff and integrated state, never from a weak subject alone.
+
+Do not rewrite published history to improve wording. Preserve its SHA and add a
+factual interpretation to the current tracker, changelog, release note, ADR, or
+other canonical document. Rename an unpublished commit only when authorized and
+safe for the active branch.
+
 ## Reject
 
 - Stock openings or closings such as “great question”, “let's dive in”, “in

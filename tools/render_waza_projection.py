@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import hashlib
 import os
 import shutil
 import tempfile
@@ -10,6 +9,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, cast
 
 import yaml
+from _projection import snapshot as _snapshot
 
 from agents_governance import GovernanceBundle, SkillRecord
 
@@ -191,21 +191,6 @@ def _build(repository: Path, destination: Path) -> None:
         if skill is None:
             raise ValueError(f"semantic suite has no skill owner: {suite}")
         _copy_suite(suite, evals / suite.name, engine, model, eval_policy, skill)
-
-
-def _snapshot(root: Path) -> tuple[tuple[str, str], ...]:
-    entries: list[tuple[str, str]] = []
-    for path in sorted(root.rglob("*")):
-        relative = path.relative_to(root).as_posix()
-        if path.is_symlink() or not (path.is_dir() or path.is_file()):
-            raise ValueError(f"projection contains a non-physical path: {path}")
-        digest = (
-            "directory"
-            if path.is_dir()
-            else hashlib.sha256(path.read_bytes()).hexdigest()
-        )
-        entries.append((relative, digest))
-    return tuple(entries)
 
 
 def main() -> None:

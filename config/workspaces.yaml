@@ -1,0 +1,10 @@
+version: 1
+workspaces:
+  - name: ai-hub
+    path: .agents
+    subjects:
+      - python
+      - flext
+    retire_globs:
+      - "**/*-legacy.md"
+      - "**/deprecated-*.md"

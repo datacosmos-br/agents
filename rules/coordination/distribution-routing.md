@@ -35,9 +35,12 @@ One grammar, one routing authority, one sweepable reality.
 3. **Managed and versioned or residue.** Projections carry the managed-by
    marker and the publishing bundle version in frontmatter; sources never
    do. Any projected file lacking the marker, or holding a foreign or older
-   version, is swept on publish. Consumer surfaces declare `retire:` globs
-   for legacy, renamed, and vendor artifacts so the first managed publish
-   cleans the historical residue it inherits.
+   version, is swept on publish. Consumer surfaces declare `retire_globs`
+   in `config/workspaces.yaml` per workspace for legacy, renamed, and vendor
+   artifacts so the first managed publish cleans the historical residue it
+   inherits. Each `retire_globs` entry must be a relative, repository-local
+   glob pattern (no absolute paths, no `..` traversal); the projection tool
+   enforces this schema at load time.
 4. **Renames are lineage events.** A slug rename ships `supersedes:` against
    the old identity, rewires `extends:`, bootstrap, guarantees, and capsule
    references in the same change, and retires the old slug from consumers in

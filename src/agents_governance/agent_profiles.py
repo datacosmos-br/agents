@@ -240,7 +240,9 @@ def audit_agent_profiles(root: Path) -> tuple[AgentProfile, ...]:
         if _INLINE_PROMPT_DEFENSE in instructions:
             raise ValueError(f"{path}: prompt defense must be composed from its owner")
         tags = _tag_values(path, metadata)
-        activation, mode, detectors = _validate_tags(repository, path, distribution, tags)
+        activation, mode, detectors = _validate_tags(
+            repository, path, distribution, tags
+        )
         raw_tools: object = None
         if "tools" in metadata:
             raw_tools = metadata["tools"]

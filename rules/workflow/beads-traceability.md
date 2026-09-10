@@ -49,3 +49,23 @@ attribute alone. Never infer it from a missing field, a title, a timestamp, or
 a count, and never accept a claimed class without proving the marker is one the
 writer could have produced. A record whose class cannot be established is a
 failure, not a default.
+
+## Reconciliation preserves executable truth
+
+When the operator selects backlog reconciliation, inspect the complete requested
+population through explicit limits and mutate in batches of at most 20. Re-read
+each bead immediately before its write and use its opaque revision when the
+backend exposes one. A stale revision ends the batch.
+
+Status follows current execution evidence. A claim requires a live owner,
+worktree, branch, or process. Deferred work requires a current date or scope
+gate. A closed parent cannot retain open children. Tasks belong to one feature;
+features stay small enough to execute as short validated slices. Bugs remain at
+root, carry `bugfix`, and carry `hotfix` only at P0 or P1. Labels encode these
+classes; prose explains the behavior and evidence instead of repeating tags.
+
+Weak commit subjects are discovery evidence only. Preserve published SHAs and
+derive current summaries from the diff, integration reachability, merged PR,
+and live code. Validate duplicates, cycles, parent state, and conventions before
+external sync. Record the command, working directory, exit status, and remote
+result after every synced batch.

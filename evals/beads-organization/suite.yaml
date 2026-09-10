@@ -1,9 +1,11 @@
-description: Beads deduplication gate, hierarchy alignment, and orphan resolution.
+description: Continuous Beads reconciliation from integration evidence.
 prompt: |-
   Grade the beads-organization response. Pass only when the deduplication
   gate runs before any external push, closes carry descriptive SUPERSEDED,
-  OBSOLETE, or DONE reasons, metadata-proven legitimate triads are
-  adjudicated instead of blindly closed, labels follow the priority and
-  domain convention, and no open child keeps a closed parent. Reject
-  invented commands, bulk creation above the limit without a reviewed
-  dry-run, substitute trackers, or fake closure.
+  OBSOLETE, or DONE reasons, metadata-proven legitimate triads are adjudicated
+  instead of blindly closed, every inventory has an explicit limit, stale
+  claims and deferred state require live evidence, bugs remain at root with
+  bugfix and conditional hotfix labels, weak commit subjects are replaced by
+  factual SHA-preserving summaries, and graph gates pass before external sync.
+  Reject history rewriting, invented commands, over-limit batches, substitute
+  trackers, stale snapshots, or fake closure.

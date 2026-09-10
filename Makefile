@@ -16,7 +16,7 @@ override export UV_PROJECT_ENVIRONMENT := $(CURDIR)/.venv
 override export VIRTUAL_ENV := $(CURDIR)/.venv
 
 .DEFAULT_GOAL := help
-.PHONY: help setup gen docs audit check runtime waza static conform fmt fix mod mod-check shell duplication build test test-full ci validate-artifacts publish
+.PHONY: help setup gen docs propagate audit check runtime waza static conform fmt fix mod mod-check shell duplication build test test-full ci validate-artifacts publish
 .DELETE_ON_ERROR:
 
 define BANNER
@@ -52,6 +52,7 @@ check: ## run every applicable non-test gate; requires APPLY=Y
 	$(call REQUIRE_APPLY)
 	$(call BANNER,check · complete non-test gate composition)
 	@$(MAKE) docs APPLY=Y
+	@$(MAKE) propagate APPLY=Y
 	@$(MAKE) static APPLY=Y
 	@$(MAKE) mod-check APPLY=Y
 	@$(MAKE) conform APPLY=Y
@@ -61,6 +62,11 @@ check: ## run every applicable non-test gate; requires APPLY=Y
 docs: ## validate documentation through the public bundle contract; requires APPLY=Y
 	$(call REQUIRE_APPLY)
 	@$(MAKE) audit APPLY=Y
+
+propagate: ## regenerate AI Hub project configuration; requires APPLY=Y
+	$(call REQUIRE_APPLY)
+	$(call BANNER,propagate · project surface configuration)
+	@uv run python tools/render_project_projection.py
 
 audit: ## print the complete public semantic inventory; requires APPLY=Y
 	$(call REQUIRE_APPLY)
@@ -118,8 +124,9 @@ mod: ## apply tested structural migrations; requires APPLY=Y
 
 shell: ## validate shell scripts and GitHub workflows; requires APPLY=Y
 	$(call REQUIRE_APPLY)
-	$(call BANNER,shell · actionlint)
+	$(call BANNER,shell · actionlint + shellcheck)
 	@$(MISE_EXEC) actionlint .github/workflows/*.yml
+	@$(MISE_EXEC) shellcheck skills/tool/beads-organization/scripts/reconcile-inventory.sh
 
 duplication: ## enforce zero strict duplication in canonical source and evaluations; requires APPLY=Y
 	$(call REQUIRE_APPLY)
