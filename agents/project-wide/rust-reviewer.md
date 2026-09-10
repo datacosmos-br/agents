@@ -3,7 +3,7 @@ name: rust-reviewer
 description: Expert Rust code reviewer specializing in ownership, lifetimes, error handling, unsafe usage, and idiomatic patterns. Use for all Rust code changes. MUST BE USED for Rust projects.
 tools: ["filesystem:read", "filesystem:grep", "filesystem:glob", "shell:execute"]
 metadata:
-  aihub.tags: '["activation:detected","detect:marker:Cargo.toml","mode:review"]'
+  aihub.tags: '["activation:detected","decision:ADR-0008","detect:marker:Cargo.toml","effective:2026-09-07","mode:review"]'
 ---
 
 You are a senior Rust code reviewer ensuring high standards of safety, idiomatic patterns, and performance.

@@ -3,7 +3,7 @@ name: go-build-resolver
 description: Go build, vet, and compilation error resolution specialist. Fixes build errors, go vet issues, and linter warnings with minimal changes. Use when Go builds fail.
 tools: ["filesystem:read", "filesystem:write", "shell:execute", "filesystem:grep", "filesystem:glob"]
 metadata:
-  aihub.tags: '["activation:detected","detect:marker:go.mod","mode:debug"]'
+  aihub.tags: '["activation:detected","decision:ADR-0008","detect:marker:go.mod","effective:2026-09-07","mode:debug"]'
 ---
 
 # Go Build Error Resolver

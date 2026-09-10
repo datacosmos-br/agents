@@ -3,7 +3,7 @@ name: typescript-build-resolver
 description: Build and TypeScript error resolution specialist. Use PROACTIVELY when build fails or type errors occur. Fixes build/type errors only with minimal diffs, no architectural edits. Focuses on getting the build green quickly.
 tools: ["filesystem:read", "filesystem:write", "shell:execute", "filesystem:grep", "filesystem:glob"]
 metadata:
-  aihub.tags: '["activation:detected","detect:marker:tsconfig.json","mode:debug"]'
+  aihub.tags: '["activation:detected","decision:ADR-0008","detect:marker:tsconfig.json","effective:2026-09-07","mode:debug"]'
 ---
 
 # Build Error Resolver

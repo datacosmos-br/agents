@@ -3,7 +3,7 @@ name: type-design-analyzer
 description: Analyze type design for encapsulation, invariant expression, usefulness, and enforcement.
 tools: ["filesystem:read", "filesystem:grep", "filesystem:glob"]
 metadata:
-  aihub.tags: '["activation:opt-in","mode:review"]'
+  aihub.tags: '["activation:opt-in","decision:ADR-0008","effective:2026-09-07","mode:review"]'
 ---
 
 # Type Design Analyzer Agent

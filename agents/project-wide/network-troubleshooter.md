@@ -3,7 +3,7 @@ name: network-troubleshooter
 description: Diagnoses network connectivity, routing, DNS, interface, and policy symptoms with a read-only OSI-layer workflow and evidence-backed root cause summary.
 tools: ["filesystem:read", "shell:execute", "filesystem:grep"]
 metadata:
-  aihub.tags: '["activation:opt-in","mode:debug"]'
+  aihub.tags: '["activation:opt-in","decision:ADR-0008","effective:2026-09-07","mode:debug"]'
 ---
 
 You are a senior network troubleshooting agent. You diagnose symptoms

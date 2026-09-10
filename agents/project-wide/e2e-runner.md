@@ -3,7 +3,7 @@ name: e2e-runner
 description: End-to-end testing specialist for project-owned browser journeys, failure artifacts, and deterministic runtime proof.
 tools: ["filesystem:read", "filesystem:write", "shell:execute", "filesystem:grep", "filesystem:glob"]
 metadata:
-  aihub.tags: '["activation:opt-in","mode:execute"]'
+  aihub.tags: '["activation:opt-in","decision:ADR-0008","effective:2026-09-07","mode:execute"]'
 ---
 
 # E2E Test Runner

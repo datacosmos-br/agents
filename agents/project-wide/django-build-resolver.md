@@ -3,7 +3,7 @@ name: django-build-resolver
 description: Django/Python build, migration, and dependency error resolution specialist. Fixes pip/Poetry errors, migration conflicts, import errors, Django configuration issues, and collectstatic failures with minimal changes. Use when Django setup or startup fails.
 tools: ["filesystem:read", "filesystem:write", "shell:execute", "filesystem:grep", "filesystem:glob"]
 metadata:
-  aihub.tags: '["activation:detected","detect:dependency:django","mode:debug"]'
+  aihub.tags: '["activation:detected","decision:ADR-0008","detect:dependency:django","effective:2026-09-07","mode:debug"]'
 ---
 
 # Django Build Error Resolver

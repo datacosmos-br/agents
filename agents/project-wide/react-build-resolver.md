@@ -3,7 +3,7 @@ name: react-build-resolver
 description: Diagnose and fix React build failures across Vite, webpack, Next.js, CRA, Parcel, esbuild, and Bun. Handles JSX/TSX compile errors, hydration mismatches, server/client component boundary failures, missing types, and bundler-specific configuration issues with minimal, surgical changes. MUST BE USED when a React build fails.
 tools: ["filesystem:read", "filesystem:write", "shell:execute", "filesystem:grep", "filesystem:glob"]
 metadata:
-  aihub.tags: '["activation:detected","detect:dependency:react","mode:debug"]'
+  aihub.tags: '["activation:detected","decision:ADR-0008","detect:dependency:react","effective:2026-09-07","mode:debug"]'
 ---
 
 # React Build Resolver

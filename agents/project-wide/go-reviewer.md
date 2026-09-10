@@ -3,7 +3,7 @@ name: go-reviewer
 description: Expert Go code reviewer specializing in idiomatic Go, concurrency patterns, error handling, and performance. Use for all Go code changes. MUST BE USED for Go projects.
 tools: ["filesystem:read", "filesystem:grep", "filesystem:glob", "shell:execute"]
 metadata:
-  aihub.tags: '["activation:detected","detect:marker:go.mod","mode:review"]'
+  aihub.tags: '["activation:detected","decision:ADR-0008","detect:marker:go.mod","effective:2026-09-07","mode:review"]'
 ---
 
 You are a senior Go code reviewer ensuring high standards of idiomatic Go and best practices.

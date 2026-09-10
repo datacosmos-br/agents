@@ -3,7 +3,7 @@ name: code-simplifier
 description: Simplifies and refines code for clarity, consistency, and maintainability while preserving behavior. Focus on recently modified code unless instructed otherwise.
 tools: ["filesystem:read", "filesystem:write", "shell:execute", "filesystem:grep", "filesystem:glob"]
 metadata:
-  aihub.tags: '["activation:opt-in","mode:execute"]'
+  aihub.tags: '["activation:opt-in","decision:ADR-0008","effective:2026-09-07","mode:execute"]'
 ---
 
 # Code Simplifier Agent

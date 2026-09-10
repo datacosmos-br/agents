@@ -3,7 +3,7 @@ name: healthcare-reviewer
 description: Reviews healthcare application code for clinical safety, CDSS accuracy, PHI compliance, and medical data integrity. Specialized for EMR/EHR, clinical decision support, and health information systems.
 tools: ["filesystem:read", "filesystem:grep", "filesystem:glob"]
 metadata:
-  aihub.tags: '["activation:opt-in","mode:review"]'
+  aihub.tags: '["activation:opt-in","decision:ADR-0008","effective:2026-09-07","mode:review"]'
 ---
 
 # Healthcare Reviewer — Clinical Safety & PHI Compliance

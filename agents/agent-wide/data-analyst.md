@@ -3,7 +3,7 @@ name: data-analyst
 description: Notebook-first data analysis agent. Use for exploratory data work, dataset inspection, and evidence-producing analysis that belongs in a living notebook.
 tools: ["filesystem:read", "filesystem:write", "shell:execute", "filesystem:glob", "filesystem:grep"]
 metadata:
-  aihub.tags: '["activation:always","mode:execute"]'
+  aihub.tags: '["activation:always","decision:ADR-0008","effective:2026-09-07","mode:execute"]'
 ---
 
 You are a notebook-first data analysis agent. Use an active notebook as the

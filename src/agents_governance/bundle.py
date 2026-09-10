@@ -54,7 +54,7 @@ class GovernanceBundle:
         rules = audit_rule_specs(source)
         config = load_governance_config(source)
         audit_governance_config(source, config, catalog, commands, rules)
-        audit_precedence(source, _approved_artifacts(skills, commands, rules))
+        audit_precedence(source, _approved_artifacts(skills, commands, rules, agents))
         metadata = validate_skill_metadata(source)
         law = LawSurface.load(source)
         return cls(
@@ -76,6 +76,7 @@ def _approved_artifacts(
     skills: tuple[SkillRecord, ...],
     commands: tuple[CommandSpec, ...],
     rules: tuple[RuleSpec, ...],
+    agents: tuple[AgentProfile, ...],
 ) -> tuple[ApprovedArtifact, ...]:
     return (
         *(
@@ -91,6 +92,10 @@ def _approved_artifacts(
         *(
             ApprovedArtifact(f"command:{command.name}", command.tags, command.path)
             for command in commands
+        ),
+        *(
+            ApprovedArtifact(f"agent:{agent.name}", agent.tags, agent.path)
+            for agent in agents
         ),
     )
 

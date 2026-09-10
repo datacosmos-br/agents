@@ -3,7 +3,7 @@ name: mle-reviewer
 description: Production machine-learning engineering reviewer for data contracts, feature pipelines, training reproducibility, offline/online evaluation, model serving, monitoring, and rollback. Use when ML, MLOps, model training, inference, feature store, or evaluation code changes.
 tools: ["filesystem:read", "filesystem:grep", "filesystem:glob", "shell:execute"]
 metadata:
-  aihub.tags: '["activation:opt-in","mode:review"]'
+  aihub.tags: '["activation:opt-in","decision:ADR-0008","effective:2026-09-07","mode:review"]'
 ---
 
 # MLE Reviewer
