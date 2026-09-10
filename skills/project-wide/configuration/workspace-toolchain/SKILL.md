@@ -25,6 +25,12 @@ alias, checkout dependency, keyring, retry, fallback, or duplicate installer.
 The first missing owner, conflicting owner, invalid pin, failed generator, or
 failed runtime check stops the workflow unchanged.
 
+- Dependency floors vs ceilings (2026-09-10): floors written into flext-infra
+  `config/codegen.yaml` `dependency_profiles` must never exceed a transitive
+  ceiling coming from another member's third-party dependency (resolver cannot
+  satisfy floor > ceiling, e.g. click floored 8.5.0 against meltano's
+  `click<8.4`). When adding/raising a floor a third-party package caps, keep
+  the floor <= ceiling and record the ceiling in the profile comment.
 - System-owned binaries vs mise (2026-09-09): `make`, `curl`, and `git` are
   system package-manager binaries — never declare them as mise-managed tools.
   Mise shims for them break bootstrap credential paths and PATH resolution;

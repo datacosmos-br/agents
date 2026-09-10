@@ -43,6 +43,9 @@ A bead may be closed ONLY with one of these reasons, each requiring evidence:
 3. Cap 20 closes per batch (`bd batch`); re-run dedup gate + `bd doctor
    --check=validate` + `bd orphans` after each batch.
 4. Never mutate beads of ACTIVE third-party lanes (from §0.7 + claims ≤24h).
+5. Every dedup and duplicate scan runs exhaustively — `bd find-duplicates
+   --limit 0`, never the default limit. A partial scan misses pairs: its
+   clean result is not evidence and its hit list is not the full set.
 
 ## Family consolidation
 
