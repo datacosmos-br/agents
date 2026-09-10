@@ -25,6 +25,10 @@ type JsonPayload = t.JsonValue | t.JsonMapping | t.SequenceOf[t.JsonValue]
 - Reuse adapters (catalog/`@cache`); instantiate `TypeAdapter` once per type.
 - Prefer `list[T]`/`dict[K, V]` over `Sequence`/`Mapping` in contracts when
   the concrete container is known; use discriminated unions over smart unions.
+- Discriminated unions (`Field(discriminator=...)`) narrow at runtime through
+  the literal `kind` check; after it, attribute access is type-safe. A
+  defensive `getattr` fallback after narrowing hides drift from the union
+  contract and is a violation.
 - `defer_build=True` is a bounded tool for CLI startup latency — apply at a
   documented owner, never fleet-wide, and never to mask a declaration failure
   (see Section 4).

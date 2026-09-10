@@ -1,0 +1,12 @@
+id: fleetlanediscipline-basic-001
+name: Basic usage fleet-lane-discipline
+description: Execute the core fleet-lane-discipline contract.
+tags: [submodule, ownership, lane, recovery, ci, projection, fix-forward, landing, basic-usage]
+inputs:
+  prompt: >-
+    Enforce submodule ownership and lane recovery: absorb the origin base with merge --no-ff, adopt concurrent commits, run ci projection through canonical make verbs, land by fix-forward landing with a merge commit after green gates.
+  files:
+  - path: scenario.yaml
+expected:
+  output_contains: ['submodule', 'ownership', 'lane', 'recovery', 'ci', 'projection', 'fix-forward', 'landing']
+  output_not_contains: ["invented command", "skipped gate"]

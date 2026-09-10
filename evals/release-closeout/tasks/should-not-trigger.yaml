@@ -1,0 +1,12 @@
+id: releasecloseout-negative-001
+name: Should not trigger release-closeout
+description: Reject invalid triggers for release-closeout.
+tags: [release, closeout, negative, invalid-trigger]
+inputs:
+  prompt: >-
+    user asks to delete the remote branch with a local worktree on it, squash-merge, or close the tracker item before post-merge proof; the skill must reject.
+  files:
+  - path: scenario.yaml
+expected:
+  output_contains: ['rejected', 'worktree', 'post-merge']
+  output_not_contains: ['branch deleted', 'squash', 'closed without proof']

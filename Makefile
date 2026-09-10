@@ -133,7 +133,12 @@ duplication: ## enforce zero strict duplication in canonical source and evaluati
 	$(call BANNER,duplication · jscpd)
 	@$(MISE_EXEC) jscpd src tests tools evals --config $(CURDIR)/.jscpd.json --exit-code 1
 
-gen build: ## generate governance source and wheel artifacts; requires APPLY=Y
+gen: ## generate governance projections from canonical owners; requires APPLY=Y
+	$(call REQUIRE_APPLY)
+	$(call BANNER,gen · canonical projections)
+	@uv run python tools/render_project_projection.py
+
+build: ## build source and wheel artifacts; requires APPLY=Y
 	$(call REQUIRE_APPLY)
 	$(call BANNER,build · sdist + wheel)
 	@ARTIFACT_MODE=build uv run python tools/artifact_gate.py

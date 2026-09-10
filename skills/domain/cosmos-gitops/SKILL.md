@@ -34,14 +34,14 @@ branch; `main`/`dc-prod`/`dc-control` receive no effect without operator order.
 - Canonical surface: root `make setup|deps|gen|check|test|fix|fmt APPLY=Y`
   only; never invented selectors or raw linters; testmon always via
   `make test APPLY=Y`.
-- Receipts live in Beads (`cosmos-d57422f2` release, `cosmos-quncg` import):
-  commit, package version, OCI digest; version drift between charts/GitOps is
-  a blocker, never an accepted residual.
+- Receipts live in the tracker (`cosmos-d57422f2` release, `cosmos-quncg`
+  import): commit, package version, OCI digest; version drift between
+  charts/GitOps is a blocker, never an accepted residual.
 - Preserve foreign WIP: commit stray module trees to a named branch before
   any regen; never reset/restore shared work.
 - Land one PR per repository, merge `--no-ff` into `develop`, bump root
   submodule pointers in a separate commit, rerun affected gates on the merged
   SHA; delete branch/worktree only after integration evidence.
-- Bug/hotfix beads never attach to epics; tasks attach to the few canonical
-  epics (`cosmos-yj36e` group). Keep bead status truthful; deferred needs a
-  reason and a date.
+- Bug/hotfix tracker items never attach to epics; tasks attach to the few
+  canonical epics (`cosmos-yj36e` group). Keep item status truthful; deferred
+  needs a reason and a date.

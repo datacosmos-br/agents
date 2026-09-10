@@ -1,0 +1,4 @@
+description: Flext family part shape law.
+prompt: |-
+  grade the flext-family-shape response, pass only when it names five private families c t p m u under _module dirs, flat entity declarations, one base per family, explicit facade composition, api composition root, cli thin adapter, rope rules one yaml per rule, shared change cycle, centralized backup cycle.
+  Reject invented family names, class-per-file violations, missing composition root, hand-edited generated roots.

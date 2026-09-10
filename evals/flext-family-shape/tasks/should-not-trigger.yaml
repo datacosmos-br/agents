@@ -1,0 +1,12 @@
+id: flextfamilyshape-negative-001
+name: Should not trigger flext-family-shape
+description: Reject invalid triggers for flext-family-shape.
+tags: [flext, family, shape, negative, invalid-trigger]
+inputs:
+  prompt: >-
+    user asks to add a sixth family, skip base composition, or hand-edit the generated api root; the skill must reject.
+  files:
+  - path: scenario.yaml
+expected:
+  output_contains: ['five families', 'rejected', 'composition']
+  output_not_contains: ['sixth family added', 'skip base']

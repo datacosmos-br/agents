@@ -1,0 +1,4 @@
+description: Beads revalidation sweep with tag waves.
+prompt: |-
+  grade the beads-reval response, pass only when it runs bd list all statuses as start, regenerates csv control, marks reval tag wave, dedups with find-duplicates limit 0, closes retired premises obsolete with evidence, keeps bugfix hotfix at root, aligns tasks to canonical epics, realigns dependencies, validates bd doctor.
+  Reject default-limit scans, closing without four-source evidence, moving bugs under epics.

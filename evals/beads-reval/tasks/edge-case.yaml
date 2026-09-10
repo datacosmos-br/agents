@@ -1,0 +1,12 @@
+id: beadsreval-edge-001
+name: Edge case beads-reval
+description: Handle the material boundary case for beads-reval.
+tags: [beads, reval, edge-case]
+inputs:
+  prompt: >-
+    bead premise diverges from measured code reality; must fix the bead or close obsolete with evidence, never change reality to match the bead.
+  files:
+  - path: scenario.yaml
+expected:
+  output_contains: ['premise', 'evidence', 'reality', 'never']
+  output_not_contains: ["normalized failure"]
