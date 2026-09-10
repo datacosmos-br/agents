@@ -84,3 +84,16 @@ require `APPLY=Y`; never weaken their guards.
 - Never close the integration bead until: all members push-synced (audit
   above), superproject gitlinks committed+pushed, PR merge landed, and gen
   fixed-point green on the merged tip.
+
+## Runner environment gates (CI closeout)
+
+- GitHub runners expose umask 002: `git checkout` materializes tracked
+  non-executable files as 0664, and exact-mode canonical gates (e.g. Mise
+  artifact spec 0o644) fail loud on the drift. The CI workflow template owns
+  the fix: normalize once after Checkout (`chmod -R go-w .`) before any gate;
+  never weaken the canonical verification.
+- Reproduce a remote gate failure locally before fixing: clone with the
+  simulated runner umask (`umask 0002` → observed 0664) or apply the minimal
+  drift (`chmod 664`) and run the canonical verb; a failure that byte-matches
+  the CI log proves the root cause and validates the fix. A fresh clone under
+  the developer's own umask (022) proves nothing about runner behavior.
