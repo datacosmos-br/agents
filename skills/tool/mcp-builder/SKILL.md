@@ -79,11 +79,11 @@ This comprehensive document contains the complete MCP specification and guidelin
 - **MCP Best Practices**: [📋 View Best Practices](./reference/mcp_best_practices-part1.md) - Core guidelines for all MCP servers
 
 **For Python implementations, also load:**
-- **Python SDK Documentation**: Use WebFetch to load `https://raw.githubusercontent.com/modelcontextprotocol/python-sdk/a5271423128ac76cbd171adad40e225d1c755522/README.md`
+- **Python SDK Documentation**: use the URL owned by [references/sdk-docs.md](references/sdk-docs.md)
 - [🐍 Python Implementation Guide](./reference/python_mcp_server-part1.md) - Python-specific best practices and examples
 
 **For Node/TypeScript implementations, also load:**
-- **TypeScript SDK Documentation**: Use WebFetch to load `https://raw.githubusercontent.com/modelcontextprotocol/typescript-sdk/c59dc3aa1a633d27fbbe873f1a430483cf7440f8/README.md`
+- **TypeScript SDK Documentation**: use the URL owned by [references/sdk-docs.md](references/sdk-docs.md)
 - [⚡ TypeScript Implementation Guide](./reference/node_mcp_server-part1.md) - Node/TypeScript-specific best practices and examples
 
 #### 1.5 Exhaustively Study API Documentation
@@ -312,8 +312,8 @@ Load these resources as needed during development:
   - Security and error handling standards
 
 ### SDK Documentation (Load During Phase 1/2)
-- **Python SDK**: Fetch from `https://raw.githubusercontent.com/modelcontextprotocol/python-sdk/a5271423128ac76cbd171adad40e225d1c755522/README.md`
-- **TypeScript SDK**: Fetch from `https://raw.githubusercontent.com/modelcontextprotocol/typescript-sdk/c59dc3aa1a633d27fbbe873f1a430483cf7440f8/README.md`
+- **Python SDK**: fetch the README URL from [references/sdk-docs.md](references/sdk-docs.md)
+- **TypeScript SDK**: fetch the README URL from [references/sdk-docs.md](references/sdk-docs.md)
 
 ### Language-Specific Implementation Guides (Load During Phase 2)
 - [🐍 Python Implementation Guide](./reference/python_mcp_server-part1.md) - Complete Python/FastMCP guide with:

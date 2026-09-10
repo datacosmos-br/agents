@@ -31,7 +31,7 @@ resumable waves marked by a sweep tag (e.g. `reval250909`).
 ## Wave plan (execute in order; tag everything touched)
 
 - **W0 — Baseline**: `bd list --all --status open,in_progress,blocked,deferred
-  --json > ~/[project]-reval.json`; convert to a CSV tracker with columns
+  --json > ./reval.json`; convert to a CSV tracker with columns
   `id,title,status,priority,type,parent,labels,revalTAG,action,notes`. The CSV
   is the progress ledger; update it after every mutation.
 - **W1 — Structural cleanup**: close formula/convoy/synthetic artifacts

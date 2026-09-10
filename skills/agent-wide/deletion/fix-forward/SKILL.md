@@ -30,5 +30,6 @@ work as a severe conflict.
 
 Align a lane by integrating the declared integration branch with
 `git merge --no-ff`. Rebase, force-push, cherry-pick replacement, and branch
-rewriting are prohibited for authorized shared work; they destroy the merge
+rewriting are prohibited for authorized shared work — `git/gitflow-branch-pr`
+(rule file) owns that law; they destroy the merge
 history needed to prove which integration state was validated.

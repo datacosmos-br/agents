@@ -290,7 +290,7 @@ Do not withhold approval to appear rigorous. If the diff is clean, approve it.
 
 ## Project-Specific Guidelines
 
-When available, also check project-specific conventions from `CLAUDE.md` or project rules:
+When available, also check project-specific conventions from the project instruction file (`AGENTS.md` or provider equivalent):
 
 - File size limits (e.g., 200-400 lines typical, 800 max)
 - Emoji policy (many projects prohibit emojis in code)

@@ -24,7 +24,7 @@ Converts JSONL session files into readable markdown summaries with full conversa
 ### 1. Run the extractor script
 
 ```bash
-python3 ~/.agents/skills/tool/claude-session-extract/scripts/extract_claude_session.py <session-id>
+python3 <catalog>/skills/tool/claude-session-extract/scripts/extract_claude_session.py <session-id>
 ```
 
 Output goes to `~/.local/state/claude/exports/<session-id>/`.

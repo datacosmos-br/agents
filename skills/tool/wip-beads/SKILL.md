@@ -9,7 +9,7 @@ metadata:
 
 ## What this is and when to reach for it
 
-`~/wip-beads.sh` is a batch processor over the `bd` ledger. Use it when bead
+`scripts/wip-beads.sh` (in this skill bundle) is a batch processor over the `bd` ledger. Use it when bead
 work is REPETITIVE (dozens of beads need the same check or mutation) — never
 for one-off edits (a single `bd update` is faster and safer).
 
@@ -20,10 +20,10 @@ line). The script processes an inventory, prints per-bead decisions, and ends
 with a countable resumo. Everything runs dry-run until you pass `--apply`.
 
 ## Canonical tool
-`~/wip-beads.sh` — CSV-driven, batches of `--limits`, selects `--beads`,
+`scripts/wip-beads.sh` (in this skill bundle) — CSV-driven, batches of `--limits`, selects `--beads`,
 modes: `collect|classify|align|unblock|title|deferred|all`, `--apply` for writes.
 Flags: `--csv` (input CSV path), `--beads` (comma-separated IDs), `--limits` (batch sizes), `--apply` (mutate), `--map` (align map CSV: `bead_id,desired_parent`), `--json-report` (output report path).
-Default = dry-run. Logs under `~/.local/state/wip-beads/`.
+Default = dry-run. Logs under `${XDG_STATE_HOME:-$HOME/.local/state}/wip-beads/` (the script's declared state root).
 
 ## Modes explained (what each one answers)
 
@@ -54,18 +54,18 @@ A healthy dry-run has `errors=0`; `mutated` counts PLANNED changes. Before any
 `--apply`, that number is your blast radius — review it, don't skip it.
 
 ## Input CSV
-`~/wip-beads-cosmos-open.csv` — regenerate with:
+`./wip-beads-open.csv` — regenerate with:
 
-    bd list --status open --flat --limit 0 --json > ~/wip-beads-cosmos-open.json
+    bd list --status open --flat --limit 0 --json > ./wip-beads-open.json
     python3 - <<'EOF'
     import json, csv, os
-    data = json.load(open(os.path.expanduser('~/wip-beads-cosmos-open.json')))
+    data = json.load(open(os.path.expanduser('./wip-beads-open.json')))
     rows = [['id','title','status','issue_type','priority','parent_id','labels','dep_count']]
     for b in data:
         rows.append([b['id'], b['title'], b['status'], b['issue_type'], b['priority'],
                      b.get('parent') or '', '|'.join(b.get('labels', [])),
                      b.get('dependency_count', 0)])
-    csv.writer(open(os.path.expanduser('~/wip-beads-cosmos-open.csv'), 'w', newline='')).writerows(rows)
+    csv.writer(open(os.path.expanduser('./wip-beads-open.csv'), 'w', newline='')).writerows(rows)
     EOF
 
 ## Governance law (strict)
@@ -122,14 +122,14 @@ Measured effect on a 102-bead ledger: `classify` 6min → 20.4s.
 ## Worked example (dry-run → apply, one epic realign)
 
     # 1. inventory
-    bd list --status open --flat --limit 0 --json > ~/wb.json   # + CSV convert
+    bd list --status open --flat --limit 0 --json > ./wb.json   # + CSV convert (workspace-local)
     # 2. plan
-    ~/wip-beads.sh --mode align --map ~/wip-beads-epics-map.csv --beads "cosmos-rbiik"
-    #    → [align] cosmos-rbiik: parent atual=vazio desejado=cosmos-cd3mh
+    scripts/wip-beads.sh --mode align --map ./epics-map.csv --beads "<bead-id>"
+    #    → [align] <bead-id>: parent atual=vazio desejado=<canonical-epic-id>
     # 3. one bead, confident, small blast radius:
-    ~/wip-beads.sh --mode align --map ~/wip-beads-epics-map.csv --beads "cosmos-rbiik" --apply
-    #    → [APPLIED align] cosmos-rbiik
-    bd show cosmos-rbiik --json | jq -r '.[0].parent'   # → cosmos-cd3mh (verify, never trust)
+    scripts/wip-beads.sh --mode align --map ./epics-map.csv --beads "<bead-id>" --apply
+    #    → [APPLIED align] <bead-id>
+    bd show <bead-id> --json | jq -r '.[0].parent'   # → <canonical-epic-id> (verify, never trust)
 
 Verification after apply is part of the mode, not optional: the script's own
 output is intent, `bd show` is the truth.

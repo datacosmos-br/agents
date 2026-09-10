@@ -29,58 +29,54 @@ only pass on a ledger already consistent. Skipping ahead produces rework: a
 title pass before classify renames beads that classify is about to re-parent.
 
 ## Canonical flow
-`~/wip-beads.sh` with modes `collect|classify|align|unblock|title|deferred|all`
+`scripts/wip-beads.sh` (wip-beads skill bundle) with modes `collect|classify|align|unblock|title|deferred|all`
 and flags `--csv --beads --limits --apply --map --json-report`.
 
 ## Cycle steps (execute in order)
 
 ### 1. Regenerate CSV (source of truth)
 ```bash
-bd list --status open --flat --limit 0 --json > ~/wip-beads-cosmos-open.json
-python3 - <<'EOF'
-import json, csv, os
-data = json.load(open(os.path.expanduser('~/wip-beads-cosmos-open.json')))
-rows = [['id','title','status','issue_type','priority','parent_id','labels','dep_count']]
-for b in data:
-    rows.append([b['id'], b['title'], b['status'], b['issue_type'], b['priority'],
-                 b.get('parent') or '', '|'.join(b.get('labels', [])),
-                 b.get('dependency_count', 0)])
-csv.writer(open(os.path.expanduser('~/wip-beads-cosmos-open.csv'), 'w', newline='')).writerows(rows)
-EOF
+bd list --status open --flat --limit 0 --json > ./wip-beads-open.json
+Workspace-local scratch files:
+
+```bash
+bd list --status open --flat --limit 0 --json > ./wip-beads-open.json
+<wip-beads-bundle>/scripts/bd_json_to_csv.py ./wip-beads-open.json ./wip-beads-open.csv
+```
 ```
 
 ### 2. Collect workspace evidence
-`~/wip-beads.sh --mode collect --csv ~/wip-beads-cosmos-open.csv`
-- Scans root repo + submodules (`apps/cosmos-charts`, `apps/cosmos-gitops`) + active worktrees
+`scripts/wip-beads.sh --mode collect --csv ./wip-beads-open.csv`
+- Scans root repo + submodules (declared submodules of the active workspace) + active worktrees
 - Stamps `WORKSPACE SYNC` evidence via `bd note` per bead
 - Output: updated CSV with `workspace_evidence` column
 
 ### 3. Classify bugfix/hotfix/bug (no epic)
-`~/wip-beads.sh --mode classify --csv ~/wip-beads-cosmos-open.csv`
+`scripts/wip-beads.sh --mode classify --csv ./wip-beads-open.csv`
 - Reports beads with `issue_type` in {bugfix,hotfix,bug} that have a parent epic
 - Dry-run by default; `--apply` removes parent after operator approval
 - Law: `bugfix`/`hotfix`/`bug` beads NEVER have epic parent
 
 ### 4. Align tasks/features to canonical epics
-`~/wip-beads.sh --mode align --csv ~/wip-beads-cosmos-open.csv`
+`scripts/wip-beads.sh --mode align --csv ./wip-beads-open.csv`
 - Re-parents `task`/`feature` beads under FEW canonical epic families
 - Prefers exact epic family from latest plan (§0.4/§0.7) over shallow parents
 - One canonical survivor per concept (ADR/plan-defined)
 
 ### 5. Unblock dependencies
-`~/wip-beads.sh --mode unblock --csv ~/wip-beads-cosmos-open.csv`
+`scripts/wip-beads.sh --mode unblock --csv ./wip-beads-open.csv`
 - Prints dependency chains and ready count (zero deps = ready)
 - Identifies blocked beads and their blockers
 - Output: ready list for next execution wave
 
 ### 6. Improve titles/tags
-`~/wip-beads.sh --mode title --csv ~/wip-beads-cosmos-open.csv`
+`scripts/wip-beads.sh --mode title --csv ./wip-beads-open.csv`
 - Normalizes titles to pattern: `[area] <imperative verb> <object>`
 - Adds/aligns labels: `P0`–`P3`, `area:<domain>`, `type:<issue_type>`
 - Removes stale/duplicate tags
 
 ### 7. Adjust deferred statuses
-`~/wip-beads.sh --mode deferred --csv ~/wip-beads-cosmos-open.csv`
+`scripts/wip-beads.sh --mode deferred --csv ./wip-beads-open.csv`
 - Deferred (❄) beads get revalidation notes, not silent reopening
 - If revalidation proves scope alive → remove deferred, add evidence note
 - If scope gone → close `OBSOLETE` with proof

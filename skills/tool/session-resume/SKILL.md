@@ -48,13 +48,13 @@ fi
 ```bash
 case "$SOURCE" in
     poolside)
-        python3 ~/agents/skills/tool/poolside-session-extract/scripts/extract_poolside_session.py "$SESSION_ID"
+        python3 <catalog>/skills/tool/poolside-session-extract/scripts/extract_poolside_session.py "$SESSION_ID"
         ;;
     claude)
-        python3 ~/agents/skills/tool/claude-session-extract/scripts/extract_claude_session.py "$SESSION_ID"
+        python3 <catalog>/skills/tool/claude-session-extract/scripts/extract_claude_session.py "$SESSION_ID"
         ;;
     opencode)
-        python3 ~/agents/skills/agent-wide/personal/opencode-session-handoff/scripts/export_session_snapshot.py "$SESSION_ID"
+        python3 <catalog>/skills/agent-wide/personal/opencode-handoff/scripts/export_session_snapshot.py "$SESSION_ID"
         ;;
 esac
 ```
