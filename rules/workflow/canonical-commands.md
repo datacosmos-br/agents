@@ -1,10 +1,17 @@
 ---
 description: Use root Make, structural codemods, CRG, and LSP as the operational surface
 metadata:
-  aihub.tags: '["decision:ADR-0008","effective:2026-09-05","route:both"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-09-10","route:both"]'
 ---
 
 # Use selector-free root Make verbs
+
+The repository's own declared instructions — its AGENTS.md, README, docs, and
+selected skills — own the canonical command inventory and practices. Resolve
+them before the first effect in that repository. Never execute a guessed
+command, flag, signature, or practice: an unverifiable form is verified at its
+canonical owner (declared docs, source, the tool's own help) or not executed.
+A plausible command that succeeds without a canonical basis is still a defect.
 
 Diagnostics, validation, generation, formatting, correction, tests, Waza,
 builds, publication, deployment, and maintenance execute only through one
