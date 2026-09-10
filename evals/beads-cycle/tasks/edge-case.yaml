@@ -1,0 +1,16 @@
+id: beads-cycle-edge-001
+name: Edge case beads-cycle
+description: Handle parent-child closure, family consolidation, stale claims.
+tags: [beads, cycle, edge-case, parent-child, family-consolidation, stale-claims]
+inputs:
+  prompt: >-
+    Cycle encounters parent bead with pending children - must re-home children
+    before closing parent. Family of 5 duplicate beads - must pick one canonical
+    survivor from newest plan and close others SUPERSEDED naming survivor. Stale
+    claim bead with no queue - must close OBSOLETE with proof. Deferred bead
+    with live scope - must remove deferred and add revalidation note, not close.
+  files:
+  - path: scenario.yaml
+expected:
+  output_contains: ["re-home children", "bd update --parent", "canonical survivor", "SUPERSEDED naming survivor", "OBSOLETE stale claim", "revalidation note", "zero parent closed with child pending"]
+  output_not_contains: ["close parent with children", "close without survivor", "close deferred without proof"]

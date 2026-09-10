@@ -1,0 +1,15 @@
+id: wip-beads-edge-001
+name: Edge case wip-beads
+description: Handle bugfix hotfix without epic, deferred revalidation, foreign lanes.
+tags: [beads, batch, governance, edge-case, bugfix, hotfix, deferred, foreign-lanes]
+inputs:
+  prompt: >-
+    Classify mode finds bugfix beads with epic parent. Align mode sees task
+    beads under shallow parent instead of canonical epic. Deferred beads need
+    revalidation notes. Active foreign lanes from §0.7 must not be mutated.
+    Show how each case is handled without violating governance law.
+  files:
+  - path: scenario.yaml
+expected:
+  output_contains: ["bugfix", "hotfix", "bug", "no epic", "canonical epic", "revalidation", "foreign lane", "§0.7", "never mutate", "bd update --parent"]
+  output_not_contains: ["force close", "ignore governance", "skip validation"]

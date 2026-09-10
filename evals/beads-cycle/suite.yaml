@@ -1,0 +1,14 @@
+description: Continuous bead governance cycle.
+prompt: |-
+  Grade the beads-cycle response. Pass only when the full cycle executes
+  regenerate CSV, collect workspace evidence root submodules worktrees,
+  classify bugfix hotfix bug without epic parent, align task feature to
+  few canonical epics, unblock dependencies, improve titles tags, adjust
+  deferred with revalidation notes, validate bd doctor check validate and
+  dedup gate and orphans after each batch, cap 20 closes per batch,
+  closure only with three legal reasons SUPERSEDED OBSOLETE DONE with
+  evidence, zero parent closed with child pending, one canonical survivor
+  per family, never mutate active third-party lanes, evidence notes via
+  bd note format with WORKSPACE SYNC stamp.
+  Reject invented commands, missing evidence, blind closures, over-limit
+  batches, mutating foreign lanes, or skipping validation gates.

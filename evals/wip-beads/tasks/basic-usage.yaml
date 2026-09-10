@@ -1,0 +1,16 @@
+id: wip-beads-happy-001
+name: Happy path wip-beads
+description: Run batch bead governance in CSV-driven modes with limits.
+tags: [beads, batch, governance, csv, collect, classify, align, unblock, title, deferred, apply, happy-path]
+inputs:
+  prompt: >-
+    Run wip-beads all mode on the current open bead set. Regenerate CSV from
+    bd list, then execute collect, classify, align, unblock, title, deferred
+    in order with batch limits of at least 25. Dry-run first, show plan,
+    apply only after operator approval. Stamp WORKSPACE SYNC evidence per bead.
+    Close only with SUPERSEDED OBSOLETE DONE reasons and evidence.
+  files:
+  - path: scenario.yaml
+expected:
+  output_contains: ["--mode", "collect", "classify", "align", "unblock", "title", "deferred", "--limits", "25", "--apply", "WORKSPACE SYNC", "bd doctor", "bd find-duplicates", "bd orphans", "SUPERSEDED", "OBSOLETE", "DONE"]
+  output_not_contains: ["force-push", "push without gate", "closed without reason", "edit .beads by hand"]

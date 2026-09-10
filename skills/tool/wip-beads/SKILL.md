@@ -1,12 +1,8 @@
 ---
 name: wip-beads
-description: >
-  Batch bead governance processor for FLEXT repos. Use when the user asks to
-  update beads in bulk, reconcile workspace evidence into beads, classify
-  bugfix/hotfix without epics, align tasks to a few canonical epics, unblock
-  chains, or synchronize deferred statuses. Triggers: "atualize beads",
-  "wip-beads", "classifique beads", "destrave", "--limits", "--beads",
-  "workspace sync beads", batch CSV processing of tracker items.
+description: 'wip beads, batch governance, csv workflow, classify align apply'
+metadata:
+  aihub.tags: '["activation:opt-in","decision:ADR-0008","detect:opt-in:wip-beads","effective:2026-09-10","route:agent","subject:beads","usage:router"]'
 ---
 
 # wip-beads — Continuous bead governance
@@ -14,6 +10,7 @@ description: >
 ## Canonical tool
 `~/wip-beads.sh` — CSV-driven, batches of `--limits`, selects `--beads`,
 modes: `collect|classify|align|unblock|title|deferred|all`, `--apply` for writes.
+Flags: `--csv` (input CSV path), `--beads` (comma-separated IDs), `--limits` (batch sizes), `--apply` (mutate), `--map` (JSON mapping file), `--json-report` (output report path).
 Default = dry-run. Logs under `~/.local/state/wip-beads/`.
 
 ## Input CSV
@@ -43,6 +40,12 @@ Default = dry-run. Logs under `~/.local/state/wip-beads/`.
    write; the `collect` mode stamps `WORKSPACE SYNC` evidence.
 7. Batches: >= 25 beads per batch; subagents execute batches, coordinator
    validates. One coordinator owns integration of results.
+8. Close only with 3 legal reasons: `SUPERSEDED` (canonical owner named absorbs),
+   `OBSOLETE` (scope/explicit disappeared with proof), `DONE` (cmd/cwd/exit/output).
+   `LEGITIMATE` = comment both, DO NOT close.
+9. Cap 20 closes per batch (`bd batch`); re-run dedup gate + `bd doctor --check=validate`
+   + `bd orphans` after each batch.
+10. Never mutate beads of ACTIVE third-party lanes (from §0.7 + claims ≤24h).
 
 ## Batch cycle loop
 1. Regenerate CSV (source of truth of current open set).
@@ -52,8 +55,16 @@ Default = dry-run. Logs under `~/.local/state/wip-beads/`.
 5. `--apply` only after the operator (or coordinator agent) approves the plan.
 6. Append every resulting note via `bd note` (never via file edits).
 
+## Subagent batch protocol
+Coordinator generates CSV → splits into batches via `--limits` → each subagent
+runs dry-run on its batch → coordinator reviews consolidated dry-run output →
+operator/coordinator approves → `--apply` executes batch → coordinator appends
+evidence note per bead (`WORKSPACE SYNC <ISO8601> (wip-beads.sh <mode> [apply|dry]): <what changed>; beads=<n> batches=<n> apply=<0|1>`).
+
 ## Evidence format (bd note)
     WORKSPACE SYNC <ISO8601> (wip-beads.sh <mode> [apply|dry]): <what changed>
     beads=<n> batches=<n> apply=<0|1>
 
-co-verified with `bd show <id>` output pasted when disputed.
+Co-verified with `bd show <id>` output pasted when disputed.
+
+(End of file)
