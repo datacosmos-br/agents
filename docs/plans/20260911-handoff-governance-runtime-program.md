@@ -80,5 +80,25 @@ comando exato, cwd, exit code, output decisivo; desviou = corrige o bead, nunca 
 4. PR + merge dev ai-hub (ag-m9lu 7 critérios measuráveis) → deploy recovery → receipts+
 5. agentsctl sync (ag-7hz) → sonda R1/F3 (ag-zrh.4) → pousar (agents) + fechar épico com 4 fontes; aposentar tudo (resíduo zero)
 
+## 7. Confrontação leis/código × ADRs/skills — pré-requisitos A CODIFICAR para o piloto
+
+Confrontado nesta sessão: skills/leis canônicas + ADR-0013/0014/0015/0016/0017/0018/0019
+vs código real (green-baseline @ d590d1cfb). Gaps de codificação, por prioridade:
+
+| # | Achado (lei violada) | Evidência | Ação de codificação | Bead |
+|---|---|---|---|---|
+| 1 | `_noop_acceptance` derrota a acceptance nativa no deploy público (runtime-is-reality + fail-loud) | `deploy.py:15-31` injeta no-op; `deploy_agents.py:564` exige provider (gate certo, derrotado pelo cachorro superior) |implementar acceptance nativa concreta e injetá-la no composition root; 64 tests de deploy devem passar com ela real | **ag-bwqu** (blocks ag-m9lu) |
+| 2 | CRG em drift (10+ workspaces) | `sync-crg-workspaces --check` exit 2 | apply + gate permanente | ag-nq7q |
+| 3 | ADR-0019 delivery contract: consumer ai-hub deve validar `capsule_budget_chars=10000` + event map config-driven (proibido vocab fixo em código) | ADR aceito no agents_governance (WsAtor); ai-hub receipt já carrega `governance_distribution_version` (deploy_agents.py:791) como dado | verificação no piloto: receipt ≥ 0.5.0 (ADR-0018) e budget gate pass; fall-loud se divergir | critério 8 do ag-m9lu |
+| 4 | ADR-0018 release 0.5.0: piloto só com wheel ≥ 0.5.0 (394 assets provados) | PR #737/0.5.0 pousados pelo ator paralelo | absorver origin/dev --no-ff ANTES do piloto (passo 1) | ag-m9lu |
+| 5 | flext chain C-A/DI (strict-execution) | namespace 1100, silent-failure 40 | passos 2-4 do plano (grunt) | ag-ey2k / ag-fwdu |
+| 6 | ADR-0015 tag grammar / ADR-0014 provenance: já implementados em F0/F2 (122/63/128) | audit/waza verdes na lane agents | nada a codificar; manter gates | — |
+| 7 | runtime walker/pointer (deployment chega à ativação) | 4 commits na lane | merge no passo 1-4 do piloto | ag-ey2k |
+
+**Leitura jurídica**: seul gap de IMPLEMENTAÇÃO nova é o item 1 (acceptance real);
+itens 2-4 são sincronização/evidência de contrato já decodificados; items 5-7
+por fusão grind verde. Sem o item 1 o piloto publicaria com aceitação simulada —
+proibido em produção.
+
 ---
 Gerado na sessão 2026-09-11 (opencode). Nova sessão: este arquivo + bd prime + plano canônico = tudo que é preciso.
