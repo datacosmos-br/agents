@@ -26,7 +26,7 @@ runtime é o único veredito.
 
 | 4b | P0 acceptance nativa real no deploy público (ag-bwqu) | 🔴 NOVO — gap de código do piloto | `_noop_acceptance` em `deploy.py` derrota o provedor exigido fail-loud; acceptance concreta a implementar no composition root (blocks ag-m9lu) |
 | 5a | P0 CRG sync (ag-nq7q) | ⏳ PENDENTE | drift medido: `ai-hub ai-hub-sync-crg-workspaces --check` exit 2 (10+ workspaces: steampipe, worker-vllm, ardupilot, invest, typeshed…) |
-| 5b | Esteira global (ag-q4w1) | ⏳ PROPOSTA para aprovação | seção "PROPOSTA" abaixo; mutação só por SSOT codegen + `make gen APPLY=Y`; `make mod` agrega 48+package rules |
+| 5b | Esteira global (ag-q4w1) | ⏳ PROPOSTA para aprovação | seção "PROPOSTA" abaixo; mutação só por SSOT codegen + `make gen`; `make mod` agrega 48+package rules |
 | 5c | Piloto homologação (ag-m9lu) | ⏳ PROPOSTA para aprovação | 7 critérios measuráveis → pouso ai-hub dev |
 | 6 | **F3 — prova produtiva (ag-zrh.4)** | ⏳ PENDENTE de F1 | Sessão opencode nova real: skill dona carrega texto canônico na versão atual, `python-production` inexistente, zero dedução |
 
@@ -34,7 +34,7 @@ runtime é o único veredito.
 
 Worktree dedicada: `~/ai-hub-wt/green-baseline` (branch `fix/green-baseline`,
 pushed; base `fix/current-pointer-transport` com 4 commits de walker/pointer +
-composed surfaces). Estado medido (`make check APPLY=Y`, pós-commit `ea29280b`):
+composed surfaces). Estado medido (`make check`, pós-commit `ea29280b`):
 
 - Baseline: 2564 → **atual: 2467** (lint 42, pyrefly 146, mypy 16, pyright 40,
   silent-failure 40, markdown 2, loc-cap 9, boundary 2, tier-whitelist 1,
@@ -56,7 +56,7 @@ composed surfaces). Estado medido (`make check APPLY=Y`, pós-commit `ea29280b`)
   - protocolo novo `p.AiHub.ForgeRouting` (`_protocols/forge.py`) + protocolo
     `GovernanceBundle` estendido com `snapshot()`; `_validate_agent_law_surface/
     base.py` e bases de forge sem reverse import de serviço concreto.
-- `make mod APPLY=Y`: 197 achados detection-only (0 actionable) exigem reparo
+- `make mod`: 197 achados detection-only (0 actionable) exigem reparo
   por dono — breakdown: test-no-mock-or-patch-identifiers 102,
   ban-test-doubles 35, hook-deploy-exception-group 12, retired-config-* 16,
   test-import-alias-mixed-root-facade 7, recursive-type-alias 6
@@ -100,7 +100,7 @@ correção de raiz executada:
    estavam em blocos de código sem crase e escaparam à primeira passada —
    redisciplina: rodar o gate após CADA onda, não ao final. Correção mecanica
    por dono: verbos selector-free (`check/test/gen/fix/mod/duplication/deps
-   APPLY=Y`, `make help`) + CLI owners reais (`ai-hub validate-agents`,
+`, `make help`) + CLI owners reais (`ai-hub validate-agents`,
    `validate-references`, `validate-mcp-routing`, `workspace-discovery --audit`);
    citação do único dono custom vivo restaurada (`make status WHAT=daemon`).
    Prova: docs_make_verbs 9 passed (exit 0), testmon 62 passed / 2 failed
@@ -177,7 +177,7 @@ gerado com header codegen, `ast-grep-rules/` 48+7 regras, binário de host
   actionable/detection_only/classification/range/text); 197 detection-only.
   Regras com `fix:` são auto-aplicáveis; sem `fix` exigem reparo por dono.
   `sgconfig.yml` e regras do projeto são **gerados** (header codegen) —
-  mudanças fluem por `config/codegen.yaml` → `make gen APPLY=Y`.
+  mudanças fluem por `config/codegen.yaml` → `make gen`.
 - **agents `make mod`**: `ast-grep test --config sgconfig.yml --update-all`
   (7 regras universais de eval-suite) — regenera snapshots aprovados.
 - **CRG CLI (hoje produtivo)**: `code-review-graph impact|query|search|rename|
@@ -191,10 +191,10 @@ gerado com header codegen, `ast-grep-rules/` 48+7 regras, binário de host
 | Habilitar CRG | `ai-hub ai-hub-sync-crg-workspaces` (apply, ai-hub) | drift zerado; `--check` vira gate permanente da lane |
 | Blast-radius pré-merge | `code-review-graph impact --base origin/dev` na lane | lista de consumers tocados antes de cada PR |
 | Namespace (1100) | `code-review-graph query`/`search` (callers de cada serviço) → rewire DI; `refactor rename --old-name --new-name --kind Class` para renames | search-first automatizado; zero rewire cego |
-| Codemod (1033) | leitura focada: `ast-grep scan --config sgconfig.yml --json` filtrado por `rule_id` → listas por classe; mutação só via `make mod APPLY=Y` | burn-down lists versionadas em `.reports/refactor/` |
-| Regras detection-only | (a) migração no código, ou (b) refinamento no SSOT `config/codegen.yaml` (Infra.codegen.sgconfig) + `make gen APPLY=Y` ×2 fixed-point | nunca hand-edit em `ast-grep-rules/`/`sgconfig.yml` |
+| Codemod (1033) | leitura focada: `ast-grep scan --config sgconfig.yml --json` filtrado por `rule_id` → listas por classe; mutação só via `make mod` | burn-down lists versionadas em `.reports/refactor/` |
+| Regras detection-only | (a) migração no código, ou (b) refinamento no SSOT `config/codegen.yaml` (Infra.codegen.sgconfig) + `make gen` ×2 fixed-point | nunca hand-edit em `ast-grep-rules/`/`sgconfig.yml` |
 | loc-cap (9) · resíduo | `code-review-graph large-functions` · `dead-code --json --repo <root>` por checkout | listas purgação, adotadas como achados |
-| agents repo | `make mod APPLY=Y` (--update-all provado para snapshots de SUAS 7 regras); `make gen APPLY=Y` = projeções canônicas | conformância do catálogo |
+| agents repo | `make mod` (--update-all provado para snapshots de SUAS 7 regras); `make gen` = projeções canônicas | conformância do catálogo |
 
 Exemplo imediato de regra-dono: `ban-test-doubles` marca
 `tests/fixtures/forge_governance.py:153` (harness aprovado injetando
@@ -212,8 +212,8 @@ acima, pousados na branch de integração (`dev` do ai-hub) com deploy recovery
 real na máquina do operador.
 
 **Critérios de aceite measuráveis (4 fontes por item)**:
-1. `make check APPLY=Y` exit 0 na lane E no SHA merged;
-2. `make test APPLY=Y` exit 0 (integrity testmon ok; RED externos fechados em beads com evidência com/sem diff);
+1. `make check` exit 0 na lane E no SHA merged;
+2. `make test` exit 0 (integrity testmon ok; RED externos fechados em beads com evidência com/sem diff);
 3. `ai-hub ai-hub-sync-crg-workspaces --check` exit 0 (CRG sincronizado e sem drift);
 4. `code-review-graph impact --base origin/dev` limpo de órfãos desautorizados antes do merge;
 5. deploy recovery com `LoadCredentialEncrypted` → receipt no home + probe de ativação;

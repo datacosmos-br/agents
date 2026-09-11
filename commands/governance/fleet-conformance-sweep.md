@@ -59,7 +59,7 @@ renames on an over-strict rule.
 `flext-core → flext-cli → flext-tests → flext-infra → charts → gitops →
 root`. Per repo: hermetic deps (`env -u VIRTUAL_ENV -u
 UV_PROJECT_ENVIRONMENT`), pinned lock + cooldown, `gen×2` fixed point,
-`check`+`test APPLY=Y`, scoped commit → **PR** (no develop bypass), merge,
+`check`+`test`, scoped commit → **PR** (no develop bypass), merge,
 gates on merged SHA.
 
 ## G5 — runtime truth before any completion claim

@@ -15,16 +15,16 @@ contract: `~/.agents/skills/framework/flext-gates-as-products/SKILL.md`
 export UV_PROJECT_ENVIRONMENT=$PWD/.venv VIRTUAL_ENV=$PWD/.venv
 
 # 1. Generation first (config SSOT → projections)
-make gen APPLY=Y
+make gen
 
 # 2. Scoped semantic rewrite (ast-grep + fixed point + Ruff + Pyrefly + LSP)
 #    Scope to ONE module or ONE facade slot per wave:
-# make mod APPLY=Y  (dispatch)  — or scoped:
+# make mod  (dispatch)  — or scoped:
 # python -m flext_infra refactor mod --apply \
 #   --module flext_core._utilities --namespace u
 
 # 3. Hygiene + gates
-make fix APPLY=Y && make fmt APPLY=Y && make check APPLY=Y
+make fix && make fmt && make check
 
 # 4. Graph evidence (agent-side tool only)
 code-review-graph doctor && code-review-graph build     # first run

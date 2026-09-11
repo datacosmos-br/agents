@@ -21,7 +21,7 @@ empty argument.
 3. **Inventory before discard/rewrite**: any history surgery requires the
    hunk inventory per `rules/workflow/landing-and-sweep-law.md`; classify each
    hunk as re-derived, port-back-needed, or superseded — in the bead.
-4. **Idempotency gate** (generation surface): `make gen APPLY=Y` twice;
+4. **Idempotency gate** (generation surface): `make gen` twice;
    artifacts to `/tmp/fixed-point/`; `difflib.unified_diff` written to a file
    (code­gen stdout is flooded — never read diffs from console flow). On
    divergence: hypotheses H1 tooling determinism (taplo/uv resolve), H2

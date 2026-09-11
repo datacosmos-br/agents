@@ -19,9 +19,9 @@ there.
 ## Phase A — sweep the project
 
 0b. Automation surfaces first. Drive classes with the declared machinery
-   before hand edits: `make mod APPLY=Y` applies the declared ast-grep rules
+   before hand edits: `make mod` applies the declared ast-grep rules
    (composed from installed distributions; targeted runs use an exact
-   rule-ID filter, not ad-hoc CLI invocations); `make gen APPLY=Y` twice
+   rule-ID filter, not ad-hoc CLI invocations); `make gen` twice
    brackets every generated-surface change and must be byte-identical; the
    persistent code-review-graph feeds discovery in CLI mode (`dead-code`,
    `impact`, `large-functions`, `query`) for nesting, callers, and split
@@ -68,8 +68,8 @@ there.
    silent failures, duplication, layout/loc), one root cause per commit,
    re-measure after each class, and record start→end numbers in the active
    plan or tracker item. Drive each wave with the canonical CLI kit:
-   `make mod APPLY=Y` for rule-driven codemod (dry-run first), `make gen
-   APPLY=Y` for any generated-surface change, `ast-grep scan` against the
+   `make mod` for rule-driven codemod (dry-run first), `make gen
+` for any generated-surface change, `ast-grep scan` against the
    project rule SSOT (never ad-hoc grep), and code-review-graph CLI proofs
    when available: `build|update --repo` before proof queries, `dead-code
    --json` before cleanup, `impact --files` after the change (0 extra

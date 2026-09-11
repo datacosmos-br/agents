@@ -60,7 +60,7 @@ comando exato, cwd, exit code, output decisivo; desviou = corrige o bead, nunca 
 - lane-worktree-anywhere-living-plan-law; beads-verification-triangle; BD memory `env -u BEADS_DOLT_SERVER_DATABASE`
 - runtime-is-reality, distribution-routing (ADR-0015), session-governance, anti-hardcode, fix-forward
 - generated files: regra via SSOT codegen config + make gen ×2 fixed-point — nunca hand-edit em `ast-grep-rules/`/`sgconfig.yml` gerados
-- make verbs: Apply=Y; CRG CLI = read-only (`impact/query/refactor rename/dead-code --json/large-functions`)
+- make verbs:; CRG CLI = read-only (`impact/query/refactor rename/dead-code --json/large-functions`)
 
 ## 5. Estado do grind (nums das classes)
 

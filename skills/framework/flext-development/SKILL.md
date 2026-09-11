@@ -39,7 +39,7 @@ composition-root contract.
 - Never discard (reset/rewrite) public history without a bead that inventories
   every hunk first; re-derive lost SSOT surgery hunk-by-hunk before declaring
   the discard complete.
-- Pre-push guard for generated surfaces: `make gen APPLY=Y && make gen APPLY=Y`
+- Pre-push guard for generated surfaces: `make gen && make gen`
   must produce byte-identical trees; only push on doubled idempotency. A
   fixed-point failure is a P0 product defect (scaffolder SLA), never "out of
   scope" cleanup residue. Owner of this contract: ADR-010 §Verification

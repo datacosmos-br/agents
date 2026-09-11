@@ -37,7 +37,7 @@ the diff is green; repair it with the lane-branch PR flow once gates allow.
 
 ## Idempotency is an SLA of the generator, not a cleanup nicety
 
-For any change touching the generation surface, `make gen APPLY=Y` twice from
+For any change touching the generation surface, `make gen` twice from
 the same tree must be byte-identical before a push. A second-run divergence is
 a P0 product defect for every fleet member consuming the projections.
 Instrument with file-based diffs (difflib to a log file; stdout of codegen is

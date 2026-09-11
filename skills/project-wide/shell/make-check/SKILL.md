@@ -31,7 +31,7 @@ codegen owner and rerun the same root verb.
 ## Idempotency pre-push guard (evidence 2026-09-11, plan `docs/plans/2026-09-11-flext-conformance-sweep.md`)
 
 - Before pushing any change that touches the generation surface, run
-  `make gen APPLY=Y` twice from the same tree and require byte-identical
+  `make gen` twice from the same tree and require byte-identical
   results. Only push on the doubled fixed point.
 - A second run that diverges is a P0 product defect in the scaffolder (every
   fleet member consumes its projections), not a flaky environment. Instrument
@@ -50,8 +50,8 @@ codegen owner and rerun the same root verb.
   — run `code-review-graph update` first and record the built-at commit.
 - Mechanical rewrite order per unit: crg map -> `make mod` detect/apply
   (cwd-scoped; rules SSOT `flext-infra/codemod/rules/` +
-  `~/agents/ast-grep-rules/universal/`) -> `make gen APPLY=Y` (projection
-  convergence) -> `make check` -> `make test APPLY=Y`. Never bypass `make mod`
+  `~/agents/ast-grep-rules/universal/`) -> `make gen` (projection
+  convergence) -> `make check` -> `make test`. Never bypass `make mod`
   with raw `sg`/ast-grep invocations; inline scan rules belong in the rules
   SSOT with a snapshot test, not ad-hoc command lines.
 - `refactor dead_code` and `impact --depth` gate deletions: a "dead" symbol

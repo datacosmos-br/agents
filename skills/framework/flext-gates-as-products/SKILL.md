@@ -24,7 +24,7 @@ Composes with `$flext-law`, `consumption-law.md` (ADR-015) and rule
   gate runs; never a silent unreached gate.
 - Gate thresholds belong to `[tool.flext.project.*]` or `config/codegen.yaml`;
   constants may seed defaults, but hand-edited per-consumer values route
-  through the config projection (`make gen APPLY=Y`, fixed point proven).
+  through the config projection (`make gen`, fixed point proven).
 - Rollout: new strict gates start advisory (warn) for one cycle, then hard
   (operator stabilization law 2026-09-08); baselines of findings are beads
   evidence, never committed fixtures.
@@ -56,14 +56,14 @@ Composes with `$flext-law`, `consumption-law.md` (ADR-015) and rule
 
 FLEXT program work runs this loop per slice; never ad-hoc tool calls.
 
-1. Preflight + generation: `make gen APPLY=Y` at the lane root (config SSOT
+1. Preflight + generation: `make gen` at the lane root (config SSOT
    → projections) before any semantic rewrite.
-2. Scoped semantic mutation: `make mod APPLY=Y` — the engine runs ast-grep
+2. Scoped semantic mutation: `make mod` — the engine runs ast-grep
    rules, ast-grep fixed point, Ruff, Pyrefly and real LSP diagnostics in
    one verb. Scope waves with `--module <dotted>` or
    `--namespace <c|m|p|t|u…>` instead of fleet-wide scans.
-3. Cycle hygiene: `make fix APPLY=Y` → `make fmt APPLY=Y` → gates
-   (`make check APPLY=Y`) → `make test APPLY=Y` (scoped, canonical testmon).
+3. Cycle hygiene: `make fix` → `make fmt` → gates
+   (`make check`) → `make test` (scoped, canonical testmon).
 4. Graph evidence via the ai-hub CLI `code-review-graph` (agent-side tool;
    flext code never imports it — rule `ban-ai-hub-crg-library-boundary.yml`):
    - `code-review-graph build` once per lane/repo (doctor reports critical

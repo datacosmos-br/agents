@@ -74,11 +74,11 @@ below is evidence-producing and stays within the project Make dispatcher.
 - `make mod` is the only sanctioned structural mutation: it composes the
   ast-grep rule plan (universal → runtime-transitive → local layers, rules
   inherited through installed distributions, so consumers inherit the fleet
-  rule library automatically). Run `make mod APPLY=Y` from the repository
+  rule library automatically). Run `make mod` from the repository
   root; its fixed point ("zero findings") is the acceptance evidence.
   `make fmt` completes bulk formatting before check. A raw `ast-grep scan`
   invocation is a research probe only — mutations go through the Make owner.
-- `make gen APPLY=Y` proves generator idempotence: one full run, then a fixed
+- `make gen` proves generator idempotence: one full run, then a fixed
   point. A second run that emits diffs is a defect at the generator, never a
   projection to hand-fix.
 - Language-level ast-grep rules (agent-law contract, hardcoded-value bands,
