@@ -25,8 +25,8 @@ lane remota recriada sob o novo nome (bug bead ag-p4a.11).
 | 3 | Correção do operador (listas/proibições, incl. tests) | ✅ ABSORVIDA | `delivery.py` grammar-only (sem vocabulários fechados); teste com pin exterminado e substituído por derivação (`test_catalog_structure.py`, ator adotado); waza floor adotado; engineering-core emendado — commits `29a7de58`, `40f47818` |
 | 4 | WS-C — ADR-0019 delivery contract | ✅ DONE (código+pouso pendente no PR) | Commit `29a7de58` + fmt: gate tipado de cápsula em `load()` (falhou ao vivo 2× e mediou: 9477/9488, headroom 11); eventos grammar-validated (config é dono das instâncias); docs linking gate (bijeção 16 ADRs); marcador ADR-0015; Task 3 do .kilo medida como já implementada (testes fixam) |
 | 5 | Gates na worktree dedicada | ✅ GREEN | `make check APPLY=Y` exit 0 (docs/static 29/waza 128/128/wheel 0.5.0+mypy strict); `test-full` 10/10, 0 warnings/skips, testmon integrity ok |
-| 6 | WS-D — ADR-0020 advance command + dossiê | ⏳ PENDENTE | Próximo: comando + dossiê 13 fontes |
-| 7 | Pouso | ⏳ PENDENTE | PR → dev → review → --no-ff → prova pós-merge → beads com 4 evidências |
+| 6 | WS-D — ADR-0020 advance command + dossiê | ✅ DONE | Commit `9318807f`: `advance.md` (15º comando); dossiê 14 fontes como evidência (garantia `instruction-design-evidence`); packaging corrigido na raiz (sdist carrega docs/research — defeito pego pelo runtime gate); check exit 0 completo (waza 128/128, wheel+sdist 0.5.0 + mypy strict); test-full 10/10 |
+| 7 | Pouso | 🔶 PR aberto | PR → dev; falta review → --no-ff → prova pós-merge → beads com 4 evidências |
 
 ## 1. Fundamentação (13 fontes, dossiê em `docs/research/agent-instruction-design.md`)
 
