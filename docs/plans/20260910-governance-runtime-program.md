@@ -16,7 +16,7 @@ runtime é o único veredito.
 
 | # | Fase | Status | Evidência decisiva |
 |---|------|--------|--------------------|
-| 0 | Base limpa: lane reval250909 pousada | ✅ DONE | PR #133 merge `ab27a954` (--no-ff, operator-authorized); `make ci APPLY=Y` exit 0 (4 passed, testmon integrity=ok); pós-merge `make gen` ×2 fixed point + `make check` exit 0; lanes `feat/reval250909-adoption` e `wip/beads-governance-reval250909` aposentadas local+remoto após `merge-base --is-ancestor` exit 0 |
+| 0 | Base limpa: lane reval250909 pousada | ✅ DONE | PR #133 merge `ab27a954` (--no-ff, operator-authorized); `make ci` exit 0 (4 passed, testmon integrity=ok); pós-merge `make gen` ×2 fixed point + `make check` exit 0; lanes `feat/reval250909-adoption` e `wip/beads-governance-reval250909` aposentadas local+remoto após `merge-base --is-ancestor` exit 0 |
 | 0 | Tracker reval250909 | ✅ DONE | Fechados com 4 fontes: ag-645 (`make help` lista gen/build), ag-s8r (conteúdo superseded provado), ag-aq8.2 (prova pós-merge), ag-9qg (jscpd 5.1.2 correto + `make duplication` exit 0, 0 clones), ag-aq8.1 (`GovernanceBundle.load` 65 agents + audit zero raise). ag-1b5/ag-blh: notas de dono ai-hub, sem falso fechamento |
 | 1 | Épico criado | ✅ DONE | ag-zrh + filhos ag-zrh.1..4 com cadeia de dependências |
 | 2 | **F0 — inventário de violação (ag-zrh.1)** | ✅ DONE | 4 varreduras paralelas read-only + observação de runtime do operador. Causa raiz provada: `~/.agents` é symlink → checkout vivo (por isso só o Kilo vê os agents). Homes: 0/current (opencode 43 stale + 10 identidades aposentadas vivas + 1 foreign + 53 tags decorativas; claude 45 stale + 10 + 14 foreign incl. `python-production`; `.claude/agents` 8 stale + 57 faltando; `selection.agents: []` nunca distribuiu). Comandos: 14/14 frontmatter ok; `ghi-list`/`pr-list` shadows estrangeiras invertem contrato (pr-list esconde CHANGES_REQUESTED). Hardcode HIGH: `rules/flext/beads-continuity.md` → `~/wip-beads.sh` + caminho de projeção. Contrato de contagem quebrado: 121/56/64 vs runtime 128/63/65 |
@@ -42,7 +42,7 @@ Worktree dedicada: `~/ai-hub-wt/green-baseline` (base fix/current-pointer-transp
   test_aihub_forge_governance_check_context (gerações velha+nova coexistindo:
   7 duplicados módulo removidos, 5 testes mortos aninhados restaurados como
   métodos reais da classe, 4 helpers perdidos no merge do ator restaurados).
-- `make mod APPLY=Y`: 197 achados detection-only exigem reparo por dono
+- `make mod`: 197 achados detection-only exigem reparo por dono
   (não auto-actionable) — breakdown: test-no-mock-or-patch-identifiers 102,
   ban-test-doubles 35, hook-deploy-exception-group 12, retired-config-* 16,
   test-import-alias-mixed-root-facade 7, recursive-type-alias 6, others 19.
