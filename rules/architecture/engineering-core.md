@@ -3,8 +3,10 @@ description: Apply the mandatory engineering decision and delivery sequence.
 capsule_summary: |
   Every implementation: research the owner first, cut scope without a current
   consumer, elect one writable authority and make every other copy a generated
-  projection, implement through the owner, remove duplication, then exercise
-  runtime behavior and run every applicable gate before changing phase.
+  projection, improve the owner in place — a parallel implementation beside
+  the owner is a violation — implement through the owner, remove duplication,
+  then exercise runtime behavior and run every applicable gate before changing
+  phase.
 
   At a cross-boundary failure, prove the producer's contract and fix whichever
   side is wrong — never bend a correct owner for an invalid consumer.
@@ -17,7 +19,7 @@ capsule_summary: |
   never authorizes the generic form, and an agent never writes the operator's SSH
   configuration or keys — identity is corrected in git, or reported.
 metadata:
-  aihub.tags: '["decision:ADR-0008","effective:2026-08-29","route:both"]'
+  aihub.tags: '["decision:ADR-0017","effective:2026-09-10","route:both"]'
 ---
 
 # Engineering core
@@ -27,7 +29,9 @@ For every implementation:
 1. Research repository owners, dependencies, and canonical documentation.
 2. Remove scope without a current requirement or consumer (YAGNI).
 3. Elect one writable authority; every other copy is a generated projection
-   (SSOT).
+   (SSOT). Improve the owner in place: writing a parallel replacement,
+   renderer, or registry beside the owner is a violation — consume the
+   owner's projection, never copy its contract.
 4. Apply SOLID only to a responsibility or dependency boundary under change.
 5. Implement through the owner and simplify without weakening behavior.
 6. Remove duplication and god components; recheck YAGNI, SSOT, SOLID.

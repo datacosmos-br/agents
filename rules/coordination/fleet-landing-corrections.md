@@ -1,3 +1,15 @@
+---
+description: Fleet landing cycles follow root cause, tag-line authority, canonical commands, integration closure, and unmasked validation.
+capsule_summary: |
+  Fleet landing: suppress no warning without removing the duplication that
+  caused it; version lines follow the declared tag timeline; commands execute
+  only from canonical docs plus measured evidence; a cycle closes only with a
+  no-ff merge on the integration lane, verified deploy, lane retirement, and
+  bead evidence; pipelines never mask a producer's exit code.
+metadata:
+  aihub.tags: '["decision:ADR-0011","effective:2026-09-10","route:both"]'
+---
+
 # Correções do operador — ciclos de landing da frota (2026-09-08/10)
 
 Correções de alta autoridade com escopo declarado, extraídas dos ciclos de

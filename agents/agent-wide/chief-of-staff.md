@@ -143,16 +143,16 @@ This checklist is enforced by a `PostToolUse` hook that blocks completion until 
 
 ## Example Invocations
 
-```bash
-claude /mail                    # Email-only triage
-claude /slack                   # Slack-only triage
-claude /today                   # All channels + calendar + todo
-claude /schedule-reply "Reply to Sarah about the board meeting"
+```
+<agent-cli> /mail                    # Email-only triage
+<agent-cli> /slack                   # Slack-only triage
+<agent-cli> /today                   # All channels + calendar + todo
+<agent-cli> /schedule-reply "Reply to Sarah about the board meeting"
 ```
 
 ## Prerequisites
 
-- [Claude Code](https://docs.anthropic.com/en/docs/claude-code)
+- The active agent runtime with this profile loaded
 - Gmail CLI (e.g., gog by @pterm)
 - Node.js 18+ (for calendar-suggest.js)
 - Optional: Slack MCP server, Matrix bridge (LINE), Chrome + Playwright (Messenger)

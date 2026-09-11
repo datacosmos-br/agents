@@ -1,65 +1,26 @@
 ---
 name: inviolable-rules
-description: 'mandatory universal governance, plan edit validate, merge close law'
+description: 'gate routing, rule owners, session gate sequence'
 metadata:
   aihub.tags: '["decision:ADR-0008","effective:2026-09-10","usage:router"]'
 ---
 
-# Inviolable Rules
+# Inviolable Rules — gate router
 
-Universal only. Domain → project law. [references/gates.md](references/gates.md). `UNIVERSAL_CORE`.
+Universal law lives in `rules/` and `UNIVERSAL_CORE`; this skill only routes the
+gate sequence. Load the named owner at each moment; never restate its law.
 
-## Start Gate
+| Moment | Owner |
+|---|---|
+| Session start: read request, law, Bead, decisions; verify root/branch/paths/owners/WIP | `coordination/session-governance` + `coordination/beads-verification` |
+| Truth: done = command+cwd+exit+output+scope; fake green = P0 | `workflow/runtime-is-reality` + `ethics/professional-integrity` |
+| Roles: orchestrator vs worker lane limits | `beads-worker` + `beads-orchestrator` skills |
+| Execution: Make/CLI verbs only, fix-forward, no stash/reset/force on unknown WIP | `runtime/strict-execution` + `coordination/fix-forward-collaboration` + `git/gitflow-branch-pr` |
+| Incident: remote is ground truth, never mutate shared venv, missing tool is RED | `workflow/runtime-is-reality` + `runtime/required-environment` |
+| Refactor: build final owner, migrate all, delete superseded, no old+new | `architecture/engineering-core` |
+| Tracker before mirror; Bead updated each state change | `workflow/beads-traceability` |
+| Continuous green + evidence + review at close | `verification-loop` skill + `workflow/production-readiness` |
 
-1. Read request, `UNIVERSAL_CORE`, project law, Bead, decisions.
-2. Record intent; verify root/branch/worktree/paths/owners/consumers/WIP.
-3. Confirm native validation commands.
-4. Bead claimed. Beads = SSOT. No competing plan; no hand-edit `.beads/`.
-
-## Truth And Anti-Deception Gate
-
-Done = command+cwd+exit+output+scope+blocker. Fake green = P0. No bypass; self-report ≠ proof.
-
-## Role Gate
-
-Orch: semantics, evidence, merge/rollout/close. Worker: 1 Bead/branch/worktree → push → PR. ≤5 lanes. See `beads/orchestrator`/`beads/worker`/`beads/audit`.
-
-## Execution Gate
-
-Make/CLI only (`governance/make`). Fix forward; never stash/reset/force-push unknown WIP. Re-read; root-cause; adopt hunks. Warnings block. Full delivery or STOP+question. See [references/gates.md](references/gates.md).
-
-## Incident Gate
-
-Rules born from outages that ALREADY happened: remote is ground truth; never mutate the shared venv from a lane; no temporary fix; a missing tool is RED, never green. Detail: [references/gates.md](references/gates.md).
-
-## Complete Refactor Gate
-
-Complete base → migrate all → delete superseded. No old+new. See [references/gates.md](references/gates.md).
-
-## Tracker And Mirror Gate
-
-Beads before GitHub; sync. Update Bead each state change. Only orch mutates semantics.
-
-## Continuous-Green Gate
-
-See [references/gates.md](references/gates.md). Procedure: `verification/loop`.
-
-## Green Checkpoint Gate
-
-See [references/gates.md](references/gates.md).
-
-## Workspace And Test Laws
-
-See [references/gates.md](references/gates.md). `UNIVERSAL_CORE` P0.
-
-## Evidence And Review Gate
-
-See [references/gates.md](references/gates.md).
-
-## Session And Reporting Gate
-
-See [references/gates.md](references/gates.md).
-
-## Stop Only For A Real Blocker
-
-Stop for destructive action, competing contracts, security/privacy, `main`/prod promotion, final release, authority conflict, material scope change. One Bead question; else continue.
+Stop only for a real blocker: destructive action, competing contracts,
+security/privacy, `main`/prod promotion, final release, authority conflict,
+material scope change. One Bead question; else continue.

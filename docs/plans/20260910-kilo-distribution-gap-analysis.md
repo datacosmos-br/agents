@@ -1,3 +1,23 @@
+# ABSORBED — Kilo distribution gap analysis (2026-09-10)
+
+> Status after absorption into the governance runtime program
+> (`docs/plans/20260910-governance-runtime-program.md`) and the delivery
+> contract program (`docs/plans/20260910-delivery-contract-behavioral-law.md`,
+> bead ag-p4a):
+>
+> - Task 1 (AGENTS.md counts) — DONE by F2 commit `56fcebdc` (66/63/128).
+> - Task 2 (propagate + workspaces.yaml + render_project_projection.py) — DONE
+>   by F2 (commit `783b285c`).
+> - Task 4 (retire globs schema) — DONE by F2 (workspaces.yaml v1).
+> - Task 6 (propagate wired into check) — DONE by F2 (`check` runs propagate).
+> - Task 3 (agent approval lineage: `_approved_artifacts` + tags validation) —
+>   REAL GAP, absorbed into bead ag-p4a.8 (WS-C, ADR-0019).
+> - Task 5 (.kilo/ config structure) — SUPERSEDED by the F2 de-provider
+>   cutover; the `.kilo/` surface is retired, not expanded.
+>
+> Relocated from `.kilo/plans/` per the operator's migration order; original
+> content below, unchanged.
+
 # Distribution System Gap Analysis & Remediation Plan
 
 ## Goal

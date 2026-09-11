@@ -3,7 +3,7 @@ name: make-check
 description: 'native gates, root make verbs, runtime-first validation'
 license: MIT
 metadata:
-  aihub.tags: '["decision:ADR-0008","effective:2026-08-29","usage:router"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-09-10","usage:router"]'
   version: 2.3.0
 ---
 
