@@ -18,3 +18,4 @@
 | `ADR-0017` | 2026-09-10 | Accepted | Ethics is primordial; change consequence is authorship; operator alignment is a duty; owners are refactored in place, never paralleled. |
 | `ADR-0018` | 2026-09-10 | Accepted | Release line 0.5.0 carries behavioral conscience and the delivery contract; tag grammar is closed as measured. |
 | `ADR-0019` | 2026-09-10 | Accepted | The delivery contract is typed data: capsule budget gate at load, closed lifecycle event map, and enforced docs linking. |
+| `ADR-0020` | 2026-09-10 | Accepted | One `advance` command owns resumption and forced advancement; skill routing owns deltas; the research dossier is referenced evidence. |
