@@ -31,9 +31,9 @@ Worktree dedicada: `~/ai-hub-wt/green-baseline` (branch `fix/green-baseline`,
 pushed; base `fix/current-pointer-transport` com 4 commits de walker/pointer +
 composed surfaces). Estado medido (`make check APPLY=Y`, pós-commit `ea29280b`):
 
-- Baseline: 2564 → **atual: 2492** (lint 44, pyrefly 157, mypy 25, pyright 43,
-  silent-failure 40, **namespace 1100**, codemod 1033, duplication 36,
-  loc-cap 9, boundary 2, tier-whitelist 1, markdown 2). Nota: lint/pyrefly/
+- Baseline: 2564 → **atual: 2467** (lint 42, pyrefly 146, mypy 16, pyright 40,
+  silent-failure 40, markdown 2, loc-cap 9, boundary 2, tier-whitelist 1,
+  namespace 1100, codemod 1033, duplication 36) — pós `d590d1cfb` (docs, permission, DI). Nota: lint/pyrefly/
   mypy/pyright subiram porque código novo (protocolos + helpers aninhados)
   entrou no raio dos gates; namespace caiu 1122→1100 e codemod 1044→1033.
 - Corrigido acumulado (commits `151278c2e`..`ea29280b`):
