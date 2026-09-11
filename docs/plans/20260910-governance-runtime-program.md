@@ -30,21 +30,27 @@ runtime é o único veredito.
 Worktree dedicada: `~/ai-hub-wt/green-baseline` (base fix/current-pointer-transport,
 4 commits de walker/pointer + composed surfaces). Estado medido:
 
-- Baseline: 2564 diagnósticos → atual: **2476** (lint 37, pyrefly 127, mypy 16,
-  pyright 38, silent-failure 40, namespace 1124, codemod 1044, duplication 36,
+- Baseline: 2564 diagnósticos → **atual: 2465** (lint 37, pyrefly 129, mypy 16,
+  pyright 38, silent-failure 40, namespace 1122, codemod 1033, duplication 36,
   loc-cap 9, boundary 2, tier-whitelist 1, markdown 2).
-- Corrigido: lint tail (os-sep-split, undefined names em tests quebrados
-  commitados — ForgeGovernanceGhDouble rename, imports r/m/Path, S105 stub,
-  magic 409→httpx.codes.CONFLICT, docstring __init__, too-many-statements no
-  walker via _walk_pointer_segments), reconstruct de
+- Corrigido nesta rodada: tests/utilities banned dict annotations → t.Dict (2
+  ocorrências, NS-CONTRACT-002 cleared).
+- Corrigido acumulado: lint tail (os-sep-split, undefined names em tests
+  quebrados commitados — ForgeGovernanceGhDouble rename, imports r/m/Path, S105
+  stub, magic 409→httpx.codes.CONFLICT, docstring __init__, too-many-statements
+  no walker via _walk_pointer_segments), reconstruct de
   test_aihub_forge_governance_check_context (gerações velha+nova coexistindo:
   7 duplicados módulo removidos, 5 testes mortos aninhados restaurados como
   métodos reais da classe, 4 helpers perdidos no merge do ator restaurados).
 - `make mod APPLY=Y`: 197 achados detection-only exigem reparo por dono
-  (não auto-actionable) — próximo lote.
+  (não auto-actionable) — breakdown: test-no-mock-or-patch-identifiers 102,
+  ban-test-doubles 35, hook-deploy-exception-group 12, retired-config-* 16,
+  test-import-alias-mixed-root-facade 7, recursive-type-alias 6, others 19.
 - Loop de continuação (próximas sessões): make fix → make mod → reparos por
-  classe de achado (namespace/codemod em _models, pyrefly/pyright typing via
-  t.*/p.*, silent-failure) → make check exit 0 → PR + merge --no-ff.
+  classe de achado (namespace NS-IMPORT-001/002 em 10+ arquivos, codemod
+  recursive-type-alias em _models/learning.py, pass-through-wrapper em cli.py,
+  test mock/patch elimination, ban-test-doubles) → make check exit 0 → PR +
+  merge --no-ff.
 
 ## Próximos passos (ordem)
 
