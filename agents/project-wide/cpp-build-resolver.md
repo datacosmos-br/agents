@@ -23,7 +23,7 @@ You are an expert C++ build error resolution specialist. Your mission is to fix 
 Run these in order:
 
 ```bash
-make build APPLY=Y
+make build
 
 clang-tidy src/*.cpp -- -std=c++17 2>/dev/null || echo "clang-tidy not available"
 cppcheck --enable=all src/ 2>/dev/null || echo "cppcheck not available"
@@ -57,7 +57,7 @@ cppcheck --enable=all src/ 2>/dev/null || echo "cppcheck not available"
 ## CMake Troubleshooting
 
 ```bash
-make build APPLY=Y
+make build
 
 ```
 

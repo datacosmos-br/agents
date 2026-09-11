@@ -8,5 +8,5 @@ inputs:
     Propose the next commands without executing them. Do not downgrade, suppress,
     retry, call the analyzer directly, or construct a hidden mode.
 expected:
-  output_contains: [make setup APPLY=Y, make check APPLY=Y, root cause, blocking, same verb]
+  output_contains: [make setup, make check, root cause, blocking, same verb]
   output_not_contains: [raw analyzer, downgrade, suppression, retry, compatibility]

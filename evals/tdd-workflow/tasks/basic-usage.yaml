@@ -10,4 +10,4 @@ inputs:
   files:
   - path: parser-contract.md
 expected:
-  output_contains: [parse_limit("0"), InvalidLimit, make test APPLY=Y, runtime first, causal, residue]
+  output_contains: [parse_limit("0"), InvalidLimit, make test, runtime first, causal, residue]

@@ -22,4 +22,4 @@ inputs:
   - path: mini-project/src/shop/api.py
   - path: mini-project/tests/test_orders.py
 expected:
-  output_contains: [AGENTS.md, architecture.md, PageTokenCodec, list_orders, itsdangerous, 2.2.0, YAGNI, no new SOLID boundary, simplify inline, no structural DRY, make test APPLY=Y]
+  output_contains: [AGENTS.md, architecture.md, PageTokenCodec, list_orders, itsdangerous, 2.2.0, YAGNI, no new SOLID boundary, simplify inline, no structural DRY, make test]

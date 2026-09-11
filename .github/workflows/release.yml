@@ -31,10 +31,10 @@ jobs:
             release-testmon-${{ runner.os }}-${{ hashFiles('uv.lock') }}-
             release-testmon-${{ runner.os }}-
       - name: Provision declared tools and environment
-        run: make setup APPLY=Y
+        run: make setup
       - name: Run complete runtime-first pipeline
-        run: make ci APPLY=Y
+        run: make ci
       - name: Publish validated immutable release
         env:
           GH_TOKEN: ${{ github.token }}
-        run: make publish APPLY=Y
+        run: make publish

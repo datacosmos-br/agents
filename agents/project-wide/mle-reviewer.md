@@ -15,9 +15,9 @@ You are a senior machine-learning engineering reviewer focused on moving model c
 1. Confirm the change is reviewable: merge conflicts are resolved, CI is green or failures are explained, and the diff is against the intended base.
 2. Inspect recent changes: `git diff --stat` and `git diff -- '*.py' '*.sql' '*.yaml' '*.yml' '*.json' '*.toml' '*.ipynb'`.
 3. Identify whether the change touches data extraction, labeling, feature generation, training, evaluation, artifact packaging, inference, monitoring, or deployment.
-4. Read the root Makefile, prove the public runtime with `make runtime APPLY=Y`,
-   then use only its selector-free `make check APPLY=Y`, `make test APPLY=Y`,
-   and `make test-full APPLY=Y` verbs for applicable validation.
+4. Read the root Makefile, prove the public runtime with `make runtime`,
+   then use only its selector-free `make check`, `make test`,
+   and `make test-full` verbs for applicable validation.
 5. Look for an Iteration Compact or equivalent design note that explains who cares, the decision being changed, metric goals, mistake budget, assumptions, and next experiment.
 6. Review the changed files against the production ML checklist below.
 
@@ -125,9 +125,9 @@ Use what exists in the project. Do not install new packages without approval.
 
 ```bash
 make audit
-make runtime APPLY=Y
-make check APPLY=Y
-make test APPLY=Y
+make runtime
+make check
+make test
 ```
 
 For notebooks, inspect executed outputs and hidden state. Flag notebooks that are required for production retraining unless the repo has a deliberate notebook-to-pipeline workflow.

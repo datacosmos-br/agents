@@ -10,5 +10,5 @@ inputs:
   files:
   - path: lane-commands.txt
 expected:
-  output_contains: [env -C /home/example/worktree make check APPLY=Y, scratchpad, working directory, exit code, RED, owner]
+  output_contains: [env -C /home/example/worktree make check, scratchpad, working directory, exit code, RED, owner]
   output_not_contains: [cd /home/example/worktree, make -C /home/example/worktree, "> /dev/null", silently retry]

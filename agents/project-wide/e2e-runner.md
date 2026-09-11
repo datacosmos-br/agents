@@ -42,9 +42,9 @@ agent-browser screenshot result.png
 Use the root Make owner for browser execution and reports:
 
 ```bash
-make runtime APPLY=Y
-make test APPLY=Y
-make test-full APPLY=Y
+make runtime
+make test
+make test-full
 ```
 
 ## Workflow

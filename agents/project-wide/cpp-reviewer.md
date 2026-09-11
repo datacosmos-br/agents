@@ -64,7 +64,7 @@ When invoked:
 ```bash
 clang-tidy --checks='*,-llvmlibc-*' src/*.cpp -- -std=c++17
 cppcheck --enable=all --suppress=missingIncludeSystem src/
-make build APPLY=Y
+make build
 ```
 
 ## Approval Criteria

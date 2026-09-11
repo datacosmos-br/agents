@@ -10,5 +10,5 @@ inputs:
   files:
   - path: Makefile
 expected:
-  output_contains: [make setup APPLY=Y, make check APPLY=Y, make static, make test APPLY=Y, runtime before tests, exit code]
+  output_contains: [make setup, make check, make static, make test, runtime before tests, exit code]
   output_not_contains: [python -m, uv run, direct tool, selector]

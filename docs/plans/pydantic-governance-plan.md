@@ -32,7 +32,7 @@ effort); convergence is a separate follow-on epic.
 2. **`.5` remainder**: sweep `mise.lock` from flext members (one mechanical
    lane; template confirmation). Est. **~1 h**. Can run parallel to 1.
 3. **`.3` automated migration**: run `$pydantic-boundary-audit` per repo →
-   inventory → `make mod APPLY=Y` batches → owner-side semantic fixes → gates.
+   inventory → `make mod` batches → owner-side semantic fixes → gates.
    Volume-dependent ("thousands of violations" reported): est. **6–12 h across
    2–3 sessions**, fleet-stabilization cadence (land per repo, never batch
    unreviewed).
@@ -98,13 +98,13 @@ Artifacts:
 
 Evidence (fill at completion):
 
-- [x] `make setup APPLY=Y` — exit: 0 (mise install unlocked + uv venv + sync;
+- [x] `make setup` — exit: 0 (mise install unlocked + uv venv + sync;
       unblocked by the Phase 0 mise lock extermination)
-- [x] `make fix APPLY=Y` / `make fmt APPLY=Y` — exit: 0 / 0 (24 files unchanged)
-- [x] `make check APPLY=Y` — exit: 0 (GovernanceBundle.load: 121 skills incl.
+- [x] `make fix` / `make fmt` — exit: 0 / 0 (24 files unchanged)
+- [x] `make check` — exit: 0 (GovernanceBundle.load: 121 skills incl.
       pydantic-development; waza: 121 suites, 0 MISS; installed wheel proof
       `ARTIFACT 0.4.0 … 121`)
-- [x] `make test APPLY=Y` — exit: 0 (typed incremental testmon cache hit:
+- [x] `make test` — exit: 0 (typed incremental testmon cache hit:
       4/4 deselected, integrity=ok, complete deselection accounting, warnings=0)
 - [x] Runtime proof (bundle load / audit command load) — exit: 0 (check `audit`
       stage; command catalogued: 12 commands incl. pydantic-boundary-audit)
@@ -172,7 +172,7 @@ Beads (filed in the workspace `bd`):
   `ban-ai-hub-crg-library-boundary.yml`) for the anti-catalog; assess adding
   enforcement catalog rows where runtime detection already exists.
 - (D) `flext-vjj1s.3` — Automated migration: inventory via
-  `commands/inspection/pydantic-boundary-audit`, then `make mod APPLY=Y`
+  `commands/inspection/pydantic-boundary-audit`, then `make mod`
   (ast-grep + Rope + LSP) per repository. Known targets: `model_construct()`
   in `flext-infra/src/flext_infra/deps/toml_phase.py` and
   `flext-ldif/src/flext_ldif/_models/results.py`; diffuse `SkipValidation`
@@ -182,7 +182,7 @@ Beads (filed in the workspace `bd`):
 - (E) `flext-vjj1s.4` — Superproject law pointers (Phase 3 scope).
 
 Migration loop (per repository, one bead lane at a time):
-audit → detect (ast-grep) → rewire (`make mod APPLY=Y`) → gates → runtime
+audit → detect (ast-grep) → rewire (`make mod`) → gates → runtime
 proof → land on integration → retire lane.
 
 ## Phase 5 — mise.lock regime extermination

@@ -1,7 +1,7 @@
 ---
 description: A gate count is only comparable under one validator SHA plus one config
 metadata:
-  aihub.tags: '["effective:2026-09-11","route:both"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-09-11","route:both"]'
 ---
 
 # Freeze the ruler before comparing gate counts

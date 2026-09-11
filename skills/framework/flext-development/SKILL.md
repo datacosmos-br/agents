@@ -29,3 +29,22 @@ real public runtime, and run every affected native gate.
 
 The procedure owns the exact Python 3.13, Pydantic 2, facet, layer, and explicit
 composition-root contract.
+
+## Landing law delta (evidence 2026-09-11, plan `docs/plans/2026-09-11-flext-conformance-sweep.md`)
+
+- "Go to the end" under operator pressure NEVER licenses skipping the landing
+  flow: bead -> scoped mutation -> native gates -> lane branch -> PR -> review ->
+  `--no-ff` merge -> gates rerun on the merged SHA. Direct fast-forward push to
+  an integration branch is a recorded governance violation, not a speedup.
+- Never discard (reset/rewrite) public history without a bead that inventories
+  every hunk first; re-derive lost SSOT surgery hunk-by-hunk before declaring
+  the discard complete.
+- Pre-push guard for generated surfaces: `make gen APPLY=Y && make gen APPLY=Y`
+  must produce byte-identical trees; only push on doubled idempotency. A
+  fixed-point failure is a P0 product defect (scaffolder SLA), never "out of
+  scope" cleanup residue. Owner of this contract: ADR-010 §Verification
+  contract (item 1, byte-idempotent ×2); this skill restates it for the
+  pressure case, it does not re-invent it.
+- After any mutation that touches the CI surface (Makefile.j2, workflow
+  templates, pre-commit), re-run `pre-commit run --all-files` once to prove hook
+  liveness against the regenerated tokens.

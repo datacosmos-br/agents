@@ -1,7 +1,7 @@
 ---
 description: Mutação consumer-facing gates on a decision; discovery work never does
 metadata:
-  aihub.tags: '["effective:2026-09-11","route:both"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-09-11","route:both"]'
 ---
 
 # Discovery never blocks; mutation does

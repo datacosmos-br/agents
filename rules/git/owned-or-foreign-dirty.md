@@ -1,7 +1,7 @@
 ---
 description: Partition every modified file as owned or foreign before staging
 metadata:
-  aihub.tags: '["effective:2026-09-11","route:both"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-09-11","route:both"]'
 ---
 
 # Owned or foreign: no dirty file is ever silent

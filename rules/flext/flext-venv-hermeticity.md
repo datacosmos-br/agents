@@ -1,7 +1,7 @@
 ---
 description: Python CLI tooling must run in a hermetic venv resolved from the target lock
 metadata:
-  aihub.tags: '["effective:2026-09-11","route:both"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-09-11","route:both"]'
 ---
 
 # Hermetic venv for multi-worktree Python tooling

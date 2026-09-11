@@ -24,19 +24,19 @@ Run these in order:
 
 ```bash
 make audit
-make check APPLY=Y
-make build APPLY=Y
+make check
+make build
 ```
 
 ## Resolution Workflow
 
 ```text
-1. make check APPLY=Y -> Parse the causal diagnostic
+1. make check -> Parse the causal diagnostic
 2. Read affected file -> Understand context
 3. Apply minimal fix  -> Only what's needed
-4. make check APPLY=Y -> Verify fix and warnings
-5. make build APPLY=Y -> Verify the artifact
-6. make test APPLY=Y  -> Ensure nothing broke
+4. make check -> Verify fix and warnings
+5. make build -> Verify the artifact
+6. make test  -> Ensure nothing broke
 ```
 
 ## Common Fix Patterns
@@ -58,7 +58,7 @@ make build APPLY=Y
 
 ```bash
 grep "replace" go.mod              # Check local replaces
-make build APPLY=Y
+make build
 go get package@v1.2.3              # Pin specific version
 go clean -modcache && go mod download  # Fix checksum issues
 ```

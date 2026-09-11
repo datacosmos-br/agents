@@ -31,9 +31,9 @@ Chain: R1 charts package+receipt → R2 GitOps import+render → Argo CD `dc-des
 only → soak 30 min (single window) → cleanup. `develop` is the sole integration
 branch; `main`/`dc-prod`/`dc-control` receive no effect without operator order.
 
-- Canonical surface: root `make setup|deps|gen|check|test|fix|fmt APPLY=Y`
+- Canonical surface: root `make setup|deps|gen|check|test|fix|fmt`
   only; never invented selectors or raw linters; testmon always via
-  `make test APPLY=Y`.
+  `make test`.
 - Receipts live in the project tracker; read the current release/import
   receipts from the tracker at activation (commit, package version, OCI
   digest); version drift between charts/GitOps is a blocker, never an accepted

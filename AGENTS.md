@@ -38,7 +38,7 @@
 
 # AGENTS.md — agents
 
-> Packaged governance `agents-governance` `0.5.0` owns the capability indexes: 66 agents, 66 rules, 128 skills. Consume them through `GovernanceBundle`; do not copy their bodies here.
+> Packaged governance `agents-governance` `0.3.0` owns the capability indexes: 62 agents, 50 rules, 102 skills. Consume them through `GovernanceBundle`; do not copy their bodies here.
 
 <!-- AIHUB-AGENTS-SCOPE-LOCAL-BEGIN -->
 This repository is the single writable authority for provider-neutral rules,
@@ -65,7 +65,7 @@ and reconciles runtime state.
 
 Read [README.md](README.md), [rules](rules), [skills](skills), and
 [ADRs](docs/adr/README.md) before mutation. Use only selector-free root Make
-verbs and run `make setup APPLY=Y` before development gates. `setup`, `fix`,
+verbs and run `make setup` before development gates. `setup`, `fix`,
 `fmt`, `check`, and every test verb require exactly `APPLY=Y`; raw-tool and
 inline substitutes are prohibited.
 

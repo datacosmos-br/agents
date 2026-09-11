@@ -8,5 +8,5 @@ duplication_report:
       lines: 18-28
       behavior: normalize and hash an invoice identifier
 consumers: [issue_receipt, issue_refund]
-canonical_gate: make duplication APPLY=Y
-behavioral_gate: make test APPLY=Y
+canonical_gate: make duplication
+behavioral_gate: make test

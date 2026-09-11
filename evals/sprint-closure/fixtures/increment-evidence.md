@@ -1,7 +1,7 @@
 # Increment evidence
 
 - Integration SHA: `7ac912e` on `dev`.
-- Runtime: `make check APPLY=Y`, exit 0, installed public API validated.
+- Runtime: `make check`, exit 0, installed public API validated.
 - Native gates: exit 0, zero warnings.
 - External-token gates: unavailable before selection and recorded as `NOT
   EXECUTED`; no scanner or live-semantic green claim is made.

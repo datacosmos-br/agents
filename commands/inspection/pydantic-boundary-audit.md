@@ -26,7 +26,7 @@ scopes) to audit. Read-only: this command never edits files.
    after model validators; `TypedDict`/`dict` used as public contracts;
    `os.environ` access or copied config/settings values in leaf modules.
 3. For each finding report: file:line, violation class, proposed owner-correct
-   replacement, and whether `make mod APPLY=Y` (ast-grep/Rope) can rewire it
+   replacement, and whether `make mod` (ast-grep/Rope) can rewire it
    mechanically or a semantic owner fix is required.
 4. Classify the result: counts per violation class, mechanical vs semantic
    split, and the ordered migration queue. Missing detection for a class is a

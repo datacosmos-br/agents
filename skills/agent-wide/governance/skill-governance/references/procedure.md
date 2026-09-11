@@ -96,8 +96,8 @@ roles as one atomic bundle change. Do not publish a router with partial evals.
 
 ## Validation
 
-Run `make runtime APPLY=Y` to validate the installed bundle, then
-`make check APPLY=Y`, `make test APPLY=Y`, and `make test-full APPLY=Y`. The
+Run `make runtime` to validate the installed bundle, then
+`make check`, `make test`, and `make test-full`. The
 official Waza spec verifier is part of the check owner and validates every
 projected skill/evaluation pair offline at the exact threshold. Any advisory or
 warning is a failed validation; live model execution remains an AI Hub concern. Never invoke

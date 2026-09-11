@@ -122,9 +122,9 @@ When invoked:
 ## Diagnostic Commands
 
 ```bash
-make runtime APPLY=Y
-make check APPLY=Y
-make test APPLY=Y
+make runtime
+make check
+make test
 ```
 
 ## Review Output and Approval

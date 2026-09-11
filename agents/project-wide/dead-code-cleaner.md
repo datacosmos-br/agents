@@ -21,7 +21,7 @@ You are an expert refactoring specialist focused on code cleanup and consolidati
 
 ```bash
 make audit
-make check APPLY=Y
+make check
 ```
 
 ## Workflow

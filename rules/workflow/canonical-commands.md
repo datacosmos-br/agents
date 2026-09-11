@@ -31,7 +31,7 @@ Git-aware owner. It does not disable language caches, delete ignored caches in
 ordinary flows, bypass standard ignores, or maintain a parallel artifact list.
 
 Before a non-trivial refactor, use the repository's declared structural
-capabilities. Repeated wiring changes execute through `make mod APPLY=Y` and
+capabilities. Repeated wiring changes execute through `make mod` and
 tested ast-grep rules; manual file-by-file rewiring is forbidden. When the host
 runtime has selected CRG or LSP, its public command/hook/MCP resolves symbols,
 relationships, consumers, definitions, and references. A portable library must

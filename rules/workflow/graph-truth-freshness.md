@@ -1,7 +1,7 @@
 ---
 description: Refresh code-review-graph before trusting impact or dead-code data
 metadata:
-  aihub.tags: '["effective:2026-09-11","route:both"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-09-11","route:both"]'
 ---
 
 # A stale graph is worse than no graph
