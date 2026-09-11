@@ -69,6 +69,103 @@ composed surfaces). Estado medido (`make check APPLY=Y`, pós-commit `ea29280b`)
   typing pyrefly/pyright via `t.*/p.*`) → `make check` exit 0 → `make test`
   verde (testmon) → PR + merge `--no-ff` no dev do ai-hub.
 
+## Autocrítica (2026-09-11, pós-revisão do operador)
+
+Defeitos cometidos e corrigidos nesta lane — cada um com lei violada e
+correção de raiz executada:
+
+1. **Código sem prova.** O protocolo `GovernanceBundle` foi estendido e
+   `p.AiHub.GovernanceBundle.snapshot()` chamado dentro de `prelude()` sem
+   rodar gate algum. Protocol não tem implementação: a chamada retornaria
+   `None` e quebraria o validator em runtime. Lei violada: gates após cada
+   passo material. Correção de raiz: base pura com fail-loud de composição,
+   `AiHubAgentLawSurface.prelude()` compõe o bundle concreto no composition
+   root (`validate_agent_law_surface.py`), protocolo revisto ao mínimo (YAGNI).
+   Prova: `.venv/bin/python -c "…prelude()"` → `prelude ok: True`, marker
+   `<!-- AIHUB-INVIOLABLE-LAW-PRELUDE -->` correto (exit 0).
+2. **Contaminação estrutural de teste.** Reconstrução do
+   `test_aihub_forge_governance_check_context` apagou helpers vivos e deixou
+   código morto pós-return em `_plan` (arquivo permission), sem `nameWithOwner`
+   no cenário do double → falha de identidade em `TestAdminPermissionGate`.
+   Correção de raiz: cenário funde payload de permissões com linha de
+   identidade (`nameWithOwner`), bloco morto removido. Prova: 6 passed no foco
+   (`pytest …forge_governance_permission.py`, exit 0).
+3. **Docs citando seletores aposentados.** 12 docs citavam `make … WHAT=…`
+   que nenhum dono declara (fail-closed do doc-vs-Make contract). 2 falhas
+   estavam em blocos de código sem crase e escaparam à primeira passada —
+   redisciplina: rodar o gate após CADA onda, não ao final. Correção mecanica
+   por dono: verbos selector-free (`check/test/gen/fix/mod/duplication/deps
+   APPLY=Y`, `make help`) + CLI owners reais (`ai-hub validate-agents`,
+   `validate-references`, `validate-mcp-routing`, `workspace-discovery --audit`);
+   citação do único dono custom vivo restaurada (`make status WHAT=daemon`).
+   Prova: docs_make_verbs 9 passed (exit 0), testmon 62 passed / 2 failed
+   externos.
+4. **Medição enganosa.** 2465→2492 durante a rodada anterior: código novo
+   entrou no raio dos gates sem medição; namespace caiu mas o TOTAL subiu, e
+   a narrativa só reportou a queda. Lei violada: verdade escopada. Correção:
+   burn-down por CLASSE (namespace, codemod, pyrefly, …) é a métrica; total é
+   secundário; toda adição de código roda `make fix → check → test` na hora.
+5. **Dois RED externos no testmon (adopted, donos roteados):**
+   `tests/e2e/test_aihub_deployed_services_match_declaration` — unidade
+   deployed inativa nesta máquina (surface do ator paralelo / lane
+   model-pipeline; não invadir — vê plano linha 5);
+   `hook_rules_engine TestsOperatorBudget[git status && pytest -q]` — orçamento
+   de operador no guard (dono: config de hooks; bead a abrir quando fechar a
+   cadeia verde, com medição com/sem diff como prova de pré-existência).
+
+## Regime de produção — definição de "green" e "done"
+
+A lane só pousa num estado que sobreviva a produção. Tradução operacional:
+
+- **Devolução implícita de falha proibida**: nenhum catch/normalize/fallback/
+  retry silencioso (silent-failure gate zerado), primeiro traceback escapa.
+- **Contratos tipados**: Pydantic-2 nas bordas; sem `Any`/`object`/`Optional`/
+  `dict` em contratos públicos e DI (namespace/codemod zerados); tudo via
+  `t.*/p.*`.
+- **Owners únicos**: sem alias local, sem redeclaração, sem reverse runtime
+  import (services só tocam services via `p.AiHub.*` injetado no composition
+  root — padrão já provado em `validate_agent_law_surface.py`).
+- **Testes = comportamento**: zero mock/patch identifiers (102 achados são
+  tests contra doubles aprovados — migrar para `ForgeGovernanceGhDouble`,
+  fixtures canônicas); testmon integrity sempre verde; zero-execução só como
+  cache-hit tipado com accounting completo.
+- **Docs vivos**: toda citação de comando em docs resolve a um handler
+  declarado (docs_make_verbs verde) — provado nesta rodada.
+- **Runtime como única verdade**: após merge, deploy atômico em modo recovery
+  (`systemd-run --user -p LoadCredentialEncrypted=…`, segredo nunca em env),
+  receipt assinado no home, setInterval de ativação probeável, e a sonda F3
+  sessão-real conclui a cadeia.
+
+## Sequência de execução (estabilizada e por que nesta ordem)
+
+| # | Passo | Definition of done (comando + exit + output decisivo) |
+|---|-------|--------|
+| 1 | Absorver `origin/dev` na lane (`git merge --no-ff origin/dev`), rezolver conflitos favorando o mais novo, re-medir | merge exit 0; `make check` medido pós-merge |
+| 2 | Corrigir `silent-failure` (40) no código de produção — primeiro traceback deve escapar | `make check` silent-failure=0 |
+| 3 | Namespace classe-a-classe (1100): reverse imports → DI no composition root; locals → facade; top-level fns → métodos da classe do módulo | namespace=0 |
+| 4 | Codemod: `recursive-type-alias` em `_models/*` → alias finito `t.JsonValue`/`t.JsonMapping`; `pass-through-wrapper` deletion; rewire consumers | codemod=0, `make mod` 0 actionable |
+| 5 | Testes: migrar 102 mock/patch + 35 test-doubles para os doubles/fixes aprovados; 2 RED externos adotados (beads com evidência com/sem diff) | `make test` exit 0 |
+| 6 | Pyrefly/pyright/mypy/lint/duplication/loc-cap restantes | all=0; `make check` exit 0 |
+| 7 | PR + merge `--no-ff` no dev do ai-hub; rerun dos gates no SHA merged; deploy atômico recovery com credencial encriptada; receipt + probe de ativação | receipt no home; `ai-hub validate-agents` exit 0 |
+| 8 | `agentsctl` (ag-7hz): transacional, idempotente, receipt-first, rollback documentado — `sync` único comando | `agentsctl sync` converte homes ≥0.5.0 |
+| 9 | Sonda R1 então F3 (ag-zrh.4): sessão opencode real | marker/versão == bundle; zero markerless; `python-production` inexistente |
+| 10 | Pouso no `agents` dev + fechamento ag-zrh.2/3/4 + épico com 4 fontes; lanes e worktrees aposentadas | merges `--no-ff`; `merge-base --is-ancestor` exit 0; resíduo zero |
+
+## Riscos de produção e mitigação
+
+- **Divergência lane vs dev (ai-hub)**: ator paralelo pousou ADR-0019/0020 +
+  version 0.5.0 no dev. Todo dia sem absorção aumenta o merge. Mitigação:
+  passo 1 logo na próxima sessão, e re-absorção contínua durante o grind.
+- **Registry poluído em PRODUÇÃO** (`workspaces.json` com checkout-0..7):
+  podrado, mas o bug de isolamento do workspace-discovery segue aberto (bead
+  próprio) — re-polução em qualquer rodada de teste é regression de produção.
+- **Deploy parcial**: deploy é transação; só materializar com candidate_root
+  validado + acceptance nativa; nunca publicar em duas ondas.
+- **Credencial**: exclusivo `LoadCredentialEncrypted` (nunca env) — já
+  provado; obrigatório no passo 7.
+- **Beads DB por sessão**: `env -u BEADS_DOLT_SERVER_DATABASE` ao tocar beads
+  de projeto alheio (lição de fleet 2026-09-08).
+
 ## Revisão consolidada — Feito vs Falta
 
 ### Feito (com evidência)
