@@ -1,0 +1,11 @@
+id: runtime-skew-triage-version-proof-001
+name: Prove both skew sides
+description: Publisher and installed versions must both be measured, never guessed.
+tags: [runtime, skew, happy-path]
+inputs:
+  prompt: |-
+    |-
+    Triage a reported runtime skew: measure the publisher release and the installed binary, compare against the running service state, attribute the skew to its owner, and prescribe a lockstep recovery with post-repair evidence.
+expected:
+  output_contains: [publisher, installed, running, owner, lockstep, evidence]
+  output_not_contains: [guess, assume]

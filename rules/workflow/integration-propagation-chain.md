@@ -1,7 +1,7 @@
 ---
 description: end-to-end propagation chain from integration branch to production pilot
 metadata:
-  aihub.tags: '["decision:ADR-0008","decision:ADR-0028","effective:2026-09-11","route:personal"]'
+  aihub.tags: '["decision:ADR-0019","effective:2026-09-11","route:personal"]'
 ---
 
 # Integration propagation chain: no pilot without every hop proven

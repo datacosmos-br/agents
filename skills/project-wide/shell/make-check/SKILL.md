@@ -50,7 +50,7 @@ codegen owner and rerun the same root verb.
   — run `code-review-graph update` first and record the built-at commit.
 - Mechanical rewrite order per unit: crg map -> `make mod` detect/apply
   (cwd-scoped; rules SSOT `flext-infra/codemod/rules/` +
-  `~/agents/ast-grep-rules/universal/`) -> `make gen` (projection
+  the agent ast-grep universal rules archive) -> `make gen` (projection
   convergence) -> `make check` -> `make test`. Never bypass `make mod`
   with raw `sg`/ast-grep invocations; inline scan rules belong in the rules
   SSOT with a snapshot test, not ad-hoc command lines.

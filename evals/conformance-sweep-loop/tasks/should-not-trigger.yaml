@@ -1,0 +1,11 @@
+id: conformance-sweep-loop-clean-repo-003
+name: Clean repository needs no loop
+description: No findings means no sweep loop may start or mutate anything.
+tags: [conformance, sweep, non-trigger]
+inputs:
+  prompt: |-
+    |-
+    The measured repository reports zero conformance findings. State that no sweep loop is needed, perform no repairs, and record the clean measurement as the only evidence.
+expected:
+  output_contains: [zero findings, no loop]
+  output_not_contains: [repair, mutate]

@@ -1,0 +1,11 @@
+id: runtime-skew-triage-partial-proof-002
+name: Single-sided proof is rejected
+description: One-sided version proof cannot close a skew diagnosis.
+tags: [runtime, skew, failure]
+inputs:
+  prompt: |-
+    |-
+    A diagnosis cites only the publisher tag while the installed binary is unmeasured. Reject the diagnosis as partial, require the missing runtime measurement, and keep the skew open until both sides and the live service agree.
+expected:
+  output_contains: [partial, rejected, installed, open]
+  output_not_contains: [closed, resolved]

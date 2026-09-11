@@ -1,0 +1,11 @@
+id: flext-gates-as-products-non-gate-003
+name: Non-gate change skips gate products
+description: Changes outside gate surfaces must not touch gate products.
+tags: [flext, gates, non-trigger]
+inputs:
+  prompt: |-
+    |-
+    A documentation-only change touches no gate surface. State that gate products and budget rows are unaffected and make no gate or projection mutations.
+expected:
+  output_contains: [unaffected, no gate mutation]
+  output_not_contains: [budget row, regenerate]

@@ -1,6 +1,6 @@
 ---
 name: runtime-skew-triage
-description: 'binary/publisher version-skew triage, systemd runtime proof, CAS race diagnosis'
+description: 'binary/publisher version-skew triage, systemd runtime proof, cas race diagnosis'
 license: MIT
 metadata:
   aihub.tags: '["decision:ADR-0008","effective:2026-09-11","usage:router"]'

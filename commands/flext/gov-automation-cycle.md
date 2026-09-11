@@ -1,7 +1,8 @@
 ---
-description: Run a FLEXT program slice through the canonical gen→mod→gates→crg-evidence→landing cycle
+name: gov-automation-cycle
+description: Run a FLEXT program slice through the canonical gen→mod→gates→crg-evidence→landing cycle.
 metadata:
-  aihub.tags: '["effective:2026-09-11","route:both"]'
+  aihub.tags: '["decision:ADR-0020","effective:2026-09-11","route:agent"]'
 ---
 
 # FLEXT Program Automation Cycle

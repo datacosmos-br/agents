@@ -1,7 +1,8 @@
 ---
-description: Triage a daemon/binary publication chain failure with version-skew and runtime proof
+name: triage-runtime-skew
+description: Triage a daemon/binary publication chain failure with version-skew and runtime proof.
 metadata:
-  aihub.tags: '["effective:2026-09-11","route:personal"]'
+  aihub.tags: '["decision:ADR-0010","effective:2026-09-11","route:agent"]'
 ---
 
 # runtime-skew-triage

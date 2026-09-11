@@ -1,9 +1,9 @@
 ---
 name: flext-gates-as-products
-description: 'flext gates-as-products: budget rows, registry-derived vocabularies, atomic primitives, converged config keys'
+description: 'flext gates-as-products, budget rows, registry vocabularies, atomic primitives, config keys'
 license: canonical flext law
 metadata:
-  aihub.tags: '["activation:detected","decision:ADR-015","detect:dependency:python:flext-infra","detect:selected-tag:flext","effective:2026-09-11","route:project","subject:flext","usage:on-demand"]'
+  aihub.tags: '["activation:detected","decision:ADR-0015","detect:dependency:python:flext-infra","detect:selected-tag:flext","effective:2026-09-11","route:project","subject:flext","usage:on-demand"]'
 ---
 
 # FLEXT Gates as Products
@@ -26,7 +26,7 @@ Composes with `$flext-law`, `consumption-law.md` (ADR-015) and rule
   constants may seed defaults, but hand-edited per-consumer values route
   through the config projection (`make gen`, fixed point proven).
 - Rollout: new strict gates start advisory (warn) for one cycle, then hard
-  (operator stabilization law 2026-09-08); baselines of findings are beads
+  (operator stabilization law 2026-09-08); baselines of findings are tracker
   evidence, never committed fixtures.
 
 ## Atomic primitives (core `u` ownership)
@@ -64,12 +64,12 @@ FLEXT program work runs this loop per slice; never ad-hoc tool calls.
    `--namespace <c|m|p|t|u…>` instead of fleet-wide scans.
 3. Cycle hygiene: `make fix` → `make fmt` → gates
    (`make check`) → `make test` (scoped, canonical testmon).
-4. Graph evidence via the ai-hub CLI `code-review-graph` (agent-side tool;
-   flext code never imports it — rule `ban-ai-hub-crg-library-boundary.yml`):
+4. Graph evidence via the project CLI `code-review-graph` (agent-side tool;
+   flext code never imports it — the CRG library-boundary ban rule):
    - `code-review-graph build` once per lane/repo (doctor reports critical
      until a graph exists); incremental `update --brief` after commits.
    - `detect-changes` / `impact <symbol>` = blast-radius evidence attached
-     to beads and PR reviews.
+     to tracker items and PR reviews.
    - `dead-code` per member feeds R2 zero-residue sweeps (YAGNI proof).
    - `refactor suggest/rename --kind Function|Class` previews
      graph-backed refactors before `make mod` or Rope executes them.
@@ -83,7 +83,8 @@ FLEXT program work runs this loop per slice; never ad-hoc tool calls.
 Rule archives (never hand-invent a new authority):
 - Repository rules: `flext-infra/src/flext_infra/codemod/rules/*.yml`
   (100+ curated; ADR-014 governs).
-- Agent-global rules: `~/.agents/ast-grep-rules/universal/` via
-  `~/.agents/sgconfig.yml` (`ast-grep scan --config ~/.agents/sgconfig.yml`)
+- Agent-global rules: the ast-grep universal rules archive under the agent
+  home rules directory, wired through the agent `sgconfig.yml`
+  (`ast-grep scan --config <agent sgconfig>`)
   — for cross-repo agent-side artifacts only; repository law stays in the
   repo engine.

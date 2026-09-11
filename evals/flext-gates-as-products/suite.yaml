@@ -1,0 +1,7 @@
+description: Flext gates as products, budget rows, atomic gate primitives.
+prompt: |-
+  Grade the flext-gates-as-products response. Pass only when it treats each
+  gate as an owned product with budget rows derived from the registry,
+  atomic primitives, converged config keys, and projections regenerated at
+  a proven fixed point. Reject hardcoded budgets, orphan gate rows,
+  hand-edited projections, or gates without a declared owner.

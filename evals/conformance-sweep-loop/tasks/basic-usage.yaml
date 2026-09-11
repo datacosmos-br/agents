@@ -1,0 +1,11 @@
+id: conformance-sweep-loop-class-wave-001
+name: Sweep findings by class
+description: Exercise gate-class inventory, owner mapping, and wave repair.
+tags: [conformance, sweep, happy-path]
+inputs:
+  prompt: |-
+    |-
+    Run a conformance sweep loop over the measured findings: inventory by gate and class, map each class to its owning rule or codemod, repair wave by wave, revalidate after each wave, and close with a loop receipt only at zero residue.
+expected:
+  output_contains: [inventory, class, owner, wave, revalidate, zero residue, receipt]
+  output_not_contains: [hardcoded class list, skipped revalidation]

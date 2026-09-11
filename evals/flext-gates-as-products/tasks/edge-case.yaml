@@ -1,0 +1,11 @@
+id: flext-gates-as-products-orphan-row-002
+name: Orphan budget row is red
+description: A budget row without a registry entry must fail loudly.
+tags: [flext, gates, failure]
+inputs:
+  prompt: |-
+    |-
+    A projection carries a budget row whose registry entry is missing. Diagnose the divergence as a hard error, refuse the projection, and repair at the config owner before regenerating to a proven fixed point.
+expected:
+  output_contains: [orphan, divergence, hard error, config owner]
+  output_not_contains: [delete row silently, ignore]
