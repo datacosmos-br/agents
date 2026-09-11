@@ -27,30 +27,89 @@ runtime é o único veredito.
 
 ## Fase 1 em execução — Verde obrigatório ai-hub (lane fix/green-baseline)
 
-Worktree dedicada: `~/ai-hub-wt/green-baseline` (base fix/current-pointer-transport,
-4 commits de walker/pointer + composed surfaces). Estado medido:
+Worktree dedicada: `~/ai-hub-wt/green-baseline` (branch `fix/green-baseline`,
+pushed; base `fix/current-pointer-transport` com 4 commits de walker/pointer +
+composed surfaces). Estado medido (`make check APPLY=Y`, pós-commit `ea29280b`):
 
-- Baseline: 2564 diagnósticos → **atual: 2465** (lint 37, pyrefly 129, mypy 16,
-  pyright 38, silent-failure 40, namespace 1122, codemod 1033, duplication 36,
-  loc-cap 9, boundary 2, tier-whitelist 1, markdown 2).
-- Corrigido nesta rodada: tests/utilities banned dict annotations → t.Dict (2
-  ocorrências, NS-CONTRACT-002 cleared).
-- Corrigido acumulado: lint tail (os-sep-split, undefined names em tests
-  quebrados commitados — ForgeGovernanceGhDouble rename, imports r/m/Path, S105
-  stub, magic 409→httpx.codes.CONFLICT, docstring __init__, too-many-statements
-  no walker via _walk_pointer_segments), reconstruct de
-  test_aihub_forge_governance_check_context (gerações velha+nova coexistindo:
-  7 duplicados módulo removidos, 5 testes mortos aninhados restaurados como
-  métodos reais da classe, 4 helpers perdidos no merge do ator restaurados).
-- `make mod`: 197 achados detection-only exigem reparo por dono
-  (não auto-actionable) — breakdown: test-no-mock-or-patch-identifiers 102,
+- Baseline: 2564 → **atual: 2492** (lint 44, pyrefly 157, mypy 25, pyright 43,
+  silent-failure 40, **namespace 1100**, codemod 1033, duplication 36,
+  loc-cap 9, boundary 2, tier-whitelist 1, markdown 2). Nota: lint/pyrefly/
+  mypy/pyright subiram porque código novo (protocolos + helpers aninhados)
+  entrou no raio dos gates; namespace caiu 1122→1100 e codemod 1044→1033.
+- Corrigido acumulado (commits `151278c2e`..`ea29280b`):
+  - lint tail: os-sep-split → `PurePosixPath.parts`, undefined names em tests
+    quebrados commitados (`ForgeGovernanceGhDouble` rename, imports r/m/Path,
+    S105 stub, magic 409→`httpx.codes.CONFLICT`, docstring `__init__`,
+    too-many-statements no walker via `_walk_pointer_segments`);
+  - `tests/utilities.py`: 2 anotações `dict` → `t.Dict` (NS-CONTRACT-002);
+  - reconstruct de `test_aihub_forge_governance_check_context` (7 duplicados
+    módulo removidos, 5 testes mortos aninhados restaurados como métodos
+    reais da classe, 4 helpers perdidos no merge do ator restaurados);
+  - namespace −22: helpers top-level aninhados em classes em 6 test files
+    (`workspace_git`, `workspace_reconcile`, `workspace_state_governance`,
+    `workspace_state_ledger_demote`, `write_lock`, `zai_stdio_child_env`);
+  - protocolo novo `p.AiHub.ForgeRouting` (`_protocols/forge.py`) + protocolo
+    `GovernanceBundle` estendido com `snapshot()`; `_validate_agent_law_surface/
+    base.py` e bases de forge sem reverse import de serviço concreto.
+- `make mod APPLY=Y`: 197 achados detection-only (0 actionable) exigem reparo
+  por dono — breakdown: test-no-mock-or-patch-identifiers 102,
   ban-test-doubles 35, hook-deploy-exception-group 12, retired-config-* 16,
-  test-import-alias-mixed-root-facade 7, recursive-type-alias 6, others 19.
-- Loop de continuação (próximas sessões): make fix → make mod → reparos por
-  classe de achado (namespace NS-IMPORT-001/002 em 10+ arquivos, codemod
-  recursive-type-alias em _models/learning.py, pass-through-wrapper em cli.py,
-  test mock/patch elimination, ban-test-doubles) → make check exit 0 → PR +
-  merge --no-ff.
+  test-import-alias-mixed-root-facade 7, recursive-type-alias 6
+  (`_models/learning.py:11`), ban-pass-through-wrapper 1 (`cli.py:118`),
+  outros 19.
+- Restante namespace (1100): NS-STRUCT-003/004 top-level functions em ~9 test
+  files + `scripts/` + `_credential_source.py` + `_models/`; facade MRO de
+  `tests/utilities.py` (NS-STRUCT-003); reverse imports em `tests/utilities.py`
+  (NS-IMPORT-001/002) e `services/_forge_governance|_forge_operations/base.py`
+  (consolidar para `p.AiHub.ForgeRouting`); local aliases NS-IMPORT-001 em 2
+  test files.
+- Loop de continuação (próximas sessões): make fix → make mod → reparo por
+  classe (namespace restante; codemod recursive-type-alias; eliminação de
+  mock/patch nos 102; doubles aprovados nos 35; retired-config rewire nos 16;
+  typing pyrefly/pyright via `t.*/p.*`) → `make check` exit 0 → `make test`
+  verde (testmon) → PR + merge `--no-ff` no dev do ai-hub.
+
+## Revisão consolidada — Feito vs Falta
+
+### Feito (com evidência)
+
+1. **Base de governance**: lane reval250909 pousada (PR #133, merge `ab27a954`);
+   tracker reval fechado com 4 fontes; épico ag-zrh + filhos criados.
+2. **F0 inventário** (ag-zrh.1 DONE): causa raiz do runtime provada
+   (`~/.agents` symlink → checkout vivo), homes inventariados, contrato de
+   contagem quebrado documentado.
+3. **F2 corte temático** (ag-zrh.3, código completo): python-production
+   absorvida em `rules/python.md`; cópias estrangeiras aposentadas; contrato
+   66/63/128 em AGENTS.md; gates `gen`×2 fixed point, `audit`, `waza` 128/128,
+   `check` exit 0 (commits `d68e2d8a`, `56fcebdc`, `0f7084fd`).
+4. **F1 cadeia ai-hub**: packaging CORRIGIDO (PR #734, merge `89294582e`);
+   renderer opencode CORRIGIDO (lane `fix/opencode-renderer-stale-socket-gate`);
+   registry poluído PODRADO + bug de isolamento registrado; classificação por
+   detecção CORRIGIDA.
+5. **Walker/pointer fix** (ag-ey2k, em `fix/green-baseline`): travessia
+   validada de ponteiros, comparação pointer-aware, sweep de órfãos, stderr do
+   systemd como evidência — deploy chega à ativação.
+6. **Verde obrigatório iniciado**: 2564→2492 diagnósticos; reconstrução de
+   teste quebrado; protocolos `ForgeRouting`/`GovernanceBundle`; namespace −22.
+
+### Falta (bloqueios e ordem)
+
+1. **Verde ai-hub completo** (bloqueio raiz): 2492 → 0 por classe de achado
+   (namespace 1100, codemod 1033, pyrefly 157, pyright 43, lint 44,
+   silent-failure 40, mypy 25, duplication 36, loc-cap 9, boundary 2,
+   tier-whitelist 1, markdown 2). Só após: PR + merge `--no-ff` no dev.
+2. **Absorção provider** (ag-zrh.2, WS-C): implementar absorção automática de
+   instruções provider não-gerenciadas na transação de deploy.
+3. **agentsctl** (ag-7hz, P0): pacote novo com `sync` como comando único de
+   ciclo de vida (bundle → projeções → homes → ativação → validate-agents).
+4. **Sonda R1**: marker/versão runtime == bundle publicado; zero markerless;
+   agents distribuídos nos homes.
+5. **F3 prova produtiva** (ag-zrh.4): sessão opencode nova real — skill dona
+   carrega texto canônico na versão atual, `python-production` inexistente.
+6. **Pouso e fechamento**: merge do programa no `agents` dev; fechamento
+   ag-zrh.2/3/4 + épico com quatro fontes; lanes aposentadas (resíduo zero).
+7. **Push pendente do plano**: commits de docs locais aguardando liberação do
+   WIP do ator no checkout compartilhado (`AGENTS.md`/`CLAUDE.md`).
 
 ## Próximos passos (ordem)
 
