@@ -65,3 +65,38 @@ submodule fleets and parallel actors.
 - A new governance index entry (skill, rule, command) requires a
   capsule-budget ADR when the delivery contract reports the budget
   near-exhausted; wording updates to an existing body do not.
+
+## Global automation stack for sweep execution
+
+Use the declared automation surface instead of manual bulk edits; every step
+below is evidence-producing and stays within the project Make dispatcher.
+
+- `make mod` is the only sanctioned structural mutation: it composes the
+  ast-grep rule plan (universal → runtime-transitive → local layers, rules
+  inherited through installed distributions, so consumers inherit the fleet
+  rule library automatically). Run `make mod APPLY=Y` from the repository
+  root; its fixed point ("zero findings") is the acceptance evidence.
+  `make fmt` completes bulk formatting before check. A raw `ast-grep scan`
+  invocation is a research probe only — mutations go through the Make owner.
+- `make gen APPLY=Y` proves generator idempotence: one full run, then a fixed
+  point. A second run that emits diffs is a defect at the generator, never a
+  projection to hand-fix.
+- Language-level ast-grep rules (agent-law contract, hardcoded-value bands,
+  boundary bans) are reusable across repos; verify rule ownership and layer
+  scope before assuming a rule applies, and register a new rule at its owning
+  distribution rather than copying it locally.
+- The code-review graph CLI builds a fresh graph with its own status verb
+  before congested refactors: build the graph for the touched project, read
+  blast radius from the active graph, and rerun idempotently after landing.
+  A stale or partial graph is RED — rebuild, do not navigate stale truth.
+- For exact definition/reference sites during consumer rewiring, structure
+  queries go through the Scope navigator with a fresh index; grep stays
+  reserved for literal evidence that the navigator cannot answer.
+- Pilot rollout for fleet-wide changes: converge one non-core member to full
+  green (gen ×2 fixed point, check, full test within the test budget), then
+  propagate waves across remaining members with the same gates per wave.
+  Fleet changes land on the declared integration branch only.
+- Graph-backed claims about code state are gated by graph freshness: run
+  `code-review-graph update` in the repo scope and record `Built at commit`
+  before citing impact/query/refactor outputs in a bead or PR; a graph built
+  at an older commit than the claimed base is evidence of nothing.
