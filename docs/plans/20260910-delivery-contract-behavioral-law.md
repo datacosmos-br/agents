@@ -10,6 +10,24 @@ F0/F2 concluídos permanecem; a parte de distribuição (ag-zrh.2) é assumida
 por este programa; a parte ai-hub da F1 vai para o planejamento ai-hub via
 prompt na seção 5.
 
+## Status executado (evidência: comando, exit, output decisivo)
+
+Lane ativa: `feat/delivery-contract-program` em worktree dedicada
+`worktrees/delivery-contract-program` (isolada do checkout compartilhado).
+Lane antiga `feat/governance-runtime-program` foi deletada local e
+remotamente por ator concorrente; commits recuperados do object store e a
+lane remota recriada sob o novo nome (bug bead ag-p4a.11).
+
+| # | WS | Status | Evidência decisiva |
+|---|----|--------|--------------------|
+| 1 | WS-A — ADR-0017 behavioral conscience | ✅ DONE (código+pouso pendente no PR) | Commit `c4403561`: emendas professional-integrity/engineering-core; novas change-consequence + operator-alignment no bootstrap; mediação de cápsula medida 9764/10000; `make check` exit 0; `test-full` 4/4 |
+| 2 | WS-B — ADR-0018 linha 0.5.0 | ✅ DONE | Adotado pelo ator em `382b490f`; `make check` exit 0 com wheel 0.5.0 provado (artifact gate + mypy strict) |
+| 3 | Correção do operador (listas/proibições, incl. tests) | ✅ ABSORVIDA | `delivery.py` grammar-only (sem vocabulários fechados); teste com pin exterminado e substituído por derivação (`test_catalog_structure.py`, ator adotado); waza floor adotado; engineering-core emendado — commits `29a7de58`, `40f47818` |
+| 4 | WS-C — ADR-0019 delivery contract | ✅ DONE (código+pouso pendente no PR) | Commit `29a7de58` + fmt: gate tipado de cápsula em `load()` (falhou ao vivo 2× e mediou: 9477/9488, headroom 11); eventos grammar-validated (config é dono das instâncias); docs linking gate (bijeção 16 ADRs); marcador ADR-0015; Task 3 do .kilo medida como já implementada (testes fixam) |
+| 5 | Gates na worktree dedicada | ✅ GREEN | `make check APPLY=Y` exit 0 (docs/static 29/waza 128/128/wheel 0.5.0+mypy strict); `test-full` 10/10, 0 warnings/skips, testmon integrity ok |
+| 6 | WS-D — ADR-0020 advance command + dossiê | ✅ DONE | Commit `9318807f`: `advance.md` (15º comando); dossiê 14 fontes como evidência (garantia `instruction-design-evidence`); packaging corrigido na raiz (sdist carrega docs/research — defeito pego pelo runtime gate); check exit 0 completo (waza 128/128, wheel+sdist 0.5.0 + mypy strict); test-full 10/10 |
+| 7 | Pouso | 🔶 PR aberto | PR → dev; falta review → --no-ff → prova pós-merge → beads com 4 evidências |
+
 ## 1. Fundamentação (13 fontes, dossiê em `docs/research/agent-instruction-design.md`)
 
 - Hierarquia de autoridade explícita → Model Spec OpenAI (chain of command).

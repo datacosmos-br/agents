@@ -146,6 +146,7 @@ class SkillRecord:
     name: str
     category: SkillCategory
     directory: Path
+    description: str
     tags: tuple[str, ...]
     usage: str
     routes: tuple[str, ...]
@@ -436,6 +437,7 @@ class Catalog:
             slug,
             category,
             skill_file.parent,
+            cast(str, frontmatter["description"]),
             tags,
             usage,
             routes,

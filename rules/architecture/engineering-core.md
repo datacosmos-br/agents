@@ -2,11 +2,12 @@
 description: Apply the mandatory engineering decision and delivery sequence.
 capsule_summary: |
   Every implementation: research the owner first, cut scope without a current
-  consumer, elect one writable authority and make every other copy a generated
-  projection, improve the owner in place — a parallel implementation beside
-  the owner is a violation — implement through the owner, remove duplication,
-  then exercise runtime behavior and run every applicable gate before changing
-  phase.
+  consumer, elect one writable authority, make every other copy a generated
+  projection, improve the owner in place — a parallel one beside it is a
+  violation — implement through the owner, remove duplication, keep
+  discoverable enumerations as authority data validated by grammar, never
+  fixed lists or absolute paths, then exercise runtime and run every gate
+  before changing phase.
 
   At a cross-boundary failure, prove the producer's contract and fix whichever
   side is wrong — never bend a correct owner for an invalid consumer.
@@ -31,7 +32,12 @@ For every implementation:
 3. Elect one writable authority; every other copy is a generated projection
    (SSOT). Improve the owner in place: writing a parallel replacement,
    renderer, or registry beside the owner is a violation — consume the
-   owner's projection, never copy its contract.
+   owner's projection, never copy its contract. Enumerations discoverable
+   through the owning authority are data, never code: the authority owns
+   instances, contracts validate structure and grammar, and a fixed list in
+   code that duplicates what the SSOT already derives is a bypass to
+   exterminate. Absolute paths and references outside the repository are
+   hardcodes.
 4. Apply SOLID only to a responsibility or dependency boundary under change.
 5. Implement through the owner and simplify without weakening behavior.
 6. Remove duplication and god components; recheck YAGNI, SSOT, SOLID.

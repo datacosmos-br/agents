@@ -38,10 +38,22 @@ def _state_root(repository: Path) -> Path:
     return raw.resolve()
 
 
+_WAZA_MINIMUM_VERSION = (0, 38, 7)
+
+
 def _verify(repository: Path, projection: Path) -> None:
     version = _run((*_WAZA, "--version"), repository, "version")
-    if version.strip() != "waza version 0.38.7":
-        raise ValueError(f"unexpected Waza version: {version.strip()!r}")
+    # The toolchain owner (.mise.toml) selects the release; the gate proves a
+    # compatible floor so newer toolchain selections never break this gate.
+    digits = tuple(
+        int(part)
+        for part in version.strip().removeprefix("waza version ").split(".")[:3]
+        if part.isdigit()
+    )
+    if len(digits) != 3 or digits < _WAZA_MINIMUM_VERSION:
+        raise ValueError(
+            f"waza below declared floor {_WAZA_MINIMUM_VERSION}: {version.strip()!r}"
+        )
     environment = dict(os.environ)
     environment["WAZA_PROJECTION_ROOT"] = str(projection)
     _run(

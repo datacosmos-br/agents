@@ -9,6 +9,7 @@ from .agent_profiles import AgentProfile, audit_agent_profiles
 from .approvals import ApprovedArtifact, audit_precedence
 from .catalog import Catalog, SkillRecord
 from .commands import CommandSpec, audit_command_specs
+from .delivery import DeliverySnapshot, audit_delivery
 from .governance_config import (
     GovernanceConfig,
     audit_governance_config,
@@ -40,6 +41,7 @@ class GovernanceBundle:
     agents: tuple[AgentProfile, ...]
     rules: tuple[RuleSpec, ...]
     law: LawSurface
+    delivery: DeliverySnapshot
 
     @classmethod
     def load(cls, root: Path | None = None) -> GovernanceBundle:
@@ -57,6 +59,14 @@ class GovernanceBundle:
         audit_precedence(source, _approved_artifacts(skills, commands, rules, agents))
         metadata = validate_skill_metadata(source)
         law = LawSurface.load(source)
+        delivery = audit_delivery(
+            config.delivery,
+            law,
+            rules,
+            skills,
+            config.bootstrap_rules,
+            config.bootstrap_skills,
+        )
         return cls(
             source,
             BUNDLE_SCHEMA_VERSION,
@@ -69,6 +79,7 @@ class GovernanceBundle:
             agents,
             rules,
             law,
+            delivery,
         )
 
 

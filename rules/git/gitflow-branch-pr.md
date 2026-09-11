@@ -3,27 +3,19 @@ description: Publishing work — creating a branch, commit, push, or opening a P
 capsule_summary: |
   Work on a change branch, never on `main` or the integration branch. The base is
   whatever the repository itself declares today — read it per repository, never
-  assume or reuse one. `origin/<base>` is a cache: fetch it from the remote
-  before any ancestry proof that authorizes deletion, or the proof answers about
-  the past and destroys work. One git root per PR. The formula owns lane creation
-  and teardown — a hand-made worktree or clone is a scope expansion the operator
-  must state.
-
-  Checkpoint: scoped `git add`, a `[WIP]` subject, fast-forward push, Draft PR
-  with the `WIP` label. `--no-verify` is prohibited and a `[WIP]` commit never
-  heads a merge into integration.
-
-  Promotion: one green local round, a non-`[WIP]` commit, green checks, resolved
-  conversations and independent approval, then a merge commit — never squash or
-  rebase. Revalidate the merge SHA and record post-merge evidence.
-
-  Divergence: merge `origin/<integration>` in with `--no-ff`; never rebase or
+  assume or reuse one. `origin/<base>` is a cache: fetch it before any ancestry
+  proof that authorizes deletion. One git root per PR; lane creation and teardown
+  are owned, never hand-made.
+  Checkpoint: scoped add, `[WIP]` subject, fast-forward push, Draft PR. `--no-verify`
+  is prohibited and a `[WIP]` commit never heads a merge.
+  Promotion: green local round, non-`[WIP]` commit, green checks, resolved review,
+  independent approval, merge commit — never squash or rebase. Revalidate the merge
+  SHA with post-merge evidence.
+  Divergence: merge the integration base in with `--no-ff`; never rebase or
   force-push.
-
-  Retirement closes the cycle and is not optional: a lane opened is carried to
-  integration and retired in the same cycle — merge, push, PR, merge, then delete
-  the local branch, the remote branch and the worktree. Retire only after
-  `git merge-base --is-ancestor` exits 0 against a just-fetched base.
+  Retirement is not optional: merge, push, PR, merge, then delete local and
+  remote branches and the worktree, only after `git merge-base --is-ancestor`
+  exits 0 against a fresh base.
 metadata:
   aihub.tags: '["decision:ADR-0008","effective:2026-08-29","route:personal"]'
 ---

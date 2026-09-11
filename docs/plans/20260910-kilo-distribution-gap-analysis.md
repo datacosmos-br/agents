@@ -10,8 +10,10 @@
 >   by F2 (commit `783b285c`).
 > - Task 4 (retire globs schema) — DONE by F2 (workspaces.yaml v1).
 > - Task 6 (propagate wired into check) — DONE by F2 (`check` runs propagate).
-> - Task 3 (agent approval lineage: `_approved_artifacts` + tags validation) —
->   REAL GAP, absorbed into bead ag-p4a.8 (WS-C, ADR-0019).
+> - Task 3 (agent approval lineage) — MEASURED AS ALREADY IMPLEMENTED in the
+>   current code at absorption time: `bundle.py` `_approved_artifacts` includes
+>   agents and `agent_profiles.py` `_validate_tags` calls
+>   `resolve_approval_tags` (ADR-0019 records the measurement; tests pin it).
 > - Task 5 (.kilo/ config structure) — SUPERSEDED by the F2 de-provider
 >   cutover; the `.kilo/` surface is retired, not expanded.
 >

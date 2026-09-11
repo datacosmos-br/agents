@@ -62,6 +62,7 @@ check: ## run every applicable non-test gate; requires APPLY=Y
 docs: ## validate documentation through the public bundle contract; requires APPLY=Y
 	$(call REQUIRE_APPLY)
 	@$(MAKE) audit APPLY=Y
+	@uv run python tools/check_docs_links.py
 
 propagate: ## regenerate AI Hub project configuration; requires APPLY=Y
 	$(call REQUIRE_APPLY)
