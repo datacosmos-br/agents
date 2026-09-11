@@ -2,7 +2,7 @@
 description: Run governance bundle audit and print inventory counts.
 ---
 
-Run `make audit APPLY=Y` to load `GovernanceBundle` and print the complete
+Run `make audit` to load `GovernanceBundle` and print the complete
 public semantic inventory: skills, commands, agents, and rules counts.
 
 The audit output includes exact counts for every artifact type. Verify that

@@ -82,7 +82,7 @@ Fleet-shaped session fragment (auto-rewrite active):
   compact status with branch and entry counts.
 - Agent runs `rtk test pytest -q` → only failures and the summary line;
   exit code preserved for the gate.
-- Agent runs `rtk err make check APPLY=Y` → only errors and warnings from the
+- Agent runs `rtk err make check` → only errors and warnings from the
   canonical verb; the make owner stays the executor.
 - Failed verbose command → filtered output cites
   `~/.local/share/rtk/tee/<epoch>_<cmd>.log` → agent reads the tee file once

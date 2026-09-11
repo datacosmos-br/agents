@@ -33,9 +33,9 @@ manifest files through ad hoc shell commands.
 ## Diagnostic Commands
 
 ```bash
-make runtime APPLY=Y
-make check APPLY=Y
-make build APPLY=Y
+make runtime
+make check
+make build
 ```
 
 ## Resolution Workflow

@@ -46,7 +46,7 @@ shape delta for internal FLEXT packages.
   `RefactorNamespaceMoves` patterns): every mutation is a Rope `Change`
   applied via `rope_project.do(changes)` so changes replicate to all
   referencing modules, followed by rewritten-file normalization — inside the
-  `make mod APPLY=Y` guarded fixed-point circuit.
+  `make mod` guarded fixed-point circuit.
 - Every mutating execution wraps its files in the centralized cycle
   `FlextInfraUtilitiesSafety.execute_safely` (backup → transform → validate →
   cleanup | rollback). Ad-hoc writes, private backups, and repo-wide rollback

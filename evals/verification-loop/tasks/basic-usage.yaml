@@ -9,5 +9,5 @@ inputs:
   files:
   - path: gate-evidence.md
 expected:
-  output_contains: [public bundle, make check APPLY=Y, make ci APPLY=Y, cache hit, NOT EXECUTED, exit 1, composite, not verified]
+  output_contains: [public bundle, make check, make ci, cache hit, NOT EXECUTED, exit 1, composite, not verified]
   output_not_contains: [implementation complete, composite green, tests passed, providers validated]

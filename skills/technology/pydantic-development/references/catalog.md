@@ -81,4 +81,4 @@ through the root Make dispatcher (`APPLY=Y` on mutating and test verbs).
 Before tests, exercise the real runtime path (import the facade, validate a
 representative payload). The boundary audit command
 (`$pydantic-boundary-audit`) inventories Section 19 violations per repository
-and feeds `make mod APPLY=Y` migrations.
+and feeds `make mod` migrations.

@@ -57,7 +57,7 @@ require `APPLY=Y`; never weaken their guards.
 - Everything else: decide per file, prefer fix-forward (preserve the other
   lane's legitimate work), and record every resolution.
 - Commit with an explicit merge message listing the resolution classes;
-  validate the merged SHA with `make gen APPLY=Y` (fixed-point gate) BEFORE
+  validate the merged SHA with `make gen` (fixed-point gate) BEFORE
   pushing.
 - Pushing the merge commit to the integration branch auto-merges the GitHub
   PR — no `gh merge` needed.
@@ -76,7 +76,7 @@ require `APPLY=Y`; never weaken their guards.
 ## Beads evidence contract during closeout
 
 - Per resolved blocker, one evidence comment: command, exit code, decisive
-  output line, pushed SHA range (e.g. `make setup APPLY=Y` → EXIT=0, "Resolved
+  output line, pushed SHA range (e.g. `make setup` → EXIT=0, "Resolved
   281 packages"; push `382b06ec5..39abee778`).
 - New discovered work becomes a task bead with
   `--deps discovered-from:<integration-bead>` (e.g. floor-writer

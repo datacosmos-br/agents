@@ -11,13 +11,43 @@ metadata:
 Treat `$ARGUMENTS` as an optional focus. Resolve authority FIRST, before any
 effect: workspace root `AGENTS.md`, then the branch-matched local law skill,
 then the nearest scope `AGENTS.md`, then the active tracker item. Run
-`make setup APPLY=Y`, then use selector-free root Make verbs only. If the
+`make setup`, then use selector-free root Make verbs only. If the
 rig hosts a third-party or non-framework project, apply only the universal
 layers below and follow upstream conventions; never impose local architecture
 there.
 
 ## Phase A — sweep the project
 
+0b. Automation surfaces first. Drive classes with the declared machinery
+   before hand edits: `make mod APPLY=Y` applies the declared ast-grep rules
+   (composed from installed distributions; targeted runs use an exact
+   rule-ID filter, not ad-hoc CLI invocations); `make gen APPLY=Y` twice
+   brackets every generated-surface change and must be byte-identical; the
+   persistent code-review-graph feeds discovery in CLI mode (`dead-code`,
+   `impact`, `large-functions`, `query`) for nesting, callers, and split
+   targets — register the working tree if its repo is absent from the graph
+   registry. A violation class with no declared rule earns its rule at the
+   highest applicable rule layer (universal for context-free patterns,
+   framework for FLEXT deltas) in the same change; see
+   `rules/workflow/structural-migrations.md` and
+   `rules/workflow/mass-rewrite-discipline.md`.
+
+0c. One class per boundary. Work violations by class wave; between waves run
+   the incremental tests, commit the wave under the class name, and update
+   the campaign tracker item. Mechanical waves (annotations, aliases)
+   validate with the static-plus-runtime bracket; structural waves (nesting,
+   facades) additionally re-run the integration gates before the next wave.
+
+0. Declaration-first scoping and dependency freshness. Before consuming any
+   error triage, declare the verification scan scope at the manifest SSOT
+   (tests/scripts/docs are never production scope) and regenerate through
+   the project generator, proving the conformance fixed point. Before any
+   git-dependency pin or re-pin: fetch the remote branch, check whether
+   commits touching the failing symbol already landed (the bug may be fixed
+   upstream), install with `--no-cache`, and verify the bumped surface
+   (`'field' in Model.model_fields`) before the first run. Identify which
+   interpreter executes the dependency for the command at hand before
+   touching any venv.
 1. Truth with evidence, zero tolerance. Never lie, promise, or fabricate. A
    claim is true only with exact command, working directory, exit code,
    decisive output, and scope. Intention, self-report, and "mergeable" are not
@@ -32,6 +62,20 @@ there.
 3. Incremental test selection is mandatory. Every test execution keeps the
    canonical persistent test selection cache. The public full verb first runs
    the incremental verb, then testmon no-selection against the same database.
+3b. Class-wave repair. When the measured report exceeds one screen (~20
+   findings), work grouped by error class (defense-in-depth kill order:
+   test-purity, aliases/owners, banned annotations, import-time wiring,
+   silent failures, duplication, layout/loc), one root cause per commit,
+   re-measure after each class, and record start→end numbers in the active
+   plan or tracker item. Drive each wave with the canonical CLI kit:
+   `make mod APPLY=Y` for rule-driven codemod (dry-run first), `make gen
+   APPLY=Y` for any generated-surface change, `ast-grep scan` against the
+   project rule SSOT (never ad-hoc grep), and code-review-graph CLI proofs
+   when available: `build|update --repo` before proof queries, `dead-code
+   --json` before cleanup, `impact --files` after the change (0 extra
+   files affected = rewire pass), `query callers_of` when deleting a
+   symbol. A false sweeping pass with a no-op bypass is never a "skip" —
+   escalate.
 4. Root cause, zero residue, complete rewire. Remove dead, superseded, and
    duplicate code in the same change; rewire every consumer to the final owner
    before the old one dies. No compatibility aliases, shims, dual paths,
@@ -54,6 +98,14 @@ there.
    their standardized header. Commits carry zero garbage; stage by explicit
    paths only; fix forward without destructive git operations; update docs in
    the same change as behavior.
+8b. Mass-rewrite execution law. Tree-wide mechanical transformations and
+   automation-apply cycles obey `rules/workflow/mass-rewrite-discipline.md`:
+   test evidence brackets the mass (before and after), scoped commits bound
+   the change per transformation class, applied-vs-reverted states are
+   inventoried before commit, string literal contexts get a machine-checked
+   safety sweep, and progress is reported per violation class, never as an
+   aggregate that hides untouched structural debt. The sweep never parks a
+   large uncommitted delta on the trunk.
 9. Runtime boundary. Keep portable primitives in their reusable library and
    host indexes, daemons, forge clients, language/refactor services, hooks, and
    MCP in the runtime control plane. Cross that boundary only through a public

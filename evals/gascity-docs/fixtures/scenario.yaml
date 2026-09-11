@@ -6,4 +6,4 @@ current_pages:
   - reference/configuration.md
 change: document worker drain and restart behavior
 runtime_owner: config/agents.yaml
-verification_owner: make docs APPLY=Y
+verification_owner: make docs

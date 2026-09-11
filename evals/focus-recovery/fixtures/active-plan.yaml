@@ -2,9 +2,9 @@ objective: Integrate the FLEXT prerequisite before downstream repositories.
 current_step: Keep pytest-testmon selective in every incremental test verb.
 next_step: Validate bounded invalidation through the public test verb.
 owned_paths:
-  - src/flext_infra/validate/pytest_runner.py
+- src/flext_infra/validate/pytest_runner.py
 latest_evidence:
-  command: make test-full APPLY=Y
+  command: make test-full
   exit: 2
   result: The full verb bypassed its required incremental predecessor.
 incoming_request:

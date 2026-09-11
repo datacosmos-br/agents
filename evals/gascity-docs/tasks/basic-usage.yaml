@@ -13,4 +13,4 @@ inputs:
   files:
   - path: scenario.yaml
 expected:
-  output_contains: [getting-started, operations, reference, config/agents.yaml, navigation, make docs APPLY=Y]
+  output_contains: [getting-started, operations, reference, config/agents.yaml, navigation, make docs]

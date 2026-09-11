@@ -40,7 +40,7 @@ help: ## show the complete selector-free development surface
 	@awk 'BEGIN{FS=":.*## "} /^## /{sub(/^## */,""); print ""; print} /^[a-z][a-z_-]*:.*## /{printf "  %-14s %s\n",$$1,$$2}' $(MAKEFILE_LIST)
 
 ## environment provisioning
-setup: ## create the declared repository runtime environment; requires APPLY=Y
+setup: ## create the declared repository runtime environment; requires
 	$(call REQUIRE_APPLY)
 	$(call BANNER,setup · mise install + uv venv + sync)
 	@mise install
@@ -48,28 +48,28 @@ setup: ## create the declared repository runtime environment; requires APPLY=Y
 	@uv sync --all-groups
 
 ## development gates
-check: ## run every applicable non-test gate; requires APPLY=Y
+check: ## run every applicable non-test gate; requires
 	$(call REQUIRE_APPLY)
 	$(call BANNER,check · complete non-test gate composition)
-	@$(MAKE) docs APPLY=Y
-	@$(MAKE) propagate APPLY=Y
-	@$(MAKE) static APPLY=Y
-	@$(MAKE) mod-check APPLY=Y
-	@$(MAKE) conform APPLY=Y
-	@$(MAKE) waza APPLY=Y
-	@$(MAKE) runtime APPLY=Y
+	@$(MAKE) docs
+	@$(MAKE) propagate
+	@$(MAKE) static
+	@$(MAKE) mod-check
+	@$(MAKE) conform
+	@$(MAKE) waza
+	@$(MAKE) runtime
 
-docs: ## validate documentation through the public bundle contract; requires APPLY=Y
+docs: ## validate documentation through the public bundle contract; requires
 	$(call REQUIRE_APPLY)
-	@$(MAKE) audit APPLY=Y
+	@$(MAKE) audit
 	@uv run python tools/check_docs_links.py
 
-propagate: ## regenerate AI Hub project configuration; requires APPLY=Y
+propagate: ## regenerate AI Hub project configuration; requires
 	$(call REQUIRE_APPLY)
 	$(call BANNER,propagate · project surface configuration)
 	@uv run python tools/render_project_projection.py
 
-audit: ## print the complete public semantic inventory; requires APPLY=Y
+audit: ## print the complete public semantic inventory; requires
 	$(call REQUIRE_APPLY)
 	$(call BANNER,audit · GovernanceBundle.load)
 	@if [ -e "$(TESTMON_DATAFILE)" ]; then \
@@ -77,13 +77,13 @@ audit: ## print the complete public semantic inventory; requires APPLY=Y
 	fi
 	@uv run python -c 'from agents_governance import GovernanceBundle; bundle = GovernanceBundle.load(); print(f"{len(bundle.skills)} skills, {len(bundle.commands)} commands, {len(bundle.agents)} agents, {len(bundle.rules)} rules")'
 
-waza: ## validate provider-neutral skill suites with Waza; requires APPLY=Y
+waza: ## validate provider-neutral skill suites with Waza; requires
 	$(call REQUIRE_APPLY)
-	@$(MAKE) audit APPLY=Y
+	@$(MAKE) audit
 	$(call BANNER,waza · provider-neutral suites + deterministic spec proof)
 	@uv run python tools/waza_gate.py
 
-static: ## lint, formatting, and Python type analysis; requires APPLY=Y
+static: ## lint, formatting, and Python type analysis; requires
 	$(call REQUIRE_APPLY)
 	$(call BANNER,static · ruff + pyright + mypy)
 	@uv run ruff check src tests tools
@@ -91,88 +91,88 @@ static: ## lint, formatting, and Python type analysis; requires APPLY=Y
 	@uv run pyright src tests tools
 	@uv run mypy src tests tools
 
-conform: ## validate workflow and zero-duplication conformance; requires APPLY=Y
+conform: ## validate workflow and zero-duplication conformance; requires
 	$(call REQUIRE_APPLY)
 	@$(MAKE) shell
 	@$(MAKE) duplication
 	@git diff --check
 
-fmt: ## apply canonical Python formatting; requires APPLY=Y
+fmt: ## apply canonical Python formatting; requires
 	$(call REQUIRE_APPLY)
 	$(call BANNER,fmt · ruff format)
 	@uv run ruff format src tests tools
 
-fix: ## apply canonical corrections; requires APPLY=Y
+fix: ## apply canonical corrections; requires
 	$(call REQUIRE_APPLY)
 	$(call BANNER,fix · ruff)
 	@uv run ruff check --fix src tests tools
 	@TESTMON_MODE=repair uv run python tools/testmon_gate.py
 
-mod-check: ## test ast-grep rules and reject structural migration residue; requires APPLY=Y
+mod-check: ## test ast-grep rules and reject structural migration residue; requires
 	$(call REQUIRE_APPLY)
 	$(call BANNER,mod-check · ast-grep tests + strict structural scan)
 	@$(MISE_EXEC) ast-grep test --config "$(CURDIR)/sgconfig.yml"
 	@$(MISE_EXEC) ast-grep scan --config "$(CURDIR)/sgconfig.yml" --error "$(CURDIR)/evals"
 
-mod: ## apply tested structural migrations; requires APPLY=Y
+mod: ## apply tested structural migrations; requires
 	$(call REQUIRE_APPLY)
 	$(call BANNER,mod · ast-grep structural rewrite)
 	@$(MISE_EXEC) ast-grep test --config "$(CURDIR)/sgconfig.yml" --update-all
 	@$(MISE_EXEC) ast-grep scan --config "$(CURDIR)/sgconfig.yml" --update-all "$(CURDIR)/evals"
 	@uv run python tools/normalize_eval_yaml.py
-	@$(MAKE) mod-check APPLY=Y
-	@$(MAKE) audit APPLY=Y
+	@$(MAKE) mod-check
+	@$(MAKE) audit
 
-shell: ## validate shell scripts and GitHub workflows; requires APPLY=Y
+shell: ## validate shell scripts and GitHub workflows; requires
 	$(call REQUIRE_APPLY)
 	$(call BANNER,shell · actionlint + shellcheck)
 	@$(MISE_EXEC) actionlint .github/workflows/*.yml
 	@$(MISE_EXEC) shellcheck skills/tool/beads-organization/scripts/reconcile-inventory.sh
 
-duplication: ## enforce zero strict duplication in canonical source and evaluations; requires APPLY=Y
+duplication: ## enforce zero strict duplication in canonical source and evaluations; requires
 	$(call REQUIRE_APPLY)
 	$(call BANNER,duplication · jscpd)
 	@$(MISE_EXEC) jscpd src tests tools evals --config $(CURDIR)/.jscpd.json --exit-code 1
 
-gen: ## generate governance projections from canonical owners; requires APPLY=Y
+gen: ## generate governance projections from canonical owners; requires
 	$(call REQUIRE_APPLY)
 	$(call BANNER,gen · canonical projections)
 	@uv run python tools/render_project_projection.py
 
-build: ## build source and wheel artifacts; requires APPLY=Y
+build: ## build source and wheel artifacts; requires
 	$(call REQUIRE_APPLY)
 	$(call BANNER,build · sdist + wheel)
 	@ARTIFACT_MODE=build uv run python tools/artifact_gate.py
 
-validate-artifacts: ## validate the exact sdist and wheel in isolation; requires APPLY=Y
+validate-artifacts: ## validate the exact sdist and wheel in isolation; requires
 	$(call REQUIRE_APPLY)
 	$(call BANNER,validate-artifacts · installed public bundle from sdist + wheel)
 	@ARTIFACT_MODE=validate uv run python tools/artifact_gate.py
 
-runtime: ## build, install, and load the public wheel; requires APPLY=Y
+runtime: ## build, install, and load the public wheel; requires
 	$(call REQUIRE_APPLY)
 	$(call BANNER,runtime · atomic build + isolated sdist/wheel proof)
 	@ARTIFACT_MODE=runtime uv run python tools/artifact_gate.py
 
-test: ## run affected tests through the shared testmon cache; requires APPLY=Y
+test: ## run affected tests through the shared testmon cache; requires
 	$(call REQUIRE_APPLY)
 	$(call BANNER,test · pytest-testmon affected selection)
 	$(call RUN_TESTMON,incremental)
 
-test-full: ## run incremental then all tests through the same cache; requires APPLY=Y
+test-full: ## run incremental then all tests through the same cache; requires
 	$(call REQUIRE_APPLY)
-	@$(MAKE) test APPLY=Y
+	@$(MAKE) test
 	$(call BANNER,test-full · pytest-testmon no-selection)
 	$(call RUN_TESTMON,full)
 
 ## complete offline composition
-ci: ## run every gate in runtime-first order; requires APPLY=Y
+ci: ## run every gate in runtime-first order; requires
 	$(call REQUIRE_APPLY)
-	@$(MAKE) check APPLY=Y
-	@$(MAKE) test-full APPLY=Y
+	@$(MAKE) check
+	@$(MAKE) test-full
 
 ## release publication
-publish: ## publish the validated tag artifacts; requires APPLY=Y
+publish: ## publish the validated tag artifacts; requires
 	$(call REQUIRE_APPLY)
 	$(call BANNER,publish · immutable GitHub release)
 	@ARTIFACT_MODE=publish uv run python tools/artifact_gate.py

@@ -150,13 +150,13 @@ If any CRITICAL security issue is found, stop and escalate to `security-reviewer
 git diff -- '*.java'
 
 # Build & verify
-make test APPLY=Y
-make check APPLY=Y
+make test
+make check
 
 # Static analysis
-make check APPLY=Y
+make check
 
-make security APPLY=Y
+make security
 
 # Framework detection greps
 grep -rn "@Autowired" src/main/java --include="*.java"          # [SPRING]

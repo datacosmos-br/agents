@@ -57,5 +57,5 @@ as overriding recorded law without reconciliation.
 2026-09-06: the crg-autopilot epic (ai-hub beads `aihub-3t7yh`,
 `aihub-igopr`, PRs #686/#687) — adoption of the governance cutover lane
 kept the partial-CRG-maintenance retirement dead, reduced the gate debt
-372→324 with automated `make mod APPLY=Y` fixes, and blocked its own
+372→324 with automated `make mod` fixes, and blocked its own
 integration merge until the conformance sweep closes.

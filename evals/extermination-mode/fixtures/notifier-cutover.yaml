@@ -8,13 +8,13 @@ owner:
   schema: config/notifications.schema.json
   generator: make generate-notifications
 producers:
-  - config/notification_defaults.yaml writes notifications.smtp_legacy
+- config/notification_defaults.yaml writes notifications.smtp_legacy
 consumers:
-  - src/notifications/dispatcher.py reads notifications.smtp_legacy
-  - src/notifications/worker.py loads the legacy SMTP adapter
+- src/notifications/dispatcher.py reads notifications.smtp_legacy
+- src/notifications/worker.py loads the legacy SMTP adapter
 obsolete_only:
-  - src/notifications/legacy_smtp.py
-  - tests/notifications/test_smtp_legacy_alias.py
+- src/notifications/legacy_smtp.py
+- tests/notifications/test_smtp_legacy_alias.py
 useful_behavior:
   contract: notifications.delivery.receipt_contract
   old_test: tests/notifications/test_smtp_legacy_receipt.py
@@ -23,12 +23,12 @@ managed_projection:
   path: docs/generated/notifications-reference.md
   owner: make generate-notifications
 semantic_residue:
-  - smtp_legacy
-  - legacy_smtp
-  - SMTP_LEGACY_DEFAULT
+- smtp_legacy
+- legacy_smtp
+- SMTP_LEGACY_DEFAULT
 concurrent_wip:
-  - src/billing/tax_rounding.py
+- src/billing/tax_rounding.py
 gates:
-  runtime: make runtime APPLY=Y
-  affected: make test APPLY=Y
-  full: make test-full APPLY=Y
+  runtime: make runtime
+  affected: make test
+  full: make test-full

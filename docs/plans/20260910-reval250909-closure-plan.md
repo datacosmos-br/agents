@@ -10,9 +10,9 @@ merge registrado como operator-authorized (AGENTS.md lei 12).
 - Lane `feat/reval250909-adoption` pousada no origin. Contém: commits do ator
   paralelo (5d02942, ff2bdf7, d0774db, 17b9b5f, 04e1de7) + bb5b02d ([WIP]
   adoção do estado da árvore) + 786e59a (correções de gate) + test(evals).
-- Gates verdes NA LANE: `make setup APPLY=Y`; `make gen APPLY=Y` ×2 com ponto
-  fixo; `make waza` (via waza_gate) verde; `make check APPLY=Y` verde completo.
-- `make ci APPLY=Y` interrompido pelo operador antes de conclusão — único gate
+- Gates verdes NA LANE: `make setup`; `make gen` ×2 com ponto
+  fixo; `make waza` (via waza_gate) verde; `make check` verde completo.
+- `make ci` interrompido pelo operador antes de conclusão — único gate
   pendente.
 - Tracker: dedup gate `bd find-duplicates --limit 0` = 0 pares; `bd lint` = 1
   warning intencional (ag-gmx, ator vivo); `bd doctor` = 71 passed, 1 erro
@@ -28,7 +28,7 @@ merge registrado como operator-authorized (AGENTS.md lei 12).
 
 ## Fase 1 — CI completo (único gate pendente)
 
-1. `make ci APPLY=Y` com loop de lock (ator paralelo compartilha locks
+1. `make ci` com loop de lock (ator paralelo compartilha locks
    waza/testmon: poll + retry; sem bypass, sem normalização).
 2. Saída: exit 0 + contagem de testes. Qualquer RED → corrigir no owner e
    repetir o gate afetado até verde.
@@ -40,8 +40,8 @@ merge registrado como operator-authorized (AGENTS.md lei 12).
 3. `git fetch origin --prune`; provar `git merge-base --is-ancestor` do base
    recém-buscado antes de qualquer aposentadoria.
 4. Push de `dev`.
-5. Prova pós-merge no SHA integrado: `make gen APPLY=Y` ×2 (ponto fixo) +
-   `make check APPLY=Y`.
+5. Prova pós-merge no SHA integrado: `make gen` ×2 (ponto fixo) +
+   `make check`.
 
 ## Fase 3 — Aposentadoria de lanes (ciclo fechado, resíduo zero)
 

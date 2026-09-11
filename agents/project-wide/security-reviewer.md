@@ -22,8 +22,8 @@ You are an expert security specialist focused on identifying and remediating vul
 ## Analysis Commands
 
 ```bash
-make security APPLY=Y
-make check APPLY=Y
+make security
+make check
 ```
 
 ## Review Workflow

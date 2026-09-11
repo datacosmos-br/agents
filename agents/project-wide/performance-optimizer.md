@@ -23,8 +23,8 @@ You are an expert performance specialist focused on identifying bottlenecks and 
 
 ```bash
 make audit
-make runtime APPLY=Y
-make check APPLY=Y
+make runtime
+make check
 ```
 
 ## Performance Review Workflow
@@ -122,7 +122,7 @@ const sortedItems = useMemo(
 
 ```bash
 make audit
-make check APPLY=Y
+make check
 ```
 
 **Optimization Strategies:**
@@ -295,7 +295,7 @@ useEffect(() => {
 # 5. Look for detached DOM nodes, event listeners, closures
 
 # Node.js memory debugging
-make check APPLY=Y
+make check
 # Open chrome://inspect
 # Take heap snapshots and compare
 ```
@@ -305,8 +305,8 @@ make check APPLY=Y
 ### Lighthouse Audits
 
 ```bash
-make runtime APPLY=Y
-make check APPLY=Y
+make runtime
+make check
 ```
 
 ### Performance Budgets

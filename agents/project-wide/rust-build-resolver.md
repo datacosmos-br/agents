@@ -24,19 +24,19 @@ Run these in order:
 
 ```bash
 make audit
-make check APPLY=Y
-make build APPLY=Y
+make check
+make build
 ```
 
 ## Resolution Workflow
 
 ```text
-1. make check APPLY=Y   -> Parse error message and error code
+1. make check   -> Parse error message and error code
 2. Read affected file   -> Understand ownership and lifetime context
 3. Apply minimal fix    -> Only what's needed
-4. make check APPLY=Y   -> Verify fix and warnings
-5. make build APPLY=Y   -> Verify the artifact
-6. make test APPLY=Y    -> Ensure nothing broke
+4. make check   -> Verify fix and warnings
+5. make build   -> Verify the artifact
+6. make test    -> Ensure nothing broke
 ```
 
 ## Common Fix Patterns
@@ -85,7 +85,7 @@ let item = vec.swap_remove(index); // Takes ownership
 
 ```bash
 make audit
-make check APPLY=Y
+make check
 ```
 
 ## Edition and MSRV Issues
@@ -108,7 +108,7 @@ grep "rust-version" Cargo.toml
 - **Never** add `#[allow(unused)]` without explicit approval
 - **Never** use `unsafe` to work around borrow checker errors
 - **Never** add `.unwrap()` to silence type errors — propagate with `?`
-- **Always** run `make check APPLY=Y` after every fix attempt
+- **Always** run `make check` after every fix attempt
 - Fix root cause over suppressing symptoms
 - Prefer the simplest fix that preserves the original intent
 

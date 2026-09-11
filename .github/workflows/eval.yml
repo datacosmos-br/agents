@@ -87,6 +87,6 @@ jobs:
             testmon-${{ runner.os }}-${{ hashFiles('uv.lock') }}-
             testmon-${{ runner.os }}-
       - name: Provision declared tools and environment
-        run: make setup APPLY=Y
+        run: make setup
       - name: Run runtime-first public gates
-        run: make ci APPLY=Y
+        run: make ci

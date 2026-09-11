@@ -36,6 +36,20 @@ failure propagates unchanged. Do not retry, fall back, partially update, or
 translate a failure into local evidence. Verify the durable post-state before
 reporting it.
 
+## Mutation coupling delta (evidence 2026-09-11, plan `docs/plans/2026-09-11-flext-conformance-sweep.md`)
+
+- A bead must exist BEFORE the first repo-state mutation of its scope: file
+  write, shell effect on the tree, or history rewrite. Git is the mirror; Beads
+  is the execution truth — a change that exists only in git does not exist for
+  the fleet's coordination views.
+- Every newly discovered red (test failure, gate failure, runtime defect) gets
+  a bead in the SAME turn it is observed, carrying the failing site, the best
+  current root-cause hypothesis, and the observable trigger. Classifying a
+  red as "pre-existing" without a bead is abandonment of the root cause, not
+  scoping.
+- Closure requires the four-evidence pattern: recorded state, git history,
+  measured reality, integrated code.
+
 ## Explicitly suspended
 
 Do not invoke the tracker, select an endpoint, start an embedded database,

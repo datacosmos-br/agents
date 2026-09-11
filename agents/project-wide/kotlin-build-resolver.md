@@ -23,8 +23,8 @@ You are an expert Kotlin/Gradle build error resolution specialist. Your mission 
 Run these in order:
 
 ```bash
-make build APPLY=Y
-make check APPLY=Y
+make build
+make check
 
 ```
 
@@ -57,22 +57,22 @@ make check APPLY=Y
 
 ```bash
 # Check dependency tree for conflicts
-make check APPLY=Y
+make check
 
 # Force refresh dependencies
-make build APPLY=Y
+make build
 
 # Rebuild without reusing the project build cache
-make build APPLY=Y
+make build
 
 # Check Gradle version compatibility
-make check APPLY=Y
+make check
 
 # Run with debug output
-make build APPLY=Y
+make build
 
 # Check for dependency conflicts
-make check APPLY=Y
+make check
 ```
 
 ## Kotlin Compiler Flags

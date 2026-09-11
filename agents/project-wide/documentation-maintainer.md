@@ -21,8 +21,8 @@ You are a documentation specialist focused on keeping codemaps and documentation
 ## Analysis Commands
 
 ```bash
-make gen APPLY=Y
-make check APPLY=Y
+make gen
+make check
 ```
 
 ## Codemap Workflow

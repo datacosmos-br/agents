@@ -100,10 +100,10 @@ You DO NOT refactor or rewrite code — you report findings only.
 ## Diagnostic Commands
 
 ```bash
-make runtime APPLY=Y
-make check APPLY=Y
-make security APPLY=Y
-make test APPLY=Y
+make runtime
+make check
+make security
+make test
 ```
 
 ## Approval Criteria

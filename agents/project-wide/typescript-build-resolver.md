@@ -22,14 +22,14 @@ You are an expert build error resolution specialist. Your mission is to get buil
 ## Diagnostic Commands
 
 ```bash
-make check APPLY=Y
-make build APPLY=Y
+make check
+make build
 ```
 
 ## Workflow
 
 ### 1. Collect All Errors
-- Run `make check APPLY=Y` to get all type errors through the root owner
+- Run `make check` to get all type errors through the root owner
 - Categorize: type inference, missing types, imports, config, dependencies
 - Prioritize: build-blocking first, then type errors, then warnings
 
@@ -82,9 +82,9 @@ For each error:
 ## Quick Recovery
 
 ```bash
-make fix APPLY=Y
-make check APPLY=Y
-make build APPLY=Y
+make fix
+make check
+make build
 ```
 
 Never delete dependency trees, lockfiles, or caches recursively. Diagnose the
@@ -93,8 +93,8 @@ caches are preserved.
 
 ## Success Metrics
 
-- `make check APPLY=Y` exits with code 0 and zero warnings
-- `make build APPLY=Y` completes successfully
+- `make check` exits with code 0 and zero warnings
+- `make build` completes successfully
 - No new errors introduced
 - Minimal lines changed (< 5% of affected file)
 - Tests still passing

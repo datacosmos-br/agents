@@ -142,8 +142,8 @@ provada).
 ## 4. Fluxo de execução
 
 Beads (épico + filhos, absorvendo ag-zrh.2) → lane atual → WS-A..WS-D com
-gates por workstream (`make gen APPLY=Y` ×2 fixed point, `make audit`,
-`make check APPLY=Y`, `make test APPLY=Y` via testmon persistente) → PR →
+gates por workstream (`make gen` ×2 fixed point, `make audit`,
+`make check`, `make test` via testmon persistente) → PR →
 dev → review → `merge --no-ff` → gates no SHA mesclado → prova pós-merge
 `GovernanceBundle.load()` → beads fechados com 4 evidências (registro, git,
 comando/exit/output, código integrado) → `op-learning` registra a correção
@@ -205,7 +205,7 @@ lifecycle event map, `advance` command). This repo owns every runtime effect
 - Refactor in place: improve existing owners; a parallel implementation,
   renderer, or registry alongside the owner is a violation. Zero residue:
   superseded code, configs, hooks and docs deleted in the same change.
-- Root Make verbs only, APPLY=Y as the sole mutation flag.
+- Root Make verbs only, as the sole mutation flag.
 - Fail loud: no catch/retry/fallback/normalization; first exception escapes
   with raw traceback. Warnings, skips, empty output, missing tools are RED.
 - Evidence contract per claim: exact command, cwd, exit code, decisive
