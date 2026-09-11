@@ -24,6 +24,31 @@
       "verification-loop"
     ]
   },
+  "delivery": {
+    "capsule_budget_chars": 10000,
+    "restore_list_reserve_chars": 512,
+    "events": {
+      "instructions-loaded": [
+        "payload:rule-bodies-by-routing"
+      ],
+      "post-compact": [
+        "payload:capsule-full",
+        "payload:restore-list"
+      ],
+      "prompt-submit": [
+        "payload:operator-precedence-reminder"
+      ],
+      "session-end": [
+        "payload:findings-harvest"
+      ],
+      "session-start": [
+        "payload:capsule-full"
+      ],
+      "subagent-start": [
+        "payload:authority-subset"
+      ]
+    }
+  },
   "guarantees": {
     "active-intent": [
       "rule:coordination/plan-topic-monopoly",
@@ -37,6 +62,9 @@
     ],
     "canonical-command-surface": [
       "rule:workflow/canonical-commands"
+    ],
+    "capsule-budget": [
+      "document:docs/adr/ADR-0019-delivery-contract.md"
     ],
     "causal-subprocess": [
       "rule:runtime/causal-subprocess"
@@ -78,6 +106,9 @@
     "database-migration": [
       "command:database-migration",
       "rule:runtime/atomic-effects"
+    ],
+    "delivery-contract": [
+      "document:docs/adr/ADR-0019-delivery-contract.md"
     ],
     "delivery-iteration": [
       "command:ralph-loop",
