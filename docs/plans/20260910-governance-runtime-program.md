@@ -151,6 +151,81 @@ A lane só pousa num estado que sobreviva a produção. Tradução operacional:
 | 9 | Sonda R1 então F3 (ag-zrh.4): sessão opencode real | marker/versão == bundle; zero markerless; `python-production` inexistente |
 | 10 | Pouso no `agents` dev + fechamento ag-zrh.2/3/4 + épico com 4 fontes; lanes e worktrees aposentadas | merges `--no-ff`; `merge-base --is-ancestor` exit 0; resíduo zero |
 
+## PROPOSTA para aprovação — Automação global da execução (make mod · ast-grep · make gen · CRG) e piloto de homologação
+
+Pesquisa de donos executada nesta lane (evidência: `Makefile`, `sgconfig.yml`
+gerado com header codegen, `ast-grep-rules/` 48+7 regras, binário de host
+`~/.local/share/ai-hub/host-tools/current/bin/code-review-graph --help`,
+`ai-hub ai-hub-sync-crg-workspaces --check`). Surrei de aplicação:
+
+### 1. Estado medido hoje (produção real)
+
+- **CRG está RED na máquina**: `ai-hub ai-hub-sync-crg-workspaces --check`
+  → *policy drift* — steampipe, rpa/worker-vllm, ardupilot, invest,
+  cosmos-legacy, typeshed e 4+ sem `.code-review-graphignore`/
+  `languages.toml` registrados; `~/.code-review-graph/crg-watch.toml`
+  desatualizado vs `config.AiHub.workspaces`. Grafo existente (`graph.db`,
+  registry.json, watch daemons vivos) — infra pronta, projeção em drift.
+- **ai-hub `make mod`**: agrega 2 fontes de regras (projeto `ast-grep-rules/`
+  48 regras + package `flext_infra codemod`), relatório tipado em
+  `.reports/refactor/mod-findings.json` (schema com
+  actionable/detection_only/classification/range/text); 197 detection-only.
+  Regras com `fix:` são auto-aplicáveis; sem `fix` exigem reparo por dono.
+  `sgconfig.yml` e regras do projeto são **gerados** (header codegen) —
+  mudanças fluem por `config/codegen.yaml` → `make gen APPLY=Y`.
+- **agents `make mod`**: `ast-grep test --config sgconfig.yml --update-all`
+  (7 regras universais de eval-suite) — regenera snapshots aprovados.
+- **CRG CLI (hoje produtivo)**: `code-review-graph impact|query|search|rename|
+  dead-code --json|large-functions|refactor|flows|architecture` — grafo
+  incremental multi-repo.
+
+### 2. Esteira global por fase (CLI, sem seletores inventados)
+
+| Fase do plano | Automação (comando real) | Produto |
+|----|----|----|
+| Habilitar CRG | `ai-hub ai-hub-sync-crg-workspaces` (apply, ai-hub) | drift zerado; `--check` vira gate permanente da lane |
+| Blast-radius pré-merge | `code-review-graph impact --base origin/dev` na lane | lista de consumers tocados antes de cada PR |
+| Namespace (1100) | `code-review-graph query`/`search` (callers de cada serviço) → rewire DI; `refactor rename --old-name --new-name --kind Class` para renames | search-first automatizado; zero rewire cego |
+| Codemod (1033) | leitura focada: `ast-grep scan --config sgconfig.yml --json` filtrado por `rule_id` → listas por classe; mutação só via `make mod APPLY=Y` | burn-down lists versionadas em `.reports/refactor/` |
+| Regras detection-only | (a) migração no código, ou (b) refinamento no SSOT `config/codegen.yaml` (Infra.codegen.sgconfig) + `make gen APPLY=Y` ×2 fixed-point | nunca hand-edit em `ast-grep-rules/`/`sgconfig.yml` |
+| loc-cap (9) · resíduo | `code-review-graph large-functions` · `dead-code --json --repo <root>` por checkout | listas purgação, adotadas como achados |
+| agents repo | `make mod APPLY=Y` (--update-all provado para snapshots de SUAS 7 regras); `make gen APPLY=Y` = projeções canônicas | conformância do catálogo |
+
+Exemplo imediato de regra-dono: `ban-test-doubles` marca
+`tests/fixtures/forge_governance.py:153` (harness aprovado injetando
+`run_raw`/`run` — não é mock). Proposta: classificação tipada no SSOT
+(`fixtures de harness` isento de `ban-test-doubles`/`test-no-mock`), com
+justificativa no codegen config — NUNCA exceção per-file manual nem
+suppression inline (a regra proíbe; a exceção é da regra, no dono dela).
+Mesma correção para `ban-test-mocks.yml` do package (exceção declarada via
+sobreposição no config do projeto) — a iteração sobe para o dono do flext_infra.
+
+### 3. Piloto de homologação (o que se pede aprovar)
+
+**Sujeito**: passos 1–7 da "Sequência de execução" executados pela esteira
+acima, pousados na branch de integração (`dev` do ai-hub) com deploy recovery
+real na máquina do operador.
+
+**Critérios de aceite measuráveis (4 fontes por item)**:
+1. `make check APPLY=Y` exit 0 na lane E no SHA merged;
+2. `make test APPLY=Y` exit 0 (integrity testmon ok; RED externos fechados em beads com evidência com/sem diff);
+3. `ai-hub ai-hub-sync-crg-workspaces --check` exit 0 (CRG sincronizado e sem drift);
+4. `code-review-graph impact --base origin/dev` limpo de órfãos desautorizados antes do merge;
+5. deploy recovery com `LoadCredentialEncrypted` → receipt no home + probe de ativação;
+6. `ai-hub validate-agents` exit 0 nos homes;
+7. docs citam só handlers declarados (`docs_make_verbs` 9 passed mantido).
+
+**Autoridade**: executor = esta lane; revisor = operador (conferindo burn-down
+por classe e receipts); homologação declarada no bead ag-zrh antes do pouso
+final (passos 8–10). Divergência = absorção `--no-ff` contínua do
+`origin/dev` (ator paralelo já pousou 0.5.0).
+
+**Custo/retorno**: CRG já indexado (graph.db live, watching); custo marginal
+= sync + 2 gates; retorno = blast-radius e callers sempre measuráveis em
+vez de grep ad-hoc, e cancelamento de ~1033 achados por classes automáveis
+em vez de curadoria manual total.
+
+
 ## Riscos de produção e mitigação
 
 - **Divergência lane vs dev (ai-hub)**: ator paralelo pousou ADR-0019/0020 +
