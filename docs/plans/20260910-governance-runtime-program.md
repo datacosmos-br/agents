@@ -27,6 +27,14 @@ runtime é o único veredito.
 
 ## Próximos passos (ordem)
 
+0. **Absorção (2026-09-10, autoridade do operador — monopólio do tema):** o
+   programa de contrato de entrega e lei comportamental
+   (`docs/plans/20260910-delivery-contract-behavioral-law.md`, bead `ag-p4a`)
+   passa a rodar nesta lane. Assorve o escopo agents-repo de ag-zrh.2 (WS-C),
+   herda a Tarefa 3 do plano .kilo (absorvida em `ag-p4a.8`; Tarefa 5
+   superseded pelo corte de-provider), e a contraparte ai-hub segue o prompt
+   da seção 5 daquele plano.
+
 1. Implementar a absorção automática de instruções provider no plano de
    deployment (mesma transação) e levar `deploy --surface skills` ao verde.
 2. PR da lane ai-hub (`fix/opencode-renderer-stale-socket-gate`: renderer +

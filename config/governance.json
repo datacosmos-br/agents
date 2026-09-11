@@ -4,8 +4,10 @@
     "rules": [
       "architecture/engineering-core",
       "coordination/beads-verification",
+      "coordination/operator-alignment",
       "coordination/operator-precedence",
       "coordination/session-governance",
+      "ethics/change-consequence",
       "ethics/professional-integrity",
       "git/gitflow-branch-pr",
       "runtime/strict-execution"
@@ -53,6 +55,9 @@
     "configuration-driven-tests": [
       "rule:python/config-settings-ssot",
       "rule:workflow/runtime-is-reality"
+    ],
+    "consequence-aversion": [
+      "rule:ethics/change-consequence"
     ],
     "context-lifecycle": [
       "rule:coordination/session-governance",
@@ -197,6 +202,9 @@
     ],
     "observable-tests": [
       "rule:testing/observable-runtime"
+    ],
+    "operator-alignment": [
+      "rule:coordination/operator-alignment"
     ],
     "operator-precedence": [
       "document:AGENTS.md",

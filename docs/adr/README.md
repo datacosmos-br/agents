@@ -15,3 +15,4 @@
 | `ADR-0016` | 2026-09-07 | Accepted | rtk is the fleet command and output economy layer; the skill teaches the manual surface, AI Hub owns routing. |
 | `ADR-0014` | 2026-09-07 | Accepted | Capability intake is canonical-lane only, with in-bundle provenance, extends-based dedup, and short slugs at birth. |
 | `ADR-0015` | 2026-09-07 | Accepted | Tag grammar v2: closed namespace set, subject-detector routing per project, versioned managed projections, and supersedes-backed renames. |
+| `ADR-0017` | 2026-09-10 | Accepted | Ethics is primordial; change consequence is authorship; operator alignment is a duty; owners are refactored in place, never paralleled. |
