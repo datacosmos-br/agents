@@ -39,6 +39,28 @@ this as project law; it composes with the project's own house rules.
    cache, scoped `[WIP]`-free commit per wave when green, fast-forward push.
    Open the draft PR once, keep it open, push every wave to its same PR.
 
+## CLI proof kit (all runnable without any UI)
+
+- **`make mod [APPLY=Y]`** (flext-infra `refactor mod`): ast-grep rule
+  application with proven fixed point plus Ruff/Pyrefly/LSP diagnostics;
+  scope a single module via `--module dotted.path` or one facade slot via
+  `--namespace c|m|p|t|u|r|e|s|x`. Prefer dry-run first, then apply.
+- **`make gen [APPLY=Y]`**: every scope/config change regenerates through
+  the generator and proves idempotence (`--mode check` equivalent). Never
+  hand-edit generated surfaces.
+- **Project ast-grep rules** root `ast-grep-rules/` (SSOT anti-hardcode
+  policy) plus the personal `~/.agents/ast-grep-rules/universal/` set;
+  run `ast-grep scan --json` for structured captures, never ad-hoc grep.
+- **code-review-graph (CRG), CLI-only proofs per wave**:
+  `code-review-graph build|update --repo <root>` (full ~27s for ~6.5k
+  nodes; incremental updates otherwise) — required before the wave's
+  proof queries; `dead-code --json` BEFORE cleanup (orphans to exterminate
+  with their consumers, never orphan-prune alone); `impact --files <changed>`
+  AFTER the change (0 impacted nodes outside the rewire is the pass
+  evidence); `query callers_of <symbol>` to prove rewire completeness when
+  deleting a symbol. A not-found query result is NOT evidence of absence —
+  build/update first.
+
 ## Class-to-verb repair map (adapt keys to the project's gates)
 
 | Finding class signature | First canonical action |
