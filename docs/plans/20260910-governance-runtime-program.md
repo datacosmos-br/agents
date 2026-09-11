@@ -25,6 +25,27 @@ runtime é o único veredito.
 | 5 | model-pipeline daemon | ⚠️ lane de outro ator | Serviço failed; 2 intents órfãos `submitted` removidos com snapshots de evidência em `~/tmp/opencode/`; a falha restante vive na lane ativa `ai-hub-wt/model-pipeline-v3` — não invadir; deploy de skills não depende mais dela |
 | 6 | **F3 — prova produtiva (ag-zrh.4)** | ⏳ PENDENTE de F1 | Sessão opencode nova real: skill dona carrega texto canônico na versão atual, `python-production` inexistente, zero dedução |
 
+## Fase 1 em execução — Verde obrigatório ai-hub (lane fix/green-baseline)
+
+Worktree dedicada: `~/ai-hub-wt/green-baseline` (base fix/current-pointer-transport,
+4 commits de walker/pointer + composed surfaces). Estado medido:
+
+- Baseline: 2564 diagnósticos → atual: **2476** (lint 37, pyrefly 127, mypy 16,
+  pyright 38, silent-failure 40, namespace 1124, codemod 1044, duplication 36,
+  loc-cap 9, boundary 2, tier-whitelist 1, markdown 2).
+- Corrigido: lint tail (os-sep-split, undefined names em tests quebrados
+  commitados — ForgeGovernanceGhDouble rename, imports r/m/Path, S105 stub,
+  magic 409→httpx.codes.CONFLICT, docstring __init__, too-many-statements no
+  walker via _walk_pointer_segments), reconstruct de
+  test_aihub_forge_governance_check_context (gerações velha+nova coexistindo:
+  7 duplicados módulo removidos, 5 testes mortos aninhados restaurados como
+  métodos reais da classe, 4 helpers perdidos no merge do ator restaurados).
+- `make mod APPLY=Y`: 197 achados detection-only exigem reparo por dono
+  (não auto-actionable) — próximo lote.
+- Loop de continuação (próximas sessões): make fix → make mod → reparos por
+  classe de achado (namespace/codemod em _models, pyrefly/pyright typing via
+  t.*/p.*, silent-failure) → make check exit 0 → PR + merge --no-ff.
+
 ## Próximos passos (ordem)
 
 0. **Absorção (2026-09-10, autoridade do operador — monopólio do tema):** o
