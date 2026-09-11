@@ -197,6 +197,9 @@
       "rule:runtime/zero-residue",
       "skill:safe-delete"
     ],
+    "instruction-design-evidence": [
+      "document:docs/research/agent-instruction-design.md"
+    ],
     "lane-ownership": [
       "rule:coordination/fix-forward-collaboration",
       "rule:git/gitflow-branch-pr"
