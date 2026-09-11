@@ -40,11 +40,7 @@ def test_skill_extends_layers_compose_general_to_specialized(
     """
 
     skills = {skill.name: skill for skill in governance_bundle.skills}
-    rooted = {
-        skill.name
-        for skill in governance_bundle.skills
-        if not skill.parents
-    }
+    rooted = {skill.name for skill in governance_bundle.skills if not skill.parents}
     assert rooted, "catalog has no root owner: composition has no base layer"
     for skill in governance_bundle.skills:
         if not skill.parents:
