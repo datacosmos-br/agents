@@ -1,4 +1,4 @@
-# Governance Runtime Program — Plano de Ação e Status (ag-zrh)
+# Governance Runtime Program — Plano de Ação e Status (ag-zrh; esteira ag-q4w1 · CRG ag-nq7q · piloto ag-m9lu)
 
 Lane: `feat/governance-runtime-program` (repo `agents`, integração `dev`).
 Autoridade: operador (monopólio pleno dos temas, sessão 2026-09-10).
@@ -23,6 +23,9 @@ runtime é o único veredito.
 | 3 | **F2 — corte temático (ag-zrh.3)** | 🔶 código completo; fechamento bloqueado por ag-zrh.2 | Absorção python-production em `rules/python.md` + `config-settings-ssot.md` (commit `0f7084fd`); cópias estrangeiras python-production/ghi-list/pr-list aposentadas no mesmo corte (resíduo zero, projeções canônicas de command intactas); wip-beads processor adotado no repo (`scripts/wip-beads.sh` + `bd_json_to_csv.py` provados em runtime); inviolable-rules colapsada a router + eval reescrito no mesmo corte; flext-boundary adotado como perfil project-wide (66 agents, audit limpo); de-provider (chief-of-staff, 4 agents CLAUDE.md→neutro, menções Kilo); caminhos quebrados corrigidos (opencode-handoff); SHAs do mcp-builder → `references/sdk-docs.md` (dono único); citações de dono nos skills com invariantes; make-check → project-wide/shell; contrato de contagem 66/63/128 em AGENTS.md. Gates: `gen` ×2 fixed point, `audit` exit 0 (128/14/66/63), `waza` 128/128 suítes, `check` exit 0. Commits `d68e2d8a`, `56fcebdc`, `0f7084fd` |
 | 4 | **F1 — distribuição pelo dono (ag-zrh.2)** | 🔶 EM ANDAMENTO — cadeia ai-hub 4 defeitos radicais, 3 corrigidos | (1) Packaging: wheel sem a superfície de assets → **CORRIGIDO** (PR #734 merge `89294582e` no dev do ai-hub; build verde com 394 arquivos; lane aposentada com ancestor proof). (2) Renderer opencode: gate velho home-relative sobre campo morto `socket_path_json` → **CORRIGIDO** na lane `fix/opencode-renderer-stale-socket-gate` (commit `625601fb`; provado: 2559 diagnósticos pré-existentes idênticos com/sem o diff). (3) Registry poluído por teste: 8 projetos pytest (checkout-0..7) no `workspaces.json` de produção → **PODRADOS** + bug bead criado (isolamento de teste do workspace-discovery). Credenciais: forma canônica descoberta — `systemd-run --user -p LoadCredentialEncrypted=...` (sem exportar segredo). (4) Classificação de projetos: **CORRIGIDO POR DETECÇÃO** (origin owner ∈ owners → internal; fora → third_party_fork; sem registro por-repo, a pedido do operador). **Bloqueiro atual**: composição de agents atinge arquivos de instrução provider não-gerenciados (ex.: `CLAUDE.md` do steampipe) — desenho fechado: absorver o conteúdo local para o bloco local do AGENTS.md dentro da MESMA transação de plano; implementação em curso |
 | 5 | model-pipeline daemon | ⚠️ lane de outro ator | Serviço failed; 2 intents órfãos `submitted` removidos com snapshots de evidência em `~/tmp/opencode/`; a falha restante vive na lane ativa `ai-hub-wt/model-pipeline-v3` — não invadir; deploy de skills não depende mais dela |
+| 5a | P0 CRG sync (ag-nq7q) | ⏳ PENDENTE | drift medido: `ai-hub ai-hub-sync-crg-workspaces --check` exit 2 (10+ workspaces: steampipe, worker-vllm, ardupilot, invest, typeshed…) |
+| 5b | Esteira global (ag-q4w1) | ⏳ PROPOSTA para aprovação | seção "PROPOSTA" abaixo; mutação só por SSOT codegen + `make gen APPLY=Y`; `make mod` agrega 48+package rules |
+| 5c | Piloto homologação (ag-m9lu) | ⏳ PROPOSTA para aprovação | 7 critérios measuráveis → pouso ai-hub dev |
 | 6 | **F3 — prova produtiva (ag-zrh.4)** | ⏳ PENDENTE de F1 | Sessão opencode nova real: skill dona carrega texto canônico na versão atual, `python-production` inexistente, zero dedução |
 
 ## Fase 1 em execução — Verde obrigatório ai-hub (lane fix/green-baseline)
@@ -202,7 +205,7 @@ sobreposição no config do projeto) — a iteração sobe para o dono do flext_
 
 ### 3. Piloto de homologação (o que se pede aprovar)
 
-**Sujeito**: passos 1–7 da "Sequência de execução" executados pela esteira
+**Sujeito** (bead ag-m9lu): passos 1–7 da "Sequência de execução" pela esteira (bead ag-q4w1, dependente do sync CRG ag-nq7q)
 acima, pousados na branch de integração (`dev` do ai-hub) com deploy recovery
 real na máquina do operador.
 
