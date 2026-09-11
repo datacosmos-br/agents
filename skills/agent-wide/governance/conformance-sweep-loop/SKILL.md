@@ -1,9 +1,9 @@
 ---
 name: conformance-sweep-loop
-description: 'conformance sweep loop, class-wave repair map, git-dep bump discipline, declaration-first scoping, crash-loop incident evidence'
+description: 'conformance sweep loop, class-wave repair map, git-dep bump, declaration-first scoping'
 license: MIT
 metadata:
-  aihub.tags: '["decision:aihub-37x3e","decision:aihub-l42it-session-v2","decision:operator-2026-09-08-full-standards","effective:2026-09-11"]'
+  aihub.tags: '["decision:ADR-0014","effective:2026-09-11","usage:on-demand"]'
   version: 1.0.0
 ---
 
