@@ -3,7 +3,7 @@ name: fleet-conformance-sweep
 description: Run the FLEXT trio/fleet conformance sweep using the frozen-ruler phases; records ruler, discovers, gates decisions, lands per-repo with runtime proofs.
 argument-hint: "[optional repo-filter, e.g. charts|gitops|root]"
 metadata:
-  aihub.tags: '["effective:2026-09-11","route:project"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-09-11","route:project"]'
 ---
 
 # Fleet conformance sweep (plan v5 execution recipe)
@@ -18,13 +18,35 @@ thresholds, strict modes), and every target repo+SHA. All counts in this
 sweep refer to this ruler only; re-freeze when the owner tip moves.
 
 ## G1 — discovery (read-only, start immediately)
-1. `class_prefix`/`proto_not_runtime`/`NS-STRUCT` violations → per-class
-   consumer/cost tables (ast-grep). Output to the epic, not your session.
-2. Facade contract audit: `api.py` class vs stem, nested MRO base count,
-   ENFORCE-047/049 base order violations with exact classes.
-3. Test-vs-runtime contract drift: for every pyrefly `missing-attribute` on
-   fleet facades, verdict per call site (rename test vs dead API).
+Automation surface order (research 2026-09-11):
+1. **Graph refresh first** (`rules/workflow/graph-truth-freshness.md`):
+   `code-review-graph status` → `update --brief` (or `build` post-rewrite)
+   scoped `--repo <root>` — never reason from a graph built on a shaled
+   branch (the fleet graphs were built on `fix/flext-pair-coherent-repin@
+   b68347b7`, 2026-09-07; stale until refreshed).
+2. **Facade census at the owner tooling** (cheaper and stricter than grep):
+   `flext-infra refactor census --repository-root <repo> --output-format
+   json` and `flext-infra refactor namespace-enforce --repository-root
+   <repo> --namespace c|m|p|u ...` produce the D1/D2 consumer and composition
+   tables directly from Rope — use them as the authoritative inventory;
+   ast-grep is the *pattern-level* complement, not the owner of this data.
+3. **ast-grep for fossil patterns** (branch-agnostic): global rules live in
+   `~/agents/ast-grep-rules/universal`; per-project rules are generator
+   output (`sgconfig.yml` ← `config/codegen.yaml`, `make gen` refreshes).
+   Ad-hoc scans: `ast-grep scan --rule <file> <path>`; new recurring lint
+   goes to the project rule dir via the generator SSOT, never a hand edit.
+4. **`make mod`** (`flext-infra refactor mod --apply`) executes approved
+   ast-grep rule rewrites at the declared scope — always the dispatcher,
+   never direct ast-grep, so LSP/Rope telemetry stays consistent.
+5. **CRG decision tables**: `code-review-graph dead-code --json` (dead
+   Protocol candidates for D4), `impact --files <changed> [--base <sha>]`
+   (rename blast radius for the F4 cost table), `refactor suggest` (rename
+   candidates). Read-only verbs only during discovery; renames land through
+   G4 discipline.
 
+Continue with D1–D4 as before, now equipped: D1 charts consumer inventory
+(census + impact), D2 gitops facade inventory (namespace-enforce + query),
+D3 helper contract audit (search + tests diff), D4 proto census (dead-code).
 ## G2 — decision gate
 Present A(internal-only) / B(big-bang rename) / C(mixed) WITH the costed
 tables. Only consumer-facing mutation waits here.
