@@ -101,8 +101,9 @@ Read those skills and root `AGENTS.md`; this file adds only FLEXT domain law.
   through the active workspace root Make dispatcher. A missing or broken verb
   is repaired generically in `flext-infra`, then reused by workspace and
   standalone projects; it is never bypassed.
-- Invoke the standard Make verbs directly. Mutating verbs use only `APPLY=Y`;
-  agents never add `WHAT=` or `PROJECT=` to setup, generation, repair,
+- Invoke the standard Make verbs directly. Mutating verbs mutate by default;
+  `APPLY=N` is the only accepted dry-run override. Agents never add `WHAT=`
+  or `PROJECT=` to setup, generation, repair,
   formatting, checking, or testing.
 - Structural rewires run through `make mod`. Its canonical FLEXT engine
   composes `ast-grep` rewrites, Rope semantic refactors, and real

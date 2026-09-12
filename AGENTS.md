@@ -25,9 +25,9 @@
     operator-authorized, never as satisfied.
 13. Root Make only: diagnostics, validation, generation, tests, Waza,
     publication, and deployment run only through selector-free verbs in the
-    repository root Makefile. `APPLY=Y` is mandatory for `fix`, `fmt`, `check`,
-    and every test verb. A full suite has its own verb, first runs the
-    incremental verb, and uses the same persistent external testmon database.
+    repository root Makefile; bare verbs mutate (`APPLY=N` = dry-run). A full
+    suite has its own verb, first runs the incremental verb, and uses the same
+    persistent external testmon database.
 14. Red means red: a warning, skip, empty output, missing tool, missing report,
     zero collection, caught exception, retry, or normalized failure is RED. The
     only acceptable zero-execution test result is a typed incremental testmon
@@ -65,9 +65,8 @@ and reconciles runtime state.
 
 Read [README.md](README.md), [rules](rules), [skills](skills), and
 [ADRs](docs/adr/README.md) before mutation. Use only selector-free root Make
-verbs and run `make setup` before development gates. `setup`, `fix`,
-`fmt`, `check`, and every test verb require exactly `APPLY=Y`; raw-tool and
-inline substitutes are prohibited.
+verbs and run `make setup` before development gates; bare verbs mutate
+(`APPLY=N` = dry-run). Raw-tool and inline substitutes are prohibited.
 
 Prove changed behavior through the public bundle load before adapting tests.
 Every Python test invocation, including focused, full, and CI, must keep the

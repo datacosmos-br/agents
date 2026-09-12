@@ -62,8 +62,10 @@ história, não scratch. Proibido reescrever do zero. Obrigatório:
    MESMO commit.
 4. **.bak dentro de templates/ é defeito**: descoberta de templates enumera o
    diretório; staging nunca no repositório.
-5. **Descriminar flag de ambiente de arg CLI**: `APPLY=Y` (env) é o flag
-   exterminado; `--apply` (arg interno de CLI em release/codegen init/deps) é
-   contrato interno vigente — não confundir, não remover.
+5. **Descriminar flag de ambiente de arg CLI**: o antigo flag de ambiente que
+   exigia confirmação (`APPLY=Y`) foi exterminado — mutação é o default e
+   `APPLY=N` é o único override de dry-run explícito; `--apply` (arg interno
+   de CLI em release/codegen init/deps) é contrato interno vigente distinto —
+   não confundir, não remover.
 6. **Prova por render**: qualquer mudança de template exige
    `pytest <framework de conform>` até ponto fixo, nunca "deve renderizar".

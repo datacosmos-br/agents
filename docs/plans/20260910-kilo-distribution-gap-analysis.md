@@ -31,7 +31,7 @@ and enforce all ADR-defined contracts.
 ## Constraints
 - ADR-0008: `GovernanceBundle` is the sole read-only semantic boundary; AI Hub owns
   runtime effects. This repo ships meaning only.
-- Rule 5 (Root Make only): all checks run through selector-free Makefile verbs with `APPLY=Y`.
+- Rule 5 (Root Make only): all checks run through selector-free Makefile verbs, mutating by default (`APPLY=N` is the explicit dry-run override).
 - Planning mode: no source mutations; this plan describes changes an implementation agent executes.
 
 ## Gap Inventory

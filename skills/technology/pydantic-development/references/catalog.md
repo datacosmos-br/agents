@@ -77,7 +77,8 @@ closed at flext-core first.
 ## 6. Evidence and gates
 
 Run diagnostics, generation, repair, formatting, checks, and tests only
-through the root Make dispatcher (`APPLY=Y` on mutating and test verbs).
+through the root Make dispatcher (mutating and test verbs mutate by default;
+`APPLY=N` is the explicit dry-run override).
 Before tests, exercise the real runtime path (import the facade, validate a
 representative payload). The boundary audit command
 (`$pydantic-boundary-audit`) inventories Section 19 violations per repository

@@ -18,8 +18,9 @@ code that no longer exists.
   for incremental, or `code-review-graph build` after rewrites, scoped
   `--repo <root>`.
 - Graph mutations (`refactor rename`) are writes: pair them with the same
-  gate discipline as any code change (`APPLY=Y`, scoped commit, gates on
-  merged SHA). Prefer `impact`/`dead-code`/`search` (read-only) as decision
+  gate discipline as any code change (mutation is the verb default, scoped
+  commit, gates on merged SHA). Prefer `impact`/`dead-code`/`search`
+  (read-only) as decision
   inputs; emit rename lists, then land renames through the project's own
   tooling (ast-grep rules, `make mod`), not by graph-side edit.
 - `dead-code --json` and `impact --files <changed>` are the cheap pre-cost
