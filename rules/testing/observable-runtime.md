@@ -34,3 +34,20 @@ first exception, cause, and raw traceback escape unchanged.
 
 See [`runtime-is-reality.md`](../workflow/runtime-is-reality.md) for the
 runtime-first owner.
+
+## Fixture composition and the fail loop (operator ruling, 2026-09-12)
+
+<!-- Why: registers 2026-09-12 flext x ai-hub x agents operator rulings on test contracts (R21/R22/R25); extends this owner rather than duplicating it -->
+Fixtures compose the gen-generated lazy-import pattern: one nested class per
+module, built from `settings`/`config`/`c`/`t`/`p`/`m`/`u` and the shared
+conftest as the tests' single source of truth (`u.Tests.*` builders), never a
+second ad hoc construction path.
+
+A red test is fixed at its contract — conftest, the `c`/`t`/`p`/`m`/`u`
+facades, or the fixture itself — never by loosening an assertion, skipping,
+or marking it xfail. Classify every red test first: one that is fake, mocked,
+exercises implementation shape, or bypasses the public interface is deleted
+— the test and any test-only production symbol it required — and a real
+failure is fixed at its root-cause owner and rewired to every consumer.
+Lowering a coverage floor to complete this extermination is acceptable; every
+surviving test stays a real functional test.

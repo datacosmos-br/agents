@@ -36,3 +36,14 @@ fixtures, or documentation.
 A repository-local `.venv` is a regenerable local runtime artifact, never a
 source or shared dependency. It is never copied or reused across checkouts; each
 physical repository reconstructs it through its declared setup owner.
+
+## Scratch root is user-home-scoped, never `/tmp` or in-tree (operator ruling, 2026-09-12)
+
+<!-- Why: registers 2026-09-12 flext x ai-hub x agents operator ruling A' on this file, the existing storage-placement owner -->
+`TMPDIR`, `GOTMPDIR`, the pytest `basetemp`, and mise staging live under
+`$HOME/tmp/.flext-runtime<absolute project root>/scratch` — never `/tmp` and
+never inside the checked-out tree. The journal, testmon cache, and
+`__pycache__` stay beside the checkout, not under scratch. A `clean` verb
+that only sweeps an in-tree `.test-tmp` while scratch actually lives at the
+`$HOME/tmp` root is incomplete and leaks; it is corrected at its Make/codegen
+owner to sweep the real location.

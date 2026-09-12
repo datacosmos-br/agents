@@ -25,3 +25,16 @@ and never serialize work whose steps share no state.
 Compose with `shared-file coordination` (rule file),
 `session governance` (rule file), and
 `bead verification` (rule file).
+
+## Model and effort selection follows the cost matrix (operator ruling, 2026-09-12)
+
+<!-- Why: registers 2026-09-12 flext x ai-hub x agents operator ruling R27 on this file, the existing subagent-dispatch owner -->
+Route subagent dispatch by a cost index, not by habit: relative price weight
+Haiku 4.5 = 0.5, Sonnet 5 = 1, Opus 5 = 2.5, Fable 5.1 = 5, multiplied by an
+effort factor (low ≈ 0.25, medium ≈ 0.5, high = 1). Mechanical or bounded work
+(search, read, verify) goes to Haiku at low effort or Sonnet at medium;
+routine edits and multi-file feature work go to Sonnet at medium or high;
+hard debugging, refactors, and architecture decisions go to Opus at high
+effort; Fable is reserved for long-horizon work at low or medium effort only.
+Decisions, merges, and operator dialogue never delegate — they stay with the
+coordinator regardless of cost.
