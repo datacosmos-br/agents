@@ -41,13 +41,15 @@ this as project law; it composes with the project's own house rules.
 
 ## CLI proof kit (all runnable without any UI)
 
-- **`make mod [APPLY=Y]`** (flext-infra `refactor mod`): ast-grep rule
-  application with proven fixed point plus Ruff/Pyrefly/LSP diagnostics;
-  scope a single module via `--module dotted.path` or one facade slot via
-  `--namespace c|m|p|t|u|r|e|s|x`. Prefer dry-run first, then apply.
-- **`make gen [APPLY=Y]`**: every scope/config change regenerates through
-  the generator and proves idempotence (`--mode check` equivalent). Never
-  hand-edit generated surfaces.
+- **`make mod [APPLY=N]`** (flext-infra `refactor mod`): mutates by default;
+  ast-grep rule application with proven fixed point plus Ruff/Pyrefly/LSP
+  diagnostics; scope a single module via `--module dotted.path` or one facade
+  slot via `--namespace c|m|p|t|u|r|e|s|x`. Prefer dry-run (`APPLY=N`) first,
+  then the default mutating run.
+- **`make gen [APPLY=N]`**: mutates by default; every scope/config change
+  regenerates through the generator and proves idempotence (`--mode check`
+  equivalent, or pass `APPLY=N` for dry-run). Never hand-edit generated
+  surfaces.
 - **Project ast-grep rules** root `ast-grep-rules/` (SSOT anti-hardcode
   policy) plus the personal `~/.agents/ast-grep-rules/universal/` set;
   run `ast-grep scan --json` for structured captures, never ad-hoc grep.

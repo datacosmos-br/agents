@@ -84,8 +84,8 @@ regenerate it, never a reason to retain the old class or edit the export by hand
 ## Generate and migrate atomically
 
 Edit only the declared configuration, schema, template, or typed source owner.
-Run the selector-free root `gen` verb with `APPLY=Y`, regenerate every affected
-facet/root/consumer, then repeat it and require zero change. A generated file
+Run the selector-free root `gen` verb — mutation is the default — regenerate
+every affected facet/root/consumer, then repeat it and require zero change. A generated file
 must state its writable owner, prohibit hand edits, and name its exact root Make
 regeneration verb. flext-infra lands its own regenerated outputs with template
 changes.
@@ -100,7 +100,8 @@ or old/new coexistence is RED and is corrected at flext-infra.
 Execute diagnostics, generation, formatting, correction, checks, Waza, tests,
 build, publication, and deployment only through selector-free verbs in the
 active repository's root Makefile. `fix`, `fmt`, `check`, and every test verb
-require exactly `APPLY=Y`; every other mutation uses the same acknowledgement.
+mutate by default; `APPLY=N` is the explicit dry-run override. Every other
+mutation uses the same override.
 Repair a missing standard verb at the Make/codegen owner rather than invoking a
 raw underlying tool.
 

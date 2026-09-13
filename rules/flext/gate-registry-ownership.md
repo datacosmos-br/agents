@@ -28,4 +28,17 @@ those localized a fact the SSOT already owns.
 - Success payloads are typed values (e.g. `r[int]` byte counts);
   `FlextResult[None]` and success-with-`None` are contract violations.
 
+## Every custom validation is re-derived, not just gates (operator ruling, 2026-09-12)
+
+<!-- Why: registers 2026-09-12 flext x ai-hub x agents operator ruling R26; generalizes this owner's existing SSOT-derivation law past lint gates -->
+The same law extends past linting gates to every custom validation, warning,
+or block a project runs — hooks, guards, enforcement rules, MCP checks. Each
+one is re-evaluated for the SSOT-derivation contract above: no hardcoded
+list/roster/prefix, a documented rule it enforces, and no selective silencing
+or disabling once it is correctly implemented. The validation's own logic
+consumes rules, data, config, and settings from their typed SSOT in context;
+it never carries a literal list of its own. A failing validation is fixed at
+its owner the moment it is found; genuine doubt about correctness escalates
+to the operator rather than being silenced.
+
 See also: `flext-venv-hermeticity.md`, `scanner-closure.md`.

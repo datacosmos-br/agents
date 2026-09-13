@@ -39,12 +39,11 @@ instead of committing.
 
 ## Regeneration note policy (2026-09-10)
 
-Generated file headers read `@flext-regenerate: make gen` — without `APPLY=Y`.
-`make gen` is provisioning/idempotent-safe with its own fixed-point verify, so
-the regeneration note must not require the mutation guard. The corrected guard
-pattern is `ifneq ($(filter-out Y Y,$(strip $(APPLY))),)` — `$(filter-out PATTERN,TEXT)`: pattern first, text second. An inverted argument
-order makes the guard always error. Mutation verbs other than `gen` still
-require `APPLY=Y`; never weaken their guards.
+Generated file headers read `@flext-regenerate: make gen` with no apply
+acknowledgement — `make gen` mutates by default and is provisioning/
+idempotent-safe with its own fixed-point verify, so the regeneration note
+needs no mutation guard. Every mutating verb mutates by default; `APPLY=N` is
+the explicit dry-run override — never weaken that guard.
 
 ## Superproject PR merge playbook (release lane → integration branch)
 

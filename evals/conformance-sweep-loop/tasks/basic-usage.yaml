@@ -1,11 +1,13 @@
 id: conformance-sweep-loop-class-wave-001
 name: Sweep findings by class
-description: Exercise gate-class inventory, owner mapping, and wave repair.
+description: Exercise gate-class inventory, owner mapping, wave repair, git-dep bump, declaration-first scoping.
 tags: [conformance, sweep, happy-path]
 inputs:
   prompt: |-
     |-
-    Run a conformance sweep loop over the measured findings: inventory by gate and class, map each class to its owning rule or codemod, repair wave by wave, revalidate after each wave, and close with a loop receipt only at zero residue.
+    Run a conformance sweep loop over the measured findings: inventory by gate and class, map each class to its owning rule or codemod, repair wave by wave, revalidate after each wave, and close with a loop receipt only at zero residue. Apply the external git-dependency bump rule before pinning: fetch origin, check upstream fixes, install with --no-cache, verify surface, determine interpreter. Apply declaration-first scoping: declare scan scope at manifest SSOT (manifest → conform → pyproject [tool.<name>.<gate>] → validator) BEFORE triage, regenerate through generator, prove at conformance fixed point.
+  files:
+  - path: scenario.yaml
 expected:
-  output_contains: [inventory, class, owner, wave, revalidate, zero residue, receipt]
-  output_not_contains: [hardcoded class list, skipped revalidation]
+  output_contains: [inventory, class, owner, wave, revalidate, zero residue, receipt, git-dep bump, declaration-first, manifest, scope, conform, pyproject, generator, fixed point]
+  output_not_contains: [hardcoded class list, skipped revalidation, stale pin, cached wheel, triaging without scope]

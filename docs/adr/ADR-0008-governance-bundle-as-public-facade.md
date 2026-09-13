@@ -42,7 +42,8 @@ all adaptation and effects. Provider-generated files identify that owner and
 the exact regeneration command; they never become canonical input.
 
 The development surface is the standard Make vocabulary. Mutating correction
-targets require the exact `APPLY=Y` acknowledgement. No selector is accepted.
+targets mutate by default; `APPLY=N` is the explicit dry-run override. No
+selector is accepted.
 Every test run, including incremental, full, and CI runs, goes through a
 dedicated root Make verb and the same external persistent pytest-testmon
 database. `make test-full` first runs `make test`, then runs

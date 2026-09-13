@@ -20,9 +20,10 @@ argument, environment-dispatched sub-operation, file/match filter, inline
 Python, raw tool, private module, wrapper, alias, or compatibility entry point
 is an operational substitute.
 
-`fix`, `fmt`, `check`, and every test verb require exactly `APPLY=Y`. Every
-other mutating verb uses that same acknowledgement. Do not introduce a second
-apply flag, truthy alias, dry-run inversion, or hidden mode. A distinct
+`fix`, `fmt`, `check`, and every test verb mutate by default; `APPLY=N` is the
+explicit dry-run override. Every other mutating verb uses that same override.
+Do not introduce a second apply flag, truthy alias, dry-run inversion, or
+hidden mode. A distinct
 operation receives a distinct public root verb; a missing verb is repaired at
 the Make/codegen owner before work continues.
 

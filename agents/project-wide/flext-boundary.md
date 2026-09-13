@@ -66,8 +66,9 @@ reportar remoção.
   explícitos (nunca `git add -A`); nunca `reset/checkout -- . /stash/rebase/
   force-push`; preserve trabalho alheio (fix-forward); nada em `/tmp` (use a
   área de trabalho temporária declarada pelo operador); nunca escrever na
-  configuração SSH ou nas chaves do operador; `APPLY=Y` nos verbos que
-  exigem; propagar rápido — lanes curtas, merge verde em horas.
+  configuração SSH ou nas chaves do operador; mutação é o default dos verbos,
+  `APPLY=N` só para dry-run explícito; propagar rápido — lanes curtas, merge
+  verde em horas.
 - Relatório final sempre: comando, cwd, exit, saída decisiva por passo, e o
   estado de integração+runtime de cada repo tocado.
 - Estado operacional (lane aberta, missão herdada, release instalada) é
