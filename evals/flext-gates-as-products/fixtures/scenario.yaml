@@ -1,0 +1,24 @@
+objective: add the loc-cap gate as an owned product
+project: flext-infra
+gate:
+  id: loc-cap
+  owner: flext_infra.gates.loc_cap
+  registry_entry: config/tooling.yaml tools.gates.loc-cap
+  vocabulary_row: gate class loc-cap registered beside its registry entry
+  budget_rows:
+    time-seconds: derived from the registry entry
+    memory-mb: derived from the registry entry
+    tokens: derived from the registry entry
+  primitive: atomic gate run with one typed Issue per over-cap module
+  config_key: Infra.codegen.loc_cap.max_lines
+projections:
+  - Makefile
+  - docs/gates.md
+fixed_point:
+  generations: 2
+  second_pass_diff: empty
+rejects:
+  - hardcoded budget
+  - orphan gate row
+  - hand-edited projection
+  - gate without a declared owner

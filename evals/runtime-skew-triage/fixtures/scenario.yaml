@@ -1,0 +1,33 @@
+objective: triage a reported hook daemon skew
+service: ai-hub-hooks.service
+publisher:
+  project: ai-hub
+  release: 0.4.9+abc123
+  owner: ai-hub deploy
+installed:
+  binary: ~/.local/share/ai-hub/runtime/current/bin/ai-hub
+  release: 0.4.8+dc0e9d4e3d83
+running:
+  unit_state: active
+  loaded_release: 0.4.8+dc0e9d4e3d83
+skew:
+  kind: installed behind publisher
+  owner: ai-hub deploy transaction
+cas_conflict:
+  stage: active snapshot flip
+  symptom: compare-and-swap rejected facts the publisher itself mutated
+  root_cause_candidates: [fetch-publish non-atomicity, stale intent]
+recovery:
+  mode: lockstep
+  steps:
+    - build from the integrated commit
+    - deploy the release transaction
+    - restart the unit through systemctl --user
+  evidence:
+    - ai-hub daemon-status exit 0
+    - journalctl --user -u ai-hub-hooks.service shows the new release id
+rejects:
+  - version guessing
+  - single-sided proof
+  - ownerless skew
+  - unverified recovery
