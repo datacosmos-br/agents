@@ -2,9 +2,8 @@
 
 from __future__ import annotations
 
-from typing import Any
-
 import json
+from typing import Any
 
 
 def parse_shipment(raw: str) -> dict[str, Any]:

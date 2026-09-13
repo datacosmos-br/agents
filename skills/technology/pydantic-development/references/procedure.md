@@ -37,10 +37,10 @@ facade letter has exactly one concern:
 | `config` | static rules | validated declarative rules from `config/*.yaml`, exposed as `config.<Namespace>.*` |
 
 ```python
-from flext_core import config, settings   # consumption is single-form
+from flext_core import config, settings  # consumption is single-form
 
-workers = settings.Dispatcher.workers     # runtime-tunable knob
-strict = config.Dispatcher.strict_mode    # validated static rule
+workers = settings.Dispatcher.workers  # runtime-tunable knob
+strict = config.Dispatcher.strict_mode  # validated static rule
 ```
 
 - `settings` models read the environment; leaf modules never touch `os.environ`

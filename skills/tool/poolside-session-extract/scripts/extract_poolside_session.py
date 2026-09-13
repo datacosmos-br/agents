@@ -323,9 +323,7 @@ def _generate_handoff(
             ts = turn.get("timestamp", "")
 
             if role == "user":
-                lines.append(f"### User [{ts}]")
-                lines.append(turn.get("content", ""))
-                lines.append("")
+                lines.extend((f"### User [{ts}]", turn.get("content", ""), ""))
 
             elif role == "tool_call":
                 tool_name = turn.get("tool_name", "unknown")
@@ -366,14 +364,14 @@ def _generate_handoff(
                 status = (
                     "OK" if success else "FAILED" if success is not None else "unknown"
                 )
-                lines.append(f"### Tool Result: `{tool_name}` [{status}] [{ts}]")
-                lines.append(obs)
-                lines.append("")
+                lines.extend(
+                    (f"### Tool Result: `{tool_name}` [{status}] [{ts}]", obs, "")
+                )
 
             elif role == "reasoning":
-                lines.append(f"### Reasoning [{ts}]")
-                lines.append(f"> {turn.get('content', '')}")
-                lines.append("")
+                lines.extend(
+                    (f"### Reasoning [{ts}]", f"> {turn.get('content', '')}", "")
+                )
 
     # Tool call summary
     if acp_summary["tool_calls"]:

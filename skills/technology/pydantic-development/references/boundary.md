@@ -4,11 +4,11 @@ Parse untrusted input exactly once, at the boundary — JSON always through
 Pydantic:
 
 ```python
-model = Shipment.model_validate(payload)            # dict -> model
-model = Shipment.model_validate_json(raw)           # JSON -> model (single pass)
+model = Shipment.model_validate(payload)  # dict -> model
+model = Shipment.model_validate_json(raw)  # JSON -> model (single pass)
 model = Shipment.model_validate(dto, from_attributes=True)  # dataclass/ORM -> model
-payload = u.model.dump(model)                        # model -> JsonMapping
-raw = model.model_dump_json(indent=2)               # model -> JSON
+payload = u.model.dump(model)  # model -> JsonMapping
+raw = model.model_dump_json(indent=2)  # model -> JSON
 ```
 
 - Never `Model.model_validate(json.loads(raw))`; the direct JSON entry point
@@ -22,7 +22,9 @@ raw = model.model_dump_json(indent=2)               # model -> JSON
 
 ```python
 def handler(raw: str) -> r[t.JsonMapping]:
-    return u.model.validate_value(t.TypeAdapters.json_mapping_adapter(), raw, from_json=True)
+    return u.model.validate_value(
+        t.TypeAdapters.json_mapping_adapter(), raw, from_json=True
+    )
 ```
 
 - `TypedDict` never crosses a public boundary as a contract; if an upstream
@@ -47,7 +49,9 @@ def handler(raw: str) -> r[t.JsonMapping]:
   `ascii_only`), and reusable aliases declared in `t`:
 
 ```python
-type MachineId = Annotated[str, mp.StringConstraints(pattern=r"^[a-z0-9-]+$", to_lower=True)]
+type MachineId = Annotated[
+    str, mp.StringConstraints(pattern=r"^[a-z0-9-]+$", to_lower=True)
+]
 ```
 
 - Validator modes: `after` (default, typed — first choice), `before` (raw
@@ -76,8 +80,8 @@ type MachineId = Annotated[str, mp.StringConstraints(pattern=r"^[a-z0-9-]+$", to
   duck-typing flag:
 
 ```python
-outer.model_dump(polymorphic_serialization=True)   # ok — models/dataclasses
-outer.model_dump(serialize_as_any=True)            # forbidden — applies to every value
+outer.model_dump(polymorphic_serialization=True)  # ok — models/dataclasses
+outer.model_dump(serialize_as_any=True)  # forbidden — applies to every value
 ```
 
   Per-field duck typing, when the contract genuinely requires it, uses

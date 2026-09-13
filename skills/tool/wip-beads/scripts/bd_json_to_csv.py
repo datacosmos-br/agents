@@ -22,9 +22,7 @@ COLUMNS = [
 
 def main() -> None:
     if len(sys.argv) != 3:
-        raise SystemExit(
-            "usage: bd_json_to_csv.py <bd-list.json> <wip-beads.csv>"
-        )
+        raise SystemExit("usage: bd_json_to_csv.py <bd-list.json> <wip-beads.csv>")
     source = Path(sys.argv[1])
     target = Path(sys.argv[2])
     data = json.loads(source.read_text(encoding="utf-8"))

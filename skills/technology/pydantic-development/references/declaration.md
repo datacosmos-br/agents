@@ -11,9 +11,10 @@ in a function scope.
 
 ```python
 class Node(m.FrozenModel):
-    child: Node | None = None      # ok — module-level, resolves itself
+    child: Node | None = None  # ok — module-level, resolves itself
 
-Node.model_rebuild()               # violation — fix the declaration owner
+
+Node.model_rebuild()  # violation — fix the declaration owner
 ```
 
 Fix the owner (export the symbol through the correct facade, break the cycle
@@ -29,7 +30,7 @@ provably cannot know its types before runtime, documented at that owner.
 
 ```python
 from flext_core import m, t, p, r  # ok
-import pydantic                    # violation outside flext-core
+import pydantic  # violation outside flext-core
 ```
 
 - A missing facade symbol is a gap to close at flext-core in the same change,
@@ -48,11 +49,12 @@ raw base is a violation; presets are the single source of configuration
 (SSOT/DRY).
 
 ```python
-class OrderLine(m.FrozenModel):        # ok — preset encodes config
+class OrderLine(m.FrozenModel):  # ok — preset encodes config
     sku: t.NonEmptyStr
     qty: t.PositiveInt
 
-class OrderLine(m.BaseModel):          # violation — raw base at consumer
+
+class OrderLine(m.BaseModel):  # violation — raw base at consumer
     model_config = m.ConfigDict(frozen=True, strict=True)  # duplicates presets
 ```
 
@@ -106,7 +108,8 @@ Use `m.Entity` (composed `m.TimestampedModel` + `m.IdentifiableMixin` +
 class Shipment(m.Entity):
     origin: t.NonEmptyStr
 
-s = Shipment(origin="GRU")             # unique_id, created_at, version set
+
+s = Shipment(origin="GRU")  # unique_id, created_at, version set
 ```
 
 Compose mixins only through the documented order (timestamped first, then

@@ -264,9 +264,7 @@ def _generate_handoff(
             ts = turn.get("timestamp", "")
 
             if role == "user":
-                lines.append(f"### User [{ts}]")
-                lines.append(turn.get("content", ""))
-                lines.append("")
+                lines.extend((f"### User [{ts}]", turn.get("content", ""), ""))
 
             elif role == "tool_call":
                 tool_name = turn.get("tool_name", "unknown")
@@ -293,19 +291,15 @@ def _generate_handoff(
 
             elif role == "tool_result":
                 result = turn.get("result", {})
-                lines.append(f"### Tool Result [{ts}]")
-                lines.append(result.get("content", ""))
-                lines.append("")
+                lines.extend((f"### Tool Result [{ts}]", result.get("content", ""), ""))
 
             elif role == "reasoning":
-                lines.append(f"### Reasoning [{ts}]")
-                lines.append(f"> {turn.get('content', '')}")
-                lines.append("")
+                lines.extend(
+                    (f"### Reasoning [{ts}]", f"> {turn.get('content', '')}", "")
+                )
 
             elif role == "assistant":
-                lines.append(f"### Assistant [{ts}]")
-                lines.append(turn.get("content", ""))
-                lines.append("")
+                lines.extend((f"### Assistant [{ts}]", turn.get("content", ""), ""))
 
     lines.extend(
         [

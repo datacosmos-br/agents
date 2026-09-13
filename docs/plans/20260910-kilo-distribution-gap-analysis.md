@@ -116,10 +116,12 @@ and enforce all ADR-defined contracts.
    Add `decision:` + `effective:` validation to `_validate_tags`.
 2. In `bundle.py`, add agents to `_approved_artifacts`:
    ```python
-   *(
-       ApprovedArtifact(f"agent:{agent.name}", agent.tags, agent.path)
-       for agent in agents
-   ),
+   (
+       *(
+           ApprovedArtifact(f"agent:{agent.name}", agent.tags, agent.path)
+           for agent in agents
+       ),
+   )
    ```
 3. Add existing agent profiles' `decision:` and `effective:` tags. Each agent
    profile under `agents/agent-wide/` and `agents/project-wide/` is missing
