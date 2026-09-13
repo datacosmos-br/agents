@@ -206,7 +206,10 @@ def _structure(node: Node, field: str = "document") -> None:
             if identity in seen:
                 raise ValueError(f"{field}.{key_node.value} is duplicated")
             seen.add(identity)
-            if key_node.style is not None:
+            # A plain scalar reports style ``None`` under the pure-Python
+            # loader and ``""`` under LibYAML. Test for plain explicitly so the
+            # rule means the same thing whichever loader parsed the document.
+            if key_node.style not in {None, ""}:
                 raise ValueError(f"{field}.{key_node.value} key must be unquoted")
             _structure(value_node, f"{field}.{key_node.value}")
         return
@@ -230,12 +233,18 @@ def _load(root: Path, path: Path, skill_name: str) -> SkillMetadata | None:
     if not stat.S_ISREG(path.lstat().st_mode):
         raise ValueError(f"metadata must be a regular file: {path.relative_to(root)}")
     text = path.read_text(encoding="utf-8")
-    node = yaml.compose(text, Loader=yaml.SafeLoader)
-    payload = yaml.safe_load(text)
-    if not isinstance(node, MappingNode):
-        raise TypeError(
-            f"metadata document must be a mapping: {path.relative_to(root)}"
-        )
+    # One parse, through LibYAML; the node and the document come from the same
+    # loader instead of parsing every metadata file twice in pure Python.
+    loader = yaml.CSafeLoader(text)
+    try:
+        node = loader.get_single_node()
+        if not isinstance(node, MappingNode):
+            raise TypeError(
+                f"metadata document must be a mapping: {path.relative_to(root)}"
+            )
+        payload = loader.construct_document(node)
+    finally:
+        loader.dispose()
     _structure(node)
     document = cast_mapping(payload, "document")
     _known_fields(

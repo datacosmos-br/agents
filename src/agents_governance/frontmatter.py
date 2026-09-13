@@ -80,13 +80,23 @@ def parse_frontmatter(
     if marker < 0:
         raise ValueError(f"{path}: unterminated YAML frontmatter")
     source = text[4:marker]
-    node = yaml.compose(source, Loader=yaml.SafeLoader)
-    loaded = yaml.safe_load(source)
-    if not isinstance(node, MappingNode) or not isinstance(loaded, dict):
+    # One parse, through LibYAML. The node carries the duplicate-key evidence
+    # and the document is constructed from that same node; composing with the
+    # pure-Python loader and then calling ``safe_load`` parsed every document
+    # twice with the slowest available parser.
+    loader = yaml.CSafeLoader(source)
+    try:
+        node = loader.get_single_node()
+        if not isinstance(node, MappingNode):
+            raise TypeError(f"{path}: frontmatter must be a mapping")
+        duplicate = detect_duplicate_key(node)
+        if duplicate is not None:
+            raise ValueError(f"{path}: frontmatter key is duplicated: {duplicate}")
+        loaded = loader.construct_document(node)
+    finally:
+        loader.dispose()
+    if not isinstance(loaded, dict):
         raise TypeError(f"{path}: frontmatter must be a mapping")
-    duplicate = detect_duplicate_key(node)
-    if duplicate is not None:
-        raise ValueError(f"{path}: frontmatter key is duplicated: {duplicate}")
     raw = cast(dict[object, object], loaded)
     if not all(isinstance(key, str) for key in raw):
         raise TypeError(f"{path}: frontmatter keys must be strings")
