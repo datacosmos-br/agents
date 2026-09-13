@@ -102,6 +102,7 @@ mod-check: ## test ast-grep rules and reject structural migration residue	$(call
 	$(call BANNER,mod-check · ast-grep tests + strict structural scan)
 	@$(MISE_EXEC) ast-grep test --config "$(CURDIR)/sgconfig.yml"
 	@$(MISE_EXEC) ast-grep scan --config "$(CURDIR)/sgconfig.yml" --error "$(CURDIR)/evals"
+	@EVAL_YAML_MODE=check uv run python tools/normalize_eval_yaml.py
 
 mod: ## apply tested structural migrations	$(call REQUIRE_APPLY)
 	$(call BANNER,mod · ast-grep structural rewrite)
