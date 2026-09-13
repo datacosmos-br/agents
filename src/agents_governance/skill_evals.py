@@ -124,13 +124,22 @@ def _mapping(path: Path) -> dict[str, object]:
     if path.is_symlink() or not path.is_file():
         raise ValueError(f"evaluation resource must be a physical file: {path}")
     source = path.read_text(encoding="utf-8")
-    node = yaml.compose(source, Loader=yaml.SafeLoader)
-    loaded = yaml.safe_load(source)
-    if not isinstance(node, MappingNode):
-        raise TypeError(f"evaluation resource must be a mapping: {path}")
-    duplicate = detect_duplicate_key(node)
-    if duplicate is not None:
-        raise ValueError(f"{path}: evaluation key is duplicated: {duplicate}")
+    # One parse, through LibYAML. The node carries the duplicate-key evidence and
+    # the document is constructed from that same node: composing with the
+    # pure-Python loader and then calling ``safe_load`` parsed every evaluation
+    # file twice with the slowest available parser, which is what made loading
+    # the governance bundle take ~15s in every consumer process.
+    loader = yaml.CSafeLoader(source)
+    try:
+        node = loader.get_single_node()
+        if not isinstance(node, MappingNode):
+            raise TypeError(f"evaluation resource must be a mapping: {path}")
+        duplicate = detect_duplicate_key(node)
+        if duplicate is not None:
+            raise ValueError(f"{path}: evaluation key is duplicated: {duplicate}")
+        loaded = loader.construct_document(node)
+    finally:
+        loader.dispose()
     return cast_mapping(loaded, str(path))
 
 
