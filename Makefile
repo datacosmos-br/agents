@@ -69,6 +69,7 @@ static: ## lint, formatting, and Python type analysis
 	@uv run ruff format --check src tests tools
 	@uv run pyright src tests tools
 	@uv run mypy src tests tools
+	@PYTHON_RESOURCES_OPERATION=check uv run python tools/python_resources_gate.py
 
 conform: ## validate workflow and zero-duplication conformance
 	@$(MAKE) shell
@@ -78,10 +79,12 @@ conform: ## validate workflow and zero-duplication conformance
 fmt: ## apply canonical Python formatting
 	$(call BANNER,fmt · ruff format)
 	@uv run ruff format src tests tools
+	@PYTHON_RESOURCES_OPERATION=format uv run python tools/python_resources_gate.py
 
 fix: ## apply canonical corrections
 	$(call BANNER,fix · ruff)
 	@uv run ruff check --fix src tests tools
+	@PYTHON_RESOURCES_OPERATION=fix uv run python tools/python_resources_gate.py
 	@TESTMON_MODE=repair uv run python tools/testmon_gate.py
 
 mod-check: ## test ast-grep rules and reject structural migration residue

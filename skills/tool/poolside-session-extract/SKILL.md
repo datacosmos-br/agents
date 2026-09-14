@@ -13,49 +13,52 @@ Converts NDJSON trajectory files into readable markdown summaries with full conv
 ## Storage Locations
 
 | Component | Path | Description |
-|---|---|---|
-| Trajectories | `~/.local/state/poolside/trajectories/trajectory-standalone_<session_id>.ndjson` | Full event log (NDJSON) |
-| Session metadata | `~/.local/state/poolside/sessions/session-<session_id>.json` | Run ID, agent ID, timestamps |
-| ACP logs | `~/.local/state/poolside/pool/logs/<workspace>/<session_id>/acp.log.jsonl` | ACP protocol events |
-| TUI logs | `~/.local/state/poolside/pool/logs/<workspace>/<session_id>/tui.log.jsonl` | TUI UI events |
-| Prompt history | `~/.local/state/poolside/pool/<workspace_hash>/prompt-history.json` | Per-workspace prompt cache |
+|---
 
-## Extraction Procedure
+# Poolside Session Extract
 
-### 1. Run the extractor script
+Activate only for an explicit session extraction, inspection, or reconciliation
+request. Resolve the configured workspace and source associations first. Do not
+infer the provider from UUID shape or the workspace from conversation words.
 
-```bash
-python3 ~/.agents/skills/tool/poolside-session-extract/scripts/extract_poolside_session.py <session-id>
+## Public pure parser
+
+Resolve this skill's script through the authenticated governance bundle and
+invoke its process CLI. No internal path import is supported.
+
+```text
+extract_poolside_session.py inventory --workspace <workspace>
+extract_poolside_session.py extract --workspace <workspace> --session-id <id>
 ```
 
-Output goes to `~/.local/state/poolside/exports/<session-id>/`.
+Supply one private JSON document on stdin. The version-1 envelope has
+`schema_version: 1` and a `sources` array. Each source declares `session_id`,
+`role` (`metadata`, `events`, or `attachment`), an adapter-owned relative
+`locator`, and `content_base64` containing the complete authenticated bytes.
+The existing adapter alone discovers and reads physical files, captures metadata
+before selecting conversation contents, and authenticates topology, bytes,
+permissions and identity through its atomic owner. The script does no filesystem
+I/O and never accepts an output-directory flag.
 
-### 2. Output files
+Read `cwd` from ACP metadata records. Preserve complete trajectory events, including `tool_call.parsed`; its `tool_call_parsed.args.path` becomes an unreviewed reference.
 
-| File | Description |
-|---|---|
-| `handoff.sanitised.md` | Readable conversation summary with tool calls, results, reasoning |
-| `conversation.private.json` | Structured conversation turns for programmatic use |
-| `manifest.json` | SHA-256 digests and metadata |
-| `trajectory.private.jsonl` | Raw trajectory (private) |
-| `acp-log.private.jsonl` | Raw ACP log (private) |
-| `tui-log.private.jsonl` | Raw TUI log (private) |
+One JSON document is emitted on stdout. Inventory returns provider, schema
+version and matching `sessions`; a valid empty inventory is `sessions: []`.
+Extraction returns private classification, selected session, complete `events`
+with `event_json`, source locator and line number, unreviewed `references`,
+and `attachments` pointing back into the authenticated envelope. Records without
+cwd are accepted when the session has one coherent declared workspace elsewhere.
+Missing or ambiguous metadata, malformed records, and unknown extraction IDs
+fail nonzero without producing a result. File references are evidence, not
+permission to read outside configured associations or publish their contents.
 
-### 3. What the conversation flow captures
+## Privacy and publication
 
-Each turn in the conversation flow includes:
-
-- **User prompts** — with mode (build/apply) and timestamp
-- **Tool calls** — tool name, parsed arguments (bash commands shown as code blocks)
-- **Tool results** — observation output, success/failure status
-- **Reasoning** — LLM thought blocks from `thought.end` events
-
-### 4. Resume Integration
-
-To continue execution from an extracted session, use the `session-resume` skill
-with the generated summary as input context.
-
-## Secret Redaction
-
-The extraction script redacts credential-shaped values (authorization, api_key,
-token, password, secret, cookie, bearer) in all output.
+Both streams are private. Never echo input or output into chat, public logs or
+Git. The adapter validates the result through its typed boundary and owns all
+digests, schema/driver-version cache keys, private persistence permissions and
+transactional publication. There is no script snapshot or second publisher.
+Read the complete selected evidence to reconcile it. Summaries may aid navigation
+but never replace evidence. Only explicitly classified plan artifacts pass into
+the documentation collector; transcripts, credentials and raw tool-output dumps
+remain private.

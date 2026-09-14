@@ -2,7 +2,10 @@
 
 from __future__ import annotations
 
+import hashlib
+import json
 from importlib.metadata import distribution
+from pathlib import Path
 
 import pytest
 
@@ -13,6 +16,7 @@ from agents_governance import (
     __version__,
 )
 from agents_governance.delivery import DeliveryContract
+from agents_governance.skill_resources import ResourcePolicy
 
 
 def test_public_bundle_is_complete_and_versioned(
@@ -51,6 +55,50 @@ def test_public_inventories_have_unique_physical_owners(
 def test_distribution_exposes_no_runtime_executable() -> None:
     metadata = distribution("agents-governance")
     assert not metadata.entry_points
+
+
+def test_resources_preserve_declared_policy_and_content(
+    governance_bundle: GovernanceBundle,
+) -> None:
+    document = json.loads((governance_bundle.root / "config/skills.json").read_text())
+    policy = ResourcePolicy.parse(document["resources"])
+    for skill in governance_bundle.skills:
+        paths = {resource.path for resource in skill.resources}
+        expected = {
+            path
+            for path in skill.directory.rglob("*")
+            if path.is_file() and path.name != "SKILL.md"
+        }
+        assert paths == expected
+        for resource in skill.resources:
+            assert resource == policy.resource(governance_bundle.root, resource.path)
+            assert (
+                resource.sha256
+                == hashlib.sha256(resource.path.read_bytes()).hexdigest()
+            )
+            assert bool(resource.mode & 0o100) == resource.executable
+
+
+def test_binary_policy_is_explicit_and_unknown_override_fails(
+    governance_bundle: GovernanceBundle, tmp_path: Path
+) -> None:
+    document = json.loads((governance_bundle.root / "config/skills.json").read_text())
+    section = document["resources"]
+    identity = "tool/probe/assets/data.bin"
+    section["overrides"] = {identity: {"format": "binary", "executable": False}}
+    path = tmp_path / "skills" / identity
+    path.parent.mkdir(parents=True)
+    payload = b"\x00\xff\x80resource"
+    path.write_bytes(payload)
+    policy = ResourcePolicy.parse(section)
+    resource = policy.resource(tmp_path, path)
+    assert resource.sha256 == hashlib.sha256(payload).hexdigest()
+    policy.validate_inventory(tmp_path, (resource,))
+    with pytest.raises(ValueError, match="no catalog owner"):
+        policy.validate_inventory(tmp_path, ())
+    section["overrides"] = {}
+    with pytest.raises(UnicodeDecodeError):
+        ResourcePolicy.parse(section).resource(tmp_path, path)
 
 
 def test_delivery_budget_holds_with_measured_composition(

@@ -13,6 +13,7 @@ from typing import cast
 from .approvals import APPROVAL_NAMESPACES, resolve_approval_tags
 from .frontmatter import cast_mapping, parse_frontmatter, require_exact_fields
 from .markdown_references import local_reference_targets, resolve_physical_reference
+from .skill_resources import ResourcePolicy, SkillResource
 
 NON_PORTABLE_PROJECT_REFERENCE = re.compile(
     r"(?:"
@@ -154,6 +155,7 @@ class SkillRecord:
     subjects: tuple[str, ...]
     detectors: tuple[str, ...]
     parents: tuple[str, ...]
+    resources: tuple[SkillResource, ...]
 
 
 class Catalog:
@@ -162,7 +164,14 @@ class Catalog:
     def __init__(self, root: Path) -> None:
         self.root = root.resolve(strict=True)
         self._policy = self._load_policy(self.root / "config" / "skills.json")
+        self._resource_policy = ResourcePolicy.parse(self._policy["resources"])
         self._records = self._discover()
+        self._resource_policy.validate_inventory(
+            self.root,
+            tuple(
+                resource for record in self._records for resource in record.resources
+            ),
+        )
         self._validate_hierarchy()
         self._validate_tree()
         for record in self._records:
@@ -173,7 +182,9 @@ class Catalog:
         if path.is_symlink() or not path.is_file():
             raise ValueError(f"skills policy must be a physical file: {path}")
         loaded = cast_mapping(json.loads(path.read_text(encoding="utf-8")), str(path))
-        require_exact_fields(loaded, frozenset({"version", "budgets"}), str(path))
+        require_exact_fields(
+            loaded, frozenset({"version", "budgets", "resources"}), str(path)
+        )
         if loaded["version"] != 2:
             raise ValueError(f"skills policy version must be 2: {path}")
         budgets = cast_mapping(loaded["budgets"], f"{path}: budgets")
@@ -240,7 +251,6 @@ class Catalog:
 
     def _validate_record(self, record: SkillRecord) -> None:
         directory = record.directory
-        resources = self._physical_tree(directory)
         skill_file = directory / "SKILL.md"
         frontmatter = self._frontmatter(skill_file)
         self._require_description(frontmatter.get("description"), skill_file)
@@ -255,9 +265,15 @@ class Catalog:
             and "project" in record.routes
             and record.activation != "opt-in"
         )
-        for path in resources:
-            if not path.is_file():
-                continue
+        textual = (
+            skill_file,
+            *(
+                resource.path
+                for resource in record.resources
+                if resource.format == "utf-8"
+            ),
+        )
+        for path in textual:
             text = path.read_text(encoding="utf-8")
             if project_distributed and NON_PORTABLE_PROJECT_REFERENCE.search(text):
                 raise ValueError(f"project-distributed skill is not portable: {path}")
@@ -452,6 +468,11 @@ class Catalog:
             subjects,
             detectors,
             parents,
+            tuple(
+                self._resource_policy.resource(self.root, path)
+                for path in self._physical_tree(skill_file.parent)
+                if path.is_file() and path != skill_file
+            ),
         )
 
     def _discover(self) -> tuple[SkillRecord, ...]:

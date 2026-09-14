@@ -209,10 +209,7 @@ def init_skill(skill_name, path):
         return None
 
     # Create skill directory
-    try:
-        skill_dir.mkdir(parents=True, exist_ok=False)
-    except Exception:
-        return None
+    skill_dir.mkdir(parents=True, exist_ok=False)
 
     # Create SKILL.md from template
     skill_title = title_case_skill_name(skill_name)
@@ -221,33 +218,22 @@ def init_skill(skill_name, path):
     )
 
     skill_md_path = skill_dir / "SKILL.md"
-    try:
-        skill_md_path.write_text(skill_content)
-    except Exception:
-        return None
+    skill_md_path.write_text(skill_content)
 
     # Create resource directories with example files
-    try:
-        # Create scripts/ directory with example script
-        scripts_dir = skill_dir / "scripts"
-        scripts_dir.mkdir(exist_ok=True)
-        example_script = scripts_dir / "example.py"
-        example_script.write_text(EXAMPLE_SCRIPT.format(skill_name=skill_name))
-        example_script.chmod(0o755)
-
-        # Create references/ directory with example reference doc
-        references_dir = skill_dir / "references"
-        references_dir.mkdir(exist_ok=True)
-        example_reference = references_dir / "api_reference.md"
-        example_reference.write_text(EXAMPLE_REFERENCE.format(skill_title=skill_title))
-
-        # Create assets/ directory with example asset placeholder
-        assets_dir = skill_dir / "assets"
-        assets_dir.mkdir(exist_ok=True)
-        example_asset = assets_dir / "example_asset.txt"
-        example_asset.write_text(EXAMPLE_ASSET)
-    except Exception:
-        return None
+    scripts_dir = skill_dir / "scripts"
+    scripts_dir.mkdir(exist_ok=True)
+    example_script = scripts_dir / "example.py"
+    example_script.write_text(EXAMPLE_SCRIPT.format(skill_name=skill_name))
+    example_script.chmod(0o755)
+    references_dir = skill_dir / "references"
+    references_dir.mkdir(exist_ok=True)
+    example_reference = references_dir / "api_reference.md"
+    example_reference.write_text(EXAMPLE_REFERENCE.format(skill_title=skill_title))
+    assets_dir = skill_dir / "assets"
+    assets_dir.mkdir(exist_ok=True)
+    example_asset = assets_dir / "example_asset.txt"
+    example_asset.write_text(EXAMPLE_ASSET)
 
     # Print next steps
 

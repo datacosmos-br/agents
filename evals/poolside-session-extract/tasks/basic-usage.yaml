@@ -1,6 +1,6 @@
 id: poolside-session-extract-happy-001
 name: Extract a finished Poolside trajectory for handoff
-description: Produce the sanitised handoff and report the first unfinished step.
+description: Read complete private trajectory evidence and report the first unfinished step.
 tags: [poolside, session, extract, trajectory, handoff, happy-path]
 inputs:
   prompt: >-
@@ -12,5 +12,5 @@ inputs:
   - path: trajectory-standalone_01a078f7.ndjson
   - path: acp.log.jsonl
 expected:
-  output_contains: [handoff.sanitised.md, manifest.json, merge --no-ff, in_progress]
+  output_contains: [private, event_json, merge --no-ff, in_progress]
   output_not_contains: [switch provider, use another model, extraction complete without running, API key]

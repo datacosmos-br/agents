@@ -1,5 +1,24 @@
 {
   "version": 2,
+  "resources": {
+    "default": {"format": "utf-8", "executable": false},
+    "file_mode": 420,
+    "executable_mode": 493,
+    "overrides": {
+      "agent-wide/personal/artifacts/scripts/bundle-artifact.sh": {"format": "utf-8", "executable": true},
+      "agent-wide/personal/artifacts/scripts/init-artifact.sh": {"format": "utf-8", "executable": true},
+      "domain/gascity/mayor/assets/scripts/create_beads_from_tasks.py": {"format": "utf-8", "executable": true},
+      "tool/beads-organization/scripts/reconcile-inventory.sh": {"format": "utf-8", "executable": true},
+      "tool/claude-session-extract/scripts/extract_claude_session.py": {"format": "utf-8", "executable": true},
+      "tool/poolside-session-extract/scripts/extract_poolside_session.py": {"format": "utf-8", "executable": true},
+      "tool/skill-creator/scripts/init_skill.py": {"format": "utf-8", "executable": true},
+      "tool/skill-creator/scripts/package_skill.py": {"format": "utf-8", "executable": true},
+      "tool/skill-creator/scripts/quick_validate.py": {"format": "utf-8", "executable": true},
+      "tool/webapp-test/scripts/with_server.py": {"format": "utf-8", "executable": true},
+      "tool/wip-beads/scripts/bd_json_to_csv.py": {"format": "utf-8", "executable": true},
+      "tool/wip-beads/scripts/wip-beads.sh": {"format": "utf-8", "executable": true}
+    }
+  },
   "budgets": {
     "router_tokens": 500,
     "frozen_tokens": 1200,

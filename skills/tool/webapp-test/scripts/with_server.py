@@ -96,7 +96,7 @@ def main() -> None:
                 raise RuntimeError(msg)
 
         # Run the command
-        result = subprocess.run(args.command)
+        result = subprocess.run(args.command, check=True)
         sys.exit(result.returncode)
 
     finally:

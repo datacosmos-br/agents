@@ -13,51 +13,52 @@ Converts JSONL session files into readable markdown summaries with full conversa
 ## Storage Locations
 
 | Component | Path | Description |
-|---|---|---|
-| Session history | `~/.claude/history.jsonl` | Main index of all sessions |
-| Session data | `~/.claude/projects/<project-hash>/<session-id>.jsonl` | Full conversation (NDJSON) |
-| Subagents | `~/.claude/projects/<project-hash>/<session-id>/subagents/` | Subagent metadata |
-| Tool results | `~/.claude/projects/<project-hash>/<session-id>/tool-results/` | Tool output files |
+|---
 
-## Extraction Procedure
+# Claude Session Extract
 
-### 1. Run the extractor script
+Activate only for an explicit session extraction, inspection, or reconciliation
+request. Resolve the configured workspace and source associations first. Do not
+infer the provider from UUID shape or the workspace from conversation words.
 
-```bash
-python3 <catalog>/skills/tool/claude-session-extract/scripts/extract_claude_session.py <session-id>
+## Public pure parser
+
+Resolve this skill's script through the authenticated governance bundle and
+invoke its process CLI. No internal path import is supported.
+
+```text
+extract_claude_session.py inventory --workspace <workspace>
+extract_claude_session.py extract --workspace <workspace> --session-id <id>
 ```
 
-Output goes to `~/.local/state/claude/exports/<session-id>/`.
+Supply one private JSON document on stdin. The version-1 envelope has
+`schema_version: 1` and a `sources` array. Each source declares `session_id`,
+`role` (`metadata`, `events`, or `attachment`), an adapter-owned relative
+`locator`, and `content_base64` containing the complete authenticated bytes.
+The existing adapter alone discovers and reads physical files, captures metadata
+before selecting conversation contents, and authenticates topology, bytes,
+permissions and identity through its atomic owner. The script does no filesystem
+I/O and never accepts an output-directory flag.
 
-### 2. Output files
+Read top-level `cwd` metadata across all session records, including records after queue events. Assistant `message.content` blocks retain their complete original events; `tool_use.input.file_path` becomes an unreviewed reference.
 
-| File | Description |
-|---|---|
-| `handoff.sanitised.md` | Readable conversation summary with tool calls, results, reasoning |
-| `conversation.private.json` | Structured conversation turns for programmatic use |
-| `manifest.json` | SHA-256 digests and metadata |
+One JSON document is emitted on stdout. Inventory returns provider, schema
+version and matching `sessions`; a valid empty inventory is `sessions: []`.
+Extraction returns private classification, selected session, complete `events`
+with `event_json`, source locator and line number, unreviewed `references`,
+and `attachments` pointing back into the authenticated envelope. Records without
+cwd are accepted when the session has one coherent declared workspace elsewhere.
+Missing or ambiguous metadata, malformed records, and unknown extraction IDs
+fail nonzero without producing a result. File references are evidence, not
+permission to read outside configured associations or publish their contents.
 
-### 3. What the conversation flow captures
+## Privacy and publication
 
-Each turn in the conversation flow includes:
-
-- **User messages** — with timestamps, including tool_result wrappers
-- **Tool calls** — tool name, parsed arguments (bash commands shown as code blocks)
-- **Tool results** — observation output matched to their tool_use_id
-- **Reasoning** — thinking blocks from the assistant
-- **Assistant text** — natural language responses
-
-### 4. Resume Integration
-
-To continue execution from an extracted session:
-
-```bash
-claude --resume <session-id>
-```
-
-Or use the `session-resume` skill with the generated summary as input context.
-
-## Secret Redaction
-
-The extraction script redacts credential-shaped values (authorization, api_key,
-token, password, secret, cookie, bearer) in all output.
+Both streams are private. Never echo input or output into chat, public logs or
+Git. The adapter validates the result through its typed boundary and owns all
+digests, schema/driver-version cache keys, private persistence permissions and
+transactional publication. There is no script snapshot or second publisher.
+Read the complete selected evidence to reconcile it. Summaries may aid navigation
+but never replace evidence. Only explicitly classified plan artifacts pass into
+the documentation collector; transcripts, credentials and raw tool-output dumps
+remain private.

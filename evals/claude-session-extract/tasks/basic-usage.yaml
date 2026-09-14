@@ -1,6 +1,6 @@
 id: claude-session-extract-happy-001
 name: Extract a Claude session for handoff
-description: Produce the sanitised handoff with the conversation flow intact.
+description: Read complete private evidence through the configured source association.
 tags: [claude, session, extract, jsonl, handoff, happy-path]
 inputs:
   prompt: >-
@@ -10,5 +10,5 @@ inputs:
   files:
   - path: 08f1115d-dd1b-4da1-bf60-0a337b29f5ef.jsonl
 expected:
-  output_contains: [handoff.sanitised.md, manifest.json, conversation]
+  output_contains: [private, event_json, conversation]
   output_not_contains: [switch provider, use another model, API key, session deleted]

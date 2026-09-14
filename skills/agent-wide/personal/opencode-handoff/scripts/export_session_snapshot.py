@@ -11,6 +11,7 @@ import shutil
 import sqlite3
 import subprocess
 import tempfile
+from functools import partial
 from pathlib import Path
 from typing import Any, Never
 
@@ -381,8 +382,10 @@ def _export(session_id: str, destination: Path) -> int:
             json.dumps(manifest, indent=2, ensure_ascii=False).encode() + b"\n",
         )
         stage.replace(destination)
-    except BaseException:  # noqa: BLE001 -- cleanup boundary
-        return _run_with_cleanup(lambda: _raise(primary), lambda: shutil.rmtree(stage))
+    except BaseException as primary:  # noqa: BLE001 -- cleanup boundary
+        return _run_with_cleanup(
+            partial(_raise, primary), partial(shutil.rmtree, stage)
+        )
 
     print(
         json.dumps(

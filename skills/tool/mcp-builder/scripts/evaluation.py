@@ -9,7 +9,6 @@ import json
 import re
 import sys
 import time
-import traceback
 import xml.etree.ElementTree as ET
 from pathlib import Path
 from typing import Any
@@ -54,26 +53,20 @@ Response Requirements:
 
 def parse_evaluation_file(file_path: Path) -> list[dict[str, Any]]:
     """Parse XML evaluation file with qa_pair elements."""
-    try:
-        tree = ET.parse(file_path)
-        root = tree.getroot()
-        evaluations = []
-
-        for qa_pair in root.findall(".//qa_pair"):
-            question_elem = qa_pair.find("question")
-            answer_elem = qa_pair.find("answer")
-
-            if question_elem is not None and answer_elem is not None:
-                evaluations.append(
-                    {
-                        "question": (question_elem.text or "").strip(),
-                        "answer": (answer_elem.text or "").strip(),
-                    }
-                )
-
-        return evaluations
-    except Exception:
-        return []
+    tree = ET.parse(file_path)
+    root = tree.getroot()
+    evaluations = []
+    for qa_pair in root.findall(".//qa_pair"):
+        question_elem = qa_pair.find("question")
+        answer_elem = qa_pair.find("answer")
+        if question_elem is not None and answer_elem is not None:
+            evaluations.append(
+                {
+                    "question": (question_elem.text or "").strip(),
+                    "answer": (answer_elem.text or "").strip(),
+                }
+            )
+    return evaluations
 
 
 def extract_xml_content(text: str, tag: str) -> str | None:
@@ -112,16 +105,12 @@ async def agent_loop(
         tool_input = tool_use.input
 
         tool_start_ts = time.time()
-        try:
-            tool_result = await connection.call_tool(tool_name, tool_input)
-            tool_response = (
-                json.dumps(tool_result)
-                if isinstance(tool_result, (dict, list))
-                else str(tool_result)
-            )
-        except Exception as e:
-            tool_response = f"Error executing tool {tool_name}: {e!s}\n"
-            tool_response += traceback.format_exc()
+        tool_result = await connection.call_tool(tool_name, tool_input)
+        tool_response = (
+            json.dumps(tool_result)
+            if isinstance(tool_result, (dict, list))
+            else str(tool_result)
+        )
         tool_duration = time.time() - tool_start_ts
 
         if tool_name not in tool_metrics:
