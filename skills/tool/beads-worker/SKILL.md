@@ -59,3 +59,11 @@ merge or closure.
   decisive output, and commit SHA.
 - Work discovered inside the slice becomes a new bead linked with
   `discovered-from`; never absorb it silently into the assigned slice.
+
+## Execution discipline (fleet slices, 2026-09-10)
+
+- Dispatcher acceptance proof: `make <verb>` (help), `WHAT=<action> make <verb>`
+  (must reach the real script; downstream credential failures belong to the
+  action, not the dispatcher), `make help` listing the verbs.
+- On FF push rejection: `git merge --no-ff` the integration tip into your lane,
+  revalidate, repush; never rebase or force-push.

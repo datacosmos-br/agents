@@ -62,3 +62,17 @@ When coordinating an owned plan across repositories or submodules:
 5. Keep one material-state section in the plan (branch, HEAD, dirty files,
    ahead/behind per repo) refreshed at every cutoff so a resumed session
    reconciles from evidence, not memory.
+
+## Fleet landing protocol (P0 trio, 2026-09-10)
+
+- Classify every dirty file as mine vs foreign-lane before acting; never stage,
+  stash away, checkout-away, or clean foreign edits in a shared checkout. Detect
+  rival concurrent edits via `git status` plus file mtimes inside your own
+  execution window; in a contended clone, validate in a detached `git worktree`
+  instead.
+- Check PR state (`gh pr view --json state`) before assuming a lane is
+  mid-flight: merged PRs relocate your projection commits to the integration
+  branch.
+- Baseline every gate against the merge parent (`HEAD^2` for merges) in a
+  detached worktree before attributing failures; push only strict improvements
+  and report inherited red with its owner lane.
