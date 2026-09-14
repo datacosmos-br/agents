@@ -667,9 +667,7 @@ def render_created_section(plan: Plan, mappings: dict[str, str]) -> str:
     titles = {item.key: item.title for item in plan.items}
     kinds = {convoy.key: "convoy" for convoy in plan.convoys}
     kinds.update({runnable.key: "bead" for runnable in plan.runnables})
-    ordered_keys = [
-        item.key for item in plan.items if item.key in mappings
-    ]
+    ordered_keys = [item.key for item in plan.items if item.key in mappings]
     lines = [
         "## Created Beads",
         "",

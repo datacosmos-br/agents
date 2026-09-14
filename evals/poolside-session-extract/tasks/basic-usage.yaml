@@ -1,6 +1,6 @@
 id: poolside-session-extract-happy-001
 name: Extract a finished Poolside trajectory for handoff
-description: Read complete private trajectory evidence and report the first unfinished step.
+description: Validate Poolside trajectory extraction with complete private evidence and conversation flow, identifying the first unfinished step.
 tags: [poolside, session, extract, trajectory, handoff, happy-path]
 inputs:
   prompt: >-

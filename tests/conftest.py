@@ -40,7 +40,9 @@ def governance_source_fixture(
     """Copy only the package's configured data inputs into a test-owned root."""
     repository = Path(__file__).resolve().parents[1]
     configuration = tomllib.loads((repository / "pyproject.toml").read_text())
-    inputs = configuration["tool"]["hatch"]["build"]["targets"]["wheel"]["force-include"]
+    inputs = configuration["tool"]["hatch"]["build"]["targets"]["wheel"][
+        "force-include"
+    ]
     root = tmp_path / "bundle"
     root.mkdir()
     for relative in inputs:

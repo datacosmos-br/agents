@@ -1,6 +1,6 @@
 id: claude-session-extract-happy-001
 name: Extract a Claude session for handoff
-description: Read complete private evidence through the configured source association.
+description: Validate Claude session extraction with complete private evidence and conversation flow through the configured source association.
 tags: [claude, session, extract, jsonl, handoff, happy-path]
 inputs:
   prompt: >-

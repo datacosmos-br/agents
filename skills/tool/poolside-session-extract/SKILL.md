@@ -1,6 +1,6 @@
 ---
 name: poolside-session-extract
-description: 'poolside trajectory extraction, conversation flow, sanitised handoff resume'
+description: 'poolside trajectory extraction, private evidence, conversation flow'
 metadata:
   aihub.tags: '["activation:opt-in","decision:ADR-0008","detect:opt-in:poolside","effective:2026-09-06","route:agent","subject:agents","usage:router"]'
 ---

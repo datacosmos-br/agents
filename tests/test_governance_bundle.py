@@ -114,7 +114,8 @@ def test_public_bundle_preserves_non_utf8_resource_and_policy(
     config_path = root / "config/skills.json"
     document = json.loads(config_path.read_text())
     document["resources"]["overrides"][path.relative_to(root / "skills").as_posix()] = {
-        "format": "binary", "executable": True,
+        "format": "binary",
+        "executable": True,
     }
     config_path.write_text(json.dumps(document))
     policy = ResourcePolicy.parse(document["resources"])
@@ -122,7 +123,9 @@ def test_public_bundle_preserves_non_utf8_resource_and_policy(
 
     loaded = GovernanceBundle.load(root)
     resource = next(
-        resource for record in loaded.skills for resource in record.resources
+        resource
+        for record in loaded.skills
+        for resource in record.resources
         if resource.path == path
     )
     assert resource.format == "binary"
@@ -136,7 +139,9 @@ def test_public_bundle_preserves_non_utf8_resource_and_policy(
         GovernanceBundle.load(root)
 
 
-def test_resource_policy_owns_an_immutable_copy(governance_bundle: GovernanceBundle) -> None:
+def test_resource_policy_owns_an_immutable_copy(
+    governance_bundle: GovernanceBundle,
+) -> None:
     document = json.loads((governance_bundle.root / "config/skills.json").read_text())
     section = document["resources"]
     policy = ResourcePolicy.parse(section)

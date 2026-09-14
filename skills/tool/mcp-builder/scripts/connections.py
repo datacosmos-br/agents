@@ -73,14 +73,16 @@ class MCPConnection(ABC):
         if self.session is None:
             raise RuntimeError("MCP connection must be entered before listing tools")
         response = await self.session.list_tools()
-        return [
-            {
+        tools: list[ToolParam] = []
+        for tool in response.tools:
+            metadata: ToolParam = {
                 "name": tool.name,
-                "description": tool.description or "",
                 "input_schema": tool.inputSchema,
             }
-            for tool in response.tools
-        ]
+            if tool.description is not None:
+                metadata["description"] = tool.description
+            tools.append(metadata)
+        return tools
 
     async def call_tool(self, tool_name: str, arguments: dict[str, Any]) -> Any:
         """Call a tool on the MCP server with provided arguments."""
