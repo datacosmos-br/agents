@@ -16,19 +16,23 @@ management operations:
 
 - Stage only reviewed, intentional paths (`git add <scoped paths>`); never
   `git add -A`/`.` at a workspace or umbrella root.
-- Never stage a directory that may contain a linked worktree, and never stage a
-  path the repository declares ignored. Git records a directory carrying its own
-  `.git` as a gitlink (mode `160000`) the moment it is staged, silently and with
-  no `.gitmodules` entry. Git then cannot resolve a URL for it, so
-  `git submodule update --init` exits 128 and every consumer fetching that
-  repository as a dependency fails during checkout, before reading a line of its
-  code. A scoped `git add` is not enough on its own: naming a parent directory
-  sweeps the worktree in. Stage files, and when a WIP-preservation commit
-  gathers changed paths, take them from `git status --porcelain` rather than
-  from a directory. Two integration branches were made unfetchable this way
-  (flext-infra, the workspace umbrella); the `index-declarations` gate now fails
-  the build on an undeclared gitlink, so the defect is caught, but it is caught
-  after it is committed.
+- Never stage a directory that may contain a linked worktree. Git records a
+  directory carrying its own `.git` as a gitlink (mode `160000`) the moment it is
+  staged, silently and with no `.gitmodules` entry. Git then cannot resolve a URL
+  for it, so `git submodule update --init` exits 128 and every consumer fetching
+  that repository as a dependency fails during checkout, before reading a line of
+  its code. Nothing local reports it. Stage files, and when gathering changed
+  paths for a WIP-preservation commit take them from `git status --porcelain`
+  rather than from a directory.
+  Two integration branches were made unfetchable this way — flext-infra, where
+  `make setup` went red for every consumer in the fleet, and the workspace
+  umbrella, where a second instance sat unnoticed. Which command staged them is
+  not established: the WIP-preservation script already skips any path holding a
+  `.git`, so some other add did it. That is exactly why the invariant is written
+  as a prohibition on the act rather than as a fix to one tool. Detection is
+  owned by the `index-declarations` gate in flext-infra, which fails the build on
+  any gitlink the repository does not declare — after the commit exists. This
+  clause is what keeps it from existing.
 - Apply `rules/coordination/fix-forward.md`; recover evidence from
   `git reflog` only when authorized, never by replacing the adopted current state.
 - Commit often so the combined work survives a lane or process failure.
