@@ -33,7 +33,7 @@ management operations:
   owned by the `index-declarations` gate in flext-infra, which fails the build on
   any gitlink the repository does not declare — after the commit exists. This
   clause is what keeps it from existing.
-- Apply `rules/coordination/fix-forward.md`; recover evidence from
+- Apply `rules/coordination/fix-forward-collaboration.md`; recover evidence from
   `git reflog` only when authorized, never by replacing the adopted current state.
 - Commit often so the combined work survives a lane or process failure.
 

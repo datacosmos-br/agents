@@ -27,6 +27,12 @@ integration work is not severe: reconcile, validate, and continue forward.
 Unexpected state requires fresh preflight; it proves no actor or intention and
 never authorizes an unchanged retry.
 
+Concurrent changes to the branch, HEAD, index, or shared files do not require
+the operator to choose an exclusive writing session. Inspect the resulting
+state, adopt compatible work, and continue the authorized effect. Serialize
+dependent mutations and consume each command's result before issuing the next;
+coordination must not become a new approval requirement.
+
 Compose this invariant with `shared-file coordination` (rule file),
 `operator precedence` (rule file),
 `plan adoption` (rule file), and

@@ -16,7 +16,7 @@ a rollback, stash, reset, revert, rebase, force-push, or whole-file replacement
 is proposed.
 
 Load the canonical invariant
-`rules/coordination/fix-forward.md` and follow the
+`rules/coordination/fix-forward-collaboration.md` and follow the
 `sync procedure` (skill file). Adopt the complete current authorized-
 worktree state regardless of provenance or age, inventory owners and intent
 before effects, preserve compatible work, integrate it forward through the

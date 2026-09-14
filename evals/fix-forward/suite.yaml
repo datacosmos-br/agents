@@ -15,7 +15,11 @@ prompt: |-
   through reconciliation. An unexpected path or branch state proves neither
   an actor nor an intention; when an exact operator authorization already
   exists, require fresh preflight and continuation without asking again or
-  repeating an unchanged effect. Unmanifested provider outputs, generated
+  repeating an unchanged effect. A concurrent branch, HEAD, or index change
+  requires adoption and fresh preflight,
+  not asking the operator to select an exclusive writing session. Dependent Git
+  mutations must consume each preceding result before proceeding. Unmanifested
+  provider outputs, generated
   destinations, external files, and ambiguous objects are preserved but are
   not repository contributions or canonical inputs; without an approved
   divergence-class rule they require operator adjudication before replacement.

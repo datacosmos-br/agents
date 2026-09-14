@@ -1,16 +1,20 @@
 """Lightweight connection handling for MCP servers."""
 
+from __future__ import annotations
+
 from abc import ABC, abstractmethod
 from contextlib import AbstractAsyncContextManager, AsyncExitStack
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
-from anthropic.types import ToolParam
 from anyio.streams.memory import MemoryObjectReceiveStream, MemoryObjectSendStream
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.sse import sse_client
 from mcp.client.stdio import stdio_client
 from mcp.client.streamable_http import GetSessionIdCallback, streamablehttp_client
 from mcp.shared.message import SessionMessage
+
+if TYPE_CHECKING:
+    from anthropic.types import ToolParam
 
 type TransportStreams = (
     tuple[
@@ -69,7 +73,7 @@ class MCPConnection(ABC):
         self._stack = None
 
     async def list_tools(self) -> list[ToolParam]:
-        """Retrieve available tools from the MCP server."""
+        """Preserve supplied descriptions, omitting the optional field when absent."""
         if self.session is None:
             raise RuntimeError("MCP connection must be entered before listing tools")
         response = await self.session.list_tools()

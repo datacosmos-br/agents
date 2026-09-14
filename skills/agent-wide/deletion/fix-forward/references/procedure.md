@@ -47,6 +47,12 @@ classify it as intent without evidence. If the operator already authorized the
 exact effect, preserve that authorization and continue after revalidation; do
 not ask again or repeat the unchanged effect.
 
+Do not ask the operator to select an exclusive writing session merely because
+the branch, HEAD, index, or shared files changed concurrently. Adopt the observed
+compatible state and proceed. Run dependent Git mutations sequentially, inspect
+each exit code, and re-read the current branch and index before the next effect;
+a failed command must not trigger a queued commit or merge against stale state.
+
 The integration lane owns the combined runtime, gates, review, landing, and
 post-merge proof. Agent-local green never advances the phase cursor. Only two
 evidenced current intentions that cannot coexist under active authority stop
