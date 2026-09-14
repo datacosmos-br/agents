@@ -7,16 +7,6 @@ metadata:
 
 # Poolside Session Extract
 
-Activate when the user requests to extract, view, or resume a Poolside session.
-Converts NDJSON trajectory files into readable markdown summaries with full conversation flow.
-
-## Storage Locations
-
-| Component | Path | Description |
-|---
-
-# Poolside Session Extract
-
 Activate only for an explicit session extraction, inspection, or reconciliation
 request. Resolve the configured workspace and source associations first. Do not
 infer the provider from UUID shape or the workspace from conversation words.

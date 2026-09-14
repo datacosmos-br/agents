@@ -4,14 +4,18 @@ from __future__ import annotations
 
 import fcntl
 import hashlib
+import json
 import os
 import sys
 import tempfile
 import tomllib
+from collections.abc import Mapping
 from pathlib import Path
 from typing import Literal, cast
 
 from strict_subprocess import run_strict
+
+from agents_governance import GovernanceBundle
 
 _IGNORED_DIST_FILES = frozenset({".gitignore"})
 
@@ -76,8 +80,14 @@ def _smoke_environment() -> dict[str, str]:
     return environment
 
 
-def _smoke(artifact: Path, cache_root: Path, version: str) -> None:
+def _smoke(
+    artifact: Path,
+    cache_root: Path,
+    version: str,
+    resources: Mapping[str, tuple[str, int, str]],
+) -> None:
     environment = _smoke_environment()
+    environment["ARTIFACT_RESOURCE_EXPECTATIONS"] = json.dumps(resources)
     with tempfile.TemporaryDirectory(
         prefix=f"{artifact.name}-", dir=cache_root
     ) as temporary:
@@ -106,12 +116,24 @@ def _smoke(artifact: Path, cache_root: Path, version: str) -> None:
             (
                 "from agents_governance import GovernanceBundle, __version__",
                 "from importlib.resources import files",
+                "import hashlib, json, os, stat",
                 "if not files('agents_governance').joinpath('py.typed').is_file():",
                 "    raise ValueError('installed PEP 561 marker missing')",
                 f"expected = {version!r}",
                 "bundle = GovernanceBundle.load()",
                 "if __version__ != expected or bundle.distribution_version != expected:",
                 "    raise ValueError('installed version mismatch')",
+                "expected_resources = json.loads(os.environ['ARTIFACT_RESOURCE_EXPECTATIONS'])",
+                "actual_resources = {}",
+                "for skill in bundle.skills:",
+                "    for resource in skill.resources:",
+                "        identity = resource.path.relative_to(bundle.root).as_posix()",
+                "        actual_resources[identity] = [",
+                "            hashlib.sha256(resource.path.read_bytes()).hexdigest(),",
+                "            stat.S_IMODE(resource.path.stat().st_mode), resource.format]",
+                "if actual_resources != expected_resources:",
+                "    raise ValueError('installed resource inventory, bytes, mode or format mismatch')",
+                "print('ARTIFACT resources', len(actual_resources), 'exact bytes/modes/formats')",
                 "print('ARTIFACT', __version__, bundle.schema_version, len(bundle.skills))",
             )
         )
@@ -147,8 +169,18 @@ def _smoke(artifact: Path, cache_root: Path, version: str) -> None:
 def _validate(repository: Path, cache_root: Path) -> tuple[Path, Path]:
     artifacts = _artifacts(_dist(repository))
     version = _project_version(repository)
+    bundle = GovernanceBundle.load(repository)
+    resources = {
+        resource.path.relative_to(bundle.root).as_posix(): (
+            resource.sha256,
+            resource.mode,
+            resource.format,
+        )
+        for skill in bundle.skills
+        for resource in skill.resources
+    }
     for artifact in artifacts:
-        _smoke(artifact, cache_root, version)
+        _smoke(artifact, cache_root, version, resources)
     return artifacts
 
 

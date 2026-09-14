@@ -60,6 +60,18 @@ configuration, skills, semantic skill evals, rules, commands, agents, the strict
 prelude owner, and documents referenced by the governance map. Each artifact is
 validated without a source checkout and performs no writes when loaded.
 
+Skill resources expose their format, SHA-256 and configured publication mode
+through `GovernanceBundle`. `make runtime` attests the exact resource inventory,
+bytes and physical modes after installing both artifacts. `make static` includes
+every Python resource selected from that inventory, with SDK dependencies owned
+by the development dependency group.
+
+For continuation, use `plan-handoff` and `strategic-compact`: retain links to the
+current owner/source revision, refs, measured gates, freshness and next action
+in the existing authorized plan or PR, not a second status ledger. Claude and
+Poolside resources are pure private parsers; discovery and transactional
+publication remain AI Hub adapter responsibilities.
+
 ## Plan reconciliation
 
 Project and provider publication runs only through AI Hub. This package has no

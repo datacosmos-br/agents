@@ -6,7 +6,7 @@ from playwright.sync_api import sync_playwright
 
 url = "http://localhost:5173"  # Replace with your URL
 
-console_logs = []
+console_logs: list[str] = []
 
 with sync_playwright() as p:
     browser = p.chromium.launch(headless=True)

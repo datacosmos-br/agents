@@ -1,24 +1,39 @@
 """Lightweight connection handling for MCP servers."""
 
 from abc import ABC, abstractmethod
-from contextlib import AsyncExitStack
+from contextlib import AbstractAsyncContextManager, AsyncExitStack
 from typing import Any
 
+from anthropic.types import ToolParam
+from anyio.streams.memory import MemoryObjectReceiveStream, MemoryObjectSendStream
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.sse import sse_client
 from mcp.client.stdio import stdio_client
-from mcp.client.streamable_http import streamablehttp_client
+from mcp.client.streamable_http import GetSessionIdCallback, streamablehttp_client
+from mcp.shared.message import SessionMessage
+
+type TransportStreams = (
+    tuple[
+        MemoryObjectReceiveStream[SessionMessage | Exception],
+        MemoryObjectSendStream[SessionMessage],
+    ]
+    | tuple[
+        MemoryObjectReceiveStream[SessionMessage | Exception],
+        MemoryObjectSendStream[SessionMessage],
+        GetSessionIdCallback,
+    ]
+)
 
 
 class MCPConnection(ABC):
     """Base class for MCP server connections."""
 
     def __init__(self) -> None:
-        self.session = None
-        self._stack = None
+        self.session: ClientSession | None = None
+        self._stack: AsyncExitStack | None = None
 
     @abstractmethod
-    def _create_context(self):
+    def _create_context(self) -> AbstractAsyncContextManager[TransportStreams]:
         """Create the connection context based on connection type."""
 
     async def __aenter__(self):
@@ -53,13 +68,15 @@ class MCPConnection(ABC):
         self.session = None
         self._stack = None
 
-    async def list_tools(self) -> list[dict[str, Any]]:
+    async def list_tools(self) -> list[ToolParam]:
         """Retrieve available tools from the MCP server."""
+        if self.session is None:
+            raise RuntimeError("MCP connection must be entered before listing tools")
         response = await self.session.list_tools()
         return [
             {
                 "name": tool.name,
-                "description": tool.description,
+                "description": tool.description or "",
                 "input_schema": tool.inputSchema,
             }
             for tool in response.tools
@@ -67,6 +84,8 @@ class MCPConnection(ABC):
 
     async def call_tool(self, tool_name: str, arguments: dict[str, Any]) -> Any:
         """Call a tool on the MCP server with provided arguments."""
+        if self.session is None:
+            raise RuntimeError("MCP connection must be entered before calling tools")
         result = await self.session.call_tool(tool_name, arguments=arguments)
         return result.content
 

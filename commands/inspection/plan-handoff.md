@@ -14,6 +14,14 @@ ambiguous, missing, symlinked, or transcript-only handoff before any effect.
 1. Read `00-index.md` first, then the handoff file, context/evidence, bead
    reorganization, and the phase named as current. Never resume a source session or
    import its cursor as authority.
+   Resolve its owner/source revision, checkout and integration refs, last gate
+   evidence, freshness conditions and exact next action. Reuse verified owner
+   links; repeat discovery only for changed or unproven inputs. Do not copy a
+   second inventory or status ledger into the handoff.
+   The resumption cursor links live checkout state, source and integration SHAs,
+   PR, current Bead, first failing command/cwd/exit, owning boundary and next
+   authorized effect. Distinguish source integration from installed runtime
+   proof; preserve answered operator decisions instead of asking them again.
 2. Run the plan's preflight commands exactly, read-only where it declares read-only.
    Record command, working directory, exit code, and decisive output. On divergence,
    investigate provenance, correct the plan at its owner, and preserve all dirty work.

@@ -7,18 +7,6 @@ metadata:
 
 # Session Resume
 
-Activate when the user wants to resume execution from a previous session.
-Supports both Poolside and Claude Code session formats.
-
-## Source Detection
-
-The skill auto-detects session source from the ID format:
-
-| Source | ID Format | Example |
-|---
-
-# Session Resume
-
 Activate for an explicit request to inspect and resume a foreign session, not
 ordinary continuation of the current conversation.
 

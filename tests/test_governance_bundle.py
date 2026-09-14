@@ -101,6 +101,51 @@ def test_binary_policy_is_explicit_and_unknown_override_fails(
         ResourcePolicy.parse(section).resource(tmp_path, path)
 
 
+def test_public_bundle_preserves_non_utf8_resource_and_policy(
+    governance_source_fixture: Path, governance_bundle: GovernanceBundle
+) -> None:
+    root = governance_source_fixture
+    skill = governance_bundle.skills[0]
+    relative = skill.directory.relative_to(governance_bundle.root)
+    path = root / relative / "assets" / "binary-probe.bin"
+    path.parent.mkdir(exist_ok=True)
+    payload = b"\x00\xff\x80full-binary-payload"
+    path.write_bytes(payload)
+    config_path = root / "config/skills.json"
+    document = json.loads(config_path.read_text())
+    document["resources"]["overrides"][path.relative_to(root / "skills").as_posix()] = {
+        "format": "binary", "executable": True,
+    }
+    config_path.write_text(json.dumps(document))
+    policy = ResourcePolicy.parse(document["resources"])
+    path.chmod(policy.executable_mode)
+
+    loaded = GovernanceBundle.load(root)
+    resource = next(
+        resource for record in loaded.skills for resource in record.resources
+        if resource.path == path
+    )
+    assert resource.format == "binary"
+    assert resource.executable
+    assert resource.mode == policy.executable_mode
+    assert resource.path.read_bytes() == payload
+    assert resource.sha256 == hashlib.sha256(payload).hexdigest()
+    document["resources"]["overrides"].pop(path.relative_to(root / "skills").as_posix())
+    config_path.write_text(json.dumps(document))
+    with pytest.raises(UnicodeDecodeError):
+        GovernanceBundle.load(root)
+
+
+def test_resource_policy_owns_an_immutable_copy(governance_bundle: GovernanceBundle) -> None:
+    document = json.loads((governance_bundle.root / "config/skills.json").read_text())
+    section = document["resources"]
+    policy = ResourcePolicy.parse(section)
+    expected = dict(policy.overrides)
+    section["overrides"].clear()
+    assert dict(policy.overrides) == expected
+    assert not hasattr(policy.overrides, "clear")
+
+
 def test_delivery_budget_holds_with_measured_composition(
     governance_bundle: GovernanceBundle,
 ) -> None:

@@ -37,9 +37,19 @@ Preserve only verified facts:
 - active blockers and unresolved decisions;
 - next owner action and invalidated evidence that must be rerun.
 
+Keep the record minimal and reference-backed: identify each canonical owner,
+current source path and revision, current checkout and integration ref, measured
+gate command/cwd/exit, and the exact next action. For mutable facts record when
+and against which revision they were verified; a changed source, ref or input
+invalidates only the dependent evidence. Link the complete evidence instead of
+copying transcripts or inventories. Reuse the selected tracker or the existing
+operator-authorized plan/PR surface; never introduce a parallel status ledger.
+
 After compaction, reload project law, the durable record, and live repository
 state. Treat summaries as navigation, never as a substitute for current files or
-runtime evidence.
+runtime evidence. Reload referenced owners and check freshness first; repeat
+discovery only where a dependency changed, evidence is missing, or a claim no
+longer matches measured state.
 
 Persist the complete record before compaction as one atomic boundary. If that
 write fails, propagate the cause and leave the active context intact.

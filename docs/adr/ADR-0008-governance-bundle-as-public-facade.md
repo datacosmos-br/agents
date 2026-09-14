@@ -48,6 +48,24 @@ Existing projected trees are not deleted by this source cutover; their owned
 retirement belongs to AI Hub. Complete skill references, scripts, and evaluation
 resources remain part of the read-only package and its distribution contract.
 
+**Amendment — 2026-09-14 (resource contract):** each skill exposes its complete
+typed resource inventory, with format, executable policy, configured mode and
+SHA-256. `config/skills.json` owns that policy. `make runtime` compares installed
+sdist and wheel resources against source bytes and declared modes through the
+public bundle. Development gates include the executable Python resources and
+provision their SDKs without making those SDKs package runtime dependencies.
+Claude and Poolside parser resources accept authenticated private envelopes on
+stdin and emit complete structured evidence on stdout; they neither discover
+physical sources nor publish files. AI Hub's adapter owns authentication,
+association, private persistence and publication. Parser readiness does not
+claim that downstream automatic collection is implemented.
+
+**Amendment — 2026-09-14 (continuation context):** `strategic-compact` and
+`plan-handoff` retain minimal owner/source revision, current refs, gate evidence,
+freshness and next-action references on the existing authorized surface. They
+do not create a second execution ledger or treat historical sessions as current
+authority; only stale or unproven dependencies require renewed discovery.
+
 The development surface is the standard Make vocabulary. Mutating correction
 targets perform their declared operation directly. No selector is accepted.
 

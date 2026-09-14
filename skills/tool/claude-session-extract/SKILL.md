@@ -7,16 +7,6 @@ metadata:
 
 # Claude Session Extract
 
-Activate when the user requests to extract, view, or resume a Claude Code session.
-Converts JSONL session files into readable markdown summaries with full conversation flow.
-
-## Storage Locations
-
-| Component | Path | Description |
-|---
-
-# Claude Session Extract
-
 Activate only for an explicit session extraction, inspection, or reconciliation
 request. Resolve the configured workspace and source associations first. Do not
 infer the provider from UUID shape or the workspace from conversation words.

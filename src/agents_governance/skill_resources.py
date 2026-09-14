@@ -3,8 +3,10 @@
 from __future__ import annotations
 
 import hashlib
+from collections.abc import Mapping
 from dataclasses import dataclass
 from pathlib import Path, PurePosixPath
+from types import MappingProxyType
 from typing import Literal
 
 from .frontmatter import cast_mapping, require_exact_fields
@@ -48,7 +50,7 @@ class ResourcePolicy:
     """The resource section of config/skills.json, parsed exactly once."""
 
     default: ResourceOptions
-    overrides: dict[str, ResourceOptions]
+    overrides: Mapping[str, ResourceOptions]
     file_mode: int
     executable_mode: int
 
@@ -99,7 +101,7 @@ class ResourcePolicy:
             )
         return cls(
             ResourceOptions.parse(document["default"], "resources.default"),
-            overrides,
+            MappingProxyType(overrides),
             file_mode,
             executable_mode,
         )
