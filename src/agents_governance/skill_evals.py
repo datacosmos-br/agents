@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import math
 import stat
 from dataclasses import dataclass
 from pathlib import Path
@@ -277,8 +278,12 @@ def _audit_defaults(path: Path) -> EvalPolicy:
     require_exact_fields(metric, _METRIC_FIELDS, f"{path}: metric")
     if metric["name"] != "behavior_quality":
         raise ValueError(f"{path}: metric must equal behavior_quality")
-    if metric["weight"] != 1.0 or metric["threshold"] != 1.0:
-        raise ValueError(f"{path}: metric weight and threshold must equal 1.0")
+    for field in ("weight", "threshold"):
+        value = metric[field]
+        if isinstance(value, bool) or not isinstance(value, (int, float)):
+            raise TypeError(f"{path}: metric {field} must be numeric")
+        if not math.isclose(value, 1.0, rel_tol=0.0, abs_tol=0.0):
+            raise ValueError(f"{path}: metric weight and threshold must equal 1.0")
     metric_description = _trimmed_text(
         metric["description"], f"{path}: metric.description"
     )
