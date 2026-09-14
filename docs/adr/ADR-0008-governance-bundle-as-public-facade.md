@@ -41,9 +41,21 @@ alias, or second load path. AI Hub consumes the public bundle and alone owns
 all adaptation and effects. Provider-generated files identify that owner and
 the exact regeneration command; they never become canonical input.
 
+**Amendment — 2026-09-14:** removed the residual project-tree writer,
+its exclusive workspace configuration, and the `gen`/`propagate` development
+routes. AI Hub already consumes `GovernanceBundle`, not that local mirror.
+Existing projected trees are not deleted by this source cutover; their owned
+retirement belongs to AI Hub. Complete skill references, scripts, and evaluation
+resources remain part of the read-only package and its distribution contract.
+
 The development surface is the standard Make vocabulary. Mutating correction
-targets mutate by default; `APPLY=N` is the explicit dry-run override. No
-selector is accepted.
+targets perform their declared operation directly. No selector is accepted.
+
+**Amendment — 2026-09-14:** the operator removed Make application controls,
+including the former dry-run override. Root verbs now have one execution
+contract without an acknowledgement or replacement flag. Reconciliation is
+tracked by `flext-ro6mj.1`.
+
 Every test run, including incremental, full, and CI runs, goes through a
 dedicated root Make verb and the same external persistent pytest-testmon
 database. `make test-full` first runs `make test`, then runs

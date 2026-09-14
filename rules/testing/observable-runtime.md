@@ -19,7 +19,7 @@ only inside fixture-owned storage; real integration services use their public
 harness.
 
 Every incremental, full, and CI pytest execution uses a selector-free root Make
-verb (mutation by default; `APPLY=N` is the explicit dry-run override),
+verb invoked directly without an apply selector,
 pytest-testmon, and the same external persistent database. The
 full verb first completes the incremental verb, then runs
 `--testmon --testmon-noselect` with that database. Raw pytest, direct test-file

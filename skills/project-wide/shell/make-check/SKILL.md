@@ -17,8 +17,8 @@ metadata:
 4. Run `make check` and the smallest distinct public root verb that owns
    each additional required gate. Never invoke a raw underlying tool or private
    module.
-5. Every test verb mutates by default (`APPLY=N` is the explicit dry-run
-   override), pytest-testmon, and the same external persistent database. The
+5. Invoke every test verb directly with pytest-testmon and the same external
+   persistent database. The
    full verb first runs incremental selection and then no-selection.
 6. Record verb, cwd, exit, decisive output, scope, warning, and cache accounting.
 

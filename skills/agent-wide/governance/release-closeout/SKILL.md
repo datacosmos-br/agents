@@ -42,8 +42,7 @@ instead of committing.
 Generated file headers read `@flext-regenerate: make gen` with no apply
 acknowledgement — `make gen` mutates by default and is provisioning/
 idempotent-safe with its own fixed-point verify, so the regeneration note
-needs no mutation guard. Every mutating verb mutates by default; `APPLY=N` is
-the explicit dry-run override — never weaken that guard.
+needs no mutation guard. Invoke every verb directly without an apply selector.
 
 ## Superproject PR merge playbook (release lane → integration branch)
 

@@ -1,0 +1,9 @@
+id: plan-reconciliation-translation-only-003
+name: Translate a planning sentence without reconciliation
+description: An isolated translation does not authorize a corpus workflow.
+tags: [plans, should-not-trigger]
+inputs:
+  prompt: 'Translate this sentence into Portuguese only, without tools or additional workflow: The plan describes receipt validation.'
+expected:
+  output_contains: [plano, validação]
+  output_not_contains: [Beads, reconcile-plans, integration branch]

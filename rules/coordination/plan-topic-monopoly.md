@@ -1,7 +1,7 @@
 ---
 description: An approved plan owns its topic
 metadata:
-  aihub.tags: '["decision:ADR-0008","effective:2026-09-10","route:both"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-09-14","route:both"]'
 ---
 
 # An approved plan owns its topic
@@ -13,7 +13,7 @@ the existing change branch under
 revert nothing.
 
 When required work has not reached the integration branch, adopt it into the
-owned branch by reviewed non-FF merge or attributable cherry-pick. Preserve
+owned branch by reviewed non-FF merge. Preserve
 attribution and revalidate the integrated result.
 
 Do not expand to another repository, create a workspace, or invoke a suspended
@@ -27,3 +27,17 @@ declared plan; do not rewrite its persisted configuration in pursuit of a
 cleaner state. Persisted-configuration change is scope expansion and requires a
 current defect or an explicit operator instruction. Diagnosis is not
 reconfiguration.
+
+## Corpus reconciliation
+
+A reconciliation cycle selects one evidenced newest plan and retains it through
+its integration proof before another plan begins. Within that plan, evaluate
+projects one at a time from dependency owners to consumers, using the configured
+graph. Read the complete plan and its attached material before adjudicating its
+meaning. Automatic collection and ordering do not decide implementation,
+supersession, deletion, or tracker closure.
+
+Beads alone owns execution status; a generated source inventory is not a second
+ledger. Versioned documents own the reviewed plan content, and any home copy is
+a configured projection. Follow the `plan-reconciliation` skill for procedure;
+the distribution and integration owners remain unchanged.

@@ -8,8 +8,7 @@ metadata:
 
 From outside an authorized lane, use
 `env -C <worktree> make <public-verb>` so the selected root remains explicit.
-Mutation is the default for every verb; pass only the exact `APPLY=N`
-acknowledgement to invoke its read-only dry-run form. Do not
+Each verb performs its declared operation without an apply selector. Do not
 change directory, use `make -C`, pass a selector, call an underlying tool, or
 substitute Git/provider/package CLIs for a root Make diagnostic, validation,
 generation, test, publication, or deployment verb.

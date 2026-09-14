@@ -25,7 +25,7 @@
     operator-authorized, never as satisfied.
 13. Root Make only: diagnostics, validation, generation, tests, Waza,
     publication, and deployment run only through selector-free verbs in the
-    repository root Makefile; bare verbs mutate (`APPLY=N` = dry-run). A full
+    repository root Makefile; bare verbs perform their declared operation. A full
     suite has its own verb, first runs the incremental verb, and uses the same
     persistent external testmon database.
 14. Red means red: a warning, skip, empty output, missing tool, missing report,
@@ -38,7 +38,7 @@
 
 # AGENTS.md — agents
 
-> Packaged governance `agents-governance` `0.3.0` owns the capability indexes: 62 agents, 50 rules, 102 skills. Consume them through `GovernanceBundle`; do not copy their bodies here.
+> Packaged governance `agents-governance` owns the capability indexes. Consume current inventories through `GovernanceBundle`; do not copy their counts or bodies here.
 
 <!-- AIHUB-AGENTS-SCOPE-LOCAL-BEGIN -->
 This repository is the single writable authority for provider-neutral rules,
@@ -65,8 +65,8 @@ and reconciles runtime state.
 
 Read [README.md](README.md), [rules](rules), [skills](skills), and
 [ADRs](docs/adr/README.md) before mutation. Use only selector-free root Make
-verbs and run `make setup` before development gates; bare verbs mutate
-(`APPLY=N` = dry-run). Raw-tool and inline substitutes are prohibited.
+verbs and run `make setup` before development gates; bare verbs perform their
+declared operation. Raw-tool and inline substitutes are prohibited.
 
 Prove changed behavior through the public bundle load before adapting tests.
 Every Python test invocation, including focused, full, and CI, must keep the

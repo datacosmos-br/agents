@@ -55,8 +55,7 @@ there.
    normalize, cap, or suppress them. The first exception escapes with its raw
    traceback; no catch, retry, fallback, or normalization exists.
 2. Canonical commands only. Everything runs through the declared Make
-   dispatcher; mutation is the default and `APPLY=N` is the explicit dry-run
-   override. Never invent selectors,
+   dispatcher; invoke each verb directly. Never invent selectors,
    bypass with raw tools, or route around a broken verb:
    repair the verb at its owner, then rerun it. Diagnosis and validation obey
    the same rule as mutation.

@@ -248,6 +248,11 @@
       "rule:architecture/engineering-core",
       "rule:architecture/generalized-abstraction"
     ],
+    "plan-corpus-reconciliation": [
+      "command:reconcile-plans",
+      "rule:coordination/plan-topic-monopoly",
+      "skill:plan-reconciliation"
+    ],
     "preflight-before-effects": [
       "rule:runtime/preflight-before-effects"
     ],

@@ -1,0 +1,11 @@
+id: plan-reconciliation-complete-corpus-001
+name: Reconcile chunk receipts before the older plan
+description: Preserve unique research and correct closed issue meaning without advancing early.
+tags: [plans, happy-path, integration]
+inputs:
+  prompt: Perform plan corpus reconciliation using attachment provenance and sequential integration on the complete fixture. Distinguish ascending index order from bottom-up execution. Explain the current plan, dependency order, corrections to open and closed Beads, and the condition for proceeding to the older plan. Consolidate the duplicate receipt-granularity ADRs while preserving the distinct encryption decision. Do not invent missing validation.
+  files:
+  - path: corpus.yaml
+expected:
+  output_contains: [chunk-receipts, receipts, warehouse, harbor-12, harbor-19, empty, integration, ascending, bottom-up, ADR-004, ADR-011, ADR-012]
+  output_not_contains: [all plans are complete, delete the older plan automatically, CSV progress ledger]

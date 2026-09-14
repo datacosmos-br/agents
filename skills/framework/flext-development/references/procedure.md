@@ -99,9 +99,8 @@ or old/new coexistence is RED and is corrected at flext-infra.
 
 Execute diagnostics, generation, formatting, correction, checks, Waza, tests,
 build, publication, and deployment only through selector-free verbs in the
-active repository's root Makefile. `fix`, `fmt`, `check`, and every test verb
-mutate by default; `APPLY=N` is the explicit dry-run override. Every other
-mutation uses the same override.
+active repository's root Makefile. Invoke each verb directly to perform its
+declared operation, without an apply selector or acknowledgement.
 Repair a missing standard verb at the Make/codegen owner rather than invoking a
 raw underlying tool.
 

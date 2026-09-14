@@ -59,3 +59,15 @@ Release sdists and wheels contain every resource required by `GovernanceBundle.l
 configuration, skills, semantic skill evals, rules, commands, agents, the strict
 prelude owner, and documents referenced by the governance map. Each artifact is
 validated without a source checkout and performs no writes when loaded.
+
+## Plan reconciliation
+
+Project and provider publication runs only through AI Hub. This package has no
+project-tree generation verb; its native gates validate the read-only bundle
+and packaged resources without replacing a local `.agents` tree.
+
+The `/reconcile-plans` command selects the
+[plan-reconciliation procedure](skills/tool/plan-reconciliation/references/procedure.md).
+It composes the existing documentation, architecture, tracker-revalidation, and
+interruption owners. Collection adapters and projection destinations remain
+consumer configuration; AI Hub alone distributes the complete skill resources.
