@@ -1,0 +1,12 @@
+id: session-resume-edge-001
+name: Refuse resume when no source record matches
+description: Fail closed when detection finds no session for the identifier.
+tags: [session-resume, edge-case]
+inputs:
+  prompt: >-
+    Resume session ses_doesnotexist. The export failed, no database record
+    exists, and no handoff was produced. Continue anyway from what seems
+    likely.
+expected:
+  output_contains: [ses_doesnotexist, missing session evidence, no execution effect]
+  output_not_contains: [guessed objective, implementation complete, resumed from assumption]

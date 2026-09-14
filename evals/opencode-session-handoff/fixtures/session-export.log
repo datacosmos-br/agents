@@ -1,6 +1,0 @@
-[opencode-provider] Failed to sync models: 401 invalid credential
-Exporting session: ses_example
-Plan: Phase A completed; Phase B in_progress; Phase C pending.
-Last tool: make test APPLY=Y
-Result: output not captured before interruption.
-Operator: replan and wait for approval before continuation.

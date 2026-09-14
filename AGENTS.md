@@ -25,9 +25,9 @@
     operator-authorized, never as satisfied.
 13. Root Make only: diagnostics, validation, generation, tests, Waza,
     publication, and deployment run only through selector-free verbs in the
-    repository root Makefile. `APPLY=Y` is mandatory for `fix`, `fmt`, `check`,
-    and every test verb. A full suite has its own verb, first runs the
-    incremental verb, and uses the same persistent external testmon database.
+    repository root Makefile; bare verbs mutate (`APPLY=N` = dry-run). A full
+    suite has its own verb, first runs the incremental verb, and uses the same
+    persistent external testmon database.
 14. Red means red: a warning, skip, empty output, missing tool, missing report,
     zero collection, caught exception, retry, or normalized failure is RED. The
     only acceptable zero-execution test result is a typed incremental testmon
@@ -36,8 +36,11 @@
     raw traceback escape unchanged.
 <!-- /AIHUB-INVIOLABLE-LAW-PRELUDE -->
 
-# AGENTS.md — agents-governance
+# AGENTS.md — agents
 
+> Packaged governance `agents-governance` `0.3.0` owns the capability indexes: 62 agents, 50 rules, 102 skills. Consume them through `GovernanceBundle`; do not copy their bodies here.
+
+<!-- AIHUB-AGENTS-SCOPE-LOCAL-BEGIN -->
 This repository is the single writable authority for provider-neutral rules,
 skills, commands, agent profiles, and their semantic evaluation resources. It
 publishes the read-only `agents-governance` package. AI Hub alone discovers
@@ -62,9 +65,8 @@ and reconciles runtime state.
 
 Read [README.md](README.md), [rules](rules), [skills](skills), and
 [ADRs](docs/adr/README.md) before mutation. Use only selector-free root Make
-verbs and run `make setup APPLY=Y` before development gates. `setup`, `fix`,
-`fmt`, `check`, and every test verb require exactly `APPLY=Y`; raw-tool and
-inline substitutes are prohibited.
+verbs and run `make setup` before development gates; bare verbs mutate
+(`APPLY=N` = dry-run). Raw-tool and inline substitutes are prohibited.
 
 Prove changed behavior through the public bundle load before adapting tests.
 Every Python test invocation, including focused, full, and CI, must keep the
@@ -100,8 +102,29 @@ its upstream architecture.
 
 ## Lifecycle
 
-Gas City runtime is suspended for this repository. Work only in this existing
-checkout; invoke no Gas City or Beads mutation and create no substitute ledger.
+Gas City owns workspace placement for this repository; `gc status` is the
+effective-state authority (declared default plus runtime override). While the
+city or this rig is suspended, work only in this existing checkout, invoke no
+Gas City or Beads mutation, and create no substitute ledger.
 Stop at `dev` unless the operator explicitly authorizes promotion. No increment
 is DONE without required gates, reviewed merge-commit landing, post-merge public
 runtime proof, and canonical tracker closure.
+
+## Operator cycle lessons
+
+- **Fix-forward permanente:** never rebase, force-push, or cherry-pick an
+  authorized lane. Integrate the base with `git merge --no-ff`, revalidate the
+  combined state, then land.
+- **Pouso:** landing requires real validation (command + exit code + output),
+  zero warnings, and record on the integration branch at cycle end. A rejected
+  FF-push means `git merge --no-ff` the base into the lane.
+- **Coordenação:** the orchestrator runs parallel subagents per file owner. An
+  empty subagent result is not a claim — verify by diff before accepting.
+- **Resíduo zero:** untracked `.bak`/backup artifacts are defects, never carry-over.
+- **Gate bare:** a CI check invoked without the project environment must be
+  stdlib-only at its script owner; provisioning env in the workflow is a
+  workaround, not a fix. Prove the gate by running it exactly as CI does.
+- **Subagentes rápidos:** dispatch independent research/verification/
+  bookkeeping to fast parallel subagents; the main thread alone owns sequenced
+  effects (merge, land, bead closure with merge evidence).
+<!-- AIHUB-AGENTS-SCOPE-LOCAL-END -->

@@ -3,7 +3,7 @@ name: go-build-resolver
 description: Go build, vet, and compilation error resolution specialist. Fixes build errors, go vet issues, and linter warnings with minimal changes. Use when Go builds fail.
 tools: ["filesystem:read", "filesystem:write", "shell:execute", "filesystem:grep", "filesystem:glob"]
 metadata:
-  aihub.tags: '["activation:detected","detect:marker:go.mod","mode:debug","role:build-resolver"]'
+  aihub.tags: '["activation:detected","decision:ADR-0008","detect:marker:go.mod","effective:2026-09-07","mode:debug"]'
 ---
 
 # Go Build Error Resolver
@@ -24,19 +24,19 @@ Run these in order:
 
 ```bash
 make audit
-make check APPLY=Y
-make build APPLY=Y
+make check
+make build
 ```
 
 ## Resolution Workflow
 
 ```text
-1. make check APPLY=Y -> Parse the causal diagnostic
+1. make check -> Parse the causal diagnostic
 2. Read affected file -> Understand context
 3. Apply minimal fix  -> Only what's needed
-4. make check APPLY=Y -> Verify fix and warnings
-5. make build APPLY=Y -> Verify the artifact
-6. make test APPLY=Y  -> Ensure nothing broke
+4. make check -> Verify fix and warnings
+5. make build -> Verify the artifact
+6. make test  -> Ensure nothing broke
 ```
 
 ## Common Fix Patterns
@@ -58,7 +58,7 @@ make build APPLY=Y
 
 ```bash
 grep "replace" go.mod              # Check local replaces
-make build APPLY=Y
+make build
 go get package@v1.2.3              # Pin specific version
 go clean -modcache && go mod download  # Fix checksum issues
 ```
@@ -89,5 +89,5 @@ Remaining errors: 3
 
 Final: `Build Status: SUCCESS/FAILED | Errors Fixed: N | Files Modified: list`
 
-Use `go-development` for detected Go language rules and the active project's
+Use `go-dev` for detected Go language rules and the active project's
 own build contract for repository-specific error patterns.

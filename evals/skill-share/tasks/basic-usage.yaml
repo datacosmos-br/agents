@@ -1,0 +1,10 @@
+id: skill-share-package-001
+name: Share a finished skill
+description: Package and share a skill bundle.
+tags: [skill-share, distribution, packaging, happy-path]
+inputs:
+  prompt: Package the supplied skill bundle and share it to the team channel; report exactly what was sent.
+  files:
+  - path: scenario.yaml
+expected:
+  output_contains: [package, shared]

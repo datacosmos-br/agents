@@ -5,6 +5,7 @@ from __future__ import annotations
 import fcntl
 import hashlib
 import os
+import sys
 import tempfile
 import tomllib
 from pathlib import Path
@@ -104,6 +105,9 @@ def _smoke(artifact: Path, cache_root: Path, version: str) -> None:
         proof = "\n".join(
             (
                 "from agents_governance import GovernanceBundle, __version__",
+                "from importlib.resources import files",
+                "if not files('agents_governance').joinpath('py.typed').is_file():",
+                "    raise ValueError('installed PEP 561 marker missing')",
                 f"expected = {version!r}",
                 "bundle = GovernanceBundle.load()",
                 "if __version__ != expected or bundle.distribution_version != expected:",
@@ -115,6 +119,27 @@ def _smoke(artifact: Path, cache_root: Path, version: str) -> None:
             (str(environment_path / "bin" / "python"), "-c", proof),
             smoke,
             f"ARTIFACT public load {artifact.name}",
+            environment,
+        )
+        run_strict(
+            (
+                sys.executable,
+                "-m",
+                "mypy",
+                "--python-executable",
+                str(environment_path / "bin" / "python"),
+                "--cache-dir",
+                str(smoke / "mypy"),
+                "--strict",
+                "-c",
+                (
+                    "from agents_governance import GovernanceBundle\n"
+                    "from agents_governance import agent_profiles, catalog, commands, rules\n"
+                    "bundle: GovernanceBundle = GovernanceBundle.load()\n"
+                ),
+            ),
+            smoke,
+            f"ARTIFACT typed public imports {artifact.name}",
             environment,
         )
 

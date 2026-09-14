@@ -1,0 +1,9 @@
+id: skill-creator-negative-001
+name: Ignore non-skill authoring
+description: Do not activate for ordinary code.
+tags: [anti-trigger, code]
+inputs:
+  prompt: Create a python module for parsing ini files. No agent skill is requested.
+expected:
+  output_contains: [module]
+  output_not_contains: [SKILL.md, eval suite]

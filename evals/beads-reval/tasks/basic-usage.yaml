@@ -1,0 +1,15 @@
+id: beadsreval-basic-001
+name: Basic usage beads-reval
+description: Execute the core beads-reval contract.
+tags: [beads, revalidation, sweep, reval, tag, waves, csv, tracker, code-reality, validation, basic-usage]
+inputs:
+  prompt: >-
+    Run the beads revalidation sweep: regenerate the csv tracker from bd list,
+    start the reval tag wave, run the dedup gate with limit 0, close obsolete
+    premises with evidence, validate with bd doctor. Cover code-reality
+    validation and validation of every wave.
+  files:
+  - path: scenario.yaml
+expected:
+  output_contains: ["beads", "revalidation", "sweep", "reval", "tag", "waves", "csv", "tracker", "code-reality", "validation", "limit 0", "obsolete", "doctor"]
+  output_not_contains: ["invented command", "skipped gate"]

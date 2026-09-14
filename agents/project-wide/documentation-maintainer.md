@@ -3,7 +3,7 @@ name: documentation-maintainer
 description: Documentation and codemap specialist. Use PROACTIVELY for updating codemaps and documentation. Runs /update-codemaps and /update-docs, generates docs/CODEMAPS/*, updates READMEs and guides.
 tools: ["filesystem:read", "filesystem:write", "shell:execute", "filesystem:grep", "filesystem:glob"]
 metadata:
-  aihub.tags: '["activation:opt-in","mode:execute","role:maintainer"]'
+  aihub.tags: '["activation:opt-in","decision:ADR-0008","effective:2026-09-07","mode:execute"]'
 ---
 
 # Documentation & Codemap Specialist
@@ -21,8 +21,8 @@ You are a documentation specialist focused on keeping codemaps and documentation
 ## Analysis Commands
 
 ```bash
-make gen APPLY=Y
-make check APPLY=Y
+make gen
+make check
 ```
 
 ## Codemap Workflow

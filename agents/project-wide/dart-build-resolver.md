@@ -3,7 +3,7 @@ name: dart-build-resolver
 description: Dart/Flutter build, analysis, and dependency error resolution specialist. Fixes `dart analyze` errors, Flutter compilation failures, pub dependency conflicts, and build_runner issues with minimal, surgical changes. Use when Dart/Flutter builds fail.
 tools: ["filesystem:read", "filesystem:write", "shell:execute", "filesystem:grep", "filesystem:glob"]
 metadata:
-  aihub.tags: '["activation:detected","detect:marker:pubspec.yaml","mode:debug","role:build-resolver"]'
+  aihub.tags: '["activation:detected","decision:ADR-0008","detect:marker:pubspec.yaml","effective:2026-09-07","mode:debug"]'
 ---
 
 # Dart/Flutter Build Error Resolver
@@ -192,4 +192,4 @@ Remaining errors: 0
 Final: `Build Status: SUCCESS/FAILED | Errors Fixed: N | Files Modified: list`
 
 Use the detected project's Dart/Flutter language rules and the
-`flutter-development` skill when that framework capability is active.
+`flutter-dev` skill when that framework capability is active.

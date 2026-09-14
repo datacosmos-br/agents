@@ -1,0 +1,19 @@
+id: beads-cycle-happy-001
+name: Happy path beads-cycle
+description: Execute full continuous bead governance cycle.
+tags: [beads, cycle, continuous, governance, csv, collect, classify, align, unblock, title, deferred, validate, happy-path]
+inputs:
+  prompt: >-
+    Run the complete beads-cycle: regenerate CSV from bd list, collect workspace
+    evidence from root submodules worktrees, classify bugfix hotfix bug without
+    epic parent, align task feature to few canonical epics, unblock dependencies,
+    improve titles tags, adjust deferred with revalidation notes, validate with
+    bd doctor check validate and dedup gate and orphans after each batch of at
+    least 25. Cap 20 closes per batch. Close only with SUPERSEDED OBSOLETE DONE
+    with evidence. Zero parent closed with child pending. One canonical survivor
+    per family. Never mutate active third-party lanes.
+  files:
+  - path: scenario.yaml
+expected:
+  output_contains: ["regenerate CSV", "collect", "classify", "align", "unblock", "title", "deferred", "bd doctor", "check validate", "bd find-duplicates", "bd orphans", "SUPERSEDED", "OBSOLETE", "DONE", "canonical survivor", "foreign lane", "WORKSPACE SYNC"]
+  output_not_contains: ["force-push", "push without gate", "closed without reason", "skip validation"]

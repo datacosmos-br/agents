@@ -1,0 +1,6 @@
+description: Architecture evidence, boundaries, flows, diagrams, and decisions.
+prompt: |-
+  Grade the arch-docs response. Pass only when it derives component ownership, boundaries,
+  and the request flow from the supplied fixture, distinguishes evidence
+  from inference, and proposes a proportionate diagram or architecture
+  artifact. Reject invented components, copied schemas, and generic prose.

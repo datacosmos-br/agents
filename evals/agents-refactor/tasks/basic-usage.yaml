@@ -1,0 +1,10 @@
+id: agents-refactor-split-001
+name: Split a bloated instruction file
+description: Exercise progressive-disclosure refactoring end to end.
+tags: [agents-refactor, progressive-disclosure, splitting, happy-path]
+inputs:
+  prompt: Refactor the supplied bloated CLAUDE.md into a minimal root plus linked topic files following progressive disclosure; resolve contradictions with the operator, flag unactionable lines, and verify every link.
+  files:
+  - path: scenario.yaml
+expected:
+  output_contains: [contradiction, essentials, linked, flagged]

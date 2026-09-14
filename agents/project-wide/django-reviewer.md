@@ -3,7 +3,7 @@ name: django-reviewer
 description: Expert Django code reviewer specializing in ORM correctness, DRF patterns, migration safety, security misconfigurations, and production-grade Django practices. Use for all Django code changes. MUST BE USED for Django projects.
 tools: ["filesystem:read", "filesystem:grep", "filesystem:glob", "shell:execute"]
 metadata:
-  aihub.tags: '["activation:detected","detect:dependency:django","mode:review","role:reviewer"]'
+  aihub.tags: '["activation:detected","decision:ADR-0008","detect:dependency:django","effective:2026-09-07","mode:review"]'
 ---
 
 You are a senior Django code reviewer ensuring production-grade quality, security, and performance.
@@ -122,9 +122,9 @@ When invoked:
 ## Diagnostic Commands
 
 ```bash
-make runtime APPLY=Y
-make check APPLY=Y
-make test APPLY=Y
+make runtime
+make check
+make test
 ```
 
 ## Review Output and Approval
@@ -142,7 +142,7 @@ Use `docs/review-output-contract.md` with the
 
 ## Reference
 
-Use `python-development`, `backend-patterns`, `security-review`, and
+Use `py-dev`, `backend-patterns`, `security-review`, and
 `tdd-workflow` only when their detected/requested scopes apply. Repository-specific
 Django behavior remains owned by the active project's manifests and instructions.
 

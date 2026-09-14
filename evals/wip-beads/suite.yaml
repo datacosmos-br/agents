@@ -1,0 +1,12 @@
+description: Batch bead governance processor for FLEXT repos.
+prompt: |-
+  Grade the wip-beads response. Pass only when the CSV-driven batch mode
+  runs collect, classify, align, unblock, title, deferred, or all with
+  explicit limits, dry-run by default, apply only after operator approval,
+  workspace evidence stamped before any status write, subagent batches of
+  at least 25 beads with coordinator validation, closure only with three
+  legal reasons SUPERSEDED OBSOLETE DONE with evidence, cap 20 closes per
+  batch, bd doctor validate and dedup gate and orphans after each batch,
+  never mutate active third-party lanes, evidence notes via bd note format.
+  Reject invented commands, missing evidence, blind closures, over-limit
+  batches, or mutating foreign lanes.

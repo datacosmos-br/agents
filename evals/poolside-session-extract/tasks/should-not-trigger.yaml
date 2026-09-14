@@ -1,0 +1,10 @@
+id: poolside-session-extract-negative-001
+name: Discuss Poolside without extracting a session
+description: Keep ordinary Poolside discussion outside trajectory extraction.
+tags: [poolside-session-extract, anti-trigger]
+inputs:
+  prompt: >-
+    Explain what the Poolside thought level configuration does. There is no
+    session to extract, no trajectory file, and no export request.
+expected:
+  output_not_contains: [trajectory-standalone, handoff.sanitised.md, extractor script]

@@ -1,0 +1,7 @@
+description: Conformance sweep loop, class-wave repair mapping, loop discipline.
+prompt: |-
+  Grade the conformance-sweep-loop response. Pass only when it inventories
+  findings by gate and class, maps a repair owner per class, executes the
+  repair loop per wave with revalidation, and closes only with zero residue
+  plus a recorded loop receipt. Reject hardcoded class lists, unowned repairs,
+  skipped revalidation, or loop termination with findings outstanding.

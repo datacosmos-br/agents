@@ -1,0 +1,10 @@
+id: beads-jira-negative-001
+name: Email a status update to the team
+description: Avoid the Jira integration for communication that carries no issue state.
+tags: [beads, anti-trigger]
+inputs:
+  prompt: >-
+    Send the team a short email summarizing this week's progress. No issue
+    creation or status change is involved.
+expected:
+  output_not_contains: [bd jira sync, bd config set jira, external_ref]

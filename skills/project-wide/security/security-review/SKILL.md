@@ -2,7 +2,7 @@
 name: security-review
 description: 'security findings, attack surfaces, dependency risk'
 metadata:
-  aihub.tags: '["decision:ADR-0008","effective:2026-08-29","policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:no-keyring","policy:preflight-before-effects","policy:required-environment","policy:strict-execution","policy:zero-residue","provenance:agents-owned","role:security","updates:manual","usage:on-demand"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-08-29","usage:on-demand"]'
 ---
 
 # Security Review

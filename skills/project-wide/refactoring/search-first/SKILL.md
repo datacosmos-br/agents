@@ -3,7 +3,7 @@ name: search-first
 description: 'owner discovery, reusable code, architecture research'
 license: MIT
 metadata:
-  aihub.tags: '["decision:ADR-0008","effective:2026-08-29","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","provenance:agents-owned","role:discovery","updates:manual","usage:router"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-08-29","usage:router"]'
   version: 1.2.0
 ---
 

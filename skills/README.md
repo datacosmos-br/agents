@@ -20,7 +20,26 @@ missing parents, cycles, reversed layers, and implicit parent references.
 
 Keep `SKILL.md` as a concise activation router. Detailed procedures, scripts,
 and assets stay inside that same bundle. A change is complete only when
-`make audit APPLY=Y`, `make check APPLY=Y`, and `make waza APPLY=Y` validate the physical
+`make audit`, `make check`, and `make waza` validate the physical
 inventory through their root Make owners. AI Hub alone interprets routing
 semantics for discovered projects and providers; this repository writes no
 destination or generated inventory.
+
+## Naming and tag grammar v2 (ADR-0014, ADR-0015)
+
+Slugs are one or two words, target ≤ 14 characters, family-consistent
+(`gc-*`, `*-dev`), and catalog-unique; a slug that needs three words to be
+understood is renamed before landing. The closed `aihub.tags` grammar is:
+`route:` (personal/project/both), `usage:` (waza budget class),
+`activation:` + `detect:` (conditional subjects), lineage (`decision:`,
+`effective:`, optional `supersedes:`), and short subject tags
+(`python`, `pydantic`, `flext`, `go`, …) paired with detector values
+(`dependency:<eco>:<pkg>`, `marker:<path>`, `selected-tag:<tag>`,
+`owned-glob:<glob>`). Decorative namespaces (`policy:`, `provenance:`,
+`updates:`, `role:`, `intent:`, `risk:`, long category subject forms) are
+deleted everywhere and fail validation. Conditional skills project into a
+project only on a detector hit against the project profile; opt-in skills
+project nowhere automatically; homes take personal and both skills minus
+opt-in. Projections carry the publisher's managed-by marker and bundle
+version; sources never do. Intake of external material follows
+`rules/workflow/capability-intake.md`.

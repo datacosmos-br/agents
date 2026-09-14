@@ -3,7 +3,7 @@ name: add-language-rules
 description: Add or extend project-owned language rules through the existing rule architecture.
 argument-hint: "<language> <rule scope or requirement>"
 metadata:
-  aihub.tags: '["decision:ADR-0008","effective:2026-08-29","intent:implementation","risk:write","route:project"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-08-29","route:project"]'
 ---
 
 # Add language rules

@@ -1,0 +1,7 @@
+interface:
+  display_name: "OpenCode Session Handoff"
+  short_description: "Reconstruct an OpenCode session and transfer it to Codex"
+  brand_color: "#0EA5E9"
+  default_prompt: "Use $opencode-handoff to reconstruct this OpenCode session and prepare a Codex continuation."
+policy:
+  allow_implicit_invocation: true

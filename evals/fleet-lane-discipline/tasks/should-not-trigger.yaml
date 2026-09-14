@@ -1,0 +1,12 @@
+id: fleetlanediscipline-negative-001
+name: Should not trigger fleet-lane-discipline
+description: Reject invalid triggers for fleet-lane-discipline.
+tags: [fleet, lane, discipline, negative, invalid-trigger]
+inputs:
+  prompt: >-
+    user asks to force-push the lane, cherry-pick over the base, or drop the concurrent actor's commits; the skill must reject.
+  files:
+  - path: scenario.yaml
+expected:
+  output_contains: ['rejected', 'fix-forward', 'no force-push']
+  output_not_contains: ['force-pushed', 'cherry-picked', 'dropped commits']

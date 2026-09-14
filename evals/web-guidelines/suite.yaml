@@ -1,0 +1,3 @@
+description: 'interface guidelines, review, files, findings'
+prompt: |-
+  Pass only when the response fetches the current guidelines, reviews the named files against them, and reports findings in terse file:line form grouped by rule.

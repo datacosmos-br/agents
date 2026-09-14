@@ -1,0 +1,9 @@
+id: flext-law-negative-001
+name: Ignore non-flext projects
+description: Do not activate outside flext-managed workspaces.
+tags: [anti-trigger, routing]
+inputs:
+  prompt: Fix a bug in this plain python service with no flext-core dependency.
+expected:
+  output_contains: [python]
+  output_not_contains: [flext law, facade order]

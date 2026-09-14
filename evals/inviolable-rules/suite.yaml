@@ -1,0 +1,4 @@
+description: Gate routing to owning rules for session gate sequence.
+prompt: |-
+  grade the inviolable-rules response, pass only when it routes each gate moment to its owning rule file (runtime evidence, strict execution, tracker verification, gitflow, professional integrity), keeps procedure-local constraints only, and refuses to restate universal law as skill text.
+  Reject a response that restates rule bodies, skips a gate moment, or cites a nonexistent rule owner.

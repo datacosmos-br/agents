@@ -3,7 +3,7 @@ name: agent-browser
 description: 'browser automation, web interaction, agent-browser'
 allowed-tools: Bash(agent-browser:*)
 metadata:
-  aihub.tags: '["activation:opt-in","decision:ADR-0008","detect:opt-in:agent-browser","effective:2026-08-28","policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:no-keyring","policy:preflight-before-effects","policy:required-environment","policy:strict-execution","policy:zero-residue","provenance:agents-owned","route:agent","tool:agent-browser","updates:manual","usage:on-demand"]'
+  aihub.tags: '["activation:opt-in","decision:ADR-0008","detect:opt-in:agent-browser","effective:2026-08-28","route:agent","subject:agent-browser","usage:on-demand"]'
 ---
 
 # agent-browser

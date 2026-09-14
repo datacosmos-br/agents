@@ -1,0 +1,15 @@
+repository: app
+range: last 7 days
+commits:
+- hash: a1b2c3
+type: feat
+summary: 'add team workspaces'
+- hash: d4e5f6
+type: perf
+summary: 'sync files 2x faster'
+- hash: 7890ab
+type: fix
+summary: 'large image upload failure'
+- hash: cdef01
+type: chore
+summary: 'bump dev dependency'

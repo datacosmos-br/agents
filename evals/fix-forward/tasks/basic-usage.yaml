@@ -1,0 +1,24 @@
+id: fix-forward-adoption-001
+name: Adopt compatible parallel work
+description: Preserve and integrate compatible changes from another lane.
+tags: [concurrent-work, integration-adoption, fix-forward, happy-path]
+inputs:
+  prompt: >-
+    Handle concurrent work and anti-rollback coordination. Agent A owns a
+    dirty CI workflow and test; Agent B can work in parallel on disjoint skills
+    and docs, but later needs the same workflow. An unmanifested provider output
+    outside the authorized repository also has semantic changes and no adoption
+    rule. An exact operator-authorized rename also appears reversed after an
+    interruption, with no evidence of a competing intention or actor. Define
+    sync checkpoints, adopt both repository contributions through the integration
+    lane, continue the rename after fresh preflight without asking again, and
+    distinguish what must be preserved for operator adjudication instead of
+    promoted to canonical input. The managed city tracker is available: require
+    one shared HQ root and linked local beads for both executing rigs, explain
+    their distinct evidence ownership, and coordinate producer-SHA adoption and
+    combined revalidation through that graph rather than through mail alone.
+  files:
+  - path: scenario.yaml
+expected:
+  output_contains: [ownership, reread, current, preserve, adopt, integration, combined, revalidate, Git, manifest, authorized, fresh preflight, continue, shared root, local bead, producer SHA]
+  output_not_contains: [stash, reset, force-push, discard, rollback code, promote external, substitute tracker, replacement ledger, parallel root, mail as ledger, severe conflict, ask again, another actor]

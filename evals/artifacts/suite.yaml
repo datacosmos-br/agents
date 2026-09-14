@@ -1,0 +1,3 @@
+description: 'html artifact, sidebar, routing, react'
+prompt: |-
+  Pass only when the response builds a self-contained artifact using the requested stack, wires the stated state and routing needs, and ships one deliverable file without external network dependencies.

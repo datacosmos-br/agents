@@ -2,7 +2,7 @@
 name: beads-orchestrator
 description: 'beads orchestration, dependency governance, tracker ownership'
 metadata:
-  aihub.tags: '["activation:opt-in","decision:ADR-0008","detect:opt-in:beads-orchestration","effective:2026-08-29","policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:no-keyring","policy:preflight-before-effects","policy:required-environment","policy:strict-execution","policy:zero-residue","provenance:agents-owned","route:agent","tool:beads","updates:manual","usage:router"]'
+  aihub.tags: '["activation:opt-in","decision:ADR-0008","detect:opt-in:beads-orchestration","effective:2026-08-29","route:agent","subject:beads","usage:router"]'
 ---
 
 # Beads Orchestrator
@@ -39,3 +39,26 @@ only the canonical tracker is output.
 The first graph, authority, runtime, or persistence failure propagates unchanged
 and leaves the prior graph authoritative. Remove partial local artifacts before
 handoff.
+
+## Orchestrator execution pattern (multi-repo lanes)
+
+When coordinating an owned plan across repositories or submodules:
+
+1. Bead first. Create/claim the coordinating bead before any file write, shell,
+   or multi-step work (`bd create --title ... --label P0`, claim, link parent
+   epics). Update it after every repo-state change, not only at the end.
+2. Explore with parallel subagents, never serially: one read-only agent per
+   repository/surface (root, fleet owner, each submodule, tracker state) with
+   structured findings (branch, HEAD vs gitlink, dirty files, gates state, open
+   PRs). The orchestrator decides; subagents never own lanes.
+3. Derive the mutation order from dependency direction — fleet/template owner
+   first, then consuming root, then submodules, root gitlink pointers last in a
+   separate commit. A shared checkout's lane belongs to its existing owner
+   branch (fix-forward, no parallel branch).
+4. Record closure evidence from four independent sources per repository: exact
+   command + exit + decisive output, merged PR SHA, CI run, and runtime proof
+   of the delivered behavior. Close only with all four attached
+   (`bd close <id> --force --reason`).
+5. Keep one material-state section in the plan (branch, HEAD, dirty files,
+   ahead/behind per repo) refreshed at every cutoff so a resumed session
+   reconciles from evidence, not memory.

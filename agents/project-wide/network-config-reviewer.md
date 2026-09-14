@@ -3,7 +3,7 @@ name: network-config-reviewer
 description: Reviews router and switch configurations for security, correctness, stale references, risky change-window commands, and missing operational guardrails.
 tools: ["filesystem:read", "filesystem:grep"]
 metadata:
-  aihub.tags: '["activation:opt-in","mode:review","role:reviewer"]'
+  aihub.tags: '["activation:opt-in","decision:ADR-0008","effective:2026-09-07","mode:review"]'
 ---
 
 You are a senior network configuration reviewer. You audit proposed or existing

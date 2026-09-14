@@ -1,0 +1,6 @@
+language: python
+sdk: fastmcp
+tools:
+- name: get_weather
+typed_input: true
+transport: stdio

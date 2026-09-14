@@ -1,0 +1,49 @@
+# Handwritten topology SSOT consumed by `flext-infra codegen conform`.
+# conform never overwrites this input. Declare members/exclusions here.
+# This repository is an `internal` (non-FLEXT) standalone project: no
+# generated Make surface (`codegen: none`); its Beads identity lives in
+# config/beads.yaml, which ai-hub projects from the Gas City rig `agents`.
+version: 3
+name: agents
+ledger_id: agents
+ledger_prefix: ag
+repository:
+  name: agents-governance
+  distribution: agents-governance
+  provider: datacosmos-br
+  url: https://github.com/datacosmos-br/agents.git
+  path: .
+  role: standalone
+  state: active
+  kind: internal
+  codegen: none
+  package: true
+  editable: true
+  read_only: false
+project:
+  namespace_scan_dirs:
+    - src
+  package_name: "agents_governance"
+  class_stem: "AgentsGovernance"
+  namespace: "AgentsGovernance"
+  constant_name: "agents"
+  namespace_attribute: "agents_governance"
+  alias: "agents_governance"
+  environment_prefix: "AGENTS_"
+  description: "Immutable semantic governance bundle: rules, skills, commands and agent profiles consumed by ai-hub"
+  license: "MIT"
+  author_name: "Marlon Costa"
+  author_email: "marlonsc@gmail.com"
+  upstream: "flext_cli"
+  homepage: "https://github.com/datacosmos-br/agents"
+  documentation: "https://github.com/datacosmos-br/agents"
+  repository_root_rel: "."
+  year: 2026
+members: []
+exclusions: []
+integration:
+  provider: datacosmos-br
+  branch: dev
+repository_policy_overlays:
+  - project: agents-governance
+    beads_enabled: true

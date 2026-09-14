@@ -1,0 +1,47 @@
+objective: bring make check to zero findings
+project: ai-hub
+scan_scope:
+  declared_in: config/tooling.yaml
+  production: [src]
+  excluded_until_declared: [tests, scripts, docs]
+git_dependency:
+  name: flext-infra
+  owns_class: private-import
+  current_revision: 983a149b
+  fixed_revision: 1d2c3b4a
+  bump_owner: pyproject.toml dependency pin plus make deps
+findings:
+  - gate: codemod
+    class: private-import
+    count: 412
+    owner: ast-grep rule ban-private-import via make mod
+  - gate: codemod
+    class: pass-through-wrapper
+    count: 96
+    owner: ast-grep rule ban-pass-through-wrapper via make mod
+  - gate: namespace
+    class: loose-module-constant
+    count: 402
+    owner: flext-infra namespace enforcer via make fix
+  - gate: loc-cap
+    class: over-cap-module
+    count: 8
+    owner: family-shape split via make mod
+waves:
+  - order: 1
+    classes: [private-import, pass-through-wrapper]
+    revalidate: make check
+  - order: 2
+    classes: [loose-module-constant]
+    revalidate: make check
+  - order: 3
+    classes: [over-cap-module]
+    revalidate: make check
+loop_receipt:
+  required_at: zero residue only
+  fields: [wave, class, owner, before, after, gate command, exit code]
+rejects:
+  - hardcoded class list
+  - unowned repair
+  - skipped revalidation
+  - loop termination with findings outstanding

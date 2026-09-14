@@ -1,0 +1,9 @@
+id: deploy-lifecycle-stage-failure-001
+name: Preserve active runtime on staging failure
+description: Fail without partial activation or alternate deployment.
+tags: [deployment, fail-closed, rollback]
+inputs:
+  prompt: Native staging acceptance fails. Keep the previous verified runtime, remove only attributable candidate state, propagate the failure, and prove zero partial activation.
+expected:
+  output_contains: [previous, attributable, failure, zero partial activation]
+  output_not_contains: [fallback deploy, success]

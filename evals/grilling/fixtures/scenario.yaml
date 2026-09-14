@@ -1,0 +1,3 @@
+plan: migrate the storage layer to a new engine
+terms: [users, sessions, efficient]
+decisions_pending: [data cutoff, rollback, dual-write]

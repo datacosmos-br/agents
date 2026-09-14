@@ -1,0 +1,36 @@
+open_issues:
+  - id: cosmos-500
+    title: Resolve circular dependency in config loader
+    type: bugfix
+    parent: cosmos-50
+  - id: cosmos-501
+    title: Hotfix rate limiter timeout
+    type: hotfix
+    parent: cosmos-50
+  - id: cosmos-502
+    title: Bug in schema validation error path
+    type: bug
+    parent: cosmos-50
+  - id: cosmos-600
+    title: Add new CLI command for batch import
+    type: feature
+    parent: cosmos-60
+  - id: cosmos-601
+    title: Implement batch import parser
+    type: task
+    parent: cosmos-60
+  - id: cosmos-602
+    title: Add unit tests for import pipeline
+    type: task
+    parent: cosmos-601
+  - id: cosmos-700
+    title: Investigate flaky integration tests
+    type: task
+    status: deferred
+  - id: cosmos-701
+    title: Document test isolation strategy
+    type: task
+    status: deferred
+closed_parents: [cosmos-50, cosmos-60]
+duplicate_candidates: [[cosmos-600, cosmos-601]]
+foreign_lanes: [cosmos-iracn.6, cosmos-cd3mh.4.1]

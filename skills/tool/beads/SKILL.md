@@ -2,7 +2,7 @@
 name: beads
 description: 'beads, issue tracking, task workflow'
 metadata:
-  aihub.tags: '["activation:opt-in","decision:ADR-0008","detect:opt-in:beads","effective:2026-08-29","policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:no-keyring","policy:preflight-before-effects","policy:required-environment","policy:strict-execution","policy:zero-residue","provenance:agents-owned","route:agent","tool:beads","updates:manual","usage:router"]'
+  aihub.tags: '["activation:opt-in","decision:ADR-0008","detect:opt-in:beads","effective:2026-08-29","route:agent","subject:beads","usage:router"]'
 ---
 
 # Beads
@@ -35,6 +35,20 @@ all checks pass. The first runtime, conflict, authorization, or persistence
 failure propagates unchanged. Do not retry, fall back, partially update, or
 translate a failure into local evidence. Verify the durable post-state before
 reporting it.
+
+## Mutation coupling delta (evidence 2026-09-11, plan `docs/plans/2026-09-11-flext-conformance-sweep.md`)
+
+- A bead must exist BEFORE the first repo-state mutation of its scope: file
+  write, shell effect on the tree, or history rewrite. Git is the mirror; Beads
+  is the execution truth — a change that exists only in git does not exist for
+  the fleet's coordination views.
+- Every newly discovered red (test failure, gate failure, runtime defect) gets
+  a bead in the SAME turn it is observed, carrying the failing site, the best
+  current root-cause hypothesis, and the observable trigger. Classifying a
+  red as "pre-existing" without a bead is abandonment of the root cause, not
+  scoping.
+- Closure requires the four-evidence pattern: recorded state, git history,
+  measured reality, integrated code.
 
 ## Explicitly suspended
 

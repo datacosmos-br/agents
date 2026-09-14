@@ -2,9 +2,12 @@
 description: Apply the mandatory engineering decision and delivery sequence.
 capsule_summary: |
   Every implementation: research the owner first, cut scope without a current
-  consumer, elect one writable authority and make every other copy a generated
-  projection, implement through the owner, remove duplication, then exercise
-  runtime behavior and run every applicable gate before changing phase.
+  consumer, elect one writable authority, make every other copy a generated
+  projection, improve the owner in place — a parallel one beside it is a
+  violation — implement through the owner, remove duplication, keep
+  discoverable enumerations as authority data validated by grammar, never
+  fixed lists or absolute paths, then exercise runtime and run every gate
+  before changing phase.
 
   At a cross-boundary failure, prove the producer's contract and fix whichever
   side is wrong — never bend a correct owner for an invalid consumer.
@@ -17,7 +20,7 @@ capsule_summary: |
   never authorizes the generic form, and an agent never writes the operator's SSH
   configuration or keys — identity is corrected in git, or reported.
 metadata:
-  aihub.tags: '["decision:ADR-0008","effective:2026-08-29","route:both"]'
+  aihub.tags: '["decision:ADR-0017","effective:2026-09-10","route:both"]'
 ---
 
 # Engineering core
@@ -27,7 +30,14 @@ For every implementation:
 1. Research repository owners, dependencies, and canonical documentation.
 2. Remove scope without a current requirement or consumer (YAGNI).
 3. Elect one writable authority; every other copy is a generated projection
-   (SSOT).
+   (SSOT). Improve the owner in place: writing a parallel replacement,
+   renderer, or registry beside the owner is a violation — consume the
+   owner's projection, never copy its contract. Enumerations discoverable
+   through the owning authority are data, never code: the authority owns
+   instances, contracts validate structure and grammar, and a fixed list in
+   code that duplicates what the SSOT already derives is a bypass to
+   exterminate. Absolute paths and references outside the repository are
+   hardcodes.
 4. Apply SOLID only to a responsibility or dependency boundary under change.
 5. Implement through the owner and simplify without weakening behavior.
 6. Remove duplication and god components; recheck YAGNI, SSOT, SOLID.
@@ -47,6 +57,15 @@ Git, runtime, build, and tests are baseline. Every other executable is an
 authorized, selected capability; installation or PATH presence never selects
 it. Do not load, locate, probe, or gate dormant capabilities. A selected invalid
 capability fails without fallback and requires only non-derivable values.
+
+A portable library owns only primitives that remain valid without a particular
+host application. Host-wide indexes, daemons, forges, language servers, and
+refactor orchestration belong to the runtime control plane that operates them.
+A lower library may consume an available host capability only through its
+public command, hook, or MCP contract; importing the host application as a
+library, reproducing its state, or creating a substitute runtime is forbidden.
+An absent and unselected host capability is not an error. Once explicitly
+selected and available, its first failure propagates without fallback.
 
 Remote access follows the repository's current Git and forge configuration.
 Never rewrite protocols, create identity aliases, or mutate user SSH

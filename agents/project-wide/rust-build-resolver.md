@@ -3,7 +3,7 @@ name: rust-build-resolver
 description: Rust build, compilation, and dependency error resolution specialist. Fixes cargo build errors, borrow checker issues, and Cargo.toml problems with minimal changes. Use when Rust builds fail.
 tools: ["filesystem:read", "filesystem:write", "shell:execute", "filesystem:grep", "filesystem:glob"]
 metadata:
-  aihub.tags: '["activation:detected","detect:marker:Cargo.toml","mode:debug","role:build-resolver"]'
+  aihub.tags: '["activation:detected","decision:ADR-0008","detect:marker:Cargo.toml","effective:2026-09-07","mode:debug"]'
 ---
 
 # Rust Build Error Resolver
@@ -24,19 +24,19 @@ Run these in order:
 
 ```bash
 make audit
-make check APPLY=Y
-make build APPLY=Y
+make check
+make build
 ```
 
 ## Resolution Workflow
 
 ```text
-1. make check APPLY=Y   -> Parse error message and error code
+1. make check   -> Parse error message and error code
 2. Read affected file   -> Understand ownership and lifetime context
 3. Apply minimal fix    -> Only what's needed
-4. make check APPLY=Y   -> Verify fix and warnings
-5. make build APPLY=Y   -> Verify the artifact
-6. make test APPLY=Y    -> Ensure nothing broke
+4. make check   -> Verify fix and warnings
+5. make build   -> Verify the artifact
+6. make test    -> Ensure nothing broke
 ```
 
 ## Common Fix Patterns
@@ -85,7 +85,7 @@ let item = vec.swap_remove(index); // Takes ownership
 
 ```bash
 make audit
-make check APPLY=Y
+make check
 ```
 
 ## Edition and MSRV Issues
@@ -108,7 +108,7 @@ grep "rust-version" Cargo.toml
 - **Never** add `#[allow(unused)]` without explicit approval
 - **Never** use `unsafe` to work around borrow checker errors
 - **Never** add `.unwrap()` to silence type errors — propagate with `?`
-- **Always** run `make check APPLY=Y` after every fix attempt
+- **Always** run `make check` after every fix attempt
 - Fix root cause over suppressing symptoms
 - Prefer the simplest fix that preserves the original intent
 
@@ -131,5 +131,5 @@ Remaining errors: 3
 
 Final: `Build Status: SUCCESS/FAILED | Errors Fixed: N | Files Modified: list`
 
-Use `rust-development` for detected Rust language rules and the active project's
+Use `rust-dev` for detected Rust language rules and the active project's
 own build contract for repository-specific error patterns.

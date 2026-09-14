@@ -3,7 +3,7 @@ name: python-reviewer
 description: Expert Python code reviewer specializing in PEP 8 compliance, Pythonic idioms, type hints, security, and performance. Use for all Python code changes. MUST BE USED for Python projects.
 tools: ["filesystem:read", "filesystem:grep", "filesystem:glob", "shell:execute"]
 metadata:
-  aihub.tags: '["activation:detected","detect:marker:pyproject.toml","mode:review","role:reviewer"]'
+  aihub.tags: '["activation:detected","decision:ADR-0008","detect:marker:pyproject.toml","effective:2026-09-07","mode:review"]'
 ---
 
 You are a senior Python code reviewer ensuring high standards of Pythonic code and best practices.
@@ -72,9 +72,9 @@ When invoked:
 ## Diagnostic Commands
 
 ```bash
-make runtime APPLY=Y
-make check APPLY=Y
-make test APPLY=Y
+make runtime
+make check
+make test
 ```
 
 ## Review Output and Approval

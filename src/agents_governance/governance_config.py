@@ -10,12 +10,13 @@ from types import MappingProxyType
 
 from .catalog import Catalog
 from .commands import CommandSpec
+from .delivery import DeliveryContract
 from .frontmatter import cast_mapping, require_exact_fields, string_array
 from .rules import RuleActivation, RuleSpec
 
 _OWNER = re.compile(r"(rule|skill|command|document):([A-Za-z0-9][A-Za-z0-9./_-]*)\Z")
 _GUARANTEE = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*\Z")
-_ROOT_FIELDS = frozenset({"bootstrap", "guarantees", "version"})
+_ROOT_FIELDS = frozenset({"bootstrap", "delivery", "guarantees", "version"})
 _BOOTSTRAP_FIELDS = frozenset({"rules", "skills"})
 
 
@@ -27,6 +28,7 @@ class GovernanceConfig:
     bootstrap_rules: tuple[str, ...]
     bootstrap_skills: tuple[str, ...]
     guarantees: MappingProxyType[str, tuple[str, ...]]
+    delivery: DeliveryContract
 
 
 def load_governance_config(root: Path) -> GovernanceConfig:
@@ -78,6 +80,9 @@ def load_governance_config(root: Path) -> GovernanceConfig:
             require_sorted=True,
         ),
         MappingProxyType(dict(sorted(parsed_guarantees.items()))),
+        DeliveryContract.from_mapping(
+            value["delivery"], "governance delivery contract"
+        ),
     )
 
 

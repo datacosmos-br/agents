@@ -1,0 +1,3 @@
+description: 'plan interviews, questions, shared understanding, design decisions'
+prompt: |-
+  Pass only when the response interviews the operator one question at a time about the supplied plan, provides a recommended answer per question, explores the codebase for answerable questions, and walks the design tree until decisions resolve.

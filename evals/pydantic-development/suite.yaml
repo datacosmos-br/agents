@@ -1,0 +1,15 @@
+description: Pydantic v2 boundary law application — MRO presets, facade-only access, conversions, validation, p/r contracts.
+prompt: |-
+  Grade the pydantic-development response. Pass only when it routes through
+  the project's declared Pydantic floor, imports Pydantic surface exclusively
+  through the m/t/p/u/r/e facades in FLEXT members, declares every model on
+  an m.* preset chosen by contract (read-only vs mutable vs strict), treats
+  model_rebuild as a declaration defect to fix at its owner, converts
+  dict/TypedDict/dataclass/JSON payloads once at the boundary through
+  model_validate/model_validate_json/from_attributes and cached t.TypeAdapters,
+  returns outcomes as p.Result[ModelT] with the single authorized
+  ValidationError conversion at the result boundary, and names the removal
+  catalog for violations found. Reject direct pydantic imports, raw-base
+  consumer models, serialize_as_any call flags, json.loads pairing, local
+  per-call TypeAdapter instances, TypedDict public contracts, and any
+  normalization of validation errors.

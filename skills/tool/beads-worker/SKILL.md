@@ -2,7 +2,7 @@
 name: beads-worker
 description: 'beads execution, scoped work, tracker workflow'
 metadata:
-  aihub.tags: '["activation:opt-in","decision:ADR-0008","detect:opt-in:beads-worker","effective:2026-08-29","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:no-keyring","policy:preflight-before-effects","policy:required-environment","policy:strict-execution","policy:zero-residue","provenance:agents-owned","route:agent","tool:beads","updates:manual","usage:router"]'
+  aihub.tags: '["activation:opt-in","decision:ADR-0008","detect:opt-in:beads-worker","effective:2026-08-29","route:agent","subject:beads","usage:router"]'
 ---
 
 # Beads Worker
@@ -35,3 +35,27 @@ scoped files, exact command/exit/decisive output, PR
 and integration evidence, residue, and unverified owner-only work. Report ready
 for review only when the slice itself is validated and residue-free; never infer
 merge or closure.
+
+## Evidence and update discipline
+
+- Work starts only after the bead is claimed; every repo-state change (commit,
+  regen, relock, submodule pointer, gate result) is written back to the bead as
+  a note before the next change begins.
+- Evidence is runtime, not attestation: paste command, working directory, exit
+  status, and decisive output. "Should pass" or "logic is correct" is not
+  evidence.
+- Generated projections are never hand-edited; change the owner input, rerun the
+  generator twice to a fixed point, and record both runs.
+- On resume, reconcile bead notes against live `git status`/`git log` first; the
+  worktree is fresher than the note and wins.
+
+## Tracker Discipline
+
+- Claim before effects: `bd update <id> --claim` precedes the first file write
+  or mutating command; update the bead after every repository-state change.
+- `--json` output from `bd` commands is a list, not an object; parse accordingly.
+- Close only with proof: the closure reason starts with `DONE:`,
+  `SUPERSEDED:`, or `OBSOLETE:` and names the exact command, exit code,
+  decisive output, and commit SHA.
+- Work discovered inside the slice becomes a new bead linked with
+  `discovered-from`; never absorb it silently into the assigned slice.

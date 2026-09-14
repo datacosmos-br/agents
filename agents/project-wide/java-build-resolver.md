@@ -3,7 +3,7 @@ name: java-build-resolver
 description: Java/Maven/Gradle build, compilation, and dependency error resolution specialist. Automatically detects Spring Boot or Quarkus and applies framework-specific fixes. Fixes build errors, Java compiler errors, and Maven/Gradle issues with minimal changes. Use when Java builds fail.
 tools: ["filesystem:read", "filesystem:write", "shell:execute", "filesystem:grep", "filesystem:glob"]
 metadata:
-  aihub.tags: '["activation:detected","detect:marker:build.gradle","detect:marker:pom.xml","mode:debug","role:build-resolver"]'
+  aihub.tags: '["activation:detected","decision:ADR-0008","detect:marker:build.gradle","detect:marker:pom.xml","effective:2026-09-07","mode:debug"]'
 ---
 
 # Java Build Error Resolver
@@ -37,9 +37,9 @@ Run these in order:
 
 ```bash
 make audit
-make check APPLY=Y
-make test APPLY=Y
-make build APPLY=Y
+make check
+make test
+make build
 ```
 
 ## Resolution Workflow
@@ -104,25 +104,25 @@ make build APPLY=Y
 
 ```bash
 # Check dependency tree for conflicts
-make check APPLY=Y
+make check
 
 # Force update snapshots and re-download
-make build APPLY=Y
+make build
 
 # Analyse dependency conflicts
-make check APPLY=Y
+make check
 
 # Check effective POM (resolved inheritance)
-make check APPLY=Y
+make check
 
 # Debug annotation processors
-make build APPLY=Y
+make build
 
 # Compile through Maven's compile phase; test gates remain mandatory afterward
-make build APPLY=Y
+make build
 
 # Check Java version in use
-make check APPLY=Y
+make check
 java -version
 ```
 
@@ -130,38 +130,38 @@ java -version
 
 ```bash
 # Check dependency tree for conflicts
-make check APPLY=Y
+make check
 
 # Force refresh dependencies
-make build APPLY=Y
+make build
 
 # Rebuild without reusing the project build cache
-make build APPLY=Y
+make build
 
 # Run with debug output
-make build APPLY=Y
+make build
 
 # Check dependency insight
-make check APPLY=Y
+make check
 
 # Check Java toolchain
-make check APPLY=Y
+make check
 ```
 
 ## [SPRING] Spring Boot Specific Commands
 
 ```bash
 # Verify application context loads
-make test APPLY=Y
+make test
 
 # Check for missing beans or circular dependencies
-make test APPLY=Y
+make test
 
 # Verify Lombok is configured as annotation processor (not just dependency)
 grep -A5 "annotationProcessorPaths\|annotationProcessor" pom.xml build.gradle
 
 # Check Spring Boot version alignment
-make check APPLY=Y
+make check
 ```
 
 ## [QUARKUS] Quarkus Specific Commands
@@ -170,47 +170,47 @@ make check APPLY=Y
 
 ```bash
 # Verify Quarkus build augmentation
-make build APPLY=Y
+make build
 
 # Run in dev mode to surface runtime errors
-make check APPLY=Y
+make check
 
 # List installed extensions
-make build APPLY=Y
+make build
 
 # Add a missing extension
-make check APPLY=Y
+make check
 
 # Check Quarkus BOM version alignment
-make check APPLY=Y
+make check
 
 # Verify native build prerequisites (GraalVM)
-make build APPLY=Y
+make build
 
 # Debug build-time augmentation failures
-make build APPLY=Y
+make build
 ```
 
 ### Gradle
 
 ```bash
 # Verify Quarkus build augmentation
-make build APPLY=Y
+make build
 
 # Run in dev mode to surface runtime errors
-make check APPLY=Y
+make check
 
 # List installed extensions
-make check APPLY=Y
+make check
 
 # Add a missing extension
-make check APPLY=Y
+make check
 
 # Check Quarkus dependency alignment
-make check APPLY=Y
+make check
 
 # Verify native build prerequisites (GraalVM)
-make test APPLY=Y
+make test
 ```
 
 ### Common (both build tools)
@@ -258,5 +258,5 @@ Remaining errors: 1
 Final: `Framework: X | Build Status: SUCCESS/FAILED | Errors Fixed: N | Files Modified: list`
 
 For detailed patterns and examples:
-- Use `jvm-development` plus the active project's declared Spring or Quarkus
+- Use `jvm-dev` plus the active project's declared Spring or Quarkus
   dependencies, configuration, and runtime contracts.

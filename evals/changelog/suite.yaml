@@ -1,0 +1,3 @@
+description: 'release notes, changelog, commits, categories'
+prompt: |-
+  Pass only when the response categorizes the supplied commits into user-facing groups, translates technical messages into customer language, filters internal-only commits, and produces a structured changelog entry.

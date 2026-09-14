@@ -1,0 +1,17 @@
+id: runtime-skew-triage-version-proof-001
+name: Prove both skew sides
+description: Publisher and installed versions must both be measured, never guessed; includes systemd runtime proof and CAS race diagnosis.
+tags: [runtime, version-skew, triage, systemd, runtime-proof, cas-race, diagnosis, happy-path]
+inputs:
+  prompt: |-
+    Triage the runtime skew reported in scenario.yaml as a binary/publisher
+    version-skew triage: measure the publisher release and the installed
+    binary, prove the systemd runtime state of the unit through its owner,
+    diagnose whether the CAS conflict is a race between fetch and publish,
+    attribute every skew to its owner, and prescribe a lockstep recovery with
+    post-repair runtime evidence.
+  files:
+  - path: scenario.yaml
+expected:
+  output_contains: [publisher, installed, running, systemd, runtime proof, binary, version-skew, CAS, race, owner, lockstep, evidence]
+  output_not_contains: [guess, assume, single-sided, unverified]

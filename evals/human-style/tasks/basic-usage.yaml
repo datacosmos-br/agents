@@ -1,0 +1,11 @@
+id: human-style-release-note-001
+name: Rewrite a measured release note
+description: Preserve facts while replacing inflated, generic language.
+tags: [human-writing, editing, style, clarity, natural, happy-path]
+inputs:
+  prompt: Edit the AI-generated text in draft.md so the writing reads like natural human release prose. Preserve the 37 percent reduction, 14-minute window, two replaced queues, and measured tone while eliminating generic significance claims and AI-style flourishes.
+  files:
+  - path: draft.md
+expected:
+  output_contains: ['37%', '14 minutes', 'two queues']
+  output_not_contains: [pivotal, tapestry, underscoring]

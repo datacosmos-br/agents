@@ -1,0 +1,12 @@
+id: inviolablerules-basic-001
+name: Basic usage inviolable-rules
+description: Route every session gate moment to its owning rule file.
+tags: [gate, routing, rule, owners, session, sequence, basic-usage]
+inputs:
+  prompt: >-
+    List the gate sequence for a governance session (start, truth, execution, incident, refactor, tracker, close) and name the owning rule file for each moment instead of restating the law.
+  files:
+  - path: scenario.yaml
+expected:
+  output_contains: ['gate', 'routing', 'rule', 'owners', 'session', 'sequence', 'runtime-is-reality', 'strict-execution']
+  output_not_contains: ["invented command", "skipped gate"]

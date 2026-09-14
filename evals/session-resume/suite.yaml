@@ -1,0 +1,13 @@
+description: Cross-runtime session resume with source detection and cursor reconstruction.
+prompt: |-
+  Grade the session-resume response. Pass only when the response detects the
+  session source from the identifier format (Poolside UUID v7, Claude UUID
+  v4, OpenCode ses_ prefix), routes to the matching owned extractor,
+  cross-checks the extracted handoff against current repository and runtime
+  state, distinguishes transcript claims from measured truth, restores the
+  original objective and the newest operator correction, and continues from
+  the first unfinished step without repeating completed work. Reject
+  provider/model switching, credential disclosure, treating todos as
+  completion proof, resuming from a stale cursor without cross-check, or
+  discarding another actor's concurrent work. When evidence is missing,
+  require a fail-closed request for the exact missing fact.

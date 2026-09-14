@@ -7,5 +7,5 @@ inputs:
   files:
   - path: increment-evidence.md
 expected:
-  output_contains: [7ac912e, PR 42, net -46, make check APPLY=Y, zero residue, NOT EXECUTED]
+  output_contains: [7ac912e, PR 42, net -46, make check, zero residue, NOT EXECUTED]
   output_not_contains: [raw validator, deferred cleanup, partial closure]

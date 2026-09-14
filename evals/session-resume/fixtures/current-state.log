@@ -1,0 +1,6 @@
+repository=/home/marlonsc/flext/flext-infra
+git status --short --branch
+## fix/fleet-toolchain-gc-fc2
+ M src/flext_infra/templates/project/base/Makefile.j2
+runtime service=inactive
+tracker alignment=in_progress

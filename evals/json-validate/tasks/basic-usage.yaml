@@ -1,0 +1,10 @@
+id: json-validate-basic-001
+name: Validate against a draft-07 schema
+description: Validate data and report errors.
+tags: [json, schema, validation, happy-path]
+inputs:
+  prompt: Validate the supplied payload against the draft-07 schema and report every violation with its code.
+  files:
+  - path: scenario.yaml
+expected:
+  output_contains: [draft-07, violation]

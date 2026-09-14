@@ -1,0 +1,11 @@
+id: conformance-sweep-loop-clean-repo-003
+name: Clean repository needs no loop
+description: No findings means no sweep loop may start or mutate anything; includes git-dep and declaration checks.
+tags: [conformance, sweep, non-trigger]
+inputs:
+  prompt: |-
+    |-
+    The measured repository reports zero conformance findings across all gates including git-dependency checks and declaration-first scope declarations. State that no sweep loop is needed, perform no repairs including no git-dep bumps or manifest scope changes, and record the clean measurement as the only evidence.
+expected:
+  output_contains: [zero findings, no loop, git-dep, declaration-first]
+  output_not_contains: [repair, mutate, git-dep bump, scope change]

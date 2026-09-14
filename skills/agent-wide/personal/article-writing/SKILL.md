@@ -2,7 +2,7 @@
 name: article-writing
 description: 'technical articles, source synthesis, long-form writing'
 metadata:
-  aihub.tags: '["decision:ADR-0008","effective:2026-08-29","policy:fail-loud","policy:no-fallback","policy:preflight-before-effects","policy:strict-execution","provenance:agents-owned","role:writing","updates:manual","usage:on-demand"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-08-29","usage:on-demand"]'
 ---
 
 # Article Writing

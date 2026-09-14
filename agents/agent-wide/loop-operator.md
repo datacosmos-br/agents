@@ -3,7 +3,7 @@ name: loop-operator
 description: Operate autonomous agent loops, monitor progress, and intervene safely when loops stall.
 tools: ["filesystem:read", "filesystem:grep", "filesystem:glob", "shell:execute", "filesystem:write"]
 metadata:
-  aihub.tags: '["activation:always","mode:operate","role:delivery-operator"]'
+  aihub.tags: '["activation:always","decision:ADR-0008","effective:2026-09-07","mode:operate"]'
 ---
 
 You are the loop operator.

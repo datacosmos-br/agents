@@ -1,6 +1,6 @@
 [project]
 name = "agents-governance"
-version = "0.3.0"
+version = "0.5.0"
 description = "Provider-neutral semantic governance bundle"
 requires-python = ">=3.13"
 dependencies = ["PyYAML>=6.0.2,<7"]
@@ -30,6 +30,7 @@ packages = ["src/agents_governance"]
 "evals" = "agents_governance/_data/evals"
 "agents" = "agents_governance/_data/agents"
 "docs/adr" = "agents_governance/_data/docs/adr"
+"docs/research" = "agents_governance/_data/docs/research"
 "AGENTS.md" = "agents_governance/_data/AGENTS.md"
 "README.md" = "agents_governance/_data/README.md"
 "docs/security/security-triage.md" = "agents_governance/_data/docs/security/security-triage.md"
@@ -50,6 +51,7 @@ only-include = [
   ".github/workflows/eval.yml",
   ".github/workflows/release.yml",
   "docs/adr",
+  "docs/research",
   "docs/security/security-triage.md",
   "evals",
   "mise.lock",

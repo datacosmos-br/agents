@@ -1,0 +1,4 @@
+description: Integration closeout with push-sync audit and tracker evidence.
+prompt: |-
+  grade the release-closeout response, pass only when it audits member push sync state, merges superproject pr by merge commit, records lane commits, reruns affected gates on merged sha, deletes branch worktree only after integration evidence, records tracker evidence with four sources.
+  Reject deleting lanes before integration evidence, squash merge, unevidenced closure.

@@ -1,0 +1,28 @@
+{
+  "$schema": "https://app.kilo.ai/config.json",
+  "auto_collapse_reasoning": true,
+  "terminal_command_display": "collapsed",
+  "permission": {
+    "read": {
+      "*": "allow"
+    },
+    "edit": {
+      "*": "allow"
+    },
+    "bash": {
+      "*": "ask",
+      "make *": "allow",
+      "ls *": "allow",
+      "git *": "allow"
+    },
+    "question": "allow"
+  },
+  "agent": {
+    "code": {
+      "model": "kilo/kilo-auto/free"
+    },
+    "ask": {
+      "model": "kilo/kilo-auto/free"
+    }
+  }
+}

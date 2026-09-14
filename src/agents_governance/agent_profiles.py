@@ -9,6 +9,7 @@ from dataclasses import dataclass
 from pathlib import Path, PurePosixPath
 from typing import cast
 
+from .approvals import APPROVAL_NAMESPACES, resolve_approval_tags
 from .catalog import NON_PORTABLE_PROJECT_REFERENCE
 from .frontmatter import parse_frontmatter
 
@@ -50,7 +51,6 @@ class AgentProfile:
     tools: tuple[str, ...]
     activation: str
     mode: str
-    role: str
     detectors: tuple[str, ...]
     instructions: str
 
@@ -120,11 +120,10 @@ def _validate_detector(path: Path, detector: str) -> None:
 
 
 def _validate_tags(
-    path: Path, distribution: str, tags: tuple[str, ...]
-) -> tuple[str, str, str, tuple[str, ...]]:
+    root: Path, path: Path, distribution: str, tags: tuple[str, ...]
+) -> tuple[str, str, tuple[str, ...]]:
     activation_tag = _one_tag(path, tags, "activation:", _ACTIVATIONS)
     mode_tag = _one_tag(path, tags, "mode:", _MODES)
-    role_tag = _one_tag(path, tags, "role:")
     detectors = tuple(tag for tag in tags if tag.startswith("detect:"))
     if distribution == "agent-wide" and activation_tag != "activation:always":
         raise ValueError(f"{path}: agent-wide profiles require activation:always")
@@ -136,13 +135,16 @@ def _validate_tags(
         raise ValueError(f"{path}: detectors require activation:detected")
     for detector in detectors:
         _validate_detector(path, detector)
-    known = {activation_tag, mode_tag, role_tag, *detectors}
+    resolve_approval_tags(root, tags, path)
+    approval = frozenset(
+        tag for tag in tags if tag.split(":", 1)[0] in APPROVAL_NAMESPACES
+    )
+    known = {activation_tag, mode_tag, *detectors, *approval}
     if set(tags) != known:
         raise ValueError(f"{path}: unsupported agent tag")
     return (
         activation_tag.removeprefix("activation:"),
         mode_tag.removeprefix("mode:"),
-        role_tag.removeprefix("role:"),
         detectors,
     )
 
@@ -238,7 +240,9 @@ def audit_agent_profiles(root: Path) -> tuple[AgentProfile, ...]:
         if _INLINE_PROMPT_DEFENSE in instructions:
             raise ValueError(f"{path}: prompt defense must be composed from its owner")
         tags = _tag_values(path, metadata)
-        activation, mode, role, detectors = _validate_tags(path, distribution, tags)
+        activation, mode, detectors = _validate_tags(
+            repository, path, distribution, tags
+        )
         raw_tools: object = None
         if "tools" in metadata:
             raw_tools = metadata["tools"]
@@ -254,7 +258,6 @@ def audit_agent_profiles(root: Path) -> tuple[AgentProfile, ...]:
                 tools,
                 activation,
                 mode,
-                role,
                 detectors,
                 instructions,
             )

@@ -3,7 +3,7 @@ name: network-architect
 description: Designs enterprise or multi-site network architecture from requirements, using existing network skills for focused routing, validation, automation, and troubleshooting detail.
 tools: ["filesystem:read", "filesystem:grep"]
 metadata:
-  aihub.tags: '["activation:opt-in","mode:plan","role:architect"]'
+  aihub.tags: '["activation:opt-in","decision:ADR-0008","effective:2026-09-07","mode:plan"]'
 ---
 
 You are a senior network architecture planner. Produce implementable network

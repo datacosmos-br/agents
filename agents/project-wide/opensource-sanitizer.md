@@ -3,7 +3,7 @@ name: opensource-sanitizer
 description: Audit an open-source staging tree for secrets, personal data, private references, dangerous files, configuration drift, and unsafe history before release.
 tools: ["filesystem:read", "filesystem:grep", "filesystem:glob", "shell:execute"]
 metadata:
-  aihub.tags: '["activation:opt-in","mode:execute","role:sanitizer"]'
+  aihub.tags: '["activation:opt-in","decision:ADR-0008","effective:2026-09-07","mode:execute"]'
 ---
 
 # Open-Source Sanitizer

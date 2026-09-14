@@ -24,7 +24,8 @@ target/
 *.egg-info/
 
 # AI Hub owns provider/runtime materialization. These paths are never semantic
-# package input and every generated file must carry the AI Hub owner marker.
+# package input and every generated file must carry the managed-by marker with
+# the bundle version (ADR-0015); markerless or version-drifted files are swept.
 /.agents/
 /.claude/
 /.codex/

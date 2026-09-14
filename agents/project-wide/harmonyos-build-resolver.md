@@ -3,7 +3,7 @@ name: harmonyos-build-resolver
 description: HarmonyOS build and implementation specialist for ArkTS, ArkUI, package validation, and compilation failures.
 tools: ["filesystem:read", "filesystem:write", "shell:execute", "filesystem:grep", "filesystem:glob"]
 metadata:
-  aihub.tags: '["activation:detected","detect:marker:module.json5","mode:debug","role:build-resolver"]'
+  aihub.tags: '["activation:detected","decision:ADR-0008","detect:marker:module.json5","effective:2026-09-07","mode:debug"]'
 ---
 
 # HarmonyOS Build Resolver
@@ -33,7 +33,7 @@ In all code generation, Q&A, and technical recommendations, you MUST strictly fo
 
 ### Step 1: Understand Project Context
 
-- Read `CLAUDE.md`, `module.json5`, `oh-package.json5` for project conventions
+- Read the project instruction file (`AGENTS.md` or provider equivalent), `module.json5`, `oh-package.json5` for project conventions
 - Identify existing state management version (V1 vs V2) and routing approach
 - Check `build-profile.json5` for API level and device targets
 

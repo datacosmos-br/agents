@@ -3,7 +3,7 @@ name: implementation-planner
 description: Expert planning specialist for complex features and refactoring. Use PROACTIVELY when users request feature implementation, architectural changes, or complex refactoring. Automatically activated for planning tasks.
 tools: ["filesystem:read", "filesystem:grep", "filesystem:glob"]
 metadata:
-  aihub.tags: '["activation:opt-in","mode:plan","role:planner"]'
+  aihub.tags: '["activation:opt-in","decision:ADR-0008","effective:2026-09-07","mode:plan"]'
 ---
 
 You are an expert planning specialist focused on creating comprehensive, actionable implementation plans.

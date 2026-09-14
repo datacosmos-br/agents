@@ -2,7 +2,7 @@
 name: cosmos-gitops
 description: 'cosmos gitops, helm delivery, argocd reconciliation, environment promotion'
 metadata:
-  aihub.tags: '["activation:detected","decision:ADR-0008","detect:selected-tag:cosmos-gitops","domain:cosmos-gitops","effective:2026-08-29","policy:atomic-effects","policy:causal-subprocess","policy:fail-loud","policy:no-fallback","policy:no-keyring","policy:preflight-before-effects","policy:required-environment","policy:strict-execution","policy:zero-residue","provenance:agents-owned","route:project","tool:argocd","tool:helm","updates:manual","usage:router"]'
+  aihub.tags: '["activation:detected","decision:ADR-0008","detect:selected-tag:cosmos-gitops","effective:2026-08-29","route:project","subject:argocd","subject:cosmos-gitops","subject:helm","usage:router"]'
 ---
 
 # Cosmos GitOps
@@ -22,3 +22,28 @@ Missing authorization, credential, deterministic render, known diff, health
 evidence, or required check fails closed. Fix the declarative owner forward; never
 fall back to a keyring, live patch, alternate context, rollback, or partial
 promotion.
+
+## dc-dese release pipeline procedure
+
+Canonical contract:
+`cosmos-main/docs/ARCHITECTURE/ARGOCD_GITOPS_RELEASE_CONVERGENCE_PLAN.md` §0.
+Chain: R1 charts package+receipt → R2 GitOps import+render → Argo CD `dc-dese`
+only → soak 30 min (single window) → cleanup. `develop` is the sole integration
+branch; `main`/`dc-prod`/`dc-control` receive no effect without operator order.
+
+- Canonical surface: root `make setup|deps|gen|check|test|fix|fmt`
+  only; never invented selectors or raw linters; testmon always via
+  `make test`.
+- Receipts live in the project tracker; read the current release/import
+  receipts from the tracker at activation (commit, package version, OCI
+  digest); version drift between charts/GitOps is a blocker, never an accepted
+  residual.
+- Preserve foreign WIP: commit stray module trees to a named branch before
+  any regen; never reset/restore shared work.
+- Land one PR per repository, merge `--no-ff` into `develop`, bump root
+  submodule pointers in a separate commit, rerun affected gates on the merged
+  SHA; delete branch/worktree only after integration evidence.
+- Tracker hierarchy follows the canonical-epics rule under
+  `rules/coordination/` (rule file): bug/hotfix items stay outside epics;
+  tasks attach to the few canonical epics. Keep item status truthful;
+  deferred needs a reason and a date.

@@ -1,0 +1,9 @@
+id: vault-api-negative-001
+name: Ignore generic secrets
+description: Do not activate for non-vault secret stores.
+tags: [anti-trigger, secrets]
+inputs:
+  prompt: Store this api key in the project env file. Vault is not involved.
+expected:
+  output_contains: [env]
+  output_not_contains: [vault api, unseal]

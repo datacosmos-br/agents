@@ -1,0 +1,10 @@
+id: opencode-handoff-negative-001
+name: Continue a native Codex plan
+description: Keep ordinary in-context Codex continuation outside OpenCode handoff.
+tags: [opencode-handoff, anti-trigger]
+inputs:
+  prompt: >-
+    Continue the Codex plan already visible in this conversation. There is no
+    OpenCode session, export, or cross-runtime handoff.
+expected:
+  output_not_contains: [opencode export, opencode db, OpenCode Session Handoff]

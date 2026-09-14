@@ -1,0 +1,51 @@
+open_issues:
+  - id: cosmos-100
+    title: Fix memory leak in agent runner
+    type: bugfix
+    parent: cosmos-10
+  - id: cosmos-101
+    title: Hotfix authentication token refresh
+    type: hotfix
+    parent: cosmos-10
+  - id: cosmos-102
+    title: Bug in chart template rendering
+    type: bug
+    parent: cosmos-10
+  - id: cosmos-200
+    title: Add new monitoring dashboard
+    type: feature
+    parent: cosmos-20
+  - id: cosmos-201
+    title: Implement dashboard backend API
+    type: task
+    parent: cosmos-20
+  - id: cosmos-202
+    title: Configure grafana datasources
+    type: task
+    parent: cosmos-201
+  - id: cosmos-300
+    title: Research new vector database
+    type: task
+    status: deferred
+  - id: cosmos-301
+    title: Evaluate ClickHouse vs TimescaleDB
+    type: task
+    status: deferred
+  - id: cosmos-400
+    title: Duplicate PR tracking bead
+    type: task
+    parent: cosmos-40
+  - id: cosmos-401
+    title: Same PR tracking bead duplicate
+    type: task
+    parent: cosmos-40
+closed_parents: [cosmos-10, cosmos-20]
+duplicate_candidates: [[cosmos-200, cosmos-201], [cosmos-400, cosmos-401]]
+foreign_lanes: [cosmos-iracn.6, cosmos-cd3mh.4.1]
+family_map:
+  survivors: {cosmos-200: [cosmos-201], cosmos-400: [cosmos-401]}
+cycle_state:
+  phase: classify
+  batch_size: 25
+  max_closes_per_batch: 20
+  validation_gates: [bd_doctor, dedup_gate, orphans]

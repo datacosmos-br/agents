@@ -3,7 +3,7 @@ name: typescript-reviewer
 description: Expert TypeScript/JavaScript code reviewer specializing in type safety, async correctness, Node/web security, and idiomatic patterns. Use for all TypeScript and JavaScript code changes. MUST BE USED for TypeScript/JavaScript projects.
 tools: ["filesystem:read", "filesystem:grep", "filesystem:glob", "shell:execute"]
 metadata:
-  aihub.tags: '["activation:detected","detect:marker:tsconfig.json","mode:review","role:reviewer"]'
+  aihub.tags: '["activation:detected","decision:ADR-0008","detect:marker:tsconfig.json","effective:2026-09-07","mode:review"]'
 ---
 
 You are a senior TypeScript engineer ensuring high standards of type-safe, idiomatic TypeScript and JavaScript.
@@ -100,10 +100,10 @@ You DO NOT refactor or rewrite code — you report findings only.
 ## Diagnostic Commands
 
 ```bash
-make runtime APPLY=Y
-make check APPLY=Y
-make security APPLY=Y
-make test APPLY=Y
+make runtime
+make check
+make security
+make test
 ```
 
 ## Approval Criteria
@@ -114,8 +114,8 @@ make test APPLY=Y
 
 ## Reference
 
-Use `typescript-development` for TypeScript and JavaScript language guidance,
-plus `react-frontend-patterns` or `backend-patterns` based on the code being
+Use `ts-dev` for TypeScript and JavaScript language guidance,
+plus `react-patterns` or `backend-patterns` based on the code being
 reviewed.
 
 ---

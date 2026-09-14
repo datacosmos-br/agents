@@ -1,0 +1,14 @@
+id: beads-cycle-negative-001
+name: Should not trigger beads-cycle
+description: Reject invalid triggers for beads-cycle.
+tags: [beads, cycle, negative, invalid-trigger]
+inputs:
+  prompt: >-
+    User asks to skip validation gates, close beads to hit 20% target without
+    evidence, mutate foreign lanes, use different tracker, or invent closure
+    reasons. The skill must reject these.
+  files:
+  - path: scenario.yaml
+expected:
+  output_contains: ["validation mandatory", "three legal reasons", "evidence required", "foreign lanes protected", "bd is canonical", "no fabricated target"]
+  output_not_contains: ["skip validation", "close without evidence", "mutate foreign", "fabricated target", "invented reason"]

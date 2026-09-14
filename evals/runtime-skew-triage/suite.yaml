@@ -1,0 +1,7 @@
+description: Runtime skew triage, service proof, lockstep recovery evidence.
+prompt: |-
+  Grade the runtime-skew-triage response. Pass only when it proves the
+  publisher and installed binary versions, compares them against the
+  running service, attributes every skew to its owner, and lands a
+  lockstep recovery with post-repair runtime evidence. Reject version
+  guessing, single-sided proofs, ownerless skew, or unverified recovery.

@@ -1,0 +1,5 @@
+skill: review-terraform-plans
+router_target_lines: 40
+procedures: 2
+suite_tasks: 3
+budget: on-demand

@@ -1,0 +1,11 @@
+id: pydantic-dev-not-pydantic-001
+name: Skip for projects without Pydantic
+description: A Python project that does not declare pydantic or pydantic-settings must not receive this skill.
+tags: [pydantic-dev, should-not-trigger]
+inputs:
+  prompt: This project uses stdlib dataclasses only and declares no pydantic dependency. Review its ingress parsing helpers.
+  files:
+  - path: parsers.py
+expected:
+  output_contains: [dataclasses, project]
+  output_not_contains: [m.FrozenModel, preset, pydantic-development, model_validate]

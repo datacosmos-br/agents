@@ -3,7 +3,8 @@
 ## Critical transition prohibition
 
 Never switch to another task, advance the plan cursor, hand off as complete, or
-declare a phase DONE before its entire approved cycle finishes. Tests, a commit,
+declare a phase DONE before its entire approved cycle finishes —
+`workflow/phase-admission-protocol` (rule file) owns this law. Tests, a commit,
 a push, an open PR, green CI, or elapsed effort are intermediate evidence, never
 phase closure.
 

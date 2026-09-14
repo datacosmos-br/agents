@@ -15,9 +15,26 @@
    ambiguous, or mismatched owner stops before effects; never fall back to a
    protected branch or another checkout.
 
+## Keep host automation outside portable libraries
+
+The portable tooling package owns Git primitives and standalone Make, codegen,
+and gate behavior. The selected host runtime owns live forge integration, code
+graph indexes, language/refactor services, hooks, MCP, and automation daemons.
+Static forge templates remain codegen data in the portable package; contacting
+the forge or maintaining host analysis state does not.
+
+A portable package may augment an operation through an installed host public
+command, hook, or MCP capability. It never imports the host application, links
+it as a language dependency, reads its private index, or reproduces its daemon.
+If that runtime is absent and unselected, continue the complete standalone
+operation without an error and without a substitute. If an available capability
+is explicitly selected, propagate its first failure. The host daemon owns graph
+build, incremental update, storage, and readiness; a managed project only
+activates its workspace and queries the public runtime contract.
+
 ## Preserve Clean Architecture and strict DI
 
-Apply `$python-development` and its `$solid` parent before this FLEXT delta.
+Apply `$py-dev` and its `$solid` parent before this FLEXT delta.
 
 Domain and application import no I/O, adapters, frameworks, process state,
 global registries, or concrete services. They depend on precise `p` ports.
@@ -39,6 +56,10 @@ aliases, `p` alone owns protocols, `m` owns Pydantic 2 models, and `u` owns pure
 utilities. All structured ingress and egress uses Pydantic 2. Public and DI
 contracts use neither `Any`, `object`, `Optional`, nor `dict`; model values
 precisely and express explicit null unions only where the domain allows them.
+Model classes always extend an `m.*` preset, declarations resolve strictly
+(never `model_rebuild`), and the complete Pydantic law — preset selection,
+`p`/`r` contracts, conversions, validation, serialization, removal catalog —
+is owned by `$pydantic-development`.
 
 Settings own external input and config owns validated derivation before the
 facade graph. Import and use their published objects directly. Never alias,
@@ -63,8 +84,8 @@ regenerate it, never a reason to retain the old class or edit the export by hand
 ## Generate and migrate atomically
 
 Edit only the declared configuration, schema, template, or typed source owner.
-Run the selector-free root `gen` verb with `APPLY=Y`, regenerate every affected
-facet/root/consumer, then repeat it and require zero change. A generated file
+Run the selector-free root `gen` verb — mutation is the default — regenerate
+every affected facet/root/consumer, then repeat it and require zero change. A generated file
 must state its writable owner, prohibit hand edits, and name its exact root Make
 regeneration verb. flext-infra lands its own regenerated outputs with template
 changes.
@@ -79,7 +100,8 @@ or old/new coexistence is RED and is corrected at flext-infra.
 Execute diagnostics, generation, formatting, correction, checks, Waza, tests,
 build, publication, and deployment only through selector-free verbs in the
 active repository's root Makefile. `fix`, `fmt`, `check`, and every test verb
-require exactly `APPLY=Y`; every other mutation uses the same acknowledgement.
+mutate by default; `APPLY=N` is the explicit dry-run override. Every other
+mutation uses the same override.
 Repair a missing standard verb at the Make/codegen owner rather than invoking a
 raw underlying tool.
 

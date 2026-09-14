@@ -1,0 +1,14 @@
+id: wip-beads-negative-001
+name: Should not trigger wip-beads
+description: Reject invalid triggers for wip-beads.
+tags: [beads, batch, governance, negative, invalid-trigger]
+inputs:
+  prompt: >-
+    User asks to edit .beads files directly, or to close beads without
+    bd note evidence, or to use a different tracker, or to apply without
+    dry-run review. The skill must reject these.
+  files:
+  - path: scenario.yaml
+expected:
+  output_contains: ["bd is canonical", "never edit .beads", "evidence required", "dry-run first", "operator approval"]
+  output_not_contains: ["edit .beads", "close without reason", "different tracker", "apply without review"]

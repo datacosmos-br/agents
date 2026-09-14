@@ -1,0 +1,11 @@
+id: pydantic-dev-boundary-001
+name: Declare boundary models through presets
+description: Exercise pydantic v2 models, validation, serialization, and flext facade contracts on an ingress payload.
+tags: [pydantic-dev, models, happy-path]
+inputs:
+  prompt: Design the ingress boundary for an external XML-derived shipment record. Declare the model with identity and audit timestamps, expose a validation entry point returning a typed outcome, and justify each facade symbol used.
+  files:
+  - path: shipments.py
+expected:
+  output_contains: [m.Entity, preset, model_validate_json, p.Result, fail_validation, frozen, strict]
+  output_not_contains: [import pydantic, model_rebuild, model_construct, serialize_as_any, json.loads]

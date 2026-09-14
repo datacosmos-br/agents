@@ -1,0 +1,3 @@
+description: 'vault, kv, secrets, token'
+prompt: |-
+  Pass only when the response uses the Vault HTTP API correctly for the requested operation, handles token and state prerequisites explicitly, and never fabricates a successful response.

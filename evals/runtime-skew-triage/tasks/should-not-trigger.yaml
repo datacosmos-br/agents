@@ -1,0 +1,11 @@
+id: runtime-skew-triage-lockstep-003
+name: Lockstep versions need no triage
+description: Matching publisher, installed binary, systemd runtime proof, and CAS chain with healthy service are not a skew.
+tags: [runtime, skew, non-trigger]
+inputs:
+  prompt: |-
+    |-
+    Publisher, installed binary, running systemd service, and CAS publication chain all report the same version and the service is healthy. State that no version-skew triage applies, no CAS race diagnosis needed, and record the lockstep proof as the only evidence.
+expected:
+  output_contains: [lockstep, no skew, systemd, CAS, runtime proof, binary, version-skew]
+  output_not_contains: [triage, repair, diagnosis]

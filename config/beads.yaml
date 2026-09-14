@@ -1,0 +1,4 @@
+version: 1
+workspace: agents
+database: agents
+issue_prefix: ag

@@ -4,8 +4,10 @@
     "rules": [
       "architecture/engineering-core",
       "coordination/beads-verification",
+      "coordination/operator-alignment",
       "coordination/operator-precedence",
       "coordination/session-governance",
+      "ethics/change-consequence",
       "ethics/professional-integrity",
       "git/gitflow-branch-pr",
       "runtime/strict-execution"
@@ -13,19 +15,44 @@
     "skills": [
       "caveman",
       "context-canary",
-      "fix-forward-collaboration",
+      "fix-forward",
+      "focus-recovery",
       "governance-audit",
-      "operator-correction-learning",
-      "plan-focus-recovery",
+      "op-learning",
       "sprint-closure",
       "strategic-compact",
       "verification-loop"
     ]
   },
+  "delivery": {
+    "capsule_budget_chars": 10000,
+    "restore_list_reserve_chars": 512,
+    "events": {
+      "instructions-loaded": [
+        "payload:rule-bodies-by-routing"
+      ],
+      "post-compact": [
+        "payload:capsule-full",
+        "payload:restore-list"
+      ],
+      "prompt-submit": [
+        "payload:operator-precedence-reminder"
+      ],
+      "session-end": [
+        "payload:findings-harvest"
+      ],
+      "session-start": [
+        "payload:capsule-full"
+      ],
+      "subagent-start": [
+        "payload:authority-subset"
+      ]
+    }
+  },
   "guarantees": {
     "active-intent": [
       "rule:coordination/plan-topic-monopoly",
-      "skill:plan-focus-recovery"
+      "skill:focus-recovery"
     ],
     "atomic-effects": [
       "rule:runtime/atomic-effects"
@@ -35,6 +62,9 @@
     ],
     "canonical-command-surface": [
       "rule:workflow/canonical-commands"
+    ],
+    "capsule-budget": [
+      "document:docs/adr/ADR-0019-delivery-contract.md"
     ],
     "causal-subprocess": [
       "rule:runtime/causal-subprocess"
@@ -54,6 +84,9 @@
       "rule:python/config-settings-ssot",
       "rule:workflow/runtime-is-reality"
     ],
+    "consequence-aversion": [
+      "rule:ethics/change-consequence"
+    ],
     "context-lifecycle": [
       "rule:coordination/session-governance",
       "skill:context-canary",
@@ -64,15 +97,18 @@
       "skill:verification-loop"
     ],
     "correction-learning": [
-      "skill:operator-correction-learning"
+      "skill:op-learning"
     ],
     "cross-runtime-session-handoff": [
       "rule:coordination/session-governance",
-      "skill:opencode-session-handoff"
+      "skill:opencode-handoff"
     ],
     "database-migration": [
       "command:database-migration",
       "rule:runtime/atomic-effects"
+    ],
+    "delivery-contract": [
+      "document:docs/adr/ADR-0019-delivery-contract.md"
     ],
     "delivery-iteration": [
       "command:ralph-loop",
@@ -107,15 +143,15 @@
     ],
     "file-owned-handoff": [
       "command:plan-handoff",
-      "skill:plan-focus-recovery"
+      "skill:focus-recovery"
     ],
     "finish-through-closure": [
       "skill:anti-phase-skip",
       "skill:sprint-closure"
     ],
-    "fix-forward-collaboration": [
+    "fix-forward": [
       "rule:coordination/fix-forward-collaboration",
-      "skill:fix-forward-collaboration"
+      "skill:fix-forward"
     ],
     "flext-strict-architecture": [
       "rule:architecture/internal-clean-architecture",
@@ -124,16 +160,16 @@
     "gas-city-operations": [
       "command:gc-session-triage",
       "rule:coordination/gascity",
-      "skill:gascity-change-lifecycle",
       "skill:gascity-docs",
-      "skill:gascity-workspace-lifecycle",
       "skill:gc-agents",
+      "skill:gc-change",
       "skill:gc-city",
       "skill:gc-dashboard",
       "skill:gc-dispatch",
       "skill:gc-mail",
       "skill:gc-rigs",
-      "skill:gc-work"
+      "skill:gc-work",
+      "skill:ws-lifecycle"
     ],
     "gate-budget": [
       "rule:workflow/gate-budget"
@@ -150,7 +186,7 @@
       "rule:coordination/operator-precedence"
     ],
     "governance-artifact-composition": [
-      "rule:architecture/governance-artifact-composition",
+      "rule:architecture/artifact-composition",
       "skill:skill-governance"
     ],
     "history-evidence": [
@@ -161,17 +197,20 @@
       "rule:runtime/zero-residue",
       "skill:safe-delete"
     ],
+    "instruction-design-evidence": [
+      "document:docs/research/agent-instruction-design.md"
+    ],
     "lane-ownership": [
       "rule:coordination/fix-forward-collaboration",
       "rule:git/gitflow-branch-pr"
     ],
     "language-rule-authoring": [
       "command:add-language-rules",
-      "rule:architecture/governance-artifact-composition"
+      "rule:architecture/artifact-composition"
     ],
     "legacy-source-adjudication": [
       "command:synthesize-governance",
-      "rule:architecture/governance-artifact-composition",
+      "rule:architecture/artifact-composition",
       "skill:governance-audit",
       "skill:skill-governance"
     ],
@@ -198,6 +237,9 @@
     "observable-tests": [
       "rule:testing/observable-runtime"
     ],
+    "operator-alignment": [
+      "rule:coordination/operator-alignment"
+    ],
     "operator-precedence": [
       "document:AGENTS.md",
       "rule:coordination/operator-precedence"
@@ -222,7 +264,7 @@
       "rule:coordination/fix-forward-collaboration"
     ],
     "provenance-before-conclusion": [
-      "rule:coordination/provenance-before-conclusion"
+      "rule:coordination/provenance-first"
     ],
     "pull-request-transparency": [
       "command:pr-list",
@@ -230,7 +272,7 @@
     ],
     "python-bytecode-cache": [
       "rule:python",
-      "skill:python-development"
+      "skill:py-dev"
     ],
     "repository-authority": [
       "document:README.md",
@@ -263,21 +305,21 @@
     ],
     "semantic-bundle-boundary": [
       "document:docs/adr/ADR-0008-governance-bundle-as-public-facade.md",
-      "rule:architecture/governance-artifact-composition"
+      "rule:architecture/artifact-composition"
     ],
     "separated-roles": [
       "document:AGENTS.md",
       "skill:dispatch-agent"
     ],
     "session-heartbeat": [
-      "skill:plan-focus-recovery"
+      "skill:focus-recovery"
     ],
     "short-integration-slices": [
       "rule:git/gitflow-branch-pr",
       "skill:verification-loop"
     ],
     "skill-specialization-hierarchy": [
-      "rule:architecture/governance-artifact-composition",
+      "rule:architecture/artifact-composition",
       "skill:skill-governance"
     ],
     "small-batches": [

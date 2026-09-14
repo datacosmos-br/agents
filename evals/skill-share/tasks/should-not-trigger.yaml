@@ -1,0 +1,9 @@
+id: skill-share-negative-001
+name: Ignore unrelated sharing
+description: Do not activate for document sharing.
+tags: [anti-trigger, documents]
+inputs:
+  prompt: Share this design document with the reviewer. No skill bundle is involved.
+expected:
+  output_contains: [document]
+  output_not_contains: [skill bundle, packaged]

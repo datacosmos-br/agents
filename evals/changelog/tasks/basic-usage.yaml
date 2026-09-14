@@ -1,0 +1,10 @@
+id: changelog-generate-001
+name: Generate a weekly changelog
+description: Turn commits into a categorized user-facing changelog.
+tags: [changelog, release-notes, categorization, happy-path]
+inputs:
+  prompt: Create a user-facing changelog from the supplied commit history for the past week, grouping features, improvements, and fixes, and dropping internal-only commits.
+  files:
+  - path: scenario.yaml
+expected:
+  output_contains: [Features, Improvements, Fixes]

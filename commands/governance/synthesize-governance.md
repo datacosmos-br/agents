@@ -3,7 +3,7 @@ name: synthesize-governance
 description: Synthesize an external governance corpus into current canonical owners without copying its structure.
 argument-hint: "<source corpus and requested governance outcome>"
 metadata:
-  aihub.tags: '["decision:ADR-0008","effective:2026-08-29","intent:governance","intent:implementation","risk:write","route:project"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-08-29","route:project"]'
 ---
 
 # Synthesize governance
@@ -31,8 +31,8 @@ resolved.
    semantic suites, guarantee mapping, documentation, and the public bundle
    atomically. Remove superseded canonical identities in the same cutover; never
    modify or delete the supplied source corpus.
-6. Run `make runtime APPLY=Y`, `make check APPLY=Y`, `make test APPLY=Y`, and
-   `make test-full APPLY=Y`, then search for duplicate owners, aliases, foreign
+6. Run `make runtime`, `make check`, `make test`, and
+   `make test-full`, then search for duplicate owners, aliases, foreign
    runtimes, private paths, compatibility, fallback, retry, and stale consumers.
 
 Return the source and target identities, semantic classifications, selected
