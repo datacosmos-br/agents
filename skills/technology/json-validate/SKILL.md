@@ -12,7 +12,7 @@ z-schema validates JSON data against JSON Schema (draft-04, draft-06, draft-07, 
 
 ## Provenance
 
-- Origin: https://github.com/zaggino/z-schema (`validating-json-data`)
+- Origin: <https://github.com/zaggino/z-schema> (`validating-json-data`)
 - Commit: `221f6d9d15a7adc117c2872ea657ab3a6c0aeedf`
 - License: MIT
 

@@ -1,8 +1,8 @@
 # Pydantic development procedure
 
-# Pydantic development procedure
+## Pydantic development procedure
 
-## 1. Composition and authority
+### 1. Composition and authority
 
 Apply `$py-dev` first; it composes `$solid`. This procedure owns the Pydantic
 delta. External behavior reference: the official Pydantic documentation for
@@ -10,7 +10,7 @@ the project's declared version. Project law: this file and the
 `rules/python/pydantic.md` rule. Generated files remain outputs; runtime
 behavior and project-owned configuration are authoritative.
 
-## 2. Version authority
+### 2. Version authority
 
 - The project's declared dependency (pyproject dependency owner / config SSOT)
   is the only version truth. Never assume a global version, never upgrade or
@@ -21,7 +21,7 @@ behavior and project-owned configuration are authoritative.
 - A floor change is a workspace-level atomic migration: dependency SSOT, then
   templates, generated config, analyzers, tests, CI, docs.
 
-## 3. settings, config, and the c·t·p·m·u wiring
+### 3. settings, config, and the c·t·p·m·u wiring
 
 Two independent typed objects own every configurable fact (ADR-005); each
 facade letter has exactly one concern:
@@ -54,7 +54,7 @@ strict = config.Dispatcher.strict_mode  # validated static rule
   value at the composition root (`api`) — never by importing config deep in a
   declaration layer.
 
-## Reference parts
+### Reference parts
 
 - [declaration.md](declaration.md) — obligatory model MRO, `model_rebuild`
   extermination, facade law, preset selection, identity models, inheritance,

@@ -1,13 +1,13 @@
 # Safe Delete procedure
 
-# Safe Delete
+## Safe Delete
 
 Delete only exact, owned targets with an explicit recovery contract. This skill
 also applies when an approved cutover supersedes tracked code: the replacement,
 consumer rewire, and deletion are one atomic change, never a compatibility or
 rollback sequence.
 
-## Atomic source cutover
+### Atomic source cutover
 
 1. Resolve the superseded owner, replacement owner, every producer and consumer,
    tests, fixtures, config, generated surfaces, documentation, and semantic term.
@@ -20,7 +20,7 @@ rollback sequence.
 4. Prove zero residue, public runtime behavior, causal failure propagation, and
    native gates before the cutover can land.
 
-## Artifact and data retirement
+### Artifact and data retirement
 
 1. Resolve every literal target and classify it as declared generated output,
    tool-owned transient data, governed data, or unknown/concurrent work.
@@ -37,7 +37,7 @@ rollback sequence.
 6. Verify the intended target is absent from the active surface, preserved items
    remain intact, the repository diff is scoped, and native gates are green.
 
-## Massive-object and quarantine adjudication
+### Massive-object and quarantine adjudication
 
 Before any effect on a large or recursively populated target, acquire its
 declared exclusive ownership or serialization primitive and write a physical
@@ -61,7 +61,7 @@ workflow failed, and requires a fresh preflight after correcting the cause.
 Verify the active source is absent, the physical quarantine and manifest are
 complete, and every preserved or excluded object remains untouched.
 
-## Rules
+### Rules
 
 - Never use recursive broad deletion, unresolved variables or globs, `git clean`,
   destructive reset, global stash, or force deletion.

@@ -5,6 +5,7 @@ allowed-tools: 'Bash(gc *), Bash(python3 *)'
 metadata:
   aihub.tags: '["activation:opt-in","decision:ADR-0008","detect:opt-in:mayor","effective:2026-08-30","route:agent","route:project","subject:gascity","usage:on-demand"]'
 ---
+
 ## Verification (mandatory)
 
 Before acting on any bead, run the four-source cross-check in

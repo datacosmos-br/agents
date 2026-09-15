@@ -29,10 +29,12 @@ make check
 ## Review Workflow
 
 ### 1. Initial Scan
+
 - Run `npm audit`, `eslint-plugin-security`, search for hardcoded secrets
 - Review high-risk areas: auth, API endpoints, DB queries, file uploads, payments, webhooks
 
 ### 2. OWASP Top 10 Check
+
 1. **Injection** — Queries parameterized? User input sanitized? ORMs used safely?
 2. **Broken Auth** — Passwords hashed (bcrypt/argon2)? JWT validated? Sessions secure?
 3. **Sensitive Data** — HTTPS enforced? Secrets in env vars? PII encrypted? Logs sanitized?
@@ -45,6 +47,7 @@ make check
 10. **Insufficient Logging** — Security events logged? Alerts configured?
 
 ### 3. Code Pattern Review
+
 Flag these patterns immediately:
 
 | Pattern | Severity | Fix |
@@ -80,6 +83,7 @@ Flag these patterns immediately:
 ## Emergency Response
 
 If you find a CRITICAL vulnerability:
+
 1. Document with detailed report
 2. Alert project owner immediately
 3. Provide secure code example

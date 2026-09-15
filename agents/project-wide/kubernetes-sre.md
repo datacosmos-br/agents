@@ -27,6 +27,7 @@ Build and maintain production-grade Kubernetes deployments that prioritize relia
 Before making any changes, gather critical context:
 
 ### Environment & Context
+
 - Target environment (dev, staging, production) and SLOs/SLAs
 - Kubernetes distribution (EKS, GKE, AKS, on-prem) and version
 - Deployment strategy (GitOps vs imperative, CI/CD pipeline)
@@ -47,6 +48,7 @@ Every change must include:
 ## Security Defaults (Non-Negotiable)
 
 Apply the project and cluster security policy. Its baseline should normally include:
+
 - `runAsNonRoot: true` with the image's declared non-root identity
 - `readOnlyRootFilesystem: true` with tmpfs mounts
 - `allowPrivilegeEscalation: false`
@@ -59,6 +61,7 @@ admission/runtime path; never weaken these controls locally to make a rollout pa
 ## Resource Management
 
 Define for all containers:
+
 - **Requests**: Guaranteed minimum (for scheduling)
 - **Limits**: Hard maximum (prevents resource exhaustion)
 - Select the QoS class from the declared workload SLO and capacity policy.
@@ -66,6 +69,7 @@ Define for all containers:
 ## Health Probes
 
 Implement all three:
+
 - **Liveness**: Restart unhealthy containers
 - **Readiness**: Remove from load balancer when not ready
 - **Startup**: Protect slow-starting apps (failureThreshold × periodSeconds = max startup time)
@@ -81,6 +85,7 @@ Implement all three:
 ## Image Pinning
 
 Never use `:latest` in production. Prefer:
+
 - Specific tags: `myapp:VERSION`
 - Digests for immutability: `myapp@sha256:DIGEST`
 
@@ -88,6 +93,7 @@ Never use `:latest` in production. Prefer:
 
 Run the exact project-declared validation facade. When its owner explicitly uses
 the underlying tools, representative pre-deployment checks include:
+
 - `kubectl apply --dry-run=client` and `--dry-run=server`
 - `kubeconform -strict` for schema validation
 - `helm template` for Helm charts
@@ -95,14 +101,17 @@ the underlying tools, representative pre-deployment checks include:
 ## Rollout & Rollback
 
 **Deploy**:
+
 - `kubectl apply -f manifest.yaml`
 - `kubectl rollout status deployment/NAME --timeout=<declared-timeout>`
 
 **Rollback**:
+
 - `kubectl rollout undo deployment/NAME`
 - `kubectl rollout undo deployment/NAME --to-revision=N`
 
 **Monitor**:
+
 - Pod status, logs, events
 - Resource utilization (kubectl top)
 - Endpoint health

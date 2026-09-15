@@ -1,6 +1,6 @@
 # Formula selection and built-ins
 
-```
+```text
 gc formula list                        # List available formulas
 gc formula show <name>                 # Show formula definition
 ```
@@ -12,7 +12,7 @@ that pack is imported. `gc formula show <name>` fails loud with
 "not found in search paths" when it is not: treat that as a missing-import
 diagnosis, never as a reason to hand-author the lifecycle.
 
-### Choosing a work formula
+## Choosing a work formula
 
 Work formulas differ by **isolation** (does the agent get its own worktree and
 branch?) and **handoff** (does the agent land the change itself, or hand off to
@@ -66,7 +66,7 @@ the solution in the current working directory, and closes the bead.
 No git branching, no worktree isolation, no refinery handoff. Good for
 demos and simple single-agent workflows.
 
-```
+```text
 gc sling <agent> <bead-id> --on mol-do-work
 ```
 
@@ -76,7 +76,7 @@ teardown, and first-class step beads that can be routed independently, with
 continuation metadata for same-session execution. The opt-in replacement for
 hierarchy-first single-session formulas; agent-managed, with no refinery handoff.
 
-```
+```text
 gc sling <agent> <bead-id> --on mol-scoped-work
 ```
 
@@ -85,7 +85,7 @@ commits directly to base_branch with no feature branch or refinery step.
 Includes preflight tests, implementation, and self-review quality gates.
 For small installations where merge review is unnecessary.
 
-```
+```text
 gc sling <agent> <bead-id> --on mol-polecat-commit
 ```
 
@@ -94,7 +94,7 @@ branch, no push, no PR. The agent investigates, writes findings as bead
 notes, and exits. Use for analysis or investigation tasks where the output
 is a written report, not a code change.
 
-```
+```text
 gc sling <agent> <bead-id> --on mol-polecat-report
 ```
 
@@ -117,4 +117,3 @@ workflow prototype. Models work as an explicit DAG with a durable `body`
 scope bead, explicit worktree setup/teardown, independently routable step
 beads, and continuation metadata for same-session execution. Opt-in
 replacement for hierarchy-first single-session formulas.
-

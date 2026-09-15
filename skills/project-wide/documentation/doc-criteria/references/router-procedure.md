@@ -1,12 +1,12 @@
 # Documentation Criteria procedure
 
-# Documentation Criteria
+## Documentation Criteria
 
 Select the smallest project-owned documentation set that preserves a current
 requirement, decision, interface, implementation contract, or execution plan.
 Do not create documents from file count, generic ceremony, or possible future use.
 
-## Preflight
+### Preflight
 
 Before selecting or writing an artifact, resolve the current request, users,
 acceptance criteria, semantic impact, existing owners and documents, contract and
@@ -17,7 +17,7 @@ The first missing or conflicting classification input stops with zero document
 effects. Do not guess a document type, create a generic placeholder, select a
 default path, or publish a partial document set.
 
-## Select by owned concern
+### Select by owned concern
 
 Retain an artifact only when its current consumer needs its distinct authority:
 
@@ -34,7 +34,7 @@ Use the project's declared document owner and location. Do not copy mutable
 schemas, policy, configuration values, rollout status, or tracker state into a
 second authority; link to their owners.
 
-## Ordering and publication
+### Ordering and publication
 
 Create only currently required artifacts. Product intent precedes UI behavior;
 approved durable decisions precede technical design; approved design precedes an

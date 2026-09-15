@@ -41,6 +41,7 @@ Each phase feeds insights into the next, creating a continuous improvement cycle
 **Objective**: Define work, prioritize, and prepare for implementation
 
 **Key Activities**:
+
 - Gather requirements and define user stories
 - Break down work into manageable tasks
 - Identify dependencies and potential risks
@@ -48,6 +49,7 @@ Each phase feeds insights into the next, creating a continuous improvement cycle
 - Plan infrastructure and architecture needs
 
 **Questions to Ask**:
+
 - What problem are we solving?
 - What are the acceptance criteria?
 - What infrastructure changes are needed?
@@ -55,6 +57,7 @@ Each phase feeds insights into the next, creating a continuous improvement cycle
 - How will we measure success?
 
 **Outputs**:
+
 - Clear requirements and specifications
 - Task breakdown and timeline
 - Risk assessment
@@ -65,6 +68,7 @@ Each phase feeds insights into the next, creating a continuous improvement cycle
 **Objective**: Develop features with quality and collaboration in mind
 
 **Key Practices**:
+
 - Version control (Git) with clear branching strategy
 - Code reviews and pair programming
 - Follow coding standards and conventions
@@ -72,11 +76,13 @@ Each phase feeds insights into the next, creating a continuous improvement cycle
 - Include tests alongside code
 
 **Automation Focus**:
+
 - Pre-commit hooks (linting, formatting)
 - Automated code quality checks
 - IDE integration for instant feedback
 
 **Questions to Ask**:
+
 - Is the code testable?
 - Does it follow team conventions?
 - Are dependencies minimal and necessary?
@@ -87,6 +93,7 @@ Each phase feeds insights into the next, creating a continuous improvement cycle
 **Objective**: Automate compilation and artifact creation
 
 **Key Practices**:
+
 - Automated builds on every commit
 - Consistent build environments (containers)
 - Dependency management and vulnerability scanning
@@ -94,12 +101,14 @@ Each phase feeds insights into the next, creating a continuous improvement cycle
 - Fast feedback loops
 
 **Tools & Patterns**:
+
 - CI/CD pipelines (GitHub Actions, Jenkins, GitLab CI)
 - Containerization (Docker)
 - Artifact repositories
 - Build caching
 
 **Questions to Ask**:
+
 - Can anyone build this from a clean checkout?
 - Are builds reproducible?
 - How long does the build take?
@@ -110,6 +119,7 @@ Each phase feeds insights into the next, creating a continuous improvement cycle
 **Objective**: Validate functionality, performance, and security automatically
 
 **Testing Strategy**:
+
 - Unit tests (fast, isolated, many)
 - Integration tests (service boundaries)
 - E2E tests (critical user journeys)
@@ -117,12 +127,14 @@ Each phase feeds insights into the next, creating a continuous improvement cycle
 - Security tests (SAST, DAST, dependency scanning)
 
 **Automation Requirements**:
+
 - All tests automated and repeatable
 - Tests run in CI on every change
 - Clear pass/fail criteria
 - Test results accessible and actionable
 
 **Questions to Ask**:
+
 - What's the test coverage?
 - How long do tests take?
 - Are tests reliable (no flakiness)?
@@ -133,6 +145,7 @@ Each phase feeds insights into the next, creating a continuous improvement cycle
 **Objective**: Package and prepare for deployment with confidence
 
 **Key Practices**:
+
 - Semantic versioning
 - Release notes generation
 - Changelog maintenance
@@ -140,12 +153,14 @@ Each phase feeds insights into the next, creating a continuous improvement cycle
 - Rollback preparation
 
 **Automation Focus**:
+
 - Automated release creation
 - Version bumping
 - Changelog generation
 - Release approvals and gates
 
 **Questions to Ask**:
+
 - What's in this release?
 - Can we roll back safely?
 - Are breaking changes documented?
@@ -156,12 +171,14 @@ Each phase feeds insights into the next, creating a continuous improvement cycle
 **Objective**: Safely deliver changes to production with zero downtime
 
 **Deployment Strategies**:
+
 - Blue-green deployments
 - Canary releases
 - Rolling updates
 - Feature flags
 
 **Key Practices**:
+
 - Infrastructure as Code (Terraform, CloudFormation)
 - Immutable infrastructure
 - Automated deployments
@@ -169,6 +186,7 @@ Each phase feeds insights into the next, creating a continuous improvement cycle
 - Rollback automation
 
 **Questions to Ask**:
+
 - What's the deployment strategy?
 - Is zero-downtime possible?
 - How do we rollback?
@@ -179,6 +197,7 @@ Each phase feeds insights into the next, creating a continuous improvement cycle
 **Objective**: Keep systems running reliably and securely
 
 **Key Responsibilities**:
+
 - Incident response and management
 - Capacity planning and scaling
 - Security patching and updates
@@ -186,12 +205,14 @@ Each phase feeds insights into the next, creating a continuous improvement cycle
 - Backup and disaster recovery
 
 **Operational Excellence**:
+
 - Runbooks and documentation
 - On-call rotation and escalation
 - SLO/SLA management
 - Change management process
 
 **Questions to Ask**:
+
 - What are our SLOs?
 - What's the incident response process?
 - How do we handle scaling?
@@ -202,17 +223,20 @@ Each phase feeds insights into the next, creating a continuous improvement cycle
 **Objective**: Observe, measure, and gain insights for continuous improvement
 
 **Monitoring Pillars**:
+
 - **Metrics**: System and business metrics (Prometheus, CloudWatch)
 - **Logs**: Centralized logging (ELK, Splunk)
 - **Traces**: Distributed tracing (Jaeger, Zipkin)
 - **Alerts**: Actionable notifications
 
 **Key Metrics**:
+
 - **DORA Metrics**: Deployment frequency, lead time, MTTR, change failure rate
 - **SLIs/SLOs**: Availability, latency, error rate
 - **Business Metrics**: User engagement, conversion, revenue
 
 **Questions to Ask**:
+
 - What signals matter for this service?
 - Are alerts actionable?
 - Can we correlate issues across services?
@@ -221,6 +245,7 @@ Each phase feeds insights into the next, creating a continuous improvement cycle
 ## Continuous Improvement Loop
 
 Monitor insights feed back into Plan:
+
 - **Incidents** → New requirements or technical debt
 - **Performance data** → Optimization opportunities
 - **User behavior** → Feature refinement
@@ -229,24 +254,28 @@ Monitor insights feed back into Plan:
 ## Core DevOps Practices
 
 **Culture**:
+
 - Break down silos between Dev and Ops
 - Shared responsibility for production
 - Blameless post-mortems
 - Continuous learning
 
 **Automation**:
+
 - Automate repetitive tasks
 - Infrastructure as Code
 - CI/CD pipelines
 - Automated testing and security scanning
 
 **Measurement**:
+
 - Track DORA metrics
 - Monitor SLOs/SLIs
 - Measure everything
 - Use data for decisions
 
 **Sharing**:
+
 - Document everything
 - Share knowledge across teams
 - Open communication channels

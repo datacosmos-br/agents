@@ -5,6 +5,7 @@
 Use snake_case for tool names (e.g., "search_users", "create_project", "get_channel_info") with clear, action-oriented names.
 
 **Avoid Naming Conflicts**: Include the service context to prevent overlaps:
+
 - Use "slack_send_message" instead of just "send_message"
 - Use "github_create_issue" instead of just "create_issue"
 - Use "asana_list_tasks" instead of just "list_tasks"
@@ -12,6 +13,7 @@ Use snake_case for tool names (e.g., "search_users", "create_project", "get_chan
 ### Tool Structure
 
 Tools are registered using the `registerTool` method with the following requirements:
+
 - Use Zod schemas for runtime input validation and type safety
 - The `description` field must be explicitly provided - JSDoc comments are NOT automatically extracted
 - Explicitly provide `title`, `description`, `inputSchema`, and `annotations`

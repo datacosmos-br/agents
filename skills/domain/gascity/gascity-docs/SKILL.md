@@ -7,6 +7,7 @@ metadata:
 
 # Project Documentation
 
-Conventions for writing, editing, restructuring, or reviewing documentation across every project under management. Applies whenever you touch anything in `docs/` (pages, tutorials, guides, reference, ADRs, concept pages, diagrams, navigation), `AGENTS.md`, `README.md`, or prose about project architecture — even when the request is just "fix the docs", "write a docs page", "the docs are wrong/confusing", "rename X across the docs", or an edit to a file under `docs/`. Defines the canonical project model, required terminology, prose / emphasis / diagram conventions, information architecture, the rule that generated docs are edited at their source, and the gates to run before docs work is done. Follow the complete
+Conventions for writing, editing, restructuring, or reviewing documentation across every project under management. Applies whenever you touch anything in `docs/` (pages, tutorials, guides, reference, ADRs, concept pages, diagrams, navigation), `AGENTS.md`, `README.md`, or prose about project architecture — even when the request is just "fix the docs", "write a docs page", "the docs are wrong/confusing", "rename X across the docs", or an edit to a file under `docs/`. Defines the canonical project
+model, required terminology, prose / emphasis / diagram conventions, information architecture, the rule that generated docs are edited at their source, and the gates to run before docs work is done. Follow the complete
 `router procedure` (skill file) and preserve its owners,
 evidence contracts, failure propagation, and required output standard.

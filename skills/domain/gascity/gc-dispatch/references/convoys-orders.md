@@ -2,7 +2,7 @@
 
 ## Convoys (grouped work)
 
-```
+```text
 gc convoy create <name> <bead-ids...>                 # Group beads into a convoy
 gc convoy create <name> --owned --target integration/<slug>  # Long-lived initiative convoy
 gc convoy target <id> <branch>                        # Set/update convoy target branch
@@ -16,11 +16,12 @@ gc convoy autoclose <id>                              # Internal: invoked by bd'
 ```
 
 Migration note:
+
 - Existing epic beads are no longer first-class containers. Migrate open epics to convoys before relying on convoy-only tooling such as `gc convoy target`, `gc sling <convoy>`, or the legacy refinery convoy flow.
 
 ## Orders
 
-```
+```text
 gc order list                     # List order rules
 gc order show <name>              # Show order definition
 gc order run <name>               # Manually trigger an order

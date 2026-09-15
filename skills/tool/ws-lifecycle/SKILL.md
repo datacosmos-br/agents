@@ -4,14 +4,13 @@ description: 'gas city, workspace lifecycle, runtime orchestration'
 metadata:
   aihub.tags: '["activation:opt-in","decision:ADR-0008","detect:opt-in:gascity","effective:2026-08-30","route:agent","subject:gascity","supersedes:skill:gascity-workspace-lifecycle","usage:on-demand"]'
 ---
+
 ## Verification (mandatory)
 
 Before bead effects, apply the four-source cross-check in
 `rules/coordination/beads-verification.md`. Record command, working directory,
 exit code, and decisive output. Close a retired premise as obsolete with
 evidence; never execute it.
-
-
 
 # Gas City Workspace Lifecycle
 

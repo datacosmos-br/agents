@@ -13,7 +13,7 @@ whole chain one admissible unit.
 
 ## The chain (every hop is a gate, never a assumption)
 
-```
+```text
 H1 integration branch GREEN      gates + tests at the merged SHA (not the PR SHA)
 H2 release PUBLISHED             tag + GitHub release visible (a tag alone is not a release)
 H3 consumer lock BUMPED          uv.lock/pin points at H2's exact version; make setup GREEN

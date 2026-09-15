@@ -239,6 +239,7 @@ grep -rn "@RegisterForReflection" src/main/java --include="*.java"
 ## Stop Conditions
 
 Stop and report if:
+
 - Same error persists after 3 fix attempts
 - Fix introduces more errors than it resolves
 - Error requires architectural changes beyond scope
@@ -258,5 +259,6 @@ Remaining errors: 1
 Final: `Framework: X | Build Status: SUCCESS/FAILED | Errors Fixed: N | Files Modified: list`
 
 For detailed patterns and examples:
+
 - Use `jvm-dev` plus the active project's declared Spring or Quarkus
   dependencies, configuration, and runtime contracts.

@@ -25,6 +25,7 @@ por caminho fixo.
 ## Mapa técnico (facades canônicas)
 
 ### Boundary gate
+
 - Implementação: gate `abstraction_boundary` do pacote flext-infra
   (data-driven), catálogos `BOUNDARY_*` em `_constants/check.py`.
 - Execução: runner do projeto com ambiente limpo (`env -u PYTHONPATH -u
@@ -35,6 +36,7 @@ por caminho fixo.
   settings.py`) — `_config.py`/`_settings.py` NÃO são cobertos.
 
 ### Replacements canônicos (superfície flext-cli)
+
 - `from flext_cli import FlextCli<X>` (classes concretas) → herdar as bases do
   **flext-core**: `FlextConfig` / `FlextSettings`. `FlextCliConfig` só adiciona
   o CONFIG_DIR do próprio pacote + domínio `Cli`; pacotes que sobrescrevem
@@ -53,6 +55,7 @@ por caminho fixo.
   `u.Cli.json_*` do boundary é o do **flext-cli**.
 
 ### Regra de usuário exclusivo por testes
+
 Quando os únicos consumidores de um símbolo/arquivo forem testes, a validação
 deve reportar: "used only by tests — remove it; no one may use it". Violações
 em arquivos sob `tests/` recebem mensagem explícita de que testes não são

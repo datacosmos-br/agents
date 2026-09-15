@@ -25,6 +25,7 @@ Run `git diff --staged` and `git diff` to see changes. If no diff, check `git lo
 ### Step 2: Understand Project Structure
 
 Check for:
+
 - `build.gradle.kts` or `settings.gradle.kts` to understand module layout
 - Project instruction file (`AGENTS.md` or provider equivalent) for project-specific conventions
 - Whether this is Android-only, KMP, or Compose Multiplatform
@@ -32,6 +33,7 @@ Check for:
 ### Step 2b: Security Review
 
 Apply the Kotlin/Android security guidance before continuing:
+
 - exported Android components, deep links, and intent filters
 - insecure crypto, WebView, and network configuration usage
 - keystore, token, and credential handling
@@ -125,7 +127,7 @@ If any CRITICAL security issue is present, stop and escalate to `security-review
 
 ## Output Format
 
-```
+```text
 [CRITICAL] Domain module imports Android framework
 File: domain/src/main/kotlin/com/app/domain/UserUseCase.kt:3
 Issue: `import android.content.Context` — domain must be pure Kotlin with no framework dependencies.

@@ -40,6 +40,7 @@ In all code generation, Q&A, and technical recommendations, you MUST strictly fo
 ### Step 2: Implement
 
 When implementing features:
+
 - Use V2 state management exclusively
 - Use Navigation + NavPathStack for routing
 - Define UI constants in resources, reference via `$r()`
@@ -62,6 +63,7 @@ hvigorw assembleHap -p product=default
 ArkTS is a strict subset of TypeScript. The following are NOT supported and will cause compilation failures:
 
 **Type System:**
+
 - No `any` or `unknown` types - use explicit types
 - No index access types - use type names
 - No conditional type aliases or `infer` keyword
@@ -73,6 +75,7 @@ ArkTS is a strict subset of TypeScript. The following are NOT supported and will
 - No TypeScript utility types except `Partial`, `Required`, `Readonly`, `Record`
 
 **Functions & Classes:**
+
 - No function expressions - use arrow functions
 - No nested functions - use lambdas
 - No generator functions - use async/await
@@ -84,6 +87,7 @@ ArkTS is a strict subset of TypeScript. The following are NOT supported and will
 - No `new.target`
 
 **Object & Property Access:**
+
 - No dynamic field declaration or `obj["field"]` access - use `obj.field`
 - No `delete` operator - use nullable type with `null`
 - No prototype assignment
@@ -92,11 +96,13 @@ ArkTS is a strict subset of TypeScript. The following are NOT supported and will
 - No `globalThis` or global scope - use explicit module exports/imports
 
 **Destructuring & Spread:**
+
 - No destructuring assignments or variable declarations
 - No destructuring parameter declarations
 - Spread operator only for arrays into rest parameters or array literals
 
 **Modules & Imports:**
+
 - No `require()` imports - use regular `import`
 - No `export = ...` syntax - use normal export/import
 - No import assertions
@@ -105,6 +111,7 @@ ArkTS is a strict subset of TypeScript. The following are NOT supported and will
 - All `import` statements must precede other statements
 
 **Other:**
+
 - No `var` keyword - use `let`
 - No `for...in` loops - use regular `for` loops for arrays
 - No `with` statements
@@ -118,6 +125,7 @@ ArkTS is a strict subset of TypeScript. The following are NOT supported and will
 - Omit type annotations in `catch` clauses
 
 **Object Literals:**
+
 - Supported only when compiler can infer the corresponding class/interface
 - Not supported for: `any`/`Object`/`object` types, classes with methods, classes with parameterized constructors, classes with `readonly` fields
 

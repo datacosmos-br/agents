@@ -12,7 +12,7 @@ This skill transforms technical git commits into polished, user-friendly changel
 
 ## Provenance
 
-- Origin: https://github.com/ComposioHQ/awesome-claude-skills (`changelog-generator`)
+- Origin: <https://github.com/ComposioHQ/awesome-claude-skills> (`changelog-generator`)
 - Commit: `92568c1edaff1bde5371154f036d959346c145a8`
 - License: unlicensed (attributed)
 
@@ -41,27 +41,27 @@ This skill transforms technical git commits into polished, user-friendly changel
 
 From your project repository:
 
-```
+```text
 Create a changelog from commits since last release
 ```
 
-```
+```text
 Generate changelog for all commits from the past week
 ```
 
-```
+```text
 Create release notes for version 2.5.0
 ```
 
 ### With Specific Date Range
 
-```
+```text
 Create a changelog for all commits between March 1 and March 15
 ```
 
 ### With Custom Guidelines
 
-```
+```text
 Create a changelog for commits since v2.4.0, using my changelog
 guidelines from CHANGELOG_STYLE.md
 ```
@@ -71,6 +71,7 @@ guidelines from CHANGELOG_STYLE.md
 **User**: "Create a changelog for commits from the past 7 days"
 
 **Output**:
+
 ```markdown
 # Updates - Week of March 10, 2024
 

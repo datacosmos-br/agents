@@ -86,6 +86,7 @@ print(f'Max allocated: {torch.cuda.max_memory_allocated()/1e9:.2f} GB')
 ```
 
 Common memory fixes:
+
 - Wrap validation in `with torch.no_grad():`
 - Use `del tensor; torch.cuda.empty_cache()`
 - Enable gradient checkpointing: `model.gradient_checkpointing_enable()`
@@ -103,6 +104,7 @@ Common memory fixes:
 ## Stop Conditions
 
 Stop and report if:
+
 - Same error persists after 3 fix attempts
 - Fix requires changing the model architecture fundamentally
 - Error is caused by hardware/driver incompatibility (recommend driver update)

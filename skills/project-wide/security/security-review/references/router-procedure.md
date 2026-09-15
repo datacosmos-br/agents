@@ -1,11 +1,11 @@
 # Security Review procedure
 
-# Security Review
+## Security Review
 
 Activate for credentials, authentication, authorization, untrusted input,
 dependencies, containers, persistence, network boundaries, or scanner output.
 
-## Procedure
+### Procedure
 
 1. Resolve project governance, security-triage owner, exact target, current
    scanner configuration, non-derivable external process inputs, runtime path,

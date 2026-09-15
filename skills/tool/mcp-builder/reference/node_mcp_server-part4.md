@@ -196,6 +196,7 @@ server.registerResourceList(async () => {
 ```
 
 **When to use Resources vs Tools:**
+
 - **Resources**: For data access with simple URI-based parameters
 - **Tools**: For complex operations requiring validation and business logic
 - **Resources**: When data is relatively static or template-based
@@ -222,6 +223,7 @@ await server.connect(sseTransport);
 ```
 
 **Transport selection guide:**
+
 - **Stdio**: Command-line tools, subprocess integration, local development
 - **HTTP**: Web services, remote access, multiple simultaneous clients
 - **SSE**: Real-time updates, server-push notifications, web dashboards

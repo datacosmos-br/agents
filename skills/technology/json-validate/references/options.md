@@ -71,7 +71,7 @@ These options cause `validateSchema()` and `validate()` to reject schemas missin
 
 `strictMode: true` enables all of these at once:
 
-```
+```text
 forceAdditional, forceItems, forceMaxLength, forceProperties,
 noExtraKeywords, noTypeless, noEmptyStrings, noEmptyArrays
 ```

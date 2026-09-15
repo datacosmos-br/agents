@@ -169,6 +169,7 @@ flutter clean && cd ios && pod deintegrate && pod install && cd ..
 ## Stop Conditions
 
 Stop and report if:
+
 - Evidence eliminates the current hypothesis or the reproduced failure persists
   after its root cause was supposedly corrected
 - Fix introduces more errors than it resolves

@@ -72,6 +72,7 @@ make build
 ## Stop Conditions
 
 Stop and report if:
+
 - Same error persists after 3 fix attempts
 - Fix introduces more errors than it resolves
 - Error requires architectural changes beyond scope

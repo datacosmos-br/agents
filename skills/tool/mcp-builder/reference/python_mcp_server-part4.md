@@ -46,6 +46,7 @@ async def interactive_tool(resource_id: str, ctx: Context) -> str:
 ```
 
 **Context capabilities:**
+
 - `ctx.report_progress(progress, message)` - Report progress for long operations
 - `ctx.log_info(message, data)` / `ctx.log_error()` / `ctx.log_debug()` - Logging
 - `ctx.elicit(prompt, input_type)` - Request input from users
@@ -77,6 +78,7 @@ async def get_setting(key: str, ctx: Context) -> str:
 ```
 
 **When to use Resources vs Tools:**
+
 - **Resources**: For data access with simple parameters (URI templates)
 - **Tools**: For complex operations with validation and business logic
 
@@ -171,6 +173,7 @@ if __name__ == "__main__":
 ```
 
 **Transport selection:**
+
 - **Stdio**: Command-line tools, subprocess integration
 - **HTTP**: Web services, remote access, multiple clients
 - **SSE**: Real-time updates, push notifications

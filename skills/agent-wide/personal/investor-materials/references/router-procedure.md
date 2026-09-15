@@ -1,10 +1,10 @@
 # Investor Materials procedure
 
-# Investor Materials
+## Investor Materials
 
 Build investor-facing materials that are consistent, credible, and easy to defend.
 
-## When to Activate
+### When to Activate
 
 - creating or revising a pitch deck
 - writing an investor memo or one-pager
@@ -12,11 +12,12 @@ Build investor-facing materials that are consistent, credible, and easy to defen
 - answering accelerator or incubator application questions
 - aligning multiple fundraising docs around one source of truth
 
-## Golden Rule
+### Golden Rule
 
 All investor materials must agree with each other.
 
 Create or confirm a single source of truth before writing:
+
 - traction metrics
 - pricing and revenue assumptions
 - raise size and instrument
@@ -26,7 +27,7 @@ Create or confirm a single source of truth before writing:
 
 If conflicting numbers appear, stop and resolve them before drafting.
 
-## Core Workflow
+### Core Workflow
 
 1. inventory the canonical facts
 2. identify missing assumptions
@@ -35,10 +36,12 @@ If conflicting numbers appear, stop and resolve them before drafting.
 4. draft the complete asset with explicit logic
 5. cross-check every number against the source of truth and publish atomically
 
-## Asset Guidance
+### Asset Guidance
 
-### Pitch Deck
+#### Pitch Deck
+
 Recommended flow:
+
 1. company + wedge
 2. problem
 3. solution
@@ -54,28 +57,32 @@ Recommended flow:
 
 If the user wants a web-native deck, pair this skill with `frontend-slides`.
 
-### One-Pager / Memo
+#### One-Pager / Memo
+
 - state what the company does in one clean sentence
 - show why now
 - include traction and proof points early
 - make the ask precise
 - keep claims easy to verify
 
-### Financial Model
+#### Financial Model
+
 Include:
+
 - explicit assumptions
 - bear / base / bull cases only when the approved fact model defines them
 - clean layer-by-layer revenue logic
 - milestone-linked spending
 - sensitivity analysis where the decision hinges on assumptions
 
-### Accelerator Applications
+#### Accelerator Applications
+
 - answer the exact question asked
 - prioritize traction, insight, and team advantage
 - avoid puffery
 - keep internal metrics consistent with the deck and model
 
-## Red Flags to Avoid
+### Red Flags to Avoid
 
 - unverifiable claims
 - fuzzy market sizing without assumptions
@@ -83,9 +90,10 @@ Include:
 - revenue math that does not sum cleanly
 - inflated certainty where assumptions are fragile
 
-## Quality Gate
+### Quality Gate
 
 Before delivering:
+
 - every number matches the current source of truth
 - use of funds and revenue layers sum correctly
 - assumptions are visible, not buried

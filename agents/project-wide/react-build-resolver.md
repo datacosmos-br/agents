@@ -40,7 +40,7 @@ make build
 
 ## Resolution Workflow
 
-```
+```text
 1. Run build               -> capture full error output
 2. Identify the layer      -> TypeScript / bundler config / runtime / hydration
 3. Read affected file      -> understand context

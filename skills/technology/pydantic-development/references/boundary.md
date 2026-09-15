@@ -86,6 +86,7 @@ outer.model_dump(serialize_as_any=True)  # forbidden — applies to every value
 
   Per-field duck typing, when the contract genuinely requires it, uses
   `SerializeAsAny[User]` on that field only.
+
 - Conditional exclusion is declarative: `Field(exclude=True)`,
   `Field(exclude_if=lambda v: v == 0)`, `computed_field(exclude_if=...)`
   (v2.13+), or call-level `exclude_unset/exclude_none/exclude_defaults`.

@@ -6,7 +6,7 @@ You do NOT need to find or create an individual session first.
 
 ## Quick reference
 
-```
+```text
 gc sling <bead-id>                     # Auto-target via rig's default_sling_target
 gc sling <session-config> <bead-id>     # Route to a specific session config
 gc sling <session-config> -f <formula>  # Instantiate formula, route its root (v2 → workflow)
@@ -16,6 +16,7 @@ gc sling <session-config> <bead-id> --on <formula>  # Attach formula to existing
 ## Targeting
 
 The `<session-config>` is a qualified config name from `gc session list`:
+
 - **Single-session config:** `mayor`, `hello-world/refinery`
 - **Multi-session config:** `hello-world/polecat` — routes to the config's shared work queue
 
@@ -34,7 +35,7 @@ creation all happen there. Create the bead in a specific rig's database
 with `gc bd create --rig <rig>`, which resolves the rig from city config
 and uses its database and prefix:
 
-```
+```text
 gc bd create "fix the bug" --rig frontend   # Creates fe-xxx in frontend's db
 gc sling frontend/polecat fe-xxx            # Works — bead is in the right db
 ```
@@ -44,7 +45,7 @@ a frontend agent), sling's cross-rig guard will block the route.
 
 ## Direct dispatch (bead to session config)
 
-```
+```text
 gc sling <session-config> <bead-id>    # Route a bead to a session config
 gc sling <bead-id>                     # Use rig's default_sling_target
 ```
@@ -53,7 +54,7 @@ The agent receives the bead on its hook and runs it per GUPP.
 
 ## Formula dispatch (`-f`, formula creates its own root bead)
 
-```
+```text
 gc sling <agent> -f <formula>          # Instantiate a formula, route its root bead
 ```
 
@@ -95,7 +96,7 @@ dispatcher session before nudging workers; if it is stopped, nothing advances
 the graph no matter how many agents are alive. (`docs/reference/specs/
 formula-spec-v2.md` sec 0.2.)
 
-```
+```text
 gc sling <agent> <bead-id> --on <formula>  # Attach a formula to an existing bead
 ```
 
@@ -121,4 +122,3 @@ suppresses only the ordinary routing auto-convoy, not the v2 input convoy. To ru
 the workflow against a convoy you already have, pass that convoy as the target
 (`gc formula cook <formula> --attach <convoy-id>`). Launching such a formula bare
 with `-f` is rejected.
-

@@ -1,6 +1,6 @@
 # Human Writing Style procedure
 
-# Human Writing Style
+## Human Writing Style
 
 Make every piece of generated text read like it was written by a real person, not a language model. This skill encodes the patterns that betray AI authorship and provides concrete rules for avoiding them.
 
@@ -10,7 +10,7 @@ Your job is to reverse that tendency. Be specific. Be plain. Be human.
 
 ---
 
-## Before you write: context and voice
+### Before you write: context and voice
 
 **Check context first.** These rules apply differently depending on genre. See "Tone guidance by context" below. An email and a technical doc need different calibrations.
 
@@ -20,7 +20,7 @@ Your job is to reverse that tendency. Be specific. Be plain. Be human.
 
 ---
 
-## The master rule: specific detail over generic praise
+### The master rule: specific detail over generic praise
 
 **Every other rule in this skill flows from this one.** When you're tempted to write that something is "significant", "important", "notable", "profound", or "valuable", stop and ask: *What specifically makes it so?* Then write that instead. If you don't know the specific, don't write the claim.
 
@@ -34,7 +34,7 @@ This single discipline, applied rigorously, prevents most of the failure modes t
 
 ---
 
-## Top AI tells — detect these on every pass
+### Top AI tells — detect these on every pass
 
 If you remember nothing else from this skill, detect these. They are the highest-frequency, highest-visibility AI fingerprints.
 
@@ -56,7 +56,7 @@ For full specifics, replacements, and per-item diagnostics, see the reference fi
 
 ---
 
-## Self-check
+### Self-check
 
 **Before writing, derive the applicable checks from the declared genre and voice. Before returning output, run every applicable check below. If any fails, revise the text and re-check; a failure cannot be waived after the fact.**
 
@@ -81,7 +81,7 @@ reference.
 
 ---
 
-## Tone guidance by context
+### Tone guidance by context
 
 **Articles / Blog posts / Essays:** Neutral, specific, fact-forward. Let the material speak for itself. Use first person only if the genre calls for it.
 
@@ -97,7 +97,7 @@ reference.
 
 ---
 
-## Further reference
+### Further reference
 
 Read `banned-words.md` (skill file) when editing or when the
 self-check flags a vocabulary cluster. It is the bundle's only lexical reference.

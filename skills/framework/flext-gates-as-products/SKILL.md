@@ -81,6 +81,7 @@ FLEXT program work runs this loop per slice; never ad-hoc tool calls.
    integrated tip → tag / release only then (F5 law).
 
 Rule archives (never hand-invent a new authority):
+
 - Repository rules: `flext-infra/src/flext_infra/codemod/rules/*.yml`
   (100+ curated; ADR-014 governs).
 - Agent-global rules: the ast-grep universal rules archive under the agent
