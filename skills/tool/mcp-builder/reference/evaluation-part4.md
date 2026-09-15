@@ -3,6 +3,7 @@
 The evaluation script (`scripts/evaluation.py`) supports three transport types:
 
 **Important:**
+
 - **stdio transport**: The evaluation script automatically launches and manages the MCP server process for you. Do not run the server manually.
 - **sse/http transports**: You must start the MCP server separately before running the evaluation. The script connects to the already-running server at the specified URL.
 
@@ -19,6 +20,7 @@ python scripts/evaluation.py \
 ```
 
 With environment variables:
+
 ```bash
 python scripts/evaluation.py \
   -t stdio \
@@ -56,7 +58,7 @@ python scripts/evaluation.py \
 
 ## Command-Line Options
 
-```
+```text
 usage: evaluation.py [-h] [-t {stdio,sse,http}] [-m MODEL] [-c COMMAND]
                      [-a ARGS [ARGS ...]] [-e ENV [ENV ...]] [-u URL]
                      [-H HEADERS [HEADERS ...]] [-o OUTPUT]
@@ -163,6 +165,7 @@ python scripts/evaluation.py \
 ### Connection Errors
 
 If you get connection errors:
+
 - **STDIO**: Verify the command and arguments are correct
 - **SSE/HTTP**: Check the URL is accessible and headers are correct
 - Ensure any required API keys are set in environment variables or headers
@@ -170,6 +173,7 @@ If you get connection errors:
 ### Low Accuracy
 
 If many evaluations fail:
+
 - Review the agent's feedback for each task
 - Check if tool descriptions are clear and comprehensive
 - Verify input parameters are well-documented
@@ -179,6 +183,7 @@ If many evaluations fail:
 ### Timeout Issues
 
 If tasks are timing out:
+
 - Use a more capable model (e.g., `claude-3-7-sonnet-20250219`)
 - Check if tools are returning too much data
 - Verify pagination is working correctly

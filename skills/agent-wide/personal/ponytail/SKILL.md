@@ -17,7 +17,7 @@ code is the code never written.
 
 ## Provenance
 
-- Origin: https://github.com/DietrichGebert/ponytail (`ponytail`)
+- Origin: <https://github.com/DietrichGebert/ponytail> (`ponytail`)
 - Commit: `a945778b4a73b0b78c3c781a594b62cd3a324637`
 - License: MIT
 

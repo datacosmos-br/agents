@@ -1,10 +1,10 @@
 # Market Research procedure
 
-# Market Research
+## Market Research
 
 Produce research that supports decisions, not research theater.
 
-## When to Activate
+### When to Activate
 
 - researching a market, category, company, investor, or technology trend
 - building TAM/SAM/SOM estimates
@@ -12,7 +12,7 @@ Produce research that supports decisions, not research theater.
 - preparing investor dossiers before outreach
 - pressure-testing a thesis before building, funding, or entering a market
 
-## Research Standards
+### Research Standards
 
 1. Every important claim needs a source.
 2. Prefer recent data and call out stale data.
@@ -25,18 +25,22 @@ customer definition, source requirements, selected research tools, and required
 report sections. A selected source/tool failure ends the report; do not replace
 it with an alternate provider, stale fact, or reduced analysis.
 
-## Common Research Modes
+### Common Research Modes
 
-### Investor / Fund Diligence
+#### Investor / Fund Diligence
+
 Collect:
+
 - fund size, stage, and typical check size
 - relevant portfolio companies
 - public thesis and recent activity
 - reasons the fund is or is not a fit
 - any obvious red flags or mismatches
 
-### Competitive Analysis
+#### Competitive Analysis
+
 Collect:
+
 - product reality, not marketing copy
 - funding and investor history if public
 - traction metrics if public
@@ -49,22 +53,27 @@ scoping, evidence-calibrated scoring, bias controls, and report assembly. Use a
 confirmed positioning brief from `brand-discovery` when the decision depends on
 the client's intended position; do not invent one.
 
-### Market Sizing
+#### Market Sizing
+
 Use:
+
 - top-down estimates from reports or public datasets
 - bottom-up sanity checks from realistic customer acquisition assumptions
 - explicit assumptions for every leap in logic
 
-### Technology / Vendor Research
+#### Technology / Vendor Research
+
 Collect:
+
 - how it works
 - trade-offs and adoption signals
 - integration complexity
 - lock-in, security, compliance, and operational risk
 
-## Output Format
+### Output Format
 
 Required decision-report structure:
+
 1. executive summary
 2. key findings
 3. implications
@@ -72,9 +81,10 @@ Required decision-report structure:
 5. recommendation
 6. sources
 
-## Quality Gate
+### Quality Gate
 
 Before delivering:
+
 - all numbers are sourced or labeled as estimates
 - old data is flagged
 - the recommendation follows from the evidence

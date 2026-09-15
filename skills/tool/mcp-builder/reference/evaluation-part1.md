@@ -9,6 +9,7 @@ This document provides guidance on creating comprehensive evaluations for MCP se
 ## Quick Reference
 
 ### Evaluation Requirements
+
 - Create 10 human-readable questions
 - Questions must be READ-ONLY, INDEPENDENT, NON-DESTRUCTIVE
 - Each question requires multiple tool calls (potentially dozens)
@@ -16,6 +17,7 @@ This document provides guidance on creating comprehensive evaluations for MCP se
 - Answers must be STABLE (won't change over time)
 
 ### Output Format
+
 ```xml
 <evaluation>
    <qa_pair>
@@ -34,6 +36,7 @@ The measure of quality of an MCP server is NOT how well or comprehensively the s
 ## Evaluation Overview
 
 Create 10 human-readable questions requiring ONLY READ-ONLY, INDEPENDENT, NON-DESTRUCTIVE, and IDEMPOTENT operations to answer. Each question should be:
+
 - Realistic
 - Clear and concise
 - Unambiguous

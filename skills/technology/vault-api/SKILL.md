@@ -10,7 +10,7 @@ metadata:
 
 ## Provenance
 
-- Origin: https://github.com/Aidas-dev/k8s-agent-skills (`vault-api`)
+- Origin: <https://github.com/Aidas-dev/k8s-agent-skills> (`vault-api`)
 - Commit: `32268017f64a968e68842387e61f02caeb02c876`
 - License: unlicensed (attributed)
 

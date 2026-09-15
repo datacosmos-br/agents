@@ -7,7 +7,7 @@ These require the legacy pack. They extend the built-in
 feature branch, implements, then pushes and reassigns to the refinery
 for merge review. Production default for multi-agent setups.
 
-```
+```text
 gc sling <agent> <bead-id> --on mol-polecat-work
 ```
 
@@ -45,7 +45,7 @@ rough idea into a PRD, reviewed design doc, and beads DAG using Gas City's
 existing primitives: repo-local artifact files, review task beads, `gc sling`,
 and mail. Best run from a crew worker in the target rig.
 
-```
+```text
 gc sling <coordinator-agent> -f mol-idea-to-plan --var problem="..." --var review_target=<rig>/polecat
 ```
 
@@ -53,7 +53,7 @@ gc sling <coordinator-agent> -f mol-idea-to-plan --var problem="..." --var revie
 Persists the full report to bead notes, mails the coordinator, closes the bead,
 and drains the session. Usually not slung by hand.
 
-### Legacy pack formulas (patrol loops)
+## Legacy pack formulas (patrol loops)
 
 Patrol formulas are auto-poured by agent startup prompts — you typically
 don't sling these manually:
@@ -68,4 +68,3 @@ don't sling these manually:
 `digest-generate` order — a 24h cooldown trigger). Run or inspect it through
 its order (`gc order run digest-generate`, `gc order show digest-generate`), not
 as a manual sling or a patrol pour.
-

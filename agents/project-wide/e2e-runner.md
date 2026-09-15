@@ -50,11 +50,13 @@ make test-full
 ## Workflow
 
 ### 1. Plan
+
 - Identify critical user journeys (auth, core features, payments, CRUD)
 - Define scenarios: happy path, edge cases, error cases
 - Prioritize by risk: HIGH (financial, auth), MEDIUM (search, nav), LOW (UI polish)
 
 ### 2. Create
+
 - Use Page Object Model (POM) pattern
 - Prefer `data-testid` locators over CSS/XPath
 - Add assertions at key steps
@@ -62,6 +64,7 @@ make test-full
 - Use proper waits (never `waitForTimeout`)
 
 ### 3. Execute
+
 - Run the project-declared repetition or stress command to reproduce flakiness
 - Keep every flaky test red until its race, timing, isolation, or fixture cause is fixed
 - Upload artifacts to CI

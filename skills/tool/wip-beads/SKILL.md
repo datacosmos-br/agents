@@ -20,6 +20,7 @@ line). The script processes an inventory, prints per-bead decisions, and ends
 with a countable resumo. Everything runs dry-run until you pass `--apply`.
 
 ## Canonical tool
+
 `scripts/wip-beads.sh` (in this skill bundle) — CSV-driven, batches of `--limits`, selects `--beads`,
 modes: `collect|classify|align|unblock|title|deferred|all`, `--apply` for writes.
 Flags: `--csv` (input CSV path), `--beads` (comma-separated IDs), `--limits` (batch sizes), `--apply` (mutate), `--map` (align map CSV: `bead_id,desired_parent`), `--json-report` (output report path).
@@ -44,6 +45,7 @@ ledger and reports the delta instead of trusting either side blindly.
 ## Reading the output
 
 Per bead, one of four lines:
+
 - `[SKIP <mode>] <id>: <reason>` — nothing to do, reason states the compared values.
 - `[<mode>] <id>: <plan>` — dry-run: what `--apply` WOULD run.
 - `[DRY-RUN <mode>] <id>: <cmd>` — the exact command queued for apply.
@@ -54,6 +56,7 @@ A healthy dry-run has `errors=0`; `mutated` counts PLANNED changes. Before any
 `--apply`, that number is your blast radius — review it, don't skip it.
 
 ## Input CSV
+
 `./wip-beads-open.csv` — regenerate with:
 
     bd list --status open --flat --limit 0 --json > ./wip-beads-open.json
@@ -69,6 +72,7 @@ A healthy dry-run has `errors=0`; `mutated` counts PLANNED changes. Before any
     EOF
 
 ## Governance law (strict)
+
 1. Truth: every note carries command + evidence; never fake "resolved".
 2. `bd` is the canonical ledger; never edit `.beads/` files by hand — the Dolt
    DB owns the state, the JSONL files are passive exports.
@@ -88,7 +92,7 @@ A healthy dry-run has `errors=0`; `mutated` counts PLANNED changes. Before any
    `OBSOLETE` (scope/explicit disappeared with proof), `DONE` (cmd/cwd/exit/output).
    `LEGITIMATE` = comment both, DO NOT close.
 9. Cap 20 closes per batch (`bd batch`); re-run dedup gate + `bd doctor --check=validate`
-   + `bd orphans` after each batch.
+   - `bd orphans` after each batch.
 10. Never mutate beads of ACTIVE third-party lanes (from §0.7 + claims ≤24h).
 
 ## Known failure modes (learned 2026-09-10 cycle)
@@ -140,12 +144,12 @@ Run `bd doctor --check=validate --json`, `bd doctor --check=pollution --json`,
 and `bd orphans --json` after the batch.
 
 These three gates answer different questions — do not conflate them:
+
 - `doctor` asks "is the ledger internally consistent?" (0 failed AND 0 warnings).
 - `pollution` asks "did test artifacts leak into the production ledger?" It
   counts but does NOT list IDs.
 - `orphans` asks "which open beads does git history reference?" — it is a
   commit-cross-reference, NOT a dependency-graph defect report.
-
 - **Test pollution**: doctor reports a count without listing IDs. The detection
   criterion (extracted from bd 1.2.2) is a title regex `^test[-:]`
   case-insensitive — legitimate beads like "test-law: ..." false-positive on it.
@@ -171,6 +175,7 @@ These three gates answer different questions — do not conflate them:
   also mutating; the audit is how you prove you touched only what you planned.
 
 ## Batch cycle loop
+
 1. Regenerate CSV (source of truth of current open set).
 2. `--mode classify` dry-run, review the desired parents report.
 3. `--mode align` to re-parent tasks into canonical epics.
@@ -184,6 +189,7 @@ review would strip parents from bugs that may instead need re-homing — the
 dry-run report is where that nuance surfaces.
 
 ## Subagent batch protocol
+
 Coordinator generates CSV → splits into batches via `--limits` → each subagent
 runs dry-run on its batch → coordinator reviews consolidated dry-run output →
 operator/coordinator approves → `--apply` executes batch → coordinator appends
@@ -195,6 +201,7 @@ back to the coordinator, not into a "fix it while I'm here" mutation. One
 writer at a time: the coordinator runs `--apply`, subagents stay dry-run.
 
 ## Evidence format (bd note)
+
     WORKSPACE SYNC <ISO8601> (wip-beads.sh <mode> [apply|dry]): <what changed>
     beads=<n> batches=<n> apply=<0|1>
 

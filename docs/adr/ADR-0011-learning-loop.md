@@ -66,7 +66,7 @@ Measured on 2026-09-05 and re-measured on 2026-09-06 against `dev`:
   168h; the imported `compound-engineering` pack supplies the edit and review
   steps.
 
-```
+```text
 per session   SessionEnd/Stop -> ai-hub hook daemon -> SessionRecord + VictoriaLogs
               Claude/Codex OTEL ------------------> VictoriaMetrics/VictoriaLogs
 daily         learn-cycle: ai-hub learn harvest -> ai-hub learn route -> beads (agents rig) -> gc sling learn-apply

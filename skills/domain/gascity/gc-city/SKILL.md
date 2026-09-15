@@ -5,6 +5,7 @@ allowed-tools: Bash(gc *)
 metadata:
   aihub.tags: '["activation:opt-in","decision:ADR-0008","detect:opt-in:gc-city","effective:2026-08-30","route:agent","route:project","subject:gascity","usage:on-demand"]'
 ---
+
 ## Verification (mandatory)
 
 Before acting on any bead, run the four-source cross-check in
@@ -16,13 +17,13 @@ A city is a directory with `city.toml` and `.gc/` runtime state.
 
 ## Initialization
 
-```
+```text
 gc init [path]                         # Initialize here or at path
 ```
 
 ## Start and stop
 
-```
+```text
 gc start [path]                        # Start the city (here or at path)
 gc supervisor run                      # Foreground supervisor
 gc start --dry-run                     # Preview what would start
@@ -34,7 +35,7 @@ gc restart                             # Stop then start
 
 ## Status
 
-```
+```text
 gc status                              # Overview; unit owner
 gc session list                        # Session / agent status
 gc rig status <name>                   # Rig status
@@ -42,14 +43,14 @@ gc rig status <name>                   # Rig status
 
 ## Suspending
 
-```
+```text
 gc suspend                             # Suspend the city
 gc resume                              # Resume suspended city
 ```
 
 ## Configuration and events
 
-```
+```text
 gc config show                         # Show resolved configuration
 gc config explain                      # Show config provenance
 gc doctor                              # Health checks

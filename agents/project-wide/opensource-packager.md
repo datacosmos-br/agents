@@ -28,6 +28,7 @@ detected stack, and selected provider adapters.
 ### Step 1: Project Analysis
 
 Read and understand:
+
 - `package.json` / `requirements.txt` / `Cargo.toml` / `go.mod` (stack detection)
 - `docker-compose.yml` (services, ports, dependencies)
 - `Makefile` / `Justfile` (existing commands)
@@ -104,6 +105,7 @@ See `CONTRIBUTING.md` (project file).
 ```
 
 **Agent-instruction rules:**
+
 - Every command must be copy-pasteable and correct
 - Architecture section should fit in a terminal window
 - List actual files that exist, not hypothetical ones
@@ -144,6 +146,7 @@ echo "  4. Read the project-owned instructions declared by the release contract.
 After writing, make it executable: `chmod +x setup.sh`
 
 **setup.sh Rules:**
+
 - Must run from the persistent project root declared by the active project contract
 - Check for prerequisites with clear error messages
 - Use `set -euo pipefail` for safety
@@ -209,6 +212,7 @@ See `CONTRIBUTING.md` (project file)
 ```
 
 **README Rules:**
+
 - If a good README already exists, enhance rather than replace
 - Add the agent-tooling section only when its provider adapter is selected
 - Do not duplicate agent instructions in the README; link to the generated artifact
@@ -234,6 +238,7 @@ requested; never write a different forge's layout as a fallback.
 ## Output Format
 
 On completion, report:
+
 - Files generated (with line counts)
 - Files enhanced (what was preserved vs added)
 - `setup.sh` marked executable
@@ -242,6 +247,7 @@ On completion, report:
 ## Examples
 
 ### Example: Package a FastAPI service
+
 Input: `Package: <persistent-staging-root>, License: MIT, Description: "Async task queue API"`
 Action: Detects the stack from project manifests, renders the selected packaging
 adapters, generates the project bootstrap, enhances the existing README, and adds

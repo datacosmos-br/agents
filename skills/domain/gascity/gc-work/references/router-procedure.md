@@ -1,16 +1,16 @@
 # Work Items (Beads) procedure
 
-# Work Items (Beads)
+## Work Items (Beads)
 
 Everything in Gas City is a bead — tasks, messages, molecules, convoys. The `gc bd` CLI is the primary interface for bead CRUD.
 
-## Rig-scoped beads
+### Rig-scoped beads
 
 Each rig has its own `.beads/` database with its own ID prefix (e.g. `fe-` for frontend, `be-` for beads). **A bead must live in the same database as the agent that will work on it.** When you sling a bead to a rig-scoped agent, sling operates on the agent's rig database — so the bead must already exist there. The bead ID prefix tells you which rig it belongs to.
 
 Use `gc rig list` to see rig names, paths, and prefixes.
 
-## Shared execution graph
+### Shared execution graph
 
 Every managed execution has one current coordination root in the city store.
 Search the city store before creation. For every rig that performs a slice,
@@ -32,11 +32,11 @@ producer through the declared integration lane, revalidate the combined result,
 and publish consumer evidence back to the shared graph. Do not implement a
 parallel owner merely because the producer is pending.
 
-## Creating work
+### Creating work
 
 **Use `--rig` to create beads in the right database.** If the work will be dispatched to a rig-scoped agent, create the bead in that agent's rig:
 
-```
+```text
 gc bd create "title" --rig frontend         # Create in frontend's db (fe- prefix)
 gc bd create "title" --rig beads            # Create in beads db (be- prefix)
 gc bd create "title"                        # Create in current directory's .beads/
@@ -44,9 +44,9 @@ gc bd create "title" -t bug                 # Create with type
 gc bd create "title" --label priority=high  # Create with labels
 ```
 
-## Finding work
+### Finding work
 
-```
+```text
 gc bd list                                # List beads in current .beads/
 gc bd list --rig <rigname>                # List beads in a specific rig
 gc bd ready                               # List beads available for claiming
@@ -65,25 +65,25 @@ from its own `[storage]` binding, `gc bd ready` (and `gc bd list --ready`) is
 refused with exit 1 and that deployment must run a build carrying `gc ready`;
 on ≤1.4.1 non-split cities `gc bd ready` stays canonical.
 
-## Claiming and updating
+### Claiming and updating
 
-```
+```text
 gc bd update <id> --claim                 # Claim a bead (sets assignee + in_progress) — races in a multi-agent city; prefer `gc hook --claim` there
 gc bd update <id> --status in_progress    # Update status
 gc bd update <id> --add-label <key>=<value>  # Add/update labels
 gc bd update <id> --append-notes "progress..."  # Append a note (does not replace existing notes)
 ```
 
-## Closing work
+### Closing work
 
-```
+```text
 gc bd close <id>                          # Close a completed bead
 gc bd close <id> --reason "done"          # Close with reason
 ```
 
-## Hooks
+### Hooks
 
-```
+```text
 gc hook [agent]                        # Show routed work for an agent (defaults to $GC_AGENT)
 gc hook --claim                        # Atomically claim one routed work item onto this agent's hook
 gc hook --claim --drain-ack            # Claim; if no work, acknowledge a pending runtime drain
@@ -91,7 +91,7 @@ gc hook --claim --json                 # Emit a JSON protocol result
 gc hook current                        # Print the work bead this session most recently claimed
 ```
 
-## How routing reaches an agent
+### How routing reaches an agent
 
 Routing is metadata-based, never direct dispatch. `gc sling` does not start a
 session — it stamps the target and lets the reconciler decide.
@@ -107,7 +107,7 @@ When the controller probes for demand **without session context, only tier 3
 applies**. A bead that is assigned but never routed therefore creates no pool
 demand.
 
-## Claim identity — prevents duplicate work
+### Claim identity — prevents duplicate work
 
 Ownership reads and writes must use this session's own identity, not the shared
 template identity:

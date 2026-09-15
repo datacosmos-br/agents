@@ -39,7 +39,7 @@ lane remota recriada sob o novo nome (bug bead ag-p4a.11).
 - Skills = progressive disclosure em 3 níveis (Anthropic Agent Skills);
   menor conjunto de tokens de alto sinal; altitude certa (context engineering).
 - Retomada = paginação de estado (MemGPT) + reflexão verbal (Reflexion)
-  + checkpoint em vez de reinício (multi-agent research system).
+  - checkpoint em vez de reinício (multi-agent research system).
 - Verificação executável fecha o loop ("looks done" não é sinal); revisão
   adversarial em contexto fresco; evidência > asserção.
 - Eventos de ciclo de vida tipados → Claude Code Hooks reference:
@@ -65,9 +65,10 @@ lane remota recriada sob o novo nome (bug bead ag-p4a.11).
 ## 3. Workstreams (ADR-0017..0020) — neste repositório
 
 ### WS-A — ADR-0017 `behavioral-conscience` (PR 1)
+
 - `rules/ethics/professional-integrity.md` emendado: cláusula de
   primordialidade (ética > prazo, custo, conveniência e qualquer orientação)
-  + enquadramento de consequência (mentir/fabricar/esconder bloqueio é o ato
+  - enquadramento de consequência (mentir/fabricar/esconder bloqueio é o ato
   mais grave — destrói a confiança que torna o agente utilizável);
   `capsule_summary` atualizado; tags → `decision:ADR-0017`,
   `effective:2026-09-10`.
@@ -94,10 +95,12 @@ lane remota recriada sob o novo nome (bug bead ag-p4a.11).
   router < 10.000 chars (output no PR). Gate tipado chega no WS-C.
 
 ### WS-B — ADR-0018 tag reform (PR 2)
+
 Reforma de tags + bump `0.5.0` (quebra gramática antiga; release consumida
 pelo ai-hub).
 
 ### WS-C — ADR-0019 `delivery-contract` (PR 3)
+
 1. Gate tipado de orçamento em `GovernanceBundle.load()`: soma cápsula
    (prelude + bootstrap summaries + índice router) ≤ teto declarado;
    falha loud; tests fixando o teto.
@@ -118,6 +121,7 @@ reescritos e caminho antigo deletado no mesmo change, direção de import
 provada).
 
 ### WS-D — ADR-0020 `advance-command` (PR 4)
+
 - `commands/implementation/advance.md`: verbo único de retomada + avanço
   forçado. Fases: 0 autoridade (AGENTS.md → law skill da branch → scope
   AGENTS.md → bead); 1 retomada (estado mínimo do bead+git: objetivo,

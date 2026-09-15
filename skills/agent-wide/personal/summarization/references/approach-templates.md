@@ -3,6 +3,7 @@
 Choose the approach that matches the content type:
 
 ### Executive Summary
+
 For business documents, reports, proposals, and strategy decks.
 
 **Structure:**
@@ -14,7 +15,8 @@ For business documents, reports, proposals, and strategy decks.
 5. **Next steps**: Who does what by when
 
 **Example pattern:**
-```
+
+```text
 **Recommendation:** [One sentence with the core decision]
 
 **Key metrics:** [2-4 data points]
@@ -37,6 +39,7 @@ For business documents, reports, proposals, and strategy decks.
 - Include specific numbers, not vague qualifiers ("revenue grew 23%" not "revenue grew significantly")
 
 ### Technical Summary
+
 For technical documents, architecture docs, RFCs, code reviews, and documentation.
 
 **Structure:**
@@ -58,6 +61,7 @@ For technical documents, architecture docs, RFCs, code reviews, and documentatio
 - Flag breaking changes or migration requirements
 
 ### Research/Academic Summary
+
 For research papers, studies, whitepapers, and analytical reports.
 
 **Structure:**
@@ -78,6 +82,7 @@ For research papers, studies, whitepapers, and analytical reports.
 - Flag if the methodology has notable limitations
 
 ### Conversation/Meeting Summary
+
 For meeting notes, chat logs, email threads, and discussions.
 
 **Structure:**
@@ -98,6 +103,7 @@ For meeting notes, chat logs, email threads, and discussions.
 - Flag anything that seemed unresolved or contentious
 
 ### Code/Changelog Summary
+
 For code diffs, pull requests, release notes, and changelogs.
 
 **Structure:**

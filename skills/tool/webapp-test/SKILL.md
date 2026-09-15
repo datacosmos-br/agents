@@ -14,19 +14,20 @@ shared conduct and this bundle adds only its delta.
 To test local web applications, write native Python Playwright scripts.
 
 **Helper Scripts Available**:
+
 - `scripts/with_server.py` - Manages server lifecycle (supports multiple servers)
 
 **Always run scripts with `--help` first** to see usage. DO NOT read the source until you try running the script first and find that a customized solution is abslutely necessary. These scripts can be very large and thus pollute your context window. They exist to be called directly as black-box scripts rather than ingested into your context window.
 
 ## Provenance
 
-- Origin: https://github.com/ComposioHQ/awesome-claude-skills (`webapp-testing`)
+- Origin: <https://github.com/ComposioHQ/awesome-claude-skills> (`webapp-testing`)
 - Commit: `92568c1edaff1bde5371154f036d959346c145a8`
 - License: Apache-2.0
 
 ## Decision Tree: Choosing Your Approach
 
-```
+```text
 User task → Is it static HTML?
     ├─ Yes → Read HTML file directly to identify selectors
     │         ├─ Success → Write Playwright script using selectors
@@ -48,11 +49,13 @@ User task → Is it static HTML?
 To start a server, run `--help` first, then use the helper:
 
 **Single server:**
+
 ```bash
 python scripts/with_server.py --server "npm run dev" --port 5173 -- python your_automation.py
 ```
 
 **Multiple servers (e.g., backend + frontend):**
+
 ```bash
 python scripts/with_server.py \
   --server "cd backend && python server.py" --port 3000 \
@@ -61,6 +64,7 @@ python scripts/with_server.py \
 ```
 
 To create an automation script, include only Playwright logic (servers are managed automatically):
+
 ```python
 from playwright.sync_api import sync_playwright
 
@@ -78,6 +82,7 @@ with sync_playwright() as p:
 ## Reconnaissance-Then-Action Pattern
 
 1. **Inspect rendered DOM**:
+
    ```python
    page.screenshot(path="/tmp/inspect.png", full_page=True)
    content = page.content()

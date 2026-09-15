@@ -1,10 +1,10 @@
 # Investor Outreach procedure
 
-# Investor Outreach
+## Investor Outreach
 
 Write investor communication that is short, concrete, and easy to act on.
 
-## When to Activate
+### When to Activate
 
 - writing a cold email to an investor
 - drafting a warm intro request
@@ -12,7 +12,7 @@ Write investor communication that is short, concrete, and easy to act on.
 - writing investor updates during a process
 - tailoring outreach based on fund thesis or partner fit
 
-## Core Rules
+### Core Rules
 
 1. Personalize every outbound message.
 2. Keep the ask low-friction.
@@ -20,15 +20,16 @@ Write investor communication that is short, concrete, and easy to act on.
 4. Stay concise.
 5. Never send copy that could go to any investor.
 
-## Voice Handling
+### Voice Handling
 
 If the user's voice matters, run `brand-voice` first and reuse its `VOICE PROFILE`.
 This skill should keep the investor-specific structure and ask discipline, not recreate its own parallel voice system.
 If that selected voice workflow fails, stop without drafting in a generic voice.
 
-## Hard Bans
+### Hard Bans
 
 Delete and rewrite any of these:
+
 - "I'd love to connect"
 - "excited to share"
 - generic thesis praise without a real tie-in
@@ -36,7 +37,7 @@ Delete and rewrite any of these:
 - begging language
 - soft closing questions when a direct ask is clearer
 
-## Cold Email Structure
+### Cold Email Structure
 
 1. subject line: short and specific
 2. opener: why this investor specifically
@@ -44,9 +45,10 @@ Delete and rewrite any of these:
 4. ask: one concrete next step
 5. sign-off: name, role, and one credibility anchor if needed
 
-## Personalization Sources
+### Personalization Sources
 
 Reference one or more of:
+
 - relevant portfolio companies
 - a public thesis, talk, post, or article
 - a mutual connection
@@ -56,29 +58,32 @@ Validate the investor identity, fit evidence, company proof, ask, voice contract
 and requested message set before drafting. Missing required context blocks the
 entire outbound set; do not return a generic or partial draft.
 
-## Follow-Up Cadence
+### Follow-Up Cadence
 
 Use only dates or intervals approved in the request. Do not invent a cadence or
 extend the sequence beyond the authorized messages.
 
-## Warm Intro Requests
+### Warm Intro Requests
 
 Make life easy for the connector:
+
 - explain why the intro is a fit
 - include a forwardable blurb
 - keep the forwardable blurb under 100 words
 
-## Post-Meeting Updates
+### Post-Meeting Updates
 
 Include:
+
 - the specific thing discussed
 - the answer or update promised
 - one new proof point if available
 - the next step
 
-## Quality Gate
+### Quality Gate
 
 Before delivering:
+
 - the message is genuinely personalized
 - the ask is explicit
 - the proof point is concrete

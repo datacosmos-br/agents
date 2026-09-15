@@ -135,7 +135,7 @@ their own authorized implementation and runtime cycle.
 
 Report findings grouped by severity (CRITICAL, HIGH, MEDIUM). For each issue:
 
-```
+```text
 [SEVERITY] short title
 File: path/to/file.tsx:42
 Issue: One-sentence description.

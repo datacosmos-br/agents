@@ -1,11 +1,11 @@
 # Video Editing procedure
 
-# Video Editing
+## Video Editing
 
 Activate for cutting, assembling, processing, or delivering edits from existing
 source footage. Do not activate for prompt-only video generation.
 
-## Preflight
+### Preflight
 
 Before creating a proxy, segment, transcript, or output, load and validate:
 
@@ -24,7 +24,7 @@ defect with zero media or filesystem effects. Credentials come only from the
 validated current process environment; keyring, secret-tool, profiles, aliases,
 and embedded secrets are prohibited.
 
-## Edit contract
+### Edit contract
 
 1. Preserve source media byte-for-byte and write only to the approved staging
    and destination paths.

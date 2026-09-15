@@ -12,9 +12,8 @@ Ask the questions one at a time, waiting for feedback on each question before co
 
 If a question can be answered by exploring the codebase, explore the codebase instead.
 
-
 ## Provenance
 
-- Origin: https://github.com/mattpocock/skills (`grilling`)
+- Origin: <https://github.com/mattpocock/skills> (`grilling`)
 - Commit: `8370e760d0251a3738e006aeacec6d1cb31dd208`
 - License: MIT

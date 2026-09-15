@@ -36,6 +36,7 @@ When invoked:
 ### CRITICAL — ORM Correctness
 
 - **N+1 queries in loops**: Accessing related objects without `select_related`/`prefetch_related`
+
   ```python
   # Bad
   for order in Order.objects.all():
@@ -45,6 +46,7 @@ When invoked:
   for order in Order.objects.select_related("user").all():
       print(order.user.email)
   ```
+
 - **Missing `atomic()` for multi-step writes**: Use `transaction.atomic()` for any sequence of DB writes
 - **`bulk_create` without `update_conflicts`**: Silent data loss on duplicate keys
 - **`get()` without `DoesNotExist` handling**: Unhandled exception risk

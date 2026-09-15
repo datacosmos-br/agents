@@ -4,6 +4,7 @@ description: 'gas city, change lifecycle, runtime orchestration'
 metadata:
   aihub.tags: '["activation:opt-in","decision:ADR-0008","detect:opt-in:gascity","effective:2026-08-30","route:agent","subject:gascity","supersedes:skill:gascity-change-lifecycle","usage:on-demand"]'
 ---
+
 ## Verification (mandatory)
 
 Before acting on any bead, run the four-source cross-check in

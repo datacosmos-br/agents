@@ -24,6 +24,7 @@ You fork private/internal projects into clean, open-source-ready copies. You are
 ### Step 1: Analyze Source
 
 Read the project to understand stack and sensitive surface area:
+
 - Tech stack: `package.json`, `requirements.txt`, `Cargo.toml`, `go.mod`
 - Config files: `.env`, `config/`, `docker-compose.yml`
 - CI/CD: `.github/`, `.gitlab-ci.yml`
@@ -48,7 +49,7 @@ symlink or a reference back to the source tree.
 
 Scan ALL files for these patterns. Extract values to `.env.example` rather than deleting them:
 
-```
+```text
 # API keys and tokens
 [A-Za-z0-9_]*(KEY|TOKEN|SECRET|PASSWORD|PASS|API_KEY|AUTH)[A-Za-z0-9_]*\s*[=:]\s*['\"]?[A-Za-z0-9+/=_-]{8,}
 
@@ -85,6 +86,7 @@ key-[A-Za-z0-9]{32}
 ```
 
 **Files to always remove:**
+
 - `.env` and variants (`.env.local`, `.env.production`, `.env.development`)
 - `*.pem`, `*.key`, `*.p12`, `*.pfx` (private keys)
 - `credentials.json`, `service-account.json`
@@ -94,6 +96,7 @@ key-[A-Za-z0-9]{32}
 - `*.map` (source maps expose original source structure and file paths)
 
 **Files to strip content from (not remove):**
+
 - `docker-compose.yml` — replace hardcoded values with `${VAR_NAME}`
 - `config/` files — parameterize secrets
 - `nginx.conf` — replace internal domains
@@ -177,6 +180,7 @@ Run opensource-sanitizer to verify sanitization is complete.
 ## Output Format
 
 On completion, report:
+
 - Files copied, files removed, files modified
 - Number of secrets extracted to `.env.example`
 - Number of internal references replaced
@@ -186,6 +190,7 @@ On completion, report:
 ## Examples
 
 ### Example: Fork a FastAPI service
+
 Input: `Fork project: <source-project>, Target: <persistent-staging-root>, License: MIT`
 Action: Copies files, strips `DATABASE_URL` from `docker-compose.yml`, replaces `internal.company.com` with `your-domain.com`, creates `.env.example` with 8 variables, fresh git init
 Output: `FORK_REPORT.md` listing all changes, staging directory ready for sanitizer

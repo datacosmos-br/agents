@@ -8,7 +8,6 @@ metadata:
 Composes as the FLEXT-only delta of $flext-development; the parent owns the
 shared Python conduct and this skill adds only domain law.
 
-
 # FLEXT Law
 
 ## Composition
@@ -189,6 +188,7 @@ unqualified catalog name, from `main`, or from another checkout.
 - Load only local surfaces declared by the workspace provider configuration.
   Global skills remain owned by the canonical catalog and are not copied into
   the local provider.
+
 ## Provenance
 
 - Origin: flext-native (`flext-law`)

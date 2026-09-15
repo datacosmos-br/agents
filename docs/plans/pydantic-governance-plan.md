@@ -66,7 +66,7 @@ code.
   migration (bead D) are the response.
 - 2026-09-08: mise root cause chain: the ai-hub generator
   (AiHubMiseConfigService) forced `lockfile=true` + `tool_config.locked=true`
-  + `mise lock --global --bump` while its GitHub resolution was
+  - `mise lock --global --bump` while its GitHub resolution was
   unauthenticated (403 rate limit), leaving a stale global lock that broke
   `mise install` fleet-wide; operator ordered extermination of the lock
   regime (fleet runs unlocked and current); fix branch

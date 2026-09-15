@@ -1,12 +1,12 @@
 # Prompt Safety Review procedure
 
-# Prompt Safety Review
+## Prompt Safety Review
 
 Activate for a requested security, injection, privacy, or governed-execution
 review of a prompt. Do not activate for a copy edit whose approved semantics
 must remain unchanged.
 
-## Preflight
+### Preflight
 
 Before issuing a verdict or rewrite, load and validate:
 
@@ -20,7 +20,7 @@ A missing, empty, conflicting, or inaccessible required input stops the review.
 Name the first missing prerequisite and produce no verdict, score, partial
 rewrite, generic template, or substitute policy.
 
-## Review contract
+### Review contract
 
 Inspect the validated prompt against the canonical owners in this order:
 
@@ -48,7 +48,7 @@ Distinguish quoted evidence from explicit inference. Any confirmed defect makes
 the original prompt unsafe for its intended execution; never dilute a defect
 into a suggestion, score, or non-blocking finding.
 
-## Output
+### Output
 
 Return:
 

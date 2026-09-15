@@ -27,7 +27,7 @@ Resolve the inventory from Git's cached and untracked files with standard
 excludes, so the repository `.gitignore` is the sole artifact policy. Scan every
 text file in that inventory except minified or binary content:
 
-```
+```text
 # API keys
 pattern: [A-Za-z0-9_]*(api[_-]?key|apikey|api[_-]?secret)[A-Za-z0-9_]*\s*[=:]\s*['"]?[A-Za-z0-9+/=_-]{16,}
 
@@ -61,7 +61,7 @@ pattern: key-[A-Za-z0-9]{32}
 
 #### Heuristic Patterns (manual classification required)
 
-```
+```text
 # High-entropy strings in config files
 pattern: ^[A-Z_]+=[A-Za-z0-9+/=_-]{32,}$
 severity: UNRESOLVED until reviewed
@@ -69,7 +69,7 @@ severity: UNRESOLVED until reviewed
 
 ### Step 2: PII Scan (CRITICAL)
 
-```
+```text
 # Personal email addresses (not generic like noreply@, info@)
 pattern: [a-zA-Z0-9._%+-]+@(gmail|yahoo|hotmail|outlook|protonmail|icloud)\.(com|net|org)
 severity: CRITICAL
@@ -85,7 +85,7 @@ severity: CRITICAL
 
 ### Step 3: Internal References Scan (CRITICAL)
 
-```
+```text
 # Absolute paths to specific user home directories
 Detect per-user home roots on Linux, macOS, and Windows with the platform path
 parser. Permit only explicit public fixtures declared by the target policy.
@@ -100,7 +100,8 @@ severity: CRITICAL
 ### Step 4: Dangerous Files Check (CRITICAL — existence = FAIL)
 
 Verify these do NOT exist:
-```
+
+```text
 .env (any variant: .env.local, .env.production, .env.*.local)
 *.pem, *.key, *.p12, *.pfx, *.jks
 credentials.json, service-account*.json
@@ -113,6 +114,7 @@ sessions/
 ### Step 5: Configuration Completeness (WARNING)
 
 Verify:
+
 - `.env.example` exists
 - Every env var referenced in code has an entry in `.env.example`
 - `docker-compose.yml` (if present) uses `${VAR}` syntax, not hardcoded values
@@ -176,6 +178,7 @@ Generate `SANITIZATION_REPORT.md` in the project directory:
 ## Examples
 
 ### Example: Scan a sanitized Node.js project
+
 Input: `Verify project: <persistent-staging-root>`
 Action: Runs every declared scan category across the complete physical file inventory, validates history against the release contract, and verifies the public configuration example covers every consumed value.
 Output: `SANITIZATION_REPORT.md` — FAIL until every finding is resolved or classified nonfatal by the owning target policy.

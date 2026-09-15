@@ -36,7 +36,7 @@
     raw traceback escape unchanged.
 <!-- /AIHUB-INVIOLABLE-LAW-PRELUDE -->
 
-# AGENTS.md — agents
+## AGENTS.md — agents
 
 > Packaged governance `agents-governance` owns the capability indexes. Consume current inventories through `GovernanceBundle`; do not copy their counts or bodies here.
 
@@ -47,7 +47,7 @@ publishes the read-only `agents-governance` package. AI Hub alone discovers
 projects, adapts providers, generates hooks and instruction artifacts, deploys,
 and reconciles runtime state.
 
-## Public contract
+### Public contract
 
 - `from agents_governance import GovernanceBundle` is the supported API.
 - `GovernanceBundle.load()` loads packaged resources; an explicit physical root
@@ -61,7 +61,7 @@ and reconciles runtime state.
   bundle records but may never edit this source or treat generated output as an
   authority.
 
-## Repository development
+### Repository development
 
 Read [README.md](README.md), [rules](rules), [skills](skills), and
 [ADRs](docs/adr/README.md) before mutation. Use only selector-free root Make
@@ -84,7 +84,7 @@ source, regenerate through the declared Make owner, prove a zero-change second
 generation, rewire all consumers, and delete the old code, test, fixture,
 document, alias, backup, and archive in the same cutover.
 
-## FLEXT project law
+### FLEXT project law
 
 For `internal_flext`, apply the complete strict contract in the
 `flext-development` skill and `rules/architecture/internal-clean-architecture.md`.
@@ -100,7 +100,7 @@ redeclared owner values, concrete service dependencies, parallel facades, and
 handwritten generated roots are blocking violations. `third_party_fork` retains
 its upstream architecture.
 
-## Lifecycle
+### Lifecycle
 
 Gas City owns workspace placement for this repository; `gc status` is the
 effective-state authority (declared default plus runtime override). While the
@@ -110,7 +110,7 @@ Stop at `dev` unless the operator explicitly authorizes promotion. No increment
 is DONE without required gates, reviewed merge-commit landing, post-merge public
 runtime proof, and canonical tracker closure.
 
-## Operator cycle lessons
+### Operator cycle lessons
 
 - **Fix-forward permanente:** never rebase, force-push, or cherry-pick an
   authorized lane. Integrate the base with `git merge --no-ff`, revalidate the

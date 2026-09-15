@@ -61,6 +61,7 @@
 ### Step 1: Documentation Inspection
 
 Read the documentation of the target API to understand:
+
 - Available endpoints and functionality
 - If ambiguity exists, fetch additional information from the web
 - Parallelize this step AS MUCH AS POSSIBLE
@@ -69,6 +70,7 @@ Read the documentation of the target API to understand:
 ### Step 2: Tool Inspection
 
 List the tools available in the MCP server:
+
 - Inspect the MCP server directly
 - Understand input/output schemas, docstrings, and descriptions
 - WITHOUT calling the tools themselves at this stage
@@ -76,6 +78,7 @@ List the tools available in the MCP server:
 ### Step 3: Developing Understanding
 
 Repeat steps 1 & 2 until you have a good understanding:
+
 - Iterate multiple times
 - Think about the kinds of tasks you want to create
 - Refine your understanding
@@ -85,6 +88,7 @@ Repeat steps 1 & 2 until you have a good understanding:
 ### Step 4: Read-Only Content Inspection
 
 After understanding the API and tools, USE the MCP server tools:
+
 - Inspect content using READ-ONLY and NON-DESTRUCTIVE operations ONLY
 - Goal: identify specific content (e.g., users, channels, messages, projects, tasks) for creating realistic questions
 - Should NOT call any tools that modify state
@@ -99,6 +103,7 @@ After understanding the API and tools, USE the MCP server tools:
 ### Step 5: Task Generation
 
 After inspecting the content, create 10 human-readable questions:
+
 - An LLM should be able to answer these with the MCP server
 - Follow all question and answer guidelines above
 

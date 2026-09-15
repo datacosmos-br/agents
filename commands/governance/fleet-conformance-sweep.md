@@ -12,13 +12,16 @@ Companion to `docs/ARCHITECTURE/FLEXT_TRIO_CONFORMANCE_SWEEP_PLAN.md`
 (plan bead `cosmos-3flk9`). Follow authority order, then phases:
 
 ## G0 — freeze the ruler (always first)
+
 Pick ONE owner validator SHA (branch tip) and one configuration. Record in
 the plan bead the tuple: validator repo+SHA, scan config (`scan_dirs`,
 thresholds, strict modes), and every target repo+SHA. All counts in this
 sweep refer to this ruler only; re-freeze when the owner tip moves.
 
 ## G1 — discovery (read-only, start immediately)
+
 Automation surface order (research 2026-09-11):
+
 1. **Graph refresh first** (`rules/workflow/graph-truth-freshness.md`):
    `code-review-graph status` → `update --brief` (or `build` post-rewrite)
    scoped `--repo <root>` — never reason from a graph built on a shaled
@@ -47,15 +50,19 @@ Automation surface order (research 2026-09-11):
 Continue with D1–D4 as before, now equipped: D1 charts consumer inventory
 (census + impact), D2 gitops facade inventory (namespace-enforce + query),
 D3 helper contract audit (search + tests diff), D4 proto census (dead-code).
+
 ## G2 — decision gate
+
 Present A(internal-only) / B(big-bang rename) / C(mixed) WITH the costed
 tables. Only consumer-facing mutation waits here.
 
 ## G3 — owner lawship
+
 Fix rule ambiguity at the validator owner and republish; do not burn 1,300
 renames on an over-strict rule.
 
 ## G4 — per-repo conformance (dependency order)
+
 `flext-core → flext-cli → flext-tests → flext-infra → charts → gitops →
 root`. Per repo: hermetic deps (`env -u VIRTUAL_ENV -u
 UV_PROJECT_ENVIRONMENT`), pinned lock + cooldown, `gen×2` fixed point,
@@ -63,10 +70,12 @@ UV_PROJECT_ENVIRONMENT`), pinned lock + cooldown, `gen×2` fixed point,
 gates on merged SHA.
 
 ## G5 — runtime truth before any completion claim
+
 Clean-venv CLI smoke per package; gitops source scan dry-run against a real
 tenant reconciled with live Argo CD; `helm template` drift-check per chart.
 
 ## Hygiene gates
+
 `make test` with 0 items selected is RED (no-tests-ran law); duplication
 gate thresholds declared fail-closed; member venv must import
 `flext_cli` after fresh `uv sync` from the committed lock.

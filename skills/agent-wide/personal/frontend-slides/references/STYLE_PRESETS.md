@@ -3,6 +3,7 @@
 Curated visual styles for `frontend-slides`.
 
 Use this file for:
+
 - the mandatory viewport-fitting CSS base
 - preset selection and mood mapping
 - CSS gotchas and validation rules
@@ -189,6 +190,7 @@ margin-left: calc(-1 * min(10vw, 100px));
 ## Validation Sizes
 
 Test at minimum:
+
 - Desktop: `1920x1080`, `1440x900`, `1280x720`
 - Tablet: `1024x768`, `768x1024`
 - Mobile: `375x667`, `414x896`
@@ -197,6 +199,7 @@ Test at minimum:
 ## Anti-Patterns
 
 Do not use:
+
 - purple-on-white startup templates
 - Inter / Roboto / Arial as the visual voice unless the user explicitly wants utilitarian neutrality
 - bullet walls, tiny type, or code blocks that require scrolling

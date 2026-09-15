@@ -101,4 +101,5 @@ por fusão grind verde. Sem o item 1 o piloto publicaria com aceitação simulad
 proibido em produção.
 
 ---
+
 Gerado na sessão 2026-09-11 (opencode). Nova sessão: este arquivo + bd prime + plano canônico = tudo que é preciso.

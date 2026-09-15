@@ -5,6 +5,7 @@ allowed-tools: Bash(gc *)
 metadata:
   aihub.tags: '["activation:opt-in","decision:ADR-0008","detect:opt-in:gc-work","effective:2026-08-30","route:agent","route:project","subject:gascity","usage:on-demand"]'
 ---
+
 ## Verification (mandatory)
 
 Before acting on any bead, run the four-source cross-check defined in
@@ -14,8 +15,6 @@ code. Declare the check and attach evidence — command, working directory,
 exit code, decisive output — before closing. A bead whose premise the
 current code retired is closed obsolete with evidence, never executed as
 written.
-
-
 
 # Work Items (Beads)
 

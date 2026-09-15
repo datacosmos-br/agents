@@ -252,11 +252,16 @@ Here's an example of proper error handling for tools:
   <Tab title="Python">
     ```python
     try:
-        # Tool operation
-        result = perform_operation()
-        return types.CallToolResult(
-            content=[types.TextContent(type="text", text=f"Operation successful: {result}")]
-        )
+
+   ```text
+    # Tool operation
+
+    result = perform_operation()
+    return types.CallToolResult(
+        content=[types.TextContent(type="text", text=f"Operation successful: {result}")]
+    )
+   ```
+
     except Exception as error:
         return types.CallToolResult(
             isError=True,

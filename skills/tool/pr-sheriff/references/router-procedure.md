@@ -1,6 +1,6 @@
 # PR Sheriff procedure
 
-# PR Sheriff
+## PR Sheriff
 
 Activate only for explicit pull-request triage or landing in one repository
 selected by active configuration. Never infer a repository or scan an

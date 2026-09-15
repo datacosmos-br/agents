@@ -228,6 +228,7 @@ python manage.py runserver --verbosity=2 2>&1
 ## Stop Conditions
 
 Stop and report if:
+
 - Migration conflict requires destructive DB changes (data loss risk)
 - Same error persists after 3 fix attempts
 - Fix requires changes to production data or irreversible DB operations

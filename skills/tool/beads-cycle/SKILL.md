@@ -29,12 +29,14 @@ only pass on a ledger already consistent. Skipping ahead produces rework: a
 title pass before classify renames beads that classify is about to re-parent.
 
 ## Canonical flow
+
 `scripts/wip-beads.sh` (wip-beads skill bundle) with modes `collect|classify|align|unblock|title|deferred|all`
 and flags `--csv --beads --limits --apply --map --json-report`.
 
 ## Cycle steps (execute in order)
 
 ### 1. Regenerate CSV (source of truth)
+
 ```bash
 bd list --status open --flat --limit 0 --json > ./wip-beads-open.json
 Workspace-local scratch files:
@@ -43,7 +45,8 @@ Workspace-local scratch files:
 bd list --status open --flat --limit 0 --json > ./wip-beads-open.json
 <wip-beads-bundle>/scripts/bd_json_to_csv.py ./wip-beads-open.json ./wip-beads-open.csv
 ```
-```
+
+```text
 
 ### 2. Collect workspace evidence
 `scripts/wip-beads.sh --mode collect --csv ./wip-beads-open.csv`
@@ -87,6 +90,7 @@ bd doctor --check=validate --json
 bd doctor --check=pollution --json
 bd orphans --json
 ```
+
 - **Test pollution**: `validate`/`pollution` reports a count but does not
   identify IDs. The detection criterion (extracted from bd 1.2.2) is a TITLE
   regex `^test[-:]`, case-insensitive — so legitimate beads like
@@ -111,19 +115,23 @@ bd orphans --json
   the proof you touched only what you planned.
 
 ### 9. Validate (mandatory after each batch)
+
 ```bash
 bd doctor --check=validate          # zero errors AND zero warnings required
 bd find-duplicates --status open --limit 50 --json  # output must be empty
 bd orphans                          # zero new orphans
 ```
+
 Why these three: doctor proves internal consistency, dedup proves one survivor
 per concept, orphans proves git history agrees with the ledger. A batch that
 skips them can have "succeeded" while corrupting the graph.
+
 - Cap 20 closes per batch (`bd batch`)
 - Re-run dedup gate + validation after each batch
 - Record pre/post counts on coordinator bead
 
 ## Governance law (from plans 1788975913248, 1788980150347)
+
 1. **Close only with 3 legal reasons**: `SUPERSEDED` (canonical owner named absorbs),
    `OBSOLETE` (scope/explicit disappeared with proof), `DONE` (cmd/cwd/exit/output).
    `LEGITIMATE` = comment both, DO NOT close.
@@ -138,6 +146,7 @@ skips them can have "succeeded" while corrupting the graph.
    subagents dry-run per batch → coordinator reviews → `--apply` → evidence note per bead.
 
 ## Performance law (SSOT fetch)
+
 One ledger fetch per mode, not per bead: load a single
 `bd list --all --flat --limit 0 --json` snapshot at mode start and index it by id.
 Per-bead `bd show` is a fallback only for ids missing from the snapshot.
@@ -146,15 +155,18 @@ Measured on a 102-bead ledger: one `bd show` ≈ 3.5s, so per-bead fetches cost
 ~6min per mode while a single snapshot runs the same mode in ~20s.
 
 ## Evidence format (bd note)
-```
+
+```text
 WORKSPACE SYNC <ISO8601> (wip-beads.sh <mode> [apply|dry]): <what changed>
 beads=<n> batches=<n> apply=<0|1>
 ```
+
 Co-verified with `bd show <id>` output when disputed. The note is the audit
 trail: months later, "why does this bead have no parent?" is answered by this
 line plus the classify dry-run log, not by memory.
 
 ## Completion criteria
+
 - `bd doctor --check=validate` = 0 errors AND 0 warnings
 - `bd find-duplicates` = zero unadjudicated pairs
 - `bd orphans` = zero new orphans (each retained flag justified on the coordinator bead)

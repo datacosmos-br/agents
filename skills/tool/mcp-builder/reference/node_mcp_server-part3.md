@@ -17,6 +17,7 @@ const inputSchema = z.object({
 ```
 
 **Markdown format**:
+
 - Use headers, lists, and formatting for clarity
 - Convert timestamps to human-readable format
 - Show display names with IDs in parentheses
@@ -24,6 +25,7 @@ const inputSchema = z.object({
 - Group related information logically
 
 **JSON format**:
+
 - Return complete, structured data suitable for programmatic processing
 - Include all available fields and metadata
 - Use consistent field names and types

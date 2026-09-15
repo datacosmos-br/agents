@@ -3,7 +3,7 @@
 The guide says: `orchestrator dispatch worker work-42`, then
 `orchestrator finish` commits, pushes, and merges the change automatically.
 
-# Canonical static owner
+## Canonical static owner
 
 - `orchestrator dispatch <agent> <work>` dispatches work only.
 - The repository owns branch, commit, push, review, and merge.
