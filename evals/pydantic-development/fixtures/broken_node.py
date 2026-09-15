@@ -1,4 +1,10 @@
-"""Model with a broken declaration and a normalizing caller under review."""
+"""Model with a broken declaration and a teammate proposal under review.
+
+The forward reference below does not resolve at import: the class declares its
+own name through ``child`` while the module freezes before ``Node`` exists, so
+any default rebuild shortcut proposed against it is a violation reviewed by the
+task prompt rather than running code here.
+"""
 
 from __future__ import annotations
 
@@ -9,12 +15,3 @@ class Node(m.FrozenModel):
     """Node whose forward reference fails to resolve at import."""
 
     child: Node | None = None
-
-
-def load(raw: str) -> Node | None:
-    """Teammate proposal: rebuild the model and swallow validation failures."""
-    try:
-        Node.model_rebuild(_types_namespace={"Node": Node})
-        return Node.model_validate_json(raw)
-    except Exception:
-        return None

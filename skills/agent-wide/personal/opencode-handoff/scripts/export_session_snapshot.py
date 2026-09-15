@@ -11,9 +11,8 @@ import shutil
 import sqlite3
 import subprocess
 import tempfile
-from functools import partial
 from pathlib import Path
-from typing import Any, Never
+from typing import Any
 
 SESSION_ID = re.compile(r"^ses_[A-Za-z0-9]+$")
 EXTERNAL_EXECUTABLES = frozenset({"opencode"})
@@ -208,24 +207,6 @@ def _private_write(path: Path, content: bytes) -> None:
         os.fsync(stream.fileno())
 
 
-def _raise(error: BaseException) -> Never:
-    raise error
-
-
-def _run_with_cleanup(operation: Any, cleanup: Any) -> Any:
-    """Preserve a primary failure when isolated-script cleanup also fails."""
-
-    try:
-        return operation()
-    except BaseException as error:
-        try:
-            cleanup()
-        except BaseException as cleanup_error:
-            error.add_note(f"cleanup failed: {cleanup_error}")
-            raise error from cleanup_error
-        raise
-
-
 def _handoff(snapshot: dict[str, Any], native_status: str) -> str:
     session = snapshot["session"][0]
     messages = snapshot["messages"][-50:]
@@ -382,10 +363,9 @@ def _export(session_id: str, destination: Path) -> int:
             json.dumps(manifest, indent=2, ensure_ascii=False).encode() + b"\n",
         )
         stage.replace(destination)
-    except BaseException as primary:  # noqa: BLE001 -- cleanup boundary
-        return _run_with_cleanup(
-            partial(_raise, primary), partial(shutil.rmtree, stage)
-        )
+    finally:
+        if stage.exists():
+            shutil.rmtree(stage, ignore_errors=False)
 
     print(
         json.dumps(
