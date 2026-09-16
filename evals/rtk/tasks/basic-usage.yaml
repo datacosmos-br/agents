@@ -5,14 +5,17 @@ tags: [rtk, token-economy, output-filtering, routing, happy-path]
 inputs:
   prompt: |
     Execute the supplied session scenario. Keep context consumption minimal
-    and state exactly which commands the hook daemon rewrote automatically and
-    which ones you wrapped manually, with reasons.
+    and state exactly which commands rtk's native hook rewrote automatically,
+    which ones stayed plain, and which ones you wrapped manually, with reasons.
   files:
   - path: session-request.md
 expected:
   output_contains:
-  - rtk git status
+  - git status
+  - plain
   - rtk docker ps
   - rtk grep
   - manual
   - deferred
+  output_not_contains:
+  - rtk git status
