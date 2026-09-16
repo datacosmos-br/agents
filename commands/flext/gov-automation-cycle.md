@@ -27,16 +27,20 @@ make gen
 # 3. Hygiene + gates
 make fix && make fmt && make check
 
-# 4. Graph evidence (agent-side tool only)
-code-review-graph doctor && code-review-graph build     # first run
-code-review-graph update --brief                        # per commit
-code-review-graph detect-changes                        # PR evidence
-code-review-graph dead-code                             # R2 residue feed
-code-review-graph impact <symbol>                       # blast radius
+# 4. Graph evidence (agent-side tool only; operate per the crg skill:
+#    freshness gate first, lane graph, verified verbs)
+code-review-graph doctor --repo "$PWD"                  # health checklist
+code-review-graph update --brief --repo "$PWD"          # per commit (build if it exits 1)
+code-review-graph detect-changes --brief --repo "$PWD"  # PR evidence
+code-review-graph dead-code --json --repo "$PWD"        # R2 residue candidates
+code-review-graph impact --files <changed...> --repo "$PWD"  # blast radius
 
 # 5. Scoped commit → FF push → PR → --no-ff into integration → gates on
-#    merged SHA (merge --no-ff) → code-review-graph update on the tip.
+#    merged SHA (merge --no-ff) → graph refresh on the tip (crg runbook).
 ```
+
+Graph operation, limits, and the manual runbook:
+`~/.agents/skills/tool/crg/SKILL.md`.
 
 Rules that may fire: anything under
 `flext-infra/src/flext_infra/codemod/rules/` and, agent-globally,

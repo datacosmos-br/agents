@@ -19,3 +19,4 @@
 | `ADR-0018` | 2026-09-10 | Accepted | Release line 0.5.0 carries behavioral conscience and the delivery contract; tag grammar is closed as measured. |
 | `ADR-0019` | 2026-09-10 | Accepted | The delivery contract is typed data: capsule budget gate at load, closed lifecycle event map, and enforced docs linking. |
 | `ADR-0020` | 2026-09-10 | Accepted | One `advance` command owns resumption and forced advancement; skill routing owns deltas; the research dossier is referenced evidence. |
+| `ADR-0021` | 2026-09-16 | Accepted | Operator rulings of 2026-09-15/16 (runtime truth, no rushed work, full landing cycle) are encoded as canonical coordination and ethics rules. |

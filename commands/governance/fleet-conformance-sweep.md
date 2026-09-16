@@ -22,11 +22,11 @@ sweep refer to this ruler only; re-freeze when the owner tip moves.
 
 Automation surface order (research 2026-09-11):
 
-1. **Graph refresh first** (`rules/workflow/graph-truth-freshness.md`):
-   `code-review-graph status` → `update --brief` (or `build` post-rewrite)
-   scoped `--repo <root>` — never reason from a graph built on a shaled
-   branch (the fleet graphs were built on `fix/flext-pair-coherent-repin@
-   b68347b7`, 2026-09-07; stale until refreshed).
+1. **Graph refresh first** (`rules/workflow/graph-truth-freshness.md`,
+   operated per the `crg` skill freshness gate): `code-review-graph status
+   --json --repo <root>` → `update --brief` (or `build` when update exits 1
+   or after rewrites) — never reason from a graph whose built commit differs
+   from the target HEAD.
 2. **Facade census at the owner tooling** (cheaper and stricter than grep):
    `flext-infra refactor census --repository-root <repo> --output-format
    json` and `flext-infra refactor namespace-enforce --repository-root
@@ -41,9 +41,10 @@ Automation surface order (research 2026-09-11):
 4. **`make mod`** (`flext-infra refactor mod --apply`) executes approved
    ast-grep rule rewrites at the declared scope — always the dispatcher,
    never direct ast-grep, so LSP/Rope telemetry stays consistent.
-5. **CRG decision tables**: `code-review-graph dead-code --json` (dead
-   Protocol candidates for D4), `impact --files <changed> [--base <sha>]`
-   (rename blast radius for the F4 cost table), `refactor suggest` (rename
+5. **CRG decision tables** (limits per the `crg` skill):
+   `code-review-graph dead-code --json` (dead Protocol candidates for D4,
+   confirmed in source), `impact --files <changed> [--base <sha>]` (rename
+   blast radius for the F4 cost table), `refactor suggest` (rename
    candidates). Read-only verbs only during discovery; renames land through
    G4 discipline.
 
