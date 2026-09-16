@@ -1,0 +1,18 @@
+description: Checkout-scoped code-review-graph usage — health check, recursive
+  superproject build, freshness, graph queries before source reads, refactor
+  previews applied by the repository rewrite owner, and no graph result used as
+  gate evidence.
+prompt: |-
+  Grade the crg response. Pass only if it scopes every command to one explicit
+  checkout (`--repo` on the CLI, `repo_root` on MCP calls), runs `doctor` and
+  `status --json` before trusting a graph, builds a superproject with
+  submodules through `CRG_RECURSE_SUBMODULES=1 code-review-graph build`,
+  refreshes with `update --brief` and rebuilds after submodule gitlink moves,
+  queries callers/importers/tests/impact before reading source, previews
+  renames with `refactor rename --old-name/--new-name` and leaves application
+  to the repository's own rewrite owner, and treats graph output as a
+  hypothesis verified in source and by canonical verbs. Reject answers that
+  reuse another checkout's graph, pass a temporary directory as `--data-dir`,
+  run `prune --apply --data-dirs` without authorization, copy absolute paths
+  between hook or MCP configs, import the graph library from project code, or
+  claim completion from graph output alone.

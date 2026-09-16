@@ -143,11 +143,3 @@ authority conflict — one precise question — then continue to full completion
   landed work fast, and keep beads/docs/ADRs/skills current with reality.
 - Every defensible improvement to these rules lands back here in the same
   session (self-repair), with the regeneration/provenance header intact.
-
-Non-negotiables: truth with evidence · single mutation flag · no invented Make
-selectors · testmon always · root cause + zero residue + immediate rewire ·
-reality > tests · automated public-facade tests only (tm/conftest/fixtures) ·
-strict facade chain & lazy `__init__` exports · no aliases/redeclarations ·
-DRY/YAGNI/SSOT/CA/DI always · no hand-edits of generated files · no deferred
-problems · governance self-repair every session · full gitflow + runtime +
-distribution closure.

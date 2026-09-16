@@ -1,0 +1,13 @@
+id: crg-should-not-trigger-001
+name: Formatting run is not a graph task
+description: A plain formatter request routes to the canonical make verb, not the graph.
+tags: [anti-trigger, negative-test, make, formatting]
+inputs:
+  prompt: Reformat the Python files changed on this branch and report whether
+    the formatter left anything to fix, using the project's own command surface.
+expected:
+  output_contains:
+  - make fmt
+  output_not_contains:
+  - code-review-graph build
+  - CRG_RECURSE_SUBMODULES
