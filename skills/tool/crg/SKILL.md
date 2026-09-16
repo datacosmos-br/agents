@@ -1,113 +1,110 @@
 ---
 name: crg
-description: 'code-review-graph, impact analysis, graph-backed refactor, submodule graph'
+description: 'code-review-graph fleet contract, graph freshness, structural impact, worktree graphs'
 metadata:
-  aihub.tags: '["activation:opt-in","decision:ADR-0014","detect:opt-in:crg","effective:2026-09-16","route:agent","subject:mcp","usage:on-demand"]'
+  aihub.tags: '["activation:opt-in","decision:ADR-0010","detect:opt-in:code-review-graph","effective:2026-09-16","route:agent","subject:mcp","usage:on-demand"]'
 ---
 
 # crg
 
-code-review-graph (CRG) is the agent-side structural graph of a checkout:
-callers, importers, tests, flows, impact radius, dead code, and rename
-previews. It narrows scope before reading source and attaches blast-radius
-evidence to tracker items and reviews. It is never a gate and never product
-code: a project imports nothing from it.
-
-This skill is the interim manual contract. The owning automation (governed
-workspace sync, recursive serving, worktree data dirs, MCP enablement) belongs
-to AI Hub's CRG autopilot; once that owner declares it closed, prefer its
-generated surface and keep only the query workflow below.
+code-review-graph (CRG) is the host structural index: a Tree-sitter graph
+(SQLite `graph.db`) answering callers, imports, tests, impact, and dead-code
+questions. AI Hub owns its installation, configuration, and index production
+(ADR-0010); project code never imports it. This skill is the fleet operating
+contract: ownership, freshness, topology, watchers, doctor reading, and the
+manual runbook until the AI Hub automation owners are live. Query technique
+lives in the generic skills the CRG fork generates (`build-graph`,
+`explore-codebase`, `review-changes`, `debug-issue`, `refactor-safely`).
+Every command and flag is verified in the
+[operations reference](references/operations.md) and
+[runtime reference](references/runtime.md).
 
 ## USE FOR
 
-- Locating symbols, callers, importers, inheritors, and tests before a change.
-- Estimating a change: `impact`, `detect-changes`, affected flows, test gaps.
-- Planning a cascade: `refactor rename` preview, `dead-code`, `refactor suggest`
-  before the project's own rewrite owner executes it.
-- Keeping a lane's graph fresh: build, update, postprocess, watch, daemon.
-- Diagnosing graph, MCP, registry, or hook setup with `doctor`.
+- Deciding whether a graph result may be cited (freshness gate, provenance).
+- Blast radius before structural or deletion-heavy edits:
+  `impact --files <changed...>`, `detect-changes --brief`,
+  `query callers_of|tests_for <target>`.
+- Residue candidates: `dead-code --json`, `refactor dead_code|suggest`, and
+  `refactor rename --old-name X --new-name Y` (a preview, never an edit).
+- Graph topology for superprojects, members, and lane worktrees; watcher and
+  `doctor` diagnosis.
 
 ## DO NOT USE FOR
 
-- Gate or completion evidence: the project's canonical verbs decide; a graph
-  result is a hypothesis to verify in source. An empty result can mean
-  "not indexed" or "not statically visible", not "does not exist".
-- Applying refactors in a repository that owns a rewrite engine (for example a
-  `make mod` codemod/Rope surface): CRG previews, the owner applies.
-- Importing `code_review_graph` from project code, or committing graph data.
-- Hand-editing generated MCP configs, hooks, or injected instruction blocks;
-  regenerate through `install` (or the AI Hub projection once it owns them).
+- A known literal at a known location: read or grep it.
+- Proof of absence or gate evidence: an empty result means "not indexed or not
+  statically visible"; canonical verbs decide completion.
+- Mutation: renames and deletions land through the project codemod owner
+  (`make mod`), never through MCP `apply_refactor_tool`.
+- Setup or repair by `install`/`uninstall`: they rewrite MCP config, hooks,
+  skills, and instruction files that AI Hub projects.
 
-## Workflow
+## Ownership boundary
 
-1. **Resolve the checkout.** One graph per checkout path; a linked worktree
-   never reuses the primary checkout's graph. Pass the checkout explicitly:
-   `--repo <root>` on the CLI, `repo_root` on every MCP tool call.
-2. **Health first.** `code-review-graph doctor --repo <root>`; exit 1 means a
-   critical check failed (usually no graph). Then
-   `code-review-graph status --repo <root> --json` and compare `built_at_sha`
-   with `HEAD`.
-3. **Build once per checkout.** A superproject with submodules must recurse:
-   `CRG_RECURSE_SUBMODULES=1 code-review-graph build --repo <root>`.
-   The variable is the only switch (no CLI flag). For a large first build,
-   `--skip-flows` then `code-review-graph postprocess --repo <root>` separates
-   parsing from flows/communities/FTS.
-4. **Stay fresh.** After commits or merges:
-   `code-review-graph update --repo <root> --brief` (re-parses changed files and
-   prints the risk summary). Rebuild with the recurse variable after submodule
-   gitlink moves, because incremental diffs do not walk into submodules.
-   Long sessions: `CRG_RECURSE_SUBMODULES=1 code-review-graph watch --repo <root>`
-   in a background job, or the daemon (see references).
-5. **Query before reading.** `search <text> [--kind Class]`,
-   `query <pattern> <target>` (`callers_of`, `importers_of`, `tests_for`,
-   `inheritors_of`, `file_summary`), `impact --files <paths>`,
-   `detect-changes --base <ref> --brief`, `large-functions`,
-   `dead-code [--file-pattern <path>]`, `architecture`, `flows`.
-6. **Refactor cascade.** `refactor rename --old-name <a> --new-name <b>`
-   or `refactor suggest` (preview with edit list), review the edits, then apply
-   through the repository's own rewrite owner; rerun `update --brief` and the
-   canonical verbs afterwards.
-7. **MCP.** When the session exposes the CRG MCP server, call the equivalent
-   `*_tool` functions with `repo_root`; if it reports `not_built`, run step 3.
-   `serve --tools lean` exposes the curated low-token set; `--auto-watch` keeps
-   the served graph fresh.
+- AI Hub installs the binary, supervises watchers, renders the daemon
+  inventory (`watch.toml`) and the `.code-review-graphignore` block, and owns
+  the MCP route plus hook, skill, and instruction projection. `install` is the
+  upstream command that owner wraps; never hand-edit its output or install a
+  parallel CRG.
+- One watcher per graph. The AI Hub supervisor can be active while
+  `daemon status` reports "not running": check both before any `watch`,
+  `serve --auto-watch`, or `daemon start`.
+- Never hardcode machine paths: roots through `--repo`, data dirs through the
+  registry or `CRG_DATA_DIR`, user state through `CRG_HOME`.
+- A missing binary, disabled MCP route, or absent hook is an AI Hub
+  configuration finding to file, never a reason to substitute another index.
+- Cloud embedding providers transmit source-derived text: explicit
+  authorization only.
 
-## Critical rules
+## Freshness gate (before any graph-backed claim)
 
-- `--data-dir` is persisted into the registry for that checkout; pass it only
-  for the checkout that should own that location, never a temporary directory.
-- Registry (`register`, `unregister`, `repos`, `prune`) is CRG-owned state;
-  `prune` reports only until `--apply`, and `--data-dirs` deletes data.
-- Hooks and MCP entries written by `install` must stay checkout-relative;
-  an absolute repository path baked into a tracked hook or MCP config is a
-  projection defect to fix at its generator, not to copy between checkouts.
-- Cloud embedding providers transmit source-derived text; use them only with
-  explicit authorization. Local FTS fallback is the default.
+1. `code-review-graph status --json --repo <root>` must show
+   `built_at_commit == current_sha` and `built_on_branch == current_branch`.
+   MCP read results carry a `_graph` envelope whose `head_matches_build` must
+   be `true` (absent means provenance unknown, never fresh).
+2. Both compare commits only. Uncommitted edits count only after `update`;
+   untracked files are not seen until tracked or rebuilt.
+3. Mismatch: `update --brief`. `update` exits 1 with no graph or no usable
+   base commit; then `build`. Edit hooks run `update --skip-flows`, so flows
+   and communities stay stale until `postprocess`.
+4. Record `built_at_commit` with every result cited in a bead or PR.
 
-## Example
+## Workspace topology
 
-Superproject lane after merging the integration tip:
+- One graph per git root; a linked lane worktree builds its own
+  (`build --repo <lane-worktree>`). Never read another checkout's graph as
+  lane evidence.
+- Superproject: `CRG_RECURSE_SUBMODULES=1 code-review-graph build --repo
+  <workspace-root>`. The variable affects the full build only; `update` diffs
+  the root repository, where a member is one gitlink, so member commits need
+  a recursive rebuild or the member's own graph.
+- `--data-dir` on `build`, `update`, `postprocess`, `embed`, `forget`, or
+  `dead-code` is persisted into the registry; never pass a temporary dir.
 
-1. `code-review-graph doctor --repo "$PWD"` → `graph: no nodes` (critical).
-2. `CRG_RECURSE_SUBMODULES=1 code-review-graph build --repo "$PWD"` → files,
-   nodes, and edges reported; `status --json` shows `built_at_sha == HEAD`.
-3. `code-review-graph impact --repo "$PWD" --files <changed files>` →
-   impacted callers and test gaps attached to the tracker item.
-4. `code-review-graph refactor rename --old-name <old> --new-name <new>
-   --kind Class --repo "$PWD"` → preview; the repository codemod owner
-   applies it; `update --brief` confirms zero dangling references; canonical
-   verbs validate.
+## Limits (the source always wins)
 
-## Troubleshooting
+- Static edges only: dynamic dispatch, registry or YAML-loaded models,
+  annotation-only references, and callback protocols (libcst `leave_*`,
+  `on_*`) can surface as false dead code.
+- Confirm every deletion candidate in source, tests, and config; a
+  graph-versus-grep disagreement is a finding, never a green.
 
-- `not_built` / zero nodes after "up to date": the incremental path found no
-  diff but no graph exists; run a full `build` (with the recurse variable).
-- Submodule symbols missing: the build ran without `CRG_RECURSE_SUBMODULES=1`.
-- Stale results in a worktree: a hook or MCP config targets another checkout's
-  absolute path; `doctor` does not inspect every platform's hooks, so read the
-  hook files and regenerate them with `install --repo <root>`.
-- Slow or hung MCP analysis: bound `detect_changes_tool` with
-  `CRG_TOOL_TIMEOUT`; narrow with `changed_files` and `max_results`.
+## Reading `doctor`
 
-Environment variables, data-dir resolution, daemon configuration, hook
-templates, and doctor checks: `references/operations.md`.
+`doctor --repo <root>` exits non-zero only for a missing or empty graph or an
+MCP server import failure. Freshness, MCP config, and hooks are warnings. Its
+hook check reads only `.git/hooks/pre-commit` and Claude/Qoder settings, so it
+ignores `core.hooksPath`, linked worktrees, and Gemini/Codex hooks; its
+`install` hints are owner findings, not agent actions.
+
+## Manual runbook until AI Hub automation is live
+
+1. Session start: `doctor --repo <root>`, then the freshness gate.
+2. Before a structural refactor: `update --brief`, then `impact --files`,
+   `query`, `dead-code --json`; record the built commit.
+3. After edits: `update --repo <root>`; trust `status`, not the silent hook.
+4. After landing: `update` in the integration checkout; rebuild the
+   superproject graph recursively after gitlink rollups.
+5. Lane retirement: `unregister <lane-worktree>`, then review `prune` before
+   `prune --apply`.

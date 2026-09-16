@@ -1,19 +1,13 @@
-id: crg-stale-checkout-001
-name: Graph targets another checkout and results look stale
-description: Absolute hook path from another checkout; fix at the generator, never reuse the foreign graph.
-tags: [crg, worktree, stale-graph, hooks, edge-case]
+id: crg-no-graph-001
+name: Refuse graph claims when no graph exists
+description: Missing database and unusable base fail closed until a full build succeeds.
+tags: [crg, fail-closed, worktree, edge-case]
 inputs:
-  prompt: |
-    In a linked worktree, graph queries keep returning symbols that were
-    deleted on this branch, while `status --json` says the graph is up to date.
-    A tracked hook script contains an absolute repository path. Explain the
-    cause and the correct fix, and whether the query results may be used as
-    evidence that the deletion is complete.
+  prompt: >-
+    In a linked lane worktree, `code-review-graph update --brief` just printed
+    "incremental update requires an existing graph; run build explicitly" and
+    exited 1. The primary checkout's graph is fresh, and the reviewer wants the
+    list of dead functions in this member right now. Say what you report.
 expected:
-  output_contains:
-  - --repo
-  - install
-  - status
-  output_not_contains:
-  - evidence of completion
-  - copy the hook
+  output_contains: [build, exit, no graph]
+  output_not_contains: ['dead functions:', 'no dead code']

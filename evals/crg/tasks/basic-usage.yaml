@@ -1,21 +1,20 @@
 id: crg-happy-path-001
-name: Recursive lane graph, impact estimate, and rename preview
-description: Health check, submodule build, impact and refactor preview scoped to one checkout.
-tags: [crg, code-review-graph, impact, refactor-preview, submodule, happy-path]
+name: Fresh lane graph before deletion blast radius
+description: Exercise code-review-graph fleet contract, graph freshness, structural impact, and worktree graphs through a lane deletion.
+tags: [crg, freshness, impact, dead-code, submodule, happy-path]
 inputs:
   prompt: |
-    Work through the supplied lane scenario with code-review-graph. Bring the
-    submodule graph of this checkout to a usable state, run the impact analysis
-    of the rename, and plan the graph-backed refactor: say exactly which tool
-    previews it, which tool applies it, and how completion is proven.
+    Using the supplied lane scenario, give the exact code-review-graph steps
+    you run before deleting the helper, which results you trust or distrust,
+    what evidence goes into the PR, and how the superproject graph reflects
+    the member change after landing.
   files:
-  - path: lane-state.md
+  - path: lane-refactor.md
 expected:
   output_contains:
-  - CRG_RECURSE_SUBMODULES=1
-  - doctor
-  - --repo
-  - refactor rename
+  - update
+  - impact --files
+  - callers_of
+  - built_at_commit
   - make mod
-  output_not_contains:
-  - apply_refactor
+  - CRG_RECURSE_SUBMODULES=1
