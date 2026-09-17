@@ -11,8 +11,6 @@ from __future__ import annotations
 
 import ast
 import hashlib
-import importlib
-import importlib.util
 import json
 import subprocess
 import sys
@@ -29,25 +27,15 @@ from agents_governance.capsule import (
     Capsule,
     render_capsule,
 )
-
-_TOOLS = Path(__file__).resolve().parents[1] / "tools"
-
-
-def _load_sync_governance():
-    sys.path.insert(0, str(_TOOLS))
-    importlib.import_module("_projection")
-
-    spec = importlib.util.spec_from_file_location(
-        "_sync_governance", _TOOLS / "sync_governance.py"
-    )
-    assert spec is not None and spec.loader is not None
-    module = importlib.util.module_from_spec(spec)
-    sys.modules["_sync_governance"] = module
-    spec.loader.exec_module(module)
-    return module
-
-
-_sg = _load_sync_governance()
+from agents_governance.projection import (
+    HOOKS,
+    build,
+    build_hooks,
+    build_instructions,
+    render_opencode_plugin,
+    render_python_hook,
+    snapshot,
+)
 
 
 class TestsCapsuleRender:
@@ -131,7 +119,7 @@ class TestsCapsuleRender:
 
 
 def _run_python_hook(response: Mapping[str, object]) -> dict[str, object]:
-    script = _sg._render_python_hook(dict(response))
+    script = render_python_hook(dict(response))
     result = subprocess.run(
         [sys.executable, "-c", script],
         input=json.dumps({}),
@@ -177,7 +165,7 @@ class TestsOpenCodePlugin:
         self, governance_bundle: GovernanceBundle
     ) -> None:
         capsule = render_capsule(governance_bundle)
-        output = _sg._render_opencode_plugin(capsule)
+        output = render_opencode_plugin(capsule)
         assert f'const DIGEST = "{capsule.opencode_digest}"' in output
         assert OPCODE_MARKER in output
 
@@ -185,7 +173,7 @@ class TestsOpenCodePlugin:
         self, governance_bundle: GovernanceBundle
     ) -> None:
         capsule = render_capsule(governance_bundle)
-        output = _sg._render_opencode_plugin(capsule)
+        output = render_opencode_plugin(capsule)
         assert json.dumps(capsule.text, ensure_ascii=False) in output
 
 
@@ -198,8 +186,8 @@ class TestsProjectionFixedPoint:
         second = tmp_path / "second"
         first.mkdir()
         second.mkdir()
-        _sg._build(first, capsule)
-        _sg._build(second, capsule)
+        build(first, capsule)
+        build(second, capsule)
         assert _snapshot_dir(first) == _snapshot_dir(second)
 
     def test_all_capsule_hooks_share_same_digest(
@@ -208,9 +196,9 @@ class TestsProjectionFixedPoint:
         capsule = render_capsule(governance_bundle)
         root = tmp_path / "out"
         root.mkdir()
-        _sg._build_hooks(root, capsule)
+        build_hooks(root, capsule)
         capsule_texts: set[str] = set()
-        for hook in _sg._HOOKS:
+        for hook in HOOKS:
             content = (root / hook.relpath).read_text(encoding="utf-8")
             tree = ast.parse(content)
             for node in ast.walk(tree):
@@ -257,7 +245,7 @@ class TestsManifestConsistency:
         capsule = render_capsule(governance_bundle)
         root = tmp_path / "out"
         root.mkdir()
-        _sg._build(root, capsule)
+        build(root, capsule)
         manifests = [
             root / ".codex/.hooks.json.agents-governance.json",
             root / ".gemini/.settings.json.agents-governance.json",
@@ -280,7 +268,7 @@ class TestsInstructionPointers:
     ) -> None:
         root = tmp_path / "out"
         root.mkdir()
-        _sg._build_instructions(root)
+        build_instructions(root)
         content = (root / "CLAUDE.md").read_text(encoding="utf-8")
         assert "AGENTS.md" in content
         assert "make gen" in content
@@ -291,22 +279,11 @@ class TestsInstructionPointers:
     ) -> None:
         root = tmp_path / "out"
         root.mkdir()
-        _sg._build_instructions(root)
+        build_instructions(root)
         content = (root / "GEMINI.md").read_text(encoding="utf-8")
         assert "AGENTS.md" in content
         assert "make gen" in content
 
 
 def _snapshot_dir(root: Path) -> tuple[tuple[str, str], ...]:
-    entries: list[tuple[str, str]] = []
-    for path in sorted(root.rglob("*")):
-        relative = path.relative_to(root).as_posix()
-        if path.is_symlink() or not (path.is_dir() or path.is_file()):
-            raise ValueError(f"non-physical path: {path}")
-        digest = (
-            "directory"
-            if path.is_dir()
-            else hashlib.sha256(path.read_bytes()).hexdigest()
-        )
-        entries.append((relative, digest))
-    return tuple(entries)
+    return snapshot(root)

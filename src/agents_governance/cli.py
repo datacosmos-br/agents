@@ -12,9 +12,9 @@ from pathlib import Path
 
 from .bundle import GovernanceBundle
 from .capsule import render_capsule
+from .projection import HOOKS, _manifest_path
 from .provenance import version as distribution_version
 from .rules import prompt_defense_body
-from .projection import HOOKS, _manifest_path
 
 _VERBS = ("help", "doctor", "check", "sync", "evaluate", "secure", "clean", "live")
 
@@ -106,7 +106,9 @@ def _doctor(root: Path, args: list[str]) -> int:
         return 2
     bundle = _load_bundle(root)
     capsule = render_capsule(bundle)
-    print(f"Bundle: schema={bundle.schema_version} distribution={bundle.distribution_version}")
+    print(
+        f"Bundle: schema={bundle.schema_version} distribution={bundle.distribution_version}"
+    )
     print(f"  rules: {len(bundle.rules)}")
     print(f"  skills: {len(bundle.skills)}")
     print(f"  commands: {len(bundle.commands)}")
@@ -129,7 +131,9 @@ def _check(root: Path, args: list[str]) -> int:
 
     workspace = yaml.safe_load(workspace_path.read_text(encoding="utf-8"))
     storage_count = len(workspace) if isinstance(workspace, dict) else 0
-    print(f"Bundle: schema={bundle.schema_version} distribution={bundle.distribution_version}")
+    print(
+        f"Bundle: schema={bundle.schema_version} distribution={bundle.distribution_version}"
+    )
     print(f"Workspace config: {workspace_path} ({storage_count} storage entries)")
     print(f"Hook surfaces: {len(HOOKS)} (fixed-point validated by sync)")
     return 0
@@ -153,7 +157,9 @@ def _evaluate(root: Path, args: list[str]) -> int:
     audit = importlib.import_module("agents_governance.skill_evals")
     bundle = _load_bundle(root)
     policy = audit.audit_skill_evals(root, bundle.skills)
-    print(f"Skill evals audited: {len(bundle.skills)} suites (policy v{policy.version})")
+    print(
+        f"Skill evals audited: {len(bundle.skills)} suites (policy v{policy.version})"
+    )
     print(f"  default_suite_version: {policy.default_suite_version}")
     print(f"  task glob: {policy.task_glob}")
     return 0
@@ -164,7 +170,6 @@ def _secure(root: Path, args: list[str]) -> int:
         print(f"secure takes no arguments, got {args!r}", file=sys.stderr)
         return 2
     bundle = _load_bundle(root)
-    rule_index = {rule.identity: rule for rule in bundle.rules}
     security_rules = [r for r in bundle.rules if r.category == "security"]
     print(f"Security rules: {len(security_rules)}")
     try:
@@ -191,13 +196,17 @@ def _clean(root: Path, args: list[str]) -> int:
     if opcode_plugin.is_file():
         opcode_plugin.unlink()
         removed += 1
-    opcode_manifest = root / ".opencode" / "plugins" / ".aihub-governance.ts.agents-governance.json"
+    opcode_manifest = (
+        root / ".opencode" / "plugins" / ".aihub-governance.ts.agents-governance.json"
+    )
     if opcode_manifest.is_file():
         opcode_manifest.unlink()
         removed += 1
     for name in ("CLAUDE.md", "GEMINI.md"):
         path = root / name
-        if path.is_file() and "AIHUB-INSTRUCTION-POINTER" in path.read_text(encoding="utf-8"):
+        if path.is_file() and "AIHUB-INSTRUCTION-POINTER" in path.read_text(
+            encoding="utf-8"
+        ):
             path.unlink()
             removed += 1
     print(f"Removed {removed} managed manifests and generated files")
@@ -210,7 +219,7 @@ def _live(root: Path, args: list[str]) -> int:
         return 2
     bundle = _load_bundle(root)
     capsule = render_capsule(bundle)
-    print(f"package: agents-governance")
+    print("package: agents-governance")
     print(f"version: {distribution_version()}")
     print(f"schema: {bundle.schema_version}")
     print(f"capsule digest: {capsule.digest}")

@@ -9,9 +9,9 @@ from pathlib import Path
 from typing import TYPE_CHECKING, cast
 
 import yaml
-from _projection import snapshot as _snapshot
 
 from agents_governance import GovernanceBundle, SkillRecord
+from agents_governance.projection import snapshot as _snapshot
 
 if TYPE_CHECKING:
     from agents_governance.skill_evals import EvalPolicy
