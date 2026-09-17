@@ -104,4 +104,4 @@ dúvidas, PARE E PERGUNTE. Nunca tente adivinhar ou deduzir.**
   adotar (preserve-commit scoped) + merge; provar por amostragem (1 repo via
   `git diff HEAD...origin/<integ>`), não investigar por repo.
 
-Precedência: regra do operador (a mais nova) > beads > ADRs > skills > docs.
+Precedence per `rules/coordination/operator-precedence.md`.
