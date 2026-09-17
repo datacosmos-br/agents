@@ -2,8 +2,8 @@ description: Fleet-shaped rtk usage — automatic routing preference, manual pre
   for deferred constructs, tee-based failure recovery, SSOT-owned config, and
   savings observability without ever masking failures or bypassing make owners.
 prompt: |-
-  Grade the rtk response. Pass only if it prefers the hook-daemon automatic
-  rewrite path with no action, applies the explicit manual `rtk <command>`
+  Grade the rtk response. Pass only if it prefers rtk's native hook automatic
+  rewrite path with no action, keeps git plain and never prefixed with rtk, applies the explicit manual `rtk <command>`
   prefix only for registry gaps or deferred constructs (heredocs, command
   substitution, file redirects), reads the referenced tee-recovery file once
   instead of re-executing a failed command, treats filtered failures as

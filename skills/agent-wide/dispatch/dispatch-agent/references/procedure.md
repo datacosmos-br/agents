@@ -26,8 +26,10 @@ current branch and repository context, accepted concurrent work, prohibited
 behavior, required evidence, focused gates, integration gates, and stop conditions.
 
 Include the allowed lane command forms and selected gates in the handoff body.
-Use `env -C <worktree> make <verb>` for make targets, `git -C` for repository
-state, and `bun run --cwd` for package scripts. Define blocked behavior as
+The worker runs plain `make <verb>` and `git <verb>` from its own session
+worktree, `direnv exec <dir> bd <verb>` for bd, and `bun run --cwd` for package
+scripts; worktree isolation refuses `git -C` and `env -C … make` against another
+path. Define blocked behavior as
 reporting the exact denial and options after 15 minutes with no written change
 or green gate, never silently idling, switching lane, editing an occupied
 checkout, or retrying a red gate.

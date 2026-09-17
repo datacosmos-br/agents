@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 description: Graph-backed structural evidence with a freshness gate, correct
   workspace topology, verified CLI verbs, and source confirmation before any
   deletion.
@@ -14,3 +15,25 @@ prompt: |-
   graph, invent flags, treat an empty result as proof of absence, run
   `code-review-graph install` or hand-edit managed daemon/MCP projections, or
   delete code on graph output alone.
+=======
+description: Fleet code-review-graph contract — freshness gate, per-checkout and
+  recursive superproject graphs, verified CLI verbs, one watcher per graph,
+  AI Hub-owned projections, and source confirmation before any deletion.
+prompt: |-
+  Grade the crg response. Pass only if it refuses to cite graph results until
+  `code-review-graph status --json` shows `built_at_commit` equal to
+  `current_sha`, refreshes with `update --brief` (or `build` when update exits
+  1) scoped with `--repo` to the lane worktree's own graph, passes changed
+  files to `impact --files` rather than a symbol, uses `query callers_of` or
+  `tests_for` for rewiring, treats `dead-code` output as candidates to confirm
+  in source (framework models and libcst `leave_*` callbacks can be false
+  positives), records the built commit as evidence, lands edits through the
+  project codemod owner, and rebuilds the superproject graph with
+  `CRG_RECURSE_SUBMODULES=1` because incremental updates do not walk into
+  member commits. Reject answers that trust a stale or foreign checkout's
+  graph, invent flags, treat an empty result as proof of absence, start a
+  second watcher or daemon on a graph the host service already watches, run
+  `code-review-graph install` or hand-edit managed daemon/MCP/hook
+  projections, apply renames through MCP `apply_refactor_tool`, pass a
+  temporary directory as `--data-dir`, or delete code on graph output alone.
+>>>>>>> origin/dev
