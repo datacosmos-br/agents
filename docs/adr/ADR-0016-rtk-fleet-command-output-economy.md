@@ -9,8 +9,9 @@
 ## Context
 
 The fleet adopted rtk (`rtk-ai/rtk`) as its command and output economy layer.
-The execution decision — daemon chain rewrite, SSOT-rendered runtime config,
-pinned provisioning — belongs to AI Hub and is recorded there
+The execution decision — rtk's native hook (`rtk hook claude`,
+`rtk hook cursor`) deployed as a foreign adapter, the AI Hub-owned
+`~/.config/rtk/config.toml`, pinned provisioning — belongs to AI Hub and is recorded there
 (AI Hub ADR-0029, `docs/adr/0029-rtk-command-output-routing.md`). This
 repository owns the reusable governance meaning: how agents are taught to use
 rtk, and which capability semantics the bundle publishes.
@@ -22,8 +23,10 @@ catalog correctly rejected.
 ## Decision
 
 The bundle ships `skills/tool/rtk/` with an `evals/rtk/` suite, tagged
-`decision:ADR-0016`. The skill teaches: prefer the daemon automatic rewrite
-path; use the manual `rtk <command>` prefix only for registry gaps and the
+`decision:ADR-0016`. The skill teaches: prefer rtk's native-hook automatic
+rewrite path; keep git plain, never prefixed with rtk; analyze long output
+through `rtk log`/`err`/`test`/`summary`/`pipe` instead of chained truncation;
+use the manual `rtk <command>` prefix only for registry gaps and the
 deferred constructs (heredocs, command substitution, file redirects); recover
 failures through the referenced tee file; treat filtered failures as failures;
 never hand-edit rtk config projections or install a parallel binary; measure

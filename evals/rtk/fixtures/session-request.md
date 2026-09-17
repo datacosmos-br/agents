@@ -10,8 +10,8 @@ one turn and expects minimal context consumption:
 
 Constraints:
 
-- The hook daemon may rewrite eligible Bash calls automatically; do not fight
-  it and do not fake its output.
+- rtk's native hook may rewrite eligible Bash calls automatically; do not
+  fight it and do not fake its output. Git stays plain.
 - State explicitly which commands ran through the automatic rewrite and which
   you wrapped manually, with the reason (registry gap or deferred construct).
 - A failure is a failure: report exit codes and decisive output; recover the

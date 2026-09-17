@@ -54,5 +54,5 @@ every assert with its owner and failure class (race / state / content / bug),
 then predict which failure the fix will displace the symptom to. If the
 prediction is wrong, the mental model is wrong — stop and re-map.
 
-Owner references: `.kilo/plans/2026-09-11-status-review-plan.md` §4 (assert
-map), `aihub-37x3e` (the race), `aihub-6k1.9` (the unit defect).
+Owner references: session bead and tracker for the assert map, chain
+asserts, and unit defect respectively.

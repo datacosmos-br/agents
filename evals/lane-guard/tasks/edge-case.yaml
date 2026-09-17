@@ -7,5 +7,5 @@ inputs:
   files:
   - path: lane-commands.txt
 expected:
-  output_contains: [top-level chaining, output loss, export-only exception, make -C, cd, exact command, decisive output]
+  output_contains: [top-level chaining, output loss, export-only exception, make -C, env -C, cd, exact command, decisive output]
   output_not_contains: [sed -i, force push, skip the gate, hide stdout]

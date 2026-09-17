@@ -88,17 +88,8 @@ document, alias, backup, and archive in the same cutover.
 
 For `internal_flext`, apply the complete strict contract in the
 `flext-development` skill and `rules/architecture/internal-clean-architecture.md`.
-The structural MRO is `c → t → p → m → u`; operational facades are `r`, `e`,
-`x`, `h`, `d`, and `s`. Each family lives under `_<module>/`, starts with
-`base.py`, and is composed by explicit inheritance. Public `api.py` is the only
-composition root and `cli.py` is a thin adapter. Modules have at most 200
-logical lines and one top-level class; declarations are pure. Boundary input
-and output use Pydantic 2, type aliases live only in `t`, protocols only in `p`,
-and contracts never use `Any`, `object`, `Optional`, or `dict`. Domain and
-application layers import no I/O, adapter, or framework. Local aliases,
-redeclared owner values, concrete service dependencies, parallel facades, and
-handwritten generated roots are blocking violations. `third_party_fork` retains
-its upstream architecture.
+FLEXT architecture facts (MRO, facade chain, module layout, typing policy) live
+there and in FLEXT domain rules — not in global governance.
 
 ### Lifecycle
 

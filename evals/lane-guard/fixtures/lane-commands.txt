@@ -1,8 +1,9 @@
 cd /home/example/worktree && make check
 make -C /home/example/worktree check
 env -C /home/example/worktree make check
+make check
 direct test-runner invocation
 direct linter invocation
 make check > /dev/null
-env -C /home/example/worktree make test
-env -C /home/example/worktree make audit
+make test
+make audit

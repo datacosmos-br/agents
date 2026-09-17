@@ -73,8 +73,8 @@ there.
    project rule SSOT (never ad-hoc grep), and code-review-graph CLI proofs
    per the `crg` skill when available: `dead-code --json` before cleanup,
    `impact --files` after the change (0 extra files affected = rewire pass),
-   `query callers_of` when deleting a symbol. A false sweeping pass with a no-op bypass is never a "skip" —
-   escalate.
+    `query callers_of` when deleting a symbol. A false sweeping pass with a
+    no-op bypass is never a "skip" — escalate.
 4. Root cause, zero residue, complete rewire. Remove dead, superseded, and
    duplicate code in the same change; rewire every consumer to the final owner
    before the old one dies. No compatibility aliases, shims, dual paths,
