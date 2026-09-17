@@ -67,6 +67,15 @@ FLEXT program work runs this loop per slice; never ad-hoc tool calls.
 4. Graph evidence through the agent-side `code-review-graph` CLI, operated
    exactly as `$crg` defines (freshness gate, lane graph, verified verbs);
    flext code never imports it — the CRG library-boundary ban rule. FLEXT
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+   delta: `impact --files` / `detect-changes` output is blast-radius evidence
+   on tracker items and PR reviews, `dead-code --json` per member feeds R2
+   zero-residue sweeps only after source confirmation, and `refactor
+   suggest|rename` previews precede `make mod` or Rope execution.
+=======
+>>>>>>> docs/governance-reconciliation
    delta only:
    - the workspace root is a superproject: its graph is built with the
      submodule recursion `$crg` prescribes, and each member lane checkout
@@ -77,6 +86,10 @@ FLEXT program work runs this loop per slice; never ad-hoc tool calls.
      source confirmation;
    - `refactor rename|suggest` previews are applied only by `make mod`
      (Rope/ast-grep owner), then the cycle above revalidates.
+<<<<<<< HEAD
+=======
+>>>>>>> origin/dev
+>>>>>>> docs/governance-reconciliation
 5. Commit scoped → push FF → PR → `--no-ff` into the declared integration
    branch → gates on the merged SHA → graph refresh on the integrated tip
    (`$crg` runbook) → tag / release only then (F5 law).
