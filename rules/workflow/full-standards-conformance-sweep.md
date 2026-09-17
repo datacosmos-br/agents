@@ -21,13 +21,9 @@ with its raw traceback; no catch, retry, fallback, or normalization, ever.
 
 ## 2. Canonical command surface — never invent
 
-Everything runs ONLY through the workspace root Make dispatcher (`setup`, `gen`,
-`fix`, `fmt`, `check`, `test`, `conform`, WAZA, publication) with the single
-declared mutation flag. NEVER add invented selectors (WHAT=, PROJECT=, FILE=,
-MATCH=, ARGS=) beyond the dispatcher's own contract. NEVER bypass with raw
-uv/pytest/ruff/mypy/ad-hoc scripts. A broken verb is a defect fixed at its owner
-(generically in flext-infra), then the native verb is rerun. Diagnosis and
-validation are bound by the same rule as mutation.
+The `canonical commands` rule owns command discovery, selector-free root Make
+verbs, structural tooling, diagnostics, and first-failure propagation. This
+sweep invokes those owners; it does not restate or weaken them.
 
 ## 3. testmon is mandatory
 
@@ -61,31 +57,11 @@ non-automated test forms are prohibited outright.
 
 ## 6. FLEXT architecture law — strict, every managed project
 
-Strict chain `settings → config → c → t → p → m → u → base.py → services/*.py
-→ api.py → cli.py`; MRO facades c→t→p→m→u + operational r/e/x/h/d/s; reverse
-imports TYPE_CHECKING-only. One public `api.py` per package (sole composition
-root) + thin `cli.py`. Internals under `_[module]/*.py` starting with `base.py`;
-`[module].py` imports all with explicit inheritance (diamond MRO). One class per
-module, nested only. ≤1000 logical LOC/module.
-
-- NO local redeclarations, aliases, or competing long-name layers: every module
-  consumes settings, config, c/t/p/m/u through the canonical single-form
-  imports. Found violation → delete and rewire immediately.
-- **Lazy imports via `__init__` are the PREFERRED form** (performance, no
-  import cycles) — implemented with the fleet lazy exports pattern
-  (`build_lazy_import_map` + `install_lazy_exports`, TYPE_CHECKING imports).
-  Cyclic-import errors are symptoms of strict-rule violations, fixed at the
-  rule, never with path hacks or sys.path injection.
-- Declaration layers are pure data; behavior only in u/base/services/api/cli.
-  Pydantic-2 in/out; typing via `t.*`/`p.*` only — `Any`, `object`, `Optional`,
-  dict contracts banned.
-- CA/DI forever: dependencies cross boundaries only via p protocols, injected
-  explicitly, wired ONCE at the composition root. Direct dependencies, service
-  locators, globals, string keys, hidden singletons, import-time wiring:
-  BANNED forever.
-- Manual registries/mappings that duplicate discoverable structure (e.g.
-  `class-nesting-mappings.yml`) are exterminated: discovery is automated from
-  the SSOT, never maintained by hand.
+The `internal clean architecture` rule owns the FLEXT chain, facade families,
+DI boundaries, declaration purity, and the 200-logical-line module limit. The
+branch-matched `flext-law` and `flext-family-shape` skill own the project delta.
+This sweep detects violations and routes repairs through those owners; it never
+defines a competing 1000-line allowance or copied facade contract.
 
 ## 7. Disciplines applied completely, in order
 

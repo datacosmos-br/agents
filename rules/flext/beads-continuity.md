@@ -5,13 +5,14 @@ metadata:
 
 # Session continuity for bead governance
 
-At the start of a session in a beads-managed workspace:
+At session start in a Beads-managed FLEXT rig, load current execution state with
+`bd prime` through the repository-declared environment, then inspect and claim
+the active Bead before effects. The `session governance`, `Gas City`, and
+`beads verification` rules own context restoration, activation, and evidence;
+this rule adds only the FLEXT routing order:
 
-1. Run the wip-beads batch processor in dry-run to stamp fresh workspace
-   evidence (`scripts/wip-beads.sh --mode collect --limits 25` from the
-   `wip-beads` skill bundle); apply only when a bead write is requested.
-2. Reconcile skills: this rule pairs with the `wip-beads` skill
-   (`skills/tool/wip-beads`), which owns the processor script.
-3. Session-router order remains authoritative (session-router.md): inviolable
-   rules -> make-check -> flext-context-routing -> flext-law domain delta ->
-   verification-loop at completion.
+`inviolable rules → make-check → flext-context-routing → branch-matched
+flext-law → verification-loop`.
+
+Do not run a second batch tracker, stamp speculative evidence, or copy Bead
+state into a local plan.

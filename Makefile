@@ -16,7 +16,7 @@ override export UV_PROJECT_ENVIRONMENT := $(CURDIR)/.venv
 override export VIRTUAL_ENV := $(CURDIR)/.venv
 
 .DEFAULT_GOAL := help
-.PHONY: help setup docs audit check runtime waza static conform fmt fix mod mod-check shell duplication build test test-full ci validate-artifacts publish
+.PHONY: help setup gen docs audit check runtime waza static conform fmt fix mod mod-check shell duplication build test test-full ci validate-artifacts publish
 .DELETE_ON_ERROR:
 
 define BANNER
@@ -36,6 +36,11 @@ setup: ## create the declared repository runtime environment
 	@mise install
 	@uv venv --clear
 	@uv sync --all-groups
+
+## generation + mutation
+gen: ## project the governance capsule into provider hooks and instruction files
+	$(call BANNER,gen · governance capsule + provider projections)
+	@uv run python tools/sync_governance.py
 
 ## development gates
 check: ## run every applicable non-test gate
