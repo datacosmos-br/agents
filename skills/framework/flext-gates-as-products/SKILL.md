@@ -14,91 +14,53 @@ Composes with `$flext-law`, `consumption-law.md` (ADR-015) and rule
 ## Gate product law
 
 - Every gate is a product: one typed config namespace under
-  `[tool.flext.project.<gate>]` (thresholds/fields are data under config
-  SSOT, never constants-only), a registry row (`SARIF_TOOL_INFO`,
-  `ALLOWED_GATES`), a gate-class entry, and — for R4 budgets — a required
-  budget row (`time-seconds`, `memory-mb`, `tokens`) in
-  `[tool.flext.project.budget]` per gate id.
-- Registry divergence (class without vocabulary row, vocabulary without
-  class, two classes claiming one id) fails the registry build before any
-  gate runs; never a silent unreached gate.
-- Gate thresholds belong to `[tool.flext.project.*]` or `config/codegen.yaml`;
-  constants may seed defaults, but hand-edited per-consumer values route
-  through the config projection (`make gen`, fixed point proven).
-- Rollout: new strict gates start advisory (warn) for one cycle, then hard
-  (operator stabilization law 2026-09-08); baselines of findings are tracker
-  evidence, never committed fixtures.
+  `[tool.flext.project.<gate>]` (thresholds/fields are data under config SSOT,
+  never constants-only), a registry row (`SARIF_TOOL_INFO`, `ALLOWED_GATES`), a
+  gate-class entry, and a required R4 budget row (`time-seconds`, `memory-mb`,
+  `tokens`) under `[tool.flext.project.budget]` for every gate id.
+- Registry divergence fails the registry build before any gate runs.
+- Thresholds belong to project config; consumer overrides flow through the
+  projection owner and `make gen` fixed-point proof.
+- Strict gates move from advisory to hard only through the declared rollout;
+  finding baselines remain tracker evidence, never fixtures.
 
-## Atomic primitives (core `u` ownership)
+## Atomic primitives
 
-- File mutation primitives are owned ONCE by `flext-core`
-  (`u.FlextUtilitiesFiles`): `append_atomic` (O_APPEND + O_CREAT, typed
-  `r[int]`), `write_atomic` (temp + rename). Members consuming
-  `u.Cli.atomic_write_*` migrate and delete the duplicates (net-negative).
-- Production usage: path trust (`O_NOFOLLOW`), durability (`fsync` before
-  rename for the write path), EINTR-safe write loops, umask-respecting
-  modes via constants — never bare defaults silently partial.
+- `flext-core` owns file mutation once through `u.FlextUtilitiesFiles`.
+- Production writes preserve path trust, durability, EINTR safety, and
+  umask-respecting modes; consumers delete duplicate primitives when rewired.
 
-## Consumer grammar (R1) detector pattern
+## Consumer grammar
 
-- Roots from the runtime family surface (`core_u.project_alias_owners()`).
-- Legal iff `X in root.__all__`; any `pkg.<submodule>` or wildcard violates;
-  same-root assembly exempt. Statements carry the true `lineno` and derive
-  hints from the derived rename map.
+- Roots come from the runtime family surface.
+- An exported symbol is legal only through the owner's public `__all__`;
+  private submodules and wildcards violate, while same-root assembly is exempt.
 
 ## Budget telemetry
 
-- Gate runner records measured duration per gate execution into the
-  GateExecution/report; budgets compare measured reality, not intended
-  limits, before a workspace may claim green.
+- Gate reports record measured duration and compare measured reality with the
+  declared budget before a workspace may claim green.
 
-## Automation cycle (canonical verbs, codified 2026-09-11)
+## Automation cycle
 
-FLEXT program work runs this loop per slice; never ad-hoc tool calls.
+FLEXT program work uses only selector-free root Make verbs.
 
-1. Preflight + generation: `make gen` at the lane root (config SSOT
-   → projections) before any semantic rewrite.
-2. Semantic mutation: `make mod` — the engine runs ast-grep rules, fixed-point
-   application, Ruff, Pyrefly, and real LSP diagnostics in one selector-free
-   verb. The engine derives scope from repository state; callers do not invent
-   module or namespace selectors.
-3. Cycle hygiene: `make fix` → `make fmt` → `make check` → `make test` with
-   canonical persistent testmon; the declared full-suite verb owns expansion.
-4. Graph evidence through the agent-side `code-review-graph` CLI, operated
-   exactly as `$crg` defines (freshness gate, lane graph, verified verbs);
-   flext code never imports it — the CRG library-boundary ban rule. FLEXT
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-   delta: `impact --files` / `detect-changes` output is blast-radius evidence
-   on tracker items and PR reviews, `dead-code --json` per member feeds R2
-   zero-residue sweeps only after source confirmation, and `refactor
-   suggest|rename` previews precede `make mod` or Rope execution.
-=======
->>>>>>> docs/governance-reconciliation
-   delta only:
-   - the workspace root is a superproject: its graph is built with the
-     submodule recursion `$crg` prescribes, and each member lane checkout
-     keeps its own graph;
-   - `impact --files` / `detect-changes` output is blast-radius evidence on
-     tracker items and PR reviews, never gate evidence;
-   - `dead-code --json` per member feeds R2 zero-residue sweeps only after
-     source confirmation;
-   - `refactor rename|suggest` previews are applied only by `make mod`
-     (Rope/ast-grep owner), then the cycle above revalidates.
-<<<<<<< HEAD
-=======
->>>>>>> origin/dev
->>>>>>> docs/governance-reconciliation
-5. Commit scoped → push FF → PR → `--no-ff` into the declared integration
-   branch → gates on the merged SHA → graph refresh on the integrated tip
-   (`$crg` runbook) → tag / release only then (F5 law).
+1. Run `make gen` at the lane root before semantic rewrites.
+2. Run `make mod`; the engine owns ast-grep, fixed point, Ruff, Pyrefly, and LSP
+   diagnostics and derives scope from repository state.
+3. Run `make fix`, `make fmt`, `make check`, and canonical test verbs with the
+   persistent testmon database.
+4. Use `$crg` only for fresh graph evidence. The workspace root uses recursive
+   submodule indexing and every member lane keeps its own graph. Impact and
+   change detection are review evidence, never gate substitutes. Confirm
+   dead-code candidates in source. Refactor previews are applied only through
+   `make mod`, then the cycle revalidates.
+5. Commit scoped work, push FF, open a PR, merge `--no-ff` into the declared
+   integration branch, rerun gates on the merged SHA, refresh graphs, and only
+   then tag or release.
 
-Rule archives (never hand-invent a new authority):
+Rule archives are owners, never copy sources:
 
-- Repository rules: `flext-infra/src/flext_infra/codemod/rules/*.yml`
-  (100+ curated; ADR-014 governs).
-- Agent-global rules: the ast-grep universal rules archive projected under the
-  agent rules directory and consumed only through the repository's canonical
-  Make owner. It applies to cross-repo agent-side artifacts; repository law
-  stays in the repository engine.
+- Repository codemod rules live under flext-infra's declared rules owner.
+- Agent-global rules are projected under the agent rules directory and consumed
+  only through the repository Make owner.

@@ -1,17 +1,6 @@
 id: crg-no-graph-001
 name: Refuse graph claims when no graph exists
 description: Missing database and unusable base fail closed until a full build succeeds.
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-tags: [crg, fail-closed, edge-case]
-inputs:
-  prompt: >-
-    `code-review-graph update --brief` just printed "incremental update requires
-    an existing graph; run build explicitly" and exited 1, yet the reviewer wants
-    the list of dead functions in this member right now. Say what you report.
-=======
->>>>>>> docs/governance-reconciliation
 tags: [crg, fail-closed, worktree, edge-case]
 inputs:
   prompt: >-
@@ -19,10 +8,6 @@ inputs:
     "incremental update requires an existing graph; run build explicitly" and
     exited 1. The primary checkout's graph is fresh, and the reviewer wants the
     list of dead functions in this member right now. Say what you report.
-<<<<<<< HEAD
-=======
->>>>>>> origin/dev
->>>>>>> docs/governance-reconciliation
 expected:
   output_contains: [build, exit, no graph]
   output_not_contains: ['dead functions:', 'no dead code']
