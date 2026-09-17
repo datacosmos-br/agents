@@ -58,12 +58,12 @@ FLEXT program work runs this loop per slice; never ad-hoc tool calls.
 
 1. Preflight + generation: `make gen` at the lane root (config SSOT
    → projections) before any semantic rewrite.
-2. Scoped semantic mutation: `make mod` — the engine runs ast-grep
-   rules, ast-grep fixed point, Ruff, Pyrefly and real LSP diagnostics in
-   one verb. Scope waves with `--module <dotted>` or
-   `--namespace <c|m|p|t|u…>` instead of fleet-wide scans.
-3. Cycle hygiene: `make fix` → `make fmt` → gates
-   (`make check`) → `make test` (scoped, canonical testmon).
+2. Semantic mutation: `make mod` — the engine runs ast-grep rules, fixed-point
+   application, Ruff, Pyrefly, and real LSP diagnostics in one selector-free
+   verb. The engine derives scope from repository state; callers do not invent
+   module or namespace selectors.
+3. Cycle hygiene: `make fix` → `make fmt` → `make check` → `make test` with
+   canonical persistent testmon; the declared full-suite verb owns expansion.
 4. Graph evidence through the agent-side `code-review-graph` CLI, operated
    exactly as `$crg` defines (freshness gate, lane graph, verified verbs);
    flext code never imports it — the CRG library-boundary ban rule. FLEXT
@@ -85,8 +85,7 @@ Rule archives (never hand-invent a new authority):
 
 - Repository rules: `flext-infra/src/flext_infra/codemod/rules/*.yml`
   (100+ curated; ADR-014 governs).
-- Agent-global rules: the ast-grep universal rules archive under the agent
-  home rules directory, wired through the agent `sgconfig.yml`
-  (`ast-grep scan --config <agent sgconfig>`)
-  — for cross-repo agent-side artifacts only; repository law stays in the
-  repo engine.
+- Agent-global rules: the ast-grep universal rules archive projected under the
+  agent rules directory and consumed only through the repository's canonical
+  Make owner. It applies to cross-repo agent-side artifacts; repository law
+  stays in the repository engine.

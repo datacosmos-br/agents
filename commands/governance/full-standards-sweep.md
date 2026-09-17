@@ -67,14 +67,13 @@ there.
    test-purity, aliases/owners, banned annotations, import-time wiring,
    silent failures, duplication, layout/loc), one root cause per commit,
    re-measure after each class, and record start→end numbers in the active
-   plan or tracker item. Drive each wave with the canonical CLI kit:
-   `make mod` for rule-driven codemod (dry-run first), `make gen
-` for any generated-surface change, `ast-grep scan` against the
-   project rule SSOT (never ad-hoc grep), and code-review-graph CLI proofs
-   per the `crg` skill when available: `dead-code --json` before cleanup,
-   `impact --files` after the change (0 extra files affected = rewire pass),
-    `query callers_of` when deleting a symbol. A false sweeping pass with a
-    no-op bypass is never a "skip" — escalate.
+   plan or tracker item. Drive each wave through canonical owners: `make mod`
+   for rule-driven codemods using the project rule SSOT, `make gen` for every
+   generated-surface change, and code-review-graph evidence per the `crg`
+   skill when available. Prove graph freshness with `build|update --repo`
+   before `dead-code --json`, `impact --files`, or `query callers_of`; confirm
+   every candidate in source. A false sweeping pass with a no-op bypass is
+   never a "skip" — escalate.
 4. Root cause, zero residue, complete rewire. Remove dead, superseded, and
    duplicate code in the same change; rewire every consumer to the final owner
    before the old one dies. No compatibility aliases, shims, dual paths,
