@@ -53,15 +53,13 @@ this as project law; it composes with the project's own house rules.
 - **Project ast-grep rules** root `ast-grep-rules/` (SSOT anti-hardcode
   policy) plus the personal `~/.agents/ast-grep-rules/universal/` set;
   run `ast-grep scan --json` for structured captures, never ad-hoc grep.
-- **code-review-graph (CRG), CLI-only proofs per wave**:
-  `code-review-graph build|update --repo <root>` (full ~27s for ~6.5k
-  nodes; incremental updates otherwise) — required before the wave's
-  proof queries; `dead-code --json` BEFORE cleanup (orphans to exterminate
-  with their consumers, never orphan-prune alone); `impact --files <changed>`
-  AFTER the change (0 impacted nodes outside the rewire is the pass
-  evidence); `query callers_of <symbol>` to prove rewire completeness when
-  deleting a symbol. A not-found query result is NOT evidence of absence —
-  build/update first.
+- **code-review-graph (CRG), CLI-only proofs per wave** (operation, freshness,
+  and limits per `$crg`): graph refreshed before the wave's proof queries;
+  `dead-code --json` BEFORE cleanup (orphans to exterminate with their
+  consumers, never orphan-prune alone); `impact --files <changed>` AFTER the
+  change (0 impacted nodes outside the rewire is the pass evidence);
+  `query callers_of <symbol>` to prove rewire completeness when deleting a
+  symbol.
 
 ## Class-to-verb repair map (adapt keys to the project's gates)
 

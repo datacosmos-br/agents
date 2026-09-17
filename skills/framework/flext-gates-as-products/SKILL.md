@@ -64,21 +64,16 @@ FLEXT program work runs this loop per slice; never ad-hoc tool calls.
    `--namespace <c|m|p|t|u…>` instead of fleet-wide scans.
 3. Cycle hygiene: `make fix` → `make fmt` → gates
    (`make check`) → `make test` (scoped, canonical testmon).
-4. Graph evidence via the project CLI `code-review-graph` (agent-side tool;
-   flext code never imports it — the CRG library-boundary ban rule):
-   - `code-review-graph build` once per lane/repo (doctor reports critical
-     until a graph exists); incremental `update --brief` after commits.
-   - `detect-changes` / `impact <symbol>` = blast-radius evidence attached
-     to tracker items and PR reviews.
-   - `dead-code` per member feeds R2 zero-residue sweeps (YAGNI proof).
-   - `refactor suggest/rename --kind Function|Class` previews
-     graph-backed refactors before `make mod` or Rope executes them.
-   - `daemon start --repo <root>` keeps lanes fresh during long sessions;
-     `doctor` says exactly what is missing. Lanes/worktrees are registered
-     explicitly, never assumed inherited.
+4. Graph evidence through the agent-side `code-review-graph` CLI, operated
+   exactly as `$crg` defines (freshness gate, lane graph, verified verbs);
+   flext code never imports it — the CRG library-boundary ban rule. FLEXT
+   delta: `impact --files` / `detect-changes` output is blast-radius evidence
+   on tracker items and PR reviews, `dead-code --json` per member feeds R2
+   zero-residue sweeps only after source confirmation, and `refactor
+   suggest|rename` previews precede `make mod` or Rope execution.
 5. Commit scoped → push FF → PR → `--no-ff` into the declared integration
-   branch → gates on the merged SHA → `code-review-graph update` on the
-   integrated tip → tag / release only then (F5 law).
+   branch → gates on the merged SHA → graph refresh on the integrated tip
+   (`$crg` runbook) → tag / release only then (F5 law).
 
 Rule archives (never hand-invent a new authority):
 

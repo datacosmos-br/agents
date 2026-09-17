@@ -1,0 +1,18 @@
+id: crg-happy-path-001
+name: Fresh lane graph before deletion blast radius
+description: Refresh the lane graph, then gather impact and caller evidence before deleting.
+tags: [crg, freshness, impact, dead-code, happy-path]
+inputs:
+  prompt: |
+    Using the supplied lane scenario, give the exact code-review-graph steps
+    you run before deleting the helper, which results you trust or distrust,
+    and what evidence goes into the PR.
+  files:
+  - path: lane-refactor.md
+expected:
+  output_contains:
+  - update
+  - impact --files
+  - callers_of
+  - built_at_commit
+  - make mod

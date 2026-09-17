@@ -112,14 +112,18 @@ runtime proof, and canonical tracker closure.
 
 ### Operator directive (auto-injected)
 
-- **Full-Standards Cleanup & Conformance Sweep:** see
-  [`OPERATOR-DIRECTIVE.md`](OPERATOR-DIRECTIVE.md) — truth with evidence,
-  runtime as sole authority, canonical Make verbs + testmon only, <1min
-  feedback loops, root cause + zero residue + automated refactoring,
-  strict FLEXT architecture (lazy imports preferred), WIP always persisted
-  via dedicated worktree/branch, full PR→integration→runtime cycle or
-  nothing, consolidation mandate, beads governance, subagent mass + learning
-  loop. Newest operator word wins; unauthorized rule changes are grave.
+- **Universal law mandate (2026-09-16):** see
+  [`VALIDATE_ON_CHANGE.md`](VALIDATE_ON_CHANGE.md) — (1) validate-on-change
+  with FULL RUNTIME FUNCTIONING as the fundamental criterion; (2) no rush:
+  statuses/beads updated and WIP saved locally+remotely via dedicated
+  worktree/branch; (3) full PR→integration-branch cycle (and runtime when
+  requested) or the work counts for nothing; (4) NEVER deduce — research,
+  understand, or stop and ask. Composed with: truth with evidence, canonical
+  Make verbs + testmon only, <1min feedback, root cause + zero residue +
+  automated refactoring (ast-grep/make mod/crg/LSP), strict FLEXT
+  architecture, consolidation mandate (adopt every lane/PR/WIP), beads
+  governance, subagent mass. Newest operator word wins; unauthorized rule
+  changes are grave.
 
 ### Operator cycle lessons
 
@@ -147,6 +151,12 @@ runtime proof, and canonical tracker closure.
   logs are subordinate confirmation; runtime is the authority. "Written" is
   not "works"; a green test never overrides a broken runtime. Applies to
   code, config, rules, docs, branches, and generated artifacts alike.
+- **Nunca deduza (UNIVERSAL):** NEVER deduce, guess, or assume. ALWAYS
+  research (read the real source, run the real command, inspect the real
+  state), understand the context and hierarchy, and when any doubt remains —
+  STOP and ASK one precise question. A wrong guess silently corrupts
+  everything downstream; a question costs one message.
+
 - **Nunca com pressa de concluir (UNIVERSAL):** never rush to "finish". At
   every step, update statuses and beads, and ALWAYS persist work-in-progress
   commits locally AND push them remotely — THROUGH YOUR DEDICATED WORKTREE
@@ -177,6 +187,21 @@ runtime proof, and canonical tracker closure.
   DI, no hand-edited generated files, self-repairing governance, and full
   gitflow + runtime + distribution closure. Full contract:
   `rules/workflow/full-standards-conformance-sweep.md`.
+- **Sem locks de frota, sem exclude-newer (UNIVERSAL, PROIBIDO):** banned
+  outright and in every project: `exclude-newer` (any form, any value),
+  `uv.lock`/`mise.lock` tracked or generated-and-kept, fleet version pins, and
+  any hand mechanism that freezes the fleet. The fleet resolves ALWAYS at the
+  branch tip (`@<integration-branch>` floating); upstream stability is the
+  fleet's discipline, and local breakage is fixed fix-forward in the consumer
+  (or reported upstream), never by freezing, pinning, or locking. Found any of
+  these → remove immediately at the owner (pyproject, lockfile, generated
+  config) in the same change.
+- **Nunca deduza — pesquise, entenda, pergunte (UNIVERSAL):** NEVER guess,
+  infer, or assume. ALWAYS research first, understand the actual state, and if
+  doubt remains STOP and ASK the operator one precise question. Acting on a
+  deduced premise (report, memory, inference) without verifying current real
+  state is a defect — verify each concrete item at its source before any
+  effect. Doubt is a stop signal, not a risk to take.
 - **Ciclo completo ou nada (UNIVERSAL):** work is DONE ONLY when the full
   cycle completes — lane commits pushed, PR opened, PR merged into the
   integration branch, and (when requested) validated at runtime. Stopping

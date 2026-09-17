@@ -2,11 +2,11 @@
 
 **Status:** Accepted
 **Date:** 2026-09-16
-**Scope:** `rules/coordination/validate-on-change.md`, `rules/coordination/wip-persistence.md`, `rules/coordination/full-landing-cycle.md`, `rules/coordination/green-green-landing.md`, `rules/coordination/lane-adoption.md`, `rules/coordination/fanout-qa-publication.md`, `rules/ethics/test-reality-law.md`, `rules/ethics/strict-typed-quality.md`, `rules/ethics/conformance-sweep.md`
+**Scope:** `rules/coordination/validate-on-change.md`, `rules/coordination/wip-persistence.md`, `rules/coordination/full-landing-cycle.md`, `rules/coordination/never-deduce.md`, `rules/coordination/green-green-landing.md`, `rules/coordination/lane-adoption.md`, `rules/coordination/fanout-qa-publication.md`, `rules/ethics/test-reality-law.md`, `rules/ethics/strict-typed-quality.md`, `rules/ethics/conformance-sweep.md`
 
 ## Context
 
-The operator issued three universal rulings during the 2026-09-15/16 fleet
+The operator issued four universal rulings during the 2026-09-15/16 fleet
 stabilization sessions, after repeated cycles where green tests and collected
 evidence coexisted with broken runtime behavior, and where work parked outside
 a dedicated lane (or short of the integration branch) was lost:
@@ -20,11 +20,14 @@ a dedicated lane (or short of the integration branch) was lost:
 3. A unit of work that never reaches the integration branch — and, when
    requested, the deployed runtime — is not done at all: the full landing
    cycle is what converts work into delivered work.
+4. Never deduce or guess: research the owner, understand, and when doubt
+   remains, stop and ask one precise question before mutation proceeds.
 
 ## Decision
 
 1. Each ruling is encoded as one canonical rule under `rules/coordination/`
-   (`validate-on-change`, `wip-persistence`, `full-landing-cycle`) and their
+   (`validate-on-change`, `wip-persistence`, `full-landing-cycle`,
+   `never-deduce`) and their
    companion rules produced by the same sweep (`green-green-landing`,
    `lane-adoption`, `fanout-qa-publication`, `test-reality-law`,
    `strict-typed-quality`, `conformance-sweep`), all approved by this ADR.

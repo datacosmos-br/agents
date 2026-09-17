@@ -43,17 +43,16 @@ codegen owner and rerun the same root verb.
 
 ## Graph-informed sweep loop (research 2026-09-11, plan section 10-11)
 
-- Before structural or deletion-heavy edits, establish blast radius with
-  `code-review-graph impact [--files ...]` and rewiring maps via
-  `query {callers_of,callees_of,imports_of,tests_for}`; stale graphs lie:
-  never cite node counts from a graph whose commit predates the claims' base
-  — run `code-review-graph update` first and record the built-at commit.
+- Before structural or deletion-heavy edits, establish blast radius and
+  rewiring maps with the code-review graph operated per `$crg` (freshness
+  gate, `impact --files`, `query`); a graph built at another commit is no
+  evidence, and the built-at commit is recorded with every cited result.
 - Mechanical rewrite order per unit: crg map -> `make mod` detect/apply
   (cwd-scoped; rules SSOT `flext-infra/codemod/rules/` +
   the agent ast-grep universal rules archive) -> `make gen` (projection
   convergence) -> `make check` -> `make test`. Never bypass `make mod`
   with raw `sg`/ast-grep invocations; inline scan rules belong in the rules
   SSOT with a snapshot test, not ad-hoc command lines.
-- `refactor dead_code` and `impact --depth` gate deletions: a "dead" symbol
-  with fleet callers listed in the graph is not dead; treat disagreement
-  between graph and grep as a finding, not as a green.
+- Graph dead-code output and impact depth gate deletions only as candidates:
+  a "dead" symbol with fleet callers is not dead, and a graph-versus-grep
+  disagreement is a finding, not a green.

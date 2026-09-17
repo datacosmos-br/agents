@@ -1,0 +1,16 @@
+description: Graph-backed structural evidence with a freshness gate, correct
+  workspace topology, verified CLI verbs, and source confirmation before any
+  deletion.
+prompt: |-
+  Grade the crg response. Pass only if it refuses to cite graph results until
+  `code-review-graph status` shows the built commit equal to the current HEAD,
+  refreshes with `update` (or `build` when update has no usable base) scoped
+  with `--repo` to the lane worktree's own graph, passes changed files to
+  `impact --files` rather than a symbol, uses `query callers_of` or
+  `tests_for` for rewiring, treats `dead-code` output as candidates to confirm
+  in source (framework models and libcst `leave_*` callbacks can be false
+  positives), records the built commit as evidence, and lands edits through
+  the project codemod owner. Reject answers that trust a stale or foreign
+  graph, invent flags, treat an empty result as proof of absence, run
+  `code-review-graph install` or hand-edit managed daemon/MCP projections, or
+  delete code on graph output alone.

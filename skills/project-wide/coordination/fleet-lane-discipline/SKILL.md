@@ -85,10 +85,10 @@ below is evidence-producing and stays within the project Make dispatcher.
   boundary bans) are reusable across repos; verify rule ownership and layer
   scope before assuming a rule applies, and register a new rule at its owning
   distribution rather than copying it locally.
-- The code-review graph CLI builds a fresh graph with its own status verb
-  before congested refactors: build the graph for the touched project, read
-  blast radius from the active graph, and rerun idempotently after landing.
-  A stale or partial graph is RED — rebuild, do not navigate stale truth.
+- Before congested refactors, refresh the touched project's code-review
+  graph and read blast radius from it per `$crg`; refresh again after
+  landing. A stale or partial graph is RED — rebuild, do not navigate stale
+  truth.
 - For exact definition/reference sites during consumer rewiring, structure
   queries go through the Scope navigator with a fresh index; grep stays
   reserved for literal evidence that the navigator cannot answer.
@@ -96,7 +96,6 @@ below is evidence-producing and stays within the project Make dispatcher.
   green (gen ×2 fixed point, check, full test within the test budget), then
   propagate waves across remaining members with the same gates per wave.
   Fleet changes land on the declared integration branch only.
-- Graph-backed claims about code state are gated by graph freshness: run
-  `code-review-graph update` in the repo scope and record `Built at commit`
-  before citing impact/query/refactor outputs in a bead or PR; a graph built
-  at an older commit than the claimed base is evidence of nothing.
+- Graph-backed claims about code state pass the `$crg` freshness gate first;
+  a graph built at an older commit than the claimed base is evidence of
+  nothing.

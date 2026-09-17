@@ -33,3 +33,9 @@ inits carry the package's real export surface. An empty generated init for a
 package with public children is a planner defect — fix the engine, never
 accept the emptiness. Import cycles are symptoms of violated strict rules,
 not of the init design.
+
+The following artifacts are BANNED fleet-wide (operator extermination order,
+revalidated 2026-09-16): `exclude-newer` (any form, including config vestiges
+like `uv_exclude_newer`), `uv.lock`, `mise.lock`. They freeze resolution
+against the always-newest contract. Presence in any producer or consumer is a
+regression: delete at the owner, commit, push, and record on the tracker.

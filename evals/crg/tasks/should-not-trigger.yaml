@@ -1,0 +1,11 @@
+id: crg-should-not-trigger-001
+name: Literal config lookup needs no graph
+description: A known literal at a known path is read directly without graph tooling.
+tags: [anti-trigger, negative-test, literal-lookup]
+inputs:
+  prompt: Open config/workspace.yaml and tell me the value of the
+    integration_branch key exactly as written there.
+expected:
+  output_not_contains:
+  - code-review-graph
+  - query_graph_tool
