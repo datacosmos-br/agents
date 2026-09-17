@@ -2,7 +2,7 @@
 name: py-dev
 description: 'python, package development, toolchain detection'
 metadata:
-  aihub.tags: '["activation:detected","decision:ADR-0008","detect:marker:poetry.lock","detect:marker:pyproject.toml","detect:marker:requirements-dev.txt","detect:marker:requirements.txt","detect:marker:uv.lock","effective:2026-08-29","extends:solid","route:project","subject:python","supersedes:skill:python-development","usage:router"]'
+  aihub.tags: '["activation:detected","decision:ADR-0008","detect:marker:pyproject.toml","detect:marker:requirements-dev.txt","detect:marker:requirements.txt","effective:2026-08-29","extends:solid","route:project","subject:python","supersedes:skill:python-development","usage:router"]'
 ---
 
 # Python Development

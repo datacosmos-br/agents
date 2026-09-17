@@ -16,8 +16,8 @@ whole chain one admissible unit.
 ```text
 H1 integration branch GREEN      gates + tests at the merged SHA (not the PR SHA)
 H2 release PUBLISHED             tag + GitHub release visible (a tag alone is not a release)
-H3 consumer lock BUMPED          uv.lock/pin points at H2's exact version; make setup GREEN
-H4 consumer gates GREEN          check + test on the consumer at the bumped lock
+H3 consumer dependency PINNED    typed dependency owner points at H2's exact version; make setup GREEN
+H4 consumer gates GREEN          check + test on the consumer at the integrated dependency pin
 H5 runtime DEPLOYED              release built from integrated source; propagate verb run
 H6 runtime ACTIVE                unit active AND port listening AND endpoint answering
 H7 pilot CYCLE EVIDENCED         one real production cycle collected as bead evidence
@@ -58,7 +58,7 @@ H7 pilot CYCLE EVIDENCED         one real production cycle collected as bead evi
   (`requires_apply`) had already been dropped upstream — stale ADR text would
   have routed the next session into a nonexistent cutover.
 - Release published (rc3) 255 commits behind the integration tip — H2/H3 would
-  have bumped a lock to a version without the landed contract.
+  have pinned a dependency version without the landed contract.
 
 ## Owner references
 
