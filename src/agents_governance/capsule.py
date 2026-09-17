@@ -67,12 +67,15 @@ def render_capsule(bundle: GovernanceBundle) -> Capsule:
     ]
     for ident in bundle.config.bootstrap_rules:
         rule = by_identity[ident]
+        summary = rule.capsule_summary
+        if summary is None:
+            raise ValueError(f"bootstrap rule {ident} declares no capsule summary")
         lines.extend(
             [
                 "",
                 f"## Rule `{rule.identity}`",
                 "",
-                rule.capsule_summary.strip(),
+                summary.strip(),
                 "",
             ]
         )
