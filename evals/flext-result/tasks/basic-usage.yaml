@@ -1,0 +1,17 @@
+id: flext-result-label-contract-001
+name: Preserve label lookup failures with the smallest Result forms
+description: Simplify two real Result methods while retaining a raw parser exception boundary.
+tags: [flext-result, happy-path, failure-metadata]
+inputs:
+  prompt: >-
+    Apply flext result law: railway composition, result mnemonics, and failure metadata.
+    Review the attached LabelService fixture and return the smallest replacement bodies
+    for all three methods. Preserve lookup failure fields and the parser exception contract;
+    do not add helpers or change the store. Explain the loaded parent chain, the selected
+    mnemonic forms, and why the proposed map(int).unwrap() shortcut is not equivalent.
+    State the failed-read callback and effect-count checks needed for these replacements.
+  files:
+  - path: label-store.yaml
+expected:
+  output_contains: ['return self.store.load()', '.map(len)', 'from_failure(loaded)', 'int(loaded.value)', 'ValueError', 'RuntimeError', 'error_code', 'error_data', 'exception', 'flext-development', 'py-dev', 'solid']
+  output_not_contains: ['.bind(', '.and_then(', '>>', '.unwrap_or(', '.recover(', '.lash(']

@@ -1,0 +1,12 @@
+id: flext-cli-plain-argparse-001
+name: Keep a standalone argparse script outside the FLEXT CLI skill
+description: A plain argument-parsing request with no flext dependency must not activate route law.
+tags: [flext-cli, non-trigger, plain-python]
+inputs:
+  prompt: |
+    This standalone maintenance script imports only argparse and shovels one optional
+    --verbose flag and one positional path argument into a small copy loop. Show the
+    minimal argument declarations and the flag lookup. No framework, fleet, facade,
+    or packaging change is requested.
+expected:
+  output_not_contains: [ResultCommandRoute, flext-cli, framework_execute, register_result_routes, create_app_with_common_params]

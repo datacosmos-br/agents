@@ -1,0 +1,29 @@
+project_profile: internal_flext
+dependency: flext-core
+consumer: LabelService
+contract:
+  store_load: p.Result[str], same outward contract, no additional effects
+  store_read_text: p.Result[str], success payload always a string
+  text_size: p.Result[int], string length, retain all failure fields
+  read_port: p.Result[int], int conversion must raise raw ValueError on malformed text
+  failure_sample: {error: label unavailable, error_code: LABEL_MISSING, error_data: {record_id: label-17}, exception: existing ValueError object}
+  effects: store called once per method; failed reads never run conversion
+  change_scope: only these three methods; existing imports are p and r from flext_core
+source: |
+  def load_label(self) -> p.Result[str]:
+      loaded = self.store.load()
+      if loaded.failure:
+          return r[str].fail(loaded.error)
+      return r[str].ok(loaded.value)
+
+  def text_size(self) -> p.Result[int]:
+      loaded = self.store.read_text()
+      if loaded.failure:
+          return r[int].fail(loaded.error)
+      return r[int].ok(len(loaded.value))
+
+  def read_port(self) -> p.Result[int]:
+      loaded = self.store.read_text()
+      if loaded.failure:
+          return r[int].from_failure(loaded)
+      return r[int].ok(int(loaded.value))

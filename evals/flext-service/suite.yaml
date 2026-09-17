@@ -1,0 +1,4 @@
+description: Flext service composition law.
+prompt: |-
+  grade the flext-service response, pass only when it names the project service base ending at the flext_core s kernel, the local s facade alias import, classmethod and staticmethod handlers returning p.Result over m and p typed boundaries, constructor and p protocol dependency injection wired at the api composition root with one eager alias, no hidden singleton module state or environment read inside services, and part classes under services part dirs composing the public service head.
+  Reject hand-rolled singletons, module-level mutable instances, bare dict boundaries, os.environ reads, and domain logic in the composition root.

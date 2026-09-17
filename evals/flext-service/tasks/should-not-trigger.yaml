@@ -1,0 +1,12 @@
+id: flextservice-negative-001
+name: Should not trigger flext-service
+description: Reject invalid triggers for flext-service.
+tags: [flext, service, composition, negative, invalid-trigger]
+inputs:
+  prompt: >-
+    User asks to choose a flext Result operation such as flat_map versus fold, to restate the five family part shape law, or to change settings config loading; the service composition skill must not trigger.
+  files:
+  - path: scenario.yaml
+expected:
+  output_contains: ['not this skill', 'flext-result', 'flext-family-shape']
+  output_not_contains: ['service composition guidance']

@@ -1,0 +1,16 @@
+id: flext-config-fail-closed-001
+name: Reject placeholder residue and a patched config owner
+description: A placeholder surviving expansion and a monkeypatched CONFIG_DIR must both fail closed.
+tags: [flext, settings, config, fail-closed, placeholder, repoint]
+inputs:
+  prompt: |
+    flext-orders config carriers.yaml declares
+    log_dir: ${SHIP_STATE_HOME:-${SHIP_HOME}/.local/state}/logs, but one file
+    misspells the inner token so it never matches the expansion grammar. A
+    contributor proposes shipping it anyway, letting the service call
+    os.path.expandvars at read time, and patching the CONFIG_DIR ClassVar in
+    tests to repoint the config root. Evaluate both proposals and do the
+    owner-correct thing.
+expected:
+  output_contains: [fail, ValueError, residue, undeclared, env seam, reset_for_testing, expandvars]
+  output_not_contains: [ship anyway, monkeypatch, ClassVar patch, empty string, silent skip]

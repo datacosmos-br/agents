@@ -153,6 +153,15 @@
       "rule:coordination/fix-forward-collaboration",
       "skill:fix-forward"
     ],
+    "flext-cli-declarative-routes": [
+      "skill:flext-cli"
+    ],
+    "flext-result-composition": [
+      "skill:flext-result"
+    ],
+    "flext-service-composition": [
+      "skill:flext-service"
+    ],
     "flext-strict-architecture": [
       "rule:architecture/internal-clean-architecture",
       "skill:flext-development"

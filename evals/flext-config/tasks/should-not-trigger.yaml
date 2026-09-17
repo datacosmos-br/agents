@@ -1,0 +1,10 @@
+id: flext-config-should-not-trigger-001
+name: Leave standalone Pydantic validation outside FLEXT config law
+description: A typed model question without FLEXT settings/config ownership must not activate this skill.
+tags: [anti-trigger, flext, config, negative-test]
+inputs:
+  prompt: Validate a standalone Pydantic model with constrained integers for a
+    Flask application. The repository has no flext selection, flext-core
+    dependency, governed config directory, or singleton export.
+expected:
+  output_not_contains: [FlextSettings, FlextConfig, fetch_global, "config/*.yaml", settings vs config]

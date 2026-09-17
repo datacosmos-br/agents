@@ -1,0 +1,18 @@
+id: flext-cli-route-table-001
+name: Add a command as a declarative ResultCommandRoute
+description: Extend the rig console with agent-suspend through the route table, typed model, and Result handler.
+tags: [flext-cli, happy-path, declarative-routes]
+inputs:
+  prompt: |
+    This internal_flext repository depends on flext-cli and builds its console with
+    create_app_with_common_params, then register_result_routes over the attached
+    route-table.yaml. Add the requested agent-suspend command: the exact input model
+    declaration, the service handler shape, the route entry (spec row or config tool
+    command), and how the CLI surface and exit codes are produced. State why no typer
+    or click import appears in project code and how "agent suspended" is emitted, and
+    name the boundary used to run the console end to end.
+  files:
+  - path: route-table.yaml
+expected:
+  output_contains: [ResultCommandRoute, register_result_routes, model_cls, handler, p.Result, AgentSuspendInput, success_message, flext-development, framework_execute]
+  output_not_contains: ['import typer', '@app.command', 'sys.exit', 'import click']

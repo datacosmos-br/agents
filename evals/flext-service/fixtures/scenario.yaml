@@ -1,0 +1,9 @@
+skill: flext-service
+state: canonical
+consumer:
+  base: src/ai_hub/base.py
+  service: src/ai_hub/services/deploy.py
+  parts: src/ai_hub/services/_deploy_agents_parts/surfaces.py
+  root: src/ai_hub/api.py
+kernel: [fetch_global, reset_for_testing, with_settings]
+gates: [runtime, check, test]

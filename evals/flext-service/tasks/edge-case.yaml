@@ -1,0 +1,12 @@
+id: flextservice-edge-001
+name: Edge case flext-service
+description: Handle the material boundary case for flext-service.
+tags: [flext, service, composition, edge-case]
+inputs:
+  prompt: >-
+    A service module wants os.environ reads, a module-level mutable instance, and its own hand-rolled singleton accessor instead of the inherited kernel; the skill must reject this shape and route settings through the injected or pre-instantiated settings owner and fetch_global from the service base.
+  files:
+  - path: scenario.yaml
+expected:
+  output_contains: ['reject', 'settings', 'fetch_global', 'service base']
+  output_not_contains: ["normalized failure", "os.environ allowed"]

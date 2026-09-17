@@ -1,0 +1,25 @@
+project: rig-console
+kind: internal_flext consumer depending on flext-cli
+app_factory: FlextCli().create_app_with_common_params(name="rig", help_text="Rig console")
+route_specs:
+  - [agent-list, List configured rig agents.]
+  - [city-enter, Create a Gas City-owned interactive session for the current rig.]
+input_models:
+  CityEnterInput:
+    agent: str (min_length=1, description: Configured Gas City agent template.)
+  NoArgsInput: {}
+service_operations:
+  agent_list: (params: NoArgsInput) -> p.Result[list[str]]
+  city_enter: (params: CityEnterInput) -> p.Result[bool]; bridges the external
+    gc binary through u.Cli.run_live and returns r.from_failure(...) on failure
+config_tool_commands:
+  - name: rig-watch-supervisor
+    help_text: Supervise incremental builds for dirty workspaces.
+    model: NoArgsInput
+    handler: watch_supervisor
+request:
+  add_command: agent-suspend
+  help_text: Suspend one configured rig agent.
+  input_model: AgentSuspendInput with agent: str (min_length=1)
+  service_operation: suspend_agent (params: AgentSuspendInput) -> p.Result[bool]
+  success: emit "agent suspended"

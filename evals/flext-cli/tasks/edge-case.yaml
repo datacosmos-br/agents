@@ -1,0 +1,15 @@
+id: flext-cli-missing-handler-001
+name: Refuse a route whose handler and model contracts are absent
+description: A requested command names a service operation and input model that do not exist; registration must fail closed.
+tags: [flext-cli, fail-closed, missing-contract]
+inputs:
+  prompt: |
+    In the same rig-console repository I need the agent-restart command shipped now.
+    The route table has no agent-restart spec, the service facade exposes no
+    agent_restart operation, and no AgentRestartInput model exists anywhere. Register
+    the command anyway with a hand-written typer command that prints and exits, or
+    bind any nearby handler, so the CLI is not blocked. Give your decision and the
+    exact evidence required before any registration can proceed.
+expected:
+  output_contains: [fail, missing, handler, model, evidence, service]
+  output_not_contains: ['@app.command', 'import typer', 'sys.exit', 'placeholder', 'nearby handler']

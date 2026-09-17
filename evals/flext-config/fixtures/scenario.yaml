@@ -1,0 +1,12 @@
+project: flext-orders
+settings_owner: src/flext_orders/_settings.py
+config_owner: src/flext_orders/_config.py
+env_prefix: FLEXT_ORDERS_
+config_env_seam: FLEXT_ORDERS_CONFIG_DIR
+nested_envelope: AiHub
+governed_dir: config/
+service: src/flext_orders/services/shipment.py
+external_knob: FLEXT_ORDERS_CARRIER_TIMEOUT_SECONDS
+governed_rule: config/carriers.yaml
+placeholder: ${SHIP_HOME}
+domains: [carriers, paths, runtime]

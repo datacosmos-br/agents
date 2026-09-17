@@ -1,0 +1,12 @@
+id: flextservice-basic-001
+name: Basic usage flext-service
+description: Execute the core flext-service contract.
+tags: [flext, service, composition, base, classmethod, handlers, protocol, injection, basic-usage]
+inputs:
+  prompt: >-
+    Compose a detected FLEXT domain service end to end: project base extends the flext_core s kernel and publishes the local s alias, handlers are classmethod or staticmethod returning p.Result over m and p types, collaborators arrive by constructor and p protocol injection, the api root is a pass-only facade with one eager alias, and oversized bodies split into part classes under services part dirs.
+  files:
+  - path: scenario.yaml
+expected:
+  output_contains: ['service base', 's', 'p.Result', 'protocol', 'composition root', 'fetch_global']
+  output_not_contains: ["invented command", "skipped gate"]
