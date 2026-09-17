@@ -82,8 +82,8 @@ Precedence: `rules/coordination/operator-precedence.md`.
 
 By category:
 - [Architecture](rules/architecture/) — clean architecture, DI, topology, ownership
-- [Coordination](rules/coordination/) — lifecycle, beads, operator alignment, sessions
-- [Ethics](rules/ethics/) — integrity, truth, never-deduce, test-reality
+- [Coordination](rules/coordination/) — lifecycle, beads, operator alignment, never-deduce, sessions
+- [Ethics](rules/ethics/) — integrity, truth, and test-reality
 - [Runtime](rules/runtime/) — execution, residue, environment, fail-fast
 - [Workflow](rules/workflow/) — discovery, generation, documentation, gates
 - [Security](rules/security/) — supply chain, scanners, prompt defense
