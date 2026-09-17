@@ -11,10 +11,12 @@ from __future__ import annotations
 
 import ast
 import hashlib
+import importlib
 import importlib.util
 import json
 import subprocess
 import sys
+from collections.abc import Mapping
 from pathlib import Path
 
 import pytest
@@ -33,8 +35,11 @@ _TOOLS = Path(__file__).resolve().parents[1] / "tools"
 
 def _load_sync_governance():
     sys.path.insert(0, str(_TOOLS))
-    import _projection  # noqa: F401
-    spec = importlib.util.spec_from_file_location("_sync_governance", _TOOLS / "sync_governance.py")
+    importlib.import_module("_projection")
+
+    spec = importlib.util.spec_from_file_location(
+        "_sync_governance", _TOOLS / "sync_governance.py"
+    )
     assert spec is not None and spec.loader is not None
     module = importlib.util.module_from_spec(spec)
     sys.modules["_sync_governance"] = module
@@ -46,11 +51,15 @@ _sg = _load_sync_governance()
 
 
 class TestsCapsuleRender:
-    def test_capsule_body_has_header_marker(self, governance_bundle: GovernanceBundle) -> None:
+    def test_capsule_body_has_header_marker(
+        self, governance_bundle: GovernanceBundle
+    ) -> None:
         capsule = render_capsule(governance_bundle)
         assert capsule.body.startswith("# Generated session governance capsule")
 
-    def test_digest_matches_body_sha256(self, governance_bundle: GovernanceBundle) -> None:
+    def test_digest_matches_body_sha256(
+        self, governance_bundle: GovernanceBundle
+    ) -> None:
         capsule = render_capsule(governance_bundle)
         expected = hashlib.sha256(capsule.body.encode("utf-8")).hexdigest()
         assert capsule.digest == expected
@@ -60,12 +69,16 @@ class TestsCapsuleRender:
         expected = f"<!-- {CAPSULE_MARKER} sha256:{capsule.digest} -->"
         assert capsule.text.startswith(expected)
 
-    def test_text_is_header_plus_body_plus_newline(self, governance_bundle: GovernanceBundle) -> None:
+    def test_text_is_header_plus_body_plus_newline(
+        self, governance_bundle: GovernanceBundle
+    ) -> None:
         capsule = render_capsule(governance_bundle)
         header_line = f"<!-- {CAPSULE_MARKER} sha256:{capsule.digest} -->"
         assert capsule.text == f"{header_line}\n{capsule.body}\n"
 
-    def test_opencode_digest_matches_full_text(self, governance_bundle: GovernanceBundle) -> None:
+    def test_opencode_digest_matches_full_text(
+        self, governance_bundle: GovernanceBundle
+    ) -> None:
         capsule = render_capsule(governance_bundle)
         expected = hashlib.sha256(capsule.text.encode("utf-8")).hexdigest()
         assert capsule.opencode_digest == expected
@@ -76,12 +89,16 @@ class TestsCapsuleRender:
         assert first.text == second.text
         assert first.digest == second.digest
 
-    def test_all_bootstrap_rules_present(self, governance_bundle: GovernanceBundle) -> None:
+    def test_all_bootstrap_rules_present(
+        self, governance_bundle: GovernanceBundle
+    ) -> None:
         capsule = render_capsule(governance_bundle)
         for ident in governance_bundle.config.bootstrap_rules:
             assert f"## Rule `{ident}`" in capsule.body
 
-    def test_bootstrap_rules_have_approval_tags(self, governance_bundle: GovernanceBundle) -> None:
+    def test_bootstrap_rules_have_approval_tags(
+        self, governance_bundle: GovernanceBundle
+    ) -> None:
         capsule = render_capsule(governance_bundle)
         by_identity = {rule.identity: rule for rule in governance_bundle.rules}
         for ident in governance_bundle.config.bootstrap_rules:
@@ -90,7 +107,9 @@ class TestsCapsuleRender:
             for tag in approves:
                 assert tag in capsule.body
 
-    def test_bootstrap_skills_listed_by_name(self, governance_bundle: GovernanceBundle) -> None:
+    def test_bootstrap_skills_listed_by_name(
+        self, governance_bundle: GovernanceBundle
+    ) -> None:
         capsule = render_capsule(governance_bundle)
         for name in governance_bundle.config.bootstrap_skills:
             assert name in capsule.body
@@ -100,7 +119,9 @@ class TestsCapsuleRender:
         for cmd in governance_bundle.commands:
             assert cmd.name in capsule.body
 
-    def test_capsule_within_delivery_budget(self, governance_bundle: GovernanceBundle) -> None:
+    def test_capsule_within_delivery_budget(
+        self, governance_bundle: GovernanceBundle
+    ) -> None:
         capsule = render_capsule(governance_bundle)
         budget = governance_bundle.config.delivery.capsule_budget_chars
         reserve = governance_bundle.config.delivery.restore_list_reserve_chars
@@ -109,60 +130,60 @@ class TestsCapsuleRender:
         assert len(capsule.body) <= ceiling
 
 
+def _run_python_hook(response: Mapping[str, object]) -> dict[str, object]:
+    script = _sg._render_python_hook(dict(response))
+    result = subprocess.run(
+        [sys.executable, "-c", script],
+        input=json.dumps({}),
+        capture_output=True,
+        text=True,
+        timeout=10,
+        check=False,
+    )
+    assert result.returncode == 0, result.stderr
+    output = json.loads(result.stdout)
+    assert isinstance(output, dict)
+    return output
+
+
 class TestsPythonHookRendering:
     @pytest.fixture
     def capsule(self, governance_bundle: GovernanceBundle) -> Capsule:
         return render_capsule(governance_bundle)
 
     def test_codex_hook_emits_capsule(self, capsule: Capsule) -> None:
-        response = {"hookSpecificOutput": {"hookEventName": "SessionStart", "additionalContext": capsule.text}}
-        script = _sg._render_python_hook(response)
-        result = subprocess.run(
-            [sys.executable, "-c", script],
-            input=json.dumps({}),
-            capture_output=True,
-            text=True,
-            timeout=10,
-        )
-        assert result.returncode == 0, result.stderr
-        output = json.loads(result.stdout)
-        assert output["hookSpecificOutput"]["additionalContext"] == capsule.text
+        response: Mapping[str, object] = {
+            "hookSpecificOutput": {
+                "hookEventName": "SessionStart",
+                "additionalContext": capsule.text,
+            }
+        }
+        output = _run_python_hook(response)
+        hook_output = output["hookSpecificOutput"]
+        assert isinstance(hook_output, dict)
+        assert hook_output.get("additionalContext") == capsule.text
 
     def test_cursor_hook_format(self, capsule: Capsule) -> None:
-        response = {"additional_context": capsule.text}
-        script = _sg._render_python_hook(response)
-        result = subprocess.run(
-            [sys.executable, "-c", script],
-            input=json.dumps({}),
-            capture_output=True,
-            text=True,
-            timeout=10,
-        )
-        assert result.returncode == 0, result.stderr
-        output = json.loads(result.stdout)
+        response: Mapping[str, object] = {"additional_context": capsule.text}
+        output = _run_python_hook(response)
         assert output["additional_context"] == capsule.text
 
     def test_empty_response_hook(self) -> None:
-        script = _sg._render_python_hook({})
-        result = subprocess.run(
-            [sys.executable, "-c", script],
-            input=json.dumps({}),
-            capture_output=True,
-            text=True,
-            timeout=10,
-        )
-        assert result.returncode == 0, result.stderr
-        assert json.loads(result.stdout) == {}
+        assert _run_python_hook({}) == {}
 
 
 class TestsOpenCodePlugin:
-    def test_plugin_has_correct_digest(self, governance_bundle: GovernanceBundle) -> None:
+    def test_plugin_has_correct_digest(
+        self, governance_bundle: GovernanceBundle
+    ) -> None:
         capsule = render_capsule(governance_bundle)
         output = _sg._render_opencode_plugin(capsule)
         assert f'const DIGEST = "{capsule.opencode_digest}"' in output
         assert OPCODE_MARKER in output
 
-    def test_plugin_capsule_literal_matches(self, governance_bundle: GovernanceBundle) -> None:
+    def test_plugin_capsule_literal_matches(
+        self, governance_bundle: GovernanceBundle
+    ) -> None:
         capsule = render_capsule(governance_bundle)
         output = _sg._render_opencode_plugin(capsule)
         assert json.dumps(capsule.text, ensure_ascii=False) in output
@@ -188,21 +209,45 @@ class TestsProjectionFixedPoint:
         root = tmp_path / "out"
         root.mkdir()
         _sg._build_hooks(root, capsule)
-        digests: set[str] = set()
+        capsule_texts: set[str] = set()
         for hook in _sg._HOOKS:
             content = (root / hook.relpath).read_text(encoding="utf-8")
             tree = ast.parse(content)
             for node in ast.walk(tree):
-                if (
-                    isinstance(node, ast.Call)
-                    and isinstance(node.func, ast.Attribute)
-                    and node.func.attr == "loads"
-                ):
-                    data = json.loads(node.args[0].value)
-                    flat = json.dumps(data, ensure_ascii=False, separators=(",", ":"))
-                    if CAPSULE_MARKER in flat:
-                        digests.add(hashlib.sha256(flat.encode("utf-8")).hexdigest())
-        assert len(digests) == 1, f"digest mismatch across capsule hooks: {digests}"
+                if not isinstance(node, ast.Call):
+                    continue
+                if not isinstance(node.func, ast.Attribute):
+                    continue
+                if node.func.attr != "loads":
+                    continue
+                if not node.args:
+                    continue
+                arg = node.args[0]
+                if not isinstance(arg, ast.Constant) or not isinstance(arg.value, str):
+                    continue
+                data = json.loads(arg.value)
+                flat = json.dumps(data, ensure_ascii=False, separators=(",", ":"))
+                if CAPSULE_MARKER in flat:
+                    for _k, v in _walk_values(data):
+                        if isinstance(v, str) and CAPSULE_MARKER in v:
+                            capsule_texts.add(v)
+        assert len(capsule_texts) == 1, "capsule text differs across hooks"
+        assert next(iter(capsule_texts)) == capsule.text
+
+
+def _walk_values(obj: object) -> list[tuple[str, object]]:
+    if isinstance(obj, dict):
+        result: list[tuple[str, object]] = []
+        for k, v in obj.items():
+            result.append((k, v))
+            result.extend(_walk_values(v))
+        return result
+    if isinstance(obj, list):
+        result = []
+        for item in obj:
+            result.extend(_walk_values(item))
+        return result
+    return []
 
 
 class TestsManifestConsistency:
@@ -224,11 +269,15 @@ class TestsManifestConsistency:
             manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
             for relpath, info in manifest.get("managed", {}).items():
                 actual = hashlib.sha256((root / relpath).read_bytes()).hexdigest()
-                assert actual == info["digest"], f"{manifest_path}: digest mismatch for {relpath}"
+                assert actual == info["digest"], (
+                    f"{manifest_path}: digest mismatch for {relpath}"
+                )
 
 
 class TestsInstructionPointers:
-    def test_claude_md_content(self, governance_bundle: GovernanceBundle, tmp_path: Path) -> None:
+    def test_claude_md_content(
+        self, governance_bundle: GovernanceBundle, tmp_path: Path
+    ) -> None:
         root = tmp_path / "out"
         root.mkdir()
         _sg._build_instructions(root)
@@ -237,7 +286,9 @@ class TestsInstructionPointers:
         assert "make gen" in content
         assert "AIHUB-INSTRUCTION-POINTER" in content
 
-    def test_gemini_md_content(self, governance_bundle: GovernanceBundle, tmp_path: Path) -> None:
+    def test_gemini_md_content(
+        self, governance_bundle: GovernanceBundle, tmp_path: Path
+    ) -> None:
         root = tmp_path / "out"
         root.mkdir()
         _sg._build_instructions(root)
@@ -252,6 +303,10 @@ def _snapshot_dir(root: Path) -> tuple[tuple[str, str], ...]:
         relative = path.relative_to(root).as_posix()
         if path.is_symlink() or not (path.is_dir() or path.is_file()):
             raise ValueError(f"non-physical path: {path}")
-        digest = "directory" if path.is_dir() else hashlib.sha256(path.read_bytes()).hexdigest()
+        digest = (
+            "directory"
+            if path.is_dir()
+            else hashlib.sha256(path.read_bytes()).hexdigest()
+        )
         entries.append((relative, digest))
     return tuple(entries)

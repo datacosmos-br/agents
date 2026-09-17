@@ -15,14 +15,18 @@ import hashlib
 import json
 import shutil
 import tempfile
+from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Callable
 
 from _projection import snapshot as _snapshot
+
 from agents_governance import GovernanceBundle
-from agents_governance.capsule import Capsule, render_capsule
-from agents_governance.capsule import CAPSULE_MARKER, OPCODE_MARKER
+from agents_governance.capsule import (
+    OPCODE_MARKER,
+    Capsule,
+    render_capsule,
+)
 
 _HOOK_TEMPLATE = """\
 #!/usr/bin/env python3
@@ -79,31 +83,73 @@ class HookDef:
 
 
 _HOOKS: tuple[HookDef, ...] = (
-    HookDef("codex", ".codex/aihub-hooks/codex-sessionstart.py",
-            lambda c: {"hookSpecificOutput": {"hookEventName": "SessionStart",
-                                              "additionalContext": c}}),
-    HookDef("codex", ".codex/aihub-hooks/codex-subagentstart.py",
-            lambda c: {"hookSpecificOutput": {"hookEventName": "SubagentStart",
-                                              "additionalContext": c}}),
-    HookDef("codex", ".codex/aihub-hooks/codex-userpromptsubmit.py",
-            lambda c: {"hookSpecificOutput": {"hookEventName": "UserPromptSubmit",
-                                              "additionalContext": c}}),
-    HookDef("gemini", ".gemini/aihub-hooks/gemini-sessionstart.py",
-            lambda c: {"hookSpecificOutput": {"hookEventName": "SessionStart",
-                                              "additionalContext": c}}),
-    HookDef("gemini", ".gemini/aihub-hooks/gemini-beforeagent.py",
-            lambda c: {"hookSpecificOutput": {"hookEventName": "BeforeAgent",
-                                              "additionalContext": c}}),
-    HookDef("gemini", ".gemini/aihub-hooks/gemini-precompress.py",
-            lambda _c: {}),
-    HookDef("cursor", ".cursor/aihub-hooks/cursor-sessionstart.py",
-            lambda c: {"additional_context": c}),
-    HookDef("cursor", ".cursor/aihub-hooks/cursor-beforesubmitprompt.py",
-            lambda _c: {"continue": True}),
-    HookDef("cursor", ".cursor/aihub-hooks/cursor-precompact.py",
-            lambda _c: {}),
-    HookDef("cursor", ".cursor/aihub-hooks/cursor-subagentstart.py",
-            lambda _c: {"permission": "allow"}),
+    HookDef(
+        "codex",
+        ".codex/aihub-hooks/codex-sessionstart.py",
+        lambda c: {
+            "hookSpecificOutput": {
+                "hookEventName": "SessionStart",
+                "additionalContext": c,
+            }
+        },
+    ),
+    HookDef(
+        "codex",
+        ".codex/aihub-hooks/codex-subagentstart.py",
+        lambda c: {
+            "hookSpecificOutput": {
+                "hookEventName": "SubagentStart",
+                "additionalContext": c,
+            }
+        },
+    ),
+    HookDef(
+        "codex",
+        ".codex/aihub-hooks/codex-userpromptsubmit.py",
+        lambda c: {
+            "hookSpecificOutput": {
+                "hookEventName": "UserPromptSubmit",
+                "additionalContext": c,
+            }
+        },
+    ),
+    HookDef(
+        "gemini",
+        ".gemini/aihub-hooks/gemini-sessionstart.py",
+        lambda c: {
+            "hookSpecificOutput": {
+                "hookEventName": "SessionStart",
+                "additionalContext": c,
+            }
+        },
+    ),
+    HookDef(
+        "gemini",
+        ".gemini/aihub-hooks/gemini-beforeagent.py",
+        lambda c: {
+            "hookSpecificOutput": {
+                "hookEventName": "BeforeAgent",
+                "additionalContext": c,
+            }
+        },
+    ),
+    HookDef("gemini", ".gemini/aihub-hooks/gemini-precompress.py", lambda _c: {}),
+    HookDef(
+        "cursor",
+        ".cursor/aihub-hooks/cursor-sessionstart.py",
+        lambda c: {"additional_context": c},
+    ),
+    HookDef(
+        "cursor",
+        ".cursor/aihub-hooks/cursor-beforesubmitprompt.py",
+        lambda _c: {"continue": True},
+    ),
+    HookDef("cursor", ".cursor/aihub-hooks/cursor-precompact.py", lambda _c: {}),
+    HookDef(
+        "cursor",
+        ".cursor/aihub-hooks/cursor-subagentstart.py",
+        lambda _c: {"permission": "allow"},
+    ),
 )
 
 
@@ -116,8 +162,7 @@ def _render_python_hook(response: dict[str, object]) -> str:
 def _render_opencode_plugin(capsule: Capsule) -> str:
     capsule_literal = json.dumps(capsule.text, ensure_ascii=False)
     return (
-        _OPCODE_TEMPLATE
-        .replace("__CAPSULE_LITERAL__", capsule_literal)
+        _OPCODE_TEMPLATE.replace("__CAPSULE_LITERAL__", capsule_literal)
         .replace("__DIGEST__", capsule.opencode_digest)
         .replace("__MARKER__", OPCODE_MARKER)
     )
@@ -208,7 +253,9 @@ def project(root: Path, capsule: Capsule) -> None:
         shutil.rmtree(first, ignore_errors=True)
         shutil.rmtree(second, ignore_errors=True)
     _build(root, capsule)
-    print(f"Governance projection fixed point: {len(_HOOKS)} hooks + 1 plugin + 2 pointers")
+    print(
+        f"Governance projection fixed point: {len(_HOOKS)} hooks + 1 plugin + 2 pointers"
+    )
 
 
 def main() -> None:

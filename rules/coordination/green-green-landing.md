@@ -10,8 +10,7 @@ metadata:
 
 # Green/green always; land and apply at every green point (universal)
 
-1. Local and CI stay green/green; a red state is triaged before new scope.
-2. As soon as a 100% green point exists, land it on the integration branch
-   (incremental landings, scoped commits) and apply to runtime.
-3. Do not delay landings to batch bigger waves: small green points land and
-   apply continuously.
+The `full landing cycle` rule owns the delivery path and proof. This rule adds
+only cadence: keep local and CI green, repair a red state before new scope, and
+land each independently complete green increment instead of batching it into a
+larger long-lived lane. Apply runtime only when the declared cycle requires it.

@@ -28,12 +28,11 @@ closure. Cherry-pick is not derivation proof.
 ## Operator pressure does not waive the landing flow
 
 "Go to the end", "do not stop", and similar pressure instructions authorize
-persistence, not rule inversion. The end state includes: bead -> scoped
-mutation -> native gates -> lane branch -> PR -> review -> `--no-ff` merge into
-the declared integration branch -> affected gates rerun on the merged SHA ->
-runtime proof on the integrated state. A direct fast-forward push to an
-integration branch (superproject or member) is a recorded violation even when
-the diff is green; repair it with the lane-branch PR flow once gates allow.
+persistence, not rule inversion. The `full landing cycle` rule owns the delivery
+path. This rule adds the repair contract: record a direct integration-branch
+push as a violation and restore reviewed lane/PR provenance at the next safe
+green increment; never present the direct push as compliant merely because its
+diff passed gates.
 
 ## Idempotency is an SLA of the generator, not a cleanup nicety
 

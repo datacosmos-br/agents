@@ -27,10 +27,11 @@ a dedicated lane (or short of the integration branch) was lost:
 
 1. Each ruling is encoded as one canonical rule under `rules/coordination/`
    (`validate-on-change`, `wip-persistence`, `full-landing-cycle`,
-   `never-deduce`) and their
-   companion rules produced by the same sweep (`green-green-landing`,
+   `never-deduce`). Companion rules produced by the same sweep (`green-green-landing`,
    `lane-adoption`, `fanout-qa-publication`, `test-reality-law`,
-   `strict-typed-quality`, `conformance-sweep`), all approved by this ADR.
+   `strict-typed-quality`, `conformance-sweep`) may add only a narrow,
+   non-overlapping delta and must reference the canonical owner instead of
+   copying its contract. All are approved by this ADR.
 2. The rules are universal (route both): they bind every execution context —
    agent sessions, rigs, and every hosted project — unless a stack's own law
    is stricter.
