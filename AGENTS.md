@@ -1,5 +1,5 @@
 <!-- AIHUB-INVIOLABLE-LAW-PRELUDE v1 -->
-# AI Hub Inviolable Law — Strict Prelude
+# AIHUB Inviolable Law — Strict Prelude
 
 1. Truth: never claim done/green/resolved without command, exit code, decisive output.
 2. Root cause: exterminate bypass, fallback, shim, suppression, stub, hardcode, catch-based normalization, retry, compatibility, partial execution, keyring, or old+new coexistence.
@@ -40,7 +40,6 @@
 
 > Packaged governance `agents-governance` owns the capability indexes. Consume current inventories through `GovernanceBundle`; do not copy their counts or bodies here.
 
-<!-- AIHUB-AGENTS-SCOPE-LOCAL-BEGIN -->
 This repository is the single writable authority for provider-neutral rules,
 skills, commands, agent profiles, and their semantic evaluation resources. It
 publishes the read-only `agents-governance` package. AI Hub alone discovers
@@ -63,134 +62,37 @@ and reconciles runtime state.
 
 ### Repository development
 
-Read [README.md](README.md), [rules](rules), [skills](skills), and
+Read [README.md](README.md), the [rules index](docs/rules-index.md), [skills](skills), and
 [ADRs](docs/adr/README.md) before mutation. Use only selector-free root Make
-verbs and run `make setup` before development gates; bare verbs perform their
-declared operation. Raw-tool and inline substitutes are prohibited.
-
-Prove changed behavior through the public bundle load before adapting tests.
-Every Python test invocation, including focused, full, and CI, must keep the
-same external persistent testmon database active. The public full verb first
-runs incremental selection, then uses testmon's official no-selection mode; it
-never bypasses or clears the cache. Tests exercise public roots with typed
-fixtures and no mocks, monkeypatching, private imports, or hardcoded owner
-values. Warning, skip, empty output, missing tool/report, or zero collection is
-RED. Zero execution is acceptable only for a typed incremental testmon cache
-hit with an integrity-checked database and complete deselection accounting, and
-must never be reported as tests passed.
-
-Generated files carry an owner and exact regeneration instruction. Change their
-source, regenerate through the declared Make owner, prove a zero-change second
-generation, rewire all consumers, and delete the old code, test, fixture,
-document, alias, backup, and archive in the same cutover.
-
-### FLEXT project law
-
-For `internal_flext`, apply the complete strict contract in the
-`flext-development` skill and `rules/architecture/internal-clean-architecture.md`.
-FLEXT architecture facts (MRO, facade chain, module layout, typing policy) live
-there and in FLEXT domain rules — not in global governance.
+verbs; bare verbs perform their declared operation. Prove changed behavior
+through the public bundle load before adapting tests.
 
 ### Lifecycle
 
-Gas City owns workspace placement for this repository; `gc status` is the
-effective-state authority (declared default plus runtime override). While the
-city or this rig is suspended, work only in this existing checkout, invoke no
-Gas City or Beads mutation, and create no substitute ledger.
-Stop at `dev` unless the operator explicitly authorizes promotion. No increment
-is DONE without required gates, reviewed merge-commit landing, post-merge public
-runtime proof, and canonical tracker closure.
+Gas City owns workspace placement; `gc status` is the effective-state authority.
+While the city or this rig is suspended, work only in this existing checkout,
+invoke no Gas City or Beads mutation, and create no substitute ledger. Stop at
+`dev` unless the operator explicitly authorizes promotion. No increment is DONE
+without required gates, reviewed merge-commit landing, post-merge public runtime
+proof, and canonical tracker closure.
 
-### Operator directive (auto-injected)
+### Authority map
 
-- **Universal law mandate (2026-09-16):** see
-  [`VALIDATE_ON_CHANGE.md`](VALIDATE_ON_CHANGE.md) — (1) validate-on-change
-  with FULL RUNTIME FUNCTIONING as the fundamental criterion; (2) no rush:
-  statuses/beads updated and WIP saved locally+remotely via dedicated
-  worktree/branch; (3) full PR→integration-branch cycle (and runtime when
-  requested) or the work counts for nothing; (4) NEVER deduce — research,
-  understand, or stop and ask. Composed with: truth with evidence, canonical
-  Make verbs + testmon only, <1min feedback, root cause + zero residue +
-  automated refactoring (ast-grep/make mod/crg/LSP), strict FLEXT
-  architecture, consolidation mandate (adopt every lane/PR/WIP), beads
-  governance, subagent mass. Newest operator word wins; unauthorized rule
-  changes are grave.
+Precedence: `rules/coordination/operator-precedence.md`.
 
-### Operator cycle lessons
+By category:
+- [Architecture](rules/architecture/) — clean architecture, DI, topology, ownership
+- [Coordination](rules/coordination/) — lifecycle, beads, operator alignment, sessions
+- [Ethics](rules/ethics/) — integrity, truth, never-deduce, test-reality
+- [Runtime](rules/runtime/) — execution, residue, environment, fail-fast
+- [Workflow](rules/workflow/) — discovery, generation, documentation, gates
+- [Security](rules/security/) — supply chain, scanners, prompt defense
+- [Language](rules/language/) — runtime floor, authored language
+- [Python](rules/python/) — config SSOT, Pydantic, typing
+- [Flext](rules/flext/) — FLEXT-specific governance
+- [Shell](rules/shell/) — bash guard rules
+- [Git](rules/git/) — branch workflow, destructive guard, fork locality
+- [Communication](rules/communication/) — caveman style
 
-- **Fix-forward permanente:** never rebase, force-push, or cherry-pick an
-  authorized lane. Integrate the base with `git merge --no-ff`, revalidate the
-  combined state, then land.
-- **Pouso:** landing requires real validation (command + exit code + output),
-  zero warnings, and record on the integration branch at cycle end. A rejected
-  FF-push means `git merge --no-ff` the base into the lane.
-- **Coordenação:** the orchestrator runs parallel subagents per file owner. An
-  empty subagent result is not a claim — verify by diff before accepting.
-- **Resíduo zero:** untracked `.bak`/backup artifacts are defects, never carry-over.
-- **Gate bare:** a CI check invoked without the project environment must be
-  stdlib-only at its script owner; provisioning env in the workflow is a
-  workaround, not a fix. Prove the gate by running it exactly as CI does.
-- **Subagentes rápidos:** dispatch independent research/verification/
-  bookkeeping to fast parallel subagents; the main thread alone owns sequenced
-  effects (merge, land, bead closure with merge evidence).
-- **Validar ao criar/alterar (UNIVERSAL):** every creation or change must be
-  validated as correct AND working BEFORE moving on. The FUNDAMENTAL
-  criterion is NEVER simple tests or static evidence — it is FULL RUNTIME
-  FUNCTIONING: execute the real consumer of the change (CLI invocation,
-  service execution, real import chain, end-to-end command) and observe the
-  correct behavior in the same resolution mode production uses. Tests and
-  logs are subordinate confirmation; runtime is the authority. "Written" is
-  not "works"; a green test never overrides a broken runtime. Applies to
-  code, config, rules, docs, branches, and generated artifacts alike.
-- **Nunca deduza (UNIVERSAL):** NEVER deduce, guess, or assume. ALWAYS
-  research (read the real source, run the real command, inspect the real
-  state), understand the context and hierarchy, and when any doubt remains —
-  STOP and ASK one precise question. A wrong guess silently corrupts
-  everything downstream; a question costs one message.
-
-- **Nunca com pressa de concluir (UNIVERSAL):** never rush to "finish". At
-  every step, update statuses and beads, and ALWAYS persist work-in-progress
-  commits locally AND push them remotely — THROUGH YOUR DEDICATED WORKTREE
-  AND DEDICATED WORK BRANCH (never on the integration branch, never on the
-  main checkout). WIP saved remotely on the work branch is recoverable; WIP
-  living only in a local checkout is one accident from zero.
-- **Plano aprovado, P0 primeiro (UNIVERSAL):** execute the approved plan in
-  order — P0 reorganizes beads/epics/tasks/docs/ADRs BEFORE the rest runs.
-  When you are the sole active lane, you are authorized to ASSUME EVERYTHING:
-  adopt, group, and reuse every existing lane, branch, PR, and WIP (or
-  discard them deliberately within the plan). The deliverable is the project
-  100% functional with the agreed feature set.
-- **Green/green permanente (UNIVERSAL):** keep the project green locally AND
-  in CI at all times; land to the integration branch as soon as a 100%-green
-  point exists and apply it at runtime promptly — do not sit on green work.
-  Re-sync with the integration branch periodically via `--no-ff` merges.
-- **Subagentes em massa, coordenação central (UNIVERSAL):** use the maximum
-  number of subagents to explore, execute, validate, and test; the main
-  thread keeps coordination, final QA approval, and publication only.
-- **Tipagem strict com SSOT DRY (UNIVERSAL):** fix all ruff/mypy/pyright/
-  pyrefly findings with strict typing; prefer helpers, models, protocols,
-  typings, and constants namespaced and declared in u/m/p/t/c, consumed in
-  the most DRY form — never local re-declarations.
-- **Full-standards sweep (UNIVERSAL):** every session runs the Full-Standards
-  Cleanup & Conformance Sweep — authority order, canonical Make surface only,
-  testmon always, root cause + zero residue + immediate rewire, reality >
-  tests, strict facade chain with lazy `__init__` exports, DRY/YAGNI/SSOT/CA/
-  DI, no hand-edited generated files, self-repairing governance, and full
-  gitflow + runtime + distribution closure. Full contract:
-  `rules/workflow/full-standards-conformance-sweep.md`.
-- **Sem locks de frota, sem exclude-newer (UNIVERSAL, PROIBIDO):** banned
-  outright and in every project: `exclude-newer` (any form, any value),
-  `uv.lock`/`mise.lock` tracked or generated-and-kept, fleet version pins, and
-  any hand mechanism that freezes the fleet. The fleet resolves ALWAYS at the
-  branch tip (`@<integration-branch>` floating); upstream stability is the
-  fleet's discipline, and local breakage is fixed fix-forward in the consumer
-  (or reported upstream), never by freezing, pinning, or locking. Found any of
-  these → remove immediately at the owner (pyproject, lockfile, generated
-  config) in the same change.
-- **Ciclo completo ou nada (UNIVERSAL):** work is DONE ONLY when the full
-  cycle completes — lane commits pushed, PR opened, PR merged into the
-  integration branch, and (when requested) validated at runtime. Stopping
-  before the PR reaches integration means the work was NOT done and is
-  entirely at risk of being lost; never report partial-lane state as
-  completion.
-<!-- AIHUB-AGENTS-SCOPE-LOCAL-END -->
+FLEXT architecture for `internal_flext`: [`rules/architecture/internal-clean-architecture.md`](rules/architecture/internal-clean-architecture.md).
+Operator mandate: [`VALIDATE_ON_CHANGE.md`](VALIDATE_ON_CHANGE.md).
