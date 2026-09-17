@@ -51,7 +51,9 @@ needs no mutation guard. Invoke every verb directly without an apply selector.
   never in a live checkout; never push from the analysis phase.
 - Conflict classes: (1) submodule/gitlink → OURS when integration tips are
   newer and pushed; (2) generated facade `__init__.py` → THEIRS when theirs
-  is the more complete public facade; (3) `uv.lock` → OURS (authoritative, newer).
+  is the more complete public facade; (3) prohibited lock/pin artifacts →
+  remove from the merged result and repair their producer in the same change.
+  Never select OURS or THEIRS for a banned artifact.
 - Everything else: decide per file, prefer fix-forward (preserve the other
   lane's legitimate work), and record every resolution.
 - Commit with an explicit merge message listing the resolution classes;
@@ -68,8 +70,10 @@ needs no mutation guard. Invoke every verb directly without an apply selector.
 - Retry the commit in a bounded loop (e.g. 40 attempts, 15s sleep) — the
   commit window between conform iterations is enough.
 - Commit by explicit paths only: gitlinks + stable projections first; leave
-  files a sibling lane is actively rewriting (e.g. `pyproject.toml`/`uv.lock`
-  during a deps upgrade) to that lane, then verify and adopt after their push.
+  files a sibling lane is actively rewriting (for example the typed dependency
+  config or generated `pyproject.toml`) to that lane, then verify and adopt
+  after their push. A banned lock/pin file is never preserved as concurrent
+  WIP; fix the producer and remove the artifact.
 
 ## Beads evidence contract during closeout
 
