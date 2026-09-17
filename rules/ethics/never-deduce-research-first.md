@@ -8,7 +8,7 @@ capsule_summary: |
   without research is a guess; guesses produce wrong patches, wasted cycles,
   and false conclusions (including wrong "canonical" claims).
 metadata:
-  aihub.tags: '["effective:2026-09-16","route:both","rule:universal"]'
+  aihub.tags: '["effective:2026-09-16","route:both"]'
 ---
 
 # Never deduce: research, understand, ask (universal)
