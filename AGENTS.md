@@ -187,12 +187,6 @@ runtime proof, and canonical tracker closure.
   (or reported upstream), never by freezing, pinning, or locking. Found any of
   these → remove immediately at the owner (pyproject, lockfile, generated
   config) in the same change.
-- **Nunca deduza — pesquise, entenda, pergunte (UNIVERSAL):** NEVER guess,
-  infer, or assume. ALWAYS research first, understand the actual state, and if
-  doubt remains STOP and ASK the operator one precise question. Acting on a
-  deduced premise (report, memory, inference) without verifying current real
-  state is a defect — verify each concrete item at its source before any
-  effect. Doubt is a stop signal, not a risk to take.
 - **Ciclo completo ou nada (UNIVERSAL):** work is DONE ONLY when the full
   cycle completes — lane commits pushed, PR opened, PR merged into the
   integration branch, and (when requested) validated at runtime. Stopping
