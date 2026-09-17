@@ -17,6 +17,7 @@ Re-verify every command with `--help` after a version change; help output wins.
 | Impact | `impact [--files F...] [--depth N] [--max-results N] [--base B] [--repo R]` | Accepts changed files, not symbols. |
 | Relationships | `query <pattern> <target> [--repo R]` | Supports callers, callees, imports, tests, inheritors, children, and file summary. |
 | Search | `search <query> [--kind File\|Class\|Function\|Type\|Test] [--limit N] [--repo R]` | Keyword or embedding-backed. |
+| Raw wiki | `wiki [--repo R] [--data-dir D] [--force]` | Requires a current graph with communities; writes raw Markdown only to the selected graph data directory's `wiki/` child. |
 | Dead-code candidates | `dead-code [--kind Function\|Class] [--file-pattern P] [--limit N] [--json] [--repo R]` | Hints only; confirm in source. |
 | Refactor preview | `refactor {rename,dead_code,suggest} [...] [--repo R]` | Preview only; fleet changes use the project codemod owner. |
 | Drop files | `forget PATH... [--dry-run] [--repo R]` | Removes parsed files without rebuilding. |
@@ -32,6 +33,9 @@ Re-verify every command with `--help` after a version change; help output wins.
 Default build/update is full. `--skip-flows` produces minimal post-processing;
 `--skip-postprocess` produces none. Run `postprocess` before flow/community
 questions after either reduced mode. Refresh embeddings only through `embed`.
+`wiki` consumes stored communities and does not make its raw data-directory
+output a project documentation authority. AI Hub owns any typed publication,
+provenance, and pruning from that output into declared project docs.
 
 ## Resolution and state
 
@@ -41,6 +45,8 @@ questions after either reduced mode. Refresh embeddings only through `embed`.
 - Mutating commands with `--data-dir` persist it in the registry; read-only
   commands only select it. Never use a temporary directory.
 - User state contains the registry, `watch.toml`, daemon state, and logs.
+- Wiki output belongs to `<data-dir>/wiki`; never point the CRG command directly
+  at a repository's maintained `docs/` tree or copy its output by hand.
 - Ignore policy is `<root>/.code-review-graphignore`.
 
 Environment, MCP, install projections, watchers, and doctor fixes are documented
