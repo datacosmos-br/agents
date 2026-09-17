@@ -89,9 +89,9 @@ below is evidence-producing and stays within the project Make dispatcher.
   graph and read blast radius from it per `$crg`; refresh again after
   landing. A stale or partial graph is RED — rebuild, do not navigate stale
   truth.
-- For exact definition/reference sites during consumer rewiring, structure
-  queries go through the Scope navigator with a fresh index; grep stays
-  reserved for literal evidence that the navigator cannot answer.
+- For exact definition/reference sites during consumer rewiring, use
+  `$crg query` with a fresh index; grep stays reserved for literal evidence that
+  CRG cannot answer.
 - Pilot rollout for fleet-wide changes: converge one non-core member to full
   green (gen ×2 fixed point, check, full test within the test budget), then
   propagate waves across remaining members with the same gates per wave.
