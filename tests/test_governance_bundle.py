@@ -11,9 +11,11 @@ import pytest
 
 from agents_governance import (
     BUNDLE_SCHEMA_VERSION,
+    CAPSULE_MARKER,
     EvalPolicy,
     GovernanceBundle,
     __version__,
+    render_capsule,
 )
 from agents_governance.delivery import DeliveryContract
 from agents_governance.skill_resources import ResourcePolicy
@@ -32,6 +34,19 @@ def test_public_bundle_is_complete_and_versioned(
     assert governance_bundle.rules
     assert governance_bundle.config.guarantees
     assert governance_bundle.law.prelude
+
+
+def test_public_capsule_is_content_addressed(
+    governance_bundle: GovernanceBundle,
+) -> None:
+    capsule = render_capsule(governance_bundle)
+
+    assert capsule.header == f"<!-- {CAPSULE_MARKER} sha256:{capsule.digest} -->"
+    assert capsule.text == f"{capsule.header}\n{capsule.body}\n"
+    assert hashlib.sha256(capsule.body.encode("utf-8")).hexdigest() == capsule.digest
+    assert "AI Hub owns publication and provider activation." in capsule.body
+    for identity in governance_bundle.config.bootstrap_rules:
+        assert f"## Rule `{identity}`" in capsule.body
 
 
 def test_public_inventories_have_unique_physical_owners(
