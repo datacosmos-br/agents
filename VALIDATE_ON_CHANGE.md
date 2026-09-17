@@ -1,12 +1,15 @@
 # Universal Law — Mandato Operacional (operador, 2026-09-16, emendada)
 
 ## Regra 1 — Validate-On-Change
+
 Ao criar ou alterar QUALQUER coisa — código, chart, valores, lockfile, gitlink,
 configuração, documentação — VALIDAR se está certo e funciona, imediatamente,
 antes de seguir adiante.
 
 ### O que vale FUNDAMENTALMENTE
+
 **O PLENO FUNCIONAMENTO EM RUNTIME.**
+
 - Testes simples e evidências estáticas NÃO comprovam entrega — são, no máximo,
   sinais de apoio. Nunca substituem o runtime.
 - Prova válida = o artefato/executável REAL operando de ponta a ponta no
@@ -19,12 +22,14 @@ antes de seguir adiante.
   interfaces públicas; o resto é descartável — e nunca anulam a prova runtime.
 
 ## Regra 2 — Sem pressa; status, beads e wip sempre atualizados
+
 - Nunca fazer algo com pressa para concluir.
 - Sempre atualizar os status e os beads à medida que o trabalho avança.
 - Sempre gravar progresso como **wip local E remotamente** — via **worktree e
   branch dedicada de trabalho** — para que interrupções não percam estado.
 
 ## Regra 3 — Ciclo completo ou nada
+
 - Se o ciclo completo não for feito — levar o trabalho até a **branch de
   integração** e, quando solicitado, até o **runtime** — o trabalho NÃO foi
   feito: é trabalho perdido.
@@ -32,14 +37,17 @@ antes de seguir adiante.
   validação viva no runtime. Estados intermediários são wip, não entrega.
 
 ## Regra 4 — NUNCA deduzir; pesquisar, entender, perguntar
+
 **NUNCA, NUNCA, NUNCA tente deduzir. SEMPRE pesquise, entenda e, se houver
 dúvidas, PARE E PERGUNTE. Nunca tente adivinhar ou deduzir.**
+
 - Antes de qualquer comando/caminho/nome/API: descobrir o valor REAL na fonte
   (kubectl get, make help, docs, código) — nunca inventar.
 - Dúvida ≠ decisão: dúvida = pergunta ao operador ou pesquisa funda até
   certificação. Ambiguidade resolvida por adivinhação é falta gravíssima.
 
 ## Regra 5 — Execução do plano (mandato de coordenação única)
+
 - Executar o plano aprovado: P0 = reorganizar beads, épicos, tasks, docs, ADRs;
   depois as demais fases.
 - Lane única em cosmos-main: ASSUMIR tudo — adotar, agrupar, reaproveitar
@@ -51,7 +59,7 @@ dúvidas, PARE E PERGUNTE. Nunca tente adivinhar ou deduzir.**
   coordenação, aprovação, QA final e publicação.
 - Corrigir ruff, mypy, pyright, pyrefly com tipagem strict.
 - Helpers, models, protocols, typings, constants namespaced de u/m/p/t/c,
-  declarados no dono, consumidos DRY. Lazy imports via __init__ preferidos
+  declarados no dono, consumidos DRY. Lazy imports via **init** preferidos
   (desempenho + ciclos); erros de import cíclico = violação das regras flext.
 - Sync periódico com a branch de integração via merge --no-ff.
 - Jeito mais novo e melhorado SEMPRE: zero fallback/legacy/compatibilidade —
@@ -63,8 +71,8 @@ dúvidas, PARE E PERGUNTE. Nunca tente adivinhar ou deduzir.**
   --no-ff com a integração, push, fecha PR, apaga worktrees/branches/PRs
   merged e fecha beads — fechando os ciclos.
 - Automação máxima: ast-grep search/replace, make mod, crg, lsp refactor;
-  testmon obrigatório (nunca full-suite fora do cache); APPLY=Y é a única
-  flag de mutação; nada de seletores inventados no Make.
+  testmon obrigatório (nunca full-suite fora do cache); nada de seletores
+  inventados no Make.
 - Qualidade total: nenhum warning/erro/indireta mal configurada fica para
   depois; nada pendente; artefatos manual-list (ex.: class-nesting-mappings.yml)
   proibidos — descoberta automatizada pelas funções SSOT.
@@ -72,6 +80,7 @@ dúvidas, PARE E PERGUNTE. Nunca tente adivinhar ou deduzir.**
   ADRs — sempre pelos ciclos.
 
 ## Non-negotiables adicionais (operador 16/09)
+
 - exclude-newer, mise.lock e uv.lock: BANIDOS. Lockfiles nunca rastreados
   (fleet standalone contract); exclude-newer nunca injetado à mão — o gerador
   emite apenas exclude-newer-package a partir do toolchain SSOT. Qualquer
@@ -82,6 +91,7 @@ dúvidas, PARE E PERGUNTE. Nunca tente adivinhar ou deduzir.**
   PARE E PERGUNTE.
 
 ## Lições operacionais (2026-09-16, ciclo rope-modernize — operador emendando)
+
 - **Branches/stashes/PRs antigos = análise de contribuição real**: o que contêm
   que o código atual e suas beads ainda não têm — adotar seletivamente só o
   unique delta útil. NUNCA diff-merge completo (traz stale/cerimônia; provado:
@@ -96,7 +106,7 @@ dúvidas, PARE E PERGUNTE. Nunca tente adivinhar ou deduzir.**
   nunca fallback. `.beads/*` de membros: só as entradas permitidas pelo gate
   (config.yaml, metadata.json, .local_version, last-touched); resíduo runtime
   já-durável no dolt é lixo e se limpa.
-- **Loops de frota em script-arquivo** (~/tmp/kilo/*.sh) rodando em background
+- **Loops de frota em script-arquivo** (~/tmp/kilo/\*.sh) rodando em background
   com análise de log — nunca loops inline `bash -c` (expansão de variável
   dentro de aspas já quebrou uma varredura inteira). Subagentes para análise
   de logs grandes.
