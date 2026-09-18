@@ -1,8 +1,8 @@
 # ADR-0022 — Home global `~/.agents` como projeção materializada versionada
 
-**Status:** Accepted **Date:** 2026-09-18 **Scope:** `tools/home_projection.py`,
-`Makefile` (verbos `home-sync`/`home-check`), `docs/plans/20260918-status-ledger.md`,
-manifesto `.agents-governance.json` do home
+**Status:** Accepted (emendado 2026-09-18 — errata G0) **Date:** 2026-09-18 **Scope:**
+`~/.agents` (superfície de leitura global) · gestão: **AI Hub** ·
+`docs/plans/20260918-handoff-repasse-consolidado.md`
 
 ## Context
 
@@ -17,8 +17,8 @@ exposto a esse acoplamento.
 
 Decisão do operador (2026-09-18, esta campanha): o home deixa de ser symlink **nesta
 campanha** e passa a ser **projeção global materializada** — fallback de leitura
-universal para todos os projetos e agentes — gerenciada pelo par ai-hub/agents, não
-mais como alias do checkout.
+universal para todos os projetos e agentes — **gerenciada pelo AI Hub**, não mais como
+alias do checkout.
 
 ## Decision
 
@@ -33,21 +33,22 @@ mais como alias do checkout.
    (`config/governance.yaml:10-16`). Consumidores lêem; nenhum consumidor escreve —
    escrita de consumer no home é defeito reportado, não estado aceito.
 2. **Carimbo de versão + digest (P5/ADR-0015).** O home carrega
-   `.agents-governance.json` com `owner`, `distribution_version` do bundle,
-   `generated_at`, e digest SHA-256 por árvore de artefato. Convergência se decide por
-   versão+digest, nunca por byte-diff cego.
-3. **Ferramenta dev-only, fora do pacote (ADR-0008).** `tools/home_projection.py`
-   materializa e verifica; o pacote publicado continua sem projector/home-writer.
-4. **Gates via Make raiz.** `home-sync` re-materializa (idempotente, com receipt
-   impresso); `home-check` compara digest projeção×catálogo e falha loud em drift —
-   wired no `check`. Enquanto o ai-hub não assume a gestão transacional (F6 do
-   rework), esses verbos cobrem o risco de stale silencioso.
+   `.agents-governance.json` com `owner`, versão do bundle, `generated_at` e digests
+   por árvore. Convergência se decide por versão+digest, nunca por byte-diff cego.
+3. **Gestão é do AI Hub (emenda G0).** A única ferramenta sancionada para
+   materializar/verificar o home é a transação de deploy do **ai-hub** (surface
+   catalog-home da F6 do rework de distribuição). **O repo agents não carrega
+   ferramenta, verbos de Make nem gate de home** — ele é catálogo read-only puro
+   (ADR-0008); a cláusula original que criava `tools/home_projection.py` +
+   `home-sync`/`home-check` está **REVOGADA** (criava um mecanismo de distribuição
+   paralelo ao ai-hub).
+4. **Estado transicional (até o ai-hub assumir):** cópia estática materializada em
+   18/09 (backup do symlink em `~/.agents-archive/home-desymlink-2026-09-18/`),
+   com manifesto já no formato ai-hub; risco de stale documentado; o reparo do stale
+   é a gestão ai-hub assumir — **nunca restaurar o symlink**.
 5. **Transição com backup.** Remoção do symlink precedida de backup tar datado +
    MANIFEST (doutrina: exclusão fora do git só com backup). O reparo de qualquer
-   falha pós-transição é forward (`home-sync`), nunca restauração do symlink.
-6. **Workaround declarado.** Os verbos `home-sync`/`home-check` entram no Makefile
-   como workaround local marcado, pendente de adoção pelo codegen flext-infra (lane
-   paralela avisada); a adoção upstream substitui a marcação sem mudança de contrato.
+   falha pós-transição é forward (gestão ai-hub), nunca restauração do symlink.
 
 ## Consequences
 
@@ -55,9 +56,9 @@ mais como alias do checkout.
   switch não tocam mais o que os consumidores leem.
 - `make gen` do checkout volta a escrever somente superfícies do próprio checkout; a
   config viva do usuário (hooks Gas City × ai-hub) sai do raio de efeito colateral.
-- Drift catálogo×home fica visível e falha loud no `check` em vez de envelhecer em
-  silêncio (estado medido em 18/09: manifesto do espelho claude 06/09 × catálogo
-  18/09).
-- A gestão transacional final permanece da ai-hub (F6 do rework); este ADR é o
-  estado intermediário sancionado, com as duas lanes — ai-hub e agents — donas do
-  mesmo contrato.
+- Drift catálogo×home fica visível quando o ai-hub assumir a verificação
+  (`projection_identity_gate` já fail-closed); no intervalo, o stale é conhecido e
+  aceito como estado transicional declarado.
+- A gestão transacional final é do ai-hub (F6 do rework); a fronteira
+  **flext ⊄ privado / privado ⊇ flext** permanece: nada disto cria dependência do
+  flext para com agents/ai-hub.

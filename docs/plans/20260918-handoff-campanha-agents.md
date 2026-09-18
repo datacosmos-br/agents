@@ -63,9 +63,11 @@
   ag-ssut, ag-fwdu, ag-k89, ag-whr, ag-lw57.9. Já-missing antes da transição (não
   causados por ela): `UNIVERSAL_CORE.md`, `agents/manifest.json`, `bin/mcp-run`,
   `mcp/servers.json`.
-- **flext-infra** (lane paralela do operador): adotar os verbos `home-sync`/
-  `home-check` + knobs de analisador no codegen (workaround marcado no Makefile/
-  pyproject do agents); mudança estrutural no grafão do testmon (rastrear markdown).
+- **flext-infra**: mudança estrutural no grafão do testmon (rastrear markdown).
+  **ERRATA G0 (18/09 tardia)**: a sugestão original deste handoff — flext-infra adotar
+  os verbos `home-sync`/`home-check` — foi INVALIDADA pelo operador: flext nunca
+  depende de agents/ai-hub; a gestão do home `~/.agents` é exclusivamente do AI Hub
+  (ADR-0022 emendado; verbos e `tools/home_projection.py` removidos do repo).
 - **flext**: par `mayor` duplicado (poda é whack-a-mole; runtime gc recria),
   tríplice `flext-law`, ag-bgs, ag-av2.
 - **gc**: storage janitor lista `~/.agents` como repositório — reavaliar pós-projeção.
@@ -77,8 +79,8 @@
 2. ag-a11 (P2) quando couber; ag-9xp pertence à sessão viva.
 3. Novo intake de capabilities segue ADR-0014; novos subjects entram por
    `config/skills.json` v3 (config-dado), nunca por constante.
-4. Quando o ai-hub assumir a gestão transacional do home (F6 do rework), o par
-   `home-sync`/`home-check` passa a ser delegado — contrato já em ADR-0022.
+4. Quando o ai-hub assumir a gestão transacional do home (F6 do rework), a cópia
+   estática é substituída pela gestão ai-hub — contrato em ADR-0022 (emendado G0).
 5. Beads [E] só movem com as lanes donas; nada de falso fechamento catalog-side.
 
 ## 4. Guardas permanentes registradas
@@ -87,6 +89,6 @@
   que toque markdown/config, `make test-full` (execução real) é obrigatório —
   cache-hit incremental não é prova (lei 14).
 - **Budget da cápsula é contrato**: corrige-se conteúdo, nunca teto (10000/512).
-- **Escrita de consumer em `~/.agents` é defeito reportado** (ADR-0022); reparo é
-  `make home-sync`, nunca restauração do symlink.
+- **Escrita de consumer em `~/.agents` é defeito reportado** (ADR-0022 emendado);
+  reparo é a gestão ai-hub, nunca restauração do symlink.
 - **Commits pathspec-escopados; push de `dev` autorizado nesta campanha apenas.**

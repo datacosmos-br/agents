@@ -42,17 +42,7 @@ gen: ## project the governance capsule into provider hooks and instruction files
 	$(call BANNER,gen · governance capsule + provider projections)
 	@uv run python tools/sync_governance.py
 
-## global home projection (ADR-0022; WORKAROUND pending flext-infra codegen)
-home-sync: ## materialize the global ~/.agents read-only projection
-	$(call BANNER,home-sync · global ~/.agents read-only projection)
-	@uv run python tools/home_projection.py sync
-
-home-check: ## verify the ~/.agents projection against the catalog (fail loud)
-	@uv run python tools/home_projection.py check
-
 ## development gates
-# WORKAROUND (ADR-0022, 20260918): home-sync/home-check are locally-added verbs
-# pending flext-infra codegen adoption; the parallel lane owns codifying them.
 check: ## run every applicable non-test gate
 	$(call BANNER,check · complete non-test gate composition)
 	@$(MAKE) docs
@@ -61,7 +51,6 @@ check: ## run every applicable non-test gate
 	@$(MAKE) conform
 	@$(MAKE) waza
 	@$(MAKE) runtime
-	@$(MAKE) home-check
 
 docs: ## validate documentation through the public bundle contract
 	@$(MAKE) audit
