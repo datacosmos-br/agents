@@ -12,12 +12,12 @@
 
 | Plano/ADR | Veredito | Evidência / ação |
 | --- | --- | --- |
-| kilo-distribution-gap-analysis | CUMPRIDO (header ABSORBED correto) | tasks 1/2/4/6 DONE por F2 (`56fcebdc`, `783b285c`); task 3 medida na ADR-0019; task 5 superseded. Resíduo `.kilo/` "retired" físico adjudicado na F3 |
+| kilo-distribution-gap-analysis | CUMPRIDO (header ABSORBED correto) | tasks 1/2/4/6 DONE por F2 (`56fcebdc`, `783b285c`); task 3 medida na ADR-0019; task 5 superseded. Resíduo `.kilo/` adjudicado na F3: `command/`+`agent/` (projeções aposentadas, contagens stale 121/12/64/56) removidos; `kilo.json` mantido (config da ferramenta do operador, não é catálogo) |
 | reval250909-closure-plan | EXECUTADO (header retificado hoje) | PR #133 merge `ab27a954`; lanes aposentadas; F4 no runtime-program |
 | governance-runtime-program (ag-zrh) | PARCIAL | F0/F2 ✓; F1 travada no lado ai-hub (ag-ey2k walker, 7 owner-fixes já em PR #737); ag-bwqu único bloqueador de código do piloto; F3 (ag-zrh.4) aguarda deploy |
 | delivery-contract-behavioral-law (ag-p4a) | CUMPRIDO no repo | `c88cf7fd` (PR #135), release v0.5.0, ADRs 0017–0020; metade runtime (seção 5) é o elo ai-hub |
 | pydantic-governance-plan | PARCIAL — lado agents completo | fases 0–3 + PR #127 ✓; resto é `flext-vjj1s.*` (DB flext); header atualizado hoje |
-| ADR-0008 | CONTRADIÇÃO resolvida na F3 desta campanha | `cli.py`/`projection.py` (0a4682dc, 17/09) saem do pacote; projeção vira dev-only em `tools/` |
+| ADR-0008 | CONTRADIÇÃO RESOLVIDA na F3 (`19e64c01`) | `cli.py`/`__main__.py` removidos; `projection.py` → `tools/governance_projection.py` (dev-only, fora do wheel); gen ponto-fixo ×2 + check + test-full 63 executados verdes |
 | ADR-0014 intake | CUMPRIDO | `rules/workflow/capability-intake.md`; tríplice `flext-law` é defeito do consumidor (F5 do rework, dono ai-hub/flext) |
 | ADR-0015 tag grammar v2 | CUMPRIDO no catálogo; parcial nas projeções | projeções versionadas (P5) entram na F4/F5 |
 | ADR-0017/0018/0020/0021 | CUMPRIDOS | regras bootstrap presentes; v0.5.0; `advance.md` |
