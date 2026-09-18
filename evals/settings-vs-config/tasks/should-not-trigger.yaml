@@ -1,0 +1,14 @@
+id: settings-vs-config-plain-sort-001
+name: Keep a plain dict helper outside the ownership skill
+description: An adjacent pure transformation needs no settings/config frontier, loading, or imports.
+tags: [settings-vs-config, negative, plain-python]
+inputs:
+  prompt: >-
+    This standalone Python helper has no flext-core dependency and takes
+    rules: dict[str, int]. Return a single expression producing the rule names
+    ordered by descending value, breaking ties alphabetically. No I/O, loading,
+    imports, framework adoption, or ownership changes are requested. Output only that
+    expression.
+expected:
+  output_contains: ['[name for name, _ in sorted(rules.items(), key=lambda item: (-item[1], item[0]))]']
+  output_not_contains: ['settings', 'frozen', 'FlextSettings', 'yaml']

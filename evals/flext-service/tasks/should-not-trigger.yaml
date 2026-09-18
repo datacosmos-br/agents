@@ -1,12 +1,13 @@
-id: flextservice-negative-001
-name: Should not trigger flext-service
-description: Reject invalid triggers for flext-service.
-tags: [flext, service, composition, negative, invalid-trigger]
+id: flext-service-plain-runner-001
+name: Keep a plain Python runner outside the service skill
+description: A standalone class needs no FLEXT kernel, facade aliases, or imports.
+tags: [flext-service, non-trigger, plain-python]
 inputs:
   prompt: >-
-    User asks to choose a flext Result operation such as flat_map versus fold, to restate the five family part shape law, or to change settings config loading; the service composition skill must not trigger.
-  files:
-  - path: scenario.yaml
+    This standalone Python module has no flext-core dependency. Return the
+    smallest class JobRunner with a run() method returning True. No framework
+    adoption, singleton kernel, facade aliases, imports, or architecture changes
+    are requested. Output only that class.
 expected:
-  output_contains: ['not this skill', 'flext-result', 'flext-family-shape']
-  output_not_contains: ['service composition guidance']
+  output_contains: ['class JobRunner', 'def run', 'True']
+  output_not_contains: ['FlextService', 'flext_core', 'fetch_global', 'p.Result', 'execute']

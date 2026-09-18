@@ -1,12 +1,16 @@
-id: flextservice-edge-001
-name: Edge case flext-service
-description: Handle the material boundary case for flext-service.
-tags: [flext, service, composition, edge-case]
+id: flext-service-unknown-handler-contract-001
+name: Refuse handler wiring when the dispatcher contract is absent
+description: Fail closed without guessing container registration or dependency result types.
+tags: [flext-service, fail-closed, missing-contract]
 inputs:
   prompt: >-
-    A service module wants os.environ reads, a module-level mutable instance, and its own hand-rolled singleton accessor instead of the inherited kernel; the skill must reject this shape and route settings through the injected or pre-instantiated settings owner and fetch_global from the service base.
-  files:
-  - path: scenario.yaml
+    In an internal_flext consumer I want to move three command handlers onto the
+    shared container dispatcher and to expose an isolated instance with a cloned
+    settings snapshot. I have supplied neither the consumer's container
+    dispatcher registration contract (signatures, handler wrapping, unwrap
+    policy) nor the handlers' dependency result types or side effects. Give your
+    decision and the precise evidence needed before editing. Do not fabricate
+    the registration calls or a sample patch.
 expected:
-  output_contains: ['reject', 'settings', 'fetch_global', 'service base']
-  output_not_contains: ["normalized failure", "os.environ allowed"]
+  output_contains: ['contract', 'dispatcher', 'settings', 'result', 'side effects']
+  output_not_contains: ['register_handler(', 'dispatcher().unwrap()', 'def connect']

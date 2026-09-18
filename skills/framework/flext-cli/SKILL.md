@@ -17,7 +17,9 @@ not activate for Result composition semantics (`$flext-result`), service layerin
 Load `$flext-development` and its ancestors first; this child owns only the route
 contract. Project code never imports `typer` or `click` and never builds commands by
 hand: `flext_cli._utilities.framework` is the single private adapter behind
-`p.Cli.Application`. Read [the route procedure](references/procedure.md) before edits.
+`p.Cli.Application`. Read [the route procedure](references/procedure.md) before
+edits; for the flext-infra form where the service class is the input model, read
+[the model-as-command reference](references/model-as-command.md).
 
 Route law: one frozen `m.Cli.ResultCommandRoute` per command — `name`, `help_text`,
 `model_cls`, `handler`, then `success_message`, `success_formatter`, `success_type`.

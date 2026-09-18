@@ -1,12 +1,21 @@
-id: flextservice-basic-001
-name: Basic usage flext-service
-description: Execute the core flext-service contract.
-tags: [flext, service, composition, base, classmethod, handlers, protocol, injection, basic-usage]
+id: flext-service-archive-wiring-001
+name: Compose the archive service on the FlextService kernel
+description: Replace a hand-rolled singleton with kernel lifecycle, facade injection, and Result execution.
+tags: [flext-service, happy-path, service-wiring]
 inputs:
   prompt: >-
-    Compose a detected FLEXT domain service end to end: project base extends the flext_core s kernel and publishes the local s alias, handlers are classmethod or staticmethod returning p.Result over m and p types, collaborators arrive by constructor and p protocol injection, the api root is a pass-only facade with one eager alias, and oversized bodies split into part classes under services part dirs.
+    Apply flext service law: service composition, service wiring, and dependency
+    injection. Review the attached JobArchiveService fixture and return the
+    smallest replacement class. Subclass the FlextService kernel with the bool
+    payload, override execute() with the p.Result[bool] contract, keep the
+    self.store collaborator access unchanged, and expose the shared instance and
+    test reset through the inherited accessors. Replace the dict returns with
+    r-built results and the hand-rolled lock with the kernel lifecycle. Explain
+    the loaded parent chain, why the redeclared _instance slot violates
+    ENFORCE-057, and where with_settings would fit if a caller needed an
+    isolated settings snapshot.
   files:
-  - path: scenario.yaml
+  - path: archive-service.yaml
 expected:
-  output_contains: ['service base', 's', 'p.Result', 'protocol', 'composition root', 'fetch_global']
-  output_not_contains: ["invented command", "skipped gate"]
+  output_contains: ['FlextService[bool]', 'p.Result[bool]', 'def execute', 'fetch_global()', 'reset_for_testing()', 'ENFORCE-057', 'r[bool]', 'with_settings', 'flext-development', 'py-dev', 'solid']
+  output_not_contains: ['threading.Lock', 'def instance(', 'def __init__', "return {'ok'", 'return {"ok"']

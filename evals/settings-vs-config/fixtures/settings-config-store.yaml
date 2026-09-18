@@ -1,0 +1,13 @@
+project_profile: internal_flext
+dependency: flext-core
+governed_rules: config/report_rules.yaml
+consumer: ReportService
+fields:
+  db_retries: per-deployment knob, differs between local and staging, loaded from env DB_RETRIES
+  request_timeout: per-deployment knob, currently buried in report_rules.yaml
+  min_label_length: validation rule, reviewed and shipped with the YAML
+violations:
+  - set_rule(min_label_length, value) mutates the loaded rules dict after validation
+  - env loader wraps DB_RETRIES parsing in try/except and returns 3 when the variable is missing
+  - resolve_endpoint() reads os.environ directly inside the service method
+change_scope: only the settings/config boundary; keep public method signatures and existing imports

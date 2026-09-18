@@ -1,0 +1,14 @@
+id: settings-vs-config-missing-ownership-001
+name: Refuse the split when the mutation policy is absent
+description: Fail closed without guessing sources, keys, defaults, or who may change the value at runtime.
+tags: [settings-vs-config, edge-case, fail-closed]
+inputs:
+  prompt: >-
+    In a flext consumer I want to make a feature flag "configurable" and decide
+    whether it is a setting or a config rule. I have supplied neither the source list
+    it loads from, the owner or mutation policy, the allowed keys/schema, nor who may
+    change it at runtime. Give your decision and the precise evidence needed before
+    any edit. Do not fabricate the sources, a default, or a sample model.
+expected:
+  output_contains: ['setting', 'config', 'source', 'schema', 'owner', 'mutation']
+  output_not_contains: ['os.getenv(', 'BaseSettings', 'yaml.safe_load']

@@ -1,4 +1,19 @@
-description: Flext service composition law.
+description: Compose FLEXT services on the FlextService kernel without reimplementing its lifecycle.
 prompt: |-
-  grade the flext-service response, pass only when it names the project service base ending at the flext_core s kernel, the local s facade alias import, classmethod and staticmethod handlers returning p.Result over m and p typed boundaries, constructor and p protocol dependency injection wired at the api composition root with one eager alias, no hidden singleton module state or environment read inside services, and part classes under services part dirs composing the public service head.
-  Reject hand-rolled singletons, module-level mutable instances, bare dict boundaries, os.environ reads, and domain logic in the composition root.
+  Grade the flext-service delta, not generic class-design vocabulary. For the
+  archive-service fixture, require subclassing the kernel as FlextService[bool]
+  (or the per-project s base) with an overridden execute() -> p.Result[bool],
+  r-built results replacing dict returns, the self.store collaborator access
+  preserved, and shared-instance plus test-reset access via the inherited
+  fetch_global()/reset_for_testing() pair. Require the parent route
+  solid -> py-dev -> flext-development -> flext-service. Explain why a
+  redeclared _instance slot and lock violate ENFORCE-057, why with_settings()
+  yields an isolated clone instead of mutating global settings, and why
+  dependency contracts must be visible in sources before wiring container
+  dispatchers. Reject reimplemented singleton kernels, invented service
+  locators or base classes, direct flext_core internal imports, speculative
+  constructor wiring, and broad refactors. For absent dispatcher, settings, or
+  dependency result contracts, require no rewrite and a precise request for
+  the missing contract, not an assumed API. For the plain Python runner
+  request, require the native class without activating FLEXT or adding
+  imports.
