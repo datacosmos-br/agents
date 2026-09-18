@@ -1,10 +1,12 @@
-"""Project the governance capsule into every provider hook surface.
+"""Project the governance capsule into every provider surface (dev-only).
 
-This module is the canonical owner for render-injection of the session
-capsule into provider hooks (Codex, Gemini, Cursor), the OpenCode plugin,
-and instruction-pointer files (CLAUDE.md, GEMINI.md). The projection is
-deterministic and validated for a generation fixed point before any file
-is written to the destination checkout.
+Canonical owner for render-injection of the session capsule into provider
+hooks (Codex, Gemini, Cursor), the OpenCode plugin, and instruction-pointer
+files (CLAUDE.md, GEMINI.md). Deterministic and validated for a generation
+fixed point before any file is written to the destination checkout.
+
+Per ADR-0008 the published package carries no projector; this module lives
+in ``tools/`` (never packaged) and imports only the public bundle API.
 """
 
 from __future__ import annotations
@@ -17,8 +19,8 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path
 
-from .bundle import GovernanceBundle
-from .capsule import OPCODE_MARKER, Capsule, render_capsule
+from agents_governance import GovernanceBundle
+from agents_governance.capsule import OPCODE_MARKER, Capsule, render_capsule
 
 _HOOK_TEMPLATE = """\
 #!/usr/bin/env python3

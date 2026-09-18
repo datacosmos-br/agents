@@ -78,6 +78,7 @@ only-include = [
 
 [tool.pytest.ini_options]
 addopts = "-p no:cacheprovider --strict-config --strict-markers"
+pythonpath = ["tools"]
 testpaths = ["tests"]
 tmp_path_retention_policy = "none"
 
@@ -86,8 +87,12 @@ core = "ctrace"
 
 [tool.pyright]
 include = ["src", "tests", "tools"]
+extraPaths = ["tools"]
 venvPath = "."
 venv = ".venv"
+
+[tool.mypy]
+mypy_path = "tools"
 
 [tool.pyrefly]
 disable-project-excludes-heuristics = true

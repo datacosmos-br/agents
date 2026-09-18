@@ -18,6 +18,15 @@ from collections.abc import Mapping
 from pathlib import Path
 
 import pytest
+from governance_projection import (
+    HOOKS,
+    build,
+    build_hooks,
+    build_instructions,
+    render_opencode_plugin,
+    render_python_hook,
+    snapshot,
+)
 
 from agents_governance import GovernanceBundle
 from agents_governance.approvals import approval_tags
@@ -26,15 +35,6 @@ from agents_governance.capsule import (
     OPCODE_MARKER,
     Capsule,
     render_capsule,
-)
-from agents_governance.projection import (
-    HOOKS,
-    build,
-    build_hooks,
-    build_instructions,
-    render_opencode_plugin,
-    render_python_hook,
-    snapshot,
 )
 
 
