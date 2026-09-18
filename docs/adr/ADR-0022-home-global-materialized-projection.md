@@ -24,12 +24,14 @@ mais como alias do checkout.
 
 1. **Projeção de leitura universal, fonte única no repo.** `~/.agents` materializa o
    catálogo semântico do checkout (`skills/`, `rules/`, `commands/`, `agents/`,
-   `evals/`, `docs/adr/`, `docs/research/`, `docs/security/`, `README.md`,
-   `metadata.json`) — e nada mais: nenhum `.git/`, `.venv/`, `.beads/`, `.gc/`,
-   `worktrees/`, `dist/`, superfícies de provider do checkout (`.claude/`, `.codex/`,
-   `.cursor/`, `.gemini/`, `.opencode/`, `.kilo/`) nem config viva de usuário.
-   Consumidores lêem; nenhum consumidor escreve — escrita de consumer no home é
-   defeito reportado, não estado aceito.
+   `evals/`, `docs/adr/`, `docs/research/`, `docs/security/`, `AGENTS.md`,
+   `README.md`, `metadata.json`) — e nada mais: nenhum `.git/`, `.venv/`, `.beads/`,
+   `.gc/`, `worktrees/`, `dist/`, superfícies de provider do checkout (`.claude/`,
+   `.codex/`, `.cursor/`, `.gemini/`, `.opencode/`, `.kilo/`) nem config viva de
+   usuário. `AGENTS.md` entra por consumidor medido: é alvo declarado do
+   `ssot_relink` e da gate fail-closed `projection_identity_gate` do ai-hub
+   (`config/governance.yaml:10-16`). Consumidores lêem; nenhum consumidor escreve —
+   escrita de consumer no home é defeito reportado, não estado aceito.
 2. **Carimbo de versão + digest (P5/ADR-0015).** O home carrega
    `.agents-governance.json` com `owner`, `distribution_version` do bundle,
    `generated_at`, e digest SHA-256 por árvore de artefato. Convergência se decide por
