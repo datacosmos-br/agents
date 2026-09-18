@@ -22,6 +22,12 @@ Program completion: foundation (docs/exports/pointers/runtime regime) **100% lan
 active**; enforcement+migration is the remaining core (~40% of total effort);
 convergence is a separate follow-on epic.
 
+> **Status update 2026-09-18 (measured, campaign agents):** every remaining item
+> (`.2`/`.3`/`.5` remainder/`.6`) lives in the flext tracker (`flext-vjj1s.*`, DB
+> externo) — dono flext/flext-infra, fora do repo agents. O lado agents deste programa
+> (fases 0–3 e PR #127 da fase 5) está completo e ativo; nenhuma ação catalog-side
+> pendente. Ver `20260918-status-ledger.md` para o grafo de bloqueios.
+
 ## Next actions (ordered queue, estimates are focused agent-work hours)
 
 1. **`.2` enforcement rules** (flext-infra): 7 ast-grep rules for the removal catalog

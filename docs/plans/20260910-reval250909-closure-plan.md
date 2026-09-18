@@ -1,9 +1,15 @@
 # reval250909 — Plano de Fechamento (adoption lane → dev)
 
-Status: aguardando aprovação do operador (2 decisões abertas, ver fim). Autor da
-execução: sessão opencode reval250909. Autorização de pouso: operador ("subir isso para
-a branch de integracao ao final e ele nao pode gerar erros"); merge registrado como
-operator-authorized (AGENTS.md lei 12).
+Status: **EXECUTADO** (retificado 2026-09-18; o header original "aguardando aprovação"
+ficou stale após o pouso). Evidência: PR #133 com merge `--no-ff` `ab27a954` em `dev`
+(fase 2); lanes `wip/beads-governance-reval250909` e `feat/reval250909-adoption`
+aposentadas (fase 3); fechamentos F4 registrados no
+`20260910-governance-runtime-program.md` F0. Decisões abertas resolvidas na execução:
+(1) pouso via PR + merge operator-authorized — foi o que aconteceu (PR #133); (2)
+ag-9qg virou lane subsequente separada. Fases 1–5 executadas pela sessão opencode
+reval250909. Autor da execução: sessão opencode reval250909. Autorização de pouso:
+operador ("subir isso para a branch de integracao ao final e ele nao pode gerar
+erros"); merge registrado como operator-authorized (AGENTS.md lei 12).
 
 ## Estado medido (evidência, 2026-09-10)
 
