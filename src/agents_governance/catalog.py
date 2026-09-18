@@ -42,60 +42,6 @@ _TAG_NAMESPACES = (
     )
     | APPROVAL_NAMESPACES
 )
-_USAGE_TAGS = frozenset({"usage:frozen", "usage:on-demand", "usage:router"})
-_ROUTE_TAGS = frozenset({"route:agent", "route:project"})
-_ACTIVATION_TAGS = frozenset(
-    {"activation:detected", "activation:detected-or-opt-in", "activation:opt-in"}
-)
-_SUBJECTS = frozenset(
-    {
-        "agent-browser",
-        "agents",
-        "architecture",
-        "argocd",
-        "beads",
-        "bun",
-        "context7",
-        "cosmos-gitops",
-        "cpp",
-        "dart",
-        "deployment",
-        "dmux",
-        "dry",
-        "exa",
-        "fal-ai",
-        "flext",
-        "flutter",
-        "frontend",
-        "fundraising",
-        "gascity",
-        "git",
-        "github",
-        "go",
-        "helm",
-        "jvm",
-        "language",
-        "market-research",
-        "mcp",
-        "mle",
-        "nextjs",
-        "openspec",
-        "playwright",
-        "pydantic",
-        "python",
-        "react",
-        "rust",
-        "schema",
-        "scope",
-        "ts",
-        "turbopack",
-        "upstream",
-        "vault",
-        "video",
-        "web",
-        "x-api",
-    }
-)
 _FRONTMATTER_FIELDS = frozenset(
     {"allowed-tools", "compatibility", "description", "license", "metadata", "name"}
 )
@@ -163,8 +109,17 @@ class Catalog:
 
     def __init__(self, root: Path) -> None:
         self.root = root.resolve(strict=True)
-        self._policy = self._load_policy(self.root / "config" / "skills.json")
+        policy_path = self.root / "config" / "skills.json"
+        self._policy = self._load_policy(policy_path)
         self._resource_policy = ResourcePolicy.parse(self._policy["resources"])
+        (
+            self._usage_tags,
+            self._route_tags,
+            self._activation_tags,
+            self._subjects,
+        ) = self._load_vocabulary(
+            self._policy["vocabulary"], f"{policy_path}: vocabulary"
+        )
         self._records = self._discover()
         self._resource_policy.validate_inventory(
             self.root,
@@ -183,10 +138,12 @@ class Catalog:
             raise ValueError(f"skills policy must be a physical file: {path}")
         loaded = cast_mapping(json.loads(path.read_text(encoding="utf-8")), str(path))
         require_exact_fields(
-            loaded, frozenset({"version", "budgets", "resources"}), str(path)
+            loaded,
+            frozenset({"version", "budgets", "resources", "vocabulary"}),
+            str(path),
         )
-        if loaded["version"] != 2:
-            raise ValueError(f"skills policy version must be 2: {path}")
+        if loaded["version"] != 3:
+            raise ValueError(f"skills policy version must be 3: {path}")
         budgets = cast_mapping(loaded["budgets"], f"{path}: budgets")
         require_exact_fields(budgets, _BUDGET_FIELDS, f"{path}: budgets")
         for key in sorted(_BUDGET_FIELDS):
@@ -194,6 +151,47 @@ class Catalog:
             if type(value) is not int or value <= 0:
                 raise TypeError(f"budgets.{key} must be a positive integer: {path}")
         return loaded
+
+    @staticmethod
+    def _load_vocabulary(
+        value: object, context: str
+    ) -> tuple[frozenset[str], frozenset[str], frozenset[str], frozenset[str]]:
+        """Parse the config-owned closed tag vocabularies or raise on defect."""
+
+        mapping = cast_mapping(value, context)
+        require_exact_fields(
+            mapping,
+            frozenset({"usage", "routes", "activation", "subjects"}),
+            context,
+        )
+
+        def entries(key: str, prefix: str | None) -> frozenset[str]:
+            raw = mapping[key]
+            if (
+                not isinstance(raw, list)
+                or not raw
+                or not all(isinstance(item, str) for item in raw)
+            ):
+                raise TypeError(f"{context}: {key} must be a non-empty string list")
+            if raw != sorted(set(raw)):
+                raise ValueError(f"{context}: {key} must be sorted and unique")
+            for item in raw:
+                if prefix is not None:
+                    if not item.startswith(prefix):
+                        raise ValueError(
+                            f"{context}: {key} entries must start with "
+                            f"{prefix!r}: {item}"
+                        )
+                elif _NAME.fullmatch(item) is None:
+                    raise ValueError(f"{context}: {key} entries must be slugs: {item}")
+            return frozenset(cast("list[str]", raw))
+
+        return (
+            entries("usage", "usage:"),
+            entries("routes", "route:"),
+            entries("activation", "activation:"),
+            entries("subjects", None),
+        )
 
     @staticmethod
     def _frontmatter(path: Path) -> dict[str, object]:
@@ -399,7 +397,7 @@ class Catalog:
             if tag.split(":", 1)[0] not in _TAG_NAMESPACES:
                 raise ValueError(f"{skill_file}: unsupported tag namespace: {tag}")
 
-        usage = self._one_tag(skill_file, tags, "usage", _USAGE_TAGS)
+        usage = self._one_tag(skill_file, tags, "usage", self._usage_tags)
 
         route_tags = tuple(tag for tag in tags if tag.startswith("route:"))
         activation_tags = tuple(tag for tag in tags if tag.startswith("activation:"))
@@ -417,20 +415,22 @@ class Catalog:
         routes: tuple[str, ...] = ()
         activation: str | None = None
         if category.conditional:
-            if not route_tags or any(tag not in _ROUTE_TAGS for tag in route_tags):
+            if not route_tags or any(tag not in self._route_tags for tag in route_tags):
                 raise ValueError(
                     f"{skill_file}: conditional skill requires at least one of "
-                    f"{', '.join(sorted(_ROUTE_TAGS))}; got "
+                    f"{', '.join(sorted(self._route_tags))}; got "
                     f"{', '.join(route_tags) or 'none'}"
                 )
             routes = tuple(tag.split(":", 1)[1] for tag in route_tags)
-            activation = self._one_tag(skill_file, tags, "activation", _ACTIVATION_TAGS)
+            activation = self._one_tag(
+                skill_file, tags, "activation", self._activation_tags
+            )
             if not subjects:
                 raise ValueError(
                     f"{skill_file}: conditional skill requires at least one "
                     f"subject:* tag"
                 )
-            unknown_subjects = frozenset(subjects) - _SUBJECTS
+            unknown_subjects = frozenset(subjects) - self._subjects
             if unknown_subjects:
                 raise ValueError(
                     f"{skill_file}: unsupported subjects: "

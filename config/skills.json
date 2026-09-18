@@ -1,22 +1,61 @@
 {
-  "version": 2,
+  "version": 3,
   "resources": {
-    "default": {"format": "utf-8", "executable": false},
+    "default": {
+      "format": "utf-8",
+      "executable": false
+    },
     "file_mode": 420,
     "executable_mode": 493,
     "overrides": {
-      "agent-wide/personal/artifacts/scripts/bundle-artifact.sh": {"format": "utf-8", "executable": true},
-      "agent-wide/personal/artifacts/scripts/init-artifact.sh": {"format": "utf-8", "executable": true},
-      "domain/gascity/mayor/assets/scripts/create_beads_from_tasks.py": {"format": "utf-8", "executable": true},
-      "tool/beads-organization/scripts/reconcile-inventory.sh": {"format": "utf-8", "executable": true},
-      "tool/claude-session-extract/scripts/extract_claude_session.py": {"format": "utf-8", "executable": true},
-      "tool/poolside-session-extract/scripts/extract_poolside_session.py": {"format": "utf-8", "executable": true},
-      "tool/skill-creator/scripts/init_skill.py": {"format": "utf-8", "executable": true},
-      "tool/skill-creator/scripts/package_skill.py": {"format": "utf-8", "executable": true},
-      "tool/skill-creator/scripts/quick_validate.py": {"format": "utf-8", "executable": true},
-      "tool/webapp-test/scripts/with_server.py": {"format": "utf-8", "executable": true},
-      "tool/wip-beads/scripts/bd_json_to_csv.py": {"format": "utf-8", "executable": true},
-      "tool/wip-beads/scripts/wip-beads.sh": {"format": "utf-8", "executable": true}
+      "agent-wide/personal/artifacts/scripts/bundle-artifact.sh": {
+        "format": "utf-8",
+        "executable": true
+      },
+      "agent-wide/personal/artifacts/scripts/init-artifact.sh": {
+        "format": "utf-8",
+        "executable": true
+      },
+      "domain/gascity/mayor/assets/scripts/create_beads_from_tasks.py": {
+        "format": "utf-8",
+        "executable": true
+      },
+      "tool/beads-organization/scripts/reconcile-inventory.sh": {
+        "format": "utf-8",
+        "executable": true
+      },
+      "tool/claude-session-extract/scripts/extract_claude_session.py": {
+        "format": "utf-8",
+        "executable": true
+      },
+      "tool/poolside-session-extract/scripts/extract_poolside_session.py": {
+        "format": "utf-8",
+        "executable": true
+      },
+      "tool/skill-creator/scripts/init_skill.py": {
+        "format": "utf-8",
+        "executable": true
+      },
+      "tool/skill-creator/scripts/package_skill.py": {
+        "format": "utf-8",
+        "executable": true
+      },
+      "tool/skill-creator/scripts/quick_validate.py": {
+        "format": "utf-8",
+        "executable": true
+      },
+      "tool/webapp-test/scripts/with_server.py": {
+        "format": "utf-8",
+        "executable": true
+      },
+      "tool/wip-beads/scripts/bd_json_to_csv.py": {
+        "format": "utf-8",
+        "executable": true
+      },
+      "tool/wip-beads/scripts/wip-beads.sh": {
+        "format": "utf-8",
+        "executable": true
+      }
     }
   },
   "budgets": {
@@ -24,5 +63,68 @@
     "frozen_tokens": 1200,
     "on_demand_tokens": 5000,
     "max_lines": 500
+  },
+  "vocabulary": {
+    "usage": [
+      "usage:frozen",
+      "usage:on-demand",
+      "usage:router"
+    ],
+    "routes": [
+      "route:agent",
+      "route:project"
+    ],
+    "activation": [
+      "activation:detected",
+      "activation:detected-or-opt-in",
+      "activation:opt-in"
+    ],
+    "subjects": [
+      "agent-browser",
+      "agents",
+      "architecture",
+      "argocd",
+      "beads",
+      "bun",
+      "context7",
+      "cosmos-gitops",
+      "cpp",
+      "dart",
+      "deployment",
+      "dmux",
+      "dry",
+      "exa",
+      "fal-ai",
+      "flext",
+      "flutter",
+      "frontend",
+      "fundraising",
+      "gascity",
+      "git",
+      "github",
+      "go",
+      "helm",
+      "jvm",
+      "language",
+      "market-research",
+      "mcp",
+      "mle",
+      "nextjs",
+      "openspec",
+      "playwright",
+      "pydantic",
+      "python",
+      "react",
+      "rust",
+      "schema",
+      "scope",
+      "ts",
+      "turbopack",
+      "upstream",
+      "vault",
+      "video",
+      "web",
+      "x-api"
+    ]
   }
 }
