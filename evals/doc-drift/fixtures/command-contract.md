@@ -1,7 +1,7 @@
 # Documented claim
 
-The guide says: `orchestrator dispatch worker work-42`, then
-`orchestrator finish` commits, pushes, and merges the change automatically.
+The guide says: `orchestrator dispatch worker work-42`, then `orchestrator finish`
+commits, pushes, and merges the change automatically.
 
 ## Canonical static owner
 

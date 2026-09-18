@@ -1,12 +1,11 @@
 # Lane scenario — graph-backed deletion review
 
-Workspace: a git superproject `<workspace-root>` with member submodules. You
-work in the lane worktree `<lane-worktree>` of one member on branch
-`lane/protocol-repairs`.
+Workspace: a git superproject `<workspace-root>` with member submodules. You work in the
+lane worktree `<lane-worktree>` of one member on branch `lane/protocol-repairs`.
 
-Operator request: delete the helper `resolve_owner_alias` and every consumer
-that only exists to call it, report the blast radius in the PR, and keep the
-superproject graph usable after the member lands.
+Operator request: delete the helper `resolve_owner_alias` and every consumer that only
+exists to call it, report the blast radius in the PR, and keep the superproject graph
+usable after the member lands.
 
 Observed state (read-only commands already run):
 
@@ -26,7 +25,7 @@ Daemon:  not running
 Constraints:
 
 - Graph-backed claims need the commit the graph was built at.
-- Renames and deletions land through the project codemod owner (`make mod`),
-  not a graph-side apply.
-- The host watcher service, daemon inventory, and MCP routes are managed
-  projections; the host watcher service is active.
+- Renames and deletions land through the project codemod owner (`make mod`), not a
+  graph-side apply.
+- The host watcher service, daemon inventory, and MCP routes are managed projections;
+  the host watcher service is active.

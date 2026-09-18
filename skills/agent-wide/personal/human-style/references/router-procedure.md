@@ -2,9 +2,15 @@
 
 ## Human Writing Style
 
-Make every piece of generated text read like it was written by a real person, not a language model. This skill encodes the patterns that betray AI authorship and provides concrete rules for avoiding them.
+Make every piece of generated text read like it was written by a real person, not a
+language model. This skill encodes the patterns that betray AI authorship and provides
+concrete rules for avoiding them.
 
-The core problem: LLMs regress to the mean. They replace specific, unusual, nuanced facts with generic, positive, important-sounding language. The subject becomes simultaneously less specific and more exaggerated, like a portrait fading from a sharp photograph into a blurry, generic sketch while someone shouts louder and louder that it shows a uniquely important person.
+The core problem: LLMs regress to the mean. They replace specific, unusual, nuanced
+facts with generic, positive, important-sounding language. The subject becomes
+simultaneously less specific and more exaggerated, like a portrait fading from a sharp
+photograph into a blurry, generic sketch while someone shouts louder and louder that it
+shows a uniquely important person.
 
 Your job is to reverse that tendency. Be specific. Be plain. Be human.
 
@@ -12,92 +18,139 @@ Your job is to reverse that tendency. Be specific. Be plain. Be human.
 
 ### Before you write: context and voice
 
-**Check context first.** These rules apply differently depending on genre. See "Tone guidance by context" below. An email and a technical doc need different calibrations.
+**Check context first.** These rules apply differently depending on genre. See "Tone
+guidance by context" below. An email and a technical doc need different calibrations.
 
-**Preserve the user's voice.** If the user's draft or prior writing has a distinctive style (sardonic, academic, casual, formal), match it. Don't flatten everything to "plain and specific." These rules are about eliminating AI tells, not imposing a single voice.
+**Preserve the user's voice.** If the user's draft or prior writing has a distinctive
+style (sardonic, academic, casual, formal), match it. Don't flatten everything to "plain
+and specific." These rules are about eliminating AI tells, not imposing a single voice.
 
-**When a banned word is the right word, use it.** If "intricate" is the precise technical term in a textile or watchmaking context, keep it. If "foster" is the term of art in developmental psychology, keep it. The problem is gratuitous usage and clustering, not the words themselves.
+**When a banned word is the right word, use it.** If "intricate" is the precise
+technical term in a textile or watchmaking context, keep it. If "foster" is the term of
+art in developmental psychology, keep it. The problem is gratuitous usage and
+clustering, not the words themselves.
 
 ---
 
 ### The master rule: specific detail over generic praise
 
-**Every other rule in this skill flows from this one.** When you're tempted to write that something is "significant", "important", "notable", "profound", or "valuable", stop and ask: *What specifically makes it so?* Then write that instead. If you don't know the specific, don't write the claim.
+**Every other rule in this skill flows from this one.** When you're tempted to write
+that something is "significant", "important", "notable", "profound", or "valuable", stop
+and ask: _What specifically makes it so?_ Then write that instead. If you don't know the
+specific, don't write the claim.
 
-This single discipline, applied rigorously, prevents most of the failure modes the remaining rules address. Significance inflation, filler adjectives, vague authorities, and the "challenges and future prospects" formula all come from the same source: the model reaches for generic importance-language when it doesn't have (or hasn't bothered to surface) a concrete fact.
+This single discipline, applied rigorously, prevents most of the failure modes the
+remaining rules address. Significance inflation, filler adjectives, vague authorities,
+and the "challenges and future prospects" formula all come from the same source: the
+model reaches for generic importance-language when it doesn't have (or hasn't bothered
+to surface) a concrete fact.
 
-❌ *She made significant contributions to the field of computational linguistics.*
-✅ *She wrote the first parser for Bantu languages, which NLP researchers at three universities still use.*
+❌ _She made significant contributions to the field of computational linguistics._ ✅
+_She wrote the first parser for Bantu languages, which NLP researchers at three
+universities still use._
 
-❌ *The building is an important example of modernist architecture.*
-✅ *The building's cantilevered upper floors extend six meters past the ground floor, unusual for 1952.*
+❌ _The building is an important example of modernist architecture._ ✅ _The building's
+cantilevered upper floors extend six meters past the ground floor, unusual for 1952._
 
 ---
 
 ### Top AI tells — detect these on every pass
 
-If you remember nothing else from this skill, detect these. They are the highest-frequency, highest-visibility AI fingerprints.
+If you remember nothing else from this skill, detect these. They are the
+highest-frequency, highest-visibility AI fingerprints.
 
-**Words (avoid clustering; one in a long piece is usually fine):** *delve*, *crucial*, *pivotal*, *tapestry*, *testament*, *underscore*, *vibrant*, *enhance*, *meticulous*, *landscape* (abstract usage).
+**Words (avoid clustering; one in a long piece is usually fine):** _delve_, _crucial_,
+_pivotal_, _tapestry_, _testament_, _underscore_, _vibrant_, _enhance_, _meticulous_,
+_landscape_ (abstract usage).
 
 **Phrases:**
 
 - "stands/serves as a testament to..."
 - "it's not just X, it's Y" (when Y doesn't actually add surprise)
-- "Despite [positive thing], [subject] faces challenges... Despite these challenges, continues to..."
+- "Despite [positive thing], [subject] faces challenges... Despite these challenges,
+  continues to..."
 
-**Sentence tails:** "...highlighting...", "...underscoring...", "...showcasing...", "...reflecting...".
+**Sentence tails:** "...highlighting...", "...underscoring...", "...showcasing...",
+"...reflecting...".
 
-**Sentence openers:** "Furthermore,", "Moreover,", "Additionally,", "In today's fast-paced world...", "It's worth noting that...".
+**Sentence openers:** "Furthermore,", "Moreover,", "Additionally,", "In today's
+fast-paced world...", "It's worth noting that...".
 
-**Significance inflation:** calling things "significant", "important", "notable", "valuable" without naming what specifically makes them so.
+**Significance inflation:** calling things "significant", "important", "notable",
+"valuable" without naming what specifically makes them so.
 
-For full specifics, replacements, and per-item diagnostics, see the reference files listed at the bottom of this file.
+For full specifics, replacements, and per-item diagnostics, see the reference files
+listed at the bottom of this file.
 
 ---
 
 ### Self-check
 
-**Before writing, derive the applicable checks from the declared genre and voice. Before returning output, run every applicable check below. If any fails, revise the text and re-check; a failure cannot be waived after the fact.**
+**Before writing, derive the applicable checks from the declared genre and voice. Before
+returning output, run every applicable check below. If any fails, revise the text and
+re-check; a failure cannot be waived after the fact.**
 
-1. **Master rule — generic praise vs. specifics** — Anywhere you wrote "significant", "important", "notable", "valuable", or "profound"? Name what specifically makes it so, or cut the claim.
-2. **Significance inflation** — Are you telling the reader something is important instead of showing why? Cut the editorializing.
-3. **Filler adjectives** — "vibrant", "rich", "diverse", "profound", "renowned" — doing real work or filling space?
-4. **Vocabulary clusters** — Three or more AI-overused words near each other? Replace or space them out.
-5. **"Is" avoidance** — "serves as" instead of "is", "boasts" instead of "has"? Simplify.
-6. **-ing clause tails** — Sentences ending with "...highlighting...", "...showcasing...", "...underscoring..."? Delete those tails.
-7. **Weasel sources** — Claims attributed to unnamed "experts" or "observers"? Name them or cut the attribution.
-8. **Challenges formula** — Does the piece end with "Despite X, faces challenges... Despite those challenges, continues to..."? Rewrite with specifics.
+1. **Master rule — generic praise vs. specifics** — Anywhere you wrote "significant",
+   "important", "notable", "valuable", or "profound"? Name what specifically makes it
+   so, or cut the claim.
+2. **Significance inflation** — Are you telling the reader something is important
+   instead of showing why? Cut the editorializing.
+3. **Filler adjectives** — "vibrant", "rich", "diverse", "profound", "renowned" — doing
+   real work or filling space?
+4. **Vocabulary clusters** — Three or more AI-overused words near each other? Replace or
+   space them out.
+5. **"Is" avoidance** — "serves as" instead of "is", "boasts" instead of "has"?
+   Simplify.
+6. **-ing clause tails** — Sentences ending with "...highlighting...",
+   "...showcasing...", "...underscoring..."? Delete those tails.
+7. **Weasel sources** — Claims attributed to unnamed "experts" or "observers"? Name them
+   or cut the attribution.
+8. **Challenges formula** — Does the piece end with "Despite X, faces challenges...
+   Despite those challenges, continues to..."? Rewrite with specifics.
 9. **Triple rhythm** — Are your lists always in threes? Vary the count.
-10. **Em dash density** — More than a couple per paragraph? Convert some to commas or periods.
-11. **Boldface abuse** — Bolding phrases in running prose? Stop (unless this is instructional or reference material).
-12. **Heavy transitions** — Opening sentences with "Furthermore," "Moreover," "It's worth noting"? Cut them.
-13. **Passive pileup** — Three or more consecutive passive sentences? Rewrite at least one in active voice.
-14. **Sentence-starter monotony** — Multiple sentences opening with "The [noun]..."? Vary the openers.
+10. **Em dash density** — More than a couple per paragraph? Convert some to commas or
+    periods.
+11. **Boldface abuse** — Bolding phrases in running prose? Stop (unless this is
+    instructional or reference material).
+12. **Heavy transitions** — Opening sentences with "Furthermore," "Moreover," "It's
+    worth noting"? Cut them.
+13. **Passive pileup** — Three or more consecutive passive sentences? Rewrite at least
+    one in active voice.
+14. **Sentence-starter monotony** — Multiple sentences opening with "The [noun]..."?
+    Vary the openers.
 
-If a check needs lexical guidance, consult
-`banned-words.md` (skill file). Do not invent or load an absent
-reference.
+If a check needs lexical guidance, consult `banned-words.md` (skill file). Do not invent
+or load an absent reference.
 
 ---
 
 ### Tone guidance by context
 
-**Articles / Blog posts / Essays:** Neutral, specific, fact-forward. Let the material speak for itself. Use first person only if the genre calls for it.
+**Articles / Blog posts / Essays:** Neutral, specific, fact-forward. Let the material
+speak for itself. Use first person only if the genre calls for it.
 
-**Emails / Messages:** Direct and human. Varying sentence length. It's fine to start sentences with "And" or "But." Contractions are good. Brief human courtesies are fine here.
+**Emails / Messages:** Direct and human. Varying sentence length. It's fine to start
+sentences with "And" or "But." Contractions are good. Brief human courtesies are fine
+here.
 
-**Marketing / Product copy:** You can be enthusiastic, but ground claims in specifics. "Fast" means nothing; "renders in 40ms" means something. Some promotional language is expected in this genre, but avoid the generic AI version of it.
+**Marketing / Product copy:** You can be enthusiastic, but ground claims in specifics.
+"Fast" means nothing; "renders in 40ms" means something. Some promotional language is
+expected in this genre, but avoid the generic AI version of it.
 
-**Technical documentation:** Clarity above all. Short sentences. Active voice. No puffery whatsoever.
+**Technical documentation:** Clarity above all. Short sentences. Active voice. No
+puffery whatsoever.
 
-**Academic / Formal writing:** If the user explicitly requests natural tone in formal contexts, apply these rules lightly. Hedging, passive voice, and formal transitions ("Furthermore") may be appropriate. Focus mainly on cutting AI vocabulary clusters and significance inflation.
+**Academic / Formal writing:** If the user explicitly requests natural tone in formal
+contexts, apply these rules lightly. Hedging, passive voice, and formal transitions
+("Furthermore") may be appropriate. Focus mainly on cutting AI vocabulary clusters and
+significance inflation.
 
-**Creative writing:** Break any of these rules if the voice calls for it, but break them *deliberately*, not because you defaulted to AI patterns.
+**Creative writing:** Break any of these rules if the voice calls for it, but break them
+_deliberately_, not because you defaulted to AI patterns.
 
 ---
 
 ### Further reference
 
-Read `banned-words.md` (skill file) when editing or when the
-self-check flags a vocabulary cluster. It is the bundle's only lexical reference.
+Read `banned-words.md` (skill file) when editing or when the self-check flags a
+vocabulary cluster. It is the bundle's only lexical reference.

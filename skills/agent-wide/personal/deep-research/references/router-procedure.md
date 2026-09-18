@@ -2,7 +2,8 @@
 
 ## Deep Research
 
-Produce thorough, cited research reports from multiple web sources using firecrawl and exa MCP tools.
+Produce thorough, cited research reports from multiple web sources using firecrawl and
+exa MCP tools.
 
 ### When to Activate
 
@@ -15,10 +16,10 @@ Produce thorough, cited research reports from multiple web sources using firecra
 ### Research Tool Preflight
 
 Select the complete declared research toolchain before searching. Validate every
-required search, crawl, authentication, and publication capability before the
-first network call. Firecrawl and Exa are supported when the active environment
-declares them; failure of any selected tool stops research without switching to
-another provider or reduced source set.
+required search, crawl, authentication, and publication capability before the first
+network call. Firecrawl and Exa are supported when the active environment declares them;
+failure of any selected tool stops research without switching to another provider or
+reduced source set.
 
 ### Workflow
 
@@ -29,8 +30,8 @@ Ask 1-2 quick clarifying questions:
 - "What's your goal — learning, making a decision, or writing something?"
 - "Any specific angle or depth you want?"
 
-If the user says "just research it", proceed with the scope stated in the request
-and disclose low-risk assumptions. Ask one targeted question before any missing
+If the user says "just research it", proceed with the scope stated in the request and
+disclose low-risk assumptions. Ask one targeted question before any missing
 decision-critical input could change the research outcome.
 
 #### Step 2: Plan the Research
@@ -83,8 +84,8 @@ firecrawl_scrape(url: "<url>")
 crawling_exa(url: "<url>", tokensNum: 5000)
 ```
 
-Deep-read every source that supports a decision-critical claim. Do not rely only
-on search snippets or stop at an arbitrary source quota.
+Deep-read every source that supports a decision-critical claim. Do not rely only on
+search snippets or stop at an arbitrary source quota.
 
 #### Step 5: Synthesize and Write Report
 
@@ -92,41 +93,50 @@ Structure the report:
 
 ```markdown
 # [Topic]: Research Report
-*Generated: [date] | Sources: [N] | Confidence: [High/Medium/Low]*
+
+_Generated: [date] | Sources: [N] | Confidence: [High/Medium/Low]_
 
 ## Executive Summary
+
 [3-5 sentence overview of key findings]
 
 ## 1. [First Major Theme]
+
 [Findings with inline citations]
+
 - Key point ([Source Name](url))
 - Supporting data ([Source Name](url))
 
 ## 2. [Second Major Theme]
+
 ...
 
 ## 3. [Third Major Theme]
+
 ...
 
 ## Key Takeaways
+
 - [Actionable insight 1]
 - [Actionable insight 2]
 - [Actionable insight 3]
 
 ## Sources
+
 1. [Title](url) — [one-line summary]
 2. ...
 
 ## Methodology
-Searched [N] queries across web and news. Analyzed [M] sources.
-Sub-questions investigated: [list]
+
+Searched [N] queries across web and news. Analyzed [M] sources. Sub-questions
+investigated: [list]
 ```
 
 #### Step 6: Deliver
 
 - **Short topics**: Post the full report in chat
-- **Long reports**: publish a file only when the user requested a validated
-  destination; otherwise deliver the complete report in the authorized response
+- **Long reports**: publish a file only when the user requested a validated destination;
+  otherwise deliver the complete report in the authorized response
 
 ### Quality Rules
 

@@ -22,9 +22,10 @@ Write investor communication that is short, concrete, and easy to act on.
 
 ### Voice Handling
 
-If the user's voice matters, run `brand-voice` first and reuse its `VOICE PROFILE`.
-This skill should keep the investor-specific structure and ask discipline, not recreate its own parallel voice system.
-If that selected voice workflow fails, stop without drafting in a generic voice.
+If the user's voice matters, run `brand-voice` first and reuse its `VOICE PROFILE`. This
+skill should keep the investor-specific structure and ask discipline, not recreate its
+own parallel voice system. If that selected voice workflow fails, stop without drafting
+in a generic voice.
 
 ### Hard Bans
 
@@ -54,14 +55,14 @@ Reference one or more of:
 - a mutual connection
 - a clear market or product fit with the investor's focus
 
-Validate the investor identity, fit evidence, company proof, ask, voice contract,
-and requested message set before drafting. Missing required context blocks the
-entire outbound set; do not return a generic or partial draft.
+Validate the investor identity, fit evidence, company proof, ask, voice contract, and
+requested message set before drafting. Missing required context blocks the entire
+outbound set; do not return a generic or partial draft.
 
 ### Follow-Up Cadence
 
-Use only dates or intervals approved in the request. Do not invent a cadence or
-extend the sequence beyond the authorized messages.
+Use only dates or intervals approved in the request. Do not invent a cadence or extend
+the sequence beyond the authorized messages.
 
 ### Warm Intro Requests
 

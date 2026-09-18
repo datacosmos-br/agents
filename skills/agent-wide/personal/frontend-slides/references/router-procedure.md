@@ -2,29 +2,34 @@
 
 ## Frontend Slides
 
-Create zero-dependency, animation-rich HTML presentations that run entirely in the browser.
+Create zero-dependency, animation-rich HTML presentations that run entirely in the
+browser.
 
-Inspired by the visual exploration approach showcased in work by [zarazhangrui](https://github.com/zarazhangrui).
+Inspired by the visual exploration approach showcased in work by
+[zarazhangrui](https://github.com/zarazhangrui).
 
 ### When to Activate
 
 - Creating a talk deck, pitch deck, workshop deck, or internal presentation
 - Converting `.ppt` or `.pptx` slides into an HTML presentation
 - Improving an existing HTML presentation's layout, motion, or typography
-- Exploring presentation styles with a user who does not know their design preference yet
+- Exploring presentation styles with a user who does not know their design preference
+  yet
 
 ### Non-Negotiables
 
-1. **Zero dependencies**: produce one self-contained HTML file with inline CSS
-   and JS unless the user explicitly contracts a complete multi-file artifact.
-2. **Viewport fit is mandatory**: every slide must fit inside one viewport with no internal scrolling.
+1. **Zero dependencies**: produce one self-contained HTML file with inline CSS and JS
+   unless the user explicitly contracts a complete multi-file artifact.
+2. **Viewport fit is mandatory**: every slide must fit inside one viewport with no
+   internal scrolling.
 3. **Show, don't tell**: use visual previews instead of abstract style questionnaires.
-4. **Distinctive design**: avoid generic purple-gradient, Inter-on-white, template-looking decks.
+4. **Distinctive design**: avoid generic purple-gradient, Inter-on-white,
+   template-looking decks.
 5. **Production quality**: keep code commented, accessible, responsive, and performant.
 
-Before generating any file, validate content, output destination, artifact mode,
-assets, style selection, viewport matrix, and required validation tools. Then
-read `STYLE_PRESETS.md` for the canonical presentation contract.
+Before generating any file, validate content, output destination, artifact mode, assets,
+style selection, viewport matrix, and required validation tools. Then read
+`STYLE_PRESETS.md` for the canonical presentation contract.
 
 ### Workflow
 
@@ -48,14 +53,15 @@ If the user has content, ask them to paste it before styling.
 
 #### 3. Discover Style
 
-If the user already selected the desired preset, record that selection during
-preflight and generate no preview artifact.
+If the user already selected the desired preset, record that selection during preflight
+and generate no preview artifact.
 
 Otherwise:
 
 1. Ask what feeling the deck should create: impressed, energized, focused, inspired.
 2. Generate **3 single-slide preview files** in `.design/slide-previews/`.
-3. Each preview must be self-contained, show typography/color/motion clearly, and stay under roughly 100 lines of slide content.
+3. Each preview must be self-contained, show typography/color/motion clearly, and stay
+   under roughly 100 lines of slide content.
 4. Ask the user which preview to keep or what elements to mix.
 
 Use the preset guide in `STYLE_PRESETS.md` when mapping mood to style.
@@ -103,7 +109,8 @@ Check the finished deck at these sizes:
 - 375x667
 - 667x375
 
-If browser automation is available, use it to verify no slide overflows and that keyboard navigation works.
+If browser automation is available, use it to verify no slide overflows and that
+keyboard navigation works.
 
 #### 7. Deliver
 
@@ -111,8 +118,8 @@ Before handoff:
 
 - remove every attributable preview unless the user explicitly selected it as a
   deliverable; cleanup completes before success
-- open the deck only when the user explicitly requested it and the selected
-  platform opener passed preflight
+- open the deck only when the user explicitly requested it and the selected platform
+  opener passed preflight
 - summarize file path, preset used, slide count, and easy theme customization points
 
 When opening was explicitly requested, use the preflight-selected OS owner:
@@ -126,20 +133,21 @@ When opening was explicitly requested, use the preflight-selected OS owner:
 For PowerPoint conversion:
 
 1. Prefer `python3` with `python-pptx` to extract text, images, and notes.
-2. If `python-pptx` is unavailable, stop with the missing dependency. A later
-   invocation may proceed only after the user establishes a new approved contract.
+2. If `python-pptx` is unavailable, stop with the missing dependency. A later invocation
+   may proceed only after the user establishes a new approved contract.
 3. Preserve slide order, speaker notes, and extracted assets.
 4. After extraction, run the same style-selection workflow as a new presentation.
 
-Keep conversion cross-platform. Do not rely on macOS-only tools when Python can do the job.
+Keep conversion cross-platform. Do not rely on macOS-only tools when Python can do the
+job.
 
 ### Implementation Requirements
 
 #### HTML / CSS
 
 - Use inline CSS and JS unless the user explicitly wants a multi-file project.
-- Fonts must be embedded or otherwise included in the validated self-contained
-  artifact; do not introduce an undeclared runtime network dependency.
+- Fonts must be embedded or otherwise included in the validated self-contained artifact;
+  do not introduce an undeclared runtime network dependency.
 - Prefer atmospheric backgrounds, strong type hierarchy, and a clear visual direction.
 - Use abstract shapes, gradients, grids, noise, and geometry rather than illustrations.
 
@@ -162,16 +170,17 @@ Include:
 
 ### Content Density Limits
 
-Use these maxima unless the user explicitly asks for denser slides and readability still holds:
+Use these maxima unless the user explicitly asks for denser slides and readability still
+holds:
 
-| Slide type | Limit |
-|------------|-------|
-| Title | 1 heading + 1 subtitle + optional tagline |
-| Content | 1 heading + 4-6 bullets or 2 short paragraphs |
-| Feature grid | 6 cards max |
-| Code | 8-10 lines max |
-| Quote | 1 quote + attribution |
-| Image | 1 image constrained by viewport |
+| Slide type   | Limit                                         |
+| ------------ | --------------------------------------------- |
+| Title        | 1 heading + 1 subtitle + optional tagline     |
+| Content      | 1 heading + 4-6 bullets or 2 short paragraphs |
+| Feature grid | 6 cards max                                   |
+| Code         | 8-10 lines max                                |
+| Quote        | 1 quote + attribution                         |
+| Image        | 1 image constrained by viewport               |
 
 ### Anti-Patterns
 

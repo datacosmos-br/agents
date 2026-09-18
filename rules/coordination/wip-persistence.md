@@ -1,5 +1,6 @@
 ---
-description: No rushed work — dedicated worktree/branch, status, beads, wip local + remote
+description:
+  No rushed work — dedicated worktree/branch, status, beads, wip local + remote
 capsule_summary: |
   Universal law (operator ruling 2026-09-16): nunca faça algo com pressa para
   concluir. Sempre atualize os status, beads; sempre grave com wip local e
@@ -16,16 +17,14 @@ metadata:
 
 # No rushed work: dedicated worktree/branch, status, beads, wip local + remote
 
-Nunca faça algo com pressa para concluir. Sempre atualize os status, beads, e
-sempre grave com wip local e remotamente — via sua worktree e branch dedicada
-de trabalho.
+Nunca faça algo com pressa para concluir. Sempre atualize os status, beads, e sempre
+grave com wip local e remotamente — via sua worktree e branch dedicada de trabalho.
 
 1. Rushing to conclude is a defect: a grain ends when its cycle ends.
-2. Each effort owns a dedicated worktree and a dedicated working branch; work
-   is committed there as wip and pushed to the remote. Never park work on the
-   integration branch, never leave it uncommitted.
-3. Status and beads are updated at every grain boundary — before starting the
-   next piece, not "later".
-4. Wip is preservation, not landing: the full landing cycle (PR to the
-   integration branch; runtime when required) still applies before completion
-   is claimed.
+2. Each effort owns a dedicated worktree and a dedicated working branch; work is
+   committed there as wip and pushed to the remote. Never park work on the integration
+   branch, never leave it uncommitted.
+3. Status and beads are updated at every grain boundary — before starting the next
+   piece, not "later".
+4. Wip is preservation, not landing: the full landing cycle (PR to the integration
+   branch; runtime when required) still applies before completion is claimed.

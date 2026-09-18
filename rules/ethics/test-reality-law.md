@@ -11,10 +11,10 @@ metadata:
 
 # Test reality law (universal)
 
-1. Tests validate reality — observed runtime behavior of modules through their
-   PUBLIC interfaces (facades, typed surfaces).
+1. Tests validate reality — observed runtime behavior of modules through their PUBLIC
+   interfaces (facades, typed surfaces).
 2. Tests that do not adhere to the quality standards (mocks, fakes, private
-   construction, hardcoded project-owned values, assertions on internals) are
-   REMOVED, not accommodated.
-3. When a test contradicts observed canonical runtime behavior, runtime wins:
-   the test is corrected or removed, never the runtime bent to the test.
+   construction, hardcoded project-owned values, assertions on internals) are REMOVED,
+   not accommodated.
+3. When a test contradicts observed canonical runtime behavior, runtime wins: the test
+   is corrected or removed, never the runtime bent to the test.

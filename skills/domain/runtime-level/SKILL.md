@@ -1,6 +1,6 @@
 ---
 name: runtime-level
-description: 'runtime floor, precise typing, modern language capabilities'
+description: "runtime floor, precise typing, modern language capabilities"
 license: MIT
 metadata:
   aihub.tags: '["activation:detected","decision:ADR-0008","detect:selected-tag:internal","effective:2026-09-04","route:project","subject:language","supersedes:skill:runtime-language-level","usage:router"]'
@@ -8,15 +8,14 @@ metadata:
 
 # Runtime language level
 
-Activate only for an internal project. Resolve the minimum runtime from the
-canonical manifest, then compare every compiler, formatter, linter, type checker,
-editor, build, and CI target with it. Use precise contracts and native language
-features available at that floor; remove compatibility syntax and branches for
-older undeclared runtimes.
+Activate only for an internal project. Resolve the minimum runtime from the canonical
+manifest, then compare every compiler, formatter, linter, type checker, editor, build,
+and CI target with it. Use precise contracts and native language features available at
+that floor; remove compatibility syntax and branches for older undeclared runtimes.
 
 Do not hardcode a universal version. Route to the detected language skill for
 language-specific syntax and gates. FLEXT resolves to Python 3.13 and Pydantic 2.
 Conflicting or missing runtime ownership stops before code changes.
 
-Never activate for `third_party_fork`; its upstream owns language level and
-typing style.
+Never activate for `third_party_fork`; its upstream owns language level and typing
+style.

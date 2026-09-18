@@ -205,7 +205,10 @@ MCP servers that connect to external services should implement proper authentica
 
 ## Summary
 
-These best practices represent the comprehensive guidelines for building secure, efficient, and compliant MCP servers that work well within the ecosystem. Developers should follow these guidelines to ensure their MCP servers meet the standards for inclusion in the MCP directory and provide a safe, reliable experience for users.
+These best practices represent the comprehensive guidelines for building secure,
+efficient, and compliant MCP servers that work well within the ecosystem. Developers
+should follow these guidelines to ensure their MCP servers meet the standards for
+inclusion in the MCP directory and provide a safe, reliable experience for users.
 
 ---
 
@@ -213,7 +216,9 @@ These best practices represent the comprehensive guidelines for building secure,
 
 > Enable LLMs to perform actions through your server
 
-Tools are a powerful primitive in the Model Context Protocol (MCP) that enable servers to expose executable functionality to clients. Through tools, LLMs can interact with external systems, perform computations, and take actions in the real world.
+Tools are a powerful primitive in the Model Context Protocol (MCP) that enable servers
+to expose executable functionality to clients. Through tools, LLMs can interact with
+external systems, perform computations, and take actions in the real world.
 
 <Note>
   Tools are designed to be **model-controlled**, meaning that tools are exposed from servers to clients with the intention of the AI model being able to automatically invoke them (with a human in the loop to grant approval).
@@ -221,13 +226,19 @@ Tools are a powerful primitive in the Model Context Protocol (MCP) that enable s
 
 ## Overview
 
-Tools in MCP allow servers to expose executable functions that can be invoked by clients and used by LLMs to perform actions. Key aspects of tools include:
+Tools in MCP allow servers to expose executable functions that can be invoked by clients
+and used by LLMs to perform actions. Key aspects of tools include:
 
-- **Discovery**: Clients can obtain a list of available tools by sending a `tools/list` request
-- **Invocation**: Tools are called using the `tools/call` request, where servers perform the requested operation and return results
+- **Discovery**: Clients can obtain a list of available tools by sending a `tools/list`
+  request
+- **Invocation**: Tools are called using the `tools/call` request, where servers perform
+  the requested operation and return results
 - **Flexibility**: Tools can range from simple calculations to complex API interactions
 
-Like [resources](https://modelcontextprotocol.io/docs/concepts/resources), tools are identified by unique names and can include descriptions to guide their usage. However, unlike resources, tools represent dynamic operations that can modify state or interact with external systems.
+Like [resources](https://modelcontextprotocol.io/docs/concepts/resources), tools are
+identified by unique names and can include descriptions to guide their usage. However,
+unlike resources, tools represent dynamic operations that can modify state or interact
+with external systems.
 
 ## Tool definition structure
 

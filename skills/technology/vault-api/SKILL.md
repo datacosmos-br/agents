@@ -1,6 +1,6 @@
 ---
 name: vault-api
-description: 'vault http api, kv v2, secret, sealed'
+description: "vault http api, kv v2, secret, sealed"
 license: unlicensed (attributed)
 metadata:
   aihub.tags: '["activation:opt-in","decision:ADR-0014","detect:opt-in:vault","effective:2026-09-07","route:project","subject:vault","usage:on-demand"]'
@@ -16,37 +16,40 @@ metadata:
 
 ## Overview
 
-Vault exposes a RESTful JSON API on port 8200. All requests include `X-Vault-Token` header for authenticated endpoints. Unauthenticated endpoints (health, init) need no token.
+Vault exposes a RESTful JSON API on port 8200. All requests include `X-Vault-Token`
+header for authenticated endpoints. Unauthenticated endpoints (health, init) need no
+token.
 
-**Base URL:** `http://vault.vault:8200` (in-cluster) or `https://vault.kubexa.tech` (external via Gateway).
+**Base URL:** `http://vault.vault:8200` (in-cluster) or `https://vault.kubexa.tech`
+(external via Gateway).
 
 ## API Endpoints
 
 ### System
 
-| Method | Endpoint | Description | Auth |
-|--------|----------|-------------|------|
-| `GET` | `/v1/sys/health` | Cluster health (see status codes below) | No |
-| `GET` | `/v1/sys/seal-status` | Seal status | No |
-| `PUT` | `/v1/sys/init` | Initialize cluster | No |
-| `PUT` | `/v1/sys/unseal` | Unseal (submit key share) | No |
-| `GET` | `/v1/sys/leader` | Current leader info | No |
+| Method | Endpoint              | Description                             | Auth |
+| ------ | --------------------- | --------------------------------------- | ---- |
+| `GET`  | `/v1/sys/health`      | Cluster health (see status codes below) | No   |
+| `GET`  | `/v1/sys/seal-status` | Seal status                             | No   |
+| `PUT`  | `/v1/sys/init`        | Initialize cluster                      | No   |
+| `PUT`  | `/v1/sys/unseal`      | Unseal (submit key share)               | No   |
+| `GET`  | `/v1/sys/leader`      | Current leader info                     | No   |
 
 **Health status codes:**
 
-| Code | Meaning |
-|------|---------|
-| `200` | Active, unsealed |
-| `429` | Standby, unsealed |
+| Code  | Meaning                                  |
+| ----- | ---------------------------------------- |
+| `200` | Active, unsealed                         |
+| `429` | Standby, unsealed                        |
 | `472` | Disaster Recovery secondary (enterprise) |
-| `473` | Performance standby (enterprise) |
-| `501` | Not initialized |
-| `503` | Sealed |
+| `473` | Performance standby (enterprise)         |
+| `501` | Not initialized                          |
+| `503` | Sealed                                   |
 
 ### Auth (Kubernetes)
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
+| Method | Endpoint                    | Description                    |
+| ------ | --------------------------- | ------------------------------ |
 | `POST` | `/v1/auth/kubernetes/login` | Login with service account JWT |
 
 ```bash
@@ -59,14 +62,14 @@ curl -s http://vault.vault:8200/v1/auth/kubernetes/login \
 
 ### KV Secrets (v2)
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `GET` | `/v1/{mount}/data/{path}` | Read secret |
-| `PUT` | `/v1/{mount}/data/{path}` | Create/update secret |
-| `DELETE` | `/v1/{mount}/data/{path}` | Delete latest version |
-| `GET` | `/v1/{mount}/metadata/{path}` | Read metadata (versions, timestamps) |
-| `POST` | `/v1/{mount}/delete/{path}` | Delete all versions |
-| `POST` | `/v1/{mount}/undelete/{path}` | Undelete |
+| Method   | Endpoint                      | Description                          |
+| -------- | ----------------------------- | ------------------------------------ |
+| `GET`    | `/v1/{mount}/data/{path}`     | Read secret                          |
+| `PUT`    | `/v1/{mount}/data/{path}`     | Create/update secret                 |
+| `DELETE` | `/v1/{mount}/data/{path}`     | Delete latest version                |
+| `GET`    | `/v1/{mount}/metadata/{path}` | Read metadata (versions, timestamps) |
+| `POST`   | `/v1/{mount}/delete/{path}`   | Delete all versions                  |
+| `POST`   | `/v1/{mount}/undelete/{path}` | Undelete                             |
 
 ```bash
 # Write a secret
@@ -87,20 +90,20 @@ curl -s http://vault.vault:8200/v1/secret/metadata/myapp \
 
 ### KV Secrets (v1)
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `GET` | `/v1/{mount}/{path}` | Read secret |
-| `PUT` | `/v1/{mount}/{path}` | Create/update secret |
-| `DELETE` | `/v1/{mount}/{path}` | Delete secret |
+| Method   | Endpoint             | Description          |
+| -------- | -------------------- | -------------------- |
+| `GET`    | `/v1/{mount}/{path}` | Read secret          |
+| `PUT`    | `/v1/{mount}/{path}` | Create/update secret |
+| `DELETE` | `/v1/{mount}/{path}` | Delete secret        |
 
 ### Policies
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `GET` | `/v1/sys/policies/acl` | List ACL policies |
-| `GET` | `/v1/sys/policies/acl/{name}` | Read policy |
-| `PUT` | `/v1/sys/policies/acl/{name}` | Create/update policy |
-| `DELETE` | `/v1/sys/policies/acl/{name}` | Delete policy |
+| Method   | Endpoint                      | Description          |
+| -------- | ----------------------------- | -------------------- |
+| `GET`    | `/v1/sys/policies/acl`        | List ACL policies    |
+| `GET`    | `/v1/sys/policies/acl/{name}` | Read policy          |
+| `PUT`    | `/v1/sys/policies/acl/{name}` | Create/update policy |
+| `DELETE` | `/v1/sys/policies/acl/{name}` | Delete policy        |
 
 ```bash
 # Create read-only policy for myapp
@@ -112,37 +115,37 @@ curl -s http://vault.vault:8200/v1/sys/policies/acl/myapp \
 
 ### Token
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `POST` | `/v1/auth/token/create` | Create token |
-| `POST` | `/v1/auth/token/create-orphan` | Create orphan token |
-| `GET` | `/v1/auth/token/lookup-self` | Validate/lookup own token |
-| `POST` | `/v1/auth/token/renew-self` | Renew own token |
-| `POST` | `/v1/auth/token/revoke-self` | Revoke own token |
+| Method | Endpoint                       | Description               |
+| ------ | ------------------------------ | ------------------------- |
+| `POST` | `/v1/auth/token/create`        | Create token              |
+| `POST` | `/v1/auth/token/create-orphan` | Create orphan token       |
+| `GET`  | `/v1/auth/token/lookup-self`   | Validate/lookup own token |
+| `POST` | `/v1/auth/token/renew-self`    | Renew own token           |
+| `POST` | `/v1/auth/token/revoke-self`   | Revoke own token          |
 
 ### Auth Methods
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `GET` | `/v1/sys/auth` | List enabled auth methods |
-| `POST` | `/v1/sys/auth/{type}` | Enable auth method |
-| `DELETE` | `/v1/sys/auth/{path}` | Disable auth method |
+| Method   | Endpoint              | Description               |
+| -------- | --------------------- | ------------------------- |
+| `GET`    | `/v1/sys/auth`        | List enabled auth methods |
+| `POST`   | `/v1/sys/auth/{type}` | Enable auth method        |
+| `DELETE` | `/v1/sys/auth/{path}` | Disable auth method       |
 
 ### Secrets Engines
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `GET` | `/v1/sys/mounts` | List enabled secret engines |
-| `POST` | `/v1/sys/mounts/{path}` | Enable secret engine (type: kv-v2, kv, transit, etc.) |
-| `DELETE` | `/v1/sys/mounts/{path}` | Disable/delete secret engine |
+| Method   | Endpoint                | Description                                           |
+| -------- | ----------------------- | ----------------------------------------------------- |
+| `GET`    | `/v1/sys/mounts`        | List enabled secret engines                           |
+| `POST`   | `/v1/sys/mounts/{path}` | Enable secret engine (type: kv-v2, kv, transit, etc.) |
+| `DELETE` | `/v1/sys/mounts/{path}` | Disable/delete secret engine                          |
 
 ### Raft
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `POST` | `/v1/sys/storage/raft/join` | Join Raft cluster |
-| `GET` | `/v1/sys/storage/raft/configuration` | List Raft peers |
-| `POST` | `/v1/sys/storage/raft/snapshot` | Take Raft snapshot |
+| Method | Endpoint                             | Description        |
+| ------ | ------------------------------------ | ------------------ |
+| `POST` | `/v1/sys/storage/raft/join`          | Join Raft cluster  |
+| `GET`  | `/v1/sys/storage/raft/configuration` | List Raft peers    |
+| `POST` | `/v1/sys/storage/raft/snapshot`      | Take Raft snapshot |
 
 ```bash
 # Join Raft cluster
@@ -158,15 +161,15 @@ curl -s http://vault.vault:8200/v1/sys/storage/raft/snapshot \
 
 ## Auth Methods Summary
 
-| Method | Endpoint Mount | Use Case |
-|--------|---------------|----------|
-| Kubernetes | `/v1/auth/kubernetes/login` | In-cluster pods via SA JWT |
-| Token | `/v1/auth/token/create` | Root token, periodic tokens |
-| AppRole | `/v1/auth/approle/login` | Machine-to-machine (w/ secretId) |
-| Userpass | `/v1/auth/userpass/login` | Human users |
-| LDAP | `/v1/auth/ldap/login` | Enterprise directory integration |
-| JWT/OIDC | `/v1/auth/jwt/login` | External OIDC providers |
-| Cert | `/v1/auth/cert/login` | mTLS client certificates |
+| Method     | Endpoint Mount              | Use Case                         |
+| ---------- | --------------------------- | -------------------------------- |
+| Kubernetes | `/v1/auth/kubernetes/login` | In-cluster pods via SA JWT       |
+| Token      | `/v1/auth/token/create`     | Root token, periodic tokens      |
+| AppRole    | `/v1/auth/approle/login`    | Machine-to-machine (w/ secretId) |
+| Userpass   | `/v1/auth/userpass/login`   | Human users                      |
+| LDAP       | `/v1/auth/ldap/login`       | Enterprise directory integration |
+| JWT/OIDC   | `/v1/auth/jwt/login`        | External OIDC providers          |
+| Cert       | `/v1/auth/cert/login`       | mTLS client certificates         |
 
 ## Health Check Examples
 
@@ -180,10 +183,21 @@ curl -s http://vault.vault:8200/v1/sys/seal-status | jq '.sealed, .t, .n, .progr
 
 ## Common Mistakes
 
-- **KV v2 path includes `data/` prefix.** For KV v2 engine mounted at `secret`, the read path is `/v1/secret/data/myapp`, not `/v1/secret/myapp`. The latter returns a 404.
-- **Health endpoint returns non-200 for sealed/standby.** A 503 (sealed) is NOT an error — it's expected after restart. Check `initialized` and `sealed` fields in the response body, not the HTTP status alone.
-- **Token in URL is stripped by proxies.** Use `X-Vault-Token` header, not `?token=` query param. Proxies and load balancers may log or strip query params.
-- **Kubernetes auth needs SA token with right audience.** The `vault` audience must be configured in the SA or the default token may not be accepted. Use `kubectl create token` with `--audience=vault` for explicit audience.
-- **`list` capabilities for metadata listing.** Reading `/v1/secret/metadata/` (to list keys) requires `list` capability at that path, not `read`. Without it, the response is empty.
-- **Raft join after unseal.** A sealed node cannot join the Raft cluster. Always unseal before `raft join`. The joining node will sync data from the leader.
-- **Snapshot restore requires same cluster size.** Raft snapshots can only be restored to a cluster with the same number of peers. Adding/removing nodes after restore may fail.
+- **KV v2 path includes `data/` prefix.** For KV v2 engine mounted at `secret`, the read
+  path is `/v1/secret/data/myapp`, not `/v1/secret/myapp`. The latter returns a 404.
+- **Health endpoint returns non-200 for sealed/standby.** A 503 (sealed) is NOT an error
+  — it's expected after restart. Check `initialized` and `sealed` fields in the response
+  body, not the HTTP status alone.
+- **Token in URL is stripped by proxies.** Use `X-Vault-Token` header, not `?token=`
+  query param. Proxies and load balancers may log or strip query params.
+- **Kubernetes auth needs SA token with right audience.** The `vault` audience must be
+  configured in the SA or the default token may not be accepted. Use
+  `kubectl create token` with `--audience=vault` for explicit audience.
+- **`list` capabilities for metadata listing.** Reading `/v1/secret/metadata/` (to list
+  keys) requires `list` capability at that path, not `read`. Without it, the response is
+  empty.
+- **Raft join after unseal.** A sealed node cannot join the Raft cluster. Always unseal
+  before `raft join`. The joining node will sync data from the leader.
+- **Snapshot restore requires same cluster size.** Raft snapshots can only be restored
+  to a cluster with the same number of peers. Adding/removing nodes after restore may
+  fail.

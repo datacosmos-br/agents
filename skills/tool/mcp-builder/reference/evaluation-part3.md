@@ -19,7 +19,8 @@ This question is good because:
 - Answer is a simple, verifiable value
 - Based on historical (closed) data that won't change
 
-**Example 2: Requires understanding context without keyword matching (Project Management MCP)**
+**Example 2: Requires understanding context without keyword matching (Project Management
+MCP)**
 
 ```xml
 <qa_pair>
@@ -30,7 +31,8 @@ This question is good because:
 
 This question is good because:
 
-- Doesn't use specific project name ("initiative focused on improving customer onboarding")
+- Doesn't use specific project name ("initiative focused on improving customer
+  onboarding")
 - Requires finding completed projects from specific timeframe
 - Needs to identify the project lead and their role
 - Requires understanding context from retrospective documents
@@ -126,19 +128,22 @@ This question is poor because:
 After creating evaluations:
 
 1. **Examine the XML file** to understand the schema
-2. **Load each task instruction** and in parallel using the MCP server and tools, identify the correct answer by attempting to solve the task YOURSELF
+2. **Load each task instruction** and in parallel using the MCP server and tools,
+   identify the correct answer by attempting to solve the task YOURSELF
 3. **Flag any operations** that require WRITE or DESTRUCTIVE operations
 4. **Accumulate all CORRECT answers** and replace any incorrect answers in the document
 5. **Remove any `<qa_pair>`** that require WRITE or DESTRUCTIVE operations
 
-Remember to parallelize solving tasks to avoid running out of context, then accumulate all answers and make changes to the file at the end.
+Remember to parallelize solving tasks to avoid running out of context, then accumulate
+all answers and make changes to the file at the end.
 
 ## Tips for Creating Quality Evaluations
 
 1. **Think Hard and Plan Ahead** before generating tasks
 2. **Parallelize Where Opportunity Arises** to speed up the process and manage context
 3. **Focus on Realistic Use Cases** that humans would actually want to accomplish
-4. **Create Challenging Questions** that test the limits of the MCP server's capabilities
+4. **Create Challenging Questions** that test the limits of the MCP server's
+   capabilities
 5. **Ensure Stability** by using historical data and closed concepts
 6. **Verify Answers** by solving the questions yourself using the MCP server tools
 7. **Iterate and Refine** based on what you learn during the process
@@ -147,7 +152,8 @@ Remember to parallelize solving tasks to avoid running out of context, then accu
 
 # Running Evaluations
 
-After creating your evaluation file, you can use the provided evaluation harness to test your MCP server.
+After creating your evaluation file, you can use the provided evaluation harness to test
+your MCP server.
 
 ## Setup
 

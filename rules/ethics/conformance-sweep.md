@@ -1,5 +1,6 @@
 ---
-description: Full-standards conformance sweep — truth, canonical verbs, root cause, closure
+description:
+  Full-standards conformance sweep — truth, canonical verbs, root cause, closure
 capsule_summary: |
   Operator directive (2026-09-16, any rig): truth with evidence only (fake green
   is P0); canonical Make verbs only (no invented selectors, no raw tool
@@ -22,20 +23,19 @@ metadata:
 
 # Full-standards conformance sweep (universal, any rig)
 
-Truth with evidence · canonical verbs only · testmon always · root cause +
-zero residue + immediate rewire · reality > tests · strict FLEXT chain and
-module pattern · no aliases/redeclarations/compat · DRY/YAGNI/SSOT/CA/DI
-always · no hand-edits of generated files · nothing deferred · governance
-self-repair every session · full gitflow + runtime closure or nothing.
+Truth with evidence · canonical verbs only · testmon always · root cause + zero
+residue + immediate rewire · reality > tests · strict FLEXT chain and module pattern ·
+no aliases/redeclarations/compat · DRY/YAGNI/SSOT/CA/DI always · no hand-edits of
+generated files · nothing deferred · governance self-repair every session · full
+gitflow + runtime closure or nothing.
 
-The lazy import via `__init__` is the PREFERRED form (performance): generated
-inits carry the package's real export surface. An empty generated init for a
-package with public children is a planner defect — fix the engine, never
-accept the emptiness. Import cycles are symptoms of violated strict rules,
-not of the init design.
+The lazy import via `__init__` is the PREFERRED form (performance): generated inits
+carry the package's real export surface. An empty generated init for a package with
+public children is a planner defect — fix the engine, never accept the emptiness. Import
+cycles are symptoms of violated strict rules, not of the init design.
 
-The following artifacts are BANNED fleet-wide (operator extermination order,
-revalidated 2026-09-16): `exclude-newer` (any form, including config vestiges
-like `uv_exclude_newer`), `uv.lock`, `mise.lock`. They freeze resolution
-against the always-newest contract. Presence in any producer or consumer is a
-regression: delete at the owner, commit, push, and record on the tracker.
+The following artifacts are BANNED fleet-wide (operator extermination order, revalidated
+2026-09-16): `exclude-newer` (any form, including config vestiges like
+`uv_exclude_newer`), `uv.lock`, `mise.lock`. They freeze resolution against the
+always-newest contract. Presence in any producer or consumer is a regression: delete at
+the owner, commit, push, and record on the tracker.

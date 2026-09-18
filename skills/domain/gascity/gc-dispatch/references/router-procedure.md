@@ -7,5 +7,5 @@ Read the complete procedure in three scoped references:
 3. `Legacy pack formulas` (skill file)
 4. `Convoys and orders` (skill file)
 
-Preserve the declared target/database guards, formula compiler semantics,
-convoy ownership, and order boundaries while using these procedures.
+Preserve the declared target/database guards, formula compiler semantics, convoy
+ownership, and order boundaries while using these procedures.

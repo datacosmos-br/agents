@@ -1,6 +1,7 @@
 # Brand Voice — Procedure
 
-Build a durable voice profile from real source material, then use that profile everywhere instead of re-deriving style from scratch or defaulting to generic AI copy.
+Build a durable voice profile from real source material, then use that profile
+everywhere instead of re-deriving style from scratch or defaulting to generic AI copy.
 
 ## When to Activate
 
@@ -22,11 +23,13 @@ Do not use generic platform exemplars as source material.
 
 ## Collection Workflow
 
-1. Require a representative source set before producing a profile; missing
-   evidence blocks profile creation instead of selecting generic examples.
+1. Require a representative source set before producing a profile; missing evidence
+   blocks profile creation instead of selecting generic examples.
 2. Gather 5 to 20 representative samples when available.
-3. Prefer recent material over old material unless the user says the older writing is more canonical.
-4. Separate "public launch voice" from "private working voice" if the source set clearly splits.
+3. Prefer recent material over old material unless the user says the older writing is
+   more canonical.
+4. Separate "public launch voice" from "private working voice" if the source set clearly
+   splits.
 5. Use `x-api` only when selected before collection and its availability and
    authorization pass preflight; its failure ends collection.
 6. If site copy matters, include the current product site and repository framing.
@@ -45,9 +48,11 @@ Do not use generic platform exemplars as source material.
 
 ## Output Contract
 
-Produce a reusable `VOICE PROFILE` block that downstream skills can consume directly. Use the schema in `references/voice-profile-schema.md` (skill file).
+Produce a reusable `VOICE PROFILE` block that downstream skills can consume directly.
+Use the schema in `references/voice-profile-schema.md` (skill file).
 
-Keep the profile structured and short enough to reuse in session context. The point is not literary criticism. The point is operational reuse.
+Keep the profile structured and short enough to reuse in session context. The point is
+not literary criticism. The point is operational reuse.
 
 ## Hard Bans
 
@@ -65,11 +70,12 @@ Delete and rewrite any of these:
 
 ## Persistence Rules
 
-- Reuse a confirmed `VOICE PROFILE` only while its declared source set remains
-  current for the task.
-- If the user asks for a durable artifact, validate the destination and complete
-  profile before publishing it atomically in the requested workspace location.
-- Do not create repo-tracked files that store personal voice fingerprints unless the user explicitly asks for that.
+- Reuse a confirmed `VOICE PROFILE` only while its declared source set remains current
+  for the task.
+- If the user asks for a durable artifact, validate the destination and complete profile
+  before publishing it atomically in the requested workspace location.
+- Do not create repo-tracked files that store personal voice fingerprints unless the
+  user explicitly asks for that.
 
 ## Downstream Use
 
@@ -80,5 +86,5 @@ Use this skill before or inside:
 - article or launch writing
 - cold or warm outbound across X, LinkedIn, and email
 
-If another skill has an incomplete voice capture section, this skill remains the
-single canonical profile owner.
+If another skill has an incomplete voice capture section, this skill remains the single
+canonical profile owner.

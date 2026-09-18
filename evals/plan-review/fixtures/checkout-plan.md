@@ -1,7 +1,7 @@
 # Guest checkout implementation plan
 
-Goal: let an unauthenticated shopper submit one order and receive its public
-receipt. Approved non-goal: account creation and saved payment methods.
+Goal: let an unauthenticated shopper submit one order and receive its public receipt.
+Approved non-goal: account creation and saved payment methods.
 
 1. Add a guest route.
 2. Make payment robust and scalable.

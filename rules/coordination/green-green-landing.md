@@ -10,7 +10,7 @@ metadata:
 
 # Green/green always; land and apply at every green point (universal)
 
-The `full landing cycle` rule owns the delivery path and proof. This rule adds
-only cadence: keep local and CI green, repair a red state before new scope, and
-land each independently complete green increment instead of batching it into a
-larger long-lived lane. Apply runtime only when the declared cycle requires it.
+The `full landing cycle` rule owns the delivery path and proof. This rule adds only
+cadence: keep local and CI green, repair a red state before new scope, and land each
+independently complete green increment instead of batching it into a larger long-lived
+lane. Apply runtime only when the declared cycle requires it.

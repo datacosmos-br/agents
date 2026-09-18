@@ -2,7 +2,8 @@
 
 ### Tool Naming
 
-Use snake_case for tool names (e.g., "search_users", "create_project", "get_channel_info") with clear, action-oriented names.
+Use snake_case for tool names (e.g., "search_users", "create_project",
+"get_channel_info") with clear, action-oriented names.
 
 **Avoid Naming Conflicts**: Include the service context to prevent overlaps:
 
@@ -15,7 +16,8 @@ Use snake_case for tool names (e.g., "search_users", "create_project", "get_chan
 Tools are registered using the `registerTool` method with the following requirements:
 
 - Use Zod schemas for runtime input validation and type safety
-- The `description` field must be explicitly provided - JSDoc comments are NOT automatically extracted
+- The `description` field must be explicitly provided - JSDoc comments are NOT
+  automatically extracted
 - Explicitly provide `title`, `description`, `inputSchema`, and `annotations`
 - The `inputSchema` must be a Zod schema object (not a JSON schema)
 - Type all parameters and return values explicitly
@@ -26,30 +28,38 @@ import { z } from "zod";
 
 const server = new McpServer({
   name: "example-mcp",
-  version: "1.0.0"
+  version: "1.0.0",
 });
 
 // Zod schema for input validation
-const UserSearchInputSchema = z.object({
-  query: z.string()
-    .min(2, "Query must be at least 2 characters")
-    .max(200, "Query must not exceed 200 characters")
-    .describe("Search string to match against names/emails"),
-  limit: z.number()
-    .int()
-    .min(1)
-    .max(100)
-    .default(20)
-    .describe("Maximum results to return"),
-  offset: z.number()
-    .int()
-    .min(0)
-    .default(0)
-    .describe("Number of results to skip for pagination"),
-  response_format: z.nativeEnum(ResponseFormat)
-    .default(ResponseFormat.MARKDOWN)
-    .describe("Output format: 'markdown' for human-readable or 'json' for machine-readable")
-}).strict();
+const UserSearchInputSchema = z
+  .object({
+    query: z
+      .string()
+      .min(2, "Query must be at least 2 characters")
+      .max(200, "Query must not exceed 200 characters")
+      .describe("Search string to match against names/emails"),
+    limit: z
+      .number()
+      .int()
+      .min(1)
+      .max(100)
+      .default(20)
+      .describe("Maximum results to return"),
+    offset: z
+      .number()
+      .int()
+      .min(0)
+      .default(0)
+      .describe("Number of results to skip for pagination"),
+    response_format: z
+      .nativeEnum(ResponseFormat)
+      .default(ResponseFormat.MARKDOWN)
+      .describe(
+        "Output format: 'markdown' for human-readable or 'json' for machine-readable",
+      ),
+  })
+  .strict();
 
 // Type definition from Zod schema
 type UserSearchInput = z.infer<typeof UserSearchInputSchema>;
@@ -100,33 +110,30 @@ Error Handling:
       readOnlyHint: true,
       destructiveHint: false,
       idempotentHint: true,
-      openWorldHint: true
-    }
+      openWorldHint: true,
+    },
   },
   async (params: UserSearchInput) => {
     try {
       // Input validation is handled by Zod schema
       // Make API request using validated parameters
-      const data = await makeApiRequest<any>(
-        "users/search",
-        "GET",
-        undefined,
-        {
-          q: params.query,
-          limit: params.limit,
-          offset: params.offset
-        }
-      );
+      const data = await makeApiRequest<any>("users/search", "GET", undefined, {
+        q: params.query,
+        limit: params.limit,
+        offset: params.offset,
+      });
 
       const users = data.users || [];
       const total = data.total || 0;
 
       if (!users.length) {
         return {
-          content: [{
-            type: "text",
-            text: `No users found matching '${params.query}'`
-          }]
+          content: [
+            {
+              type: "text",
+              text: `No users found matching '${params.query}'`,
+            },
+          ],
         };
       }
 
@@ -149,7 +156,6 @@ Error Handling:
         }
 
         result = lines.join("\n");
-
       } else {
         // Machine-readable JSON format
         const response: any = {
@@ -161,8 +167,8 @@ Error Handling:
             name: user.name,
             email: user.email,
             ...(user.team ? { team: user.team } : {}),
-            active: user.active ?? true
-          }))
+            active: user.active ?? true,
+          })),
         };
 
         // Add pagination info if there are more results
@@ -175,20 +181,24 @@ Error Handling:
       }
 
       return {
-        content: [{
-          type: "text",
-          text: result
-        }]
+        content: [
+          {
+            type: "text",
+            text: result,
+          },
+        ],
       };
     } catch (error) {
       return {
-        content: [{
-          type: "text",
-          text: handleApiError(error)
-        }]
+        content: [
+          {
+            type: "text",
+            text: handleApiError(error),
+          },
+        ],
       };
     }
-  }
+  },
 );
 ```
 
@@ -200,42 +210,43 @@ Zod provides runtime type validation:
 import { z } from "zod";
 
 // Basic schema with validation
-const CreateUserSchema = z.object({
-  name: z.string()
-    .min(1, "Name is required")
-    .max(100, "Name must not exceed 100 characters"),
-  email: z.string()
-    .email("Invalid email format"),
-  age: z.number()
-    .int("Age must be a whole number")
-    .min(0, "Age cannot be negative")
-    .max(150, "Age cannot be greater than 150")
-}).strict();  // Use .strict() to forbid extra fields
+const CreateUserSchema = z
+  .object({
+    name: z
+      .string()
+      .min(1, "Name is required")
+      .max(100, "Name must not exceed 100 characters"),
+    email: z.string().email("Invalid email format"),
+    age: z
+      .number()
+      .int("Age must be a whole number")
+      .min(0, "Age cannot be negative")
+      .max(150, "Age cannot be greater than 150"),
+  })
+  .strict(); // Use .strict() to forbid extra fields
 
 // Enums
 enum ResponseFormat {
   MARKDOWN = "markdown",
-  JSON = "json"
+  JSON = "json",
 }
 
 const SearchSchema = z.object({
-  response_format: z.nativeEnum(ResponseFormat)
+  response_format: z
+    .nativeEnum(ResponseFormat)
     .default(ResponseFormat.MARKDOWN)
-    .describe("Output format")
+    .describe("Output format"),
 });
 
 // Optional fields with defaults
 const PaginationSchema = z.object({
-  limit: z.number()
+  limit: z
+    .number()
     .int()
     .min(1)
     .max(100)
     .default(20)
     .describe("Maximum results to return"),
-  offset: z.number()
-    .int()
-    .min(0)
-    .default(0)
-    .describe("Number of results to skip")
+  offset: z.number().int().min(0).default(0).describe("Number of results to skip"),
 });
 ```

@@ -1,6 +1,6 @@
 ---
 name: skill-share
-description: 'skill bundle, package, shared, credentials'
+description: "skill bundle, package, shared, credentials"
 license: unlicensed (attributed)
 metadata:
   aihub.tags: '["decision:ADR-0014","effective:2026-09-07","usage:on-demand"]'

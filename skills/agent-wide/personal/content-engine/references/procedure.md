@@ -1,6 +1,7 @@
 # Content Engine — Procedure
 
-Build platform-native content without flattening the author's real voice into platform slop.
+Build platform-native content without flattening the author's real voice into platform
+slop.
 
 ## When to Activate
 
@@ -8,7 +9,8 @@ Build platform-native content without flattening the author's real voice into pl
 - drafting LinkedIn posts or launch updates
 - scripting short-form video or YouTube explainers
 - repurposing articles, podcasts, demos, docs, or internal notes into public content
-- building a launch sequence or ongoing content system around a product, insight, or narrative
+- building a launch sequence or ongoing content system around a product, insight, or
+  narrative
 
 ## Non-Negotiables
 
@@ -20,9 +22,9 @@ Build platform-native content without flattening the author's real voice into pl
 
 ## Source-First Workflow
 
-Before drafting, validate the complete source set, requested destinations,
-audience, claims, and any required voice evidence. A missing required input
-blocks the campaign; do not draft a reduced substitute. Sources may include:
+Before drafting, validate the complete source set, requested destinations, audience,
+claims, and any required voice evidence. A missing required input blocks the campaign;
+do not draft a reduced substitute. Sources may include:
 
 - published articles
 - notes or internal memos
@@ -32,8 +34,9 @@ blocks the campaign; do not draft a reduced substitute. Sources may include:
 - screenshots
 - prior posts from the same author
 
-If the user wants a specific voice, build a voice profile from real examples before writing.
-Use `brand-voice` as the canonical workflow when voice consistency matters across more than one output.
+If the user wants a specific voice, build a voice profile from real examples before
+writing. Use `brand-voice` as the canonical workflow when voice consistency matters
+across more than one output.
 
 ## Voice Handling
 
@@ -45,10 +48,10 @@ Run it first when:
 - the user explicitly cares about writing style
 - the content is launch, outreach, or reputation-sensitive
 
-Reuse the resulting `VOICE PROFILE` here instead of rebuilding a second voice model.
-For any named product or author voice, treat `brand-voice` as the source of truth and feed it the best live or source-derived material available.
-If the selected voice workflow fails, preserve that failure and stop instead of
-writing in a generic replacement voice.
+Reuse the resulting `VOICE PROFILE` here instead of rebuilding a second voice model. For
+any named product or author voice, treat `brand-voice` as the source of truth and feed
+it the best live or source-derived material available. If the selected voice workflow
+fails, preserve that failure and stop instead of writing in a generic replacement voice.
 
 ## Hard Bans
 
@@ -73,7 +76,8 @@ Delete and rewrite any of these:
 ### LinkedIn
 
 - expand only enough for people outside the immediate niche to follow
-- do not turn it into a fake lesson post unless the source material actually is reflective
+- do not turn it into a fake lesson post unless the source material actually is
+  reflective
 - no corporate inspiration cadence
 - no praise-stacking, no "journey" filler
 

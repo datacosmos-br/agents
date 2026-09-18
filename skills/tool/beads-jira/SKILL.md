@@ -1,43 +1,42 @@
 ---
 name: beads-jira
-description: 'beads jira sync, epic link, flext service, native cli only'
+description: "beads jira sync, epic link, flext service, native cli only"
 metadata:
   aihub.tags: '["activation:opt-in","decision:ADR-0008","detect:opt-in:beads-jira","effective:2026-09-02","route:agent","subject:beads","subject:flext","supersedes:skill:beads-jira-integration","usage:router"]'
 ---
 
 # Beads Jira Integration
 
-Activate when integrating beads with Jira Cloud. Sync goes through the native
-`bd jira` CLI; the only custom code is the FLEXT `CosmosMainJiraService`
-epic-link gap. Read the `complete procedure` (skill file) before the first
-push — it owns configuration, sync policy, credential custody, and the
-recovery runbook.
+Activate when integrating beads with Jira Cloud. Sync goes through the native `bd jira`
+CLI; the only custom code is the FLEXT `CosmosMainJiraService` epic-link gap. Read the
+`complete procedure` (skill file) before the first push — it owns configuration, sync
+policy, credential custody, and the recovery runbook.
 
 ## Sync (native `bd jira sync`)
 
 ```bash
-bd jira sync --push --state open --dry-run      # preview; always first
-bd jira sync --push --state open --create-only  # create new issues only
-bd jira sync --pull --state open                # pull status changes
+bd jira sync --push --state open --dry-run     # preview; always first
+bd jira sync --push --state open --create-only # create new issues only
+bd jira sync --pull --state open               # pull status changes
 ```
 
-`--state` defaults to `all` upstream — always pass `--state open`. The CLI
-writes `external_ref`, the only dedup key; never set it by hand and never
-re-push without reviewing a dry run. The beads CLI owns every credential.
+`--state` defaults to `all` upstream — always pass `--state open`. The CLI writes
+`external_ref`, the only dedup key; never set it by hand and never re-push without
+reviewing a dry run. The beads CLI owns every credential.
 
 ## Hierarchy Alignment
 
-| Beads | Jira |
-|---|---|
-| feature (macro épico) | Task under Epic |
+| Beads                   | Jira               |
+| ----------------------- | ------------------ |
+| feature (macro épico)   | Task under Epic    |
 | task (child of feature) | Subtask under Task |
-| bug | not pushed to Jira |
+| bug                     | not pushed to Jira |
 
 Epic key: `config.CosmosMain.jira.epic_key`. Only OPEN beads sync.
 
 ## Prohibited Patterns
 
-- Jira REST calls outside `bd jira` or the FLEXT service (`urllib.request`,
-  `requests`, `httpx` included).
-- CSV data layers; data lives in beads; no superseded feature beads open; no
-  hand-edited `custom.mk` with bead IDs or Jira keys.
+- Jira REST calls outside `bd jira` or the FLEXT service (`urllib.request`, `requests`,
+  `httpx` included).
+- CSV data layers; data lives in beads; no superseded feature beads open; no hand-edited
+  `custom.mk` with bead IDs or Jira keys.

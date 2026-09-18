@@ -1,6 +1,7 @@
 # Article Writing — Procedure
 
-Write long-form content that sounds like an actual person with a point of view, not an LLM smoothing itself into paste.
+Write long-form content that sounds like an actual person with a point of view, not an
+LLM smoothing itself into paste.
 
 ## When to Activate
 
@@ -11,7 +12,8 @@ Write long-form content that sounds like an actual person with a point of view, 
 
 ## Core Rules
 
-1. Lead with the concrete thing: artifact, example, output, anecdote, number, screenshot, or code.
+1. Lead with the concrete thing: artifact, example, output, anecdote, number,
+   screenshot, or code.
 2. Explain after the example, not before.
 3. Keep sentences tight unless the source voice is intentionally expansive.
 4. Use proof instead of adjectives.
@@ -19,11 +21,12 @@ Write long-form content that sounds like an actual person with a point of view, 
 
 ## Voice Handling
 
-If the user wants a specific voice, run `brand-voice` first and reuse its `VOICE PROFILE`.
-Do not duplicate a second style-analysis pass here unless the user explicitly asks for one.
+If the user wants a specific voice, run `brand-voice` first and reuse its
+`VOICE PROFILE`. Do not duplicate a second style-analysis pass here unless the user
+explicitly asks for one.
 
-If no specific voice is requested, do not invent one or invoke another source;
-write directly from the supplied evidence in clear, concrete language.
+If no specific voice is requested, do not invent one or invoke another source; write
+directly from the supplied evidence in clear, concrete language.
 
 ## Banned Patterns
 
@@ -40,8 +43,8 @@ Delete and rewrite any of these:
 ## Writing Process
 
 1. Clarify the audience and purpose.
-2. Validate the required sources and claims before drafting; a missing source
-   blocks the affected article rather than producing a partial substitute.
+2. Validate the required sources and claims before drafting; a missing source blocks the
+   affected article rather than producing a partial substitute.
 3. Build a hard outline with one job per section.
 4. Start sections with proof, artifact, conflict, or example.
 5. Expand only where the next sentence earns space.

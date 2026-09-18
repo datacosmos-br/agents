@@ -1,6 +1,6 @@
 ---
 name: gc-mail
-description: 'gas city mail, inter-agent messaging, bead threads, inbox'
+description: "gas city mail, inter-agent messaging, bead threads, inbox"
 allowed-tools: Bash(gc *)
 metadata:
   aihub.tags: '["activation:opt-in","decision:ADR-0008","detect:opt-in:gc-mail","effective:2026-08-30","route:agent","route:project","subject:gascity","usage:on-demand"]'
@@ -9,12 +9,13 @@ metadata:
 ## Verification (mandatory)
 
 Before acting on any bead, run the four-source cross-check in
-`rules/coordination/beads-verification.md` (project law) and attach the
-evidence it requires.
+`rules/coordination/beads-verification.md` (project law) and attach the evidence it
+requires.
 
 # Messaging (Mail)
 
-Mail is bead-based messaging between agents. Messages are beads with type=message, stored in the bead store.
+Mail is bead-based messaging between agents. Messages are beads with type=message,
+stored in the bead store.
 
 ## Sending
 
@@ -45,4 +46,6 @@ gc mail delete <id>                    # alias for archive
 gc mail check                          # Check for new mail (used in hooks)
 ```
 
-`archive` and `delete` are the same operation under two names — both irreversibly delete the message's underlying bead; there is no reversible storage path. Prefer `mark-read` to remove a message from the unread count without destroying it.
+`archive` and `delete` are the same operation under two names — both irreversibly delete
+the message's underlying bead; there is no reversible storage path. Prefer `mark-read`
+to remove a message from the unread count without destroying it.

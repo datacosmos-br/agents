@@ -5,14 +5,17 @@ Support multiple output formats for flexibility:
 ```typescript
 enum ResponseFormat {
   MARKDOWN = "markdown",
-  JSON = "json"
+  JSON = "json",
 }
 
 const inputSchema = z.object({
   query: z.string(),
-  response_format: z.nativeEnum(ResponseFormat)
+  response_format: z
+    .nativeEnum(ResponseFormat)
     .default(ResponseFormat.MARKDOWN)
-    .describe("Output format: 'markdown' for human-readable or 'json' for machine-readable")
+    .describe(
+      "Output format: 'markdown' for human-readable or 'json' for machine-readable",
+    ),
 });
 ```
 
@@ -37,7 +40,7 @@ For tools that list resources:
 ```typescript
 const ListSchema = z.object({
   limit: z.number().int().min(1).max(100).default(20),
-  offset: z.number().int().min(0).default(0)
+  offset: z.number().int().min(0).default(0),
 });
 
 async function listItems(params: z.infer<typeof ListSchema>) {
@@ -49,9 +52,10 @@ async function listItems(params: z.infer<typeof ListSchema>) {
     offset: params.offset,
     items: data.items,
     has_more: data.total > params.offset + data.items.length,
-    next_offset: data.total > params.offset + data.items.length
-      ? params.offset + data.items.length
-      : undefined
+    next_offset:
+      data.total > params.offset + data.items.length
+        ? params.offset + data.items.length
+        : undefined,
   };
 
   return JSON.stringify(response, null, 2);
@@ -64,7 +68,7 @@ Add a CHARACTER_LIMIT constant to prevent overwhelming responses:
 
 ```typescript
 // At module level in constants.ts
-export const CHARACTER_LIMIT = 25000;  // Maximum response size in characters
+export const CHARACTER_LIMIT = 25000; // Maximum response size in characters
 
 async function searchTool(params: SearchInput) {
   let result = generateResponse(data);
@@ -122,7 +126,7 @@ async function makeApiRequest<T>(
   endpoint: string,
   method: "GET" | "POST" | "PUT" | "DELETE" = "GET",
   data?: any,
-  params?: any
+  params?: any,
 ): Promise<T> {
   try {
     const response = await axios({
@@ -133,8 +137,8 @@ async function makeApiRequest<T>(
       timeout: 30000,
       headers: {
         "Content-Type": "application/json",
-        "Accept": "application/json"
-      }
+        Accept: "application/json",
+      },
     });
     return response.data;
   } catch (error) {
@@ -156,8 +160,9 @@ async function fetchData(resourceId: string): Promise<ResourceData> {
 
 // Bad: Promise chains
 function fetchData(resourceId: string): Promise<ResourceData> {
-  return axios.get(`${API_URL}/resource/${resourceId}`)
-    .then(response => response.data);  // Harder to read and maintain
+  return axios
+    .get(`${API_URL}/resource/${resourceId}`)
+    .then((response) => response.data); // Harder to read and maintain
 }
 ```
 
@@ -186,19 +191,19 @@ const UserSchema = z.object({
   name: z.string(),
   email: z.string().email(),
   team: z.string().optional(),
-  active: z.boolean()
+  active: z.boolean(),
 });
 
 type User = z.infer<typeof UserSchema>;
 
 async function getUser(id: string): Promise<User> {
   const data = await apiCall(`/users/${id}`);
-  return UserSchema.parse(data);  // Runtime validation
+  return UserSchema.parse(data); // Runtime validation
 }
 
 // Bad: Using any
 async function getUser(id: string): Promise<any> {
-  return await apiCall(`/users/${id}`);  // No type safety
+  return await apiCall(`/users/${id}`); // No type safety
 }
 ```
 

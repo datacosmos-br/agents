@@ -31,8 +31,8 @@ If conflicting numbers appear, stop and resolve them before drafting.
 
 1. inventory the canonical facts
 2. identify missing assumptions
-3. validate the complete fact set, destination, asset type, arithmetic, and
-   publication contract before drafting
+3. validate the complete fact set, destination, asset type, arithmetic, and publication
+   contract before drafting
 4. draft the complete asset with explicit logic
 5. cross-check every number against the source of truth and publish atomically
 

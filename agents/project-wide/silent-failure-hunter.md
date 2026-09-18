@@ -1,6 +1,8 @@
 ---
 name: silent-failure-hunter
-description: Review code for silent failures, swallowed errors, bad fallbacks, and missing error propagation.
+description:
+  Review code for silent failures, swallowed errors, bad fallbacks, and missing error
+  propagation.
 tools: ["filesystem:read", "filesystem:grep", "filesystem:glob", "shell:execute"]
 metadata:
   aihub.tags: '["activation:opt-in","decision:ADR-0008","effective:2026-09-07","mode:review"]'

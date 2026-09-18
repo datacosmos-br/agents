@@ -1,6 +1,7 @@
 # Decision brief
 
-Decision: whether a European SaaS vendor that integrates a third-party general-purpose AI model needs a 2026 compliance workstream under the EU AI Act.
+Decision: whether a European SaaS vendor that integrates a third-party general-purpose
+AI model needs a 2026 compliance workstream under the EU AI Act.
 
 Scope:
 

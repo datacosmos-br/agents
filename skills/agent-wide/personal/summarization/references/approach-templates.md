@@ -9,7 +9,8 @@ For business documents, reports, proposals, and strategy decks.
 **Structure:**
 
 1. **Bottom line first**: Lead with the key decision, recommendation, or conclusion
-2. **Critical metrics**: Include the 2-4 numbers that matter most (revenue, timeline, cost, impact)
+2. **Critical metrics**: Include the 2-4 numbers that matter most (revenue, timeline,
+   cost, impact)
 3. **Key findings**: 3-5 bullet points covering what was discovered or decided
 4. **Risks and concerns**: What could go wrong, what's uncertain
 5. **Next steps**: Who does what by when
@@ -35,8 +36,10 @@ For business documents, reports, proposals, and strategy decks.
 
 - Use business language, not technical jargon
 - Every sentence should help the reader make a decision
-- If you can't state the bottom line in one sentence, the source material may be unclear — flag this
-- Include specific numbers, not vague qualifiers ("revenue grew 23%" not "revenue grew significantly")
+- If you can't state the bottom line in one sentence, the source material may be unclear
+  — flag this
+- Include specific numbers, not vague qualifiers ("revenue grew 23%" not "revenue grew
+  significantly")
 
 ### Technical Summary
 

@@ -1,6 +1,6 @@
 ---
 name: web-guidelines
-description: 'ui review, interface guidelines, accessibility audit, ux compliance'
+description: "ui review, interface guidelines, accessibility audit, ux compliance"
 license: MIT
 metadata:
   aihub.tags: '["decision:ADR-0014","effective:2026-09-07","usage:on-demand"]'
@@ -31,7 +31,8 @@ Fetch fresh guidelines before each review:
 https://raw.githubusercontent.com/vercel-labs/web-interface-guidelines/main/command.md
 ```
 
-Use WebFetch to retrieve the latest rules. The fetched content contains all the rules and output format instructions.
+Use WebFetch to retrieve the latest rules. The fetched content contains all the rules
+and output format instructions.
 
 ## Usage
 

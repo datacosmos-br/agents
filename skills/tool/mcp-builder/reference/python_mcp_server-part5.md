@@ -25,7 +25,8 @@ Before finalizing your Python MCP server implementation, ensure:
 ### Tool Configuration
 
 - [ ] All tools implement 'name' and 'annotations' in the decorator
-- [ ] Annotations correctly set (readOnlyHint, destructiveHint, idempotentHint, openWorldHint)
+- [ ] Annotations correctly set (readOnlyHint, destructiveHint, idempotentHint,
+      openWorldHint)
 - [ ] All tools use Pydantic BaseModel for input validation with Field() definitions
 - [ ] All Pydantic Fields have explicit types and descriptions with constraints
 - [ ] All tools have comprehensive docstrings with explicit input/output types

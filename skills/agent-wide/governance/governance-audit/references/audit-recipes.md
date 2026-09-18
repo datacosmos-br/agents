@@ -4,14 +4,14 @@ These recipes classify supplied governance evidence without mutating its owner.
 
 ## Runtime preflight
 
-Determine the declared tracker, documentation authority, projection owner, and
-runtime state before inspection. When the tracker is suspended or unavailable,
-use only supplied static snapshots and repository files. Do not invoke a tracker,
-select an endpoint, or substitute another database.
+Determine the declared tracker, documentation authority, projection owner, and runtime
+state before inspection. When the tracker is suspended or unavailable, use only supplied
+static snapshots and repository files. Do not invoke a tracker, select an endpoint, or
+substitute another database.
 
 After explicit runtime restoration, read the then-current canonical help before
-selecting any read-only command. Historical flags, endpoints, and command examples
-are not reusable authority. A missing inspection surface is the first blocker.
+selecting any read-only command. Historical flags, endpoints, and command examples are
+not reusable authority. A missing inspection surface is the first blocker.
 
 ## Tracker-state checks
 
@@ -22,8 +22,8 @@ are not reusable authority. A missing inspection surface is the first blocker.
 - claim concentration and priority inflation;
 - overlapping epics and drain candidates.
 
-Timestamps alone do not prove staleness. Inspect content, declared dependencies,
-live ownership, and current runtime evidence.
+Timestamps alone do not prove staleness. Inspect content, declared dependencies, live
+ownership, and current runtime evidence.
 
 ## Content and projection checks
 
@@ -35,28 +35,30 @@ live ownership, and current runtime evidence.
 
 ## External and historical corpus checks
 
-- inspect relevant routers and every referenced script, asset, manifest,
-  generated marker, provenance, license, and current consumer;
-- derive outcome, trigger, non-trigger, inputs, effects, failure contract, scope,
-  and proof independently of the historical filename or type;
-- compare those semantics with current rules, skills, commands, typed runtime,
-  and provider adapters;
+- inspect relevant routers and every referenced script, asset, manifest, generated
+  marker, provenance, license, and current consumer;
+- derive outcome, trigger, non-trigger, inputs, effects, failure contract, scope, and
+  proof independently of the historical filename or type;
+- compare those semantics with current rules, skills, commands, typed runtime, and
+  provider adapters;
 - classify each behavior as already owned, owner extension, distinct required
   capability, or rejected residue;
 - reject copied projections, foreign updaters/runtimes, private paths, aliases,
   fallback, retry, normalized failure, and behavior without a current consumer.
 
-The supplied corpus remains unchanged. An unreadable resource, missing license
-for content that would be copied, executable effect that cannot be attributed,
-or unresolved current owner is a P1 and stops that unit. Original synthesis of
-general behavior may continue only when its evidence and ownership are complete.
+The supplied corpus remains unchanged. An unreadable resource, missing license for
+content that would be copied, executable effect that cannot be attributed, or unresolved
+current owner is a P1 and stops that unit. Original synthesis of general behavior may
+continue only when its evidence and ownership are complete.
 
 ## Severity and report
 
 - **P0**: dual mutating orchestrators, ownerless in-flight work, or two writable truths;
-- **P1**: stale blocks, missing epic contract, claim concentration, zombie work, or canonical-link rot;
-- **P2**: priority inflation, note archaeology, dead references, or non-authoritative prose drift.
+- **P1**: stale blocks, missing epic contract, claim concentration, zombie work, or
+  canonical-link rot;
+- **P2**: priority inflation, note archaeology, dead references, or non-authoritative
+  prose drift.
 
-Report: check | finding | evidence | owner-correct action | severity. Evidence
-must identify its source or read-only command and decisive result. Stop at the
-first causal inspection defect; do not aggregate later checks after it fails.
+Report: check | finding | evidence | owner-correct action | severity. Evidence must
+identify its source or read-only command and decisive result. Stop at the first causal
+inspection defect; do not aggregate later checks after it fails.

@@ -29,63 +29,58 @@ For every implementation:
 
 1. Research repository owners, dependencies, and canonical documentation.
 2. Remove scope without a current requirement or consumer (YAGNI).
-3. Elect one writable authority; every other copy is a generated projection
-   (SSOT). Improve the owner in place: writing a parallel replacement,
-   renderer, or registry beside the owner is a violation — consume the
-   owner's projection, never copy its contract. Enumerations discoverable
-   through the owning authority are data, never code: the authority owns
-   instances, contracts validate structure and grammar, and a fixed list in
-   code that duplicates what the SSOT already derives is a bypass to
-   exterminate. Absolute paths and references outside the repository are
-   hardcodes.
+3. Elect one writable authority; every other copy is a generated projection (SSOT).
+   Improve the owner in place: writing a parallel replacement, renderer, or registry
+   beside the owner is a violation — consume the owner's projection, never copy its
+   contract. Enumerations discoverable through the owning authority are data, never
+   code: the authority owns instances, contracts validate structure and grammar, and a
+   fixed list in code that duplicates what the SSOT already derives is a bypass to
+   exterminate. Absolute paths and references outside the repository are hardcodes.
 4. Apply SOLID only to a responsibility or dependency boundary under change.
 5. Implement through the owner and simplify without weakening behavior.
 6. Remove duplication and god components; recheck YAGNI, SSOT, SOLID.
-7. Exercise runtime behavior, run every applicable native gate, and complete
-   the approved landing cycle before changing phase.
+7. Exercise runtime behavior, run every applicable native gate, and complete the
+   approved landing cycle before changing phase.
 
-At a cross-boundary failure, prove the producer contract and output. Fix its
-owner when invalid or the receiver when it conforms. Never alter a correct
-adjacent owner for an invalid consumer; symptom workarounds are defects.
+At a cross-boundary failure, prove the producer contract and output. Fix its owner when
+invalid or the receiver when it conforms. Never alter a correct adjacent owner for an
+invalid consumer; symptom workarounds are defects.
 
-Hardcodes, normalized failure, failover, retry, fallback, compatibility,
-partial execution, application keyring reads, and unevidenced success are
-defects. Typed owners
+Hardcodes, normalized failure, failover, retry, fallback, compatibility, partial
+execution, application keyring reads, and unevidenced success are defects. Typed owners
 keep defaults. The first exception escapes its CLI with traceback and cause.
 
-Git, runtime, build, and tests are baseline. Every other executable is an
-authorized, selected capability; installation or PATH presence never selects
-it. Do not load, locate, probe, or gate dormant capabilities. A selected invalid
-capability fails without fallback and requires only non-derivable values.
+Git, runtime, build, and tests are baseline. Every other executable is an authorized,
+selected capability; installation or PATH presence never selects it. Do not load,
+locate, probe, or gate dormant capabilities. A selected invalid capability fails without
+fallback and requires only non-derivable values.
 
-A portable library owns only primitives that remain valid without a particular
-host application. Host-wide indexes, daemons, forges, language servers, and
-refactor orchestration belong to the runtime control plane that operates them.
-A lower library may consume an available host capability only through its
-public command, hook, or MCP contract; importing the host application as a
-library, reproducing its state, or creating a substitute runtime is forbidden.
-An absent and unselected host capability is not an error. Once explicitly
-selected and available, its first failure propagates without fallback.
+A portable library owns only primitives that remain valid without a particular host
+application. Host-wide indexes, daemons, forges, language servers, and refactor
+orchestration belong to the runtime control plane that operates them. A lower library
+may consume an available host capability only through its public command, hook, or MCP
+contract; importing the host application as a library, reproducing its state, or
+creating a substitute runtime is forbidden. An absent and unselected host capability is
+not an error. Once explicitly selected and available, its first failure propagates
+without fallback.
 
-Remote access follows the repository's current Git and forge configuration.
-Never rewrite protocols, create identity aliases, or mutate user SSH
-configuration as a prerequisite for ordinary Git operations.
+Remote access follows the repository's current Git and forge configuration. Never
+rewrite protocols, create identity aliases, or mutate user SSH configuration as a
+prerequisite for ordinary Git operations.
 
-A broken account alias never authorizes the generic form. When the declared
-identity stops resolving, the remote stays declared and the alias is restored by
-its owner; migrating repositories to a generic remote to regain access converts
-one outage into a standing violation. The operator's SSH client configuration and
-keys are never written by an agent — not to repair identity, not to deploy a
-fragment, not to restore access. Identity is corrected in git; anything that
-requires editing SSH configuration is reported to the operator instead.
+A broken account alias never authorizes the generic form. When the declared identity
+stops resolving, the remote stays declared and the alias is restored by its owner;
+migrating repositories to a generic remote to regain access converts one outage into a
+standing violation. The operator's SSH client configuration and keys are never written
+by an agent — not to repair identity, not to deploy a fragment, not to restore access.
+Identity is corrected in git; anything that requires editing SSH configuration is
+reported to the operator instead.
 
-An external token validation without its token is not executed and is recorded
-as `NOT EXECUTED`, never green; it does not block offline gates, landing, or
-post-merge proof. Direct invocation selects it: the token becomes required and
-any failure escapes without skip, catch, fallback, or normalization.
+An external token validation without its token is not executed and is recorded as
+`NOT EXECUTED`, never green; it does not block offline gates, landing, or post-merge
+proof. Direct invocation selects it: the token becomes required and any failure escapes
+without skip, catch, fallback, or normalization.
 
-Compose with `generalized ownership` (rule file),
-`strict execution` (rule file),
-`runtime evidence` (rule file),
-`storage isolation` (rule file),
-`security closure` (rule file).
+Compose with `generalized ownership` (rule file), `strict execution` (rule file),
+`runtime evidence` (rule file), `storage isolation` (rule file), `security closure`
+(rule file).

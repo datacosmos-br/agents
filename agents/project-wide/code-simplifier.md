@@ -1,7 +1,16 @@
 ---
 name: code-simplifier
-description: Simplifies and refines code for clarity, consistency, and maintainability while preserving behavior. Focus on recently modified code unless instructed otherwise.
-tools: ["filesystem:read", "filesystem:write", "shell:execute", "filesystem:grep", "filesystem:glob"]
+description:
+  Simplifies and refines code for clarity, consistency, and maintainability while
+  preserving behavior. Focus on recently modified code unless instructed otherwise.
+tools:
+  [
+    "filesystem:read",
+    "filesystem:write",
+    "shell:execute",
+    "filesystem:grep",
+    "filesystem:glob",
+  ]
 metadata:
   aihub.tags: '["activation:opt-in","decision:ADR-0008","effective:2026-09-07","mode:execute"]'
 ---
@@ -49,10 +58,10 @@ You simplify code while preserving functionality.
 
 ## Refactoring methodology
 
-Apply in priority order: reduce complexity (flatten nested conditionals, extract
-complex expressions, early returns), eliminate redundancy (consolidate similar
-logic), improve naming, extract focused methods, simplify data structures, remove
-dead code, clarify the happy path. For each change verify preserved behavior and
-genuinely reduced complexity; surface any public-contract change as an explicit
-question instead of doing it silently. Report a high-level summary, per-change
-rationale, risks, and remaining improvement candidates.
+Apply in priority order: reduce complexity (flatten nested conditionals, extract complex
+expressions, early returns), eliminate redundancy (consolidate similar logic), improve
+naming, extract focused methods, simplify data structures, remove dead code, clarify the
+happy path. For each change verify preserved behavior and genuinely reduced complexity;
+surface any public-contract change as an explicit question instead of doing it silently.
+Report a high-level summary, per-change rationale, risks, and remaining improvement
+candidates.

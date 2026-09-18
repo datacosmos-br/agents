@@ -1,13 +1,13 @@
 ---
 name: webapp-test
-description: 'playwright, login flow, console errors, local webapp'
+description: "playwright, login flow, console errors, local webapp"
 license: Apache-2.0
 metadata:
   aihub.tags: '["activation:detected","decision:ADR-0014","detect:dependency:python:playwright","effective:2026-09-07","extends:playwright-e2e","route:project","subject:playwright","subject:web","usage:on-demand"]'
 ---
 
-Composes as the specialized delta of $playwright-e2e; the parent owns the
-shared conduct and this bundle adds only its delta.
+Composes as the specialized delta of $playwright-e2e; the parent owns the shared conduct
+and this bundle adds only its delta.
 
 # Web Application Testing
 
@@ -17,7 +17,11 @@ To test local web applications, write native Python Playwright scripts.
 
 - `scripts/with_server.py` - Manages server lifecycle (supports multiple servers)
 
-**Always run scripts with `--help` first** to see usage. DO NOT read the source until you try running the script first and find that a customized solution is abslutely necessary. These scripts can be very large and thus pollute your context window. They exist to be called directly as black-box scripts rather than ingested into your context window.
+**Always run scripts with `--help` first** to see usage. DO NOT read the source until
+you try running the script first and find that a customized solution is abslutely
+necessary. These scripts can be very large and thus pollute your context window. They
+exist to be called directly as black-box scripts rather than ingested into your context
+window.
 
 ## Provenance
 
@@ -63,7 +67,8 @@ python scripts/with_server.py \
   -- python your_automation.py
 ```
 
-To create an automation script, include only Playwright logic (servers are managed automatically):
+To create an automation script, include only Playwright logic (servers are managed
+automatically):
 
 ```python
 from playwright.sync_api import sync_playwright
@@ -95,12 +100,15 @@ with sync_playwright() as p:
 
 ## Common Pitfall
 
-❌ **Don't** inspect the DOM before waiting for `networkidle` on dynamic apps
-✅ **Do** wait for `page.wait_for_load_state('networkidle')` before inspection
+❌ **Don't** inspect the DOM before waiting for `networkidle` on dynamic apps ✅ **Do**
+wait for `page.wait_for_load_state('networkidle')` before inspection
 
 ## Best Practices
 
-- **Use bundled scripts as black boxes** - To accomplish a task, consider whether one of the scripts available in `scripts/` can help. These scripts handle common, complex workflows reliably without cluttering the context window. Use `--help` to see usage, then invoke directly.
+- **Use bundled scripts as black boxes** - To accomplish a task, consider whether one of
+  the scripts available in `scripts/` can help. These scripts handle common, complex
+  workflows reliably without cluttering the context window. Use `--help` to see usage,
+  then invoke directly.
 - Use `sync_playwright()` for synchronous scripts
 - Always close the browser when done
 - Use descriptive selectors: `text=`, `role=`, CSS selectors, or IDs

@@ -48,12 +48,12 @@ Here's an example of implementing a basic tool in an MCP server:
       throw new Error("Tool not found");
     });
     ```
+
   </Tab>
 
   <Tab title="Python">
     ```python
     app = Server("example-server")
-
 
     @app.list_tools()
     async def list_tools() -> list[types.Tool]:
@@ -81,6 +81,7 @@ Here's an example of implementing a basic tool in an MCP server:
             return [types.TextContent(type="text", text=str(result))]
         raise ValueError(f"Tool not found: {name}")
     ```
+
   </Tab>
 </Tabs>
 
@@ -165,15 +166,25 @@ When implementing tools:
 
 ### Tool name conflicts
 
-MCP client applications and MCP server proxies may encounter tool name conflicts when building their own tool lists. For example, two connected MCP servers `web1` and `web2` may both expose a tool named `search_web`.
+MCP client applications and MCP server proxies may encounter tool name conflicts when
+building their own tool lists. For example, two connected MCP servers `web1` and `web2`
+may both expose a tool named `search_web`.
 
-Applications may disambiguiate tools with one of the following strategies (among others; not an exhaustive list):
+Applications may disambiguiate tools with one of the following strategies (among others;
+not an exhaustive list):
 
-* Concatenating a unique, user-defined server name with the tool name, e.g. `web1___search_web` and `web2___search_web`. This strategy may be preferable when unique server names are already provided by the user in a configuration file.
-* Generating a random prefix for the tool name, e.g. `jrwxs___search_web` and `6cq52___search_web`. This strategy may be preferable in server proxies where user-defined unique names are not available.
-* Using the server URI as a prefix for the tool name, e.g. `web1.example.com:search_web` and `web2.example.com:search_web`. This strategy may be suitable when working with remote MCP servers.
+- Concatenating a unique, user-defined server name with the tool name, e.g.
+  `web1___search_web` and `web2___search_web`. This strategy may be preferable when
+  unique server names are already provided by the user in a configuration file.
+- Generating a random prefix for the tool name, e.g. `jrwxs___search_web` and
+  `6cq52___search_web`. This strategy may be preferable in server proxies where
+  user-defined unique names are not available.
+- Using the server URI as a prefix for the tool name, e.g. `web1.example.com:search_web`
+  and `web2.example.com:search_web`. This strategy may be suitable when working with
+  remote MCP servers.
 
-Note that the server-provided name from the initialization flow is not guaranteed to be unique and is not generally suitable for disambiguation purposes.
+Note that the server-provided name from the initialization flow is not guaranteed to be
+unique and is not generally suitable for disambiguation purposes.
 
 ## Security considerations
 
@@ -181,27 +192,27 @@ When exposing tools:
 
 ### Input validation
 
-* Validate all parameters against the schema
-* Sanitize file paths and system commands
-* Validate URLs and external identifiers
-* Check parameter sizes and ranges
-* Prevent command injection
+- Validate all parameters against the schema
+- Sanitize file paths and system commands
+- Validate URLs and external identifiers
+- Check parameter sizes and ranges
+- Prevent command injection
 
 ### Access control
 
-* Implement authentication where needed
-* Use appropriate authorization checks
-* Audit tool usage
-* Rate limit requests
-* Monitor for abuse
+- Implement authentication where needed
+- Use appropriate authorization checks
+- Audit tool usage
+- Rate limit requests
+- Monitor for abuse
 
 ### Error handling
 
-* Don't expose internal errors to clients
-* Log security-relevant errors
-* Handle timeouts appropriately
-* Clean up resources after errors
-* Validate return values
+- Don't expose internal errors to clients
+- Log security-relevant errors
+- Handle timeouts appropriately
+- Clean up resources after errors
+- Validate return values
 
 ## Tool discovery and updates
 
@@ -214,7 +225,9 @@ MCP supports dynamic tool discovery:
 
 ## Error handling
 
-Tool errors should be reported within the result object, not as MCP protocol-level errors. This allows the LLM to see and potentially handle the error. When a tool encounters an error:
+Tool errors should be reported within the result object, not as MCP protocol-level
+errors. This allows the LLM to see and potentially handle the error. When a tool
+encounters an error:
 
 1. Set `isError` to `true` in the result
 2. Include error details in the `content` array
@@ -253,14 +266,14 @@ Here's an example of proper error handling for tools:
     ```python
     try:
 
-   ```text
-    # Tool operation
+```text
+ # Tool operation
 
-    result = perform_operation()
-    return types.CallToolResult(
-        content=[types.TextContent(type="text", text=f"Operation successful: {result}")]
-    )
-   ```
+ result = perform_operation()
+ return types.CallToolResult(
+     content=[types.TextContent(type="text", text=f"Operation successful: {result}")]
+ )
+```
 
     except Exception as error:
         return types.CallToolResult(
@@ -268,7 +281,9 @@ Here's an example of proper error handling for tools:
             content=[types.TextContent(type="text", text=f"Error: {str(error)}")],
         )
     ```
+
   </Tab>
 </Tabs>
 
-This approach allows the LLM to see that an error occurred and potentially take corrective action or request human intervention.
+This approach allows the LLM to see that an error occurred and potentially take
+corrective action or request human intervention.

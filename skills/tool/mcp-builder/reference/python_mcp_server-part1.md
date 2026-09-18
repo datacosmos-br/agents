@@ -2,7 +2,9 @@
 
 ## Overview
 
-This document provides Python-specific best practices and examples for implementing MCP servers using the MCP Python SDK. It covers server setup, tool registration patterns, input validation with Pydantic, error handling, and complete working examples.
+This document provides Python-specific best practices and examples for implementing MCP
+servers using the MCP Python SDK. It covers server setup, tool registration patterns,
+input validation with Pydantic, error handling, and complete working examples.
 
 ---
 
@@ -37,9 +39,11 @@ async def tool_function(params: InputModel) -> str:
 
 ## MCP Python SDK and FastMCP
 
-The official MCP Python SDK provides FastMCP, a high-level framework for building MCP servers. It provides:
+The official MCP Python SDK provides FastMCP, a high-level framework for building MCP
+servers. It provides:
 
-- Automatic description and inputSchema generation from function signatures and docstrings
+- Automatic description and inputSchema generation from function signatures and
+  docstrings
 - Pydantic model integration for input validation
 - Decorator-based tool registration with `@mcp.tool`
 
@@ -64,7 +68,8 @@ The name should be:
 
 ### Tool Naming
 
-Use snake_case for tool names (e.g., "search_users", "create_project", "get_channel_info") with clear, action-oriented names.
+Use snake_case for tool names (e.g., "search_users", "create_project",
+"get_channel_info") with clear, action-oriented names.
 
 **Avoid Naming Conflicts**: Include the service context to prevent overlaps:
 
@@ -74,7 +79,8 @@ Use snake_case for tool names (e.g., "search_users", "create_project", "get_chan
 
 ### Tool Structure with FastMCP
 
-Tools are defined using the `@mcp.tool` decorator with Pydantic models for input validation:
+Tools are defined using the `@mcp.tool` decorator with Pydantic models for input
+validation:
 
 ```python
 from pydantic import BaseModel, Field, ConfigDict
@@ -195,7 +201,8 @@ class UserSearchInput(BaseModel):
 **Markdown format**:
 
 - Use headers, lists, and formatting for clarity
-- Convert timestamps to human-readable format (e.g., "2024-01-15 10:30:00 UTC" instead of epoch)
+- Convert timestamps to human-readable format (e.g., "2024-01-15 10:30:00 UTC" instead
+  of epoch)
 - Show display names with IDs in parentheses (e.g., "@john.doe (U123456)")
 - Omit verbose metadata (e.g., show only one profile image URL, not all sizes)
 - Group related information logically

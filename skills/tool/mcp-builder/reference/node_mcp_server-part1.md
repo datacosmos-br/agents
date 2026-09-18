@@ -2,7 +2,10 @@
 
 ## Overview
 
-This document provides Node/TypeScript-specific best practices and examples for implementing MCP servers using the MCP TypeScript SDK. It covers project structure, server setup, tool registration patterns, input validation with Zod, error handling, and complete working examples.
+This document provides Node/TypeScript-specific best practices and examples for
+implementing MCP servers using the MCP TypeScript SDK. It covers project structure,
+server setup, tool registration patterns, input validation with Zod, error handling, and
+complete working examples.
 
 ---
 
@@ -22,14 +25,14 @@ import axios, { AxiosError } from "axios";
 ```typescript
 const server = new McpServer({
   name: "service-mcp-server",
-  version: "1.0.0"
+  version: "1.0.0",
 });
 ```
 
 ### Tool Registration Pattern
 
 ```typescript
-server.registerTool("tool_name", {...config}, async (params) => {
+server.registerTool("tool_name", { ...config }, async (params) => {
   // Implementation
 });
 ```

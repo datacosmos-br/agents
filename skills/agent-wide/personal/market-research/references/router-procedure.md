@@ -20,10 +20,10 @@ Produce research that supports decisions, not research theater.
 4. Translate findings into a decision, not just a summary.
 5. Separate fact, inference, and recommendation clearly.
 
-Before research calls or drafting, validate the decision, audience, geography,
-customer definition, source requirements, selected research tools, and required
-report sections. A selected source/tool failure ends the report; do not replace
-it with an alternate provider, stale fact, or reduced analysis.
+Before research calls or drafting, validate the decision, audience, geography, customer
+definition, source requirements, selected research tools, and required report sections.
+A selected source/tool failure ends the report; do not replace it with an alternate
+provider, stale fact, or reduced analysis.
 
 ### Common Research Modes
 
@@ -47,11 +47,10 @@ Collect:
 - distribution and pricing clues
 - strengths, weaknesses, and positioning gaps
 
-For a decision-grade competitive benchmark, read the
-`competitive analysis procedure` (skill file). It owns
-scoping, evidence-calibrated scoring, bias controls, and report assembly. Use a
-confirmed positioning brief from `brand-discovery` when the decision depends on
-the client's intended position; do not invent one.
+For a decision-grade competitive benchmark, read the `competitive analysis procedure`
+(skill file). It owns scoping, evidence-calibrated scoring, bias controls, and report
+assembly. Use a confirmed positioning brief from `brand-discovery` when the decision
+depends on the client's intended position; do not invent one.
 
 #### Market Sizing
 

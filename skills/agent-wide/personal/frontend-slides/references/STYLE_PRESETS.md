@@ -24,14 +24,14 @@ Never scroll inside a slide.
 
 ### Density Limits
 
-| Slide Type | Maximum Content |
-|------------|-----------------|
-| Title slide | 1 heading + 1 subtitle + optional tagline |
-| Content slide | 1 heading + 4-6 bullets or 2 paragraphs |
-| Feature grid | 6 cards maximum |
-| Code slide | 8-10 lines maximum |
-| Quote slide | 1 quote + attribution |
-| Image slide | 1 image, ideally under 60vh |
+| Slide Type    | Maximum Content                           |
+| ------------- | ----------------------------------------- |
+| Title slide   | 1 heading + 1 subtitle + optional tagline |
+| Content slide | 1 heading + 4-6 bullets or 2 paragraphs   |
+| Feature grid  | 6 cards maximum                           |
+| Code slide    | 8-10 lines maximum                        |
+| Quote slide   | 1 quote + attribution                     |
+| Image slide   | 1 image, ideally under 60vh               |
 
 ## Mandatory Base CSS
 
@@ -49,12 +49,12 @@ Use the canonical viewport-fitting rules in `BASE_CSS.md` (skill file).
 
 ## Mood to Preset Mapping
 
-| Mood | Good Presets |
-|------|--------------|
-| Impressed / Confident | Bold Signal, Electric Studio, Dark Botanical |
-| Excited / Energized | Creative Voltage, Neon Cyber, Split Pastel |
-| Calm / Focused | Notebook Tabs, Paper & Ink, Swiss Modern |
-| Inspired / Moved | Dark Botanical, Vintage Editorial, Pastel Geometry |
+| Mood                  | Good Presets                                       |
+| --------------------- | -------------------------------------------------- |
+| Impressed / Confident | Bold Signal, Electric Studio, Dark Botanical       |
+| Excited / Energized   | Creative Voltage, Neon Cyber, Split Pastel         |
+| Calm / Focused        | Notebook Tabs, Paper & Ink, Swiss Modern           |
+| Inspired / Moved      | Dark Botanical, Vintage Editorial, Pastel Geometry |
 
 ## Preset Catalog
 
@@ -156,18 +156,19 @@ Use the canonical viewport-fitting rules in `BASE_CSS.md` (skill file).
 
 ## Direct Selection Prompts
 
-If the user already knows the style they want, let them pick directly from the preset names above instead of forcing preview generation.
+If the user already knows the style they want, let them pick directly from the preset
+names above instead of forcing preview generation.
 
 ## Animation Feel Mapping
 
-| Feeling | Motion Direction |
-|---------|------------------|
-| Dramatic / Cinematic | slow fades, parallax, large scale-ins |
-| Techy / Futuristic | glow, particles, grid motion, scramble text |
-| Playful / Friendly | springy easing, rounded shapes, floating motion |
-| Professional / Corporate | subtle 200-300ms transitions, clean slides |
-| Calm / Minimal | very restrained movement, whitespace-first |
-| Editorial / Magazine | strong hierarchy, staggered text and image interplay |
+| Feeling                  | Motion Direction                                     |
+| ------------------------ | ---------------------------------------------------- |
+| Dramatic / Cinematic     | slow fades, parallax, large scale-ins                |
+| Techy / Futuristic       | glow, particles, grid motion, scramble text          |
+| Playful / Friendly       | springy easing, rounded shapes, floating motion      |
+| Professional / Corporate | subtle 200-300ms transitions, clean slides           |
+| Calm / Minimal           | very restrained movement, whitespace-first           |
+| Editorial / Magazine     | strong hierarchy, staggered text and image interplay |
 
 ## CSS Gotcha: Negating Functions
 
@@ -201,6 +202,7 @@ Test at minimum:
 Do not use:
 
 - purple-on-white startup templates
-- Inter / Roboto / Arial as the visual voice unless the user explicitly wants utilitarian neutrality
+- Inter / Roboto / Arial as the visual voice unless the user explicitly wants
+  utilitarian neutrality
 - bullet walls, tiny type, or code blocks that require scrolling
 - decorative illustrations when abstract geometry would do the job better

@@ -1,15 +1,14 @@
 ---
 name: jvm-dev
-description: 'java, kotlin, jvm development'
+description: "java, kotlin, jvm development"
 metadata:
   aihub.tags: '["activation:detected","decision:ADR-0008","detect:marker:build.gradle","detect:marker:build.gradle.kts","detect:marker:gradlew","detect:marker:pom.xml","detect:marker:settings.gradle","detect:marker:settings.gradle.kts","effective:2026-08-29","route:project","subject:jvm","supersedes:skill:jvm-development","usage:router"]'
 ---
 
 # JVM Development
 
-Read `the procedure` (skill file) for Java, Kotlin, Gradle, Maven, or
-mixed JVM work.
+Read `the procedure` (skill file) for Java, Kotlin, Gradle, Maven, or mixed JVM work.
 
-The repository owns language levels, plugins, dependency resolution, formatting,
-static analysis, frameworks, and test engines. Use its wrapper and canonical
-tasks; never introduce a parallel build path or assume one JVM framework.
+The repository owns language levels, plugins, dependency resolution, formatting, static
+analysis, frameworks, and test engines. Use its wrapper and canonical tasks; never
+introduce a parallel build path or assume one JVM framework.

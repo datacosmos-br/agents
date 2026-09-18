@@ -1,6 +1,7 @@
 ---
 name: gc-agents
-description: 'gas city agents, session lifecycle, pool capacity, drain restart, reconciliation'
+description:
+  "gas city agents, session lifecycle, pool capacity, drain restart, reconciliation"
 allowed-tools: Bash(gc *)
 metadata:
   aihub.tags: '["activation:opt-in","decision:ADR-0008","detect:opt-in:gc-agents","effective:2026-08-30","route:agent","route:project","subject:gascity","usage:on-demand"]'
@@ -9,24 +10,23 @@ metadata:
 ## Verification (mandatory)
 
 Before acting on any bead, run the four-source cross-check defined in
-`rules/coordination/beads-verification.md` (project law): the registered state
-records, git history, measured reality, and the intent of the most recent
-code. Declare the check and attach evidence — command, working directory,
-exit code, decisive output — before closing. A bead whose premise the
-current code retired is closed obsolete with evidence, never executed as
-written.
+`rules/coordination/beads-verification.md` (project law): the registered state records,
+git history, measured reality, and the intent of the most recent code. Declare the check
+and attach evidence — command, working directory, exit code, decisive output — before
+closing. A bead whose premise the current code retired is closed obsolete with evidence,
+never executed as written.
 
 # Agent Management
 
-Agents are the workers in a Gas City workspace. Each runs in its own session (tmux pane, container, etc). Follow the complete
-`router procedure` (skill file) and preserve its owners,
-evidence contracts, failure propagation, and required output standard.
+Agents are the workers in a Gas City workspace. Each runs in its own session (tmux pane,
+container, etc). Follow the complete `router procedure` (skill file) and preserve its
+owners, evidence contracts, failure propagation, and required output standard.
 
-For session state, the controller reconciliation tick, the drain/restart
-handshake, pool capacity keys, and claim identity, read
-`references/lifecycle-reconciliation.md` (skill file) before diagnosing a session
-that will not start, will not stop, restarts in a loop, or ignores a drain.
+For session state, the controller reconciliation tick, the drain/restart handshake, pool
+capacity keys, and claim identity, read `references/lifecycle-reconciliation.md` (skill
+file) before diagnosing a session that will not start, will not stop, restarts in a
+loop, or ignores a drain.
 
-Managed availability is proven by `systemctl --user`, `gc order check`, supervisor
-log, and Dolt runtime publication—not by a process census. Never send a signal to a
-process inside a unit; ask the unit owner to stop or restart.
+Managed availability is proven by `systemctl --user`, `gc order check`, supervisor log,
+and Dolt runtime publication—not by a process census. Never send a signal to a process
+inside a unit; ask the unit owner to stop or restart.

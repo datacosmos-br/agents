@@ -2,7 +2,9 @@
 
 ## Overview
 
-This document compiles essential best practices and guidelines for building Model Context Protocol (MCP) servers. It covers naming conventions, tool design, response formats, pagination, error handling, security, and compliance requirements.
+This document compiles essential best practices and guidelines for building Model
+Context Protocol (MCP) servers. It covers naming conventions, tool design, response
+formats, pagination, error handling, security, and compliance requirements.
 
 ---
 
@@ -84,7 +86,8 @@ The name should be:
 ### Tool Naming Best Practices
 
 1. **Use snake_case**: `search_users`, `create_project`, `get_channel_info`
-2. **Include service prefix**: Anticipate that your MCP server may be used alongside other MCP servers
+2. **Include service prefix**: Anticipate that your MCP server may be used alongside
+   other MCP servers
    - Use `slack_send_message` instead of just `send_message`
    - Use `github_create_issue` instead of just `create_issue`
    - Use `asana_list_tasks` instead of just `list_tasks`
@@ -97,7 +100,8 @@ The name should be:
 - Tool descriptions must narrowly and unambiguously describe functionality
 - Descriptions must precisely match actual functionality
 - Should not create confusion with other MCP servers
-- Should provide tool annotations (readOnlyHint, destructiveHint, idempotentHint, openWorldHint)
+- Should provide tool annotations (readOnlyHint, destructiveHint, idempotentHint,
+  openWorldHint)
 - Keep tool operations focused and atomic
 
 ---
@@ -118,7 +122,8 @@ All tools that return data should support multiple formats for flexibility:
 
 - Human-readable formatted text
 - Use headers, lists, and formatting for clarity
-- Convert timestamps to human-readable format (e.g., "2024-01-15 10:30:00 UTC" instead of epoch)
+- Convert timestamps to human-readable format (e.g., "2024-01-15 10:30:00 UTC" instead
+  of epoch)
 - Show display names with IDs in parentheses (e.g., "@john.doe (U123456)")
 - Omit verbose metadata (e.g., show only one profile image URL, not all sizes)
 - Group related information logically
@@ -130,12 +135,15 @@ All tools that return data should support multiple formats for flexibility:
 
 For tools that list resources:
 
-- **Always respect the `limit` parameter**: Never load all results when a limit is specified
+- **Always respect the `limit` parameter**: Never load all results when a limit is
+  specified
 - **Implement pagination**: Use `offset` or cursor-based pagination
-- **Return pagination metadata**: Include `has_more`, `next_offset`/`next_cursor`, `total_count`
+- **Return pagination metadata**: Include `has_more`, `next_offset`/`next_cursor`,
+  `total_count`
 - **Never load all results into memory**: Especially important for large datasets
 - **Default to reasonable limits**: 20-50 items is typical
-- **Include clear pagination info in responses**: Make it easy for LLMs to request more data
+- **Include clear pagination info in responses**: Make it easy for LLMs to request more
+  data
 
 Example pagination response structure:
 
@@ -238,12 +246,12 @@ MCP servers support multiple transport mechanisms for different deployment scena
 
 ### Transport Selection Criteria
 
-| Criterion | Stdio | HTTP | SSE |
-|-----------|-------|------|-----|
-| **Deployment** | Local | Remote | Remote |
-| **Clients** | Single | Multiple | Multiple |
+| Criterion         | Stdio         | HTTP             | SSE         |
+| ----------------- | ------------- | ---------------- | ----------- |
+| **Deployment**    | Local         | Remote           | Remote      |
+| **Clients**       | Single        | Multiple         | Multiple    |
 | **Communication** | Bidirectional | Request-Response | Server-Push |
-| **Complexity** | Low | Medium | Medium-High |
-| **Real-time** | No | No | Yes |
+| **Complexity**    | Low           | Medium           | Medium-High |
+| **Real-time**     | No            | No               | Yes         |
 
 ---

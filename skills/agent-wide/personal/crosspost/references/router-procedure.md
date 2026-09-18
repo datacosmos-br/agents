@@ -2,7 +2,8 @@
 
 ## Crosspost
 
-Distribute content across platforms without turning it into the same fake post in four costumes.
+Distribute content across platforms without turning it into the same fake post in four
+costumes.
 
 ### When to Activate
 
@@ -20,9 +21,9 @@ Distribute content across platforms without turning it into the same fake post i
 
 ### Workflow
 
-Before drafting, validate the source, every requested destination, the factual
-claims, voice owner, and whether the request authorizes drafting only or external
-publication. A missing required item blocks the complete request.
+Before drafting, validate the source, every requested destination, the factual claims,
+voice owner, and whether the request authorizes drafting only or external publication. A
+missing required item blocks the complete request.
 
 #### Step 1: Start with the Primary Version
 
@@ -38,12 +39,13 @@ Use `content-engine` first if the source still needs voice shaping.
 
 #### Step 2: Capture the Voice Fingerprint
 
-Run `brand-voice` first if the source voice is not already captured in the current session.
+Run `brand-voice` first if the source voice is not already captured in the current
+session.
 
-Reuse the resulting `VOICE PROFILE` directly.
-Do not build a second ad hoc voice checklist here unless the user explicitly wants a fresh override for this campaign.
-Failure of the selected voice workflow stops crossposting; do not replace it with
-a generic platform voice.
+Reuse the resulting `VOICE PROFILE` directly. Do not build a second ad hoc voice
+checklist here unless the user explicitly wants a fresh override for this campaign.
+Failure of the selected voice workflow stops crossposting; do not replace it with a
+generic platform voice.
 
 #### Step 3: Adapt by Platform Constraint
 
@@ -75,11 +77,12 @@ a generic platform voice.
 
 ### Posting Order
 
-Return a posting order only when the user requests sequencing. Validate all
-requested variants before any authorized publication, then publish the complete
-approved set through its declared atomic owner.
+Return a posting order only when the user requests sequencing. Validate all requested
+variants before any authorized publication, then publish the complete approved set
+through its declared atomic owner.
 
-Do not add cross-platform references unless useful. Most of the time, the post should stand on its own.
+Do not add cross-platform references unless useful. Most of the time, the post should
+stand on its own.
 
 ### Banned Patterns
 
@@ -98,8 +101,8 @@ Return:
 - the primary platform version
 - adapted variants for each requested platform
 - a short note on what changed and why
-- confirmed non-blocking publishing constraints; a required constraint blocks
-  drafting or publication as applicable
+- confirmed non-blocking publishing constraints; a required constraint blocks drafting
+  or publication as applicable
 
 ### Quality Gate
 

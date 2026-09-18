@@ -1,6 +1,6 @@
 ---
 name: beads-cycle
-description: 'beads cycle, continuous governance, csv workflow, classify align unblock'
+description: "beads cycle, continuous governance, csv workflow, classify align unblock"
 metadata:
   aihub.tags: '["activation:opt-in","decision:ADR-0008","detect:opt-in:beads-cycle","effective:2026-09-10","route:agent","subject:beads","usage:router"]'
 ---
@@ -9,44 +9,44 @@ metadata:
 
 ## What this skill is
 
-The operating rhythm that keeps a `bd` ledger from rotting: regenerate the
-inventory, reconcile it against the live workspace, classify and re-home beads,
-verify integrity, and record evidence — in one repeatable cycle. Run it after
-every large delivery wave, before backlog triage, or whenever
-`bd doctor`/`bd stats` look wrong.
+The operating rhythm that keeps a `bd` ledger from rotting: regenerate the inventory,
+reconcile it against the live workspace, classify and re-home beads, verify integrity,
+and record evidence — in one repeatable cycle. Run it after every large delivery wave,
+before backlog triage, or whenever `bd doctor`/`bd stats` look wrong.
 
-Relationship to sibling skills: `wip-beads` owns the TOOL reference (flags,
-output semantics, failure modes); this skill owns the CYCLE (order, gates, who
-decides). When both apply, follow the order here and the tool detail there.
+Relationship to sibling skills: `wip-beads` owns the TOOL reference (flags, output
+semantics, failure modes); this skill owns the CYCLE (order, gates, who decides). When
+both apply, follow the order here and the tool detail there.
 
 ## Why the order is fixed
 
-Each step shrinks the search space of the next: collect reconciles reality
-first (so classify/align judge live truth, not stale CSV), classify defines
-WHAT a bead is, align defines WHERE it lives, unblock reads the graph those
-two just cleaned, title/deferred polish what remains, and the deep-clean gates
-only pass on a ledger already consistent. Skipping ahead produces rework: a
-title pass before classify renames beads that classify is about to re-parent.
+Each step shrinks the search space of the next: collect reconciles reality first (so
+classify/align judge live truth, not stale CSV), classify defines WHAT a bead is, align
+defines WHERE it lives, unblock reads the graph those two just cleaned, title/deferred
+polish what remains, and the deep-clean gates only pass on a ledger already consistent.
+Skipping ahead produces rework: a title pass before classify renames beads that classify
+is about to re-parent.
 
 ## Canonical flow
 
-`scripts/wip-beads.sh` (wip-beads skill bundle) with modes `collect|classify|align|unblock|title|deferred|all`
-and flags `--csv --beads --limits --apply --map --json-report`.
+`scripts/wip-beads.sh` (wip-beads skill bundle) with modes
+`collect|classify|align|unblock|title|deferred|all` and flags
+`--csv --beads --limits --apply --map --json-report`.
 
 ## Cycle steps (execute in order)
 
 ### 1. Regenerate CSV (source of truth)
 
-```bash
+````bash
 bd list --status open --flat --limit 0 --json > ./wip-beads-open.json
 Workspace-local scratch files:
 
 ```bash
 bd list --status open --flat --limit 0 --json > ./wip-beads-open.json
 <wip-beads-bundle>/scripts/bd_json_to_csv.py ./wip-beads-open.json ./wip-beads-open.csv
-```
+````
 
-```text
+````text
 
 ### 2. Collect workspace evidence
 `scripts/wip-beads.sh --mode collect --csv ./wip-beads-open.csv`
@@ -89,42 +89,41 @@ bd list --status open --flat --limit 0 --json > ./wip-beads-open.json
 bd doctor --check=validate --json
 bd doctor --check=pollution --json
 bd orphans --json
-```
+````
 
-- **Test pollution**: `validate`/`pollution` reports a count but does not
-  identify IDs. The detection criterion (extracted from bd 1.2.2) is a TITLE
-  regex `^test[-:]`, case-insensitive — so legitimate beads like
-  "test-law: ..." false-positive on it. Enumerate the complete ledger with
-  `bd list --all --flat --limit 0 --json`, reproduce the criterion, inspect
-  each hit with `bd show <id> --json`. A proven artifact closes (max 20/batch):
-  `bd close <id> --force --reason "OBSOLETE: test artifact; see bd show <id>"`.
-  A false positive gets its TITLE reworded past the regex — renaming preserves
-  the description and clears the flag without touching closed history.
+- **Test pollution**: `validate`/`pollution` reports a count but does not identify IDs.
+  The detection criterion (extracted from bd 1.2.2) is a TITLE regex `^test[-:]`,
+  case-insensitive — so legitimate beads like "test-law: ..." false-positive on it.
+  Enumerate the complete ledger with `bd list --all --flat --limit 0 --json`, reproduce
+  the criterion, inspect each hit with `bd show <id> --json`. A proven artifact closes
+  (max 20/batch):
+  `bd close <id> --force --reason "OBSOLETE: test artifact; see bd show <id>"`. A false
+  positive gets its TITLE reworded past the regex — renaming preserves the description
+  and clears the flag without touching closed history.
 - **Orphans**: `bd orphans` reports commit-referenced issues that remain
-  open/in_progress; it is not itself a dependency-graph report. Two causes,
-  two fixes: (a) the referenced commit delivered only a SLICE of scope — keep
-  the bead open and justify the flag with `bd note` (closing = false green);
-  (b) fully delivered — close DONE with cmd/cwd/exit/output. True graph
-  defects get fixed at the cause: `bd update <id> --parent <canonical>` or
-  `bd dep remove <id> <dead-id>`. Re-run both gates until clean or each
-  exception is justified on the coordinator bead.
-- **Status-delta audit**: after every batch, diff the pre-cycle CSV against a
-  fresh `bd list --all --flat --limit 0 --json` snapshot. Classify each status
-  change as external lane activity (`updated_at` + owner) or an effect of this
-  cycle; record the former, revert the latter. No unclassified drift — this is
-  the proof you touched only what you planned.
+  open/in_progress; it is not itself a dependency-graph report. Two causes, two fixes:
+  (a) the referenced commit delivered only a SLICE of scope — keep the bead open and
+  justify the flag with `bd note` (closing = false green); (b) fully delivered — close
+  DONE with cmd/cwd/exit/output. True graph defects get fixed at the cause:
+  `bd update <id> --parent <canonical>` or `bd dep remove <id> <dead-id>`. Re-run both
+  gates until clean or each exception is justified on the coordinator bead.
+- **Status-delta audit**: after every batch, diff the pre-cycle CSV against a fresh
+  `bd list --all --flat --limit 0 --json` snapshot. Classify each status change as
+  external lane activity (`updated_at` + owner) or an effect of this cycle; record the
+  former, revert the latter. No unclassified drift — this is the proof you touched only
+  what you planned.
 
 ### 9. Validate (mandatory after each batch)
 
 ```bash
-bd doctor --check=validate          # zero errors AND zero warnings required
-bd find-duplicates --status open --limit 50 --json  # output must be empty
-bd orphans                          # zero new orphans
+bd doctor --check=validate                         # zero errors AND zero warnings required
+bd find-duplicates --status open --limit 50 --json # output must be empty
+bd orphans                                         # zero new orphans
 ```
 
-Why these three: doctor proves internal consistency, dedup proves one survivor
-per concept, orphans proves git history agrees with the ledger. A batch that
-skips them can have "succeeded" while corrupting the graph.
+Why these three: doctor proves internal consistency, dedup proves one survivor per
+concept, orphans proves git history agrees with the ledger. A batch that skips them can
+have "succeeded" while corrupting the graph.
 
 - Cap 20 closes per batch (`bd batch`)
 - Re-run dedup gate + validation after each batch
@@ -135,24 +134,25 @@ skips them can have "succeeded" while corrupting the graph.
 1. **Close only with 3 legal reasons**: `SUPERSEDED` (canonical owner named absorbs),
    `OBSOLETE` (scope/explicit disappeared with proof), `DONE` (cmd/cwd/exit/output).
    `LEGITIMATE` = comment both, DO NOT close.
-2. **Zero parent closed with child pending** — check `↳` in `bd show` parent before close;
-   re-home child by child (`bd update <child> --parent <owner>`), no batch.
+2. **Zero parent closed with child pending** — check `↳` in `bd show` parent before
+   close; re-home child by child (`bd update <child> --parent <owner>`), no batch.
 3. **One canonical survivor per family** — defined by newest plan (ADR/§0.4/§0.7).
    Others close with survivor name in `--reason`.
 4. **Cap 20 closes per batch** + validation gates.
 5. **Never mutate active third-party lanes** (from §0.7 + claims ≤24h).
 6. **Workspace evidence first** — root+submodules+worktrees before any status write.
 7. **Subagent batch protocol**: coordinator generates CSV → splits via `--limits` →
-   subagents dry-run per batch → coordinator reviews → `--apply` → evidence note per bead.
+   subagents dry-run per batch → coordinator reviews → `--apply` → evidence note per
+   bead.
 
 ## Performance law (SSOT fetch)
 
 One ledger fetch per mode, not per bead: load a single
 `bd list --all --flat --limit 0 --json` snapshot at mode start and index it by id.
-Per-bead `bd show` is a fallback only for ids missing from the snapshot.
-Re-fetch the snapshot between modes, never reuse stale.
-Measured on a 102-bead ledger: one `bd show` ≈ 3.5s, so per-bead fetches cost
-~6min per mode while a single snapshot runs the same mode in ~20s.
+Per-bead `bd show` is a fallback only for ids missing from the snapshot. Re-fetch the
+snapshot between modes, never reuse stale. Measured on a 102-bead ledger: one `bd show`
+≈ 3.5s, so per-bead fetches cost ~6min per mode while a single snapshot runs the same
+mode in ~20s.
 
 ## Evidence format (bd note)
 
@@ -161,9 +161,9 @@ WORKSPACE SYNC <ISO8601> (wip-beads.sh <mode> [apply|dry]): <what changed>
 beads=<n> batches=<n> apply=<0|1>
 ```
 
-Co-verified with `bd show <id>` output when disputed. The note is the audit
-trail: months later, "why does this bead have no parent?" is answered by this
-line plus the classify dry-run log, not by memory.
+Co-verified with `bd show <id>` output when disputed. The note is the audit trail:
+months later, "why does this bead have no parent?" is answered by this line plus the
+classify dry-run log, not by memory.
 
 ## Completion criteria
 
@@ -173,7 +173,7 @@ line plus the classify dry-run log, not by memory.
 - Non-closed count ≤ 20% of baseline OR justified retention per family recorded
 - All decisions documented on coordinator bead + snapshot saved
 
-A cycle that ends with any gate red is NOT done — it is a documented handoff
-with the failure named, owned, and queued.
+A cycle that ends with any gate red is NOT done — it is a documented handoff with the
+failure named, owned, and queued.
 
 (End of file)

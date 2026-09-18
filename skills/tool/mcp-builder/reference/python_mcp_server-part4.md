@@ -2,7 +2,8 @@
 
 ### Context Parameter Injection
 
-FastMCP can automatically inject a `Context` parameter into tools for advanced capabilities like logging, progress reporting, resource reading, and user interaction:
+FastMCP can automatically inject a `Context` parameter into tools for advanced
+capabilities like logging, progress reporting, resource reading, and user interaction:
 
 ```python
 from mcp.server.fastmcp import FastMCP, Context
@@ -196,15 +197,18 @@ Your implementation MUST prioritize composability and code reuse:
 2. **Avoid Duplication**:
    - NEVER copy-paste similar code between tools
    - If you find yourself writing similar logic twice, extract it into a function
-   - Common operations like pagination, filtering, field selection, and formatting should be shared
+   - Common operations like pagination, filtering, field selection, and formatting
+     should be shared
    - Authentication/authorization logic should be centralized
 
 ### Python-Specific Best Practices
 
-1. **Use Type Hints**: Always include type annotations for function parameters and return values
+1. **Use Type Hints**: Always include type annotations for function parameters and
+   return values
 2. **Pydantic Models**: Define clear Pydantic models for all input validation
 3. **Avoid Manual Validation**: Let Pydantic handle input validation with constraints
 4. **Proper Imports**: Group imports (standard library, third-party, local)
-5. **Error Handling**: Use specific exception types (httpx.HTTPStatusError, not generic Exception)
+5. **Error Handling**: Use specific exception types (httpx.HTTPStatusError, not generic
+   Exception)
 6. **Async Context Managers**: Use `async with` for resources that need cleanup
 7. **Constants**: Define module-level constants in UPPER_CASE

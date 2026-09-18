@@ -1,6 +1,8 @@
 ## Tool annotations
 
-Tool annotations provide additional metadata about a tool's behavior, helping clients understand how to present and manage tools. These annotations are hints that describe the nature and impact of a tool, but should not be relied upon for security decisions.
+Tool annotations provide additional metadata about a tool's behavior, helping clients
+understand how to present and manage tools. These annotations are hints that describe
+the nature and impact of a tool, but should not be relied upon for security decisions.
 
 ### Purpose of tool annotations
 
@@ -137,27 +139,39 @@ Here's how to define tools with annotations for different scenarios:
         result = a + b
         return str(result)
     ```
+
   </Tab>
 </Tabs>
 
 ### Best practices for tool annotations
 
-1. **Be accurate about side effects**: Clearly indicate whether a tool modifies its environment and whether those modifications are destructive.
+1. **Be accurate about side effects**: Clearly indicate whether a tool modifies its
+   environment and whether those modifications are destructive.
 
-2. **Use descriptive titles**: Provide human-friendly titles that clearly describe the tool's purpose.
+2. **Use descriptive titles**: Provide human-friendly titles that clearly describe the
+   tool's purpose.
 
-3. **Indicate idempotency properly**: Mark tools as idempotent only if repeated calls with the same arguments truly have no additional effect.
+3. **Indicate idempotency properly**: Mark tools as idempotent only if repeated calls
+   with the same arguments truly have no additional effect.
 
-4. **Set appropriate open/closed world hints**: Indicate whether a tool interacts with a closed system (like a database) or an open system (like the web).
+4. **Set appropriate open/closed world hints**: Indicate whether a tool interacts with a
+   closed system (like a database) or an open system (like the web).
 
-5. **Remember annotations are hints**: All properties in ToolAnnotations are hints and not guaranteed to provide a faithful description of tool behavior. Clients should never make security-critical decisions based solely on annotations.
+5. **Remember annotations are hints**: All properties in ToolAnnotations are hints and
+   not guaranteed to provide a faithful description of tool behavior. Clients should
+   never make security-critical decisions based solely on annotations.
 
 ## Testing tools
 
 A comprehensive testing strategy for MCP tools should cover:
 
-* **Functional testing**: Verify tools execute correctly with valid inputs and handle invalid inputs appropriately
-* **Integration testing**: Test tool interaction with external systems using both real and mocked dependencies
-* **Security testing**: Validate authentication, authorization, input sanitization, and rate limiting
-* **Performance testing**: Check behavior under load, timeout handling, and resource cleanup
-* **Error handling**: Ensure tools properly report errors through the MCP protocol and clean up resources
+- **Functional testing**: Verify tools execute correctly with valid inputs and handle
+  invalid inputs appropriately
+- **Integration testing**: Test tool interaction with external systems using both real
+  and mocked dependencies
+- **Security testing**: Validate authentication, authorization, input sanitization, and
+  rate limiting
+- **Performance testing**: Check behavior under load, timeout handling, and resource
+  cleanup
+- **Error handling**: Ensure tools properly report errors through the MCP protocol and
+  clean up resources

@@ -4,8 +4,10 @@ The evaluation script (`scripts/evaluation.py`) supports three transport types:
 
 **Important:**
 
-- **stdio transport**: The evaluation script automatically launches and manages the MCP server process for you. Do not run the server manually.
-- **sse/http transports**: You must start the MCP server separately before running the evaluation. The script connects to the already-running server at the specified URL.
+- **stdio transport**: The evaluation script automatically launches and manages the MCP
+  server process for you. Do not run the server manually.
+- **sse/http transports**: You must start the MCP server separately before running the
+  evaluation. The script connects to the already-running server at the specified URL.
 
 ### 1. Local STDIO Server
 

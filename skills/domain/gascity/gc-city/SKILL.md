@@ -1,6 +1,6 @@
 ---
 name: gc-city
-description: 'gas city lifecycle, city init, start stop, supervisor status'
+description: "gas city lifecycle, city init, start stop, supervisor status"
 allowed-tools: Bash(gc *)
 metadata:
   aihub.tags: '["activation:opt-in","decision:ADR-0008","detect:opt-in:gc-city","effective:2026-08-30","route:agent","route:project","subject:gascity","usage:on-demand"]'
@@ -31,7 +31,10 @@ gc stop                                # Stop the city
 gc restart                             # Stop then start
 ```
 
-`gc init` and `gc start` register the city and reconcile immediately. Interactive sessions: `gc session new <template>`. One supervisor hosts one reconciliation runtime per city, lock-enforced. Tick timing and `[daemon]` keys: `references/reconciliation-timing.md`.
+`gc init` and `gc start` register the city and reconcile immediately. Interactive
+sessions: `gc session new <template>`. One supervisor hosts one reconciliation runtime
+per city, lock-enforced. Tick timing and `[daemon]` keys:
+`references/reconciliation-timing.md`.
 
 ## Status
 
@@ -60,4 +63,5 @@ gc event emit <type> [data]            # Emit event
 
 ## Dashboard and packs
 
-Dashboard: the gc-dashboard skill. Packs add `gc <pack> <command>` subcommands and doctor checks — `gc pack list`, `gc pack fetch`.
+Dashboard: the gc-dashboard skill. Packs add `gc <pack> <command>` subcommands and
+doctor checks — `gc pack list`, `gc pack fetch`.
