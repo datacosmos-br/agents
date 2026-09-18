@@ -1,15 +1,11 @@
-id: beadsreval-basic-001
-name: Basic usage beads-reval
-description: Execute the core beads-reval contract.
-tags: [beads, revalidation, sweep, reval, tag, waves, csv, tracker, code-reality, validation, basic-usage]
+id: beads-reval-closed-premise-001
+name: Revalidate a closed receipt premise
+description: Correct registered meaning using all four evidence sources.
+tags: [beads, basic-usage, evidence]
 inputs:
-  prompt: >-
-    Run the beads revalidation sweep: regenerate the csv tracker from bd list,
-    start the reval tag wave, run the dedup gate with limit 0, close obsolete
-    premises with evidence, validate with bd doctor. Cover code-reality
-    validation and validation of every wave.
+  prompt: Perform Beads revalidation of open issues and closed issues using integrated code evidence in the supplied complete inventory. Explain the correction to harbor-20 and the active harbor-31 cursor using registered state, integrated history, current code and native evidence. Keep all execution state in Beads and do not claim an unproven closure.
   files:
   - path: scenario.yaml
 expected:
-  output_contains: ["beads", "revalidation", "sweep", "reval", "tag", "waves", "csv", "tracker", "code-reality", "validation", "limit 0", "obsolete", "doctor"]
-  output_not_contains: ["invented command", "skipped gate"]
+  output_contains: [harbor-20, harbor-31, empty, Beads, evidence]
+  output_not_contains: [regenerate the CSV tracker, stash the change, all issues are closed]

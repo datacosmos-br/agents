@@ -1,99 +1,33 @@
 ---
 name: session-resume
-description: 'session source detection, handoff cross-check, unfinished step resume'
+description: "session source detection, handoff cross-check, unfinished step resume"
 metadata:
   aihub.tags: '["activation:opt-in","decision:ADR-0008","detect:opt-in:claude","detect:opt-in:opencode","detect:opt-in:poolside","effective:2026-09-06","route:agent","subject:agents","usage:router"]'
 ---
 
 # Session Resume
 
-Activate when the user wants to resume execution from a previous session.
-Supports both Poolside and Claude Code session formats.
+Activate for an explicit request to inspect and resume a foreign session, not ordinary
+continuation of the current conversation.
 
-## Source Detection
+Resolve the selected provider and workspace from the operator's request or configured
+source associations. UUID shape is not provider evidence. Missing or ambiguous
+association fails closed; never probe alternate providers or guess from conversation
+keywords.
 
-The skill auto-detects session source from the ID format:
+Route Claude to $claude-session-extract, Poolside to
+$poolside-session-extract, and
+OpenCode to $opencode-handoff. Read the selected owner's complete procedure and use its
+current public CLI. Claude and Poolside emit complete private structured stdout; the
+consumer's transaction owns private persistence. Do not search for historical export
+paths or use a summary as the only evidence.
 
-| Source | ID Format | Example |
-|---|---|---|
-| Poolside | UUID v7 | `01a07966-03e0-7df3-bf3b-dde492feabd8` |
-| Claude | UUID v4 | `08f1115d-dd1b-4da1-bf60-0a337b29f5ef` |
-| OpenCode | `ses_` prefix | `ses_f8b25a89effeXKTKUYNMf01TkN` |
+Cross-check the full selected evidence against the current objective and newest operator
+correction, plan, first unfinished step, Git state, tracker state, last successful and
+failed commands, affected repositories, and integration proof. Session history is
+evidence, never authority to repeat stale actions.
 
-## Resume Procedure
-
-### 1. Detect source and locate session
-
-```bash
-SESSION_ID="<session-id>"
-
-# Poolside: check logs
-if ls ~/.local/state/poolside/pool/logs/*/$SESSION_ID 2>/dev/null; then
-    SOURCE="poolside"
-fi
-
-# Claude: check projects
-if grep -q "$SESSION_ID" ~/.claude/history.jsonl 2>/dev/null; then
-    SOURCE="claude"
-fi
-
-# OpenCode: check database
-if opencode export "$SESSION_ID" 2>/dev/null; then
-    SOURCE="opencode"
-fi
-```
-
-### 2. Extract session based on source
-
-```bash
-case "$SOURCE" in
-    poolside)
-        python3 <catalog>/skills/tool/poolside-session-extract/scripts/extract_poolside_session.py "$SESSION_ID"
-        ;;
-    claude)
-        python3 <catalog>/skills/tool/claude-session-extract/scripts/extract_claude_session.py "$SESSION_ID"
-        ;;
-    opencode)
-        python3 <catalog>/skills/agent-wide/personal/opencode-handoff/scripts/export_session_snapshot.py "$SESSION_ID"
-        ;;
-esac
-```
-
-### 3. Read extracted handoff
-
-```bash
-# Find the handoff file
-HANDOFF=$(find ~/.local/state -name "handoff.sanitised.md" -path "*$SESSION_ID*" 2>/dev/null | head -1)
-cat "$HANDOFF"
-```
-
-### 4. Cross-check and reconstruct cursor
-
-Read the handoff and verify against current state:
-- Original objective and newest operator correction
-- Persisted plan and first unfinished step
-- Last successful and failed commands
-- Repositories and paths changed
-- Branch, HEAD, worktree changes
-
-### 5. Continue execution
-
-Based on the handoff, continue from the first unfinished step.
-Apply the operator's latest instructions and current repository state.
-
-## Output Locations
-
-| Source | Export Directory |
-|---|---|
-| Poolside | `~/.local/state/poolside/exports/<session-id>/` |
-| Claude | `~/.local/state/claude/exports/<session-id>/` |
-| OpenCode | `<opencode-data-root>/exports/<session-id>/` |
-
-## Secret Redaction
-
-All extraction scripts redact credential-shaped values before output.
-Private logs are stored with mode 0600.
-
-## Precedence
-
-Operator request > this skill > default.
+Continue only from the first unfinished step after the cross-check passes and only
+within the operator's execution authorization. Preserve an explicit approval pause.
+Missing session evidence means no execution effect; a provider failure remains failed
+without substitution or reconstruction from memory.

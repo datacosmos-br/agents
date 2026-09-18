@@ -2,6 +2,7 @@
 
 from .agent_profiles import AgentProfile
 from .bundle import BUNDLE_SCHEMA_VERSION, GovernanceBundle
+from .capsule import CAPSULE_MARKER, OPCODE_MARKER, Capsule, render_capsule
 from .catalog import SkillCategory, SkillRecord
 from .commands import CommandRoute, CommandSpec
 from .governance_config import GovernanceConfig
@@ -20,7 +21,10 @@ __version__ = _distribution_version()
 
 __all__ = (
     "BUNDLE_SCHEMA_VERSION",
+    "CAPSULE_MARKER",
+    "OPCODE_MARKER",
     "AgentProfile",
+    "Capsule",
     "CommandRoute",
     "CommandSpec",
     "EvalBehaviorGraderPolicy",
@@ -39,4 +43,5 @@ __all__ = (
     "SkillRecord",
     "ToolDependency",
     "__version__",
+    "render_capsule",
 )

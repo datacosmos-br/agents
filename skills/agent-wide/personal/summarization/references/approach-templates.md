@@ -3,18 +3,21 @@
 Choose the approach that matches the content type:
 
 ### Executive Summary
+
 For business documents, reports, proposals, and strategy decks.
 
 **Structure:**
 
 1. **Bottom line first**: Lead with the key decision, recommendation, or conclusion
-2. **Critical metrics**: Include the 2-4 numbers that matter most (revenue, timeline, cost, impact)
+2. **Critical metrics**: Include the 2-4 numbers that matter most (revenue, timeline,
+   cost, impact)
 3. **Key findings**: 3-5 bullet points covering what was discovered or decided
 4. **Risks and concerns**: What could go wrong, what's uncertain
 5. **Next steps**: Who does what by when
 
 **Example pattern:**
-```
+
+```text
 **Recommendation:** [One sentence with the core decision]
 
 **Key metrics:** [2-4 data points]
@@ -33,10 +36,13 @@ For business documents, reports, proposals, and strategy decks.
 
 - Use business language, not technical jargon
 - Every sentence should help the reader make a decision
-- If you can't state the bottom line in one sentence, the source material may be unclear — flag this
-- Include specific numbers, not vague qualifiers ("revenue grew 23%" not "revenue grew significantly")
+- If you can't state the bottom line in one sentence, the source material may be unclear
+  — flag this
+- Include specific numbers, not vague qualifiers ("revenue grew 23%" not "revenue grew
+  significantly")
 
 ### Technical Summary
+
 For technical documents, architecture docs, RFCs, code reviews, and documentation.
 
 **Structure:**
@@ -58,6 +64,7 @@ For technical documents, architecture docs, RFCs, code reviews, and documentatio
 - Flag breaking changes or migration requirements
 
 ### Research/Academic Summary
+
 For research papers, studies, whitepapers, and analytical reports.
 
 **Structure:**
@@ -78,6 +85,7 @@ For research papers, studies, whitepapers, and analytical reports.
 - Flag if the methodology has notable limitations
 
 ### Conversation/Meeting Summary
+
 For meeting notes, chat logs, email threads, and discussions.
 
 **Structure:**
@@ -98,6 +106,7 @@ For meeting notes, chat logs, email threads, and discussions.
 - Flag anything that seemed unresolved or contentious
 
 ### Code/Changelog Summary
+
 For code diffs, pull requests, release notes, and changelogs.
 
 **Structure:**

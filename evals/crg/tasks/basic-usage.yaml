@@ -1,0 +1,20 @@
+id: crg-happy-path-001
+name: Fresh lane graph before deletion blast radius
+description: Exercise code-review-graph fleet contract, graph freshness, structural impact, and worktree graphs through a lane deletion.
+tags: [crg, freshness, impact, dead-code, submodule, happy-path]
+inputs:
+  prompt: |
+    Using the supplied lane scenario, give the exact code-review-graph steps
+    you run before deleting the helper, which results you trust or distrust,
+    what evidence goes into the PR, and how the superproject graph reflects
+    the member change after landing.
+  files:
+  - path: lane-refactor.md
+expected:
+  output_contains:
+  - update
+  - impact --files
+  - callers_of
+  - built_at_commit
+  - make mod
+  - CRG_RECURSE_SUBMODULES=1

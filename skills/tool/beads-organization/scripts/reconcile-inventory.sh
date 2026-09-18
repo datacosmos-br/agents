@@ -125,7 +125,8 @@ render_csv() {
       def requested_ids:
         if ($beads | length) == 0 then [] else ($beads | split("\n") | unique) end;
       def selected($requested):
-        ($requested | length) == 0 or ($requested | index(.id)) != null;
+        .id as $id
+        | ($requested | length) == 0 or ($requested | index($id)) != null;
       def weak_title:
         (.title | ascii_downcase | test("^(wip|fix|fixes|todo|test|update|changes|misc)([: ]|$)"));
       def weak_description: ((.description // "") | length) < 40;
@@ -143,7 +144,8 @@ render_csv() {
           if weak_title then "weak-title" else empty end,
           if weak_description then "weak-description" else empty end
         ] | join(";");
-      . as $all
+      if type == "array" then . else error("bd list JSON must be an array") end
+      | . as $all
       | requested_ids as $requested
       | ($all | map(.id)) as $available
       | ($requested - $available) as $missing

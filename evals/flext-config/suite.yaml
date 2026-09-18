@@ -1,0 +1,14 @@
+description: Enforce FLEXT settings vs config ownership, expansion, and facade consumption.
+prompt: |-
+  Grade the flext-config response. Pass only when it routes external inputs
+  (environment variables, .env) to the mutable settings singleton owner and
+  governed declarative rules to the frozen config singleton, keeps the two as
+  siblings with strict nested facade access, expands ${VAR} and ${VAR:-default}
+  once at the YAML source with no-residue failure, repoints tests through the
+  production env seam plus reset_for_testing instead of monkeypatching, and
+  makes services consume explicit parameters or the validated global facade.
+  Require config.AiHub to remain a validated frozen model with Result wrapping
+  only at operation boundaries. Reject os.environ, Path.home, or cwd reads
+  inside services, a second derivation of an owned directory, patching the
+  CONFIG_DIR ClassVar, flat compatibility aliases, or any placeholder
+  surviving into a typed model.

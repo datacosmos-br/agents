@@ -1,6 +1,8 @@
 ---
 name: comment-analyzer
-description: Analyze code comments for accuracy, completeness, maintainability, and comment rot risk.
+description:
+  Analyze code comments for accuracy, completeness, maintainability, and comment rot
+  risk.
 tools: ["filesystem:read", "filesystem:grep", "filesystem:glob"]
 metadata:
   aihub.tags: '["activation:opt-in","decision:ADR-0008","effective:2026-09-07","mode:review"]'

@@ -1,21 +1,20 @@
 ---
 name: brand-discovery
-description: 'brand discovery, identity interviews, positioning brief'
+description: "brand discovery, identity interviews, positioning brief"
 metadata:
   aihub.tags: '["decision:ADR-0008","effective:2026-08-29","usage:on-demand"]'
 ---
 
 # Brand Discovery
 
-Activate when a brand needs an evidence-backed identity or positioning brief
-elicited from founders or stakeholders. Do not activate merely to imitate an
-existing writing style; `brand-voice` owns corpus-derived voice profiles.
+Activate when a brand needs an evidence-backed identity or positioning brief elicited
+from founders or stakeholders. Do not activate merely to imitate an existing writing
+style; `brand-voice` owns corpus-derived voice profiles.
 
-Read the `interview and synthesis procedure` (skill file). Preserve
-participants' language as attributed evidence, separate it from synthesis, and
-surface contradictions instead of averaging them away.
+Read the `interview and synthesis procedure` (skill file). Preserve participants'
+language as attributed evidence, separate it from synthesis, and surface contradictions
+instead of averaging them away.
 
-Keep session state in the conversation unless the operator explicitly requests
-a durable artifact and approves its destination. Never invent a project path,
-overwrite an existing brandbook, or treat an unfinished module as a completed
-positioning brief.
+Keep session state in the conversation unless the operator explicitly requests a durable
+artifact and approves its destination. Never invent a project path, overwrite an
+existing brandbook, or treat an unfinished module as a completed positioning brief.

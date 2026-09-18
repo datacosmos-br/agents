@@ -1,6 +1,6 @@
 ---
 name: summarization
-description: 'source compression, bounded summaries, factual fidelity'
+description: "source compression, bounded summaries, factual fidelity"
 metadata:
   aihub.tags: '["decision:ADR-0008","effective:2026-08-29","usage:on-demand"]'
   version: 3.0.0
@@ -8,9 +8,8 @@ metadata:
 
 # Summarization
 
-Compress supplied material without changing facts, attribution, uncertainty, or
-decision context. Select the audience-specific structure from
-`approach templates` (skill file).
+Compress supplied material without changing facts, attribution, uncertainty, or decision
+context. Select the audience-specific structure from `approach templates` (skill file).
 
 ## Contract
 
@@ -19,11 +18,11 @@ decision context. Select the audience-specific structure from
 3. Preserve decisive numbers, units, dates, owners, interfaces, limitations,
    disagreements, and open questions.
 4. Distinguish source statements, inference, correlation, and causation.
-5. Remove repetition and supporting detail that does not change understanding or
-   action; never invent missing content.
-6. For multiple sources, reconcile agreement and conflict with attribution instead
-   of flattening them into a false consensus.
+5. Remove repetition and supporting detail that does not change understanding or action;
+   never invent missing content.
+6. For multiple sources, reconcile agreement and conflict with attribution instead of
+   flattening them into a false consensus.
 
-Missing, inaccessible, empty, or conflicting required source material blocks a
-factual summary before writing begins. Name the first causal defect and produce
-no partial summary, inferred replacement, generic template, or alternate source.
+Missing, inaccessible, empty, or conflicting required source material blocks a factual
+summary before writing begins. Name the first causal defect and produce no partial
+summary, inferred replacement, generic template, or alternate source.

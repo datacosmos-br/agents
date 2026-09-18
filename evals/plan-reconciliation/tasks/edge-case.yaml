@@ -1,0 +1,11 @@
+id: plan-reconciliation-incomplete-input-002
+name: Refuse incomplete source authority
+description: Missing destinations and unreadable evidence cannot authorize semantic publication.
+tags: [plans, edge-case, provenance]
+inputs:
+  prompt: Reconcile the supplied incomplete corpus. Can observed_at rank this plan as the latest decision and can publication proceed? Explain the precise missing evidence without creating a tracker or choosing a destination.
+  files:
+  - path: incomplete.yaml
+expected:
+  output_contains: [truncated, research.md, destination]
+  output_not_contains: [publication can proceed, observed_at proves the newest decision, use /tmp]

@@ -1,5 +1,6 @@
 ---
-description: Rehydrate governance at session, prompt, compaction, and subagent boundaries.
+description:
+  Rehydrate governance at session, prompt, compaction, and subagent boundaries.
 capsule_summary: |
   Static provider instructions own the standing contract; hooks only deliver it
   and are never a policy owner or second runtime path.
@@ -18,50 +19,44 @@ metadata:
 
 # Rehydrate governance at every agent context boundary
 
-Static provider instructions own the complete standing contract. Personal
-provider hooks refresh a compact governance capsule at every native equivalent
-of session start, prompt submission, context compaction, and subagent start. A
-hook is an AI Hub-generated delivery mechanism; it is never a policy owner,
-public command, fallback, or second runtime path. This semantic package neither
-generates nor executes hooks.
+Static provider instructions own the complete standing contract. Personal provider hooks
+refresh a compact governance capsule at every native equivalent of session start, prompt
+submission, context compaction, and subagent start. A hook is an AI Hub-generated
+delivery mechanism; it is never a policy owner, public command, fallback, or second
+runtime path. This semantic package neither generates nor executes hooks.
 
-At session start, load the current operator and repository instructions before
-work. Resolve the global canonical rule and skill identities first, then compose
-the repository manifest and its narrower local owners. A project selects and
-specialises global capabilities; it does not copy their universal procedure or
-bind governance to a personal filesystem path. Generated provider surfaces are
-AI Hub-owned outputs and change only at its source and regeneration verb.
+At session start, load the current operator and repository instructions before work.
+Resolve the global canonical rule and skill identities first, then compose the
+repository manifest and its narrower local owners. A project selects and specialises
+global capabilities; it does not copy their universal procedure or bind governance to a
+personal filesystem path. Generated provider surfaces are AI Hub-owned outputs and
+change only at its source and regeneration verb.
 
-At each prompt, strictly follow every applicable skill. Reconcile all lower
-owners and consumers to newest operator intent; no conflict may remain.
-When a session demonstrates a reusable procedural gap,
-correct the narrowest canonical global owner, add a material evaluation, deploy
-it through the AI Hub lifecycle, and keep project-local text to
-selection and domain-specific constraints. After compaction, restore the active
-goal, evidence, scope, exclusions, accepted concurrent work, first red gate, and
-next action. Every subagent inherits authority, the fix-forward contract, and a
-bounded assignment; it may not discard, stash, roll back, or overwrite another
-actor's work.
+At each prompt, strictly follow every applicable skill. Reconcile all lower owners and
+consumers to newest operator intent; no conflict may remain. When a session demonstrates
+a reusable procedural gap, correct the narrowest canonical global owner, add a material
+evaluation, deploy it through the AI Hub lifecycle, and keep project-local text to
+selection and domain-specific constraints. After compaction, restore the active goal,
+evidence, scope, exclusions, accepted concurrent work, first red gate, and next action.
+Every subagent inherits authority, the fix-forward contract, and a bounded assignment;
+it may not discard, stash, roll back, or overwrite another actor's work.
 
-A continuation transferred between agent runtimes starts from the source
-runtime's native session record and then reconciles that record with current
-tracker, Git, runtime, and integrated-code evidence. The source transcript is
-historical evidence, never a writable plan owner or permission to repeat an
-effect. The receiving runtime preserves the newest operator boundary, including
-an approval pause, and owns all subsequent execution through current project
-owners. A failed source export or selected provider remains failed even when a
-read-only native state store supplies enough evidence to reconstruct the cursor;
-never resume the source agent, switch provider, or change reality merely to
-transfer ownership.
+A continuation transferred between agent runtimes starts from the source runtime's
+native session record and then reconciles that record with current tracker, Git,
+runtime, and integrated-code evidence. The source transcript is historical evidence,
+never a writable plan owner or permission to repeat an effect. The receiving runtime
+preserves the newest operator boundary, including an approval pause, and owns all
+subsequent execution through current project owners. A failed source export or selected
+provider remains failed even when a read-only native state store supplies enough
+evidence to reconstruct the cursor; never resume the source agent, switch provider, or
+change reality merely to transfer ownership.
 
-AI Hub calculates provider capability through its typed adapter. An exact native
-event is used when available. A documented per-turn or pre-model equivalent is
-used when it is the provider's only delivery point, and observational events
-remain observational. Never claim an exact lifecycle semantic that the provider
-does not expose. Declarative instructions and generated skills/rules remain the
-standing guarantee when a hook can only observe or advise.
+AI Hub calculates provider capability from its typed `config/agents.yaml` registry and
+provider adapter. An exact native event is used when available. A documented per-turn or
+pre-model equivalent is used when it is the provider's only delivery point, and
+observational events remain observational. Never claim an exact lifecycle semantic that
+the provider does not expose. Declarative instructions and generated skills/rules remain
+the standing guarantee when a hook can only observe or advise.
 
-Compose with `operator precedence` (rule file),
-`fix-forward collaboration` (rule file),
-`strict execution` (rule file), and
-`runtime evidence` (rule file).
+Compose with `operator precedence` (rule file), `fix-forward collaboration` (rule file),
+`strict execution` (rule file), and `runtime evidence` (rule file).

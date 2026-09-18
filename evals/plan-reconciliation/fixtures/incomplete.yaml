@@ -1,0 +1,11 @@
+workspace: harbor
+versioned_destination: unspecified
+collection:
+  provider: native-sessions
+  result: truncated
+  source_updated_at: unknown
+  observed_at: '2026-09-14T09:00:00Z'
+plan: Chunk receipt migration
+attachment:
+  path: chunk-receipts/research.md
+  readable: false

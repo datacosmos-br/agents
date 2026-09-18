@@ -1,8 +1,6 @@
 # Engineering reliability review
 
-Preset: Terminal Green
-Audience: platform engineers
-Length: four slides
+Preset: Terminal Green Audience: platform engineers Length: four slides
 
 1. Title — “Reliability without folklore”; subtitle “Q3 platform review”.
 2. Signal — error budget improved from 99.85% to 99.96%; one short chart caption.

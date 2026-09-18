@@ -1,5 +1,5 @@
 <!-- AIHUB-INVIOLABLE-LAW-PRELUDE v1 -->
-# AI Hub Inviolable Law — Strict Prelude
+# AIHUB Inviolable Law — Strict Prelude
 
 1. Truth: never claim done/green/resolved without command, exit code, decisive output.
 2. Root cause: exterminate bypass, fallback, shim, suppression, stub, hardcode, catch-based normalization, retry, compatibility, partial execution, keyring, or old+new coexistence.
@@ -25,7 +25,7 @@
     operator-authorized, never as satisfied.
 13. Root Make only: diagnostics, validation, generation, tests, Waza,
     publication, and deployment run only through selector-free verbs in the
-    repository root Makefile; bare verbs mutate (`APPLY=N` = dry-run). A full
+    repository root Makefile; bare verbs perform their declared operation. A full
     suite has its own verb, first runs the incremental verb, and uses the same
     persistent external testmon database.
 14. Red means red: a warning, skip, empty output, missing tool, missing report,
@@ -36,95 +36,66 @@
     raw traceback escape unchanged.
 <!-- /AIHUB-INVIOLABLE-LAW-PRELUDE -->
 
-# AGENTS.md — agents
+## AGENTS.md — agents
 
-> Packaged governance `agents-governance` `0.3.0` owns the capability indexes: 62 agents, 50 rules, 102 skills. Consume them through `GovernanceBundle`; do not copy their bodies here.
+> Packaged governance `agents-governance` owns the capability indexes. Consume current
+> inventories through `GovernanceBundle`; do not copy their counts or bodies here.
 
-<!-- AIHUB-AGENTS-SCOPE-LOCAL-BEGIN -->
-This repository is the single writable authority for provider-neutral rules,
-skills, commands, agent profiles, and their semantic evaluation resources. It
-publishes the read-only `agents-governance` package. AI Hub alone discovers
-projects, adapts providers, generates hooks and instruction artifacts, deploys,
-and reconciles runtime state.
+This repository is the single writable authority for provider-neutral rules, skills,
+commands, agent profiles, and their semantic evaluation resources. It publishes the
+read-only `agents-governance` package. AI Hub alone discovers projects, adapts
+providers, generates hooks and instruction artifacts, deploys, and reconciles runtime
+state.
 
-## Public contract
+### Public contract
 
 - `from agents_governance import GovernanceBundle` is the supported API.
-- `GovernanceBundle.load()` loads packaged resources; an explicit physical root
-  is accepted for source validation.
-- Loading validates the complete catalog, semantic skill evaluations, approval
-  lineage, governance ownership map, metadata, agent profiles, commands, rules,
-  and strict prelude before returning one frozen snapshot.
+- `GovernanceBundle.load()` loads packaged resources; an explicit physical root is
+  accepted for source validation.
+- Loading validates the complete catalog, semantic skill evaluations, approval lineage,
+  governance ownership map, metadata, agent profiles, commands, rules, and strict
+  prelude before returning one frozen snapshot.
 - This package has no CLI, daemon, hook, publisher, projector, sync, cleanup,
   provider-home writer, fallback loader, or compatibility API.
-- Consumer delivery is a transaction owned by AI Hub. A consumer may transform
-  bundle records but may never edit this source or treat generated output as an
-  authority.
+- Consumer delivery is a transaction owned by AI Hub. A consumer may transform bundle
+  records but may never edit this source or treat generated output as an authority.
 
-## Repository development
+### Repository development
 
-Read [README.md](README.md), [rules](rules), [skills](skills), and
-[ADRs](docs/adr/README.md) before mutation. Use only selector-free root Make
-verbs and run `make setup` before development gates; bare verbs mutate
-(`APPLY=N` = dry-run). Raw-tool and inline substitutes are prohibited.
+Read [README.md](README.md), the [rules index](docs/rules-index.md), [skills](skills),
+and [ADRs](docs/adr/README.md) before mutation. Use only selector-free root Make verbs;
+bare verbs perform their declared operation. Prove changed behavior through the public
+bundle load before adapting tests.
 
-Prove changed behavior through the public bundle load before adapting tests.
-Every Python test invocation, including focused, full, and CI, must keep the
-same external persistent testmon database active. The public full verb first
-runs incremental selection, then uses testmon's official no-selection mode; it
-never bypasses or clears the cache. Tests exercise public roots with typed
-fixtures and no mocks, monkeypatching, private imports, or hardcoded owner
-values. Warning, skip, empty output, missing tool/report, or zero collection is
-RED. Zero execution is acceptable only for a typed incremental testmon cache
-hit with an integrity-checked database and complete deselection accounting, and
-must never be reported as tests passed.
+### Lifecycle
 
-Generated files carry an owner and exact regeneration instruction. Change their
-source, regenerate through the declared Make owner, prove a zero-change second
-generation, rewire all consumers, and delete the old code, test, fixture,
-document, alias, backup, and archive in the same cutover.
+Gas City owns workspace placement; `gc status` is the effective-state authority. While
+the city or this rig is suspended, work only in this existing checkout, invoke no Gas
+City or Beads mutation, and create no substitute ledger. Stop at `dev` unless the
+operator explicitly authorizes promotion. No increment is DONE without required gates,
+reviewed merge-commit landing, post-merge public runtime proof, and canonical tracker
+closure.
 
-## FLEXT project law
+### Authority map
 
-For `internal_flext`, apply the complete strict contract in the
-`flext-development` skill and `rules/architecture/internal-clean-architecture.md`.
-The structural MRO is `c → t → p → m → u`; operational facades are `r`, `e`,
-`x`, `h`, `d`, and `s`. Each family lives under `_<module>/`, starts with
-`base.py`, and is composed by explicit inheritance. Public `api.py` is the only
-composition root and `cli.py` is a thin adapter. Modules have at most 200
-logical lines and one top-level class; declarations are pure. Boundary input
-and output use Pydantic 2, type aliases live only in `t`, protocols only in `p`,
-and contracts never use `Any`, `object`, `Optional`, or `dict`. Domain and
-application layers import no I/O, adapter, or framework. Local aliases,
-redeclared owner values, concrete service dependencies, parallel facades, and
-handwritten generated roots are blocking violations. `third_party_fork` retains
-its upstream architecture.
+Precedence: `rules/coordination/operator-precedence.md`.
 
-## Lifecycle
+By category:
 
-Gas City owns workspace placement for this repository; `gc status` is the
-effective-state authority (declared default plus runtime override). While the
-city or this rig is suspended, work only in this existing checkout, invoke no
-Gas City or Beads mutation, and create no substitute ledger.
-Stop at `dev` unless the operator explicitly authorizes promotion. No increment
-is DONE without required gates, reviewed merge-commit landing, post-merge public
-runtime proof, and canonical tracker closure.
+- [Architecture](rules/architecture/) — clean architecture, DI, topology, ownership
+- [Coordination](rules/coordination/) — lifecycle, beads, operator alignment,
+  never-deduce, sessions
+- [Ethics](rules/ethics/) — integrity, truth, and test-reality
+- [Runtime](rules/runtime/) — execution, residue, environment, fail-fast
+- [Workflow](rules/workflow/) — discovery, generation, documentation, gates
+- [Security](rules/security/) — supply chain, scanners, prompt defense
+- [Language](rules/language/) — runtime floor, authored language
+- [Python](rules/python/) — config SSOT, Pydantic, typing
+- [Flext](rules/flext/) — FLEXT-specific governance
+- [Shell](rules/shell/) — bash guard rules
+- [Git](rules/git/) — branch workflow, destructive guard, fork locality
+- [Communication](rules/communication/) — caveman style
 
-## Operator cycle lessons
-
-- **Fix-forward permanente:** never rebase, force-push, or cherry-pick an
-  authorized lane. Integrate the base with `git merge --no-ff`, revalidate the
-  combined state, then land.
-- **Pouso:** landing requires real validation (command + exit code + output),
-  zero warnings, and record on the integration branch at cycle end. A rejected
-  FF-push means `git merge --no-ff` the base into the lane.
-- **Coordenação:** the orchestrator runs parallel subagents per file owner. An
-  empty subagent result is not a claim — verify by diff before accepting.
-- **Resíduo zero:** untracked `.bak`/backup artifacts are defects, never carry-over.
-- **Gate bare:** a CI check invoked without the project environment must be
-  stdlib-only at its script owner; provisioning env in the workflow is a
-  workaround, not a fix. Prove the gate by running it exactly as CI does.
-- **Subagentes rápidos:** dispatch independent research/verification/
-  bookkeeping to fast parallel subagents; the main thread alone owns sequenced
-  effects (merge, land, bead closure with merge evidence).
-<!-- AIHUB-AGENTS-SCOPE-LOCAL-END -->
+FLEXT architecture for `internal_flext`:
+[`rules/architecture/internal-clean-architecture.md`](rules/architecture/internal-clean-architecture.md).
+Operator mandate: [`VALIDATE_ON_CHANGE.md`](VALIDATE_ON_CHANGE.md).

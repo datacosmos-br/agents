@@ -17,6 +17,10 @@ inputs:
     one shared HQ root and linked local beads for both executing rigs, explain
     their distinct evidence ownership, and coordinate producer-SHA adoption and
     combined revalidation through that graph rather than through mail alone.
+    The checkout branch, HEAD, and index then change concurrently before a
+    planned commit. Continue adopting compatible work without asking the
+    operator to choose a writing session. Explain how command results and
+    fresh branch/index reads prevent a queued merge after a failed commit.
   files:
   - path: scenario.yaml
 expected:

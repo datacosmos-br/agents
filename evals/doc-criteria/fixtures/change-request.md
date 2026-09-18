@@ -5,5 +5,5 @@
 - Introduces a third-party persistence SDK.
 - Changes request -> validation -> storage -> event publication data flow.
 - Touches nine implementation and test files.
-- Requires keyboard navigation, screen transitions, measurable adoption KPI,
-  rollback criteria, and staged delivery.
+- Requires keyboard navigation, screen transitions, measurable adoption KPI, rollback
+  criteria, and staged delivery.

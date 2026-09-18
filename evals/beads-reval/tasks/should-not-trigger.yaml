@@ -1,12 +1,9 @@
-id: beadsreval-negative-001
-name: Should not trigger beads-reval
-description: Reject invalid triggers for beads-reval.
-tags: [beads, reval, negative, invalid-trigger]
+id: beads-reval-query-explanation-003
+name: Explain a receipt count without a tracker sweep
+description: A read-only SQL explanation is outside issue revalidation.
+tags: [beads, should-not-trigger]
 inputs:
-  prompt: >-
-    user asks to dedup with default limit, close beads without evidence, or put bugfix under an epic; the skill must reject.
-  files:
-  - path: scenario.yaml
+  prompt: Explain only what SELECT COUNT(*) FROM receipts returns. Do not inspect tools, projects or trackers.
 expected:
-  output_contains: ['limit 0', 'evidence', 'root']
-  output_not_contains: ['default limit', 'closed without evidence', 'bug under epic']
+  output_contains: [rows, receipts]
+  output_not_contains: [beads-reval, revalidation sweep, bd list]

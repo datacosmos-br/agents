@@ -2,13 +2,16 @@
 
 ## Overview
 
-This document provides Python-specific best practices and examples for implementing MCP servers using the MCP Python SDK. It covers server setup, tool registration patterns, input validation with Pydantic, error handling, and complete working examples.
+This document provides Python-specific best practices and examples for implementing MCP
+servers using the MCP Python SDK. It covers server setup, tool registration patterns,
+input validation with Pydantic, error handling, and complete working examples.
 
 ---
 
 ## Quick Reference
 
 ### Key Imports
+
 ```python
 from mcp.server.fastmcp import FastMCP
 from pydantic import BaseModel, Field, field_validator, ConfigDict
@@ -18,11 +21,13 @@ import httpx
 ```
 
 ### Server Initialization
+
 ```python
 mcp = FastMCP("service_mcp")
 ```
 
 ### Tool Registration Pattern
+
 ```python
 @mcp.tool(name="tool_name", annotations={...})
 async def tool_function(params: InputModel) -> str:
@@ -34,8 +39,11 @@ async def tool_function(params: InputModel) -> str:
 
 ## MCP Python SDK and FastMCP
 
-The official MCP Python SDK provides FastMCP, a high-level framework for building MCP servers. It provides:
-- Automatic description and inputSchema generation from function signatures and docstrings
+The official MCP Python SDK provides FastMCP, a high-level framework for building MCP
+servers. It provides:
+
+- Automatic description and inputSchema generation from function signatures and
+  docstrings
 - Pydantic model integration for input validation
 - Decorator-based tool registration with `@mcp.tool`
 
@@ -45,10 +53,12 @@ The official MCP Python SDK provides FastMCP, a high-level framework for buildin
 ## Server Naming Convention
 
 Python MCP servers must follow this naming pattern:
+
 - **Format**: `{service}_mcp` (lowercase with underscores)
 - **Examples**: `github_mcp`, `jira_mcp`, `stripe_mcp`
 
 The name should be:
+
 - General (not tied to specific features)
 - Descriptive of the service/API being integrated
 - Easy to infer from the task description
@@ -58,16 +68,19 @@ The name should be:
 
 ### Tool Naming
 
-Use snake_case for tool names (e.g., "search_users", "create_project", "get_channel_info") with clear, action-oriented names.
+Use snake_case for tool names (e.g., "search_users", "create_project",
+"get_channel_info") with clear, action-oriented names.
 
 **Avoid Naming Conflicts**: Include the service context to prevent overlaps:
+
 - Use "slack_send_message" instead of just "send_message"
 - Use "github_create_issue" instead of just "create_issue"
 - Use "asana_list_tasks" instead of just "list_tasks"
 
 ### Tool Structure with FastMCP
 
-Tools are defined using the `@mcp.tool` decorator with Pydantic models for input validation:
+Tools are defined using the `@mcp.tool` decorator with Pydantic models for input
+validation:
 
 ```python
 from pydantic import BaseModel, Field, ConfigDict
@@ -186,13 +199,16 @@ class UserSearchInput(BaseModel):
 ```
 
 **Markdown format**:
+
 - Use headers, lists, and formatting for clarity
-- Convert timestamps to human-readable format (e.g., "2024-01-15 10:30:00 UTC" instead of epoch)
+- Convert timestamps to human-readable format (e.g., "2024-01-15 10:30:00 UTC" instead
+  of epoch)
 - Show display names with IDs in parentheses (e.g., "@john.doe (U123456)")
 - Omit verbose metadata (e.g., show only one profile image URL, not all sizes)
 - Group related information logically
 
 **JSON format**:
+
 - Return complete, structured data suitable for programmatic processing
 - Include all available fields and metadata
 - Use consistent field names and types

@@ -1,0 +1,17 @@
+description: Split values between runtime-adjustable settings and frozen static config without mutation or silent defaults.
+prompt: |-
+  Grade the settings-vs-config delta, not generic configuration vocabulary. For the
+  report-service fixture, require db_retries kept as an environment-loaded setting,
+  request_timeout moved out of report_rules.yaml into the settings model, and
+  min_label_length retained as a governed config rule with the validated root frozen.
+  Require set_rule removed, the try/except env default replaced by a fail-closed
+  validation error, and the direct os.environ read replaced by the injected or
+  validated facade. Require the parent route solid -> py-dev -> flext-development ->
+  settings-vs-config. Explain why a field gets exactly one home, why config mutation
+  after validation is a defect while sanctioned repoint/clone in tests is not, and why
+  catch-based defaults hide invalid external input. Reject mixed mutable/frozen
+  models, hardcoded environment knobs, invented keys, defaults, or file locations.
+  For absent source list, owner/mutation policy, or schema evidence, require no edit
+  and a precise request for the missing contract, not an assumed model. For the plain
+  dict helper request, require the native sorted expression without activating
+  settings/config law or adding imports.

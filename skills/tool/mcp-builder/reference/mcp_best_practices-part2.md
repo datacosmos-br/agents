@@ -1,6 +1,7 @@
 ## 7. Tool Development Best Practices
 
 ### General Guidelines
+
 1. Tool names should be descriptive and action-oriented
 2. Use parameter validation with detailed JSON schemas
 3. Include examples in tool descriptions
@@ -15,6 +16,7 @@
 ### Security Considerations for Tools
 
 #### Input Validation
+
 - Validate all parameters against schema
 - Sanitize file paths and system commands
 - Validate URLs and external identifiers
@@ -22,6 +24,7 @@
 - Prevent command injection
 
 #### Access Control
+
 - Implement authentication where needed
 - Use appropriate authorization checks
 - Audit tool usage
@@ -29,6 +32,7 @@
 - Monitor for abuse
 
 #### Error Handling
+
 - Don't expose internal errors to clients
 - Log security-relevant errors
 - Handle timeouts appropriately
@@ -36,6 +40,7 @@
 - Validate return values
 
 ### Tool Annotations
+
 - Provide readOnlyHint and destructiveHint annotations
 - Remember annotations are hints, not security guarantees
 - Clients should not make security-critical decisions based solely on annotations
@@ -45,6 +50,7 @@
 ## 8. Transport Best Practices
 
 ### General Transport Guidelines
+
 1. Handle connection lifecycle properly
 2. Implement proper error handling
 3. Use appropriate timeout values
@@ -52,12 +58,14 @@
 5. Clean up resources on disconnection
 
 ### Security Best Practices for Transport
+
 - Follow security considerations for DNS rebinding attacks
 - Implement proper authentication mechanisms
 - Validate message formats
 - Handle malformed messages gracefully
 
 ### Stdio Transport Specific
+
 - Local MCP servers should NOT log to stdout (interferes with protocol)
 - Use stderr for logging messages
 - Handle standard I/O streams properly
@@ -69,18 +77,23 @@
 A comprehensive testing strategy should cover:
 
 ### Functional Testing
+
 - Verify correct execution with valid/invalid inputs
 
 ### Integration Testing
+
 - Test interaction with external systems
 
 ### Security Testing
+
 - Validate auth, input sanitization, rate limiting
 
 ### Performance Testing
+
 - Check behavior under load, timeouts
 
 ### Error Handling
+
 - Ensure proper error reporting and cleanup
 
 ---
@@ -92,6 +105,7 @@ A comprehensive testing strategy should cover:
 MCP servers that connect to external services should implement proper authentication:
 
 **OAuth 2.1 Implementation:**
+
 - Use secure OAuth 2.1 with certificates from recognized authorities
 - Validate access tokens before processing requests
 - Only accept tokens specifically intended for your server
@@ -99,6 +113,7 @@ MCP servers that connect to external services should implement proper authentica
 - Never pass through tokens received from MCP clients
 
 **API Key Management:**
+
 - Store API keys in environment variables, never in code
 - Validate keys on server startup
 - Provide clear error messages when authentication fails
@@ -107,6 +122,7 @@ MCP servers that connect to external services should implement proper authentica
 ### Input Validation and Security
 
 **Always validate inputs:**
+
 - Sanitize file paths to prevent directory traversal
 - Validate URLs and external identifiers
 - Check parameter sizes and ranges
@@ -114,6 +130,7 @@ MCP servers that connect to external services should implement proper authentica
 - Use schema validation (Pydantic/Zod) for all inputs
 
 **Error handling security:**
+
 - Don't expose internal errors to clients
 - Log security-relevant errors server-side
 - Provide helpful but not revealing error messages
@@ -122,12 +139,14 @@ MCP servers that connect to external services should implement proper authentica
 ### Privacy and Data Protection
 
 **Data collection principles:**
+
 - Only collect data strictly necessary for functionality
 - Don't collect extraneous conversation data
 - Don't collect PII unless explicitly required for the tool's purpose
 - Provide clear information about what data is accessed
 
 **Data transmission:**
+
 - Don't send data to servers outside your organization without disclosure
 - Use secure transmission (HTTPS) for all network communication
 - Validate certificates for external services
@@ -186,17 +205,20 @@ MCP servers that connect to external services should implement proper authentica
 
 ## Summary
 
-These best practices represent the comprehensive guidelines for building secure, efficient, and compliant MCP servers that work well within the ecosystem. Developers should follow these guidelines to ensure their MCP servers meet the standards for inclusion in the MCP directory and provide a safe, reliable experience for users.
+These best practices represent the comprehensive guidelines for building secure,
+efficient, and compliant MCP servers that work well within the ecosystem. Developers
+should follow these guidelines to ensure their MCP servers meet the standards for
+inclusion in the MCP directory and provide a safe, reliable experience for users.
 
-
-----------
-
+---
 
 # Tools
 
 > Enable LLMs to perform actions through your server
 
-Tools are a powerful primitive in the Model Context Protocol (MCP) that enable servers to expose executable functionality to clients. Through tools, LLMs can interact with external systems, perform computations, and take actions in the real world.
+Tools are a powerful primitive in the Model Context Protocol (MCP) that enable servers
+to expose executable functionality to clients. Through tools, LLMs can interact with
+external systems, perform computations, and take actions in the real world.
 
 <Note>
   Tools are designed to be **model-controlled**, meaning that tools are exposed from servers to clients with the intention of the AI model being able to automatically invoke them (with a human in the loop to grant approval).
@@ -204,13 +226,19 @@ Tools are a powerful primitive in the Model Context Protocol (MCP) that enable s
 
 ## Overview
 
-Tools in MCP allow servers to expose executable functions that can be invoked by clients and used by LLMs to perform actions. Key aspects of tools include:
+Tools in MCP allow servers to expose executable functions that can be invoked by clients
+and used by LLMs to perform actions. Key aspects of tools include:
 
-* **Discovery**: Clients can obtain a list of available tools by sending a `tools/list` request
-* **Invocation**: Tools are called using the `tools/call` request, where servers perform the requested operation and return results
-* **Flexibility**: Tools can range from simple calculations to complex API interactions
+- **Discovery**: Clients can obtain a list of available tools by sending a `tools/list`
+  request
+- **Invocation**: Tools are called using the `tools/call` request, where servers perform
+  the requested operation and return results
+- **Flexibility**: Tools can range from simple calculations to complex API interactions
 
-Like [resources](https://modelcontextprotocol.io/docs/concepts/resources), tools are identified by unique names and can include descriptions to guide their usage. However, unlike resources, tools represent dynamic operations that can modify state or interact with external systems.
+Like [resources](https://modelcontextprotocol.io/docs/concepts/resources), tools are
+identified by unique names and can include descriptions to guide their usage. However,
+unlike resources, tools represent dynamic operations that can modify state or interact
+with external systems.
 
 ## Tool definition structure
 

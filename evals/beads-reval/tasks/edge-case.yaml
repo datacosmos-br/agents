@@ -1,12 +1,9 @@
-id: beadsreval-edge-001
-name: Edge case beads-reval
-description: Handle the material boundary case for beads-reval.
-tags: [beads, reval, edge-case]
+id: beads-reval-suspended-tracker-002
+name: Preserve evidence when the selected tracker is suspended
+description: Suspension cannot authorize a replacement ledger or fabricated closure.
+tags: [beads, edge-case, suspension]
 inputs:
-  prompt: >-
-    bead premise diverges from measured code reality; must fix the bead or close obsolete with evidence, never change reality to match the bead.
-  files:
-  - path: scenario.yaml
+  prompt: Revalidate these issues, but the operator has explicitly suspended the only selected Beads runtime. A historical export lists a closed issue; no integration revision or native command evidence is available. Explain what can be concluded and what prevents tracker writes and closure. Do not propose another status store.
 expected:
-  output_contains: ['premise', 'evidence', 'reality', 'never']
-  output_not_contains: ["normalized failure"]
+  output_contains: [suspended, evidence, integration]
+  output_not_contains: [create a CSV ledger, close the issue now, start a replacement tracker]

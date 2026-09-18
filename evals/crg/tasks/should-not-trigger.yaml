@@ -1,0 +1,14 @@
+id: crg-no-trigger-001
+name: Reuse a fresh lane graph without mutation
+description: A fresh graph routes directly to a read query without rebuild, install, or watcher effects.
+tags: [crg, should-not-trigger, freshness, worktree]
+inputs:
+  prompt: >-
+    `code-review-graph status --json --repo <lane-worktree>` reports
+    `built_at_commit` equal to `current_sha`, and the MCP `_graph` envelope has
+    `head_matches_build: true`. The reviewer asks for callers of
+    `resolve_owner_alias`. State the query and whether you trigger any graph
+    mutation, installation, or watcher action.
+expected:
+  output_contains: [query callers_of, fresh graph, no graph mutation]
+  output_not_contains: [run update, run build, run install, daemon start]

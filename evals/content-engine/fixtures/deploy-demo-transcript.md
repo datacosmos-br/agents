@@ -2,10 +2,10 @@
 
 Audience: platform engineers who maintain integration branches.
 
-Before the change, an operator used eight commands to inspect a deployment,
-approve it, and prepare rollback. The demo now uses two commands: `deploy plan`
-shows the exact image and configuration diff, then `deploy apply` requires an
-explicit approval and records the rollback revision.
+Before the change, an operator used eight commands to inspect a deployment, approve it,
+and prepare rollback. The demo now uses two commands: `deploy plan` shows the exact
+image and configuration diff, then `deploy apply` requires an explicit approval and
+records the rollback revision.
 
 Visible proof in the recording:
 

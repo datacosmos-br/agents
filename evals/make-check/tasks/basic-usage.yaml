@@ -5,7 +5,7 @@ tags: [make, native-gates, project-validation, command-ownership, happy-path]
 inputs:
   prompt: Read the supplied Makefile and return the exact ordered commands for
     setup, public runtime validation, static validation, and incremental tests.
-    Preserve the APPLY acknowledgement and evidence required for green. Do not
+    Invoke bare Make verbs and preserve evidence required for green. Do not
     execute commands or substitute an underlying tool.
   files:
   - path: Makefile

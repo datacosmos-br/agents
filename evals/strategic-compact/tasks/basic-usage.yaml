@@ -3,9 +3,9 @@ name: Compact at a proven phase boundary
 description: Preserve the approved contract while discarding bulky research context.
 tags: [context, compaction, continuity, happy-path]
 inputs:
-  prompt: Decide whether to compact at session-boundary.md and give the exact continuation context to reload.
+  prompt: Decide whether to compact at session-boundary.md and give the exact continuation context to reload, including owner/source revision, gate evidence and freshness conditions without duplicating the tracker.
   files:
   - path: session-boundary.md
 expected:
-  output_contains: [compact, durable plan, repository state, atomic]
+  output_contains: [compact, durable plan, repository state, atomic, owner, revision, freshness]
   output_not_contains: [alternate persistence, partial recovery packet]

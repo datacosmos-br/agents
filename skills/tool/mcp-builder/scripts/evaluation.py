@@ -9,13 +9,23 @@ import json
 import re
 import sys
 import time
-import traceback
 import xml.etree.ElementTree as ET
+from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any
 
 from anthropic import Anthropic
+from anthropic.types import MessageParam, ToolParam
 from connections import create_connection
+
+
+@dataclass
+class ToolMetrics:
+    """Measured calls for one tool, serialized only at the report boundary."""
+
+    count: int = 0
+    durations: list[float] = field(default_factory=list)
+
 
 EVALUATION_PROMPT = """You are an AI assistant with access to tools.
 
@@ -54,26 +64,20 @@ Response Requirements:
 
 def parse_evaluation_file(file_path: Path) -> list[dict[str, Any]]:
     """Parse XML evaluation file with qa_pair elements."""
-    try:
-        tree = ET.parse(file_path)
-        root = tree.getroot()
-        evaluations = []
-
-        for qa_pair in root.findall(".//qa_pair"):
-            question_elem = qa_pair.find("question")
-            answer_elem = qa_pair.find("answer")
-
-            if question_elem is not None and answer_elem is not None:
-                evaluations.append(
-                    {
-                        "question": (question_elem.text or "").strip(),
-                        "answer": (answer_elem.text or "").strip(),
-                    }
-                )
-
-        return evaluations
-    except Exception:
-        return []
+    tree = ET.parse(file_path)
+    root = tree.getroot()
+    evaluations = []
+    for qa_pair in root.findall(".//qa_pair"):
+        question_elem = qa_pair.find("question")
+        answer_elem = qa_pair.find("answer")
+        if question_elem is not None and answer_elem is not None:
+            evaluations.append(
+                {
+                    "question": (question_elem.text or "").strip(),
+                    "answer": (answer_elem.text or "").strip(),
+                }
+            )
+    return evaluations
 
 
 def extract_xml_content(text: str, tag: str) -> str | None:
@@ -87,11 +91,11 @@ async def agent_loop(
     client: Anthropic,
     model: str,
     question: str,
-    tools: list[dict[str, Any]],
+    tools: list[ToolParam],
     connection: Any,
-) -> tuple[str, dict[str, Any]]:
+) -> tuple[str, dict[str, ToolMetrics]]:
     """Run the agent loop with MCP tools."""
-    messages = [{"role": "user", "content": question}]
+    messages: list[MessageParam] = [{"role": "user", "content": question}]
 
     response = await asyncio.to_thread(
         client.messages.create,
@@ -104,7 +108,7 @@ async def agent_loop(
 
     messages.append({"role": "assistant", "content": response.content})
 
-    tool_metrics = {}
+    tool_metrics: dict[str, ToolMetrics] = {}
 
     while response.stop_reason == "tool_use":
         tool_use = next(block for block in response.content if block.type == "tool_use")
@@ -112,22 +116,18 @@ async def agent_loop(
         tool_input = tool_use.input
 
         tool_start_ts = time.time()
-        try:
-            tool_result = await connection.call_tool(tool_name, tool_input)
-            tool_response = (
-                json.dumps(tool_result)
-                if isinstance(tool_result, (dict, list))
-                else str(tool_result)
-            )
-        except Exception as e:
-            tool_response = f"Error executing tool {tool_name}: {e!s}\n"
-            tool_response += traceback.format_exc()
+        tool_result = await connection.call_tool(tool_name, tool_input)
+        tool_response = (
+            json.dumps(tool_result)
+            if isinstance(tool_result, (dict, list))
+            else str(tool_result)
+        )
         tool_duration = time.time() - tool_start_ts
 
         if tool_name not in tool_metrics:
-            tool_metrics[tool_name] = {"count": 0, "durations": []}
-        tool_metrics[tool_name]["count"] += 1
-        tool_metrics[tool_name]["durations"].append(tool_duration)
+            tool_metrics[tool_name] = ToolMetrics()
+        tool_metrics[tool_name].count += 1
+        tool_metrics[tool_name].durations.append(tool_duration)
 
         messages.append(
             {
@@ -153,7 +153,7 @@ async def agent_loop(
         messages.append({"role": "assistant", "content": response.content})
 
     response_text = next(
-        (block.text for block in response.content if hasattr(block, "text")), None
+        block.text for block in response.content if block.type == "text"
     )
     return response_text, tool_metrics
 
@@ -162,7 +162,7 @@ async def evaluate_single_task(
     client: Anthropic,
     model: str,
     qa_pair: dict[str, Any],
-    tools: list[dict[str, Any]],
+    tools: list[ToolParam],
     connection: Any,
     task_index: int,
 ) -> dict[str, Any]:
@@ -185,9 +185,9 @@ async def evaluate_single_task(
         "actual": response_value,
         "score": int(response_value == qa_pair["answer"]) if response_value else 0,
         "total_duration": duration_seconds,
-        "tool_calls": tool_metrics,
+        "tool_calls": {name: asdict(metrics) for name, metrics in tool_metrics.items()},
         "num_tool_calls": sum(
-            len(metrics["durations"]) for metrics in tool_metrics.values()
+            len(metrics.durations) for metrics in tool_metrics.values()
         ),
         "summary": summary,
         "feedback": feedback,
@@ -285,7 +285,7 @@ async def run_evaluation(
 
 def parse_headers(header_list: list[str]) -> dict[str, str]:
     """Parse header strings in format 'Key: Value' into a dictionary."""
-    headers = {}
+    headers: dict[str, str] = {}
     if not header_list:
         return headers
 
@@ -298,7 +298,7 @@ def parse_headers(header_list: list[str]) -> dict[str, str]:
 
 def parse_env_vars(env_list: list[str]) -> dict[str, str]:
     """Parse environment variable strings in format 'KEY=VALUE' into a dictionary."""
-    env = {}
+    env: dict[str, str] = {}
     if not env_list:
         return env
 

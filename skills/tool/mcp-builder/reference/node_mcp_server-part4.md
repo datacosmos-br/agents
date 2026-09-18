@@ -21,30 +21,38 @@ const CHARACTER_LIMIT = 25000;
 // Enums
 enum ResponseFormat {
   MARKDOWN = "markdown",
-  JSON = "json"
+  JSON = "json",
 }
 
 // Zod schemas
-const UserSearchInputSchema = z.object({
-  query: z.string()
-    .min(2, "Query must be at least 2 characters")
-    .max(200, "Query must not exceed 200 characters")
-    .describe("Search string to match against names/emails"),
-  limit: z.number()
-    .int()
-    .min(1)
-    .max(100)
-    .default(20)
-    .describe("Maximum results to return"),
-  offset: z.number()
-    .int()
-    .min(0)
-    .default(0)
-    .describe("Number of results to skip for pagination"),
-  response_format: z.nativeEnum(ResponseFormat)
-    .default(ResponseFormat.MARKDOWN)
-    .describe("Output format: 'markdown' for human-readable or 'json' for machine-readable")
-}).strict();
+const UserSearchInputSchema = z
+  .object({
+    query: z
+      .string()
+      .min(2, "Query must be at least 2 characters")
+      .max(200, "Query must not exceed 200 characters")
+      .describe("Search string to match against names/emails"),
+    limit: z
+      .number()
+      .int()
+      .min(1)
+      .max(100)
+      .default(20)
+      .describe("Maximum results to return"),
+    offset: z
+      .number()
+      .int()
+      .min(0)
+      .default(0)
+      .describe("Number of results to skip for pagination"),
+    response_format: z
+      .nativeEnum(ResponseFormat)
+      .default(ResponseFormat.MARKDOWN)
+      .describe(
+        "Output format: 'markdown' for human-readable or 'json' for machine-readable",
+      ),
+  })
+  .strict();
 
 type UserSearchInput = z.infer<typeof UserSearchInputSchema>;
 
@@ -53,7 +61,7 @@ async function makeApiRequest<T>(
   endpoint: string,
   method: "GET" | "POST" | "PUT" | "DELETE" = "GET",
   data?: any,
-  params?: any
+  params?: any,
 ): Promise<T> {
   try {
     const response = await axios({
@@ -64,8 +72,8 @@ async function makeApiRequest<T>(
       timeout: 30000,
       headers: {
         "Content-Type": "application/json",
-        "Accept": "application/json"
-      }
+        Accept: "application/json",
+      },
     });
     return response.data;
   } catch (error) {
@@ -96,7 +104,7 @@ function handleApiError(error: unknown): string {
 // Create MCP server instance
 const server = new McpServer({
   name: "example-mcp",
-  version: "1.0.0"
+  version: "1.0.0",
 });
 
 // Register tools
@@ -110,12 +118,12 @@ server.registerTool(
       readOnlyHint: true,
       destructiveHint: false,
       idempotentHint: true,
-      openWorldHint: true
-    }
+      openWorldHint: true,
+    },
   },
   async (params: UserSearchInput) => {
     // Implementation as shown above
-  }
+  },
 );
 
 // Main function
@@ -159,7 +167,7 @@ server.registerResource(
     uri: "file://documents/{name}",
     name: "Document Resource",
     description: "Access documents by name",
-    mimeType: "text/plain"
+    mimeType: "text/plain",
   },
   async (uri: string) => {
     // Extract parameter from URI
@@ -172,30 +180,33 @@ server.registerResource(
     const content = await loadDocument(documentName);
 
     return {
-      contents: [{
-        uri,
-        mimeType: "text/plain",
-        text: content
-      }]
+      contents: [
+        {
+          uri,
+          mimeType: "text/plain",
+          text: content,
+        },
+      ],
     };
-  }
+  },
 );
 
 // List available resources dynamically
 server.registerResourceList(async () => {
   const documents = await getAvailableDocuments();
   return {
-    resources: documents.map(doc => ({
+    resources: documents.map((doc) => ({
       uri: `file://documents/${doc.name}`,
       name: doc.name,
       mimeType: "text/plain",
-      description: doc.description
-    }))
+      description: doc.description,
+    })),
   };
 });
 ```
 
 **When to use Resources vs Tools:**
+
 - **Resources**: For data access with simple URI-based parameters
 - **Tools**: For complex operations requiring validation and business logic
 - **Resources**: When data is relatively static or template-based
@@ -222,6 +233,7 @@ await server.connect(sseTransport);
 ```
 
 **Transport selection guide:**
+
 - **Stdio**: Command-line tools, subprocess integration, local development
 - **HTTP**: Web services, remote access, multiple simultaneous clients
 - **SSE**: Real-time updates, server-push notifications, web dashboards
@@ -233,12 +245,12 @@ Notify clients when server state changes:
 ```typescript
 // Notify when tools list changes
 server.notification({
-  method: "notifications/tools/list_changed"
+  method: "notifications/tools/list_changed",
 });
 
 // Notify when resources change
 server.notification({
-  method: "notifications/resources/list_changed"
+  method: "notifications/resources/list_changed",
 });
 ```
 
@@ -262,7 +274,8 @@ Your implementation MUST prioritize composability and code reuse:
 2. **Avoid Duplication**:
    - NEVER copy-paste similar code between tools
    - If you find yourself writing similar logic twice, extract it into a function
-   - Common operations like pagination, filtering, field selection, and formatting should be shared
+   - Common operations like pagination, filtering, field selection, and formatting
+     should be shared
    - Authentication/authorization logic should be centralized
 
 ## Building and Running
@@ -280,4 +293,5 @@ npm start
 npm run dev
 ```
 
-Always ensure `npm run build` completes successfully before considering the implementation complete.
+Always ensure `npm run build` completes successfully before considering the
+implementation complete.

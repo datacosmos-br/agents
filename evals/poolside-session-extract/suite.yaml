@@ -1,10 +1,12 @@
-description: Poolside trajectory extraction into an evidence-preserving sanitised handoff.
+description: Poolside trajectory extraction with complete private evidence and conversation flow.
 prompt: |-
   Grade the poolside-session-extract response. Pass only when the response
-  locates the trajectory NDJSON and session logs for the requested Poolside
-  session, runs the owned extractor script, reports the produced
-  handoff.sanitised.md and manifest paths, keeps raw trajectory and log data
-  private, preserves the conversation flow with user prompts, tool calls,
+  resolves the requested Poolside workspace through ACP metadata and invokes
+  the bundle-owned pure parser on an adapter-authenticated private stdin
+  envelope. Require complete structured stdout with event_json and reference
+  locators, never script-created files or truncated summaries. The adapter owns
+  source snapshots, digests, private persistence and publication. Keep raw
+  trajectory private and preserve conversation flow with user prompts, tool calls,
   results, and reasoning, and identifies the todo state and first unfinished
   step at session end. Reject provider/model switching, credential
   disclosure, fabricating events absent from the trajectory, treating a

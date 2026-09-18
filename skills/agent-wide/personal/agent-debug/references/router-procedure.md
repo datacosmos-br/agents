@@ -1,8 +1,10 @@
 # Agent Introspection Debugging — Procedure
 
-Use this skill when an agent run is failing repeatedly, consuming tokens without progress, looping on the same tools, or drifting away from the intended task.
+Use this skill when an agent run is failing repeatedly, consuming tokens without
+progress, looping on the same tools, or drifting away from the intended task.
 
-This is a workflow skill, not a hidden runtime. It teaches the agent to debug itself systematically before escalating to a human.
+This is a workflow skill, not a hidden runtime. It teaches the agent to debug itself
+systematically before escalating to a human.
 
 ## When to Activate
 
@@ -38,13 +40,15 @@ Capture:
 - error type, message, and stack trace when available
 - last meaningful tool call sequence
 - what the agent was trying to do
-- current context pressure: repeated prompts, oversized pasted logs, duplicated plans, or runaway notes
+- current context pressure: repeated prompts, oversized pasted logs, duplicated plans,
+  or runaway notes
 - current environment assumptions: cwd, branch, relevant service state, expected files
 
 Minimum capture template:
 
 ```markdown
 ## Failure Capture
+
 - Session / task:
 - Goal in progress:
 - Error:
@@ -58,14 +62,14 @@ Minimum capture template:
 
 Match the failure to a known pattern before changing anything.
 
-| Pattern | Likely Cause | Check |
-| --- | --- | --- |
-| Maximum tool calls / repeated same command | loop or no-exit observer path | inspect the last N tool calls for repetition |
-| Context overflow / degraded reasoning | unbounded notes, repeated plans, oversized logs | inspect recent context for duplication and low-signal bulk |
-| `ECONNREFUSED` / timeout | selected service path failed | preserve the causal error and verify the configured endpoint read-only |
-| `429` / quota exhaustion | selected external path is unavailable | preserve the response and stop without another request |
-| file missing after write / stale diff | race, wrong cwd, or branch drift | re-check path, cwd, git status, and actual file existence |
-| tests still failing after "fix" | wrong hypothesis | isolate the exact failing test and re-derive the bug |
+| Pattern                                    | Likely Cause                                    | Check                                                                  |
+| ------------------------------------------ | ----------------------------------------------- | ---------------------------------------------------------------------- |
+| Maximum tool calls / repeated same command | loop or no-exit observer path                   | inspect the last N tool calls for repetition                           |
+| Context overflow / degraded reasoning      | unbounded notes, repeated plans, oversized logs | inspect recent context for duplication and low-signal bulk             |
+| `ECONNREFUSED` / timeout                   | selected service path failed                    | preserve the causal error and verify the configured endpoint read-only |
+| `429` / quota exhaustion                   | selected external path is unavailable           | preserve the response and stop without another request                 |
+| file missing after write / stale diff      | race, wrong cwd, or branch drift                | re-check path, cwd, git status, and actual file existence              |
+| tests still failing after "fix"            | wrong hypothesis                                | isolate the exact failing test and re-derive the bug                   |
 
 Diagnosis questions:
 
@@ -75,15 +79,14 @@ Diagnosis questions:
 - what is the smallest reversible action that would validate the diagnosis?
 
 For runaway shell, interpreter, loader, or agent processes, read the
-`process-forensics procedure` (skill file) before containment.
-It owns producer attribution, persistence discovery, and narrow process/file
-boundaries.
+`process-forensics procedure` (skill file) before containment. It owns producer
+attribution, persistence discovery, and narrow process/file boundaries.
 
 ### Phase 3: Contained Recovery
 
-Run exactly one read-only check that discriminates the chosen hypothesis. If it
-fails, preserve that causal failure and stop. If it succeeds, preflight the one
-authorized correction completely before applying it.
+Run exactly one read-only check that discriminates the chosen hypothesis. If it fails,
+preserve that causal failure and stop. If it succeeds, preflight the one authorized
+correction completely before applying it.
 
 Safe recovery actions:
 
@@ -94,12 +97,15 @@ Safe recovery actions:
 - switch from speculative reasoning to direct observation
 - escalate to a human when the failure is high-risk or externally blocked
 
-Do not claim unsupported auto-healing actions like "reset agent state" or "update harness config" unless you are actually doing them through real tools in the current environment.
+Do not claim unsupported auto-healing actions like "reset agent state" or "update
+harness config" unless you are actually doing them through real tools in the current
+environment.
 
 Contained recovery checklist:
 
 ```markdown
 ## Recovery Action
+
 - Diagnosis chosen:
 - Smallest action taken:
 - Why this is safe:
@@ -112,6 +118,7 @@ End with a report that makes the recovery legible to the next agent or human.
 
 ```markdown
 ## Agent Self-Debug Report
+
 - Session / task:
 - Failure:
 - Root cause:

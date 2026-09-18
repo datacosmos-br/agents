@@ -1,0 +1,19 @@
+id: settings-vs-config-report-service-001
+name: Split report service values into settings and frozen config
+description: Classify three fields, move the buried knob, and remove runtime mutation and catch-based defaults.
+tags: [settings-vs-config, happy-path, ownership-frontier]
+inputs:
+  prompt: >-
+    Apply settings vs config law: runtime adjustment versus static rules. Review the
+    attached ReportService fixture and state, for each field, whether it is a setting
+    or a config rule, then the exact move: keep db_retries as an env-loaded setting,
+    move request_timeout out of the governed YAML into the settings model, and keep
+    min_label_length as config. Remove set_rule and keep the validated config frozen,
+    replace the try/except env default with a fail-closed validation error, and
+    replace the direct os.environ read with the injected or validated facade. Explain
+    the loaded parent chain and why one value may not live in both places.
+  files:
+  - path: settings-config-store.yaml
+expected:
+  output_contains: ['db_retries', 'request_timeout', 'min_label_length', 'setting', 'config', 'frozen', 'os.environ', 'except', 'flext-development', 'py-dev', 'solid']
+  output_not_contains: ['def set_rule', 'model_rebuild', 'return 3']

@@ -1,3 +1,20 @@
-skill: beads-reval
-state: canonical
-gates: [gen, check, waza]
+tracker:
+  runtime: available
+  enumeration: complete including closed issues and all pages
+  active_issue: harbor-31
+issues:
+  - id: harbor-20
+    state: closed
+    premise: Empty chunks create audit receipts.
+  - id: harbor-31
+    state: in_progress
+    premise: Reconcile receipt requirements against integrated behavior.
+operator_decision: Empty chunks must not create audit receipts.
+integration_history: The integrated receipt change removes empty-chunk receipts.
+current_code: The public receipt owner returns no receipt for an empty chunk.
+native_evidence:
+  command: make test
+  cwd: configured repository root
+  exit_code: 0
+  decisive_output: The empty-chunk public behavior test passed.
+instruction: Correct issue meaning and identify remaining integration evidence; do not invent review or closure proof.

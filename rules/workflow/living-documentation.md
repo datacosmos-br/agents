@@ -6,6 +6,21 @@ metadata:
 
 # Documentation follows runtime reality
 
-Use and update project/global docs, skills and ADRs with the same change. Keep
-docstrings accurate when public behavior changes. Remove stale guidance; state
-purpose and contract, not implementation mechanics.
+Documentation is a maintained product surface, not historical proof by itself. Before
+editing, identify each claim's runtime/config/schema/code owner and whether the file is
+canonical, generated, historical, or proposed.
+
+- Change canonical docs, skills, commands, rules, ADRs, executable examples, and public
+  docstrings in the same grain as the behavior or decision.
+- Preserve historical evidence as dated evidence; remove its authority to direct current
+  execution. Never present a proposal, plan, or old gate result as live architecture.
+- Change generated documentation only through its config/template/generator, regenerate
+  it with the repository's canonical verb, and prove a second-run fixed point.
+- Validate links, commands, snippets, schemas, and the real public consumer.
+  Documentation gates and tests confirm that observation; they do not replace it.
+- Remove extinct contracts and duplicate explanations. State purpose, ownership,
+  interface, and observable contract rather than copied implementation or configurable
+  values.
+
+Compose with `runtime is reality`, `generators not projections`, and the project's
+documentation-drift skill.

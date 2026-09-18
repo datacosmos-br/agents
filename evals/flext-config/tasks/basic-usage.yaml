@@ -1,0 +1,19 @@
+id: flext-config-happy-path-001
+name: Route one knob to its settings or config owner
+description: Exercise external-input versus governed-rule ownership and facade consumption.
+tags: [flext, settings, config, happy-path]
+inputs:
+  prompt: |
+    This authorized repository selects the flext tag and depends on
+    flext-core. The shipping service needs a carrier timeout that operators
+    tune per deployment and a governed carrier rate table that ships with the
+    code. Explain the owner-correct change: where each value lives, the typed
+    nested access shape, how the service consumes them without reading the
+    process environment, how ${SHIP_HOME} placeholders in the governed YAML
+    expand, and how a test repoints the config tree. Keep the singleton
+    exports and the frozen validated root.
+  files:
+  - path: scenario.yaml
+expected:
+  output_contains: [settings, config, fetch_global, reset_for_testing, frozen, "${SHIP_HOME", "FLEXT_ORDERS_CONFIG_DIR", "config/*.yaml"]
+  output_not_contains: [monkeypatch, patch CONFIG_DIR, os.environ inside the service, Path.home inside the service]

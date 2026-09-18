@@ -1,0 +1,13 @@
+description: Select minimal FLEXT Result forms without changing failure or effect contracts.
+prompt: |-
+  Grade the flext-result delta, not generic railway vocabulary. For the label-store fixture,
+  require a direct return for load_label, map(len) for text_size with code/data/exception
+  retained under canonical fail redaction, and the explicit read_port branch with
+  from_failure and int(loaded.value), preserving raw ValueError. Require the parent route
+  solid -> py-dev -> flext-development -> flext-result. Explain why map/flat_map/flow_through/tap
+  catch only the configured runtime exception set, why unwrap cannot restore the original
+  exception, and why defaults/recovery cannot hide failures. Reject invented aliases,
+  local helpers, long lambda pipelines, changed effect order, and broad refactors.
+  For absent callback/type/exception evidence, require no rewrite and a precise request
+  for the missing contract, not an assumed total function. For the plain Python report
+  request, require the native comprehension without activating FLEXT or adding imports.

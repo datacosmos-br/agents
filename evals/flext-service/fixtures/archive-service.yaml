@@ -1,0 +1,30 @@
+project_profile: internal_flext
+dependency: flext-core
+consumer: JobArchiveService
+contract:
+  execute: p.Result[bool], true when at least one job archived, same outward contract
+  store_archive: p.Result[int], count archived, owned by the store collaborator, keep self.store access unchanged
+  lifecycle: one shared instance per class; tests must drop state between runs
+  failure_sample: {error: archive unavailable}
+  effects: store called once per execute; failed reads never produce a success result
+  change_scope: only this service class; existing imports are p and r from flext_core
+source: |
+  import threading
+
+  class JobArchiveService:
+      _instance = None
+      _lock = threading.Lock()
+
+      @classmethod
+      def instance(cls) -> "JobArchiveService":
+          if cls._instance is None:
+              with cls._lock:
+                  if cls._instance is None:
+                      cls._instance = cls()
+          return cls._instance
+
+      def execute(self):
+          archived = self.store.archive()
+          if archived.failure:
+              return {"ok": False, "error": archived.error}
+          return {"ok": archived.value > 0}

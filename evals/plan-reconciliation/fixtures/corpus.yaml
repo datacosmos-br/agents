@@ -1,0 +1,44 @@
+workspace:
+  name: harbor
+  authority: repository configuration
+  versioned_plans: docs/plans
+  projection_owner: AI Hub
+  dependencies:
+    warehouse: [receipts]
+collection:
+  complete: true
+  providers: [native-sessions, repository-plans]
+  attachments: complete
+plans:
+  - id: chunk-receipts
+    updated_at: '2026-09-13T12:00:00Z'
+    body: Replace one receipt per file with one receipt per committed chunk.
+    companion:
+      path: chunk-receipts/research.md
+      body: Empty chunks must never generate receipts; this requirement remains unique.
+  - id: file-receipts
+    updated_at: '2026-09-11T12:00:00Z'
+    body: Generate exactly one receipt per file.
+registered:
+  - id: harbor-12
+    state: closed
+    premise: One receipt per file was implemented.
+  - id: harbor-19
+    state: in_progress
+    premise: Reconcile chunk receipts through integration.
+integrated_code: The receipt owner records one receipt per committed chunk; the warehouse consumer still assumes one per file.
+evidence: Native receipt behavior passed for committed and empty chunks; warehouse validation failed on multi-chunk input.
+integration: Consumer correction has no review or merge evidence yet.
+adrs:
+  - id: ADR-004
+    scope: receipt granularity
+    decision: One receipt per file.
+    accepted_at: '2026-09-11T12:00:00Z'
+  - id: ADR-011
+    scope: receipt granularity
+    decision: One receipt per committed chunk, excluding empty chunks.
+    accepted_at: '2026-09-13T12:00:00Z'
+  - id: ADR-012
+    scope: receipt encryption
+    decision: Encrypt persisted receipt content.
+    accepted_at: '2026-09-13T13:00:00Z'

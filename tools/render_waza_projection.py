@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, cast
 
 import yaml
-from _projection import snapshot as _snapshot
+from governance_projection import snapshot as _snapshot
 
 from agents_governance import GovernanceBundle, SkillRecord
 

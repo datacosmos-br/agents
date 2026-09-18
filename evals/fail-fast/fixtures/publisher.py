@@ -16,7 +16,7 @@ def publish(source: Path, destination: Path, cached: Path) -> Path:
             capture_output=True,
             text=True,
         )
-    except Exception:
+    except OSError:
         return cached
     if completed.returncode != 0:
         return cached

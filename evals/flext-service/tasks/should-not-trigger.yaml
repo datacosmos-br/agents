@@ -1,0 +1,13 @@
+id: flext-service-plain-runner-001
+name: Keep a plain Python runner outside the service skill
+description: A standalone class needs no FLEXT kernel, facade aliases, or imports.
+tags: [flext-service, non-trigger, plain-python]
+inputs:
+  prompt: >-
+    This standalone Python module has no flext-core dependency. Return the
+    smallest class JobRunner with a run() method returning True. No framework
+    adoption, singleton kernel, facade aliases, imports, or architecture changes
+    are requested. Output only that class.
+expected:
+  output_contains: ['class JobRunner', 'def run', 'True']
+  output_not_contains: ['FlextService', 'flext_core', 'fetch_global', 'p.Result', 'execute']

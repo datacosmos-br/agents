@@ -1,6 +1,7 @@
 # Error Codes
 
-Complete list of error codes reported by z-schema. Each error appears in `SchemaErrorDetail.code`.
+Complete list of error codes reported by z-schema. Each error appears in
+`SchemaErrorDetail.code`.
 
 ## Table of contents
 

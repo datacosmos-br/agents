@@ -1,8 +1,8 @@
 # Shared Review Output Contract
 
 Apply this contract only when a reviewer explicitly selects one of its approval
-policies. Preserve the reviewer's language-specific diagnostic commands and
-framework checks at their existing owners.
+policies. Preserve the reviewer's language-specific diagnostic commands and framework
+checks at their existing owners.
 
 ## Issue entry
 
@@ -32,11 +32,10 @@ Verdict: BLOCK — HIGH issues must be fixed before merge.
 
 ## Approval policies
 
-- **medium-caution**: approve with no CRITICAL or HIGH findings; report a
-  caution when only MEDIUM findings remain; block on any CRITICAL or HIGH
-  finding.
-- **high-blocking**: approve only with no CRITICAL or HIGH findings; block on
-  any CRITICAL or HIGH finding.
+- **medium-caution**: approve with no CRITICAL or HIGH findings; report a caution when
+  only MEDIUM findings remain; block on any CRITICAL or HIGH finding.
+- **high-blocking**: approve only with no CRITICAL or HIGH findings; block on any
+  CRITICAL or HIGH finding.
 
-A project-owned reviewer may add required automated checks to its blocking
-condition, but it may not weaken either policy.
+A project-owned reviewer may add required automated checks to its blocking condition,
+but it may not weaken either policy.

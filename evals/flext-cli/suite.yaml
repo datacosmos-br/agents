@@ -1,0 +1,16 @@
+description: Enforce declarative FLEXT CLI routes over manual framework plumbing.
+prompt: |-
+  Grade the flext-cli delta, not generic CLI vocabulary. For the rig-console fixture, require
+  one frozen m.Cli.ResultCommandRoute (name, help_text, model_cls, handler, success_message or
+  success_formatter, success_type), batch registration through register_result_routes, an input
+  model on m validated by the framework, and a handler receiving that model and returning
+  p.Result. Require the parent route solid -> py-dev -> flext-development -> flext-cli. Require
+  framework-owned success resolution (formatter, then value-derived message, then static),
+  exit semantics only through the framework boundary (execute_app/framework_execute normalizing
+  exits into Result[bool]; failure exit 1 with error_code/error_data preserved), and the correct
+  execution boundary: framework_execute for the adapter-owned app, execute_external_command for
+  a foreign Click command, u.Cli.run_live/run/capture for subprocess bridging. Reject direct
+  typer or click imports, @app.command decorators, argv parsing, sys.exit inside handlers,
+  hand-rolled success printing, imperative register_result_command repetition where a route
+  table fits, and invented handlers or models where the service contract is missing. A plain
+  argparse or non-FLEXT request must not activate this skill.

@@ -1,6 +1,7 @@
 # Options Reference
 
-All options are passed to `ZSchema.create(options)`. This file lists every option with its type, default, and behavior.
+All options are passed to `ZSchema.create(options)`. This file lists every option with
+its type, default, and behavior.
 
 ## Table of contents
 
@@ -19,7 +20,8 @@ All options are passed to `ZSchema.create(options)`. This file lists every optio
 
 ## Factory options
 
-These are consumed by `ZSchema.create()` and determine which validator variant is returned. They are not stored on the instance.
+These are consumed by `ZSchema.create()` and determine which validator variant is
+returned. They are not stored on the instance.
 
 | Option  | Type      | Default | Effect                                                                             |
 | ------- | --------- | ------- | ---------------------------------------------------------------------------------- |
@@ -34,9 +36,11 @@ Combine both: `ZSchema.create({ async: true, safe: true })`.
 | --------- | -------- | ---------------- | ------------------------------------- |
 | `version` | `string` | `'draft2020-12'` | JSON Schema draft to validate against |
 
-Values: `'draft-04'` · `'draft-06'` · `'draft-07'` · `'draft2019-09'` · `'draft2020-12'` · `'none'`
+Values: `'draft-04'` · `'draft-06'` · `'draft-07'` · `'draft2019-09'` · `'draft2020-12'`
+· `'none'`
 
-`'none'` skips meta-schema version detection — schemas validate using whatever `$schema` declares.
+`'none'` skips meta-schema version detection — schemas validate using whatever `$schema`
+declares.
 
 ## Data validation behavior
 
@@ -52,7 +56,8 @@ Values: `'draft-04'` · `'draft-06'` · `'draft-07'` · `'draft2019-09'` · `'dr
 
 ## Schema strictness
 
-These options cause `validateSchema()` and `validate()` to reject schemas missing certain keywords.
+These options cause `validateSchema()` and `validate()` to reject schemas missing
+certain keywords.
 
 | Option            | Type      | Default | Effect                                                           |
 | ----------------- | --------- | ------- | ---------------------------------------------------------------- |
@@ -71,7 +76,7 @@ These options cause `validateSchema()` and `validate()` to reject schemas missin
 
 `strictMode: true` enables all of these at once:
 
-```
+```text
 forceAdditional, forceItems, forceMaxLength, forceProperties,
 noExtraKeywords, noTypeless, noEmptyStrings, noEmptyArrays
 ```
@@ -115,11 +120,11 @@ const validator = ZSchema.create({
         if (value !== undefined) {
           if (seen.includes(value)) {
             report.addCustomError(
-              'NON_UNIQUE_PROPERTY_VALUE',
+              "NON_UNIQUE_PROPERTY_VALUE",
               'Property "{0}" has non-unique value: {1}',
               [prop, value],
               null,
-              schema.description
+              schema.description,
             );
           }
           seen.push(value);
@@ -134,7 +139,8 @@ const validator = ZSchema.create({
 
 ## Per-call options (ValidateOptions)
 
-Passed as the third argument to `validate()` / `validateSafe()`, not to `ZSchema.create()`.
+Passed as the third argument to `validate()` / `validateSafe()`, not to
+`ZSchema.create()`.
 
 | Option          | Type       | Effect                                                                   |
 | --------------- | ---------- | ------------------------------------------------------------------------ |
@@ -144,7 +150,7 @@ Passed as the third argument to `validate()` / `validateSafe()`, not to `ZSchema
 
 ```typescript
 validator.validate(data, schema, {
-  schemaPath: 'definitions.car',
-  excludeErrors: ['MIN_LENGTH'],
+  schemaPath: "definitions.car",
+  excludeErrors: ["MIN_LENGTH"],
 });
 ```

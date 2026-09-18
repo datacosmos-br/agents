@@ -1,9 +1,11 @@
 {
     "githubPullRequests.ignoredPullRequestBranches": [
         "dev"
-    ]
-{
-    "githubPullRequests.ignoredPullRequestBranches": [
-        "dev"
+    ],
+    "yaml.disableSchemaDetection": [
+        "**/.github/workflows/*.yml",
+        "**/.github/workflows/*.yaml",
+        "**/evals/**/*.yaml",
+        "**/evals/**/*.yml"
     ]
 }

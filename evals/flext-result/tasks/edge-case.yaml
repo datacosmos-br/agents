@@ -1,0 +1,14 @@
+id: flext-result-unknown-callback-001
+name: Refuse composition when the callback contract is absent
+description: Fail closed without guessing payload type or whether callback exceptions may become Results.
+tags: [flext-result, fail-closed, missing-contract]
+inputs:
+  prompt: >-
+    In an internal_flext consumer I want to replace the existing branches around
+    loaded = port.read(); transform(loaded.value) with map or flat_map. I have supplied
+    neither port.read's result annotation nor transform's definition, return type,
+    exception contract, or side effects. Give your decision and the precise evidence
+    needed before editing. Do not fabricate the missing implementation or a sample patch.
+expected:
+  output_contains: ['contract', 'return type', 'exception', 'side effects']
+  output_not_contains: ['.map(transform)', '.flat_map(transform)', 'def transform', '.unwrap()']

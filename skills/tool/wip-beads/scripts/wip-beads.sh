@@ -6,7 +6,7 @@ set -euo pipefail
 # CSV columns: id,title,status,issue_type,priority,parent_id,labels,dep_count
 
 readonly PROG="${0##*/}"
-readonly START_TS="$(date -Iseconds)"
+readonly START_TS; START_TS="$(date -Iseconds)"
 readonly LOGDIR="${XDG_STATE_HOME:-${HOME}/.local/state}/wip-beads"
 readonly CSV_DEFAULT="./wip-beads-open.csv"
 
@@ -79,24 +79,21 @@ ln -sf "$(basename "$LOG")" "$LOGDIR/latest.log"
 BEAD_IDS=()
 declare -A CSV_STATUS
 declare -A CSV_PARENT
-declare -A CSV_ISSUE_TYPE
-declare -A CSV_TITLE
-declare -A CSV_LABELS
 
 if [[ -n "$BEADS" ]]; then
   IFS=',' read -ra BEAD_IDS <<< "$BEADS"
 elif [[ -f "$CSV_FILE" ]]; then
   # Skip header, parse CSV with proper quoting handling
-  tail -n +2 "$CSV_FILE" | while IFS=',' read -r id title status issue_type priority parent_id labels dep_count; do
+  tail -n +2 "$CSV_FILE" | while IFS=',' read -r id title status issue_type parent_id labels; do
     # Remove surrounding quotes if present
     id="${id//\"/}"
     printf '%s\n' "$id"
   done > /tmp/wip-beads-ids.$$
-  BEAD_IDS=($(cat /tmp/wip-beads-ids.$$))
+  mapfile -t BEAD_IDS < /tmp/wip-beads-ids.$$
   rm -f /tmp/wip-beads-ids.$$
 
   # Also populate lookup arrays from CSV for collect mode comparison
-  while IFS=',' read -r id title status issue_type priority parent_id labels dep_count; do
+  while IFS=',' read -r id title status issue_type parent_id labels; do
     id="${id//\"/}"
     title="${title//\"/}"
     status="${status//\"/}"
@@ -105,9 +102,6 @@ elif [[ -f "$CSV_FILE" ]]; then
     labels="${labels//\"/}"
     CSV_STATUS["$id"]="$status"
     CSV_PARENT["$id"]="$parent_id"
-    CSV_ISSUE_TYPE["$id"]="$issue_type"
-    CSV_TITLE["$id"]="$title"
-    CSV_LABELS["$id"]="$labels"
   done < <(tail -n +2 "$CSV_FILE")
 fi
 
@@ -211,7 +205,7 @@ get_bead_field() {
 # ---------------------------------------------------------------
 mode_collect() {
   local id="$1"
-  local note_ts="$(date -Iseconds)"
+  local note_ts; note_ts="$(date -Iseconds)"
   local note="WORKSPACE SYNC ${note_ts} (wip-beads.sh collect): root develop+submods+worktrees evidencia coletada; verifica alignment/epics/status no CSV ${CSV_FILE}."
 
   # Get current status and parent from bd
@@ -433,7 +427,7 @@ mode_deferred() {
   local assignee
   assignee=$(get_bead_field "$id" "owner")
 
-  local note="REVALIDACAO DEFERRED $(date -Iseconds) (wip-beads.sh deferred): bead com status deferred reavaliado. Assignee: ${assignee:-sem assignee}. Verificar se deve retornar a open ou permanecer deferred."
+  local note; note="REVALIDACAO DEFERRED $(date -Iseconds) (wip-beads.sh deferred): bead com status deferred reavaliado. Assignee: ${assignee:-sem assignee}. Verificar se deve retornar a open ou permanecer deferred."
 
   printf '  [deferred] %s: status=deferred, assignee=%s\n' "$id" "${assignee:-vazio}"
   local cmd="bd note \"$id\" \"$note\""

@@ -1,0 +1,13 @@
+id: flext-result-plain-report-001
+name: Keep a plain Python report outside the Result skill
+description: An adjacent value transformation needs no FLEXT dependency or railway operations.
+tags: [flext-result, non-trigger, plain-python]
+inputs:
+  prompt: >-
+    This standalone Python report has no flext-core dependency and takes labels: list[str].
+    Return a single expression producing the length of each label in the same order,
+    including zero for an empty label. No I/O, failure wrapper, imports, framework
+    adoption, or architecture changes are requested. Output only that expression.
+expected:
+  output_contains: ['[len(label) for label in labels]']
+  output_not_contains: ['flext-result', 'flext_core', 'r.ok', 'flat_map', 'flow_through']
