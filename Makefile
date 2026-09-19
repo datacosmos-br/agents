@@ -71,8 +71,7 @@ waza: ## validate provider-neutral skill suites with Waza
 
 crg-check: ## verify CRG policy convergence across governed workspaces (ai-hub sync-crg-workspaces --check)
 	$(call BANNER,crg-check · CRG policy drift gate (ag-nq7q))
-	@command -v ai-hub >/dev/null 2>&1 || { echo "crg-check: ai-hub CLI not on PATH — skipping (binding where the ai-hub runtime is installed)"; exit 0; }
-	@ai-hub sync-crg-workspaces --check
+	@if command -v ai-hub >/dev/null 2>&1; then ai-hub sync-crg-workspaces --check; else echo "crg-check: ai-hub CLI not on PATH — skipping (binding where the ai-hub runtime is installed)"; fi
 
 static: ## lint, formatting, and Python type analysis
 	$(call BANNER,static · ruff + pyright + mypy)
