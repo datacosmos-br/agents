@@ -15,7 +15,7 @@ capsule_summary: |
   worktrees are in the project discovery's scope; rig runtime worktrees and foreign
   same-origin clones are excluded unless an explicit flag includes them.
 metadata:
-  aihub.tags: '["decision:ADR-0023","effective:2026-09-19","route:both"]'
+  aihub.tags: '["decision:ADR-0023","effective:2026-09-19","route:personal"]'
 ---
 
 # Worktree discovery and maintenance frontier

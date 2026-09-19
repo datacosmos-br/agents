@@ -35,7 +35,8 @@ complete plan and its attached material before adjudicating its meaning. Automat
 collection and ordering do not decide implementation, supersession, deletion, or tracker
 closure.
 
-Beads alone owns execution status; a generated source inventory is not a second ledger.
+The selected tracker alone owns execution status; a generated source inventory is not a
+second ledger.
 Versioned documents own the reviewed plan content, and any home copy is a configured
 projection. Follow the `plan-reconciliation` skill for procedure; the distribution and
 integration owners remain unchanged.

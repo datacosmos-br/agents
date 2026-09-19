@@ -9,7 +9,7 @@ capsule_summary: |
   no-ff merge on the integration lane, verified deploy, lane retirement, and
   bead evidence; pipelines never mask a producer's exit code.
 metadata:
-  aihub.tags: '["decision:ADR-0011","effective:2026-09-10","route:both"]'
+  aihub.tags: '["decision:ADR-0011","effective:2026-09-10","route:personal"]'
 ---
 
 # Correções do operador — ciclos de landing da frota (2026-09-08/10)

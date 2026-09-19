@@ -24,7 +24,8 @@ documentation.
 - Missing, empty, conflicting, unexpanded, relative, or invalid genuinely required
   external values and configured paths raise immediately. No environment variable,
   setting, parameter, or argument repeats a derivable canonical default; no failure
-  selects home, XDG, shell, or `/tmp` as an alternate.
+  selects the home directory, a user-config directory, the shell, or `/tmp` as an
+  alternate.
 - Preflight selects exactly one physical staging and publication path on the destination
   filesystem. Its failure raises; no alternate primitive is tried. Symbolic links and
   cross-repository mutable references are prohibited.
@@ -41,9 +42,10 @@ repository reconstructs it through its declared setup owner.
 
 <!-- Why: registers 2026-09-12 operator ruling A' on this file, the existing storage-placement owner -->
 
-`TMPDIR`, `GOTMPDIR`, the pytest `basetemp`, and mise staging live under
-`$HOME/tmp/.flext-runtime<absolute project root>/scratch` — never `/tmp` and never
-inside the checked-out tree. The journal, testmon cache, and `__pycache__` stay beside
-the checkout, not under scratch. A `clean` verb that only sweeps an in-tree `.test-tmp`
-while scratch actually lives at the `$HOME/tmp` root is incomplete and leaks; it is
-corrected at its Make/codegen owner to sweep the real location.
+`TMPDIR`, `GOTMPDIR`, the pytest `basetemp`, and tool staging live under the platform
+home plus `tmp`, at `.flext-runtime<absolute project root>/scratch` — never `/tmp` and
+never inside the checked-out tree. The journal, testmon cache, and `__pycache__` stay
+beside the checkout, not under scratch. A `clean` verb that only sweeps an in-tree
+`.test-tmp` while scratch actually lives at the platform home plus `tmp` root is
+incomplete and leaks; it is corrected at its Make/codegen owner to sweep the real
+location.

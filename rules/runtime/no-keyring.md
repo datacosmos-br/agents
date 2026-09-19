@@ -16,11 +16,12 @@ entry points, shell integration, services, tests, documentation, and generated
 projections contain no keyring owner, reader, writer, loader, profile, alias, migration,
 maintenance, discovery, or compatibility path. A service that reads the keyring directly
 acquires an ambient credential whose presence depends on a desktop session, an unlocked
-collection, and a login agent; it then behaves differently under systemd, in CI, and
-over SSH, and the difference surfaces as an authentication failure far from its cause.
+collection, and a login agent; it then behaves differently under a service manager, in
+CI, and over SSH, and the difference surfaces as an authentication failure far from its
+cause.
 
-A service receives its credentials only from the encrypted credential store
-(`systemd-creds` + `LoadCredentialEncrypted` + `CREDENTIALS_DIRECTORY`) or from
+A service receives its credentials only from the encrypted credential store (the host's
+encrypted credential store, see `encrypted credential store` (rule file)) or from
 validated variables already present in its own process environment. Missing or invalid
 credentials raise immediately; nothing falls back to the keyring, and no code path
 treats the two as interchangeable.

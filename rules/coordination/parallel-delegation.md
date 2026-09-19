@@ -25,7 +25,7 @@ tracker closure with evidence. Never delegate a sequenced effect, and never seri
 work whose steps share no state.
 
 Compose with `shared-file coordination` (rule file), `session governance` (rule file),
-and `bead verification` (rule file).
+and `tracker verification` (rule file).
 
 ## Model and effort selection follows the cost matrix (operator ruling, 2026-09-12)
 

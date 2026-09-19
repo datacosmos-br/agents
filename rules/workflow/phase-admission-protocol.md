@@ -1,14 +1,14 @@
 ---
 description:
-  Admission gate between execution phases — applies before starting any new phase, bead,
-  or lane. Load when a phase or work item is about to be declared finished, when picking
-  up the next phase, or when adopting concurrent work.
+  Admission gate between execution phases — applies before starting any new phase,
+  tracker item, or lane. Load when a phase or work item is about to be declared
+  finished, when picking up the next phase, or when adopting concurrent work.
 metadata:
   aihub.tags: '["decision:ADR-0012","effective:2026-09-06","route:both"]'
 capsule_summary: |
   A phase is admitted as finished only with zero pending items: every failure,
-  warning, and skipped check resolved or tracked on its own bead, WIP pushed,
-  and — before integration — validated 100% locally and in CI. Before entering
+  warning, and skipped check resolved or tracked on its own tracker item, WIP
+  pushed, and — before integration — validated 100% locally and in CI. Before entering
   the next phase, sweep the fleet for existing fixes first: open PRs, foreign
   branches, and worktrees may already carry the work; adopt the newest correct
   side (cherry-pick for isolated commits, merge --no-ff for lanes), never
@@ -20,14 +20,14 @@ capsule_summary: |
 
 # Phase admission protocol
 
-No phase, bead, or lane closes while anything is pending, and none opens while adoption
-debt exists.
+No phase, tracker item, or lane closes while anything is pending, and none opens while
+adoption debt exists.
 
 ## Law
 
 1. **Zero pending closure.** A phase is finished only when every failure, warning, skip,
-   and missing check is either resolved at root cause or carried by its own bead with
-   exact evidence. "Pre-existing", "cosmetic", and "later" do not exist.
+   and missing check is either resolved at root cause or carried by its own tracker
+   item with exact evidence. "Pre-existing", "cosmetic", and "later" do not exist.
 2. **Fleet sweep before new work.** Before starting a phase, check open PRs, branches,
    and worktrees for existing fixes of the same problem. Adopt the newest correct side:
    cherry-pick isolated commits; absorb lanes with `merge --no-ff`. Never adopt dead

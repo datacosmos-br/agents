@@ -25,4 +25,4 @@ blast radius. Prove safety through the project's native gates before claiming do
 green claim without gate evidence is fabrication.
 
 Compose with `professional integrity` (rule file), `engineering core` (rule file),
-`beads verification` (rule file).
+`tracker verification` (rule file).
