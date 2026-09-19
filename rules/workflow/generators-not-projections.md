@@ -1,7 +1,7 @@
 ---
 description:
   Editing configuration, generated surfaces, or hardcoding a value. Load when changing
-  config, settings, templates, tool homes, systemd units, or goldens.
+  config, settings, templates, tool homes, service units, or goldens.
 metadata:
   aihub.tags: '["decision:ADR-0008","effective:2026-08-28","route:both"]'
 ---

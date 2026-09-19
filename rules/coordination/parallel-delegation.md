@@ -25,11 +25,11 @@ tracker closure with evidence. Never delegate a sequenced effect, and never seri
 work whose steps share no state.
 
 Compose with `shared-file coordination` (rule file), `session governance` (rule file),
+and `tracker verification` (rule file).
 and `bead verification` (rule file).
-
 ## Model and effort selection follows the cost matrix (operator ruling, 2026-09-12)
 
-<!-- Why: registers 2026-09-12 flext x ai-hub x agents operator ruling R27 on this file, the existing subagent-dispatch owner -->
+<!-- Why: registers 2026-09-12 operator ruling R27 on this file, the existing subagent-dispatch owner -->
 
 Route subagent dispatch by a cost index, not by habit: relative price weight Haiku 4.5 =
 0.5, Sonnet 5 = 1, Opus 5 = 2.5, Fable 5.1 = 5, multiplied by an effort factor (low ≈

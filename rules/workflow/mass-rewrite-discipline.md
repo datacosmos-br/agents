@@ -42,16 +42,16 @@ change, not free bookkeeping. It is graded like code.
 Compose with `rules/workflow/structural-migrations.md` (rule layering),
 `rules/workflow/production-readiness.md` (blast-radius adoption),
 `rules/runtime/strict-execution.md` (atomic effects), and
+the tracker traceability rule (evidence cadence).
 `rules/workflow/beads-traceability.md` (evidence cadence).
-
 ## §Templates — cirurgia em templates gerenciados (2026-09-11, do erro real)
 
 Template gerido (`.j2` em `src/flext_infra/templates/`) é CÓDIGO PRODUÇÃO com história,
 não scratch. Proibido reescrever do zero. Obrigatório:
 
 1. **Diff cirúrgico primeiro**: remover só os blocos da transformação
-   (define/calls/condicionais). Reescrever 732→467 linhas destruiu bootstrap mise,
-   resolução UV do caller, exports, cygpath — ~400 falhas em cascata.
+   (define/calls/condicionais). Reescrever 732→467 linhas destruiu o bootstrap da
+   toolchain, resolução UV do caller, exports, cygpath — ~400 falhas em cascata.
 2. **Contexto de render = campos do RenderSpec**: cada `{{ var }}` no template tem que
    existir no modelo de render (ex.: `MakefileRenderSpec`). Antes de referenciar
    variável: ler o modelo em `_models/config.py`. `'dict object' has no attribute 'X'` =

@@ -7,7 +7,7 @@ metadata:
 # Freeze the ruler before comparing gate counts
 
 Gate/red counts measured under different validator versions, rule configurations, or
-scan scopes are not the same measurement. The cosmos-3flk9 sweep twice read a "reduced"
+scan scopes are not the same measurement. One fleet-wide sweep twice read a "reduced"
 error count that later re-exploded when the owner validator tip moved, and twice
 re-greened when config owners changed `scan_dirs` — each time treating the numbers as
 one series.
