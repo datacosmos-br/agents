@@ -81,11 +81,19 @@ wrong invocation, not of the store, and it is never answered with `bd init`.
 
 ## Operating limits (measured)
 
-- `gc mail send --all --notify` hangs and is killed by a timeout; broadcast **without**
-  `--notify`, and use `--notify` only for one named recipient that must be woken.
-- The store lock is intermittent (`schema migration lock unavailable: timeout`): a send
-  that times out may still have created the bead — check `gc mail count` before
-  resending, and prefer one longer timeout over repeated short ones.
+- `gc mail send --all` reaches **only live gc sessions and excludes `human`**: for
+  coding agents it reaches nobody, and with `--notify` it hangs past two minutes. Do
+  not broadcast; send to `human`. Use `--notify` only for one named registered
+  recipient that must be woken.
+- The store lock is intermittent even from the project home under direnv: stderr
+  `WARN native_store_unavailable … schema migration lock unavailable: timeout`, then
+  `To diagnose: bd dolt status / Do NOT run 'bd init'`, and the message is **not**
+  stored. Retry the same command from the same place; never change directory to get
+  around it. **Proof of delivery is reading it back** — `gc mail inbox human --json`
+  filtered by your subject — an exit code alone is not evidence (a send can look
+  successful and store nothing).
+- Answer in-thread with `gc mail reply <id> -s "Re: …" -m "…"` so `gc mail thread <id>`
+  reconstructs the conversation; a fresh `send` breaks the thread.
 - `PROJECT IDENTITY MISMATCH — refusing to connect` on any mail verb means the command
   was not run through the project's direnv environment (section above); rerun it from
   the project home. Only a mismatch that survives a correct invocation is a store
