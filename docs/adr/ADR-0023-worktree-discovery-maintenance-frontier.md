@@ -49,9 +49,39 @@ descobertos por nenhum dos dois.
 - A lacuna de husks órfãos fica dentro do escopo declarado, com dono nomeado, em vez de
   ficar invisível aos dois lados.
 
+## Emenda 2026-09-19 — dono entregador, cálculo do caminho, medida de conformidade
+
+Rulings do operador de 2026-09-19, mais novos que o texto acima e adotados aqui:
+
+1. **Dono entregador nomeado.** O "programa wip do projeto" da decisão 1 é o programa
+   `wip` do ai-hub (`ai-hub wip <verbo>`: `start`, `save`, `ship`, `land`, `clean`,
+   `status`, `next`, `doctor`; plano `wip-automation`, épico `aihub-hjsdg`). Toda outra
+   implementação de wip no ai-hub é exterminada verbo a verbo, com exatamente uma
+   implementação por verbo em cada momento.
+2. **Placement delega o cálculo do caminho.** A Gas City continua dona do placement
+   (decisão 3); o caminho canônico de uma lane é calculado por uma única primitiva pura,
+   `FlextInfraWorktreeService.canonical_lane_path(primary_root, branch)`, que resolve
+   para `~/.worktrees/<repo>-<sha12>/<branch>`, e `gc worktree ensure|verify|cleanup`
+   consome esse cálculo. Nenhuma regra, config ou verbo escreve caminho de lane à mão.
+   `~/<repo>-worktrees/` e `<repo>/.claude/worktrees/` são roots legados em migração,
+   provados entrada a entrada (registro, publicação, ancestralidade) antes da retirada.
+3. **Conformidade é aderência, não existência.** Violação desta fronteira é uma
+   superfície que planeja ou executa descoberta ou retirada fora do programa wip, ou uma
+   lane fora do caminho calculado. A existência de uma lane nunca é violação. O detector
+   de lane fora do lugar acusa contra o caminho calculado, nunca contra um sufixo de
+   configuração.
+4. **A sonda git vive no dono autorizado.** O executor residente de storage consome fatos
+   já apurados pelo programa wip, dono autorizado de git; ele não executa git. A escada
+   de veto (dirty → unpushed → open-bead → active-session → retirável) permanece, e
+   evidência desconhecida veta a retirada.
+5. **Atores coordenam por correio.** `rules/coordination/inter-session-mail.md` rege a
+   tomada e a liberação de lanes (`[coord] lane claim`, `[coord] lane changed`);
+   abandono exige três provas e a precondição de backup do reaper da cidade.
+
 ## References
 
 - `rules/coordination/wip-persistence.md` (regra dona)
+- `rules/coordination/inter-session-mail.md` (coordenação entre atores)
 - `rules/coordination/gascity.md` (placement/provisionamento)
 - `rules/git/gitflow-branch-pr.md` (aposentadoria com prova de ancestralidade)
 - `rules/coordination/fleet-landing-corrections.md` (ciclo de fecho com retirada de lane)
