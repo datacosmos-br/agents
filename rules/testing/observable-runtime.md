@@ -35,7 +35,7 @@ owner.
 
 ## Fixture composition and the fail loop (operator ruling, 2026-09-12)
 
-<!-- Why: registers 2026-09-12 flext x ai-hub x agents operator rulings on test contracts (R21/R22/R25); extends this owner rather than duplicating it -->
+<!-- Why: registers 2026-09-12 operator rulings on test contracts (R21/R22/R25); extends this owner rather than duplicating it -->
 
 Fixtures compose the gen-generated lazy-import pattern: one nested class per module,
 built from `settings`/`config`/`c`/`t`/`p`/`m`/`u` and the shared conftest as the tests'

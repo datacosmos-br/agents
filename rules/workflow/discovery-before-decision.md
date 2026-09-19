@@ -7,8 +7,8 @@ metadata:
 # Discovery never blocks; mutation does
 
 When a convergence plan waits on an operator decision (an A/B/C on, say, renaming
-consumer-facing facade classes), the temptation is to idle the whole lane. In the
-cosmos-3flk9 sweep the fleet-wide namespace surf (~1.4k errors) sat behind an operator
+consumer-facing facade classes), the temptation is to idle the whole lane. In one
+fleet-wide namespace sweep, roughly 1.4k errors sat behind an operator
 decision for an entire cycle while the harmless inventory work that would have made the
 decision cheap sat undone.
 

@@ -31,7 +31,7 @@ already owns.
 
 ## Every custom validation is re-derived, not just gates (operator ruling, 2026-09-12)
 
-<!-- Why: registers 2026-09-12 flext x ai-hub x agents operator ruling R26; generalizes this owner's existing SSOT-derivation law past lint gates -->
+<!-- Why: registers 2026-09-12 operator ruling R26; generalizes this owner's existing SSOT-derivation law past lint gates -->
 
 The same law extends past linting gates to every custom validation, warning, or block a
 project runs — hooks, guards, enforcement rules, MCP checks. Each one is re-evaluated

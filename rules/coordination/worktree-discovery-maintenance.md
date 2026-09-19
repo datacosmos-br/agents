@@ -27,7 +27,7 @@ forbids.
 
 1. **Discovery and planning belong to the project's wip program.** The project's
    declared wip surface — its capture/plan/retire program in the doc-10 vocabulary, for
-   example ai-hub's `wip/` program — is the single owner that names the candidate set,
+   example a project's `wip` program — is the single owner that names the candidate set,
    its read-only correlation to beads, pull requests and actors, and the retirement
    intent. This catalog NAMES that owner class; it never reimplements discovery nor
    invents a parallel policy.
