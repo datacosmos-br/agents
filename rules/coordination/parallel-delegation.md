@@ -26,7 +26,7 @@ work whose steps share no state.
 
 Compose with `shared-file coordination` (rule file), `session governance` (rule file),
 and `tracker verification` (rule file).
-
+and `bead verification` (rule file).
 ## Model and effort selection follows the cost matrix (operator ruling, 2026-09-12)
 
 <!-- Why: registers 2026-09-12 operator ruling R27 on this file, the existing subagent-dispatch owner -->

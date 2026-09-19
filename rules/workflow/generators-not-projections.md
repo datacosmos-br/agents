@@ -18,7 +18,7 @@ projection such as provider configuration, service units, or goldens.
   hand edits are forbidden, and the exact declared Make regeneration command. A
   generated marker without a resolvable owner is a defect.
 - A file carrying a tool-managed block (e.g. `AGENTS.md` with `BEGIN BEADS INTEGRATION`
-  / tracker-setup markers) is a tool-managed projection: markdown and docs gates
+  / `bd setup codex` markers) is a tool-managed projection: markdown and docs gates
   exclude it at their SSOT exclude list (flext fleet: `flext-infra`
   `config/tooling.yaml`), never by hand-fixing lint inside managed blocks.
 - After changing a source, regenerate and prove a second generation has no diff.

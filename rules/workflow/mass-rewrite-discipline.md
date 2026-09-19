@@ -43,7 +43,7 @@ Compose with `rules/workflow/structural-migrations.md` (rule layering),
 `rules/workflow/production-readiness.md` (blast-radius adoption),
 `rules/runtime/strict-execution.md` (atomic effects), and
 the tracker traceability rule (evidence cadence).
-
+`rules/workflow/beads-traceability.md` (evidence cadence).
 ## §Templates — cirurgia em templates gerenciados (2026-09-11, do erro real)
 
 Template gerido (`.j2` em `src/flext_infra/templates/`) é CÓDIGO PRODUÇÃO com história,
