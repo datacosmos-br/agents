@@ -52,6 +52,35 @@ Measured on 2026-09-07 against the live catalog and the AI Hub projection path:
    release. The catalog validator enforces that a superseded slug is absent from the
    tree and present in git history.
 
+## Amendment 2026-09-19 — host facts are detectors, and content is gated
+
+The routing axis above decides *where* a record goes. It does not decide *what a record
+may contain*, and the two were conflated: records routed to projects carried host
+subjects (the tracker CLI, the orchestrator, the service manager, the tool manager, the
+environment loader, home layout) and named private projects. A project receives
+universal law specialised to its own resources, nothing about the machine, and nothing
+about another private project.
+
+1. **Three scopes, derived from the routing tag that already exists.** `route:both` is
+   universal law, `route:personal` is host-conditional, `route:project` is
+   project-conditional. No fourth namespace is introduced.
+2. **Host facts join the detector vocabulary.** A host-conditional record declares
+   `activation: host-scoped` with `detect:host:<fact>`, where a fact is one of
+   `os:<name>`, `tool:<executable on the path>`, `tracker:reachable`, or
+   `orchestrator:active`. Facts are measured once per deployment, read-only, from each
+   owner's own authority — never inferred from an installed binary, a running process,
+   or a previous session. An unmatched fact means the record is not projected into that
+   home, exactly as an unmatched project detector already works.
+3. **Content is gated before any effect.** The projector refuses to publish a record
+   whose body carries a host subject into a project destination, or a private project's
+   identity into any destination but that project's own. The forbidden vocabulary and
+   the private-project identities are configuration derived from the declared workspace
+   owners, never literals in code. The first violation stops the plan and names the
+   record and the tokens; nothing is normalised, stripped, or partially published.
+4. **Detector parsing is data.** Detector kinds resolve through a typed registry, so a
+   value whose arguments contain the separator (`dependency:dart:sdk:flutter`) parses
+   instead of raising and aborting every project projection.
+
 ## Consequences
 
 - Deleting the decorative namespaces is a breaking grammar change: `agents-governance`
