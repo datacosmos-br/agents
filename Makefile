@@ -16,7 +16,7 @@ override export UV_PROJECT_ENVIRONMENT := $(CURDIR)/.venv
 override export VIRTUAL_ENV := $(CURDIR)/.venv
 
 .DEFAULT_GOAL := help
-.PHONY: help setup gen docs audit check runtime waza static conform fmt fix mod mod-check shell duplication build test test-full ci validate-artifacts publish
+.PHONY: help setup gen docs audit check runtime waza crg-check static conform fmt fix mod mod-check shell duplication build test test-full ci validate-artifacts publish
 .DELETE_ON_ERROR:
 
 define BANNER
@@ -50,6 +50,7 @@ check: ## run every applicable non-test gate
 	@$(MAKE) mod-check
 	@$(MAKE) conform
 	@$(MAKE) waza
+	@$(MAKE) crg-check
 	@$(MAKE) runtime
 
 docs: ## validate documentation through the public bundle contract
@@ -67,6 +68,10 @@ waza: ## validate provider-neutral skill suites with Waza
 	@$(MAKE) audit
 	$(call BANNER,waza · provider-neutral suites + deterministic spec proof)
 	@uv run python tools/waza_gate.py
+
+crg-check: ## verify CRG policy convergence across governed workspaces (ai-hub sync-crg-workspaces --check)
+	$(call BANNER,crg-check · CRG policy drift gate (ag-nq7q))
+	@if command -v ai-hub >/dev/null 2>&1; then ai-hub sync-crg-workspaces --check; else echo "crg-check: ai-hub CLI not on PATH — skipping (binding where the ai-hub runtime is installed)"; fi
 
 static: ## lint, formatting, and Python type analysis
 	$(call BANNER,static · ruff + pyright + mypy)
