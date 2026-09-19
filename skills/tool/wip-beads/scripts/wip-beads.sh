@@ -327,7 +327,9 @@ mode_unblock() {
   local unblockable=0
   local blocked_by_open=0
 
-  echo "$deps_json" | jq -c '.[]' | while read -r dep; do
+  # Process substitution (not a pipe): a `while` on the right of a pipe runs
+  # in a subshell, so the counters below would always stay 0 at the verdict.
+  while read -r dep; do
     local blocker_id blocker_status
     blocker_id=$(echo "$dep" | jq -r '.id // empty')
     blocker_status=$(echo "$dep" | jq -r '.status // empty')
@@ -339,7 +341,7 @@ mode_unblock() {
       printf '  [unblock] %s: blocker %s esta %s (aberto)\n' "$id" "$blocker_id" "$blocker_status"
       ((blocked_by_open+=1)) || true
     fi
-  done
+  done < <(echo "$deps_json" | jq -c '.[]')
 
   if [[ $unblockable -gt 0 && $blocked_by_open -eq 0 ]]; then
     printf '  [unblock] %s: TODOS blockers fechados -> pode desbloquear\n' "$id"
