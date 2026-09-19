@@ -1,6 +1,6 @@
 # PR/branch archaeology sweep — 2026-09-18 (ag-y19j)
 
-One-by-one evaluation of every local branch, stray worktree, closed-unmerged PR and
+One-by-one evaluation of every local branch, stray worktree, closed-unmerged PR and subprojects of this repository against the integration branch `dev`, each measured from
 subproject of this repository against the integration branch `dev`, each measured from
 its own last fork point (`git merge-base dev <head>`). Safety patches for every
 discarded lane with content are archived outside the repository at
