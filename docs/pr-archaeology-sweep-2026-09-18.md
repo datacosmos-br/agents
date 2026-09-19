@@ -8,7 +8,7 @@ discarded lane with content are archived outside the repository at
 Tracked in beads issue `ag-y19j` (agents store).
 
 Integration-type note (operator ruling, 2026-09-18): cycle-closing PRs go from a
-work tree branch INTO the integration branch (`dev`), never from the integration
+Integration-type note (operator ruling, 2026-09-18): cycle-closing PRs go from a worktree branch INTO the integration branch (`dev`), never from the integration
 branch to `main`.
 
 ## Stray worktrees (5) — all discarded
