@@ -118,3 +118,26 @@ _generate_workspace_config_parts + _allocation) — patch arquivado em
 5. agents: triage WARNINGs review 130 (P3); cadeia G2 de distribuição aberta
    e não reclamada (ag-lw57.*, ag-vblj.*, ag-m9lu) — bloqueada menos por
    design que por pickup.
+
+## ADDENDUM 2026-09-20 — desbloqueios pós-handoff (mesma sessão)
+
+1. **DEPLOY DO AI-HUB DESBLOQUEADO**: a credencial nunca esteve ausente — o
+   cofre `~/.local/state/ai-hub/credentials/current/` carrega os 6 .cred
+   válidos (PROXY_INTERNAL_API_KEY.cred incluído, geração atual). O
+   "required credential is absent" acontece só quando o `make deploy` roda
+   fora do contrato systemd. Caminho correto (documentado em
+   `_host_runtime_parts/credentials.py:87-93`): `systemd-run --user --wait
+   --pipe --collect -p LoadCredentialEncrypted=<id>:$HOME/.local/state/
+   ai-hub/credentials/current/<id>.cred (×6) make deploy`.
+2. **algar**: check local 100% VERDE (400→0; gm9/qou fechadas); r5t FECHADA
+   (cooldown ×4 pousado via knob + org layer).
+3. **flext-infra**: 6ep5y perna-2 pousada (recovery noop para package-owned);
+   gen fixed-point + Docs byte-identidade restaurados; perna-1
+   (root-resolution) com o dono mise-artifacts.
+4. **loc-cap 1030/1000**: packing 4/linha era fmt-INSTÁVEL (ruff expande
+   trailing comma — revertido corretamente pelo escritor); decisão
+   registrada em aihub-jcgfm: `_lazy_map.py` módulo de dados separado.
+5. **Piloto C2** (symlinks → cópias carimbadas variante A): pendente de
+   execução — é o próximo passo deste plano.
+6. Bloqueio real restante do deploy: nenhum técnico — a janela de execução
+   coordenada com o deacon/storage (deploy → flip done → e2e → S1–S4).
