@@ -17,10 +17,10 @@ projection such as provider configuration, service units, or goldens.
 - Every generated file carries a standardized marker naming its writable owner, that
   hand edits are forbidden, and the exact declared Make regeneration command. A
   generated marker without a resolvable owner is a defect.
-- A file carrying a tool-managed block (e.g. `AGENTS.md` with `BEGIN BEADS INTEGRATION`
-  / tracker-setup markers) is a tool-managed projection: markdown and docs gates
-  exclude it at their SSOT exclude list (flext fleet: `flext-infra`
-  `config/tooling.yaml`), never by hand-fixing lint inside managed blocks.
+- A file carrying a tool-managed block — an instruction file into which the selected
+  tracker or another tool writes its own begin/end integration markers — is a
+  tool-managed projection: markdown and docs gates exclude it at their SSOT exclude
+  list, never by hand-fixing lint inside managed blocks.
 - After changing a source, regenerate and prove a second generation has no diff.
 - Rewire every consumer before deleting the superseded output. Remove obsolete
   projections, manifests, tests, fixtures, docs, backups, and archives in the same
