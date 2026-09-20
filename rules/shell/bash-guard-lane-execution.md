@@ -10,7 +10,7 @@ Work from the session's own worktree: its working directory is the lane root. Ru
 `git <verb>` and `make <public-verb>` there as plain commands. Claude Code worktree
 isolation refuses `git -C <path>` and `env -C <path> make <verb>` when the path is not
 the session's own worktree, so never use those forms, a `cd`, or `make -C` to reach
-another checkout. Run `bd` from the project home through the project's
+another checkout. Run the tracker CLI from the project home through the project's
 environment loader. Each verb performs its declared operation without an apply
 selector; do not substitute an underlying tool or a
 Git/provider/package CLI for a root Make diagnostic, validation, generation, test,
