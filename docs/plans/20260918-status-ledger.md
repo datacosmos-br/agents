@@ -36,6 +36,25 @@ Cadeia crítica do piloto de homologação: `ag-bwqu` (acceptance real) + `ag-nq
 (CRG sync) + `ag-q4w1` (esteira make) → `ag-m9lu`. Todas as três raízes são [E] —
 dono ai-hub; o piloto não destrava por trabalho catalog-side.
 
+### Addendum 2026-09-20 (agents-dedicated, stabilization round — ver `20260920-stabilization-record.md`)
+
+- Grafo atualizado: `ag-nq7q` **FECHADA** (CRG sync aplicado + gate
+  `crg-check` permanente no Makefile via PR #157) → `ag-q4w1` destravada
+  (aprovada e claimed). `ag-bwqu` **LANDED** no ai-hub (acceptance nativa,
+  deploy.py consome `AiHubNativeDeploymentAcceptance`) + lei #814
+  (credencial indisponível = NOT EXECUTED). `ag-ey2k` corrigida no ai-hub
+  (`d1fb316be` +walker pointer) e evidência registrada. `ag-k89` FIX
+  POUSADO (ai-hub PR #803: local-origin nunca vira external dependency;
+  reconcile podou `gascity-build-141fc1`) + `ag-whr` fechada (isolamento
+  provado). `ag-gmx` fechada (workflow dormente → épico flext-cpzjo).
+- Grind de frota mapeado na lane `wip/stabilize-0.12-algar-20260919`
+  (mypy 198→0, pyrefly 53→0 via cutover para donos tipados) e no
+  worktree `wip/stabilize-0.12-root-20260919` (flext-infra commitado
+  `020728af4`; imports circulares do merge corrigidos).
+- Bloqueadores restantes do piloto: fix do `sync-crg-workspaces`
+  (dedicado ai-hub, em diagnóstico) e o pouso flext com SHA (hold do
+  make setup).
+
 ## 3. Beads [A] — fecháveis/executáveis no repo agents (plano de fechamento F6)
 
 | ID | P | Ação | Evidência exigida/produzida |
