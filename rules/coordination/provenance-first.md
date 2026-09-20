@@ -21,4 +21,4 @@ the whole. Verify against the canonical source and the full command output befor
 conclusion; what a partial read did not show stays unproven, and absence proved by it is
 a false negative at the reader.
 
-Compose with `bead verification` (rule file).
+Compose with the tracker-verification rule.
