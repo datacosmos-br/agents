@@ -8,8 +8,8 @@ metadata:
 
 Operator law 2026-09-20 (`flext-0in0k`). It binds every FLEXT generator, detector, and fix
 (`make gen`, `make mod`, `make fix`, the namespace validator and its gates) and every
-consumer of them: the `flext` workspace and its members, ai-hub, cosmos-main and its
-apps, cosmos-docgen, invest and their FLEXT subprojects. A generator that violates a
+consumer of them: the FLEXT workspace family and every private workspace that
+consumes the fleet toolchain, with their FLEXT subprojects. A generator that violates a
 point below is defective at its owner; a consumer is never patched around it.
 
 1. **The owner of a facade letter is the module that declares it** in its own explicit
