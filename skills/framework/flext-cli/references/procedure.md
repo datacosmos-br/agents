@@ -116,7 +116,7 @@ business logic returning `p.Result`.
 
 ## Before/after 2: imperative keyword soup → route table
 
-Before (real imperative API; acceptable once, a defect as a pattern):
+Before (real imperative API):
 
 ```python
 cli.register_result_command(
@@ -153,7 +153,7 @@ def result_routes(self) -> tuple[m.Cli.ResultCommandRoute, ...]:
 ```
 
 Adding a command becomes one spec/config row plus its `m` input model and service
-handler — no registration-code change; the table is inspectable data.
+handler — no registration-code change.
 
 ## Verification
 
