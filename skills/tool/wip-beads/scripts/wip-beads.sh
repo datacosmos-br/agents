@@ -6,7 +6,7 @@ set -euo pipefail
 # CSV columns: id,title,status,issue_type,priority,parent_id,labels,dep_count
 
 readonly PROG="${0##*/}"
-readonly START_TS; START_TS="$(date -Iseconds)"
+readonly START_TS="$(date -Iseconds)"
 readonly LOGDIR="${XDG_STATE_HOME:-${HOME}/.local/state}/wip-beads"
 readonly CSV_DEFAULT="./wip-beads-open.csv"
 
@@ -175,15 +175,31 @@ reset_counts() {
 
 declare -A BEAD_JSON_CACHE
 
-load_bead_json_cache() {
-  local snapshot id encoded bead_json
-  BEAD_JSON_CACHE=()
-  snapshot="$(bd list --all --flat --json)"
+cache_batch() {
+  local snapshot id encoded
+  snapshot="$(bd show "$@" --json 2>/dev/null || true)"
+  [[ -n "$snapshot" ]] || return 0
   while IFS=$'\t' read -r id encoded; do
     [[ -n "$id" ]] || continue
-    bead_json="$(printf '%s' "$encoded" | base64 --decode)"
-    BEAD_JSON_CACHE["$id"]="$bead_json"
-  done < <(jq -r '.[] | [.id, (. | @base64)] | @tsv' <<< "$snapshot")
+    BEAD_JSON_CACHE["$id"]="$(printf '%s' "$encoded" | base64 --decode)"
+  done < <(jq -r '.[]? | [.id, (. | @base64)] | @tsv' <<< "$snapshot")
+}
+
+load_bead_json_cache() {
+  local -a chunk=()
+  local id
+  BEAD_JSON_CACHE=()
+  # Preload only the beads this run processes. A full-corpus `bd list --all`
+  # hydrates every ephemeral wisp and hangs the batch (bounded ledger reads).
+  for id in "${BEAD_IDS[@]}"; do
+    chunk+=("$id")
+    if [[ ${#chunk[@]} -ge 200 ]]; then
+      cache_batch "${chunk[@]}"
+      chunk=()
+    fi
+  done
+  [[ ${#chunk[@]} -gt 0 ]] && cache_batch "${chunk[@]}"
+  return 0
 }
 
 get_bead_json() {
