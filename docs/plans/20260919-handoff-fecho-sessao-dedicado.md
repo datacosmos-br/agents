@@ -168,3 +168,27 @@ _generate_workspace_config_parts + _allocation) — patch arquivado em
 - 918fb7dc: fleet MCP projection refresh + procedure.md fix
 - wip-beads CRITICAL fix (subshell counting) pousado e verificado
 - Backup Dolt do store agents ativo (bd backup sync 2,2 GB)
+
+## FECHO DE SESSÃO 2026-09-21 — estado para retomada
+
+### Quadro final verificado
+| Repo | Branch | Tip | Gates |
+|---|---|---|---|
+| agents | dev | 918fb7dc+ (synced) | verde (known-red ag-j36p P3) |
+| algar | 0.12.0-dev/wip stabilize | 06ca264c | **check EXIT 0, testes 324** |
+| ai-hub | dev | **72f571eb1** | **20/20 gates PASS 0** (só post-check homes = deploy) |
+| flext-infra | 0.12.0-dev | (lanes ativas) | recovery noop pousado caeddadae |
+
+### Últimos pousos da sessão
+- 72f571eb1: ENFORCE-042 fix (AiHubSettingsSources herda FlextSettings) + convergence renders + hooks candidate isolation
+- 06ca264c: plan v4 handoff no algar (branch wip propagation, check 0, docs blocker roteado)
+
+### Como retomar (gatilhos nomeados)
+1. **Deploy ai-hub**: deacon executa com a receita do mail gc-wisp-ogenrn (systemd-run + 6 LoadCredentialEncrypted; make build primeiro). Depois: validate-agents verde → enable --now ai-hub-storage-prune.timer → sinal 'flip done' à storage lane → e2e → S1–S4 → bead aihub-oig6s.2.1 fecha.
+2. **loc-cap**: implementar _lazy_map.py (aihub-jcgfm) OU fmt-skip no exports_tuple (skills-propagation) — área do escritor lazy_init do flext-infra.
+3. **flext-6ep5y perna-1**: root-resolution do mise-artifacts bootstrap (não escrever em templates do pacote instalado).
+4. **Operador**: STO-S5 (cutover Gas City), mayor config (asleep por config), backup off-machine, cliproxy key.
+5. **G2 sem dono**: ag-lw57.*/ag-vblj.*/ag-m9lu — cadeia de distribuição para pickup.
+
+### Regras operacionais da sessão (validadas)
+bd com direnv no repo · fix-forward-adopt · gates pelo Make do dono · gen×2 em fronteiras de render · guarda de dados privados em diff público · algar PR-only · janelas de exclusão mútua por mail · nunca matar processos alheios · gc-mail: destinatários = sessões vivas (gc session list), canal human compartilhado, retry com timeout sob degradação.
