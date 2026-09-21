@@ -22,3 +22,4 @@
 | `ADR-0021` | 2026-09-16 | Accepted | Operator rulings of 2026-09-15/16 (runtime truth, no rushed work, full landing cycle) are encoded as canonical coordination and ethics rules.         |
 | `ADR-0022` | 2026-09-18 | Accepted (emendada) | `~/.agents` becomes a materialized, version-and-digest-stamped global read-only projection (no longer a symlink), managed exclusively by AI Hub — the repo carries no home tooling. |
 | `ADR-0023` | 2026-09-19 | Accepted | Worktree discovery/planning is owned by the project's wip program (doc-10 vocabulary) and retirement has a single executor consuming the same candidate queue; placement stays with Gas City. |
+| `ADR-0024` | 2026-09-20 | Accepted | Generator declarations law (operator law 2026-09-20): fourteen points binding every FLEXT generator, detector, fix and consumer — owners declared via `__all__`, init propagates, tiers detected, deriving beats listing, strict compliance as the mechanism. |
