@@ -50,3 +50,4 @@ target/
 .beads-credential-key
 .gqlout.json
 .poolside/
+backup/

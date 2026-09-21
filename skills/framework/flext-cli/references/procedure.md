@@ -96,11 +96,12 @@ Before (upstream typer shape — a defect in project code; only
 ```python
 import typer
 
+
 @app.command(name="city-enter")
 def city_enter(agent: str = typer.Option(...)) -> None:
     if not agent:
-        typer.echo("agent is required")   # hand-rolled validation + output
-        raise typer.Exit(code=1)          # hand-rolled exit semantics
+        typer.echo("agent is required")  # hand-rolled validation + output
+        raise typer.Exit(code=1)  # hand-rolled exit semantics
 ```
 
 After (real consumer code): strict input model `CityEnterInput` on `m`; handler
@@ -118,10 +119,22 @@ business logic returning `p.Result`.
 Before (real imperative API; acceptable once, a defect as a pattern):
 
 ```python
-cli.register_result_command(app, name="agent-list", help_text="...",
-    model_cls=NoArgsInput, handler=svc.agent_list, success_message="listed")
-cli.register_result_command(app, name="city-enter", help_text="...",
-    model_cls=CityEnterInput, handler=svc.city_enter, success_message=None)
+cli.register_result_command(
+    app,
+    name="agent-list",
+    help_text="...",
+    model_cls=NoArgsInput,
+    handler=svc.agent_list,
+    success_message="listed",
+)
+cli.register_result_command(
+    app,
+    name="city-enter",
+    help_text="...",
+    model_cls=CityEnterInput,
+    handler=svc.city_enter,
+    success_message=None,
+)
 ```
 
 After (real `AiHubCli`): a data tuple and one call:
