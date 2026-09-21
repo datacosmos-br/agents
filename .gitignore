@@ -38,6 +38,12 @@ target/
 /.github/skills/
 /GEMINI.md
 
+# Banned residue (never source, any profile): deploy-transaction prior state,
+# staging names, and ad-hoc backups are runtime-only and must never be tracked.
+*aihub-prior*
+*aihub-txn*
+*.pre-fleet-*
+
 # Gas City and the selected tracker own their suspended runtime state.
 /.gc/
 /crew/

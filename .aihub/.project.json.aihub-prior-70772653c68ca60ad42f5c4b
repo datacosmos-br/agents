@@ -1,8 +1,0 @@
-{
-  "version": 1,
-  "project_id": "datacosmos-br/agents",
-  "project_profile": "internal",
-  "source_remote": "git@github.com:datacosmos-br/agents.git",
-  "upstream_project_id": null,
-  "detected_capabilities": []
-}
