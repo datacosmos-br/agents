@@ -77,3 +77,27 @@ evidence-backed in beads (agents/algar/flext stores).
 - Bead store incident recorded: the Dolt server restart window made the
   agents store refuse connections (PROJECT IDENTITY MISMATCH) —
   transient; rule re-affirmed (env+cwd from the same store).
+
+## Governance wave — beads reorganization (2026-09-21)
+
+Item-by-item audit of the agents store executed per the fleet governance
+directive (aligned with `flext-49quw` on the flext side and `aihub-636vd` on
+the ai-hub side — those own their stores' waves; this store's wave is ours):
+
+- **Claims**: 14 claims audited; stale >3h claims taken over with TAKEOVER
+  notes (`ag-r0g3`, `ag-zm1e`, `ag-9xp`, `ag-q6uo`, `ag-lw57.3`, epic
+  `ag-vblj` reconfirmed); `ag-a11` assignee restored (11 days unassigned).
+- **Duplicates**: `ag-xgco` closed as exact duplicate of `ag-j36p`; 8 closed
+  exact-duplicate twins PRUNED (`ag-bbo`, `ag-0ez`, `ag-p4a.1–.5`, `ag-dom`)
+  — `ag-59y` retained with a retention note (live cross-reference from
+  `ag-2sc.5` reconciliation). Store: 259 → 251.
+- **Hierarchy adjudication**: 6 open bugs sit as children of epics
+  (`ag-lw57.7/.8/.10` under the AH v2 epic; `ag-vblj.3/.4/.5` under the MCP
+  epic). Adjudication: these are campaign-scoped defects of the epics' own
+  deliverables — they stay scoped (the fleet's own convention; standalone
+  bugs stay top-level: `ag-r0g3`, `ag-zm1e`, `ag-bwqu`, `ag-ey2k`, `ag-fwdu`,
+  `ag-vmn` all correctly outside). Recorded here to prevent a future
+  mass-move from misreading the shape.
+- **Superseded closures**: 22 superseded/obsolete closures kept as history
+  (lineage pointers); 14 keyword false-positives confirmed as real
+  completions.
