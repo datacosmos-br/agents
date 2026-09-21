@@ -141,3 +141,30 @@ _generate_workspace_config_parts + _allocation) — patch arquivado em
    execução — é o próximo passo deste plano.
 6. Bloqueio real restante do deploy: nenhum técnico — a janela de execução
    coordenada com o deacon/storage (deploy → flip done → e2e → S1–S4).
+
+## FECHO FINAL 2026-09-20 — evidências de entrega
+
+### algar-oud-mig (0.12.0-dev / wip/stabilize-0.12-algar)
+- `make check` exit 0 confirmado 2× (pré e pós-piloto C2)
+- `pytest tests`: 324 passed, 250 skipped, 1 xfailed — 0 falhas
+- Namespace 96→0; 9 gates zerados; loc-cap converter 1231→848 LOC
+- Piloto C2: symlinks→cópias carimbadas variante A (539109b2)
+- Runner CI: aguarda flext-57i4w + metadata receipt (upstream, dono flext-infra)
+
+### ai-hub (dev)
+- Gates repo: TODOS PASS 0 (namespace 50→0, types 221→0, codemod 30→0)
+- Render convergence: 4/line packing implementado e revertido corretamente
+- Deploy: desbloqueado (invocação systemd-run + credencial presente no cofre);
+  native consumer validation com deacon/storage (domínio .2.1/#826)
+- loc-cap 1030/1000: decisão `_lazy_map.py` registrada (aihub-jcgfm)
+
+### flext-infra (0.12.0-dev)
+- Recovery noop package-owned pousado (caeddadae) — o "2 hard links" não recorre
+- Gen fixed-point restaurado (manifest-free cutover completo)
+- Settings-c carve-out pousado (c7e788510)
+- 6ep5y perna-1 documentada; perna-2 aguarda dono mise-artifacts
+
+### agents (dev)
+- 918fb7dc: fleet MCP projection refresh + procedure.md fix
+- wip-beads CRITICAL fix (subshell counting) pousado e verificado
+- Backup Dolt do store agents ativo (bd backup sync 2,2 GB)
