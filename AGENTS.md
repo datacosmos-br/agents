@@ -36,6 +36,11 @@
     raw traceback escape unchanged.
 <!-- /AIHUB-INVIOLABLE-LAW-PRELUDE -->
 
+# AGENTS.md — agents
+
+> Packaged governance `agents-governance` `0.5.0` owns the capability indexes: 66 agents, 96 rules, 137 skills. Consume them through `GovernanceBundle`; do not copy their bodies here.
+
+<!-- AIHUB-AGENTS-SCOPE-LOCAL-BEGIN -->
 ## AGENTS.md — agents
 
 > Packaged governance `agents-governance` owns the capability indexes. Consume current
@@ -99,3 +104,4 @@ By category:
 FLEXT architecture for `internal_flext`:
 [`rules/architecture/internal-clean-architecture.md`](rules/architecture/internal-clean-architecture.md).
 Operator mandate: [`VALIDATE_ON_CHANGE.md`](VALIDATE_ON_CHANGE.md).
+<!-- AIHUB-AGENTS-SCOPE-LOCAL-END -->
