@@ -27,8 +27,11 @@ documentation.
   selects the home directory, a user-config directory, the shell, or `/tmp` as an
   alternate.
 - Preflight selects exactly one physical staging and publication path on the destination
-  filesystem. Its failure raises; no alternate primitive is tried. Symbolic links and
-  cross-repository mutable references are prohibited.
+  filesystem. Its failure raises; no alternate primitive is tried. Cross-repository
+  mutable references are prohibited. A symbolic link exists only as the compatibility
+  link a declared migration leaves at a tool's fixed path after moving its store, named
+  in that migration's declaration and recorded in its receipt; an ad hoc link, or one
+  a migration did not declare, is a defect at the storage owner.
 - A unit test's writes stay inside its `tmp_path` fixture; a test that writes to the
   repository tree, the real home directory, or any path outside `tmp_path` is a test
   defect at its owner, never a skip. See `observable-runtime.md` (rule file) for the

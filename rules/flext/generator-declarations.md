@@ -1,7 +1,7 @@
 ---
 description: FLEXT generators emit only what is declared; nothing is inferred, listed by hand, or accommodated
 metadata:
-  aihub.tags: '["decision:ADR-018","effective:2026-09-20","route:both"]'
+  aihub.tags: '["decision:ADR-0024","effective:2026-09-20","route:both"]'
 ---
 
 # Generator declarations law
