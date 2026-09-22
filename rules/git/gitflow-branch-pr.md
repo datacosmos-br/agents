@@ -6,8 +6,8 @@ capsule_summary: |
   Work on a change branch, never on `main` or the integration branch. The base is
   whatever the repository itself declares today — read it per repository, never
   assume or reuse one. `origin/<base>` is a cache: fetch it before any ancestry
-  proof that authorizes deletion. One git root per PR; lane creation and teardown
-  are owned, never hand-made.
+  proof that authorizes deletion. One git root per PR; placement follows the
+  active/manual Gas City boundary.
   Checkpoint: scoped add, `[WIP]` subject, fast-forward push, Draft PR. `--no-verify`
   is prohibited and a `[WIP]` commit never heads a merge.
   Promotion: green local round, non-`[WIP]` commit, green checks, resolved review,
@@ -19,16 +19,17 @@ capsule_summary: |
   remote branches and the worktree, only after `git merge-base --is-ancestor`
   exits 0 against a fresh base.
 metadata:
-  aihub.tags: '["decision:ADR-0008","effective:2026-08-29","route:personal"]'
+  aihub.tags: '["decision:ADR-0025","effective:2026-09-22","route:personal"]'
 ---
 
 # Branch and PR — integration by merge commit
 
 Work on a change branch, never on `main` or the integration branch. One git root per PR.
 Where a tracker is selected, one work item owns the branch and PR and records head OID,
-Draft state, gate evidence and next action at every checkpoint. The formula owns lane
-creation and teardown: creating a worktree or clone by hand is a scope expansion the
-operator must state.
+Draft state, gate evidence and next action at every checkpoint. Lane creation and
+teardown follow `rules/coordination/gascity.md`: active orchestration uses its owner;
+every manual task uses a dedicated native Git worktree and branch. Never implement in
+the primary/default checkout or reactivate suspended orchestration to provision a lane.
 
 **The base is read, never assumed.** The integration base is whatever the repository
 itself currently declares — its forge default branch. Never hardcode one, carry one from
