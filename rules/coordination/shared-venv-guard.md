@@ -6,9 +6,10 @@ metadata:
 
 # Python environments are physical and checkout-local
 
-Use the repository's declared setup owner and interpreter. `make setup` provisions only
-`<workspace>/.venv`, a physical directory exclusively owned by that workspace. A worktree
-is its own workspace; its environment never resolves to the primary checkout.
+Use the repository's declared setup owner and interpreter. `make setup` provisions the
+Python environment only in `<workspace>/.venv`, a physical directory exclusively owned
+by that workspace. A worktree is its own workspace; its environment never resolves to
+the primary checkout.
 
 - Never borrow another checkout's environment through a symlink, path dependency,
   `PYTHONPATH`, editable-install path, or cross-repository reference.

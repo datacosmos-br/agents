@@ -23,7 +23,8 @@ discard that explicit selection.
    suspension, manual worktrees use native Git on the authorized destination filesystem;
    suspension does not prohibit worktrees or authorize any city, rig, Pack, agent,
    formula, run, or session orchestration action.
-3. `make setup` provisions only each worktree's physical, exclusively owned `.venv`.
+3. `make setup` provisions the Python environment only in each worktree's physical,
+   exclusively owned `.venv`.
    External or borrowed environments, symlinks, cross-repository editable installs, and
    inherited environment variables that redirect setup are prohibited. Caches and
    temporary artifacts remain external. `/tmp` worktree placement and backup/archive
