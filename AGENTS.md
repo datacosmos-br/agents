@@ -15,7 +15,7 @@
 8. Divergence: FF push rejected → integrate by cooperation: `git merge --no-ff` the integration base into your lane, resolve conflicts, revalidate, land. Never rebase or force-push an authorized change or integration branch; adopt all current worktree state and fix it forward.
 9. Escalation: impossible rule → exact error. Rule conflict → present both with numbers. Unclear → one targeted question. Never guess.
 10. Precedence: NEWEST > OLDEST. USER REQUEST > BEADS > ADRs > SKILLs > DOCS > default. Adjust lower/older to higher/newer. Doubt → ASK USER FIRST.
-11. Workspaces: follow `rules/coordination/gascity.md`. Every manual task uses a dedicated Git worktree, branch, and physical environment, never the primary checkout. Gas City suspension keeps orchestration inactive. Worktrees and staging stay on the destination filesystem, never `/tmp`; no borrowed environment, backup, or archive. Retire worktrees after verified integration.
+11. Workspaces: follow `rules/coordination/gascity.md`. Every manual task uses a dedicated Git worktree, branch, and physical `.venv`, never the primary checkout. Gas City suspension keeps orchestration inactive. Worktrees and staging stay on the destination filesystem, never `/tmp`; no borrowed environment, backup, or archive. Retire worktrees after verified integration.
 12. Phase closure: keep the phase active through check repair, review resolution,
     independent approval, merge into the configured integration branch, and
     post-merge proof. Only then, with its Bead closed with evidence, is it DONE.
@@ -76,8 +76,8 @@ bundle load before adapting tests.
 
 Gas City owns workspace placement while its orchestration is active; `gc status` is
 the effective-state authority. Every manual execution uses a dedicated native Git
-worktree, branch, and physical environment; never implement in the primary/default
-checkout. During suspension, keep Gas City orchestration inactive and follow the manual
+worktree, branch, and physical checkout-local `.venv`; never implement in the
+primary/default checkout. During suspension, keep Gas City orchestration inactive and follow the manual
 boundary in `rules/coordination/gascity.md`. A separately selected and available
 canonical Beads service remains the tracker; suspension of orchestration alone does
 not suspend that service. Create no substitute ledger. Stop at `dev` unless the

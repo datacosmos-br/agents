@@ -23,8 +23,11 @@ discard that explicit selection.
    suspension, manual worktrees use native Git on the authorized destination filesystem;
    suspension does not prohibit worktrees or authorize any city, rig, Pack, agent,
    formula, run, or session orchestration action.
-3. Each worktree provisions its environment through its repository's setup owner.
-   Borrowed environments, `/tmp` placement, and backup/archive copies remain prohibited.
+3. `make setup` provisions only each worktree's physical, exclusively owned `.venv`.
+   External or borrowed environments, symlinks, cross-repository editable installs, and
+   inherited environment variables that redirect setup are prohibited. Caches and
+   temporary artifacts remain external. `/tmp` worktree placement and backup/archive
+   copies remain prohibited.
 4. Orchestration and tracker activation are resolved independently. A separately
    selected and available canonical Beads service remains authoritative. A suspended
    tracker is never replaced with another store or ledger.

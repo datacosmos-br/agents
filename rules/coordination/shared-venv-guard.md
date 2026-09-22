@@ -6,18 +6,17 @@ metadata:
 
 # Python environments are physical and checkout-local
 
-Use the repository's declared setup owner and interpreter. Each authorized checkout
-reconstructs its own physical environment.
+Use the repository's declared setup owner and interpreter. `make setup` provisions only
+`<workspace>/.venv`, a physical directory exclusively owned by that workspace. A worktree
+is its own workspace; its environment never resolves to the primary checkout.
 
 - Never borrow another checkout's environment through a symlink, path dependency,
   `PYTHONPATH`, editable-install path, or cross-repository reference.
-- A declared workspace may install its own members as editable path dependencies; that
-  is its setup owner, not borrowing. Every member then runs the working tree of every
-  sibling, so a sibling left on a feature branch silently changes the toolchain of all
-  of them and fails in a different repository than the one that moved. Prove the
-  checked-out branch of each editable sibling before diagnosing a toolchain failure, and
-  return a generator checkout to its integration branch in the same turn that inspected
-  it.
+- Never place the environment outside that workspace, install another repository as an
+  editable dependency, or let inherited environment variables route setup or execution
+  to another environment. Setup owns the checkout-local environment identity.
+- Caches and temporary artifacts remain outside the checkout; they are not Python
+  environments and must never become environment-sharing paths.
 - Never replace or clear a real environment while another process may own it.
 - Every manual task uses a dedicated Git worktree and branch, including while Gas City
   orchestration is suspended. Provision that worktree's own physical environment
