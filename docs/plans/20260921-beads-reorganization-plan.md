@@ -65,3 +65,25 @@ Cada bead é processada individualmente com:
 - Zero beads referenciando branches ou PRs inexistentes
 - Zero beads duplicando outras beads
 - Todas as beads stale/superadas fechadas com evidência
+
+## Registro de execução — rodada 2026-09-21 (noite)
+
+Validação item-a-item contra runtime real (grep/probe no código da tip + gates + scans):
+
+**Fechadas com evidência (10)**:
+- agents: `ag-vblj.5` (rota github mise-provisionada, binário em runtime), `ag-lw57.10` (staging dry-run/output implementado), `ag-lw57.5` (artefatos aihub exterminados dos homes), `ag-lw57.4` (one-release: recovery.conf ausente, units em runtime/current), `ag-bwqu` (_noop_acceptance 0 hits; AiHubNativeDeploymentAcceptance pousada)
+- ai-hub: `aihub-aooib` (AGENTS.md real no release instalado, 19967 bytes), `aihub-zj4l3` (check 20/20 failed=0; vermelho 22:04 era corrida com merge 202e603c5), `aihub-agfq7.11` (letras d/e/h/r/x vivas em flext_core; mypy/pyright 0), `aihub-agfq7.10` (AiHubSettingsSources(FlextSettings) pousado; runtime-census 0), `aihub-6o75i` (rota generate-configs wired → services/generate_configs.py)
+
+**Evidência atualizada em abertas (5)**: `ag-lw57.8` (resta 1 fail: test_concurrent_fragment_creation_is_never_overwritten), `ag-vblj.1` (censo 338 linhas de import direto), `ag-lw57.7` (references/ existe mas vazio), `aihub-73b244ef` (bloqueio sistêmico: mint de credencial falha em todo run pull_request), `aihub-636vd` (esta rodada)
+
+**Descobertas estruturais (novas beads flext)**:
+- `flext-yj3s0` (P1): gerador emite `flext-sh/flext` hardcoded no docs/index.md (`docs_render.py:220 _LINK_PREFIX_DOCS_INDEX = c.Infra.GITHUB_REPO_URL`) — termo que a própria auditoria proíbe fora do org flext-sh; fix = derivar do mapa governado `make.docs.github_repos`. Bloqueia o vermelho final do algar (14º issue de docs).
+- `flext-zxdl5` (P1): censo jscpd — 17 clones em `codegen/_conform/` (landlords misc.py/plan.py; consumidores beads_routes, docs_ownership, existing_plan, file_plans). algar/ai-hub/agents PASS 0 no mesmo gate.
+
+**Diagnóstico publicado**: PR #836 ai-hub (release dev→main) — dois bloqueios: mint de credencial em contexto PR (Sprint-G) + skew de pins flext entre main e dev no merge-ref (gen ImportError `mp`).
+
+**Estado de gates na rodada**: ai-hub check interno 20/20 failed=0 (único vermelho = post-check de homes = deploy pendente, cadeia aihub-oig6s); algar gen/docs em fixed-point com cadeia I001+13/14 docs fixes no worktree (14º aguarda flext-yj3s0); algar/ai-hub/agents duplication PASS 0.
+
+**Segurança (scan Mimosa deep, selado)**: algar 0 findings (249 pacotes, seal 216b458f), ai-hub 0 findings (406 pacotes, seal 87a3f2b2); programa semgrep flext-p57t COMPLETO (0 abertas, PR #793 mergeada). SonarQube 2wjm.* (P2) e flext-z89p (P1) permanecem como programa contínuo.
+
+**Hierarquia verificada**: clusters B/C/D/E/G (aihub-4b4rr et al) corretamente parentados ao épico aihub-z82dg com dependências reais — sem órfãos. Semgrep/SonarQube fora da hierarquia de épicos (protocolo bugfix/hotfix respeitado).
