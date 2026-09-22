@@ -1,7 +1,7 @@
 ---
 description: Python environments are physical and checkout-local
 metadata:
-  aihub.tags: '["decision:ADR-0008","effective:2026-08-30","route:both"]'
+  aihub.tags: '["decision:ADR-0025","effective:2026-09-22","route:both"]'
 ---
 
 # Python environments are physical and checkout-local
@@ -19,8 +19,10 @@ reconstructs its own physical environment.
   return a generator checkout to its integration branch in the same turn that inspected
   it.
 - Never replace or clear a real environment while another process may own it.
-- While orchestration is suspended, use only the environment already owned by the
-  existing authorized checkout; create no clone, worktree, or alternate workspace.
+- Every manual task uses a dedicated Git worktree and branch, including while Gas City
+  orchestration is suspended. Provision that worktree's own physical environment
+  through its canonical setup surface; never implement in the primary/default checkout
+  or borrow its environment. Suspension does not forbid native Git worktrees.
 - Missing or stale environment state is red. Repair it through the repository's
   canonical setup surface only when that mutation is authorized.
 

@@ -1,7 +1,7 @@
 ---
 description:
   One discovery frontier and one retirement executor for worktrees — the project wip
-  program plans, the resident executor retires, Gas City places
+  program plans, the resident executor retires, the activation boundary owns placement
 capsule_summary: |
   Universal law (operator mandate 2026-09-19): a dedicated worktree exists to be
   discovered, measured, and — when its grain ends — retired. That lifecycle has exactly
@@ -11,11 +11,12 @@ capsule_summary: |
   capture/plan/retire surface in the doc-10 vocabulary). Retirement's resident executor
   consumes the SAME candidate queue the wip planner produces; a second surface planning
   retirement over the same worktrees with a different policy is a defect. Placement and
-  provisioning stay with Gas City; ad-hoc `git worktree` remains drift. Orphan/husk
+  provisioning follow the Gas City activation boundary: active orchestration uses its
+  owner; manual execution uses dedicated native Git worktrees. Orphan/husk
   worktrees are in the project discovery's scope; rig runtime worktrees and foreign
   same-origin clones are excluded unless an explicit flag includes them.
 metadata:
-  aihub.tags: '["decision:ADR-0023","effective:2026-09-19","route:personal"]'
+  aihub.tags: '["decision:ADR-0025","effective:2026-09-22","route:personal"]'
 ---
 
 # Worktree discovery and maintenance frontier
@@ -35,9 +36,12 @@ forbids.
    queue the wip planner produces. Two surfaces planning retirement over the same
    worktrees with different policies — for example merge-state versus an activity
    window — are forbidden: they double-retire or diverge.
-3. **Placement is not discovery.** Provisioning and placement stay with Gas City
-   (`coordination/gascity.md`); ad-hoc `git worktree` remains drift. Discovery reads the
-   project's own registration and measurement surfaces, never a hand-maintained list.
+3. **Placement is not discovery.** Provisioning and placement follow
+   `coordination/gascity.md`: active Gas City orchestration uses its transactional
+   owner; manual execution uses a dedicated native Git worktree, branch, and physical
+   environment on the authorized destination filesystem. Suspension never authorizes
+   implementation in the primary/default checkout. Discovery reads the project's own
+   registration and measurement surfaces, never a hand-maintained list.
 4. **Scope.** Orphan/husk worktrees with no registration entry are inside the project
    discovery's scope. Rig runtime worktrees (Gas City runtime state) and foreign
    same-origin clones are excluded unless an explicit flag includes them.
