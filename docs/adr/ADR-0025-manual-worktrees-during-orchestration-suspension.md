@@ -32,9 +32,10 @@ discard that explicit selection.
    integration ancestry proof, runtime proof, and retirement of the dedicated worktree
    remain mandatory under their existing owners.
 
-This decision supersedes the suspension and manual-placement restrictions in
-[ADR-0008](ADR-0008-governance-bundle-as-public-facade.md) and the
-unconditional Gas City placement wording in
+This decision replaces the suspension and manual-placement restrictions in rules
+previously approved under
+[ADR-0008](ADR-0008-governance-bundle-as-public-facade.md), and the unconditional Gas
+City placement wording in
 [ADR-0023](ADR-0023-worktree-discovery-maintenance-frontier.md). The discovery frontier,
 single retirement executor, active-city placement contract, and historical evidence
 remain unchanged.
