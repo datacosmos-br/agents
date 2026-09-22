@@ -16,7 +16,7 @@ branch by reviewed non-FF merge. Preserve attribution and revalidate the integra
 result.
 
 Keep repository scope within the operator's authorization. Every manual task uses a
-dedicated native Git worktree and branch under `coordination/gascity.md`; never
+dedicated native Git worktree and branch per `rules/coordination/gascity.md`; never
 implement in the primary/default checkout. Do not invoke suspended orchestration or a
 suspended tracker. Orchestration suspension alone leaves an independently selected and
 available canonical Beads service usable. If the tracker is suspended, create no

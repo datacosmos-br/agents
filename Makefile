@@ -43,7 +43,7 @@ gen: ## project the governance capsule into provider hooks and instruction files
 	@uv run python tools/sync_governance.py
 
 ## development gates
-check: ## run every applicable non-test gate
+check: ## run package non-test gates; host CRG acceptance uses make crg-check
 	$(call BANNER,check · complete non-test gate composition)
 	@$(MAKE) docs
 	@$(MAKE) static
@@ -142,7 +142,7 @@ test-full: ## run incremental then all tests through the same cache
 	$(call RUN_TESTMON,full)
 
 ## complete offline composition
-ci: ## run every gate in runtime-first order
+ci: ## run package gates and cached tests; host CRG acceptance uses make crg-check
 	@$(MAKE) check
 	@$(MAKE) test-full
 

@@ -37,7 +37,7 @@ forbids.
    worktrees with different policies — for example merge-state versus an activity
    window — are forbidden: they double-retire or diverge.
 3. **Placement is not discovery.** Provisioning and placement follow
-   `coordination/gascity.md`: active Gas City orchestration uses its transactional
+   `rules/coordination/gascity.md`: active Gas City orchestration uses its transactional
    owner; manual execution uses a dedicated native Git worktree, branch, and physical
    environment on the authorized destination filesystem. Suspension never authorizes
    implementation in the primary/default checkout. Discovery reads the project's own
