@@ -1,7 +1,7 @@
 ---
 description: An approved plan owns its topic
 metadata:
-  aihub.tags: '["decision:ADR-0008","effective:2026-09-14","route:both"]'
+  aihub.tags: '["decision:ADR-0025","effective:2026-09-22","route:both"]'
 ---
 
 # An approved plan owns its topic
@@ -15,9 +15,13 @@ When required work has not reached the integration branch, adopt it into the own
 branch by reviewed non-FF merge. Preserve attribution and revalidate the integrated
 result.
 
-Do not expand to another repository, create a workspace, or invoke a suspended
-orchestration/tracker runtime. During suspension, create no substitute tracker or ledger
-and preserve evidence only in separately authorized Git/PR/CI.
+Keep repository scope within the operator's authorization. Every manual task uses a
+dedicated native Git worktree and branch per `rules/coordination/gascity.md`; never
+implement in the primary/default checkout. Do not invoke suspended orchestration or a
+suspended tracker. Orchestration suspension alone leaves an independently selected and
+available canonical Beads service usable. If the tracker is suspended, create no
+substitute tracker or ledger and preserve evidence only in separately authorized
+Git/PR/CI.
 
 A diagnosis that ends in a verified-healthy service is complete, not a mandate to
 improve it. When a service functions in the current session — including through a scoped

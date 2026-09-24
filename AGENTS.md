@@ -74,9 +74,13 @@ bundle load before adapting tests.
 
 ### Lifecycle
 
-Gas City owns workspace placement; `gc status` is the effective-state authority. While
-the city or this rig is suspended, work only in this existing checkout, invoke no Gas
-City or Beads mutation, and create no substitute ledger. Stop at `dev` unless the
+Gas City owns workspace placement while its orchestration is active; `gc status` is
+the effective-state authority. Every manual execution uses a dedicated native Git
+worktree, branch, and physical checkout-local `.venv`; never implement in the
+primary/default checkout. During suspension, keep Gas City orchestration inactive and follow the manual
+boundary in `rules/coordination/gascity.md`. A separately selected and available
+canonical Beads service remains the tracker; suspension of orchestration alone does
+not suspend that service. Create no substitute ledger. Stop at `dev` unless the
 operator explicitly authorizes promotion. No increment is DONE without required gates,
 reviewed merge-commit landing, post-merge public runtime proof, and canonical tracker
 closure.
