@@ -1,7 +1,7 @@
 ---
 description: Execute lane work only through selector-free root Make verbs
 metadata:
-  aihub.tags: '["decision:ADR-0026","effective:2026-09-24","route:both"]'
+  aihub.tags: '["decision:ADR-0027","effective:2026-09-24","route:both"]'
 ---
 
 # Execute a lane through its root Makefile

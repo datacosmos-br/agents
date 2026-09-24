@@ -18,7 +18,7 @@ capsule_summary: |
   Orphan/husk worktrees are in the project discovery's scope; rig runtime worktrees and
   foreign same-origin clones are excluded unless an explicit flag includes them.
 metadata:
-  aihub.tags: '["decision:ADR-0026","effective:2026-09-24","route:personal"]'
+  aihub.tags: '["decision:ADR-0027","effective:2026-09-24","route:personal"]'
 ---
 
 # Worktree discovery and maintenance frontier
