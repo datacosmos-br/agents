@@ -1,7 +1,7 @@
 ---
 description: A declared fleet tool owns its job; code that reimplements it is the defect
 metadata:
-  aihub.tags: '["decision:ADR-0026","effective:2026-09-24","route:both"]'
+  aihub.tags: '["decision:ADR-0027","effective:2026-09-24","route:both"]'
 ---
 
 # A declared fleet tool owns its job; reimplementing it is the defect

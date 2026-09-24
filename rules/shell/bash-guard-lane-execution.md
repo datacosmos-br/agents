@@ -1,18 +1,17 @@
 ---
 description: Execute lane work only through selector-free root Make verbs
 metadata:
-  aihub.tags: '["decision:ADR-0008","effective:2026-09-16","route:both"]'
+  aihub.tags: '["decision:ADR-0027","effective:2026-09-24","route:both"]'
 ---
 
 # Execute a lane through its root Makefile
 
-Work from the session's own worktree: its working directory is the lane root. Run
-`git <verb>` and `make <public-verb>` there as plain commands. Claude Code worktree
-isolation refuses `git -C <path>` and `env -C <path> make <verb>` when the path is not
-the session's own worktree, so never use those forms, a `cd`, or `make -C` to reach
-another checkout. Run the tracker CLI from the project home through the project's
-environment loader. Each verb performs its declared operation without an apply
-selector; do not substitute an underlying tool or a
+Run `git <verb>` and `make <public-verb>` against the lane root. From the session's own
+worktree they run as plain commands; a lane in another checkout or repository is reached
+with the owner-directed forms `git -C <lane> <verb>` and `env -C <lane> make <verb>`.
+Never `cd` into another checkout or use `make -C`. Run the tracker CLI from the project
+home through the project's environment loader. Each verb performs its declared operation
+without an apply selector; do not substitute an underlying tool or a
 Git/provider/package CLI for a root Make diagnostic, validation, generation, test,
 publication, or deployment verb.
 

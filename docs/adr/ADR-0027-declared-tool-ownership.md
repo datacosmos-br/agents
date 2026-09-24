@@ -1,4 +1,4 @@
-# ADR-0026 — A declared fleet tool owns its job; reimplementing it is the defect
+# ADR-0027 — A declared fleet tool owns its job; reimplementing it is the defect
 
 **Status:** Accepted **Date:** 2026-09-24 **Scope:**
 `rules/workflow/declared-tool-ownership.md`
