@@ -43,14 +43,13 @@ gen: ## project the governance capsule into provider hooks and instruction files
 	@uv run python tools/sync_governance.py
 
 ## development gates
-check: ## run every applicable non-test gate
+check: ## run package non-test gates; host CRG acceptance uses make crg-check
 	$(call BANNER,check · complete non-test gate composition)
 	@$(MAKE) docs
 	@$(MAKE) static
 	@$(MAKE) mod-check
 	@$(MAKE) conform
 	@$(MAKE) waza
-	@$(MAKE) crg-check
 	@$(MAKE) runtime
 
 docs: ## validate documentation through the public bundle contract
@@ -71,7 +70,8 @@ waza: ## validate provider-neutral skill suites with Waza
 
 crg-check: ## verify CRG policy convergence across governed workspaces (ai-hub sync-crg-workspaces --check)
 	$(call BANNER,crg-check · CRG policy drift gate (ag-nq7q))
-	@if command -v ai-hub >/dev/null 2>&1; then ai-hub sync-crg-workspaces --check; else echo "crg-check: ai-hub CLI not on PATH — skipping (binding where the ai-hub runtime is installed)"; fi
+	@ai-hub sync-crg-workspaces --check
+	@printf '%s\n' 'CRG workspace policies and watch configuration verified.'
 
 static: ## lint, formatting, and Python type analysis
 	$(call BANNER,static · ruff + pyright + mypy)
@@ -142,7 +142,7 @@ test-full: ## run incremental then all tests through the same cache
 	$(call RUN_TESTMON,full)
 
 ## complete offline composition
-ci: ## run every gate in runtime-first order
+ci: ## run package gates and cached tests; host CRG acceptance uses make crg-check
 	@$(MAKE) check
 	@$(MAKE) test-full
 

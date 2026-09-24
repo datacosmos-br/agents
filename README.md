@@ -31,6 +31,7 @@ make setup
 make audit
 make check
 make runtime
+make crg-check
 make waza
 make static
 make conform
@@ -52,6 +53,13 @@ uses testmon no-selection rather than bypassing cache collection. CI invokes the
 Make owners. The Waza gate proves the projected suite schema, every skill/evaluation
 reference, the exact spec threshold, and token ceilings; model execution belongs to a
 selected AI Hub runtime and is not claimed by this package.
+
+`make check` and `make ci` validate the immutable package without requiring the host's
+AI Hub runtime. Under [ADR-0010](docs/adr/ADR-0010-optional-host-runtime-boundary.md),
+host CRG convergence is a separate, mandatory installed-integration acceptance step:
+run `make crg-check` alongside the package gates on the selected host. That explicit
+verb requires the public `ai-hub` command and propagates any missing command or policy
+failure. Remote package CI proves the package; it never claims host CRG convergence.
 
 Release sdists and wheels contain every resource required by `GovernanceBundle.load()`:
 configuration, skills, semantic skill evals, rules, commands, agents, the strict prelude
