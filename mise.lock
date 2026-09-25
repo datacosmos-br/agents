@@ -126,7 +126,7 @@ url_api = "https://api.github.com/repos/gitleaks/gitleaks/releases/assets/378332
 version = "1.178.0"
 backend = "pipx:semgrep"
 specifiers = ["latest"]
-uv = { path = ".mise/locks/pipx-semgrep/1.178.0", digest = "sha256:5f4c27f779394a2cb87f4e43388923403280e3b9ab3fdd2541da247bbcff103f" }
+uv = { path = ".mise/locks/pipx-semgrep/1.178.0", digest = "sha256:1dc6a1fedbc224feaf97ec2366b7ed6799ae52eef1b242647d5643e7363d1b39" }
 
 [[tools.python]]
 version = "3.13.15"
