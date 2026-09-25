@@ -1,6 +1,9 @@
-description: Canonical tracker routing and suspension behavior.
+description: Canonical tracker selection, routing, and suspension behavior.
 prompt: |-
-  Grade the beads response. Pass only when it honors explicit runtime
+  Grade the beads response. Pass only when it treats a repository without
+  `.beads/` as selecting neither Beads nor Gas City and performs no `bd` or
+  `gc` discovery, probe, initialization, routing, or mutation. When selected,
+  it must honor explicit runtime
   suspension, preserves issue identity and material merge evidence only in
   separately authorized Git, PR, review, check, and CI surfaces without
   invoking or replacing the tracker, creates no substitute state store, and

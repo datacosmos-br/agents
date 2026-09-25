@@ -3,8 +3,8 @@ name: Validate a suspended workspace placement
 description: Derive the workspace contract without invoking runtime.
 tags: [gascity, workspace, city, rig, pack, placement, happy-path]
 inputs:
-  prompt: Review city.toml and produce a static placement assessment for the ledger rig. Identify the declared city, pinned Pack V2 import, agent, formula, provider-selected physical workspace, and the run/session evidence that would be required after suspension is lifted. Do not execute or propose an active command now.
+  prompt: Review city.toml and the declared repository .beads boundary, then produce a static placement assessment for the ledger rig. Identify the declared city, pinned Pack V2 import, agent, formula, provider-selected physical workspace, canonical Beads store, and the run/session evidence that would be required after suspension is lifted. Do not execute or propose an active command now.
   files:
   - path: city.toml
 expected:
-  output_contains: [atlas, ledger, managed-workspaces/ledger, suspended, without Beads]
+  output_contains: [atlas, ledger, managed-workspaces/ledger, suspended, canonical Beads store]

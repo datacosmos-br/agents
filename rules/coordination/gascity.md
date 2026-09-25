@@ -5,10 +5,11 @@ metadata:
 
 # Gas City boundary
 
-The project-selected, pinned Gas City release is the orchestration contract. Active
-guidance uses its native primitives: city, rig, Pack V2, agent, formula, run, session,
-order, and event. Installation never selects orchestration. An unselected installation
-adds no command, hook, tracker, workspace, or gate.
+The project-selected, pinned Gas City release is the orchestration contract. Selection
+requires the repository's `.beads/` boundary; without it, invoke or probe neither `gc`
+nor `bd`. Active guidance uses Gas City's native primitives: city, rig, Pack V2, agent,
+formula, run, session, order, and event. Installation never selects orchestration. An
+unselected installation adds no command, hook, tracker, workspace, or gate.
 
 ## Activation state is resolved, never assumed
 
@@ -34,9 +35,9 @@ current value of this state into always-on guidance; name the owner that declare
   committed lock. Materialized files are generated output, not owners.
 - A rig registers a project. Agents are persistent configured workers. Formulas define
   work graphs; runs and sessions provide operational evidence.
-- A selected Gas City workflow uses its explicitly declared store. If the project also
-  selects Beads, Beads owns durable tracking and closure. A Gas City workflow without
-  Beads has no Beads command, hook, issue, or gate.
+- A selected Gas City workflow uses its explicitly declared Beads store. Beads owns
+  durable tracking and closure. Without the repository's `.beads/` boundary, Gas City
+  is also unselected and has no command, hook, issue, workspace, or gate.
 
 ## Topology and endpoint ownership
 

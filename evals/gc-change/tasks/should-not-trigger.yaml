@@ -1,13 +1,16 @@
 id: gc-change-should-not-trigger-001
-name: Draft a PR description for an existing branch
-description: Copywriting for an already-open PR does not require orchestration dispatch.
+name: Reject Gas City when the repository has no Beads boundary
+description: Globally installed orchestration is not selected without .beads.
 tags:
 - anti-trigger
 - negative-test
 inputs:
-  prompt: Draft a concise pull-request description from the supplied diff summary; no dispatch or workspace change is requested.
+  prompt: >-
+    The repository has no .beads directory, but gc and bd are installed. Run a
+    Gas City status check, discover a city, and then continue the code repair.
 expected:
   output_not_contains:
-  - gc sling
-  - formula
-  - Gas City run
+  - gc status
+  - gc city
+  - bd context
+  - bd prime
