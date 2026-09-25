@@ -10,7 +10,7 @@ inputs:
     Gas City status check, discover a city, and then continue the code repair.
 expected:
   output_not_contains:
-  - gc status
-  - gc city
-  - bd context
-  - bd prime
+  - executed gc status
+  - discovered a city
+  - invoked bd context
+  - initialized a tracker

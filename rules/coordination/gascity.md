@@ -37,7 +37,7 @@ current value of this state into always-on guidance; name the owner that declare
   work graphs; runs and sessions provide operational evidence.
 - A selected Gas City workflow uses its explicitly declared Beads store. Beads owns
   durable tracking and closure. Without the repository's `.beads/` boundary, Gas City
-  is also unselected and has no command, hook, issue, workspace, or gate.
+  is also unselected and has no command, hook, tracker, workspace, or gate.
 
 ## Topology and endpoint ownership
 

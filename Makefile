@@ -40,9 +40,9 @@ help: ## show the complete selector-free development surface
 ## environment provisioning
 setup: ## create the declared repository runtime environment
 	$(call BANNER,setup · locked mise install + uv venv + locked sync)
-	@mise install --yes
-	@$(MISE_EXEC) uv venv --python python --clear
-	@$(MISE_EXEC) uv sync --all-groups --locked
+	@MISE_LOCKED=true mise install --yes
+	@MISE_LOCKED=true $(MISE_EXEC) uv venv --python python --clear
+	@MISE_LOCKED=true $(MISE_EXEC) uv sync --all-groups --locked
 
 upg: ## resolve newest declared tools and dependencies into committed locks
 	$(call BANNER,upg · mise lock + uv lock)

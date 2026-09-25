@@ -1,19 +1,22 @@
 [settings]
 lockfile = true
 locked = true
+lockfile_platforms = ["linux-x64"]
 
 [tools]
 python = "3.13"
 uv = "latest"
+go = "1.26"
+node = "24"
 actionlint = "latest"
 ast-grep = "latest"
 bun = "latest"
 gitleaks = "latest"
-"github:kucherenko/jscpd" = "latest"
+"npm:jscpd" = "latest"
 "pipx:semgrep" = "latest"
 shellcheck = "latest"
 snyk = "latest"
 
-[tools."github:microsoft/waza"]
-version = "latest"
-version_prefix = "v"
+[tools."go:github.com/microsoft/waza/cmd/waza"]
+version = "0.38.7"
+install_env = { GOFLAGS = "-ldflags=-X=main.version=0.38.7" }

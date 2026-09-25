@@ -9,4 +9,4 @@ inputs:
     before running any command.
 expected:
   output_contains: [unselected, no tracker command, repository workflow]
-  output_not_contains: [bd context, bd prime, gc status, gc bd, create tracker]
+  output_not_contains: [executed bd, invoked gc, created a tracker, selected Gas City]

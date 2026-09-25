@@ -18,10 +18,13 @@ workflow.
 Read the active repository instructions for the scope under work and resolve one mode
 before any tracker action:
 
-- **Unselected:** when the repository has no `.beads/` directory, perform no Beads or
+- **Boundary absent:** when the repository has no `.beads/` directory, perform no Beads or
   Gas City discovery, status, context, health, initialization, routing, or mutation.
   Continue through the repository's authorized non-tracker workflow; absence is not a
   tracker failure and creates no unresolved tracker closure requirement.
+- **Workflow unselected:** when `.beads/` exists but the project or current workflow does
+  not select Beads, perform no tracker discovery, status, context, health,
+  initialization, routing, or mutation. The boundary alone grants no tracker action.
 - **Available:** record and query execution state only through the declared tracker
   owner, verified through its documented interface. Never select an endpoint, database,
   or prefix by inference.
