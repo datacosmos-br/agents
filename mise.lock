@@ -90,7 +90,7 @@ specifiers = ["latest"]
 version = "1.178.0"
 backend = "pipx:semgrep"
 specifiers = ["latest"]
-uv = { path = ".mise/locks/pipx-semgrep/1.178.0", digest = "sha256:68da45e4591f3eea5ad582ddf9e7b8226728dcc24d5c861505768393201b8e80" }
+uv = { path = ".mise/locks/pipx-semgrep/1.178.0", digest = "sha256:49bd64ffdfe3d3527bb8897b3ff949b4f5a1f7e4ae76b59d71a31e90dc96063d" }
 
 [[tools.python]]
 version = "3.13.15"
