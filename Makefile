@@ -14,9 +14,16 @@ override export PYRIGHT_PYTHON_CACHE_DIR := $(PYRIGHT_CACHE_ROOT)
 override export WAZA_STATE_ROOT := $(WAZA_STATE_ROOT)
 override export UV_PROJECT_ENVIRONMENT := $(CURDIR)/.venv
 override export VIRTUAL_ENV := $(CURDIR)/.venv
+override export GIT_CEILING_DIRECTORIES := $(abspath $(CURDIR)/..)
+override export MISE_CEILING_PATHS := $(abspath $(CURDIR)/..)
+override export MISE_GLOBAL_CONFIG_FILE := $(CURDIR)/config/mise-isolation.toml
+override export MISE_SYSTEM_CONFIG_FILE := $(CURDIR)/config/mise-isolation.toml
+override export MISE_OVERRIDE_CONFIG_FILENAMES := .mise.toml
+override export MISE_OVERRIDE_TOOL_VERSIONS_FILENAMES := none
+unexport UV_PYTHON
 
 .DEFAULT_GOAL := help
-.PHONY: help setup gen docs audit check runtime waza crg-check static conform fmt fix mod mod-check shell duplication build test test-full ci validate-artifacts publish
+.PHONY: help setup upg gen docs audit check runtime waza crg-check static conform fmt fix mod mod-check shell duplication build test test-full ci validate-artifacts publish
 .DELETE_ON_ERROR:
 
 define BANNER
@@ -32,10 +39,16 @@ help: ## show the complete selector-free development surface
 
 ## environment provisioning
 setup: ## create the declared repository runtime environment
-	$(call BANNER,setup · mise install + uv venv + sync)
-	@mise install
-	@uv venv --clear
-	@uv sync --all-groups
+	$(call BANNER,setup · locked mise install + uv venv + locked sync)
+	@MISE_LOCKED=true mise install --yes
+	@MISE_LOCKED=true $(MISE_EXEC) uv venv --python python --clear
+	@MISE_LOCKED=true $(MISE_EXEC) uv sync --all-groups --locked
+
+upg: ## resolve newest declared tools and dependencies into committed locks
+	$(call BANNER,upg · mise lock + uv lock)
+	@mise lock --bump
+	@MISE_LOCKED=false $(MISE_EXEC) uv lock --upgrade --refresh
+	@MISE_LOCKED=false $(MISE_EXEC) uv sync --all-groups --locked
 
 ## generation + mutation
 gen: ## project the governance capsule into provider hooks and instruction files

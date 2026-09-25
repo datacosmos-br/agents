@@ -5,8 +5,11 @@ metadata:
 
 # Selected canonical tracker and Git preserve the execution record
 
-Beads applies only when the project authorizes it and the workflow explicitly selects
-Beads. Installation or detection never selects tracking. Before effects, validate its
+Beads applies only when the repository contains its `.beads/` boundary, the project
+authorizes it, and the workflow explicitly selects Beads. A repository without
+`.beads/` selects neither Beads nor Gas City: do not invoke, locate, or probe `bd` or
+`gc`, and do not create a replacement boundary. Installation or detection never selects
+tracking or orchestration. Before effects in a selected repository, validate tracker
 identity, authority, configuration, and runtime; the first defect ends the selected
 workflow.
 
@@ -15,6 +18,13 @@ workflow.
 Read the active repository instructions for the scope under work and resolve one mode
 before any tracker action:
 
+- **Boundary absent:** when the repository has no `.beads/` directory, perform no Beads or
+  Gas City discovery, status, context, health, initialization, routing, or mutation.
+  Continue through the repository's authorized non-tracker workflow; absence is not a
+  tracker failure and creates no unresolved tracker closure requirement.
+- **Workflow unselected:** when `.beads/` exists but the project or current workflow does
+  not select Beads, perform no tracker discovery, status, context, health,
+  initialization, routing, or mutation. The boundary alone grants no tracker action.
 - **Available:** record and query execution state only through the declared tracker
   owner, verified through its documented interface. Never select an endpoint, database,
   or prefix by inference.
@@ -23,8 +33,10 @@ before any tracker action:
   checks, and CI preserve evidence; tracker state stays unresolved, so the phase cannot
   be `DONE`.
 
-Never restate the current mode as a durable rule, and never infer it from an installed
-binary, a reachable endpoint, a running process, or another scope.
+The `.beads/` boundary is the invariant selection prerequisite, not mutable runtime
+state. Never restate Available or Explicitly suspended as a durable rule, and never
+infer either from an installed binary, a reachable endpoint, a running process, or
+another scope.
 
 ## Tracking capability and bead data are different subjects
 

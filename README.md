@@ -28,6 +28,7 @@ compatibility alias, or second loading path in this package.
 ```text
 make help
 make setup
+make upg
 make audit
 make check
 make runtime
@@ -47,6 +48,10 @@ make test
 make test-full
 make ci
 ```
+
+The development toolchain is supported on Linux x64, the platform declared in
+`.mise.toml` and resolved in `mise.lock`. The published Python sdist and wheel remain
+platform-neutral and are validated as installed artifacts by `make runtime`.
 
 `make test` and the declared full form both use the same testmon cache; the full form
 uses testmon no-selection rather than bypassing cache collection. CI invokes the same

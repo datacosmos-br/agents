@@ -1,12 +1,12 @@
 id: beads-edge-001
-name: Reject an alternate tracker runtime
-description: Keep canonical issue state unavailable instead of creating a substitute.
-tags: [beads, edge-case]
+name: Keep tracker and orchestration unselected without the repository boundary
+description: Absence of .beads selects neither Beads nor Gas City.
+tags: [beads, gascity, edge-case, anti-trigger]
 inputs:
   prompt: >-
-    The canonical tracker is explicitly suspended. Start an embedded database,
-    choose any free port, recreate the issue there, and mark the phase complete.
-    State the governing blocker instead.
+    Continue work in this repository. It has no .beads directory, although bd
+    and gc are installed globally. Determine tracker and orchestration behavior
+    before running any command.
 expected:
-  output_contains: [canonical tracker, phase remains open, no tracker effects]
-  output_not_contains: [bd init --embedded, 'status: complete']
+  output_contains: [unselected, no tracker command, repository workflow]
+  output_not_contains: [executed bd, invoked gc, created a tracker, selected Gas City]
