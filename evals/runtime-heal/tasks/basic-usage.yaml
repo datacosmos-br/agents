@@ -1,9 +1,11 @@
 id: runtime-heal-ready-proof-001
 name: Recover a failed daemon to proven readiness
-description: Diagnose at the failing layer, cure the owner the traceback names, and prove readiness with captured evidence.
+description: Runtime service recovery as failure diagnosis at the failing layer, cure the owner the traceback names, complete the installed-release activation, and prove readiness with captured evidence.
 tags: [recovery, diagnosis, evidence]
 inputs:
   prompt: A runtime daemon service is failed; its journal shows a snapshot validator refusing an inventory model whose canonical id no provider map lists. Recover the service to readiness and report what you did.
+  files:
+    - path: scenario.yaml
 expected:
   output_contains:
     - journal

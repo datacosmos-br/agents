@@ -1,0 +1,32 @@
+service:
+  name: ai-hub-model-pipeline
+  unit_state: failed
+  activated_release: 0.5.0+2b7ad5ac4bc9
+journal_excerpt: |
+  pydantic_core.ValidationError: 1 validation error for ModelPipelineSnapshotV3
+    Value error, snapshot inventory model has no resolved catalog model:
+    claude/claude-3-5-haiku-20241022 [type=value_error]
+  systemd[1111]: ai-hub-model-pipeline.service: Main process exited, code=exited, status=1/FAILURE
+tracker:
+  runtime: available
+  active_issue: aihub-l42it
+  heartbeat_recorded: recovery chain, measured commands, and the failing layer's owner
+operator_decision: Reach READY=1 with zero suppressed findings; a normalizing fix is red, the owner-cured fix is green.
+code_truth: >
+  The inventory route is real (its credential is live) but the provider map
+  lists no route facts for the retired id; the routing fallback resolves the
+  route from the canonical entry instead of dropping it, and the provenance
+  model accepts the emitter's declared unstamped sentinel. The activated
+  release predates both cures, so it publishes nothing and the install probe
+  refuses to activate a replacement while the publication is absent.
+native_evidence:
+  command: make install
+  cwd: recovery lane at the integration tip carrying both cures
+  exit_code: 0
+  decisive_output: custom-install probe passes; second install run produces a zero diff; active.json exists with an advanced generation.
+instruction: >
+  Runtime service recovery, failure diagnosis at the named owner, and the
+  installed-release activation path: diagnose from the journal excerpt, name
+  the failing layer and its owner, recover the service through the declared
+  verbs without bypassing or suppressing the validator, and prove readiness
+  with captured commands.
