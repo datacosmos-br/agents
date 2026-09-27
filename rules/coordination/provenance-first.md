@@ -1,8 +1,7 @@
 ---
 description: Provenance before conclusion
 metadata:
-  aihub.tags: '["decision:ADR-0007","effective:2026-09-03","route:both","supersedes:rule:coordination/provenance-before-conclusion"]'
----
+  aihub.tags: '["decision:ADR-0007","effective:2026-09-03","route:both"]'edes: `coordination/provenance-before-conclusion`
 
 # Provenance before conclusion
 
