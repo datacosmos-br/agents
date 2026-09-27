@@ -6,7 +6,7 @@ tools:
   - Grep
   - Bash
 metadata:
-  aihub.tags: '["activation:always","decision:ADR-0021","effective:2026-09-27","mode:review"]'
+  aihub.tags: '["activation:opt-in","decision:ADR-0021","detect:opt-in:session-postmortem","effective:2026-09-27","mode:review"]'
 ---
 
 You are a session post-mortem auditor. You audit ONE agent session against the
