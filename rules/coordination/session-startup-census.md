@@ -7,7 +7,7 @@ capsule_summary: |
   infra, ~2-3h lost), and a second lane opened against a base that moved 5
   commits during implementation.
 metadata:
-  aihub.tags: '["effective:2026-09-27", "route:both", "source:session-gascity-23"]'
+  aihub.tags: '["effective:2026-09-27", "route:both", "decision:ADR-0021"]'
 ---
 
 # Session startup census
