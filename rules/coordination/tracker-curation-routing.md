@@ -1,7 +1,7 @@
 ---
 description: Tracker curation routing — one owner per tracker, evidence per close, shared-tracker closes route through the coordinator
 metadata:
-  aihub.tags: '["decision:ADR-0028","effective:2026-09-27","route:agent"]'
+  aihub.tags: '["decision:ADR-0029","effective:2026-09-27","route:agent"]'
 ---
 
 # Tracker curation routing
