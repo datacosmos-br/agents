@@ -1,3 +1,9 @@
+---
+description: Acting rules for agent sessions working the mcb project.
+metadata:
+  aihub.tags: '["decision:ADR-0021","effective:2026-09-27","route:project"]'
+---
+
 # mcb session operating rules
 
 Acting rules for any agent session working `marlonsc/mcb` (distilled from
