@@ -11,7 +11,10 @@ capsule_summary: |
   The durable fix is the trusted_config_paths SETTING, persisted in
   ~/.config/mise/settings.toml — path-based, rewrite-proof.
 metadata:
-  aihub.tags: '["decision:ADR-0021","effective:2026-09-27","route:project"]'th-based, not hash-based
+  aihub.tags: '["decision:ADR-0021","effective:2026-09-27","route:project"]'
+---
+
+# mise config trust is path-based, not hash-based
 
 ## The two failure shapes this rule exists for
 
