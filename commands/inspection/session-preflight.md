@@ -1,6 +1,6 @@
 ---
 name: session-preflight
-description: "Read-only multi-agent preflight before any implementation: coordination thread, bead ownership, open PRs, worktree inventory — run this before writing code in a shared fleet."
+description: "Run the read-only multi-agent preflight sweep before implementing in a shared fleet."
 argument-hint: "[repository path]"
 metadata:
   aihub.tags: '["effective:2026-09-27","route:agent","usage:on-demand"]'
@@ -8,10 +8,10 @@ metadata:
 
 # Session preflight
 
-Run this read-only sweep before writing any code in a fleet workspace. It
-exists because every measured failure of 2026-09-27 started with a session
-that skipped it: discovering concurrent work by collision, closing beads in
-shared trackers, building on stale lanes, re-implementing landed work.
+Read-only sweep before writing any code in a fleet workspace. It exists
+because every measured failure of 2026-09-27 started with a session that
+skipped it: discovering concurrent work by collision, closing beads in shared
+trackers, building on stale lanes, re-implementing landed work.
 
 1. Read the coordination thread first: `gc mail inbox` from a direnv-enabled
    repository; peek every message younger than your session. Your task may have
