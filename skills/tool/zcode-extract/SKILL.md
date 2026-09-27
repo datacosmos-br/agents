@@ -1,11 +1,11 @@
 ---
-name: zcode-session-extract
+name: zcode-extract
 description: "zcode session extraction, rollout jsonl, private conversation evidence"
 metadata:
   aihub.tags: '["activation:opt-in","decision:ADR-0008","detect:opt-in:zcode","effective:2026-09-27","route:agent","subject:agents","usage:router"]'
 ---
 
-# ZCode Session Extract
+# ZCode Extract
 
 Activate for an explicit request to inspect or resume a ZCode session. Resolve the
 workspace and session identity from the operator or authenticated local task metadata.
@@ -33,8 +33,9 @@ python extract_zcode_session.py extract --session-id <id> < authenticated-rollou
 
 The result contains all distinct observed request messages with source lines, every
 model response with tool calls and terminal errors, plus the final request snapshot.
-The request headers, request body, response headers, and provider metadata are omitted.
-These omissions do not make message contents safe to publish. Read the complete private
+The request messages are included; other request fields (including `body` and `headers`),
+response headers, and provider metadata are omitted. These omissions do not make
+message contents safe to publish. Read the complete private
 result to reconstruct conversation order and the first unfinished step. A failed model
 request remains failed; a missing or malformed record fails nonzero. Inspect referenced
 artifacts only through the source adapter's authenticated association.

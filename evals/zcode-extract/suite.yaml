@@ -1,11 +1,12 @@
 description: ZCode rollout extraction with complete private conversation evidence.
 prompt: |-
-  Grade the zcode-session-extract response. Pass only when it authenticates the
+  Grade the zcode-extract response. Pass only when it authenticates the
   ZCode task identity and workspace, streams the selected model-io rollout
   through the bundle-owned pure parser, and keeps the result private. Require
   observed request messages, model responses and tool calls, source lines,
-  the final request snapshot, and the terminal error when present. Require a
-  current Git and tracker cross-check before resumption. Reject a plan file
+  the final request snapshot, and the terminal error when present. Require
+  identification of the first unfinished step at session end and a current Git
+  and tracker cross-check before resumption. Reject a plan file
   as conversation proof, a guessed provider, headers or credentials in a
   public answer, deletion of source material, and a fabricated successful
   gate after an unreturned tool call. A missing rollout or mismatched session

@@ -1,4 +1,4 @@
-id: zcode-session-extract-happy-001
+id: zcode-extract-happy-001
 name: Extract private ZCode session evidence from rollout JSONL
 description: Extract private conversation evidence and the terminal error from a real-shaped ZCode rollout JSONL.
 tags: [zcode, session, extract, jsonl, handoff, happy-path]
@@ -12,4 +12,4 @@ inputs:
   - path: model-io-sess_42a935f9-67d5-4c4f-93f2-90da387f014a.jsonl
 expected:
   output_contains: [private, Model request failed, unfinished, Git, tracker]
-  output_not_contains: [request succeeded, plan file proves conversation, session deleted]
+  output_not_contains: [gate completed successfully, plan file proves conversation, session deleted]

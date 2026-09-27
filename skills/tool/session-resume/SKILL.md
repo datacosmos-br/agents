@@ -17,7 +17,7 @@ keywords.
 
 Route Claude to $claude-session-extract, Poolside to
 $poolside-session-extract, and
-OpenCode to $opencode-handoff, and ZCode to $zcode-session-extract. Read the selected
+OpenCode to $opencode-handoff, and ZCode to $zcode-extract. Read the selected
 owner's complete procedure and use its
 current public CLI. Claude, Poolside, and ZCode emit private structured stdout; the
 consumer's transaction owns private persistence. Do not search for historical export

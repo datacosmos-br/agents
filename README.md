@@ -74,9 +74,9 @@ dependency group.
 
 For continuation, use `plan-handoff` and `strategic-compact`: retain links to the
 current owner/source revision, refs, measured gates, freshness and next action in the
-existing authorized plan or PR, not a second status ledger. Claude, Poolside, and ZCode
-resources are pure private parsers; discovery and transactional publication remain AI
-Hub adapter responsibilities.
+existing authorized plan or PR, not a second status ledger. Claude and Poolside
+resources are pure private parsers; ZCode's parser likewise reads only authenticated
+stdin. Discovery and transactional publication remain consumer responsibilities.
 
 ## Plan reconciliation
 

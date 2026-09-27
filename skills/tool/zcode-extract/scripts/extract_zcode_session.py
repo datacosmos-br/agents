@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 def _records() -> Iterator[tuple[int, dict[str, object]]]:
     for line_number, raw_line in enumerate(sys.stdin, 1):
         if not raw_line.strip():
-            raise ValueError(f"empty ZCode record at line {line_number}")
+            continue
         record = json.loads(raw_line)
         if not isinstance(record, dict):
             raise TypeError(f"ZCode record at line {line_number} must be an object")
@@ -36,6 +36,8 @@ def main() -> None:
         session_id = record.get("sessionId")
         if session_id != args.session_id:
             raise ValueError(f"session identity mismatch at line {line_number}")
+        if record.get("type") != "model_io":
+            raise ValueError(f"unexpected ZCode record type at line {line_number}")
         request = record.get("request")
         response = record.get("response")
         if not isinstance(request, dict) or not isinstance(response, dict):
