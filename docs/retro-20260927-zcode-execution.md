@@ -9,7 +9,7 @@
 - Catalog TTL cache landed (PR #902) — no more per-cycle remote fetch stall
 - 111 model-governance warnings eliminated at the model source
 - Per-platform resource-limit contracts (6 skips → 0)
-- ADR-0031 (provenance reset contract) documented and landed
+- ai-hub ADR-0031 (model-pipeline provenance reset) recorded on the hooks-runtime lane (PR pending); the census ruling consolidated into ADR-0028, its coordinated duplicate (agents ADR-0031) retired at the dev merge
 
 ## What went wrong — and the structural fix for each
 

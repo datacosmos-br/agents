@@ -18,7 +18,7 @@ across three bead trackers. Measured failures from that day:
   was safe.
 - Ten+ worktrees accumulated across gascity and ai-hub with no bead mapping
   several of them; at least one lane changed hands mid-work (created for a
-  deploy attempt, adopted by the census session for ADR-0031) and the original
+  deploy attempt, adopted by the census session for ADR-0028) and the original
   creator discovered the adoption only by collision.
 
 Root cause in all three: tracker curation had no declared owner per tracker,
