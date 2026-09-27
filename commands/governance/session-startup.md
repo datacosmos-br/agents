@@ -5,7 +5,7 @@ capsule_summary: |
   unread, prior art unsearched, coordinator uninformed) and lost work for it.
   Run this at session start, before the first edit.
 metadata:
-  aihub.tags: '["decision:ADR-0031","effective:2026-09-27","route:both"]'
+  aihub.tags: '["decision:ADR-0021","effective:2026-09-27","route:both"]'
 ---
 
 # Session startup

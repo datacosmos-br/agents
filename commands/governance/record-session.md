@@ -6,7 +6,7 @@ capsule_summary: |
   record, ADRs, governance repo, handoff index) with a mandatory critical
   retrospective, then land the records themselves through the full cycle.
 metadata:
-  aihub.tags: '["decision:ADR-0031","effective:2026-09-27","route:both"]'
+  aihub.tags: '["decision:ADR-0021","effective:2026-09-27","route:both"]'
 ---
 
 # Record session

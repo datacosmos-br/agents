@@ -2,7 +2,7 @@
 name: lane-landing-cycle
 description: "beads, git worktree, landing cycle, pr merge, ci generation, lane retirement"
 metadata:
-  aihub.tags: '["activation:opt-in","decision:ADR-0031","detect:opt-in:lane-landing-cycle","effective:2026-09-27","route:agent","subject:beads","subject:git","subject:github","usage:router"]'
+  aihub.tags: '["activation:opt-in","decision:ADR-0021","detect:opt-in:lane-landing-cycle","effective:2026-09-27","route:agent","subject:beads","subject:git","subject:github","usage:router"]'
 ---
 
 # Lane landing cycle

@@ -6,7 +6,7 @@ description:
   without implementing product work.
 tools: ["filesystem:read", "filesystem:grep", "filesystem:glob", "shell:execute"]
 metadata:
-  aihub.tags: '["activation:always","decision:ADR-0031","effective:2026-09-27","mode:execute"]'
+  aihub.tags: '["activation:always","decision:ADR-0021","effective:2026-09-27","mode:execute"]'
 ---
 
 # Session Chronicler
