@@ -1,0 +1,16 @@
+description: Landing cycle mechanics from dedicated lane to retirement and bead evidence.
+prompt: |-
+  Grade the lane-landing-cycle response. Pass only when it creates a dedicated
+  worktree on the destination filesystem with its own environment, declares the
+  bead + branch + PR triple before the first commit, runs the generation with
+  the CI context twice, protects the CI-context emission paths from a
+  local-context generation, orders the gate as fix, fmt, check, then the full
+  suite, merges only on green checks, proves the merged tip post-merge, records
+  closure evidence on the bead, and retires the worktree and branch.
+  Reject work on the primary checkout, /tmp lanes, borrowed environments,
+  local-context emission swept into commits, partial cycles reported as done,
+  reds normalized or bypassed, and lanes left behind after landing.
+tasks:
+  - tasks/basic-usage.yaml
+  - tasks/edge-case.yaml
+  - tasks/should-not-trigger.yaml

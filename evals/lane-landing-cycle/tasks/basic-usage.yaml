@@ -1,0 +1,14 @@
+id: lane-landing-cycle-happy-001
+name: Run the verified cycle end to end
+description: Create the lane, protect the emission canon, land on green, retire.
+tags: [beads, git, github, workflow, happy-path]
+inputs:
+  prompt: >-
+    You claimed aihub-5j4cw.7 on branch fix/f6-protocols-20260927. Execute the
+    unit to the end: lane creation, generation with the CI context, gates,
+    pull request, merge, post-merge proof, bead closure, and lane retirement.
+    State each gate in order and what evidence you leave on the bead.
+expected:
+  output_contains:
+    [CI=Y, make check, test-full, gh pr merge, append-notes, worktree remove]
+  output_not_contains: [rebase, force-push, make test only, waived, skipped]

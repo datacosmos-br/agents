@@ -1,0 +1,15 @@
+id: lane-landing-cycle-edge-001
+name: A local generation dirtied the CI-context paths
+description: Restore the canon instead of sweeping the wrong-context emission.
+tags: [git, github, workflow, edge-case]
+inputs:
+  prompt: >-
+    After running make gen locally, git status shows .envrc, .github/workflows/ci.yml,
+    .gitignore, .mise.toml, Makefile, mkdocs.yml, pyproject.toml and the generated
+    api-reference overview modified, and the commit is about a hooks fix. What
+    must happen before push, and what does the CI gen fixed-point job fail with
+    if the wrong emission lands?
+expected:
+  output_contains:
+    [restore, origin/dev, CI-context, gen fixed point, canon]
+  output_not_contains: [commit everything, harmless, generator will fix it]
