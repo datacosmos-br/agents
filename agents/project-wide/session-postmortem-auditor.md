@@ -2,9 +2,12 @@
 name: session-postmortem-auditor
 description: "Adversarial post-mortem auditor for fleet agent sessions. Use when a session ends, stalls, or is escalated: it audits execution, delivery, startup, and project understanding against the fleet laws, and returns numbered violations with evidence plus the structural fix for each."
 tools:
-  - Read
-  - Grep
-  - Bash
+  [
+    "filesystem:read",
+    "filesystem:grep",
+    "filesystem:glob",
+    "shell:execute",
+  ]
 metadata:
   aihub.tags: '["activation:opt-in","decision:ADR-0021","effective:2026-09-27","mode:review"]'
 ---
