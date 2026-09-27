@@ -1,7 +1,11 @@
 ---
 description: Census and debt maps are evidence only when the executing runtime matches the lock.
 metadata:
+<<<<<<< HEAD
   aihub.tags: '["decision:ADR-0031","effective:2026-09-27","route:both"]'
+=======
+  aihub.tags: '["decision:ADR-0028","effective:2026-09-27","route:both"]'
+>>>>>>> origin/dev
 ---
 
 # Census validity requires the locked runtime

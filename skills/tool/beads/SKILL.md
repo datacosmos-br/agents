@@ -7,8 +7,10 @@ metadata:
 
 # Beads
 
-Activate only when the repository selects Beads and the request concerns its durable
-tracker. The active repository contract owns lifecycle and closure.
+Activate only when the repository contains `.beads/`, selects Beads, and the request
+concerns its durable tracker. If `.beads/` is absent, do not invoke or probe `bd` or
+`gc`; continue through the repository's authorized non-tracker workflow. The active
+repository contract owns lifecycle and closure.
 
 Resolve Available versus Explicitly suspended from the active repository contract; never
 infer availability from a binary, port, or old instruction.

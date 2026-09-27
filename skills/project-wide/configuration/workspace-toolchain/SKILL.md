@@ -34,7 +34,7 @@ the workflow unchanged.
   binaries — never declare them as mise-managed tools. Mise shims for them break
   bootstrap credential paths and PATH resolution; the host package manager is their only
   owner.
-- Locked-runtime preflight for debt maps (ADR-0031, rule
+- Locked-runtime preflight for debt maps (ADR-0028, rule
   `runtime/locked-runtime-census.md`): before trusting any census, smell, or
   enforcement finding, compare the installed dependency commit in the physical
   `.venv` (`*.dist-info/direct_url.json` `vcs_info.commit_id`) against the commit

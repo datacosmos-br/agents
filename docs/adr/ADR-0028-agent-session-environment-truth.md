@@ -49,7 +49,8 @@ recorded in the campaign retrospective
 ## Consequences
 
 - The ai-hub credential guard gains a cgroup-leaf check (its decision record is
-  ai-hub `docs/adr/0032-credential-projection-unit-guard.md`); the canonical
+  ai-hub `docs/adr/0034-credential-projection-unit-guard.md`, renumbered from a
+  colliding 0032); the canonical
   operator flow works from agent shells without bypasses.
 - The battery becomes deterministic across execution contexts.
 - The `session-recover` command and the operating rules carry the startup

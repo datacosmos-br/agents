@@ -34,8 +34,13 @@ carry the package's real export surface. An empty generated init for a package w
 public children is a planner defect — fix the engine, never accept the emptiness. Import
 cycles are symptoms of violated strict rules, not of the init design.
 
-The following artifacts are BANNED fleet-wide (operator extermination order, revalidated
-2026-09-16): `exclude-newer` (any form, including config vestiges like
-`uv_exclude_newer`), and the tool lockfiles. They freeze resolution against the
-always-newest contract. Presence in any producer or consumer is a regression: delete at
-the owner, commit, push, and record on the tracker.
+`exclude-newer` (any form, including config vestiges like `uv_exclude_newer`) is BANNED
+fleet-wide (operator extermination order, revalidated 2026-09-16): it freezes resolution
+against a date instead of a reviewed lock. Presence in any producer or consumer is a
+regression: delete at the owner, commit, push, and record on the tracker.
+
+Lockfiles are written only by `make upg` (operator law, 2026-09-24). Configuration
+declares `latest`; `make upg` resolves the newest releases and writes the uv and mise
+locks; the committed locks pin them. `make setup`, `make gen`, and `make fmt` install
+from the locks and never upgrade — they are the CI path and must be stable. Any other
+verb that resolves, refreshes, or rewrites a lock is a regression at its owner.
