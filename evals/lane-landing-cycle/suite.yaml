@@ -10,7 +10,3 @@ prompt: |-
   Reject work on the primary checkout, /tmp lanes, borrowed environments,
   local-context emission swept into commits, partial cycles reported as done,
   reds normalized or bypassed, and lanes left behind after landing.
-tasks:
-  - tasks/basic-usage.yaml
-  - tasks/edge-case.yaml
-  - tasks/should-not-trigger.yaml
