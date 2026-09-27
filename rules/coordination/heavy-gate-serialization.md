@@ -1,8 +1,5 @@
 ---
-description:
-  One heavy gate at a time: pre-push matrices, full suites, and dependency
-  resolution never run concurrently — shared temp/git state under load
-  manufactures flakes that cost more to diagnose than the serialization saved.
+description: "One heavy gate at a time: pre-push matrices, full suites, and dependency resolution never run concurrently — shared temp/git state under load manufactures flakes that cost more to diagnose than the serialization saved."
 capsule_summary: |
   Measured 2026-09-26/27 (session gascity-23): a pre-push matrix, a full test
   suite, and a dependency resolution running together produced an atomic-write

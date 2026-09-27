@@ -1,8 +1,5 @@
 ---
-description:
-  The runtime is the acceptance authority: when a test contradicts observed
-  runtime behavior, the test's premise is rewritten in the same commit as the
-  contract change — the runtime is never contorted to satisfy a stale test.
+description: "The runtime is the acceptance authority: when a test contradicts observed runtime behavior, the test's premise is rewritten in the same commit as the contract change — the runtime is never contorted to satisfy a stale test."
 capsule_summary: |
   Operator ruling 2026-09-27 (session gascity-23): "tests are more broken than
   the runtime; what counts is validating and making the runtime work". Measured

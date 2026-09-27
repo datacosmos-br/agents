@@ -1,9 +1,5 @@
 ---
-description:
-  Session startup is a mandatory census: fetch the integration tip, count
-  open PRs, census worktrees and branches (stale = adopt), census beads
-  (silent >1h = abandoned), and declare bead + branch + PR before the first
-  effect.
+description: "Session startup is a mandatory census: fetch the integration tip, count open PRs, census worktrees and branches (stale = adopt), census beads (silent >1h = abandoned), and declare bead + branch + PR before the first effect."
 capsule_summary: |
   Operator ruling 2026-09-27 (session gascity-23): every session opens with a
   measured census, not with code. Measured cost of skipping it: one full lane

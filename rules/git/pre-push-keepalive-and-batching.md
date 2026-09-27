@@ -1,8 +1,5 @@
 ---
-description:
-  Long pre-push gates kill idle SSH connections mid-hook: persist a
-  ServerAliveInterval keepalive in the lane's git config before the first
-  push, and batch pushes so the gate runs once per landed stack.
+description: "Long pre-push gates kill idle SSH connections mid-hook: persist a ServerAliveInterval keepalive in the lane's git config before the first push, and batch pushes so the gate runs once per landed stack."
 capsule_summary: |
   Measured 2026-09-25/27 on gascity (pre-push matrix ≈ 15–18 min): three
   consecutive pushes failed with "Connection to github.com closed by remote
