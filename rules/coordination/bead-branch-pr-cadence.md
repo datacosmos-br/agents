@@ -10,7 +10,7 @@ capsule_summary: |
   (close superseded, realign epics, fix titles, --force when bd refuses) is part
   of the acting role, not an extra.
 metadata:
-  aihub.tags: '["effective:2026-09-27", "route:both"]'
+  aihub.tags: '["decision:ADR-0031","effective:2026-09-27","route:both"]'
 ---
 
 # Bead + branch + PR cadence and the dedupe mandate (operator ruling 2026-09-27)
