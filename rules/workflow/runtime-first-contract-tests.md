@@ -8,7 +8,7 @@ capsule_summary: |
   resource ledger pinned as Medium owners — the ledger dangled until the tests
   were restored from the pre-merge parent, not waved through.
 metadata:
-  aihub.tags: '["effective:2026-09-27", "route:both", "decision:ADR-0021"]'
+  aihub.tags: '["decision:ADR-0021","effective:2026-09-27","route:both"]'
 ---
 
 # Runtime first, contract tests second

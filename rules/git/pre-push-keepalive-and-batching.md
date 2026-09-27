@@ -7,7 +7,7 @@ capsule_summary: |
   ref update. The fix is not a retry loop — it is a persistent keepalive in
   the worktree's git config, set once per lane.
 metadata:
-  aihub.tags: '["effective:2026-09-27", "route:project", "decision:ADR-0021"]'
+  aihub.tags: '["decision:ADR-0021","effective:2026-09-27","route:project"]'
 ---
 
 # Pre-push keepalive and push batching

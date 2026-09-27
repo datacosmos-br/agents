@@ -6,7 +6,7 @@ capsule_summary: |
   timeout flake, a misattributed test red, and three blind push retries.
   Diagnosing any of them required re-running the very gates that were racing.
 metadata:
-  aihub.tags: '["effective:2026-09-27", "route:both", "decision:ADR-0021"]'
+  aihub.tags: '["decision:ADR-0021","effective:2026-09-27","route:both"]'
 ---
 
 # Heavy gate serialization
