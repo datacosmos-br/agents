@@ -1,0 +1,30 @@
+tracker:
+  runtime: available
+  claimed_issue: aihub-5j4cw.7
+  claim_note: lane note comment recorded at claim time with the branch name.
+lane:
+  branch: fix/f6-protocols-20260927
+  worktree: dedicated native git worktree with its own physical .venv from make setup
+  base: integration branch tip fetched before lane creation
+cycle:
+  - lane creation from the fetched tip
+  - generation with the CI context (make gen, twice to the fixed point)
+  - gates in order (make check, CI=Y make check, make test)
+  - pull request opened from the pushed lane branch
+  - merge with --no-ff after green CI
+  - post-merge proof on the integration tip
+  - bead closed with the merge commit and captured gate results
+  - lane retired after the ancestry proof (merge-base --is-ancestor)
+forbidden:
+  - rebase of the authorized change branch
+  - force-push to any shared branch
+  - skipping a red gate or waiving a finding
+native_evidence:
+  command: gh pr merge --merge
+  cwd: the lane worktree
+  exit_code: 0
+  decisive_output: Merge commit on the integration branch; ancestry proof returns true; worktree removed.
+instruction: >
+  Execute the unit in the declared order and state, at each step, the exact
+  evidence left on the claimed bead. Never rebase or force-push; a red gate
+  stops the cycle at its owner's cure.
