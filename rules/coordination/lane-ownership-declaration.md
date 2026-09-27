@@ -13,7 +13,10 @@ capsule_summary: |
   never rebuild it. Colliding with an active lane is a violation; deleting an
   active lane is worse.
 metadata:
-  aihub.tags: '["decision:ADR-0021","effective:2026-09-27","route:both"]'ion and the one-hour clock
+  aihub.tags: '["decision:ADR-0021","effective:2026-09-27","route:both"]'
+---
+
+# Lane ownership declaration and the one-hour clock
 
 ## Declare before the first commit
 
