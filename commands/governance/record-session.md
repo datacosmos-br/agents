@@ -1,9 +1,9 @@
 ---
 name: record-session
 description:
-  Session recording checklist: the five canonical destinations, the mandatory
-  critical retrospective, landing the records through the full cycle, and the
-  index-only handoff.
+  "Session recording checklist — the five canonical destinations, the
+  mandatory critical retrospective, landing the records through the full
+  cycle, and the index-only handoff."
 metadata:
   aihub.tags: '["decision:ADR-0021","effective:2026-09-27","route:project"]'
 ---
