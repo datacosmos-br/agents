@@ -1,4 +1,4 @@
-# ADR-0028 — Agent-session environment truth: the kernel owns process context, never inherited environment
+# ADR-0030 — Agent-session environment truth: the kernel owns process context, never inherited environment
 
 **Status:** Accepted **Date:** 2026-09-27
 

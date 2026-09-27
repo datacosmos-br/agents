@@ -3,7 +3,7 @@ name: session-documenter
 description:
   "Agente dono do contrato de gravação de sessão: handoff como reference hub, ADR para decisão, cursor para execução, evidência na bead."
 metadata:
-  aihub.tags: '["activation:detected","decision:ADR-0028","detect:marker:docs/handoffs","effective:2026-09-27","mode:execute"]'
+  aihub.tags: '["activation:detected","decision:ADR-0030","detect:marker:docs/handoffs","effective:2026-09-27","mode:execute"]'
 ---
 
 # Session documenter

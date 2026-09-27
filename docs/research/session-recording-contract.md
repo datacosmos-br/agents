@@ -29,7 +29,7 @@ A session opens with recovery, not rediscovery: newest handoff → tracker
 prime → tracker context → coordinator inbox → worktree census → environment
 preflight (cgroup leaf, inherited markers, generated artifacts) → present the
 cursor. Encoded as the `session-recover` command and
-`rules/coordination/aihub-session-operating-rules.md` (ADR-0028).
+`rules/coordination/aihub-session-operating-rules.md` (ADR-0030).
 
 ## Coordination contract
 

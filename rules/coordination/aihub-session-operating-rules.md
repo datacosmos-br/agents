@@ -1,7 +1,7 @@
 ---
 description: Acting rules for any agent session working the ai-hub fleet, earned across the 2026-09 runtime campaigns.
 metadata:
-  aihub.tags: '["decision:ADR-0028","effective:2026-09-27","route:project"]'
+  aihub.tags: '["decision:ADR-0030","effective:2026-09-27","route:project"]'
 ---
 
 # ai-hub session operating rules
@@ -53,7 +53,7 @@ ai-hub `.kilo/plans/2026-09-27-surfaced-inventory-runtime-recovery/00-index.md`)
 
 - Inherited unit markers (`INVOCATION_ID`, `SYSTEMD_EXEC_PID`,
   `GC_SUPERVISOR_*`) say nothing about the current process; context comes from
-  the cgroup leaf (ADR-0028). Unsetting a marker to pass a guard is a bypass —
+  the cgroup leaf (ADR-0030). Unsetting a marker to pass a guard is a bypass —
   cure the guard.
 - A worktree's environment is physical and exclusive (`make setup`, own
   `.venv`); never borrow, symlink, or place it under `/tmp`.

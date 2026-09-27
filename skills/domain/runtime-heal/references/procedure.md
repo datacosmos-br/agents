@@ -10,7 +10,7 @@ state.
 
 1. `systemctl --user list-units '<prefix>-*' --all` — which services are
    failed/inactive/active; record the invocation.
-2. Environment truth per ADR-0028: read the process's own cgroup
+2. Environment truth per ADR-0030: read the process's own cgroup
    (`cat /proc/self/cgroup`, rightmost `.service`/`.scope` segment decides).
    Inherited `INVOCATION_ID`/`SYSTEMD_EXEC_PID`/`GC_SUPERVISOR_*` are not
    evidence of unit membership.

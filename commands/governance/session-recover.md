@@ -4,7 +4,7 @@ description:
   Open an agent session from the recorded surfaces instead of rediscovering context.
 argument-hint: "[--repo PATH] [--bead ID]"
 metadata:
-  aihub.tags: '["decision:ADR-0028","effective:2026-09-27","route:project"]'
+  aihub.tags: '["decision:ADR-0030","effective:2026-09-27","route:project"]'
 ---
 
 Recover the context for `$ARGUMENTS` in order, and stop at step 9 to present
