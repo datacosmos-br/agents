@@ -8,6 +8,8 @@ inputs:
     unit to the end: lane creation, generation with the CI context, gates,
     pull request, merge, post-merge proof, bead closure, and lane retirement.
     State each gate in order and what evidence you leave on the bead.
+  files:
+    - path: scenario.yaml
 expected:
   output_contains:
     [CI=Y, make check, test-full, gh pr merge, append-notes, worktree remove]
