@@ -2,7 +2,10 @@
 globs: "**/*.py"
 description: run_raw success means the command ran, not that it exited zero
 metadata:
-  aihub.tags: '["decision:ADR-0021","effective:2026-09-27","route:both"]'s` means "the command ran" — decide on the exit code
+  aihub.tags: '["decision:ADR-0021","effective:2026-09-27","route:both"]'
+---
+
+# run_raw `.success` means "the command ran" — decide on the exit code
 
 `u.Cli.run_raw(...)` returns a result whose `.success` reflects invocation, not
 the child's exit status. A command that ran and exited 1 is `.success` with
