@@ -3,7 +3,7 @@ name: session-preflight
 description: "Run the read-only multi-agent preflight sweep before implementing in a shared fleet."
 argument-hint: "[repository path]"
 metadata:
-  aihub.tags: '["decision:ADR-0028","route:agent"]'
+  aihub.tags: '["decision:ADR-0028","effective:2026-09-27","route:agent"]'
 ---
 
 # Session preflight
