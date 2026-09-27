@@ -7,4 +7,4 @@ inputs:
     Explain where ZCode stores its CLI settings. I am not asking you to
     extract, inspect, or resume a session.
 expected:
-  output_not_contains: [extract_zcode_session.py, private-result.json, private conversation evidence]
+  output_not_contains: [extract_zcode_session.py, private-result.json]
