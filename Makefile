@@ -14,9 +14,16 @@ override export PYRIGHT_PYTHON_CACHE_DIR := $(PYRIGHT_CACHE_ROOT)
 override export WAZA_STATE_ROOT := $(WAZA_STATE_ROOT)
 override export UV_PROJECT_ENVIRONMENT := $(CURDIR)/.venv
 override export VIRTUAL_ENV := $(CURDIR)/.venv
+override export GIT_CEILING_DIRECTORIES := $(abspath $(CURDIR)/..)
+override export MISE_CEILING_PATHS := $(abspath $(CURDIR)/..)
+override export MISE_GLOBAL_CONFIG_FILE := $(CURDIR)/config/mise-isolation.toml
+override export MISE_SYSTEM_CONFIG_FILE := $(CURDIR)/config/mise-isolation.toml
+override export MISE_OVERRIDE_CONFIG_FILENAMES := .mise.toml
+override export MISE_OVERRIDE_TOOL_VERSIONS_FILENAMES := none
+unexport UV_PYTHON
 
 .DEFAULT_GOAL := help
-.PHONY: help setup gen docs audit check runtime waza static conform fmt fix mod mod-check shell duplication build test test-full ci validate-artifacts publish
+.PHONY: help setup upg gen docs audit check runtime waza crg-check static conform fmt fix mod mod-check shell duplication build test test-full ci validate-artifacts publish
 .DELETE_ON_ERROR:
 
 define BANNER
@@ -32,10 +39,16 @@ help: ## show the complete selector-free development surface
 
 ## environment provisioning
 setup: ## create the declared repository runtime environment
-	$(call BANNER,setup · mise install + uv venv + sync)
-	@mise install
-	@uv venv --clear
-	@uv sync --all-groups
+	$(call BANNER,setup · locked mise install + uv venv + locked sync)
+	@MISE_LOCKED=true mise install --yes
+	@MISE_LOCKED=true $(MISE_EXEC) uv venv --python python --clear
+	@MISE_LOCKED=true $(MISE_EXEC) uv sync --all-groups --locked
+
+upg: ## resolve newest declared tools and dependencies into committed locks
+	$(call BANNER,upg · mise lock + uv lock)
+	@mise lock --bump
+	@MISE_LOCKED=false $(MISE_EXEC) uv lock --upgrade --refresh
+	@MISE_LOCKED=false $(MISE_EXEC) uv sync --all-groups --locked
 
 ## generation + mutation
 gen: ## project the governance capsule into provider hooks and instruction files
@@ -43,7 +56,7 @@ gen: ## project the governance capsule into provider hooks and instruction files
 	@uv run python tools/sync_governance.py
 
 ## development gates
-check: ## run every applicable non-test gate
+check: ## run package non-test gates; host CRG acceptance uses make crg-check
 	$(call BANNER,check · complete non-test gate composition)
 	@$(MAKE) docs
 	@$(MAKE) static
@@ -67,6 +80,11 @@ waza: ## validate provider-neutral skill suites with Waza
 	@$(MAKE) audit
 	$(call BANNER,waza · provider-neutral suites + deterministic spec proof)
 	@uv run python tools/waza_gate.py
+
+crg-check: ## verify CRG policy convergence across governed workspaces (ai-hub sync-crg-workspaces --check)
+	$(call BANNER,crg-check · CRG policy drift gate (ag-nq7q))
+	@ai-hub sync-crg-workspaces --check
+	@printf '%s\n' 'CRG workspace policies and watch configuration verified.'
 
 static: ## lint, formatting, and Python type analysis
 	$(call BANNER,static · ruff + pyright + mypy)
@@ -137,7 +155,7 @@ test-full: ## run incremental then all tests through the same cache
 	$(call RUN_TESTMON,full)
 
 ## complete offline composition
-ci: ## run every gate in runtime-first order
+ci: ## run package gates and cached tests; host CRG acceptance uses make crg-check
 	@$(MAKE) check
 	@$(MAKE) test-full
 

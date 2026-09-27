@@ -1,14 +1,15 @@
 ---
 metadata:
-  aihub.tags: '["decision:ADR-0008","effective:2026-08-30","route:personal"]'
+  aihub.tags: '["decision:ADR-0025","effective:2026-09-22","route:personal"]'
 ---
 
 # Gas City boundary
 
-The project-selected, pinned Gas City release is the orchestration contract. Active
-guidance uses its native primitives: city, rig, Pack V2, agent, formula, run, session,
-order, and event. Installation never selects orchestration. An unselected installation
-adds no command, hook, tracker, workspace, or gate.
+The project-selected, pinned Gas City release is the orchestration contract. Selection
+requires the repository's `.beads/` boundary; without it, invoke or probe neither `gc`
+nor `bd`. Active guidance uses Gas City's native primitives: city, rig, Pack V2, agent,
+formula, run, session, order, and event. Installation never selects orchestration. An
+unselected installation adds no command, hook, tracker, workspace, or gate.
 
 ## Activation state is resolved, never assumed
 
@@ -19,8 +20,8 @@ exact city before any effect:
 - when its authority declares the city operating, its declared scope is executable under
   every strict-execution policy, and dispatch, observation, and closure run through the
   city's own command surface;
-- when its authority declares suspension, only static configuration review is authorized
-  and the repository boundary below applies;
+- when its authority declares suspension, Gas City configuration review remains static
+  and manual repository execution follows the boundary below;
 - a scope the city's authority does not declare stays unauthorized in either case.
 
 Never infer the state from installation, an available binary, a running process, another
@@ -34,9 +35,9 @@ current value of this state into always-on guidance; name the owner that declare
   committed lock. Materialized files are generated output, not owners.
 - A rig registers a project. Agents are persistent configured workers. Formulas define
   work graphs; runs and sessions provide operational evidence.
-- A selected Gas City workflow uses its explicitly declared store. If the project also
-  selects Beads, Beads owns durable tracking and closure. A Gas City workflow without
-  Beads has no Beads command, hook, issue, or gate.
+- A selected Gas City workflow uses its explicitly declared Beads store. Beads owns
+  durable tracking and closure. Without the repository's `.beads/` boundary, Gas City
+  is also unselected and has no command, hook, tracker, workspace, or gate.
 
 ## Topology and endpoint ownership
 
@@ -103,12 +104,22 @@ beyond it requires an explicit operator request.
 
 ## Repository boundary while suspended
 
-- Work only in the existing authorized checkout.
+- Every manual task uses a dedicated native Git worktree and working branch. Never
+  implement in the primary/default checkout. Gas City suspension does not prohibit or
+  provision these worktrees; it keeps Gas City orchestration inactive.
+- Place the worktree on the operator-authorized destination filesystem, never under
+  `/tmp`. Provision its own physical environment through the repository's setup owner;
+  never borrow another checkout's environment or create backup/archive copies.
 - Repository Git, native gates, PR review, and merge-commit landing remain local
-  responsibilities.
-- Create no city, rig, Pack, agent, formula, run, session, clone, worktree, workspace,
-  symlink, cross-repository reference, tracker, or alternate ledger. Preserve evidence
-  only in separately authorized Git/PR/CI surfaces.
+  responsibilities. Publish recoverable commits and retire the dedicated worktree and
+  branch only after the required merge and fresh integration ancestry proof.
+- Invoke no city, rig, Pack, agent, formula, run, or session orchestration surface and
+  do not reactivate the city. Native Git worktree execution grants no topology mutation
+  or permission to create another clone, tracker, or alternate ledger.
+- Resolve tracker activation independently. If the operator selected and retained the
+  canonical Beads service, continue through that service and its declared connection
+  owner. When that tracker is itself suspended, create no substitute; preserve evidence
+  in separately authorized Git/PR/CI surfaces and leave phase closure open.
 - Static Gas City skills are personal governance and never project projections.
 
 ## Runtime projections into a registered rig

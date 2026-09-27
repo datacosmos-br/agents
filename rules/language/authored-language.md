@@ -16,9 +16,8 @@ Content in another language is a defect corrected at its owner in the same sessi
 never deferred.
 
 The project's canonical law is the only authority that may declare a different authored
-language. When a project declares one — for example Portuguese for `algar`, `gruponos`,
-`cosmos-main`, and the other projects that declare it — every artifact it owns follows
-that declared language: code comments, documentation, references, templates, commit
+language. When a project declares one — Portuguese, for example — every artifact it
+owns follows that declared language: code comments, documentation, references, templates, commit
 messages, and user-facing outputs. The declaration is singular and explicit; a project
 without a declared authored language defaults to English-only. The universal governance
 home itself is always English-only.

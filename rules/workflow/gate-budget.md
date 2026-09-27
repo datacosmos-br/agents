@@ -25,8 +25,8 @@ fetches a version manifest, or reaches a network endpoint mid-run.
   toolchain owner.
 
 Observed: cProfile enabled unconditionally in a pytest runner, `tokei` installed from
-crates.io during `make gen`, and `gc doctor` running its checks sequentially — each
-pushed a gate past its budget or broke offline execution.
+crates.io during `make gen`, and a doctor command running its checks sequentially —
+each pushed a gate past its budget or broke offline execution.
 
 Compose with `rules/runtime/strict-execution.md` and
 `rules/workflow/canonical-commands.md`.

@@ -81,7 +81,10 @@ def main() -> None:
     try:
         # Start all servers
         for server in servers:
-            # Use shell=True to support commands with cd and &&
+            # shell=True is the tool's contract: --server values are composed
+            # dev commands ("cd x && serve") supplied by the local operator on
+            # argv. This script never accepts remote or untrusted input, so the
+            # trust boundary is the operator's own shell.
             process = subprocess.Popen(
                 server["cmd"],
                 shell=True,

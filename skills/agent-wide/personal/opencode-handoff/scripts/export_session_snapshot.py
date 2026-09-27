@@ -92,6 +92,11 @@ def _database(data_root: Path) -> sqlite3.Connection:
     database.row_factory = sqlite3.Row
     database.execute("PRAGMA query_only = ON")
     for table, required in TABLE_COLUMNS.items():
+        # PRAGMA takes no bound parameters; the identifier comes only from the
+        # module-level TABLE_COLUMNS literals, and this guard keeps any future
+        # edit from interpolating anything that is not a plain table name.
+        if not re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*", table):
+            raise ValueError(f"Unsafe schema probe identifier: {table!r}")
         actual = {
             str(row[1]) for row in database.execute(f"PRAGMA table_info({table})")
         }

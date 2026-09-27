@@ -35,13 +35,19 @@ async def main():
         print(json.dumps(await connection.list_tools()), flush=True)
 asyncio.run(main())
 """
+    # Why 60s (ag-rzct): this is a stdio handshake, not a CPU assertion. Measured
+    # 2026-09-21 on the agents venv (CPython 3.13.11) the round trip takes 2.145s
+    # min / 2.439s max / 2.315s median idle, but the former 10s bound produced a
+    # false red in `make test-full` when the suite, the Make owner's other stages
+    # and unrelated sessions loaded the host concurrently. The assertion set is
+    # unchanged; only the transport bound is load-tolerant.
     result = subprocess.run(
         (sys.executable, "-c", client, str(server)),
         cwd=scripts,
         capture_output=True,
         text=True,
         check=True,
-        timeout=10,
+        timeout=60,
     )
     metadata = {tool["name"]: tool for tool in json.loads(result.stdout)}
     assert "description" not in metadata["absent"]

@@ -54,3 +54,13 @@ fix will displace the symptom to. If the prediction is wrong, the mental model i
 
 Owner references: session bead and tracker for the assert map, chain asserts, and unit
 defect respectively.
+
+## Runtime is the acceptance authority (operator, 2026-09-27)
+
+Tests verify the consumer contract; they do not define it. When a test's premise
+contradicts observed runtime behavior, the test is rewritten in the same commit as
+the contract change — never the runtime contorted to satisfy the test, and never
+the suite waved green while the runtime stays broken. The full rule lives in
+`rules/workflow/runtime-first-contract-tests.md`; this section is the cross-reference
+that binds it to the contract-first diagnosis above (diagnose on the runtime, fix at
+the owner, reconcile the tests, all in one commit).

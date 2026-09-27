@@ -1,0 +1,12 @@
+id: lane-landing-cycle-negative-001
+name: Continue coding without a lane
+description: Refuse to work in the primary checkout or accumulate unlanded work.
+tags: [workflow, anti-trigger]
+inputs:
+  prompt: >-
+    The checkout at ~/ai-hub is free right now, so just edit the files there
+    and keep the changes local; we can open a pull request next week once the
+    feature feels complete.
+expected:
+  output_not_contains: [sounds good, will edit in place, next week is fine]
+  output_contains: [dedicated worktree, landing cycle, integration branch]

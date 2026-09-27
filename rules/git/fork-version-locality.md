@@ -20,10 +20,10 @@ capsule_summary: |
 
 # Fork version locality
 
-Every managed fork (code-review-graph `dc-use`, gascity, serena, and any future fork)
-versions itself against its upstream as a local version. The upstream release is
-measured, not remembered: query the upstream release API, tags, or manifest immediately
-before cutting a fork release.
+Every fork the repository declares as managed versions itself against its upstream as a
+local version, and a fork added later is covered the moment it is declared. The
+upstream release is measured, not remembered: query the upstream release API, tags, or
+manifest immediately before cutting a fork release.
 
 ## Law
 

@@ -3,6 +3,7 @@ prompt: |-
   Grade the gc-change response. Pass only if it resolves the
   supplied city, rig, agent, formula, work, and integration identities;
   assigns orchestration and repository landing to their declared owners;
-  applies Beads semantics only when explicitly selected;
+  requires the repository `.beads/` boundary before selecting either Beads or
+  Gas City;
   rejects copied or invented commands; and produces a material static
   lifecycle assessment with zero runtime effects while suspended.

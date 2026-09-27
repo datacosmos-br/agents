@@ -1,8 +1,8 @@
 ---
 description:
   Public-history discard, direct-to-integration pushes, and unowned reds are
-  landing-scope governance effects with mandatory beads, inventories, and merged-SHA
-  gates.
+  landing-scope governance effects with mandatory tracker items, inventories, and
+  merged-SHA gates.
 metadata:
   aihub.tags: '["decision:ADR-0008","effective:2026-09-11","route:both"]'
 ---
@@ -12,15 +12,15 @@ metadata:
 Session evidence 2026-09-11 (flext conformance sweep, plan
 `docs/plans/2026-09-11-flext-conformance-sweep.md`): a wip discard, a 12-file
 template/test cleanup, and an abandoned midpoint investigation landed through a direct
-fast-forward push to the integration branch with zero beads. The result was technically
-on the tip and procedurally unlanded — coordination debt transferred to every concurrent
-lane. This rule encodes what that session violated so the failure mode cannot repeat
-silently.
+fast-forward push to the integration branch with zero tracker items. The result was
+technically on the tip and procedurally unlanded — coordination debt transferred to
+every concurrent lane. This rule encodes what that session violated so the failure mode
+cannot repeat silently.
 
 ## Discarding public history is a production effect
 
 Rewriting shared history (`reset --hard` past a public or pushed commit, history surgery
-to drop a commit) requires, before the first destructive command, a bead that
+to drop a commit) requires, before the first destructive command, a tracker item that
 inventories every hunk being discarded and classifies it: already re-derived elsewhere,
 still required and absent (must be ported back with a test), or superseded by a newer
 decision (record why). A discard that loses SSOT surgery (hermetic-env, conform writers,
@@ -46,15 +46,15 @@ Publishing through gates that cannot converge is publishing a broken scaffolder.
 
 ## Reds are captured in the turn they are observed
 
-Every newly observed red (test, gate, runtime) gets a bead in the same turn: the failing
-site, the best current root-cause hypothesis, and the observable trigger. "Pre-existing"
-without a bead is not scoping — it is abandonment of the root cause. A poorly
-instrumented investigation that yields nothing is not evidence of anything;
-re-instrument or hand the hypothesis (with artifacts) to the next session through the
-bead, never through narrative.
+Every newly observed red (test, gate, runtime) gets a tracker item in the same turn: the
+failing site, the best current root-cause hypothesis, and the observable trigger.
+"Pre-existing" without a tracker item is not scoping — it is abandonment of the root
+cause. A poorly instrumented investigation that yields nothing is not evidence of
+anything; re-instrument or hand the hypothesis (with artifacts) to the next session
+through the tracker item, never through narrative.
 
 ## Test budget is enforced on the test, never on the limit
 
-A test executing real provisioning (mise install, uv sync) in-line violates the budget
-law by construction. Fix by fixture isolation and receipt assertions; raising the
-timeout limit is prohibited in all cases.
+A test executing real provisioning (tool installation, dependency sync) in-line violates
+the budget law by construction. Fix by fixture isolation and receipt assertions; raising
+the timeout limit is prohibited in all cases.

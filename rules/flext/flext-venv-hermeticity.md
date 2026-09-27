@@ -7,11 +7,11 @@ metadata:
 
 # Hermetic venv for multi-worktree Python tooling
 
-The cosmos fleet suffered a day of wrong-verdict measurements because the shell exported
+A fleet lost a day to wrong-verdict measurements because the shell exported
 `VIRTUAL_ENV` and `UV_PROJECT_ENVIRONMENT` pointing at a different project's `.venv`, so
 `uv sync`, `make deps`, gate validators, and pytest in one repo silently exercised wheel
-installs of another repo. The error repeated across gitops, charts, and root before
-root-causing.
+installs of another repo. The error repeated across several members and the workspace
+root before anyone root-caused it.
 
 - Run every dependency sync, gate, and test with the shell environment neutralized:
   `env -u VIRTUAL_ENV -u UV_PROJECT_ENVIRONMENT make ...`.

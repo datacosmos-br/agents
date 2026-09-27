@@ -1,0 +1,2 @@
+# Empty by design. Root Make verbs select this file for Mise's global and
+# system layers so only this repository's .mise.toml contributes tools.

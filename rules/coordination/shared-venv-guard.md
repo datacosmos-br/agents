@@ -1,26 +1,28 @@
 ---
 description: Python environments are physical and checkout-local
 metadata:
-  aihub.tags: '["decision:ADR-0008","effective:2026-08-30","route:both"]'
+  aihub.tags: '["decision:ADR-0025","effective:2026-09-22","route:both"]'
 ---
 
 # Python environments are physical and checkout-local
 
-Use the repository's declared setup owner and interpreter. Each authorized checkout
-reconstructs its own physical environment.
+Use the repository's declared setup owner and interpreter. `make setup` provisions the
+Python environment only in `<workspace>/.venv`, a physical directory exclusively owned
+by that workspace. A worktree is its own workspace; its environment never resolves to
+the primary checkout.
 
 - Never borrow another checkout's environment through a symlink, path dependency,
   `PYTHONPATH`, editable-install path, or cross-repository reference.
-- A declared workspace may install its own members as editable path dependencies; that
-  is its setup owner, not borrowing. Every member then runs the working tree of every
-  sibling, so a sibling left on a feature branch silently changes the toolchain of all
-  of them and fails in a different repository than the one that moved. Prove the
-  checked-out branch of each editable sibling before diagnosing a toolchain failure, and
-  return a generator checkout to its integration branch in the same turn that inspected
-  it.
+- Never place the environment outside that workspace, install another repository as an
+  editable dependency, or let inherited environment variables route setup or execution
+  to another environment. Setup owns the checkout-local environment identity.
+- Caches and temporary artifacts remain outside the checkout; they are not Python
+  environments and must never become environment-sharing paths.
 - Never replace or clear a real environment while another process may own it.
-- While orchestration is suspended, use only the environment already owned by the
-  existing authorized checkout; create no clone, worktree, or alternate workspace.
+- Every manual task uses a dedicated Git worktree and branch, including while Gas City
+  orchestration is suspended. Provision that worktree's own physical environment
+  through its canonical setup surface; never implement in the primary/default checkout
+  or borrow its environment. Suspension does not forbid native Git worktrees.
 - Missing or stale environment state is red. Repair it through the repository's
   canonical setup surface only when that mutation is authorized.
 
