@@ -3,7 +3,10 @@ description:
   Project kind decides who may rewrite a repository; topology is workspace or
   standalone, never a third value.
 metadata:
-  aihub.tags: '["decision:ADR-0008","effective:2026-09-06","route:both"]'edes: `architecture/project-kind-and-checkout-topology`
+  aihub.tags: '["decision:ADR-0008","effective:2026-09-06","route:both"]'
+---
+
+> Supersedes: `architecture/project-kind-and-checkout-topology`
 
 # Project kind gates generation; topology has exactly two values
 

@@ -9,7 +9,10 @@ globs:
   - "rules/**/*.md"
   - "skills/**"
 metadata:
-  aihub.tags: '["decision:ADR-0008","effective:2026-08-29","route:project"]'edes: `architecture/governance-artifact-composition`
+  aihub.tags: '["decision:ADR-0008","effective:2026-08-29","route:project"]'
+---
+
+> Supersedes: `architecture/governance-artifact-composition`
 
 # Compose governance through one owner per behavior
 
