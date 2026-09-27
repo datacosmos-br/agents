@@ -1,0 +1,14 @@
+id: runtime-heal-not-recovery-001
+name: Feature work is not runtime recovery
+description: A routine feature implementation must not run the recovery procedure or claim readiness evidence.
+tags: [non-trigger, scope]
+inputs:
+  prompt: Add a new output field to the project's report CLI verb with a unit test, on the current feature lane.
+expected:
+  output_contains:
+    - lane
+    - test
+  output_not_contains:
+    - daemon recovery
+    - readiness evidence
+    - install twice

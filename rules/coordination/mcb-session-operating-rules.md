@@ -55,3 +55,14 @@ file) laws for that repository's gates and failure modes.
   landing time.
 - Critique other sessions with evidence, never blame without it; stop and ask the
   operator when two rules collide or authority is missing.
+
+## mcb-specific quirks (breaking these wastes hours)
+
+- `make test WHAT=rust` is a retired selector that silently collects 0 tests;
+  the rust gate is `make rust WHAT=test` with `ORT_DYLIB_PATH` and
+  `CARGO_HOME` exported (see the mcb.lane-ops skill and bead mcb-hsro).
+- mise lock/install only with the aube-capable receipt mise
+  (`~/.local/share/mise/bootstrap/mise-2026.9.15`); the host mise corrupts npm
+  tool installs.
+- Mimosa hook: write source via Write/Edit tools, never Bash heredocs; clippy
+  denies `expect_used` in tests and `-D unused-variables` everywhere.

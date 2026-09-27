@@ -1,0 +1,2 @@
+description: Evidence-backed runtime service recovery at the failing layer's owner.
+prompt: Grade runtime-heal. Pass only for journal-first diagnosis at the named owner, owner-cured failures without suppression/retry/bypass, kernel-owned process context (no inherited-marker evidence), installed-runtime provenance checks, install-idempotency and compare-and-swap publication discipline, activation-never-readiness evidence with captured commands, and bead evidence before closure.
