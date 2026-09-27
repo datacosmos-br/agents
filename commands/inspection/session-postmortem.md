@@ -3,7 +3,7 @@ name: session-postmortem
 description: "Run the adversarial post-mortem auditor over one agent session: bead trail, branches, PRs, CI verdicts — numbered findings with rules and structural fixes."
 argument-hint: "<bead-id> [branch] [PR-number]"
 metadata:
-  aihub.tags: '["effective:2026-09-27", "route:both", "subject:postmortem"]'
+  aihub.tags: '["decision:ADR-0021","route:project"]'
 ---
 
 # Session post-mortem audit
