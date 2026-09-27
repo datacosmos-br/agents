@@ -2,7 +2,7 @@
 name: lane-landing-cycle
 description: "landing cycle, worktree gates, CI=Y emission canon, PR merge, bead evidence, lane retirement"
 metadata:
-  aihub.tags: '["activation:opt-in","decision:ADR-0031","detect:opt-in:lane-landing-cycle","effective:2026-09-27","route:agent","subject:landing-cycle","usage:router"]'
+  aihub.tags: '["activation:opt-in","decision:ADR-0031","detect:opt-in:lane-landing-cycle","effective:2026-09-27","route:agent","subject:beads","subject:git","subject:github","usage:router"]'
 ---
 
 # Lane landing cycle
