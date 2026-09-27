@@ -1,9 +1,6 @@
 ---
 name: session-startup
-description:
-  "Session startup checklist — handoff index, governance rules, tracker
-  claims, prior-art search, lane ownership, and the bead + branch + PR
-  declaration before the first edit."
+description: Run the startup checklist before the first edit of the session.
 metadata:
   aihub.tags: '["decision:ADR-0021","effective:2026-09-27","route:project"]'
 ---
