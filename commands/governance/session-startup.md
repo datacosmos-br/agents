@@ -1,11 +1,11 @@
 ---
-description: Session startup checklist — become competent before touching code
-capsule_summary: |
-  Operator ruling 2026-09-27, after a session that started blind (governance
-  unread, prior art unsearched, coordinator uninformed) and lost work for it.
-  Run this at session start, before the first edit.
+name: session-startup
+description:
+  Session startup checklist: handoff index, governance rules, tracker claims,
+  prior-art search, lane ownership, and the bead + branch + PR declaration —
+  before the first edit.
 metadata:
-  aihub.tags: '["decision:ADR-0021","effective:2026-09-27","route:both"]'
+  aihub.tags: '["decision:ADR-0021","effective:2026-09-27","route:project"]'
 ---
 
 # Session startup

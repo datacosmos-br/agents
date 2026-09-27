@@ -1,12 +1,11 @@
 ---
-description: Session recording checklist — turn the session into canonical records at close
-capsule_summary: |
-  Operator ruling 2026-09-27: the handoff is an index, not content. At session
-  close, record the work in the five canonical destinations (beads, landing
-  record, ADRs, governance repo, handoff index) with a mandatory critical
-  retrospective, then land the records themselves through the full cycle.
+name: record-session
+description:
+  Session recording checklist: the five canonical destinations, the mandatory
+  critical retrospective, landing the records through the full cycle, and the
+  index-only handoff.
 metadata:
-  aihub.tags: '["decision:ADR-0021","effective:2026-09-27","route:both"]'
+  aihub.tags: '["decision:ADR-0021","effective:2026-09-27","route:project"]'
 ---
 
 # Record session
