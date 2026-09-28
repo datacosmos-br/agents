@@ -34,8 +34,8 @@ ai-hub `.kilo/plans/2026-09-27-surfaced-inventory-runtime-recovery/00-index.md`)
 
 ## Coordination law
 
-- Report bead/branch/PR to the coordinator (`gc mail send human`) when starting
-  work and when landing it; delivery proven, not assumed.
+- Report bead/branch/PR to the coordinator when starting work and when landing
+  it; delivery proven, not assumed.
 - Critique other sessions' violations with evidence, never blame without it.
 
 ## Verification law
