@@ -19,7 +19,7 @@ Contradictions and their winners:
 
 1. `flext/credential-keyring` (system Secret Service, `env-keyring auto-exec`)
    contradicted `runtime/no-keyring`, `runtime/encrypted-credential-store`, and prelude
-   rule 2. It is retired; `runtime/no-keyring` absorbs its identity.
+   rule 2. It is retired, and `runtime/no-keyring` records the supersession.
 2. `flext/scanner-closure` duplicated `security/scanner-closure` with weaker semantics
    (triage files as a finding ledger; false positives without operator authorization).
    It is retired. The security rule is the one owner: triage files are evidence
@@ -34,7 +34,7 @@ Contradictions and their winners:
    staging used for atomic publication are recovery data of one invocation, not
    backups; persistent backups, `.bak` siblings, and archives stay prohibited.
 5. `python` forbade a universal line-count threshold while
-   `architecture/internal-clean-architecture`, `workflow/full-standards-conformance-sweep`
+   `architecture/internal-clean-architecture`, `workflow/full-standards-conformance-sweep`,
    and two skills stated 200 logical lines, and the declared FLEXT owner — the
    flext-infra `loc-cap` gate — is configured with a different ceiling. A cap exists
    only where a project declares it in its own gate; the universal layer has none, and
@@ -118,5 +118,6 @@ New decisions:
   RTK and Beads blocks), the AI Hub instructions (RTK and Beads blocks), the Beads fork
   agent templates and doctor hints (`git pull --rebase`), and the AI Hub home and
   project projections that still carry the retired prelude rule 11 wording.
-- AI Hub consumes the released bundle and owns deployment; source edits or a green
-  package load alone do not prove propagation.
+- AI Hub consumes the integrated bundle through its locked `agents-governance`
+  dependency and owns deployment; source edits or a green package load alone do not
+  prove propagation.
