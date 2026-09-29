@@ -44,26 +44,30 @@ Compose with `rules/workflow/structural-migrations.md` (rule layering),
 `rules/runtime/strict-execution.md` (atomic effects), and
 the tracker-traceability rule (evidence cadence).
 
-## §Templates — cirurgia em templates gerenciados (2026-09-11, do erro real)
+## Templates — surgery on managed templates (2026-09-11, from a real failure)
 
-Template gerido (`.j2` em `src/flext_infra/templates/`) é CÓDIGO PRODUÇÃO com história,
-não scratch. Proibido reescrever do zero. Obrigatório:
+A managed template (`.j2` under `src/flext_infra/templates/`) is production code with
+history, not scratch. Rewriting one from scratch is prohibited. Required:
 
-1. **Diff cirúrgico primeiro**: remover só os blocos da transformação
-   (define/calls/condicionais). Reescrever 732→467 linhas destruiu o bootstrap da
-   toolchain, resolução UV do caller, exports, cygpath — ~400 falhas em cascata.
-2. **Contexto de render = campos do RenderSpec**: cada `{{ var }}` no template tem que
-   existir no modelo de render (ex.: `MakefileRenderSpec`). Antes de referenciar
-   variável: ler o modelo em `_models/config.py`. `'dict object' has no attribute 'X'` =
-   variável inventada ou campo removido do SSOT.
-3. **Quebra de render = sintoma de dono**: `{% if verb.requires_apply %}` refere campo
-   removido de `MakeVerbSpec` — consertar no template É o passo do exterminio; a remoção
-   do campo no SSOT exige a cirurgia nos templates NO MESMO commit.
-4. **.bak dentro de templates/ é defeito**: descoberta de templates enumera o diretório;
-   staging nunca no repositório.
-5. **Descriminar flag de ambiente de arg CLI**: o antigo flag de ambiente que exigia
-   confirmação foi exterminado — cada verbo Make executa diretamente sua operação, sem
-   seletor de aplicação; `--apply` (arg interno de CLI em release/codegen init/deps) é
-   contrato interno vigente distinto — não confundir, não remover.
-6. **Prova por render**: qualquer mudança de template exige
-   `pytest <framework de conform>` até ponto fixo, nunca "deve renderizar".
+1. **Surgical diff first**: remove only the blocks the transformation targets (defines,
+   calls, conditionals). A rewrite from 732 to 467 lines destroyed the toolchain
+   bootstrap, the caller's UV resolution, exports, and cygpath — about 400 cascading
+   failures.
+2. **Render context = RenderSpec fields**: every `{{ var }}` in a template must exist in
+   its render model (for example `MakefileRenderSpec`). Read the model in
+   `_models/config.py` before referencing a variable. An error such as
+   `'dict object' has no attribute 'X'` means an invented variable or a field removed
+   from the SSOT.
+3. **A render break is an owner symptom**: `{% if verb.requires_apply %}` referenced a
+   field removed from `MakeVerbSpec`. Fixing the template is the extermination step
+   itself; removing a field from the SSOT requires the template surgery in the same
+   commit.
+4. **A `.bak` inside `templates/` is a defect**: template discovery enumerates the
+   directory, and staging never lives in the repository.
+5. **Distinguish an environment flag from a CLI argument**: the old environment flag
+   that demanded confirmation was exterminated — every Make verb performs its operation
+   directly, with no apply selector. `--apply`, an internal CLI argument of release,
+   codegen init, and deps, is a distinct current internal contract: do not confuse it
+   and do not remove it.
+6. **Proof by rendering**: every template change runs the conform tests through the root
+   `make test` verb until a fixed point, never "it should render".

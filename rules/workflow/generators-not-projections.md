@@ -3,7 +3,7 @@ description:
   Editing configuration, generated surfaces, or hardcoding a value. Load when changing
   config, settings, templates, tool homes, service units, or goldens.
 metadata:
-  aihub.tags: '["decision:ADR-0008","effective:2026-08-28","route:both"]'
+  aihub.tags: '["decision:ADR-0031","effective:2026-09-29","route:both"]'
 ---
 
 # Edit canonical sources, regenerate projections, prove idempotence
@@ -20,7 +20,11 @@ projection such as provider configuration, service units, or goldens.
 - A file carrying a tool-managed block — an instruction file into which the selected
   tracker or another tool writes its own begin/end integration markers — is a
   tool-managed projection: markdown and docs gates exclude it at their SSOT exclude
-  list, never by hand-fixing lint inside managed blocks.
+  list, never by hand-fixing lint inside managed blocks. Its text carries no authority:
+  where it contradicts a rule — an `rtk init` block prefixing git with `rtk`, a Beads
+  profile running `git pull --rebase` — the rule wins (git stays plain and is never
+  rebased), and the block is corrected or removed through its tool, never hand-edited
+  between its markers.
 - After changing a source, regenerate and prove a second generation has no diff.
 - Rewire every consumer before deleting the superseded output. Remove obsolete
   projections, manifests, tests, fixtures, docs, backups, and archives in the same

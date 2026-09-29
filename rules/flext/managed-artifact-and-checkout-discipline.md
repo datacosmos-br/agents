@@ -3,7 +3,7 @@ description:
   File-mutation infrastructure and rig checkout topology are single-owner facts, not
   per-consumer choices
 metadata:
-  aihub.tags: '["decision:ADR-0008","effective:2026-09-12","route:personal"]'
+  aihub.tags: '["decision:ADR-0031","effective:2026-09-29","route:personal"]'
 ---
 
 <!-- Why: new file registering 2026-09-12 flext x ai-hub x agents operator rulings R20/R24; no existing owner covers managed-artifact mutation ownership or rig-checkout-tracks-integration-only -->
@@ -17,12 +17,17 @@ make on its own.
 ## File mutation has exactly one owner
 
 flext-infra's managed-artifact machinery — codegen transaction, staging, atomic journal,
-backup/validate/restore — is the sole owner of writing, backing up, validating, and
-restoring generated files across the fleet. A consumer, ai-hub included, calls that
-machinery; it never reimplements transaction, staging, or rollback logic of its own for
-a file it does not originate. A parallel implementation found in a consumer is
-exterminated and rewired to the owner in the same change, never left to coexist as a
-compatibility path.
+validation, and attributable restore — is the sole owner of writing, validating, and
+restoring generated files across the fleet. Its journal and staging are recovery data
+of one invocation on the destination filesystem: they exist only until that invocation
+commits or its rollback (or interrupted-run recovery) consumes them
+(`atomic-effects.md` (rule file)), and they are not backups. Persistent backups, `.bak`
+siblings, and archives stay prohibited (`storage.md` (rule file)).
+
+A consumer, ai-hub included, calls that machinery; it never reimplements transaction,
+staging, or rollback logic of its own for a file it does not originate. A parallel
+implementation found in a consumer is exterminated and rewired to the owner in the same
+change, never left to coexist as a compatibility path.
 
 ## A rig's primary checkout tracks integration only
 

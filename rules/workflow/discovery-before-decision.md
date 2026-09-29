@@ -1,5 +1,5 @@
 ---
-description: Mutação consumer-facing gates on a decision; discovery work never does
+description: Consumer-facing mutation gates on a decision; discovery work never does
 metadata:
   aihub.tags: '["decision:ADR-0008","effective:2026-09-11","route:both"]'
 ---

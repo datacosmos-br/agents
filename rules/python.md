@@ -2,7 +2,7 @@
 globs: ["*.py", "**/*.py", "pyproject.toml"]
 description: Python rules
 metadata:
-  aihub.tags: '["decision:ADR-0008","effective:2026-08-28","route:both"]'
+  aihub.tags: '["decision:ADR-0031","effective:2026-09-29","route:both"]'
 ---
 
 # Python rules
@@ -77,13 +77,15 @@ Make/codegen owner and rerun its public verb.
   data, return ambiguous sentinels, or convert structured failures into untyped strings.
 - Use context managers and structured concurrency for owned resources.
 - Cancellation and timeouts must stop only resources owned by the invocation.
-- Retry is prohibited. A failed operation terminates the invocation.
+- Retry is prohibited. A failed operation terminates the invocation; `no-fallback.md`
+  (rule file) separates retries from bounded readiness polling.
 
 ## Design and migration
 
 - Search existing owners and consumers before adding code.
-- Keep functions/modules cohesive and follow repository complexity/size gates; never
-  invent a universal line-count threshold.
+- Keep functions and modules cohesive and follow the repository's complexity and size
+  gates. A line-count cap exists only where a project declares it in its own gate; this
+  layer declares none, and no rule, skill, or review invents or restates the number.
 - Complete refactors in one cycle: build the final owner, migrate every in-scope
   consumer, delete superseded code/tests/docs, and prove no stale reference remains.
 - Prefer immutable data where practical and explicit dependency injection at boundaries.
