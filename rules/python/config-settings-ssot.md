@@ -2,7 +2,7 @@
 globs: "**/*.py"
 description: Read configuration through the project's typed owner
 metadata:
-  aihub.tags: '["decision:ADR-0008","effective:2026-08-28","route:both"]'
+  aihub.tags: '["decision:ADR-0031","effective:2026-09-29","route:both"]'
 ---
 
 # Read configuration through the project's typed owner
@@ -12,6 +12,9 @@ environment variables, files, and CLI input only at that boundary; consumers rec
 validated typed values, never raw dictionaries or repeated environment lookups.
 
 - Fixed business rules and user-overridable settings have one owner each.
+- An input that omits a settings key keeps that key's typed default; only a required
+  value, one without a default, fails when absent. A caller that misuses the owner's
+  contract is corrected at the caller; the owner is never bent to it.
 - Model configuration as frozen typed value objects (immutable dataclasses or the
   project's typed owner equivalent); never raw dictionaries, and never sentinel values
   where `T | None` states optionality.

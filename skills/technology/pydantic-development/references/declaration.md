@@ -58,7 +58,8 @@ class OrderLine(m.BaseModel):  # violation — raw base at consumer
 - Facade families are namespace containers composed by explicit inheritance
   (`FlextModelsBase` chains its parts; `FlextModels` composes the families). Never
   create tuple-unpacked bases, merge classes, or parallel namespaces.
-- One top-level class per module, ≤200 logical lines; declaration layers stay pure —
+- One top-level class per module, within the flext-infra `loc-cap` ceiling; declaration
+  layers stay pure —
   models carry data (fields, validators, computed fields), behavior lives in
   `u`/services.
 - Within flext-core, new shared presets join the existing `FlextModelsBase(_part02)`

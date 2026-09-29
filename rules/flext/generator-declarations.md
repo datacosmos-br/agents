@@ -1,12 +1,13 @@
 ---
 description: FLEXT generators emit only what is declared; nothing is inferred, listed by hand, or accommodated
 metadata:
-  aihub.tags: '["decision:ADR-0024","effective:2026-09-20","route:both"]'
+  aihub.tags: '["decision:ADR-0031","effective:2026-09-29","route:both"]'
 ---
 
 # Generator declarations law
 
-Operator law 2026-09-20 (`flext-0in0k`). It binds every FLEXT generator, detector, and fix
+Operator law 2026-09-20 (`flext-0in0k`); points 8, 11, and 12 amended by the operator
+decisions of 2026-09-29 (ADR-0031). It binds every FLEXT generator, detector, and fix
 (`make gen`, `make mod`, `make fix`, the namespace validator and its gates) and every
 consumer of them: the FLEXT workspace family and every private workspace that
 consumes the fleet toolchain, with their FLEXT subprojects. A generator that violates a
@@ -38,8 +39,9 @@ point below is defective at its owner; a consumer is never patched around it.
    case enters a generator to tolerate a file. A single case is exterminated at the
    source; a shape that can recur becomes a catalog rule with a fixture — the criterion
    is recurrence, not count.
-8. **Verdict and count derive from one classification.** A gate fails on severity
-   `error`; a warning is not a failure. There is no advisory-gate list by name.
+8. **Verdict and count derive from one classification.** A gate fails on every finding
+   it counts, error or warning alike: a warning is RED, never an advisory pass. There is
+   no advisory-gate list by name.
 9. **Every rule is computed from a source that already exists** and is **proven against
    the whole fleet before it is committed**. A rule that fires where it must not is a
    defect of the rule.
@@ -55,11 +57,20 @@ point below is defective at its owner; a consumer is never patched around it.
     method, a loose function, an additional loose class. The existing FLEXT rules for
     this (one nested class per facade; `c/t/p/m/u` monopolize class declarations; no flat
     alias) are **absolute**: the finding is `error`, not warning; the correction belongs
-    to the fix, not to a hand.
+    to the fix, not to a hand. Three shapes are not loose code: an executable module's
+    `main()` entry point, pytest fixtures and hooks in `conftest.py`, and the dunders a
+    generator emits (`__all__`, the lazy-export `__getattr__` and `__dir__`, generated
+    `__version__` metadata).
 12. **An exception is the operator's decision, never the agent's.** There is no
     self-maintained exception list. Each surviving exception is a single motivated
     entry with a bead and the operator's deliberate, explicit authorization; without
-    all four the exception does not exist and the case is a violation.
+    all four the exception does not exist and the case is a violation. A gate
+    suspension, or an order that keeps a gate's findings observational, is such an
+    exception: it is recorded with its authority and reason at the project's typed
+    owner, every run reports it separately and never counts it as passed, and it stands
+    until the operator lifts it. Meanwhile strictness comes from the active gates, the
+    pytest plugins, and the project post-check, and suspended or observational findings
+    are still driven to zero.
 13. **A hack's permission dies with it.** Every exclusion, allowlist,
     `per-file-ignores`, validator bypass, advisory gate, single-file guard, or
     "tolerance" that **authorizes** a hack is exterminated in the same commit as the

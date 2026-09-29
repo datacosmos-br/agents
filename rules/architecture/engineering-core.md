@@ -20,7 +20,7 @@ capsule_summary: |
   never authorizes the generic form, and an agent never writes the operator's SSH
   configuration or keys — identity is corrected in git, or reported.
 metadata:
-  aihub.tags: '["decision:ADR-0017","effective:2026-09-10","route:both"]'
+  aihub.tags: '["decision:ADR-0031","effective:2026-09-29","route:both"]'
 ---
 
 # Engineering core
@@ -76,10 +76,14 @@ by an agent — not to repair identity, not to deploy a fragment, not to restore
 Identity is corrected in git; anything that requires editing SSH configuration is
 reported to the operator instead.
 
-An external token validation without its token is not executed and is recorded as
-`NOT EXECUTED`, never green; it does not block offline gates, landing, or post-merge
-proof. Direct invocation selects it: the token becomes required and any failure escapes
-without skip, catch, fallback, or normalization.
+A check whose declared capability is unavailable — an external token, or a host
+capability such as Docker or a remote service that the environment (CI included) lacks —
+is not executed and is recorded as typed `NOT EXECUTED` with its reason: never green,
+never counted as passed, never a runtime skip. A missing token does not block offline
+gates, landing, or post-merge proof. A missing host capability does not turn the run
+that lacks it red, and the behavior it covers counts as proven only by a run where the
+capability is present. Direct invocation selects the check: the capability becomes
+required and any failure escapes without skip, catch, fallback, or normalization.
 
 Compose with `generalized ownership` (rule file), `strict execution` (rule file),
 `runtime evidence` (rule file), `storage isolation` (rule file), `security closure`

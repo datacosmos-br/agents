@@ -30,8 +30,11 @@ substitutes. Resolve external-token workflows before invocation: when the token 
 absent, exclude the dormant workflow from the applicable set and record it as
 `NOT EXECUTED` because the external token is unavailable. This is not green evidence and
 cannot prove that workflow's semantics, but it does not block the remaining validation
-or landing. A missing or conflicting prerequisite for an applicable workflow stops with
-zero gate effects.
+or landing. A test whose declared host capability is unavailable (for example Docker in
+CI) is recorded the same way, as typed `NOT EXECUTED` with its node id and reason; it is
+never counted as passed, and its behavior is proven only by a run on a capable host. A
+missing or conflicting prerequisite for an applicable workflow stops with zero gate
+effects.
 
 ## Ordered evidence
 

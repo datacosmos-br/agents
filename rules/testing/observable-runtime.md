@@ -1,7 +1,7 @@
 ---
 description: Test observable runtime behavior
 metadata:
-  aihub.tags: '["decision:ADR-0008","effective:2026-08-30","route:both"]'
+  aihub.tags: '["decision:ADR-0031","effective:2026-09-29","route:both"]'
 ---
 
 # Test observable runtime behavior
@@ -10,12 +10,17 @@ Measure the real public runtime or installed artifact before creating or adaptin
 test. Tests validate current behavior; they never define it. Use only public package
 roots, shared conftest owners, and typed fixtures. Do not mock, monkeypatch, patch
 construction, import private modules, assert private methods, copy configuration, freeze
-implementation shape, or hardcode owner values.
+implementation shape, or hardcode project-owned values — values that a configuration,
+settings, or constants owner declares; inputs a fixture synthesizes are scenario data.
+A test changes the process environment only through a scoped context that restores it
+on exit (FLEXT: `u.Tests.env_vars_context`); a change that outlives the test fails it.
 
 For `internal_flext`, all construction comes from `flext-tests` and its public `tm`,
 `c`, `t`, `p`, `m`, and `u` facets. A local fixture binds scenario data but never
-redeclares that machinery. Unit tests open no network socket and write only inside
-fixture-owned storage; real integration services use their public harness.
+redeclares that machinery. Assertions use a `tm` matcher; a bare `assert` is allowed
+only where no `tm` matcher expresses the check. Unit tests open no network socket and
+write only inside fixture-owned storage; real integration services use their public
+harness.
 
 Every incremental, full, and CI pytest execution uses a selector-free root Make verb
 invoked directly without an apply selector, pytest-testmon, and the same external
@@ -27,11 +32,32 @@ A warning, skip, xfail, empty output, missing tool, missing report, zero collect
 unexecuted selected suite, caught exception, retry, or normalized failure is RED. Only
 zero execution from a typed incremental testmon cache hit is acceptable, and only when
 database integrity and complete deselection accounting are proved; report it as a cache
-hit, never as tests passed. The first exception, cause, and raw traceback escape
-unchanged.
+hit, never as tests passed. A capability deselection (below) is neither a skip nor zero
+collection. The first exception, cause, and raw traceback escape unchanged.
 
 See [`runtime-is-reality.md`](../workflow/runtime-is-reality.md) for the runtime-first
 owner.
+
+## Host services and capability gating (operator decisions, 2026-09-29)
+
+<!-- Why: registers the ADR-0031 test-program decisions on this owner rather than a new rule -->
+
+A real integration service that a suite needs, such as a directory-server container, is
+host state: one long-lived instance per host, shared by every checkout. Its declared
+harness provisions it before the test clock starts (`gate-budget.md` (rule file)),
+reuses it while healthy, and recreates it only when it is broken or its declared
+fingerprint (image, configuration, schema, harness revision) changes, always under a
+host lock. Tests share no data through it: each test works in its own namespace,
+derived from the worker and run identity and removed at teardown, and the harness
+sweeps stale namespaces. The service is not a borrowed environment; every checkout
+still owns its own `.venv` (`shared-venv-guard.md` (rule file)).
+
+A test that needs a host or remote capability declares it by marker, and resolution is
+declarative and automatic at collection: CI never executes `remote` or `docker` tests;
+locally, `docker` tests run whenever the host supports Docker. A test whose capability
+is unavailable is deselected as typed `NOT EXECUTED`, with its node id and reason in the
+run report — never a runtime skip and never counted as passed (`engineering-core.md`
+(rule file)). An executed test whose real service fails is RED.
 
 ## Fixture composition and the fail loop (operator ruling, 2026-09-12)
 

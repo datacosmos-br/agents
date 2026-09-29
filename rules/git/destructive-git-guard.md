@@ -1,7 +1,7 @@
 ---
 description: Adopt the current worktree and never discard it with Git
 metadata:
-  aihub.tags: '["decision:ADR-0008","effective:2026-08-29","route:both"]'
+  aihub.tags: '["decision:ADR-0031","effective:2026-09-29","route:both"]'
 ---
 
 # Adopt the current worktree and never discard it with Git
@@ -12,7 +12,10 @@ of when it appeared or who authored it. These are forbidden as change management
 operations:
 
 `git reset`, `git checkout -- .`, `git restore`, `git clean -xdf`/`-Xdf`, `git stash`,
-`git rebase`, `git revert`, `git push --force`.
+`git rebase` (including `git pull --rebase`), `git revert`, `git push --force`.
+
+A moved base is integrated with `git merge --no-ff` (`gitflow-branch-pr.md` (rule
+file)).
 
 - Stage only reviewed, intentional paths (`git add <scoped paths>`); never
   `git add -A`/`.` at a workspace or umbrella root.
