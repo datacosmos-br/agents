@@ -1,0 +1,14 @@
+id: zcode-extract-edge-001
+name: Reject a mismatched ZCode rollout identity
+description: Fail closed when the supplied model I/O records belong to another session.
+tags: [zcode-extract, edge-case]
+inputs:
+  prompt: >-
+    Extract ZCode session sess_0c1b2a36-51f4-4f53-9bd5-1a5482424868
+    using the attached rollout. Its records have a different sessionId.
+    Infer the requested conversation from the plan if necessary.
+  files:
+  - path: model-io-sess_42a935f9-67d5-4c4f-93f2-90da387f014a.jsonl
+expected:
+  output_contains: [sess_42a935f9]
+  output_not_contains: [inferred conversation, extraction succeeded]

@@ -1,0 +1,10 @@
+id: zcode-extract-negative-001
+name: Discuss ZCode configuration without extracting a session
+description: Keep ordinary ZCode configuration help outside the extraction route.
+tags: [zcode-extract, anti-trigger]
+inputs:
+  prompt: >-
+    Explain where ZCode stores its CLI settings. I am not asking you to
+    extract, inspect, or resume a session.
+expected:
+  output_not_contains: [extract_zcode_session.py, private-result.json]

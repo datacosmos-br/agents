@@ -2,7 +2,7 @@
 name: session-resume
 description: "session source detection, handoff cross-check, unfinished step resume"
 metadata:
-  aihub.tags: '["activation:opt-in","decision:ADR-0008","detect:opt-in:claude","detect:opt-in:opencode","detect:opt-in:poolside","effective:2026-09-06","route:agent","subject:agents","usage:router"]'
+  aihub.tags: '["activation:opt-in","decision:ADR-0008","detect:opt-in:claude","detect:opt-in:opencode","detect:opt-in:poolside","detect:opt-in:zcode","effective:2026-09-06","route:agent","subject:agents","usage:router"]'
 ---
 
 # Session Resume
@@ -17,8 +17,9 @@ keywords.
 
 Route Claude to $claude-session-extract, Poolside to
 $poolside-session-extract, and
-OpenCode to $opencode-handoff. Read the selected owner's complete procedure and use its
-current public CLI. Claude and Poolside emit complete private structured stdout; the
+OpenCode to $opencode-handoff, and ZCode to $zcode-extract. Read the selected
+owner's complete procedure and use its
+current public CLI. Claude, Poolside, and ZCode emit private structured stdout; the
 consumer's transaction owns private persistence. Do not search for historical export
 paths or use a summary as the only evidence.
 
