@@ -20,6 +20,7 @@ proof exists, and the bead is closed with evidence.
 | Merging with `make test` red | **Forbidden.** R-S3 (`docs/rules/session-execution-rules-20260927.md:18`, the PR goes up with tests green) and bead-branch-pr-cadence §4.1 (full suite before the PR exists) forbid it; AGENTS #14 makes every warning, skip or failure RED. The earlier coordinator ruling that allowed it (used for ai-hub #940/#941) was never operator law and is void |
 | One merger per repository: the coordinator for flext-\*, cosmos-\* and agents; for ai-hub, the operator-authorized ai-hub merger session under the same protocol (`[coord] MERGING`, exact-head CI green, local `make test` green, merge commit). Workers deliver green PRs and never merge | Law of this handoff; the general rule is pending in `ag-k47r` |
 | One heavy gate per machine (ADR-0021) | In force; the carve-out is pending in `ag-g29z` |
+| Provisional `[coord]` subjects in use: `[coord] MERGING <repo>#<n> head <sha>`, `[coord] ready <repo>#<n> head <sha>`, `[coord] heavy-gate claim <lane>` / `[coord] heavy-gate release <lane> exit=<n>` | Not yet in the `rules/coordination/inter-session-mail.md` taxonomy; `ag-k47r` (merge subjects) and `ag-g29z` (heavy-gate subjects) add them there |
 | ai-hub `main` frozen; no promotion | In force |
 | Never hand-edit `.beads/config.yaml` (flext-infra projection) or commit with `core.hooksPath` overridden | In force; the rule is pending in `ag-4a82` |
 | Claim a bead only with a worktree and a first commit | In force |
