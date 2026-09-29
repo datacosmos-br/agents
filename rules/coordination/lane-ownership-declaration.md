@@ -20,10 +20,10 @@ metadata:
 
 ## Declare before the first commit
 
-A lane is declared with three identifiers, sent to the coordinator via
-`gc mail` and written on the canonical bead:
+A lane is declared with three identifiers, sent to the coordinator through the
+mail channel and written on the canonical bead:
 
-- **bead** — claimed (`bd update <id> --claim`) with the scope comment;
+- **bead** — claimed (`--claim`) with the scope comment;
 - **branch** — cut from the freshly fetched integration tip in a dedicated
   worktree on the destination filesystem;
 - **PR** — the receiving integration branch, named in the declaration even
@@ -60,7 +60,7 @@ did not read.
 
 - The primary checkout carrying another session's live work is hands-off —
   even when it looks like churn you would have restored.
-- Criticism of another session's violations goes through `gc mail`, with the
-  rule numbers, never through their files.
+- Criticism of another session's violations goes through the coordinator mail
+  channel, with the rule numbers, never through their files.
 - Critical doubt goes to the coordinator; the coordinator escalates to the
   human operator.

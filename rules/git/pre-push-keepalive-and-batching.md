@@ -37,7 +37,7 @@ The fast-gate runner deletes its temp shard logs unless
 `LOCAL_TEST_LOG_DIR` is set. Run the gate yourself with it before diagnosing:
 
 ```bash
-LOCAL_TEST_LOG_DIR=$HOME/tmp/gc-shards make test-fast-parallel
+LOCAL_TEST_LOG_DIR=$HOME/tmp/test-shards make test-fast-parallel
 ```
 
 Diagnosing a push refusal without shard logs costs a full extra gate cycle.

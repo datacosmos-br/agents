@@ -7,7 +7,7 @@ capsule_summary: |
   anyone; before starting any unit, research whether the work already exists in
   abandoned branches, open PRs, or other beads — redoing existing work or two
   actors doing the same thing is a severe violation; the dedupe of the tracker
-  (close superseded, realign epics, fix titles, --force when bd refuses) is part
+  (close superseded, realign epics, fix titles, --force when the tracker refuses) is part
   of the acting role, not an extra.
 metadata:
   aihub.tags: '["decision:ADR-0021","effective:2026-09-27","route:both"]'
@@ -23,8 +23,8 @@ delivers) and [fleet-landing-corrections](fleet-landing-corrections.md).
 1. Every work unit carries its triple from the moment work starts: the claimed
    **bead**, the dedicated **branch**, and the **PR** (opened as soon as the
    commit exists, updated as work lands).
-2. The coordinator is informed of the triple through `gc mail human` at claim
-   time and at every material state change (land, blocker, scope change).
+2. The coordinator is informed of the triple through the coordinator mail channel
+   at claim time and at every material state change (land, blocker, scope change).
 3. The branch is dedicated (one mandate per lane, ruling 58): `fix/<slug>-<date>`
    from the current integration tip, in a dedicated worktree on the destination
    filesystem — never `/tmp`, never a borrowed venv, never the primary checkout.
@@ -33,8 +33,8 @@ delivers) and [fleet-landing-corrections](fleet-landing-corrections.md).
 
 1. A bead — claimed, deferred, or blocked — with more than one hour without a
    recorded update is abandoned. Anyone may adopt it.
-2. Heartbeats are `bd update --append-notes` with the measured state, not "still
-   working". Adoption supersedes re-creation: pick the bead up, record the
+2. Heartbeats record the measured state on the bead as an appended note, not
+   "still working". Adoption supersedes re-creation: pick the bead up, record the
    adoption, continue from its notes.
 3. Epics and parents are kept alive the same way; a stale `updated_at` with a
    same-day comment is cured by a heartbeat, not by opening a duplicate.
@@ -48,8 +48,8 @@ delivers) and [fleet-landing-corrections](fleet-landing-corrections.md).
 3. Duplicates found in flight are retired after containment proof
    (`git diff` against the survivor shows no unique content).
 4. Tracker hygiene is continuous: close what is already done, realign beads to
-   the correct epic, fix misleading titles, and use `--force` when bd's state
-   machine refuses a lawful operation.
+   the correct epic, fix misleading titles, and use `--force` when the tracker's
+   state machine refuses a lawful operation.
 
 ## 4. Validate locally, land in short cycles
 

@@ -27,8 +27,8 @@ metadata:
    deferred, or blocked included — is abandoned and up for adoption. Claim
    with `--force` when a stale lock blocks, and keep every touched bead on a
    one-hour keep-alive from that moment.
-5. **Declare bead + branch + PR** to the coordinator (`gc mail`) and on the
-   bead itself. The declaration is the lane's birth certificate: without it,
+5. **Declare bead + branch + PR** to the coordinator through the mail channel
+   and on the bead itself. The declaration is the lane's birth certificate: without it,
    the work is unowned and lost.
 
 ## During the session
