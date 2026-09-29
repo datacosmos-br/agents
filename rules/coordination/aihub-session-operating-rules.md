@@ -1,7 +1,7 @@
 ---
 description: Acting rules for any agent session working the ai-hub fleet, earned across the 2026-09 runtime campaigns.
 metadata:
-  aihub.tags: '["decision:ADR-0030","effective:2026-09-27","route:project"]'
+  aihub.tags: '["decision:ADR-0030","effective:2026-09-27","route:personal"]'
 ---
 
 # ai-hub session operating rules
