@@ -91,20 +91,23 @@ New decisions:
     `coordination/fleet-landing-corrections`, and the description of
     `workflow/discovery-before-decision` are translated; the universal home is
     English-only. The translated templates section names the root test verb instead of
-    a raw `pytest` invocation.
+    a raw `pytest` invocation. A translation keeps its rule's approval tags: the ruling
+    it carries and that ruling's date are unchanged.
 
 ## Consequences
 
 - Retired: `rules/flext/credential-keyring.md` and `rules/flext/scanner-closure.md`;
   their survivors record the supersession in their bodies.
-- Amended under this record: `architecture/engineering-core`,
-  `architecture/internal-clean-architecture`, `coordination/fleet-landing-corrections`,
-  `flext/generator-declarations`, `flext/managed-artifact-and-checkout-discipline`,
-  `git/destructive-git-guard`, `git/fork-version-locality`, `python`,
-  `python/config-settings-ssot`, `runtime/no-fallback`, `runtime/no-keyring`,
-  `security/scanner-closure`, `testing/observable-runtime`, `workflow/gate-budget`,
-  `workflow/generators-not-projections`, `workflow/full-standards-conformance-sweep`,
-  and `workflow/mass-rewrite-discipline`. `flext/gate-registry-ownership` rewires its
+- Amended under this record, and tagged with it: `architecture/engineering-core`,
+  `architecture/internal-clean-architecture`, `flext/generator-declarations`,
+  `flext/managed-artifact-and-checkout-discipline`, `git/destructive-git-guard`,
+  `git/fork-version-locality`, `python`, `python/config-settings-ssot`,
+  `runtime/no-fallback`, `runtime/no-keyring`, `security/scanner-closure`,
+  `testing/observable-runtime`, `workflow/gate-budget`,
+  `workflow/generators-not-projections`, and `workflow/full-standards-conformance-sweep`.
+  Translated only: `coordination/fleet-landing-corrections`,
+  `workflow/mass-rewrite-discipline`, and the description of
+  `workflow/discovery-before-decision`. `flext/gate-registry-ownership` rewires its
   reference to the surviving scanner rule. The FLEXT development and Pydantic skill
   references defer the module cap to the `loc-cap` gate, and the verification-loop
   procedure records capability-gated tests as typed `NOT EXECUTED`.

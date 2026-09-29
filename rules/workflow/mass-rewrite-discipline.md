@@ -3,7 +3,7 @@ description:
   Tree-wide mechanical rewrites and automation-applied fixes are commit-boundaried,
   inventories-first, and fully test-proven before and after.
 metadata:
-  aihub.tags: '["decision:ADR-0031","effective:2026-09-29","route:both"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-09-11","route:both"]'
 ---
 
 # Mass rewrite discipline: inventory, boundaries, evidence
