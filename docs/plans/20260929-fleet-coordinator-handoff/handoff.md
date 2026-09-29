@@ -36,8 +36,8 @@ proof exists, and the bead is closed with evidence.
   runs no pytest step, so test reds stay hidden: `flext-qsou4`, the
   boundary-gate fixture, and the Bandit severity bug.
 - **ai-hub `dev`** at `021f6e008` is 39 ahead of `main` (`0e66c1960`, which
-  carries #836 against the operator's NO). #946 is CONFLICTING and owned by a
-  live session (worktrees under `~/ai-hub-worktrees/`).
+  carries #836 against the operator's NO). #946 was merged by the ai-hub
+  merger session at 01:10:10Z (a56e053d7); no ai-hub PR is open.
 - **cosmos-main `develop`** at `c2324a0f3` fails at setup: the retired
   `datacosmos-br/flext-web@baseline-20260919` cannot be fetched. #304 passes
   setup and fails the gen fixed point; #303 is superseded by #304 except its 3
@@ -68,13 +68,17 @@ Each item follows the same cycle: local green gate, then PR, then green CI,
 then the coordinator merges, then the post-merge tip CI is checked. One heavy
 gate runs at a time.
 
-1. **`flext-pxonf`:** a cold testmon cache on a fresh worktree must persist or
-   warm within budget. It blocks every flext-infra test gate.
-2. **flext-infra, one at a time:**
-   - `flext-n6y4i`: a single parent-walking mise.lock reader. Delete
-     `_locked_tool_version` / `_locked_taplo_version` in
-     `_utilities/pyproject.py:163-187`. Both readers sit on the one
-     `format_toml_source` path. Dependents: `flext-ezzws`, `flext-qsou4`.
+1. **flext-infra tip green.** `max-failures: 1` stops every lane at the first
+   tip red, so this blocks all infra lanes. The cold `make test` on 8b37da306
+   (01:11Z) shows three reds: the two `abstraction_boundary` fixture failures
+   (fixed in the t8p7n lane) and `flext-u7w1d`. `flext-pxonf` was re-measured:
+   at load ~4 the cold DB warms (0 to 1.28 MB). What remains is the cold
+   full-suite budget: about 450s on 4 workers against 120s.
+2. **flext-infra, one at a time** (t8p7n + u7w1d first):
+   - `flext-n6y4i`: pushed as `fix/flext-n6y4i-single-mise-reader-20260929`
+     (09fc54b8a). One parent-walking reader; the fixtures seed through
+     `u.Tests.copy_tracked_mise_seeds`. Dependents: `flext-ezzws`,
+     `flext-qsou4`.
    - `flext-t8p7n`.
    - `flext-idihq` (WIP 47bdff5b6).
    - `flext-akfj4`, `flext-7gdlg`, `flext-zmzvq`, `flext-dkoe4`.
@@ -101,8 +105,7 @@ gate runs at a time.
      and #297.
 4. **flext-core #523** (`flext-blgw9`): merge once green. Then `flext-sdjub`
    and `flext-lwvy1`.
-5. **ai-hub #946:** coordinate with the live session that owns it before any
-   merge. `aihub-kvx0x.6.6` and `aihub-kvx0x.6.7` are blocked on the operator's
+5. **ai-hub:** #946 has been merged; the ai-hub merger session owns that repo's merges. `aihub-kvx0x.6.6` and `aihub-kvx0x.6.7` are blocked on the operator's
    OAuth for native agent acceptance.
 6. **cosmos-main (`cosmos-7ysc5`):**
    - Run `make upg` to move off the retired datacosmos pins.
