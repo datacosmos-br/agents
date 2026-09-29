@@ -17,7 +17,7 @@ proof exists, and the bead is closed with evidence.
 | Item | State |
 |---|---|
 | Adopt the cosmos-main direct push `c2324a0f3` ("dev") as base, fix-forward | **Operator-approved 2026-09-29.** Pusher recorded: GitHub `marlon-costa-dc`, PushEvent 2026-09-28T22:04:47Z, no PR (bead `cosmos-7ysc5`) |
-| Merging with `make test` red | **Forbidden.** AGENTS #14, R-S3 and bead-branch-pr-cadence §4.1 already forbid it. The earlier coordinator ruling that allowed it (used for ai-hub #940/#941) was never operator law and is void |
+| Merging with `make test` red | **Forbidden.** R-S3 (`docs/rules/session-execution-rules-20260927.md:18`, the PR goes up with tests green) and bead-branch-pr-cadence §4.1 (full suite before the PR exists) forbid it; AGENTS #14 makes every warning, skip or failure RED. The earlier coordinator ruling that allowed it (used for ai-hub #940/#941) was never operator law and is void |
 | One merger per repository (the coordinator); workers deliver green PRs and never merge | Law of this handoff; the general rule is pending in `ag-k47r` |
 | One heavy gate per machine (ADR-0021) | In force; the carve-out is pending in `ag-g29z` |
 | ai-hub `main` frozen; no promotion | In force |
@@ -85,6 +85,11 @@ gate runs at a time.
    - `flext-m3sre` (#938, minus the pending (a)/(b)).
    - `flext-t3gku`: the detector at `workspace/detector.py:528` must fail loud
      on an empty gitlink directory.
+   - `flext-u7w1d`: `test_resource_limits[memory-1]` exits 2 instead of 1 on
+     Linux; it blocks the tip together with the t8p7n fixture reds.
+   - `flext-nktqo` (flext-target-ldap mypy gate killed at 6144 MiB/100s):
+     profile first; the pushed `make upg` output (21fca19) is re-derived on the
+     current infra tip, never promoted as is.
 3. **Root (`flext-itpd1.3.14`, claimed):**
    - Work in a fresh root worktree from `origin/0.12.0-dev`.
    - Move the flext-infra gitlink to at least 8b37da306.
