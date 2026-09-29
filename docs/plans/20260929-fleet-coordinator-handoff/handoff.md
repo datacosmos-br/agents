@@ -18,7 +18,7 @@ proof exists, and the bead is closed with evidence.
 |---|---|
 | Adopt the cosmos-main direct push `c2324a0f3` ("dev") as base, fix-forward | **Operator-approved 2026-09-29.** Pusher recorded: GitHub `marlon-costa-dc`, PushEvent 2026-09-28T22:04:47Z, no PR (bead `cosmos-7ysc5`) |
 | Merging with `make test` red | **Forbidden.** R-S3 (`docs/rules/session-execution-rules-20260927.md:18`, the PR goes up with tests green) and bead-branch-pr-cadence §4.1 (full suite before the PR exists) forbid it; AGENTS #14 makes every warning, skip or failure RED. The earlier coordinator ruling that allowed it (used for ai-hub #940/#941) was never operator law and is void |
-| One merger per repository (the coordinator); workers deliver green PRs and never merge | Law of this handoff; the general rule is pending in `ag-k47r` |
+| One merger per repository: the coordinator for flext-\*, cosmos-\* and agents; for ai-hub, the operator-authorized ai-hub merger session under the same protocol (`[coord] MERGING`, exact-head CI green, local `make test` green, merge commit). Workers deliver green PRs and never merge | Law of this handoff; the general rule is pending in `ag-k47r` |
 | One heavy gate per machine (ADR-0021) | In force; the carve-out is pending in `ag-g29z` |
 | ai-hub `main` frozen; no promotion | In force |
 | Never hand-edit `.beads/config.yaml` (flext-infra projection) or commit with `core.hooksPath` overridden | In force; the rule is pending in `ag-4a82` |
@@ -74,12 +74,14 @@ gate runs at a time.
    (fixed in the t8p7n lane) and `flext-u7w1d`. `flext-pxonf` was re-measured:
    at load ~4 the cold DB warms (0 to 1.28 MB). What remains is the cold
    full-suite budget: about 450s on 4 workers against 120s.
-2. **flext-infra, one at a time** (t8p7n + u7w1d first):
+2. **flext-infra, one at a time**, in this order:
+   - `flext-t8p7n`, including the abstraction_boundary fixture fix.
+   - `flext-u7w1d`: `test_resource_limits[memory-1]` exits 2 instead of 1 on
+     Linux. With t8p7n, it makes the tip green.
    - `flext-n6y4i`: pushed as `fix/flext-n6y4i-single-mise-reader-20260929`
      (09fc54b8a). One parent-walking reader; the fixtures seed through
      `u.Tests.copy_tracked_mise_seeds`. Dependents: `flext-ezzws`,
      `flext-qsou4`.
-   - `flext-t8p7n`.
    - `flext-idihq` (WIP 47bdff5b6).
    - `flext-akfj4`, `flext-7gdlg`, `flext-zmzvq`, `flext-dkoe4`.
    - `flext-38odd`.
@@ -89,8 +91,6 @@ gate runs at a time.
    - `flext-m3sre` (#938, minus the pending (a)/(b)).
    - `flext-t3gku`: the detector at `workspace/detector.py:528` must fail loud
      on an empty gitlink directory.
-   - `flext-u7w1d`: `test_resource_limits[memory-1]` exits 2 instead of 1 on
-     Linux; it blocks the tip together with the t8p7n fixture reds.
    - `flext-nktqo` (flext-target-ldap mypy gate killed at 6144 MiB/100s):
      profile first; the pushed `make upg` output (21fca19) is re-derived on the
      current infra tip, never promoted as is.
