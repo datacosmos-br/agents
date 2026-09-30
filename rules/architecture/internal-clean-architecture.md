@@ -2,7 +2,7 @@
 description:
   Internal projects enforce Clean Architecture, strict FLEXT facades, and explicit DI
 metadata:
-  aihub.tags: '["decision:ADR-0008","effective:2026-09-04","route:project"]'
+  aihub.tags: '["decision:ADR-0031","effective:2026-09-29","route:project"]'
 ---
 
 # Clean Architecture and DI for internal projects
@@ -25,12 +25,14 @@ module, and is composed through explicit inheritance. The public API composes th
 required facades; parallel facades, tuple-unpacked bases, eager export routers,
 compatibility namespaces, and local descriptors are prohibited.
 
-Each module has at most 200 logical lines and exactly one top-level class. Declaration
-layers are pure: `c` owns constants, `t` alone owns type aliases, `p` alone owns
-protocols, `m` owns Pydantic 2 models, and `u` owns pure utilities. All structured
-boundary input and output is validated by Pydantic 2 models. Public and DI contracts
-contain no `Any`, `object`, `Optional`, or `dict`; use precise models, aliases,
-protocols, and explicit null unions.
+Each module has exactly one top-level class and stays within the size cap its project
+declares; for `internal_flext` that cap is the flext-infra `loc-cap` gate, whose ceiling
+lives in that gate's configuration, never in a rule or skill. Declaration layers are
+pure: `c` owns constants, `t` alone owns type aliases, `p` alone owns protocols, `m`
+owns Pydantic 2 models, and `u` owns pure utilities. All structured boundary input and
+output is validated by Pydantic 2 models. Public and DI contracts contain no `Any`,
+`object`, `Optional`, or `dict`; use precise models, aliases, protocols, and explicit
+null unions.
 
 Settings own external input and config owns validated derivation before the facade
 graph. Consumers import those owner objects directly. Local aliases, copies,

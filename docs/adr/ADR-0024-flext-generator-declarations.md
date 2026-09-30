@@ -1,6 +1,8 @@
 # ADR-0024 — FLEXT generator declarations law
 
-**Status:** Accepted **Date:** 2026-09-20 **Scope:** the rule
+**Status:** Accepted; point 5 (warning verdict) and the facade-module carve-outs amended
+by [ADR-0031](ADR-0031-contradiction-winners-and-shared-test-service.md) **Date:**
+2026-09-20 **Scope:** the rule
 `rules/flext/generator-declarations.md`, every FLEXT generator, detector and fix
 (`make gen`, `make mod`, `make fix`, the namespace validator and its gates), and every
 consumer of them across the governed fleet

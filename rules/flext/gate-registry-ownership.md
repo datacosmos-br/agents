@@ -42,4 +42,4 @@ their typed SSOT in context; it never carries a literal list of its own. A faili
 validation is fixed at its owner the moment it is found; genuine doubt about correctness
 escalates to the operator rather than being silenced.
 
-See also: `flext-venv-hermeticity.md`, `scanner-closure.md`.
+See also: `flext-venv-hermeticity.md`, `security/scanner-closure.md`.

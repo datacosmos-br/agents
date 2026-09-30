@@ -1,19 +1,22 @@
 ---
 description: Running security scanners or closing findings from security reports.
 metadata:
-  aihub.tags: '["decision:ADR-0008","effective:2026-08-28","route:both"]'
+  aihub.tags: '["decision:ADR-0031","effective:2026-09-29","route:both"]'
 ---
+
+> Supersedes: `flext/scanner-closure`
 
 # Every reproducible security finding blocks closure
 
 Project-owned `docs/security/*-triage.md` files are evidence reports, not task trackers.
 Each finding requires the active canonical tracker, a decision, owner-source correction,
 reproducible evidence, and a clean scanner rerun. A false-positive or compatibility
-classification requires prior operator discussion, its reproducible technical proof, and
-explicit authorization. This applies to every severity and every released scanner
-version. While the tracker is suspended, create no substitute tracker or ledger,
-preserve evidence only in separately authorized Git/PR/CI surfaces, and leave tracker
-closure open.
+classification requires prior operator discussion, its reproducible technical proof —
+for a compatibility finding, measured against the project's declared language and
+runtime compatibility — and explicit authorization. This applies to every severity and
+every released scanner version. While the tracker is suspended, create no substitute
+tracker or ledger, preserve evidence only in separately authorized Git/PR/CI surfaces,
+and leave tracker closure open.
 
 Never close via risk acceptance, generic ignore files, `nosemgrep`, `|| true`, exit-code
 suppression, vulnerable old/new coexistence, or an unverified base image change. Never

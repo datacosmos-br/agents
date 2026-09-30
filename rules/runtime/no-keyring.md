@@ -1,8 +1,10 @@
 ---
 description: The OS keyring is the operator's store; application code never reads it.
 metadata:
-  aihub.tags: '["decision:ADR-0008","effective:2026-09-06","route:both"]'
+  aihub.tags: '["decision:ADR-0031","effective:2026-09-29","route:both"]'
 ---
+
+> Supersedes: `flext/credential-keyring`
 
 # The keyring is the operator's store, never an application ingress
 

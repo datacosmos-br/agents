@@ -47,7 +47,8 @@ composes it through explicit inheritance. Do not create tuple-unpacked bases,
 intermediate merge classes, parallel namespaces, eager routers, compatibility facades,
 local descriptors, or a second API.
 
-Every module contains exactly one top-level class and no more than 200 logical lines.
+Every module contains exactly one top-level class and stays within the ceiling of the
+flext-infra `loc-cap` gate; that value lives in the gate's configuration, never here.
 Declaration layers remain pure: `c` owns constants, `t` alone owns type aliases, `p`
 alone owns protocols, `m` owns Pydantic 2 models, and `u` owns pure utilities. All
 structured ingress and egress uses Pydantic 2. Public and DI contracts use neither

@@ -4,7 +4,7 @@ description:
   upstream. Load when the user versions a fork, tags a fork release, updates fork
   version surfaces, or measures upstream releases.
 metadata:
-  aihub.tags: '["decision:ADR-0011","effective:2026-09-06","route:both"]'
+  aihub.tags: '["decision:ADR-0031","effective:2026-09-29","route:both"]'
 capsule_summary: |
   A managed fork never invents a version ahead of its upstream. The fork
   version is a PEP 440 local version of the current measured upstream
@@ -33,8 +33,8 @@ manifest immediately before cutting a fork release.
 2. The fork suffix is a monotonic local identifier: `+dc.N` (PEP 440 local version) for
    Python distributions, `-fc.N` where the ecosystem's tooling uses that form. Each fork
    release increments N by one.
-3. When upstream publishes a new release, the fork rebases onto it and the suffix
-   restarts at 1.
+3. When upstream publishes a new release, the fork integrates it with a merge commit
+   (`git merge --no-ff`, never a rebase) and the suffix restarts at 1.
 4. Version surfaces stay consistent (project manifest, package metadata, lockfile,
    installer manifest) or are corrected in the same change.
 5. Test constants and documentation never repeat an invented version; they use the

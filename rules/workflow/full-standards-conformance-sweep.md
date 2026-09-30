@@ -1,6 +1,6 @@
 ---
 metadata:
-  aihub.tags: '["decision:ADR-0021", "effective:2026-09-16", "route:personal"]'
+  aihub.tags: '["decision:ADR-0031","effective:2026-09-29","route:personal"]'
 ---
 
 # Full-Standards Cleanup & Conformance Sweep (universal)
@@ -56,10 +56,10 @@ maximum automation. Hardcoded, non-automated test forms are prohibited outright.
 ## 6. FLEXT architecture law — strict, every managed project
 
 The `internal clean architecture` rule owns the FLEXT chain, facade families, DI
-boundaries, declaration purity, and the 200-logical-line module limit. The
-branch-matched `flext-law` and `flext-family-shape` skill own the project delta. This
-sweep detects violations and routes repairs through those owners; it never defines a
-competing 1000-line allowance or copied facade contract.
+boundaries, declaration purity, and the module size cap, which is the one FLEXT declares
+in its `loc-cap` gate. The branch-matched `flext-law` and `flext-family-shape` skill own
+the project delta. This sweep detects violations and routes repairs through those
+owners; it never restates a cap value or copies a facade contract.
 
 ## 7. Disciplines applied completely, in order
 

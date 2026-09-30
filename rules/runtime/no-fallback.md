@@ -1,7 +1,7 @@
 ---
 description: Prohibition of error-triggered alternates, retries, and partial execution.
 metadata:
-  aihub.tags: '["decision:ADR-0008","effective:2026-08-29","route:both"]'
+  aihub.tags: '["decision:ADR-0031","effective:2026-09-29","route:both"]'
 ---
 
 # One authorized path or failure
@@ -15,6 +15,12 @@ substitution, undeclared or competing defaults, compatibility aliases, dual
 reads/writes, deprecated inputs, best-effort branches, partial execution, and reduced
 modes are prohibited. Optional behavior exists only as an explicit typed absence in the
 canonical schema; it cannot be inferred from a failure.
+
+A retry is any repetition of a failed operation: a retry helper (`u.retry` and its
+kind), automatic reconnection, or an `until` loop around a state-changing task. A
+readiness wait is not a retry: it polls a read-only condition until an explicit deadline
+and fails loud with the last observation when the deadline passes; it never repeats the
+operation it waits for.
 
 A deterministic default resolved and validated by the typed owner before any failure is
 normal SSOT behavior, not fallback. Consumers omit equal environment variables,
