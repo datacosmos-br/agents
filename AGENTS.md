@@ -38,7 +38,7 @@
 
 # AGENTS.md — agents
 
-> Packaged governance `agents-governance` `0.5.0` owns the capability indexes: 66 agents, 96 rules, 137 skills. Consume them through `GovernanceBundle`; do not copy their bodies here.
+> Packaged governance `agents-governance` `0.5.0` owns the capability indexes: 71 agents, 109 rules, 140 skills. Consume them through `GovernanceBundle`; do not copy their bodies here.
 
 <!-- AIHUB-AGENTS-SCOPE-LOCAL-BEGIN -->
 ## AGENTS.md — agents
