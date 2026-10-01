@@ -13,10 +13,12 @@ the pre-test provisioning of a host test service, which fetches only digest-pinn
 inputs and only when the service's declared fingerprint changes.
 
 - Nothing slow runs in CI or at pre-commit, in absolute terms (operator ruling
-  2026-10-01): whole-program type checkers, code-smell audits, and slow tests run only
-  locally and at pre-push. Which gates are slow is a typed property declared once in the
-  project's gate registry or configuration; the CI workflow and the pre-commit hook
-  derive their gate sets from it and never list gates themselves. Pre-commit is enabled
+  2026-10-01): whole-program type checkers, code-smell audits, the project's own custom
+  validators (the gates whose owning tool is the project's toolchain itself), and slow
+  tests run only locally and at pre-push, where they block. Which gates are local-only
+  is derived from typed gate metadata (owning tool and gate kind) declared once in the
+  project's gate registry; the CI workflow and the pre-commit hook derive their gate
+  sets from it and never list gates themselves. Pre-commit is enabled
   and propagated by the project's generator and installed by its setup verb, never
   hand-installed per checkout.
 - Profiling (cProfile, a coverage instrumenter, or any other collector) is opt-in and
