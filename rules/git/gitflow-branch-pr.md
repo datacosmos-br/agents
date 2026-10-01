@@ -19,7 +19,7 @@ capsule_summary: |
   branches and the worktree, only after `git merge-base --is-ancestor` exits 0
   against a fresh base.
 metadata:
-  aihub.tags: '["decision:ADR-0025","effective:2026-09-22","route:personal"]'
+  aihub.tags: '["decision:ADR-0025","effective:2026-10-01","route:personal"]'
 ---
 
 # Branch and PR — integration by merge commit

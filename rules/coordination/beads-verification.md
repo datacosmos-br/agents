@@ -13,7 +13,7 @@ capsule_summary: |
   population; an inventory that authorizes a conclusion uses the explicit
   unbounded form, e.g. `bd list --all --limit 0`.
 metadata:
-  aihub.tags: '["decision:ADR-0007","effective:2026-09-10","route:personal"]'
+  aihub.tags: '["decision:ADR-0007","effective:2026-10-01","route:personal"]'
 ---
 
 # Bead verification is critical and mandatory

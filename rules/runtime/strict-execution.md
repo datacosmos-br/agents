@@ -7,9 +7,9 @@ capsule_summary: |
 
   A project rule may reject more inputs; it can never relax, catch, normalize,
   skip, defer or route around any of them. Opposing behavior is a blocking
-  violation fixed at its owner, never grandfathered compatibility.
+  violation to exterminate at its owner, never grandfathered compatibility.
 metadata:
-  aihub.tags: '["decision:ADR-0008","effective:2026-08-29","route:both"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-10-01","route:both"]'
 ---
 
 # Strict execution is universal and non-optional

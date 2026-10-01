@@ -50,12 +50,11 @@ tools, or turn warnings/skips into green.
 
 When the project pins pytest-testmon, its test verbs, their testmon contract, and where
 each runs are declared in `rules/workflow/canonical-commands.md` (section "Test
-verbs"). Never disable Testmon or replace/clear its database to widen a run. Its
-config-owned persistent path stays outside the checkout and is passed directly to
-Testmon, never projected back through a symlink. The full verb is never an implicit
-retry or a substitute for an ordinary impacted run. To force an explicit `FILE`, nodeid, or
-`MATCH`, resolve its exact nodeids, reject an empty or owner-limit-exceeding set,
-invalidate only those rows in the existing database transactionally, and run their
+verbs"). Its config-owned persistent path stays outside the checkout and is passed
+directly to Testmon, never projected back through a symlink. The full verb is never an
+implicit retry or a substitute for an ordinary impacted run. To force an explicit
+`FILE`, nodeid, or `MATCH`, resolve its exact nodeids, reject an empty or
+owner-limit-exceeding set, invalidate only those rows in the existing database transactionally, and run their
 intersection through `--testmon-forceselect`. Never invalidate by broad pattern, guessed
 substring, unbounded set, environment change, database replacement, or global cache
 clear. Prove the same database identity survived, the invalidated count stayed within

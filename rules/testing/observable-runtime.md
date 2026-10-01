@@ -22,9 +22,9 @@ only where no `tm` matcher expresses the check. Unit tests open no network socke
 write only inside fixture-owned storage; real integration services use their public
 harness.
 
-Every pytest execution uses a selector-free root Make verb invoked directly without an
-apply selector. Which test verb runs where, and its testmon contract, are declared
-only in `rules/workflow/canonical-commands.md` (section "Test verbs").
+Every pytest execution goes through the test verbs declared only in
+`rules/workflow/canonical-commands.md` (section "Test verbs"), which owns how they are
+invoked, where each runs, and their testmon contract.
 
 A warning, skip, xfail, empty output, missing tool, missing report, zero collection,
 unexecuted selected suite, caught exception, retry, or normalized failure is RED. The

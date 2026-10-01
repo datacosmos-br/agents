@@ -29,9 +29,9 @@ process failure, not a discovery step.
 ## 4. Every execution has a timeout
 
 A gate or suite invocation carries its declared budget (120 s for full suites
-in the ai-hub law). `make test-full` is the one test verb without a time limit;
-`rules/workflow/canonical-commands.md` (section "Test verbs") declares where each test
-verb runs. Slowness is a defect cured at the owner (profile the stage,
+in the ai-hub law), except as the test verbs declared in
+`rules/workflow/canonical-commands.md` (section "Test verbs") state. Slowness is a
+defect cured at the owner (profile the stage,
 fix the cache, fix the discovery) — never accepted as normal, never masked by
 a bigger ceiling without the owner's measured justification.
 

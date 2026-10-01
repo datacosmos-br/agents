@@ -18,8 +18,8 @@ fingerprint changes.
 
 - Nothing slow runs in CI or at pre-commit, in absolute terms (tracker memory
   `operator-ruling-2026-10-01-precommit-fast-only`). CI and pre-commit run only fast
-  external gates — lint, format, and gates of that kind — plus the test verb that
-  `rules/workflow/canonical-commands.md` assigns to each of them. Whole-program type
+  external gates — lint, format, and gates of that kind — and CI adds only the test
+  verb that `rules/workflow/canonical-commands.md` assigns to CI. Whole-program type
   checkers, code-smell audits, the project's own custom validators, and slow tests run
   only locally and at pre-push, where they block. Whether a gate is a fast external
   gate is typed metadata declared once in each project's gate registry; the CI workflow
