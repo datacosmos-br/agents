@@ -83,12 +83,6 @@ aube = { path = ".mise/locks/npm-jscpd/5.3.3", digest = "sha256:c0a62cf6050ed88d
 backend = "npm:jscpd"
 specifiers = ["latest"]
 
-[[tools."pipx:semgrep"]]
-version = "1.178.0"
-backend = "pipx:semgrep"
-specifiers = ["latest"]
-uv = { path = ".mise/locks/pipx-semgrep/1.178.0", digest = "sha256:4817d7787fbd6b193323c17615c1325c4df9341b1c8729334a5c3b1a5c0875f1" }
-
 [[tools.python]]
 version = "3.13.15"
 backend = "core:python"
