@@ -25,6 +25,12 @@ compatibility alias, or second loading path in this package.
 
 ## Development
 
+`make gen` also projects the portable `.beads/metadata.json` from
+`config/beads.yaml` and `.beads/identity.toml`, and the tracked `.envrc` from
+`tools/templates/agents.envrc`. Both files are committed so a new linked worktree
+can select the canonical Beads database before setup. The city runtime publication
+continues to own the live server port; local Dolt data remains ignored.
+
 ```text
 make help
 make setup

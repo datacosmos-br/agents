@@ -53,6 +53,7 @@ upg: ## resolve newest declared tools and dependencies into committed locks
 ## generation + mutation
 gen: ## project the governance capsule into provider hooks and instruction files
 	$(call BANNER,gen · governance capsule + provider projections)
+	@uv run python tools/sync_beads_activation.py
 	@uv run python tools/sync_governance.py
 
 ## development gates
