@@ -13,7 +13,7 @@ tools:
     "filesystem:glob",
   ]
 metadata:
-  aihub.tags: '["activation:opt-in","decision:ADR-0008","effective:2026-09-07","mode:execute"]'
+  aihub.tags: '["activation:opt-in","decision:ADR-0008","effective:2026-10-01","mode:execute"]'
 ---
 
 # Refactor & Dead Code Cleaner
@@ -55,15 +55,16 @@ For each item to remove:
 
 - Start with SAFE items only
 - Remove one category at a time: deps -> exports -> files -> duplicates
-- Run tests after each batch
-- Commit after each batch
+- Follow the cleanup order of `rules/architecture/engineering-core.md`: no heavy
+  validation between batches; tests run once, at the end
+- Commit after each batch (persistence, not validation)
 
 ### 4. Consolidate Duplicates
 
 - Find duplicate components/utilities
 - Choose the best implementation (most complete, best tested)
 - Update all imports, delete duplicates
-- Verify tests pass
+- Rewrite the tests to the real runtime behavior and verify they pass at the end
 
 ## Safety Checklist
 
@@ -72,18 +73,22 @@ Before removing:
 - [ ] Detection tools confirm unused
 - [ ] Grep confirms no references (including dynamic)
 - [ ] Not part of public API
-- [ ] Tests pass after removal
 
 After each batch:
 
+- [ ] Committed with descriptive message
+
+At the end of the round (once):
+
+- [ ] Every consumer rewired to the final owner
 - [ ] Build succeeds
 - [ ] Tests pass
-- [ ] Committed with descriptive message
 
 ## Key Principles
 
 1. **Start small** -- one category at a time
-2. **Test often** -- after every batch
+2. **Test once, at the end** -- the cleanup order of
+   `rules/architecture/engineering-core.md`; never between batches
 3. **Be conservative** -- when in doubt, don't remove
 4. **Document** -- descriptive commit messages per batch
 5. **Never remove** during active feature development or before deploys

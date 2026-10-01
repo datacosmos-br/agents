@@ -5,7 +5,7 @@ tags: [conformance, sweep, happy-path]
 inputs:
   prompt: |-
     |-
-    Run a conformance sweep loop over the measured findings: inventory by gate and class, map each class to its owning rule or codemod, repair wave by wave, revalidate after each wave, and close with a loop receipt only at zero residue. Apply the external git-dependency bump rule before pinning: fetch origin, check upstream fixes, install with --no-cache, verify surface, determine interpreter. Apply declaration-first scoping: declare scan scope at manifest SSOT (manifest → conform → pyproject [tool.<name>.<gate>] → validator) BEFORE triage, regenerate through generator, prove at conformance fixed point.
+    Run a conformance sweep loop over the measured findings: inventory by gate and class, map each class to its owning rule or codemod, repair wave by wave without heavy validation between waves, rewire consumers, rewrite the tests to the real runtime behavior, revalidate once at the end of the round, and close with a loop receipt only at zero residue. Apply the external git-dependency bump rule before pinning: fetch origin, check upstream fixes, install with --no-cache, verify surface, determine interpreter. Apply declaration-first scoping: declare scan scope at manifest SSOT (manifest → conform → pyproject [tool.<name>.<gate>] → validator) BEFORE triage, regenerate through generator, prove at conformance fixed point.
   files:
   - path: scenario.yaml
 expected:

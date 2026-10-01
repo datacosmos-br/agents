@@ -5,7 +5,7 @@ tags: [conformance, sweep, failure]
 inputs:
   prompt: |-
     |-
-    During a conformance sweep loop one repair wave revalidates red — whether it's a class-wave repair, git-dep bump verification, or declaration-first scoping reduction. Keep the loop open, record the failing wave with command and exit evidence, attribute the finding to its owning rule owner, and forbid closure until the revalidation turns green.
+    During a conformance sweep loop the end-of-round revalidation is red for one repair wave — whether it's a class-wave repair, git-dep bump verification, or declaration-first scoping reduction. Keep the loop open, record the failing wave with command and exit evidence, attribute the finding to its owning rule owner, and forbid closure until the revalidation turns green.
 expected:
   output_contains: [red, evidence, owner, open, revalidation, git-dep bump, declaration-first]
   output_not_contains: [closed, force close, ignore, bypass revalidation]

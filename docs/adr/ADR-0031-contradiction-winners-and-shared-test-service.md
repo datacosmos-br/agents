@@ -69,9 +69,9 @@ New decisions:
 12. A gate suspension or an order that keeps a gate's findings observational is a gate
     relaxation and has no machinery: no suspension or observational mode exists in any
     gate, model, configuration, report, or template, and every finding blocks.
-    Extermination comes first, then every consumer is rewired, then the tests assert
-    the real runtime behavior. `rules/flext/generator-declarations.md` point 12 owns the
-    text (amended 2026-10-01; tracker memory
+    The machinery is removed in the cleanup order of
+    `rules/architecture/engineering-core.md`. `rules/flext/generator-declarations.md`
+    point 12 owns the text (amended 2026-10-01; tracker memory
     `operator-ruling-2026-10-01-total-extermination`). Routing a gate family to a
     project-owned smells verb is ownership of that family, not a suspension.
 13. Operation retries are banned: retry helpers such as `u.retry`, automatic

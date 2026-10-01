@@ -53,7 +53,8 @@ keep defaults. The first exception escapes its CLI with traceback and cause.
 Every one of these defects is a workaround to exterminate at its owner, never to
 accommodate (tracker memory `operator-ruling-2026-10-01-total-extermination`). The
 same holds for the classes below; the hardcode class is stated precisely first, and
-each of them is replaced by rules, configuration, and SSOT functions:
+each of them is replaced by rules, configuration, and SSOT functions (tracker memory
+`operator-rulings-2026-10-01-governance`, rulings 7 and 11):
 
 - a hardcoded value — path, URL, number, name, version, or limit — instead of its
   declared owner in configuration, settings, or constants; a tunable value is declared
@@ -71,6 +72,20 @@ each of them is replaced by rules, configuration, and SSOT functions:
   function derives.
 
 Exterminating them shrinks the code; growth to accommodate one is itself a defect.
+
+Every cleanup follows one order, declared only here (tracker memory
+`operator-ruling-2026-10-01-total-extermination`); every other rule, skill, command,
+and agent profile references it:
+
+1. Exterminate absolutely every violation in scope first, with no heavy validation
+   between extermination steps.
+2. Then rewire every consumer to the final owner.
+3. Then rewrite the tests to the real runtime behavior and run them. Validation runs
+   once, at the end.
+
+The order is the work sequence inside one cutover, not a landing sequence: the cutover
+still lands atomically, with zero residue and every consumer rewired, and a scoped WIP
+commit between steps is persistence, not validation.
 
 Git, runtime, build, and tests are baseline. Every other executable is an authorized,
 selected capability; installation or PATH presence never selects it. Do not load,

@@ -72,8 +72,8 @@ around it.
     `operator-ruling-2026-10-01-total-extermination`). No suspension or observational
     machinery exists in any gate, model, configuration, report, or template. Every
     finding blocks; it is fixed at its root, or its rule is corrected at the rule's
-    owner. Extermination comes first, then every consumer is rewired, then the tests
-    assert the real runtime behavior.
+    owner. The machinery is removed in the cleanup order of
+    `rules/architecture/engineering-core.md`.
 13. **A hack's permission dies with it.** Every exclusion, allowlist,
     `per-file-ignores`, validator bypass, advisory gate, single-file guard, or
     "tolerance" that **authorizes** a hack is exterminated in the same commit as the

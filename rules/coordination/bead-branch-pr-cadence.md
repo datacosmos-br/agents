@@ -32,12 +32,12 @@ delivers) and [fleet-landing-corrections](fleet-landing-corrections.md).
 
 ## 2. Abandonment after the configured threshold without change
 
-This section is the single owner of the abandonment test (operator ruling
-2026-10-01). Its threshold is a tunable value, declared only in the governance
-config key `coordination.abandonment_threshold_minutes` and validated whenever the
-bundle loads. Any consumer reads it through the published package as
-`GovernanceBundle.load().config.coordination.abandonment_threshold_minutes`. No rule,
-skill, command, or doc restates the number; each references this section.
+This section is the single owner of the abandonment test (tracker memory
+`operator-rulings-2026-10-01-governance`, ruling 3). Its threshold is a tunable value,
+declared only in the governance config key `coordination.abandonment_threshold_minutes`
+and validated whenever the bundle loads. Any consumer reads it through the published
+package as `GovernanceBundle.load().config.coordination.abandonment_threshold_minutes`.
+No rule, skill, command, or doc restates the number; each references this section.
 
 1. A bead in any state (claimed, deferred, blocked), a lane, a worktree, a branch,
    or a PR is abandoned once the threshold passes without a change. A change is

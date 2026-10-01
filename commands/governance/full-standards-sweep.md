@@ -61,10 +61,12 @@ before the next wave.
    When the measured report exceeds one screen (~20 findings), work grouped by error
    class (defense-in-depth kill order: test-purity, aliases/owners, banned annotations,
    import-time wiring, silent failures, duplication, layout/loc), one root cause per
-   commit, re-measure after each class, and record start→end numbers in the active plan
-   or tracker item. Drive each wave through canonical owners: `make mod` for rule-driven
-   codemods using the project rule SSOT, `make gen` for every generated-surface change,
-   and code-review-graph evidence per the `crg` skill when available. Prove graph
+   commit, in the cleanup order of `rules/architecture/engineering-core.md`: measure
+   once at the end of the round and record start→end numbers per class in the active
+   plan or tracker item. Drive each wave through canonical owners: `make mod` for
+   rule-driven codemods using the project rule SSOT, `make gen` for every
+   generated-surface change, and code-review-graph evidence per the `crg` skill when
+   available. Prove graph
    freshness with `build|update --repo` before `dead-code --json`, `impact --files`, or
    `query callers_of`; confirm every candidate in source. A false sweeping pass with a
    no-op bypass is never a "skip" — escalate.
@@ -90,8 +92,8 @@ before the next wave.
    destructive git operations; update docs in the same change as behavior. 8b.
    Mass-rewrite execution law. Tree-wide mechanical transformations and automation-apply
    cycles obey `rules/workflow/mass-rewrite-discipline.md`: test evidence brackets the
-   mass (before and after), scoped commits bound the change per transformation class,
-   applied-vs-reverted states are inventoried before commit, string literal contexts get
+   mass (baseline before, single validation after), scoped commits bound the change per
+   transformation class, applied-vs-reverted states are inventoried before commit, string literal contexts get
    a machine-checked safety sweep, and progress is reported per violation class, never
    as an aggregate that hides untouched structural debt. The sweep never parks a large
    uncommitted delta on the trunk.

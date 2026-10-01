@@ -2,7 +2,7 @@
 name: extermination-mode
 description: "zero residue, contract removal, consumer rewiring"
 metadata:
-  aihub.tags: '["decision:ADR-0008","effective:2026-08-29","usage:router"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-10-01","usage:router"]'
 ---
 
 # Extermination Mode
@@ -24,8 +24,10 @@ data, repositories, branches, runtime state, or unrelated work.
    to make deletion easier.
 4. Delete exact tracked obsolete files with scoped patches. Regenerate managed indexes
    and artifacts through their canonical owner; do not hand-maintain a generated facade.
-5. Prove the cutover with zero-residue semantic searches, focused behavior tests,
-   generation fixed point, static gates, and the repository's full gate. A failed gate
+5. Prove the cutover once, at the end, with zero-residue semantic searches, focused
+   behavior tests, generation fixed point, static gates, and the repository's full gate;
+   no heavy validation runs between the steps above (cleanup order of
+   `rules/architecture/engineering-core.md`). A failed gate
    means the extermination is incomplete, not that the gate or generator should be
    weakened.
 
