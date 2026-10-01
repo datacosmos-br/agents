@@ -40,6 +40,7 @@ class TestsBeadsActivation:
         )
         template = tmp_path / "tools/templates/agents.envrc"
         shutil.copyfile(source / "tools/templates/agents.envrc", template)
+        assert (source / ".envrc").read_bytes() == template.read_bytes()
         command = (
             sys.executable,
             str(source / "tools/sync_beads_activation.py"),
