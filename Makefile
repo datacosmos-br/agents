@@ -51,8 +51,9 @@ upg: ## resolve newest declared tools and dependencies into committed locks
 	@MISE_LOCKED=false $(MISE_EXEC) uv sync --all-groups --locked
 
 ## generation + mutation
-gen: ## project the governance capsule into provider hooks and instruction files
-	$(call BANNER,gen · governance capsule + provider projections)
+gen: ## project Beads activation and governance provider outputs
+	$(call BANNER,gen · Beads activation + governance projections)
+	@uv run python tools/sync_beads_activation.py
 	@uv run python tools/sync_governance.py
 
 ## development gates

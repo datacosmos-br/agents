@@ -2,11 +2,11 @@ description: Landing cycle mechanics from dedicated lane to retirement and bead 
 prompt: |-
   Grade the lane-landing-cycle response. Pass only when it creates a dedicated
   worktree on the destination filesystem with its own environment, declares the
-  bead + branch + PR triple before the first commit, runs the generation with
-  the CI context twice, protects the CI-context emission paths from a
-  local-context generation, orders the gate as fix, fmt, check, then the full
+  bead + branch + PR triple before the first commit, runs generation twice in
+  the owner's declared context, classifies outputs by their tracked source,
+  preserves unrelated work, orders the gate as fix, fmt, check, then the full
   suite, merges only on green checks, proves the merged tip post-merge, records
   closure evidence on the bead, and retires the worktree and branch.
   Reject work on the primary checkout, /tmp lanes, borrowed environments,
-  local-context emission swept into commits, partial cycles reported as done,
+  unrelated generated changes swept into commits, partial cycles reported as done,
   reds normalized or bypassed, and lanes left behind after landing.
