@@ -24,6 +24,9 @@
       "verification-loop"
     ]
   },
+  "coordination": {
+    "abandonment_threshold_minutes": 60
+  },
   "delivery": {
     "capsule_budget_chars": 10000,
     "restore_list_reserve_chars": 512,

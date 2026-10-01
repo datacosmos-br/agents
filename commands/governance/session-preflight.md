@@ -25,8 +25,8 @@ first red with its exact output. Every step reads state; none mutates.
    dependency in the lock (`uv.lock`, the `source.git` `#<commit>` fragment).
    A mismatch voids every debt map the runtime would produce: sync through
    the repository's declared upgrade verb and recompute before planning.
-3. **Adoption sweep.** List claimed/deferred work and flag every item stale
-   beyond one hour without an update as abandoned; adopt through the tracker
+3. **Adoption sweep.** List claimed/deferred work and flag every item abandoned
+   under rule `bead-branch-pr-cadence` §2; adopt through the tracker
    with a recorded claim comment, never by silently starting the work.
 4. **Coordination channel.** Read the session inbox (gc mail when available;
    tracker comments otherwise) for roll-call, lane claims, and blockers, and

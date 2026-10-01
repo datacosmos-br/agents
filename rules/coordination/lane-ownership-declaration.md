@@ -1,14 +1,14 @@
 ---
 description:
   Declare bead + branch + PR before any effect; keep every touched bead alive
-  on a one-hour clock; re-check open PRs and the integration tip before opening
+  inside the configured abandonment threshold; re-check open PRs and the integration tip before opening
   a lane; adopt abandoned work instead of redoing it.
 capsule_summary: |
   Operator ruling 2026-09-27: work performed outside an integrated lane is
   work totally lost. A lane exists only when its bead (claimed), its branch,
   and its PR are declared to the coordinator before the first commit, and
-  every touched bead is updated at least once per hour — claimed, deferred,
-  and blocked included. Before opening a lane, re-check open PRs, the
+  every touched bead is updated within the configured abandonment threshold —
+  claimed, deferred, and blocked included. Before opening a lane, re-check open PRs, the
   integration tip, and abandoned branches: adopt their work (fix forward),
   never rebuild it. Operator ruling 2026-10-01: an active lane is adopted
   immediately by cherry-picking its valid published commits into your own
@@ -20,7 +20,7 @@ metadata:
   aihub.tags: '["decision:ADR-0021","effective:2026-10-01","route:both"]'
 ---
 
-# Lane ownership declaration and the one-hour clock
+# Lane ownership declaration and the abandonment clock
 
 ## Declare before the first commit
 
@@ -35,10 +35,10 @@ mail channel and written on the canonical bead:
 
 Work without this declaration is unowned. Unowned work is lost work.
 
-## The one-hour clock
+## The abandonment clock
 
-A bead with more than one hour without an update is abandoned — this applies
-to claimed, deferred, and blocked beads alike. Keep every touched bead alive
+The abandonment test and its configured threshold are declared once, in
+[bead-branch-pr-cadence](bead-branch-pr-cadence.md) §2. Keep every touched bead alive
 with a progress comment at each boundary (effect applied, gate passed, PR
 opened, merge landed). A bead you let go stale is a bead another session will
 assume or duplicate.
@@ -72,10 +72,10 @@ violation.
 
 ## Adopt abandoned work
 
-Branches, PRs, worktrees, and beads with no activity beyond the abandonment
-threshold are inputs, not obstacles: diff them against the integration tip,
-port what is still useful into your lane, close with recorded disposition
-what is superseded, and delete the residue with ancestry proof. Never rebuild
+Branches, PRs, worktrees, and beads abandoned under
+[bead-branch-pr-cadence](bead-branch-pr-cadence.md) §2 are inputs, not
+obstacles: diff them against the integration tip, port what is still useful
+into your lane, and record the disposition of the rest. Never rebuild
 from scratch what an abandoned branch already carries; never discard what you
 did not read.
 

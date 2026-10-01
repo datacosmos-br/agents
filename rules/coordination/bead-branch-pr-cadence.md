@@ -1,10 +1,11 @@
 ---
-description: Acting cadence — bead identity, dedupe mandate, one-hour staleness, and the CI=Y emission canon
+description: Acting cadence — bead identity, dedupe mandate, the configured abandonment threshold, and the CI=Y emission canon
 capsule_summary: |
   Operator rulings 2026-09-27. Every work unit is declared as bead + branch + PR
   to the coordinator at claim time; a bead (any state), lane, worktree, branch,
-  or PR with one hour without change is ABANDONED and may be adopted by anyone
-  (operator ruling 2026-10-01; adoption never authorizes deletion); before starting any unit, research whether the work already exists in
+  or PR without change for the configured abandonment threshold is ABANDONED
+  and may be adopted by anyone (adoption never authorizes deletion); before
+  starting any unit, research whether the work already exists in
   abandoned branches, open PRs, or other beads — redoing existing work or two
   actors doing the same thing is a severe violation; the dedupe of the tracker
   (close superseded, realign epics, fix titles, --force when the tracker refuses) is part
@@ -29,16 +30,18 @@ delivers) and [fleet-landing-corrections](fleet-landing-corrections.md).
    from the current integration tip, in a dedicated worktree on the destination
    filesystem — never `/tmp`, never a borrowed venv, never the primary checkout.
 
-## 2. One hour without change is abandonment
+## 2. Abandonment after the configured threshold without change
 
 This section is the single owner of the abandonment test (operator ruling
-2026-10-01: "a regra para abandonada é 1h sem mudanca"). Every other rule,
-skill, and command references it and never restates another threshold.
+2026-10-01). Its threshold is a tunable value, declared only in
+`config/governance.json` at `coordination.abandonment_threshold_minutes` and
+validated whenever the bundle loads. No rule, skill, command, or doc restates the
+number; each references this section.
 
 1. A bead in any state (claimed, deferred, blocked), a lane, a worktree, a branch,
-   or a PR is abandoned once one hour passes without a change. A change is the
-   newest of: the bead's recorded update, the branch's last commit or push, and
-   the PR's last update. Anyone may adopt it.
+   or a PR is abandoned once the threshold passes without a change. A change is
+   the newest of: the bead's recorded update, the branch's last commit or push,
+   and the PR's last update. Anyone may adopt it.
 2. Adopting means claiming the bead, announcing `[coord] lane claim`, and
    continuing the existing work with `merge --no-ff` (or by cherry-picking
    isolated commits) into the adopter's lane. It never means rewriting work that

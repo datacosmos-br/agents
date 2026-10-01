@@ -1,5 +1,5 @@
 ---
-description: "Session startup is a mandatory census: fetch the integration tip, count open PRs, census worktrees, branches, PRs and beads (one hour without change = abandoned, adopt it), and declare bead + branch + PR before the first effect."
+description: "Session startup is a mandatory census: fetch the integration tip, count open PRs, census worktrees, branches, PRs and beads (abandoned ones are adopted), and declare bead + branch + PR before the first effect."
 capsule_summary: |
   Operator ruling 2026-09-27 (session gascity-23): every session opens with a
   measured census, not with code. Measured cost of skipping it: one full lane
@@ -25,8 +25,8 @@ metadata:
    your lane, and record the disposition of the rest.
 4. **Census beads**: every bead past the same test — claimed, deferred, or
    blocked included — is abandoned and up for adoption. Claim
-   with `--force` when a stale lock blocks, and keep every touched bead on a
-   one-hour keep-alive from that moment.
+   with `--force` when a stale lock blocks, and keep every touched bead updated
+   inside the configured abandonment threshold from that moment.
 5. **Declare bead + branch + PR** to the coordinator through the mail channel
    and on the bead itself. The declaration is the lane's birth certificate: without it,
    the work is unowned and lost.

@@ -16,8 +16,18 @@ from .rules import RuleActivation, RuleSpec
 
 _OWNER = re.compile(r"(rule|skill|command|document):([A-Za-z0-9][A-Za-z0-9./_-]*)\Z")
 _GUARANTEE = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*\Z")
-_ROOT_FIELDS = frozenset({"bootstrap", "delivery", "guarantees", "version"})
+_ROOT_FIELDS = frozenset(
+    {"bootstrap", "coordination", "delivery", "guarantees", "version"}
+)
 _BOOTSTRAP_FIELDS = frozenset({"rules", "skills"})
+_COORDINATION_FIELDS = frozenset({"abandonment_threshold_minutes"})
+
+
+@dataclass(frozen=True)
+class CoordinationPolicy:
+    """Tunable coordination values that rules reference by key, never by number."""
+
+    abandonment_threshold_minutes: int
 
 
 @dataclass(frozen=True)
@@ -29,6 +39,19 @@ class GovernanceConfig:
     bootstrap_skills: tuple[str, ...]
     guarantees: MappingProxyType[str, tuple[str, ...]]
     delivery: DeliveryContract
+    coordination: CoordinationPolicy
+
+
+def _coordination_policy(value: object) -> CoordinationPolicy:
+    mapping = cast_mapping(value, "governance coordination")
+    require_exact_fields(mapping, _COORDINATION_FIELDS, "governance coordination")
+    threshold = mapping["abandonment_threshold_minutes"]
+    if isinstance(threshold, bool) or not isinstance(threshold, int) or threshold < 1:
+        raise ValueError(
+            "governance coordination abandonment_threshold_minutes "
+            "must be a positive int"
+        )
+    return CoordinationPolicy(threshold)
 
 
 def load_governance_config(root: Path) -> GovernanceConfig:
@@ -83,6 +106,7 @@ def load_governance_config(root: Path) -> GovernanceConfig:
         DeliveryContract.from_mapping(
             value["delivery"], "governance delivery contract"
         ),
+        _coordination_policy(value["coordination"]),
     )
 
 
@@ -125,6 +149,7 @@ def audit_governance_config(
 
 
 __all__ = (
+    "CoordinationPolicy",
     "GovernanceConfig",
     "audit_governance_config",
     "load_governance_config",

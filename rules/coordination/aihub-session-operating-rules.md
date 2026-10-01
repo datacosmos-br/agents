@@ -28,8 +28,7 @@ ai-hub `.kilo/plans/2026-09-27-surfaced-inventory-runtime-recovery/00-index.md`)
 
 ## Beads law
 
-- A bead untouched for more than 1 hour is abandoned — claimed, deferred, and
-  blocked included.
+- Bead abandonment follows `bead-branch-pr-cadence` (rule file) §2.
 - Closing requires command evidence: merge commit, captured gate output, or
   structural proof written into the bead. "Done" without a command output is a
   lie. Notes carry pointers (ADRs, cursor plans, handoffs), never the whole

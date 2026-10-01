@@ -185,6 +185,42 @@ def test_delivery_budget_holds_with_measured_composition(
     assert delivery.headroom_chars >= 0
 
 
+def test_coordination_policy_is_a_positive_configured_threshold(
+    governance_bundle: GovernanceBundle,
+) -> None:
+    threshold = governance_bundle.config.coordination.abandonment_threshold_minutes
+
+    assert isinstance(threshold, int)
+    assert not isinstance(threshold, bool)
+    assert threshold > 0
+
+
+@pytest.mark.parametrize(
+    ("coordination", "message"),
+    [
+        ({"abandonment_threshold_minutes": 0}, "positive int"),
+        ({"abandonment_threshold_minutes": True}, "positive int"),
+        ({"abandonment_threshold_minutes": "1h"}, "positive int"),
+        (
+            {"abandonment_threshold_minutes": 1, "abandonment_hours": 1},
+            "coordination",
+        ),
+    ],
+)
+def test_coordination_policy_rejects_values_outside_its_contract(
+    governance_source_fixture: Path,
+    coordination: dict[str, object],
+    message: str,
+) -> None:
+    config_path = governance_source_fixture / "config/governance.json"
+    document = json.loads(config_path.read_text())
+    document["coordination"] = coordination
+    config_path.write_text(json.dumps(document))
+
+    with pytest.raises(ValueError, match=message):
+        GovernanceBundle.load(governance_source_fixture)
+
+
 def test_delivery_contract_rejects_payload_outside_grammar() -> None:
     with pytest.raises(ValueError, match="payload:<slug>"):
         DeliveryContract.from_mapping(
