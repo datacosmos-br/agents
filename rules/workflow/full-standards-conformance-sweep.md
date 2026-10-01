@@ -34,12 +34,14 @@ contract and where each verb runs. A raw test-run bypass is prohibited.
 ## 4. Root cause, zero residue, complete rewire
 
 Fix at root cause, canonical owner, correct location, full context.
-Dead/superseded/duplicate code is removed IMMEDIATELY in the same change; every consumer
-is rewired to the final owner BEFORE the old one dies. No compat aliases, shims, dual
-old+new paths, undone-later workarounds, or "temporary" anything. Procedure: inventory
-owner/consumers/fallbacks/tests/docs → classify → rewire consumers to the SSOT → delete
-old owner → regenerate managed surfaces → prove with zero-residue semantic searches,
-generation fixed point, full gates. "Pre-existing problem, not my responsibility" does
+Dead/superseded/duplicate code is removed IMMEDIATELY in the same change, and every
+consumer is rewired to the final owner in that change; the landed state leaves no
+consumer on a removed owner. No compat aliases, shims, dual old+new paths, undone-later
+workarounds, or "temporary" anything. Procedure: inventory
+owner/consumers/fallbacks/tests/docs → classify → the cleanup order of
+`rules/architecture/engineering-core.md` (exterminate, then rewire consumers to the
+SSOT, then rewrite the tests) → regenerate managed surfaces → prove once with
+zero-residue semantic searches, generation fixed point, full gates. "Pre-existing problem, not my responsibility" does
 not exist: every defect in the blast radius, including pre-existing ones, is adopted and
 fixed. Nothing is deferred.
 

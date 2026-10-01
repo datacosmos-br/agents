@@ -71,8 +71,9 @@ before the next wave.
    `query callers_of`; confirm every candidate in source. A false sweeping pass with a
    no-op bypass is never a "skip" — escalate.
 4. Root cause, zero residue, complete rewire. Remove dead, superseded, and duplicate
-   code in the same change; rewire every consumer to the final owner before the old one
-   dies. No compatibility aliases, shims, dual paths, throwaway workarounds, or deferred
+   code in the same change and rewire every consumer to the final owner, in the cleanup
+   order of `rules/architecture/engineering-core.md`; the landed change is atomic, with
+   no consumer left on a removed owner. No compatibility aliases, shims, dual paths, throwaway workarounds, or deferred
    defects. Pre-existing defects in the blast radius are adopted and fixed, never
    excused.
 5. Reality is the authority; tests are never the source of truth. Tests validate

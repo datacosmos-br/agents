@@ -5,7 +5,7 @@ description:
   evidence"
 license: MIT
 metadata:
-  aihub.tags: '["decision:ADR-0008","effective:2026-08-29","usage:on-demand"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-10-01","usage:on-demand"]'
   version: 2.0.0
 ---
 

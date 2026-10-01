@@ -10,7 +10,8 @@ capsule_summary: |
   every touched bead is updated within the configured abandonment threshold —
   claimed, deferred, and blocked included. Before opening a lane, re-check open PRs, the
   integration tip, and abandoned branches: adopt their work (fix forward),
-  never rebuild it. Operator ruling 2026-10-01: an active lane is adopted
+  never rebuild it. Tracker memory operator-ruling-2026-10-01-adopt-by-cherry-pick:
+  an active lane is adopted
   immediately by cherry-picking its valid published commits into your own
   lane cut from the fresh tip — never awaited, never asked about. Workaround
   commits are rejected with the reason recorded, never adopted. Editing or
@@ -53,9 +54,9 @@ work that is already landing.
 ## Adopt active lanes by cherry-pick, immediately
 
 When another session's lane — active or abandoned — carries work your target
-needs, adopt it now (operator ruling 2026-10-01). Waiting for it to land,
-asking permission to adopt, or parking your own lane behind it is a
-violation.
+needs, adopt it now (tracker memory
+`operator-ruling-2026-10-01-adopt-by-cherry-pick`). Waiting for it to land, asking
+permission to adopt, or parking your own lane behind it is a violation.
 
 1. Cut your own lane from the freshly fetched integration tip.
 2. Cherry-pick the valid published commits you need, by SHA (`git

@@ -17,17 +17,18 @@ data, repositories, branches, runtime state, or unrelated work.
    - delete tests whose sole purpose is enforcing the removed contract;
    - rewrite tests that protect behavior still required by the final contract;
    - preserve unrelated tests and concurrent WIP exactly.
-3. Rewire useful consumers to the final SSOT before removing the old owner. Use
-   structural search/replace for mechanical migrations and review every match. Elide
-   every field and call argument equal to a canonical typed default. Never add a
-   compatibility alias, dual reader, fallback, or undeclared default-on-error behavior
-   to make deletion easier.
-4. Delete exact tracked obsolete files with scoped patches. Regenerate managed indexes
+   Work in the cleanup order of `rules/architecture/engineering-core.md`: steps 3–5
+   below, with no heavy validation between them.
+3. Delete exact tracked obsolete files with scoped patches. Regenerate managed indexes
    and artifacts through their canonical owner; do not hand-maintain a generated facade.
-5. Prove the cutover once, at the end, with zero-residue semantic searches, focused
-   behavior tests, generation fixed point, static gates, and the repository's full gate;
-   no heavy validation runs between the steps above (cleanup order of
-   `rules/architecture/engineering-core.md`). A failed gate
+4. Rewire every useful consumer to the final SSOT in the same change; the landed
+   cutover leaves no consumer on the removed owner. Use structural search/replace for
+   mechanical migrations and review every match. Elide every field and call argument
+   equal to a canonical typed default. Never add a compatibility alias, dual reader,
+   fallback, or undeclared default-on-error behavior to make deletion easier.
+5. Rewrite the classified tests to the real runtime behavior, then prove the cutover
+   once, at the end, with zero-residue semantic searches, focused behavior tests,
+   generation fixed point, static gates, and the repository's full gate. A failed gate
    means the extermination is incomplete, not that the gate or generator should be
    weakened.
 
