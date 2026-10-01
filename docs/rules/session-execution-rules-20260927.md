@@ -51,5 +51,6 @@ did not have the claim.
 ## R-S8. Respect other sessions' worktrees
 
 Never touch another session's worktree, branch, or in-flight edits. If the
-lane looks abandoned under rule `bead-branch-pr-cadence` §2, verify via beads and
-gc-mail BEFORE acting. Ask the coordinator if unsure.
+lane looks abandoned, verify every change source that rule
+`bead-branch-pr-cadence` §2 declares BEFORE acting, and announce the adoption in
+gc-mail. Ask the coordinator if unsure.
