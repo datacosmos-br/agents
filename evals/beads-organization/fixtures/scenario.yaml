@@ -11,6 +11,9 @@ open_issues:
     title: Validate invoice cancellation endpoint
     type: task
     parent: app-41
+  - id: app-11
+    title: Invoice audit reporting
+    type: feature
   - id: app-73
     title: Export invoice audit trail
     type: task
