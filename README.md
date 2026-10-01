@@ -29,8 +29,8 @@ compatibility alias, or second loading path in this package.
 `config/beads.yaml`, `config/beads-activation.yaml`, and `.beads/identity.toml`,
 and the tracked `.envrc` from
 `tools/templates/agents.envrc`. Both files are committed so a new linked worktree
-can select the canonical Beads database before setup. The city runtime publication
-continues to own the live server port; local Dolt data remains ignored.
+can select the canonical Beads database before setup. The managed `gc bd context`
+route supplies the live server host and port; local Dolt data remains ignored.
 
 ```text
 make help
