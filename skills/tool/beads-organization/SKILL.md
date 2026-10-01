@@ -50,10 +50,10 @@ evidence. Read the `complete procedure` (skill file) before any tracker write.
    similarity. Similarity reports candidates, not duplicate truth: pairs above 0.5 are
    frequent false positives when they are siblings of one program/epic with distinct
    premises — resolve by reading, not by score.
-2. Status follows live execution. Release a claim when owner, process, branch, and
-   worktree evidence proves there is no executor, or when the claim is abandoned
-   under rule `bead-branch-pr-cadence` §2, which also declares what abandonment
-   never permits. Deferred work needs a current date or scope gate.
+2. Status follows live execution. Release a claim only when owner, process, branch,
+   and worktree evidence proves there is no executor; a claim abandoned under rule
+   `bead-branch-pr-cadence` §2 changes hands only through an adopter who claims it
+   as that section declares. Deferred work needs a current date or scope gate.
 3. Tasks have one feature parent. Keep features small enough for short validated slices.
    Bugs remain at root with `bugfix`; `hotfix` belongs only to P0/P1 bugs.
 4. Before closing a parent, re-parent or close every open child. Valid closure reasons

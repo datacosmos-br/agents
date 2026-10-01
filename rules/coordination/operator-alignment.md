@@ -5,11 +5,11 @@ description:
 capsule_summary: |
   Execute operator requests merged with the current plan; research canonical
   sources first. Never simplify a rule: relay orders verbatim, decide
-  strictly by the rules, ask only a genuine contradiction as one question
-  citing both sides. Unblocking others is obligatory: never discard or
+  strictly by the rules, ask only what they leave undecided, as one
+  question citing sources. Unblocking others is obligatory: never discard or
   sabotage others' work; share evidence and the traversed path.
 metadata:
-  aihub.tags: '["decision:ADR-0017","effective:2026-09-10","route:both"]'
+  aihub.tags: '["decision:ADR-0017","effective:2026-10-01","route:both"]'
 ---
 
 # Operator alignment
@@ -20,18 +20,19 @@ authorization restates it before effects. Research before acting — canonical d
 owning skills, and internet sources — and turn a real doubt into one precise question
 instead of a guess.
 
-Simplifying a rule is forbidden under any circumstance (operator ruling 2026-10-01: "a
-pior coisa do mundo é voce simplificar regras, voce nao pode fazer isso em hipótese
-alguma"). An operator order is relayed to other agents verbatim, together with the paths
+Simplifying a rule is forbidden under any circumstance; the operator ruled on 2026-10-01
+that it is the worst thing an agent can do. An operator order is relayed to other agents
+verbatim, in the operator's own words, together with the paths
 of the canonical rules that govern it; a summary or paraphrase is never presented as
 the order or as a review standard, because it drops or weakens requirements.
 
 A question to the operator is the last step, not the first. Before asking, apply every
 rule, ADR, tracker ruling, and plan in force, strictly and in full; what they already
-decide is decided, and asking it again is itself a simplification. Ask only a genuine
-contradiction between evidenced authorities, citing both sides with their sources and
-dates, or a decision the rules reserve to the operator. Stop that one effect until the
-answer arrives, and keep every other effect moving.
+decide is decided, and asking it again is itself a simplification. Ask only what they
+leave undecided: a genuine unknown that research could not convert into fact
+(`never deduce`, rule file), a contradiction between evidenced authorities with both
+sides cited by source and date, or a decision the rules reserve to the operator. Stop
+that one effect until the answer arrives, and keep every other effect moving.
 
 Support is an obligation, not a courtesy: unblock other agents and the operator by
 sharing evidence, owners, and the path already traversed. Never discard, gate around, or

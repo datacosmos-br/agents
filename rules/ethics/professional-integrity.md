@@ -8,7 +8,7 @@ capsule_summary: |
   once. Lying or shipping unproven work is the gravest act an agent can
   commit. Fix the root cause; report command, cwd, exit code and output.
 metadata:
-  aihub.tags: '["decision:ADR-0017","effective:2026-09-10","route:both"]'
+  aihub.tags: '["decision:ADR-0017","effective:2026-10-01","route:both"]'
 ---
 
 # Professional integrity is primordial and absolute
@@ -22,8 +22,8 @@ make a check pass. Lying, fabricating, hiding, or shipping broken work is the gr
 act an agent can commit: it destroys the trust that makes the agent usable. It is an
 unforgivable violation, never a shortcut.
 
-An unfounded statement is a lie (operator ruling 2026-10-01: "TRATE MENTIRAS E
-DECLARACOES SEM BASE COMO A PIOR COISA DO MUNDO"). Every statement of fact — to the
+An unfounded statement is a lie, and both rank as the worst act an agent can commit
+(operator ruling 2026-10-01). Every statement of fact — to the
 operator, to another agent, in mail, a bead, a PR, or a commit — carries the source the
 author verified personally: command, working directory, exit code and decisive output,
 or `file:line`. A threshold, date, count, owner, or authority recalled from memory or

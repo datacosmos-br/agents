@@ -3,7 +3,7 @@ description:
   Editing configuration, generated surfaces, or hardcoding a value. Load when changing
   config, settings, templates, tool homes, service units, or goldens.
 metadata:
-  aihub.tags: '["decision:ADR-0031","effective:2026-09-29","route:both"]'
+  aihub.tags: '["decision:ADR-0031","effective:2026-10-01","route:both"]'
 ---
 
 # Edit canonical sources, regenerate projections, prove idempotence
@@ -18,14 +18,12 @@ projection such as provider configuration, service units, or goldens.
   hand edits are forbidden, and the exact declared Make regeneration command. A
   generated marker without a resolvable owner is a defect.
 - A file such as `AGENTS.md` has no single owner: each piece has its correct owner
-  (operator ruling 2026-10-01: "nao existe um single owner, cada pedaço dele tem um
-  owner correto"). A block written between begin/end markers by ~/agents and AI Hub,
-  the selected tracker, or another tool is a projection owned by that writer. The text
-  outside every marker belongs to the project. A whole generated file belongs to the
-  owner its marker names. No writer creates, rewrites, or
-  removes a piece it does not own; altering projected parts or crossing a domain is
-  inviolable (operator ruling 2026-10-01: "nao alterar partes projetadas e nao violar
-  domínios é um a regra inviolável").
+  (operator ruling 2026-10-01). A block written between begin/end markers by
+  ~/agents and AI Hub, the selected tracker, or another tool is a projection owned by
+  that writer. The text outside every marker belongs to the project. A whole
+  generated file belongs to the owner its marker names. No writer creates, rewrites,
+  or removes a piece it does not own: never altering a projected part and never
+  crossing a domain are inviolable (operator ruling 2026-10-01).
 - Markdown and docs gates exclude a projected block at their SSOT exclude list, never
   by hand-fixing lint inside it. A projected block carries no authority: where it
   contradicts a rule — an `rtk init` block prefixing git with `rtk`, a Beads profile

@@ -20,11 +20,11 @@ metadata:
    your target file set is someone else's active lane.
 3. **Census worktrees, branches, and PRs**: last-commit date, last push, PR
    update, dirty state, merged into the integration branch? Anything abandoned
-   under [bead-branch-pr-cadence](bead-branch-pr-cadence.md) §2 is adopted as
-   that section declares: diff it against the tip, port the useful delta into
-   your lane, and record the disposition of the rest.
+   under [bead-branch-pr-cadence](bead-branch-pr-cadence.md) §2 may be adopted
+   as that section declares: claim it, diff it against the tip, port the useful
+   delta into your lane, and record the disposition of the rest.
 4. **Census beads**: every bead past the same test — claimed, deferred, or
-   blocked included — is abandoned and up for adoption. Claim
+   blocked included — is abandoned and may be adopted. Claim
    with `--force` when a stale lock blocks, and keep every touched bead updated
    inside the configured abandonment threshold from that moment.
 5. **Declare bead + branch + PR** to the coordinator through the mail channel
