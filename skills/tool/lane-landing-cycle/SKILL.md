@@ -41,19 +41,15 @@ Run targeted tests first for fast feedback; the full suite is the landing
 gate. A red is red: cure the root cause in the wave, or record it with its
 owner and sequence — never bypass, never normalize.
 
-## 3. Protect the CI-context emission
+## 3. Classify generated outputs by owner
 
-The repository canon is the CI runner's generation. A local `make gen` without
-`CI=Y` dirties exactly these paths — never sweep them into a commit; restore
-them from the origin tip if dirtied:
-
-- `.envrc`, `.github/workflows/ci.yml`, `.gitignore`, `.mise.toml`, `Makefile`,
-  `mkdocs.yml`, `pyproject.toml`,
-  `docs/api-reference/generated/overview.md`,
-  `docs/api-reference/generated/projects/`.
-
-CI symptom when violated: the "gen fixed point (blocking)" job fails with
-those files modified after generation.
+Read the project generator declaration and inspect each changed output before
+staging. A generated file belongs in the PR when its tracked source changed and
+the canonical generator produced it. In this standalone `agents` project,
+`make gen` owns `.beads/metadata.json` and `.envrc`; both are committed for
+fresh linked worktree activation. In projects where `CI=Y` changes emission,
+regenerate through that project's declared CI context and verify the fixed
+point. Preserve unrelated worktree changes and repair source drift at its owner.
 
 ## 4. Land, prove, retire
 
