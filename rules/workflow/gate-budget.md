@@ -1,7 +1,7 @@
 ---
 description: A PR gate stays inside its offline time budget.
 metadata:
-  aihub.tags: '["decision:ADR-0031","effective:2026-09-29","route:both"]'
+  aihub.tags: '["decision:ADR-0031","effective:2026-10-01","route:both"]'
 ---
 
 # Gate budget and offline generation
@@ -12,6 +12,13 @@ fetches a version manifest, or reaches a network endpoint mid-run. The one excep
 the pre-test provisioning of a host test service, which fetches only digest-pinned
 inputs and only when the service's declared fingerprint changes.
 
+- Nothing slow runs in CI or at pre-commit, in absolute terms (operator ruling
+  2026-10-01): whole-program type checkers, code-smell audits, and slow tests run only
+  locally and at pre-push. Which gates are slow is a typed property declared once in the
+  project's gate registry or configuration; the CI workflow and the pre-commit hook
+  derive their gate sets from it and never list gates themselves. Pre-commit is enabled
+  and propagated by the project's generator and installed by its setup verb, never
+  hand-installed per checkout.
 - Profiling (cProfile, a coverage instrumenter, or any other collector) is opt-in and
   off by default on every gate-path runner. A pytest runner with always-on profiling is
   a toolchain defect, not an acceptable baseline.

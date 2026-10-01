@@ -20,7 +20,7 @@ capsule_summary: |
   never authorizes the generic form, and an agent never writes the operator's SSH
   configuration or keys — identity is corrected in git, or reported.
 metadata:
-  aihub.tags: '["decision:ADR-0031","effective:2026-09-29","route:both"]'
+  aihub.tags: '["decision:ADR-0031","effective:2026-10-01","route:both"]'
 ---
 
 # Engineering core
@@ -49,6 +49,26 @@ invalid consumer; symptom workarounds are defects.
 Hardcodes, normalized failure, failover, retry, fallback, compatibility, partial
 execution, application keyring reads, and unevidenced success are defects. Typed owners
 keep defaults. The first exception escapes its CLI with traceback and cause.
+
+These are workarounds to exterminate at their owner, not to accommodate (operator ruling
+2026-10-01), and each is replaced by rules, configuration, and SSOT functions:
+
+- a hardcoded value — path, URL, number, name, version, or limit — instead of its
+  declared owner in configuration, settings, or constants; a tunable value is declared
+  once in gated configuration with a per-project override, and guidance references its
+  key, never the number;
+- a dependency-injection violation — a service building its own infrastructure, reading
+  global settings, probing capabilities, or depending on a concrete type where a
+  protocol port belongs;
+- coupling — an import against the layer direction, use of another package's private
+  module, a cycle hidden by a local import, a library that knows its consumers, or
+  behavior placed in a declaration layer;
+- a hardcoded rule — validation or enforcement written as code instead of rule data
+  applied by the generic engine;
+- a hand-maintained registry, roster, allowlist, or mapping that duplicates what an SSOT
+  function derives.
+
+Exterminating them shrinks the code; growth to accommodate one is itself a defect.
 
 Git, runtime, build, and tests are baseline. Every other executable is an authorized,
 selected capability; installation or PATH presence never selects it. Do not load,
