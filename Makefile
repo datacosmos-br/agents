@@ -46,7 +46,7 @@ setup: ## create the declared repository runtime environment
 
 upg: ## resolve newest declared tools and dependencies into committed locks
 	$(call BANNER,upg · mise lock + uv lock)
-	@mise lock --bump
+	@mise lock --upgrade --bump
 	@MISE_LOCKED=false $(MISE_EXEC) uv lock --upgrade --refresh
 	@MISE_LOCKED=false $(MISE_EXEC) uv sync --all-groups --locked
 

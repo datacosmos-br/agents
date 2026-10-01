@@ -2,9 +2,10 @@
 lockfile = true
 locked = true
 lockfile_platforms = ["linux-x64"]
+minimum_release_age_excludes = ["pipx:semgrep"]
 
 [vars]
-waza_version = "0.38.7"
+waza_version = "0.38.8"
 
 [tools]
 python = "3.13"
