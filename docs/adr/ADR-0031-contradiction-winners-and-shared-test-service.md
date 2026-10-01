@@ -69,7 +69,11 @@ New decisions:
 12. The standing gate suspensions (`namespace`, `smells`) and the codemod observational
     order of 2026-09-24 remain operator decisions. Strictness comes from the active
     gates, the pytest plugins, and the project post-check; suspended and observational
-    findings are still driven to zero.
+    findings are still driven to zero. (Amendment, operator order 2026-10-01: these
+    orders are lifted. Gate suspension and observational findings are relaxations to
+    exterminate entirely, then rewire consumers, then align tests to real behavior;
+    `rules/flext/generator-declarations.md` point 12 owns the current text. Smell
+    families are routed to their own smells verb, which is ownership, not suspension.)
 13. Operation retries are banned: retry helpers such as `u.retry`, automatic
     reconnection, and `until` loops on state-changing tasks. A readiness wait is
     bounded condition polling with an explicit deadline that fails loud; it is not a
