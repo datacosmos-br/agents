@@ -110,5 +110,5 @@ wrong invocation, not of the store, and it is never answered with `bd init`.
 | which sessions exist | `gc agent list` |
 | which are alive now | `gc status --json` → `running`, `gc session list --state active` |
 | what each is doing, roles | `[coord]` mail + the owning bead |
-| is a lane abandoned | unanswered `[coord] lane status?` + registration proof + publication proof + fresh backup |
+| is a lane abandoned | the test declared in rule `bead-branch-pr-cadence` §2 |
 | who touched my lane and why | lane `git log`/reflog + the author's mail + the bead cited in the commit |

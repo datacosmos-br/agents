@@ -30,5 +30,11 @@ child strengthens its parents and never copies, weakens, renames, or replaces th
 content appears at two layers, it moves to the highest applicable layer, consumers are
 rewired to reference it there, and the duplicate is deleted in the same change.
 
+Every piece of guidance has exactly one place of declaration; every other surface,
+in any layer or in the same layer, only references it (operator ruling 2026-10-01: "as
+orientações tem que ter APENAS UM LOCAL DE DECLARAÇÃO, sendo os outros apenas
+referencias"). A restatement, paraphrase, or summary that adds no delta is a duplicate
+and is replaced by a reference in the same change.
+
 A violation of language or placement blocks delivery until the owner is corrected, every
 consumer is rewired, and the affected gates pass.

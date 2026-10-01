@@ -2,9 +2,9 @@
 description: Acting cadence — bead identity, dedupe mandate, one-hour staleness, and the CI=Y emission canon
 capsule_summary: |
   Operator rulings 2026-09-27. Every work unit is declared as bead + branch + PR
-  to the coordinator at claim time; a bead (claimed, deferred, or blocked) with
-  more than one hour without an update is ABANDONED and may be adopted by
-  anyone; before starting any unit, research whether the work already exists in
+  to the coordinator at claim time; a bead (any state), lane, worktree, branch,
+  or PR with one hour without change is ABANDONED and may be adopted by anyone
+  (operator ruling 2026-10-01; adoption never authorizes deletion); before starting any unit, research whether the work already exists in
   abandoned branches, open PRs, or other beads — redoing existing work or two
   actors doing the same thing is a severe violation; the dedupe of the tracker
   (close superseded, realign epics, fix titles, --force when the tracker refuses) is part
@@ -29,14 +29,28 @@ delivers) and [fleet-landing-corrections](fleet-landing-corrections.md).
    from the current integration tip, in a dedicated worktree on the destination
    filesystem — never `/tmp`, never a borrowed venv, never the primary checkout.
 
-## 2. One hour of silence is abandonment
+## 2. One hour without change is abandonment
 
-1. A bead — claimed, deferred, or blocked — with more than one hour without a
-   recorded update is abandoned. Anyone may adopt it.
-2. Heartbeats record the measured state on the bead as an appended note, not
+This section is the single owner of the abandonment test (operator ruling
+2026-10-01: "a regra para abandonada é 1h sem mudanca"). Every other rule,
+skill, and command references it and never restates another threshold.
+
+1. A bead in any state (claimed, deferred, blocked), a lane, a worktree, a branch,
+   or a PR is abandoned once one hour passes without a change. A change is the
+   newest of: the bead's recorded update, the branch's last commit or push, and
+   the PR's last update. Anyone may adopt it.
+2. Adopting means claiming the bead, announcing `[coord] lane claim`, and
+   continuing the existing work with `merge --no-ff` (or by cherry-picking
+   isolated commits) into the adopter's lane. It never means rewriting work that
+   already exists.
+3. Abandonment authorizes adoption, never destruction or closure. Retiring a
+   branch or worktree follows `gitflow-branch-pr` (rule file) and the city
+   reaper's backup precondition; closing a bead follows
+   [beads-canonical-epics](beads-canonical-epics.md).
+4. Heartbeats record the measured state on the bead as an appended note, not
    "still working". Adoption supersedes re-creation: pick the bead up, record the
    adoption, continue from its notes.
-3. Epics and parents are kept alive the same way; a stale `updated_at` with a
+5. Epics and parents are kept alive the same way; a stale `updated_at` with a
    same-day comment is cured by a heartbeat, not by opening a duplicate.
 
 ## 3. Dedupe mandate (part of the acting role)

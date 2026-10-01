@@ -3,8 +3,10 @@ prompt: |-
   Grade the beads-organization response. Pass only when the deduplication
   gate runs before any external push, closes carry descriptive SUPERSEDED,
   OBSOLETE, or DONE reasons, metadata-proven legitimate triads are adjudicated
-  instead of blindly closed, every inventory has an explicit limit, stale
-  claims and deferred state require live evidence, bugs remain at root with
+  instead of blindly closed, every inventory has an explicit limit, a claim
+  is released only on measured evidence (no executor, or one hour without
+  change per rule bead-branch-pr-cadence §2) and abandonment never closes a
+  bead, deferred state requires live evidence, bugs remain at root with
   bugfix and conditional hotfix labels, weak commit subjects are replaced by
   factual SHA-preserving summaries, and graph gates pass before external sync.
   Reject history rewriting, invented commands, over-limit batches, substitute

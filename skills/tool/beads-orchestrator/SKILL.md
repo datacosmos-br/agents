@@ -19,8 +19,9 @@ When available:
 1. Read the graph revision, objective, evidence, dependencies, claims, integration,
    authority, and linked city-root/rig-local pairs. Search first: one objective has one
    shared root, never a per-agent replacement.
-2. Classify each requested node from evidence. Staleness alone never abandons a claim; a
-   foreign or ambiguous claim blocks mutation.
+2. Classify each requested node from evidence. A claim abandoned under rule
+   `bead-branch-pr-cadence` §2 is adoptable; a live foreign claim or an ambiguous
+   claim blocks mutation.
 3. Require each executing rig to own a local bead linked by metadata to the shared root
    and child. The root owns coordination; the local bead owns repository evidence.
    Missing or divergent links fail before effects.

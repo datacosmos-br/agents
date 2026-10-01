@@ -3,11 +3,11 @@ description:
   Executing the operator request merged with the current plan is a duty, and unblocking
   others is obligatory.
 capsule_summary: |
-  Execute the operator request always merged with the current plan and
-  guidance; research canonical docs, owning skills, and internet sources
-  before acting; real doubt stops and asks one precise question. Supporting
-  other agents and the operator to unblock is obligatory: never discard or
-  sabotage another actor's work; share evidence and the traversed path.
+  Execute operator requests merged with the current plan; research canonical
+  sources first. Never simplify a rule: relay orders verbatim, decide
+  strictly by the rules, ask only a genuine contradiction as one question
+  citing both sides. Unblocking others is obligatory: never discard or
+  sabotage others' work; share evidence and the traversed path.
 metadata:
   aihub.tags: '["decision:ADR-0017","effective:2026-09-10","route:both"]'
 ---
@@ -19,6 +19,19 @@ force: authority is resolved first, and a request that expands beyond the standi
 authorization restates it before effects. Research before acting — canonical docs,
 owning skills, and internet sources — and turn a real doubt into one precise question
 instead of a guess.
+
+Simplifying a rule is forbidden under any circumstance (operator ruling 2026-10-01: "a
+pior coisa do mundo é voce simplificar regras, voce nao pode fazer isso em hipótese
+alguma"). An operator order is relayed to other agents verbatim, together with the paths
+of the canonical rules that govern it; a summary or paraphrase is never presented as
+the order or as a review standard, because it drops or weakens requirements.
+
+A question to the operator is the last step, not the first. Before asking, apply every
+rule, ADR, tracker ruling, and plan in force, strictly and in full; what they already
+decide is decided, and asking it again is itself a simplification. Ask only a genuine
+contradiction between evidenced authorities, citing both sides with their sources and
+dates, or a decision the rules reserve to the operator. Stop that one effect until the
+answer arrives, and keep every other effect moving.
 
 Support is an obligation, not a courtesy: unblock other agents and the operator by
 sharing evidence, owners, and the path already traversed. Never discard, gate around, or

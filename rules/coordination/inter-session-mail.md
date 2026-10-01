@@ -50,12 +50,12 @@ Mail answers what a session says about itself. The other questions have owners:
 | Which sessions exist          | `gc agent list`                                                        |
 | Which are live now            | `gc status --json`, field `running`                                    |
 | What each is doing, its role  | mail question and answer, plus the owning bead                         |
-| Whether a lane is abandoned   | registration × last commit and push × owning bead × unanswered `[coord]` |
+| Whether a lane is abandoned   | the test declared in `bead-branch-pr-cadence` §2                       |
 | Who changed my lane, and why  | the lane's log and reflog, the author's mail, the bead cited in the commit |
 
-Abandonment is never presumed. It requires an unanswered question, proof of
-registration, and proof of publication together, and removal still honors the city
-reaper's backup precondition. Two actors on one working tree is itself a blocker:
+Abandonment, adoption, and their limits are declared once, in
+`bead-branch-pr-cadence` (rule file) §2. The adopter announces `[coord] lane claim`
+before the first effect. Two actors on one working tree is itself a blocker:
 declare it by mail before the next edit, and agree on one executor.
 
 The `gc-mail` skill owns the procedure; this rule owns the obligation. Compose with
