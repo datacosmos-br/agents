@@ -54,10 +54,10 @@ verbs"). Its config-owned persistent path stays outside the checkout and is pass
 directly to Testmon, never projected back through a symlink. The full verb is never an
 implicit retry or a substitute for an ordinary impacted run. To force an explicit
 `FILE`, nodeid, or `MATCH`, resolve its exact nodeids, reject an empty or
-owner-limit-exceeding set, invalidate only those rows in the existing database transactionally, and run their
-intersection through `--testmon-forceselect`. Never invalidate by broad pattern, guessed
-substring, unbounded set, environment change, database replacement, or global cache
-clear. Prove the same database identity survived, the invalidated count stayed within
+owner-limit-exceeding set, invalidate only those rows in the existing database
+transactionally, and run their intersection through `--testmon-forceselect`. Never
+invalidate by broad pattern, guessed substring, unbounded set, environment change,
+database replacement, or global cache clear. Prove the same database identity survived, the invalidated count stayed within
 the configured limit, Testmon selection remained active, and at least one requested test
 executed.
 

@@ -93,10 +93,10 @@ before the next wave.
    Mass-rewrite execution law. Tree-wide mechanical transformations and automation-apply
    cycles obey `rules/workflow/mass-rewrite-discipline.md`: test evidence brackets the
    mass (baseline before, single validation after), scoped commits bound the change per
-   transformation class, applied-vs-reverted states are inventoried before commit, string literal contexts get
-   a machine-checked safety sweep, and progress is reported per violation class, never
-   as an aggregate that hides untouched structural debt. The sweep never parks a large
-   uncommitted delta on the trunk.
+   transformation class, applied-vs-reverted states are inventoried before commit,
+   string literal contexts get a machine-checked safety sweep, and progress is reported
+   per violation class, never as an aggregate that hides untouched structural debt. The
+   sweep never parks a large uncommitted delta on the trunk.
 9. Runtime boundary. Keep portable primitives in their reusable library and host
    indexes, daemons, forge clients, language/refactor services, hooks, and MCP in the
    runtime control plane. Cross that boundary only through a public command/hook/MCP.

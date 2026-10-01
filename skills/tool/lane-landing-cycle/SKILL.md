@@ -40,8 +40,9 @@ env -C <lane> -u VIRTUAL_ENV -u UV_PROJECT_ENVIRONMENT make test-full  # local, 
 
 Run targeted tests first for fast feedback; the full suite is the local landing
 gate. Where each test verb runs, and its testmon contract, are declared in
-`rules/workflow/canonical-commands.md` (section "Test verbs"). A red is red: cure the root cause in the wave, or record it with its
-owner and sequence — never bypass, never normalize.
+`rules/workflow/canonical-commands.md` (section "Test verbs"). A red is red: cure the
+root cause in the wave, or record it with its owner and sequence — never bypass, never
+normalize.
 
 ## 3. Classify generated outputs by owner
 

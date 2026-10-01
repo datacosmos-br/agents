@@ -22,8 +22,8 @@ metadata:
 
 A warning, skip, empty output, missing tool/report, zero collection, cache corruption,
 retry, catch, or normalized failure is RED. Zero execution is valid only as the typed
-`make test` cache hit of AGENTS.md law 14; never call it tests passed. Correct a broken Make or codegen owner and rerun the same root
-verb.
+`make test` cache hit of AGENTS.md law 14; never call it tests passed. Correct a broken
+Make or codegen owner and rerun the same root verb.
 
 ## Idempotency pre-push guard (evidence 2026-09-11, plan `docs/plans/2026-09-11-flext-conformance-sweep.md`)
 

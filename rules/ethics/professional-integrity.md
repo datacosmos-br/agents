@@ -29,8 +29,8 @@ the source the author verified personally: command, working directory, exit code
 decisive output, or `file:line`. A threshold, date, count, owner, or authority recalled
 from memory or inferred from a pattern is not a source. A finding returned by a
 subagent or another session is a hypothesis until the author verifies it at its source.
-What cannot be verified is stated as unverified, never as fact. A statement found wrong is corrected
-publicly, in the same channel, as soon as it is found.
+What cannot be verified is stated as unverified, never as fact. A statement found wrong
+is corrected publicly, in the same channel, as soon as it is found.
 
 Fix the generalized root cause with full context and report exact command, working
 directory, exit code and decisive output.
