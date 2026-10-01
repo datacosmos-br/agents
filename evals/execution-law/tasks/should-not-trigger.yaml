@@ -1,0 +1,11 @@
+id: execution-law-negative-001
+name: Summarize a release note
+description: Do not activate the execution contract for a summarization request.
+tags: [anti-trigger]
+inputs:
+  prompt: |
+    Summarize these three release-note bullets into one sentence: added a
+    caching layer, fixed two import errors, renamed a CLI flag.
+expected:
+  output_not_contains: [census, coordinator ladder, lane declaration, extermination,
+    execution contract activated, integration SHA]

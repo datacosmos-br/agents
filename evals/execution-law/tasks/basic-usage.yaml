@@ -1,0 +1,17 @@
+id: execution-law-happy-001
+name: Happy path execution-law
+description: Exercise the sole-executor engagement from startup census through coordinator ladder, adoption, extermination, and landing.
+tags: [execution, sole-executor, engagement, census, ladder, adoption, extermination, landing, happy-path]
+inputs:
+  prompt: >-
+    You hold total monopoly over the repository in engagement.md for a
+    cleanup-and-finalization campaign. Begin. Report the opening moves and
+    the completion bar.
+  files:
+  - path: engagement.md
+expected:
+  output_contains: [census, lane, bead-branch-pr-cadence, coordinator-ladder, nomination,
+    human channel, adopt, same cutover, gated, selector-free, full-landing-cycle,
+    integration]
+  output_not_contains: [rewrite from scratch, assume the mayor is up, wait for permission,
+    hardcode, partial completion]
