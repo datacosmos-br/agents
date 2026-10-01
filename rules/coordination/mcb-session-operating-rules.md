@@ -26,8 +26,11 @@ file) laws for that repository's gates and failure modes.
 - Every lane is a dedicated `git worktree` with a physical `.venv` from `make setup`
   and `direnv allow` — never a symlinked venv, never the primary checkout.
 - Before assuming a bead, search for pre-existing work: open PRs, remote branches,
-  and upstream WIP branches. Adopt abandoned work; never redo or duplicate work
-  another session is actively driving (prove recency before touching it).
+  and upstream WIP branches. Adopt existing work instead of redoing it — an
+  abandoned lane by porting, an active lane by cherry-picking its valid
+  published commits into your own tip-based lane immediately (rule `lane
+  ownership declaration`); never edit inside the other session's worktree and
+  never adopt a workaround commit.
 
 ## Beads law
 
