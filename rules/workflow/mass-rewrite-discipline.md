@@ -3,7 +3,7 @@ description:
   Tree-wide mechanical rewrites and automation-applied fixes are commit-boundaried,
   inventories-first, and fully test-proven before and after.
 metadata:
-  aihub.tags: '["decision:ADR-0008","effective:2026-09-11","route:both"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-10-01","route:both"]'
 ---
 
 # Mass rewrite discipline: inventory, boundaries, evidence
@@ -13,11 +13,13 @@ Any transformation applied to more than a handful of files — textual rewrites
 import/annotation migrations — is a production effect with the same standing as a code
 change, not free bookkeeping. It is graded like code.
 
-- **Test evidence brackets the rewrite.** `make test` runs before and after the mass,
-  not only after. Static gates green do not prove runtime: annotations evaluated by
-  frameworks (pydantic, casts, generics), string literals, and fixtures can break only
-  at runtime. A mass landing without a post-run test selection result is an unproved
-  trunk.
+- **Test evidence brackets the rewrite.** `make test` runs before the mass, as its
+  baseline, and after it, not only after. The after-run is the single validation at the
+  end of the cleanup order declared in `rules/architecture/engineering-core.md`; no
+  heavy validation runs between extermination steps. Static gates green do not prove
+  runtime: annotations evaluated by frameworks (pydantic, casts, generics), string
+  literals, and fixtures can break only at runtime. A mass landing without a post-run
+  test selection result is an unproved trunk.
 - **Commit boundaries are part of the change.** Never accumulate tree-wide uncommitted
   mass. Package the rewrite into scoped commits (owner of the transformation, not file
   adjacency) and push each package; a trunk with a large uncommitted delta has no
@@ -69,5 +71,7 @@ history, not scratch. Rewriting one from scratch is prohibited. Required:
    directly, with no apply selector. `--apply`, an internal CLI argument of release,
    codegen init, and deps, is a distinct current internal contract: do not confuse it
    and do not remove it.
-6. **Proof by rendering**: every template change runs the conform tests through the root
-   `make test` verb until a fixed point, never "it should render".
+6. **Proof by rendering**: every template change is proven by the conform tests through
+   the root `make test` verb, until a fixed point, never by "it should render"; the run
+   is the end-of-round validation of the cleanup order in
+   `rules/architecture/engineering-core.md`.

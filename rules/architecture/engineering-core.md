@@ -3,14 +3,14 @@ description: Apply the mandatory engineering decision and delivery sequence.
 capsule_summary: |
   Every implementation: research the owner first, cut scope without a current
   consumer, elect one writable authority, make every other copy a generated
-  projection, improve the owner in place — a parallel one beside it is a
-  violation — implement through the owner, remove duplication, keep
+  projection, improve the owner in place, never a parallel one beside it,
+  implement through the owner, remove duplication, keep
   discoverable enumerations as authority data validated by grammar, never
   fixed lists or absolute paths, then exercise runtime and run every gate
   before changing phase.
 
-  At a cross-boundary failure, prove the producer's contract and fix whichever
-  side is wrong — never bend a correct owner for an invalid consumer.
+  At a cross-boundary failure, prove the producer's contract and fix the wrong
+  side; never bend a correct owner for an invalid consumer.
 
   Hardcodes, normalized failure, failover, retry, fallback, partial execution
   and unevidenced success are defects. The first exception escapes with its
@@ -20,7 +20,7 @@ capsule_summary: |
   never authorizes the generic form, and an agent never writes the operator's SSH
   configuration or keys — identity is corrected in git, or reported.
 metadata:
-  aihub.tags: '["decision:ADR-0031","effective:2026-09-29","route:both"]'
+  aihub.tags: '["decision:ADR-0031","effective:2026-10-01","route:both"]'
 ---
 
 # Engineering core
@@ -49,6 +49,43 @@ invalid consumer; symptom workarounds are defects.
 Hardcodes, normalized failure, failover, retry, fallback, compatibility, partial
 execution, application keyring reads, and unevidenced success are defects. Typed owners
 keep defaults. The first exception escapes its CLI with traceback and cause.
+
+Every one of these defects is a workaround to exterminate at its owner, never to
+accommodate (tracker memory `operator-ruling-2026-10-01-total-extermination`). The
+same holds for the classes below; the hardcode class is stated precisely first, and
+each of them is replaced by rules, configuration, and SSOT functions (tracker memory
+`operator-rulings-2026-10-01-governance`, rulings 7 and 11):
+
+- a hardcoded value — path, URL, number, name, version, or limit — instead of its
+  declared owner in configuration, settings, or constants; a tunable value is declared
+  once in gated configuration with a per-project override, and guidance references its
+  key, never the number;
+- a dependency-injection violation — a service building its own infrastructure, reading
+  global settings, probing capabilities, or depending on a concrete type where a
+  protocol port belongs;
+- coupling — an import against the layer direction, use of another package's private
+  module, a cycle hidden by a local import, a library that knows its consumers, or
+  behavior placed in a declaration layer;
+- a hardcoded rule — validation or enforcement written as code instead of rule data
+  applied by the generic engine;
+- a hand-maintained registry, roster, allowlist, or mapping that duplicates what an SSOT
+  function derives.
+
+Exterminating them shrinks the code; growth to accommodate one is itself a defect.
+
+Every cleanup follows one order, declared only here (tracker memory
+`operator-ruling-2026-10-01-total-extermination`); every other rule, skill, command,
+and agent profile references it:
+
+1. Exterminate absolutely every violation in scope first, with no heavy validation
+   between extermination steps.
+2. Then rewire every consumer to the final owner.
+3. Then rewrite the tests to the real runtime behavior and run them. Validation runs
+   once, at the end.
+
+The order is the work sequence inside one cutover, not a landing sequence: the cutover
+still lands atomically, with zero residue and every consumer rewired, and a scoped WIP
+commit between steps is persistence, not validation.
 
 Git, runtime, build, and tests are baseline. Every other executable is an authorized,
 selected capability; installation or PATH presence never selects it. Do not load,

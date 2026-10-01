@@ -50,8 +50,8 @@ FLEXT program work uses only selector-free root Make verbs.
 1. Run `make gen` at the lane root before semantic rewrites.
 2. Run `make mod`; the engine owns ast-grep, fixed point, Ruff, Pyrefly, and LSP
    diagnostics and derives scope from repository state.
-3. Run `make fix`, `make fmt`, `make check`, and canonical test verbs with the
-   persistent testmon database.
+3. Run `make fix`, `make fmt`, `make check`, and the canonical test verbs declared in
+   `rules/workflow/canonical-commands.md` (section "Test verbs").
 4. Use `$crg` only for fresh graph evidence. The workspace root uses recursive submodule
    indexing and every member lane keeps its own graph. Impact and change detection are
    review evidence, never gate substitutes. Confirm dead-code candidates in source.

@@ -92,5 +92,5 @@ jobs:
             testmon-${{ runner.os }}-
       - name: Provision declared tools and environment
         run: make setup
-      - name: Run runtime-first public gates
+      - name: Run fast external gates and make test
         run: make ci

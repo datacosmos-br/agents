@@ -34,12 +34,15 @@ CI=Y env -C <lane> -u VIRTUAL_ENV -u UV_PROJECT_ENVIRONMENT make gen   # twice
 env -C <lane> -u VIRTUAL_ENV -u UV_PROJECT_ENVIRONMENT make fix
 env -C <lane> -u VIRTUAL_ENV -u UV_PROJECT_ENVIRONMENT make fmt
 env -C <lane> -u VIRTUAL_ENV -u UV_PROJECT_ENVIRONMENT make check
-env -C <lane> -u VIRTUAL_ENV -u UV_PROJECT_ENVIRONMENT make test-full  # bounded background
+env -C <lane> -u VIRTUAL_ENV -u UV_PROJECT_ENVIRONMENT make test
+env -C <lane> -u VIRTUAL_ENV -u UV_PROJECT_ENVIRONMENT make test-full  # local, background
 ```
 
-Run targeted tests first for fast feedback; the full suite is the landing
-gate. A red is red: cure the root cause in the wave, or record it with its
-owner and sequence — never bypass, never normalize.
+Run targeted tests first for fast feedback; the full suite is the local landing
+gate. Where each test verb runs, and its testmon contract, are declared in
+`rules/workflow/canonical-commands.md` (section "Test verbs"). A red is red: cure the
+root cause in the wave, or record it with its owner and sequence — never bypass, never
+normalize.
 
 ## 3. Classify generated outputs by owner
 

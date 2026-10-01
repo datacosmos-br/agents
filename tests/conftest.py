@@ -1,4 +1,4 @@
-"""Typed public fixtures and mandatory pytest-testmon execution guard."""
+"""Typed public fixtures and the root test-verb execution guard."""
 
 from __future__ import annotations
 
@@ -13,10 +13,21 @@ from agents_governance import GovernanceBundle
 
 
 def pytest_configure(config: pytest.Config) -> None:
-    """Reject every pytest path that bypasses testmon or writes in the checkout."""
+    """Reject every pytest path outside the root test verbs.
 
-    if not config.getoption("testmon"):
-        raise pytest.UsageError("tests must run through the Make pytest-testmon owner")
+    ``make test`` runs with testmon against the shared external database;
+    ``make test-full`` runs without testmon.
+    """
+
+    mode = os.environ.get("TESTMON_MODE")
+    if mode not in {"full", "incremental"}:
+        raise pytest.UsageError(
+            "tests must run through `make test` or `make test-full`"
+        )
+    if bool(config.getoption("testmon")) is not (mode == "incremental"):
+        raise pytest.UsageError(f"testmon activation is not canonical for {mode}")
+    if mode == "full":
+        return
     configured = os.environ.get("TESTMON_DATAFILE")
     if configured is None or not configured.strip():
         raise pytest.UsageError("TESTMON_DATAFILE must select the shared cache")

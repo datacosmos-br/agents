@@ -32,7 +32,7 @@ jobs:
             release-testmon-${{ runner.os }}-
       - name: Provision declared tools and environment
         run: make setup
-      - name: Run complete runtime-first pipeline
+      - name: Run fast external gates and make test
         run: make ci
       - name: Publish validated immutable release
         env:

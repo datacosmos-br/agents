@@ -100,12 +100,12 @@ apply selector or acknowledgement. Repair a missing standard verb at the Make/co
 owner rather than invoking a raw underlying tool.
 
 First exercise the installed public import, facade, service, API, CLI, or generated
-consumer. Only after runtime proof may tests run. Every test verb uses the same external
-persistent pytest-testmon database. The public full verb first runs incremental
-selection and then no-selection. Warning, skip, empty output, missing tool/report, zero
-collection, catch, retry, or normalized failure is RED. Zero execution is valid only for
-a typed incremental testmon cache hit with database integrity and complete deselection
-accounting, and is never reported as tests passed.
+consumer. Only after runtime proof may tests run, through the test verbs declared in
+`rules/workflow/canonical-commands.md` (section "Test verbs"), which owns their testmon
+contract and where each runs. Warning, skip, empty output, missing tool/report, zero
+collection, catch, retry, or normalized failure is RED. Zero execution is valid only as
+the typed `make test` cache hit of AGENTS.md law 14, and is never reported as tests
+passed.
 
 For `internal_flext`, construct tests only through flext-tests public facets and shared
 conftest/typed fixtures. Use no mock, monkeypatch, private import, copied configuration,

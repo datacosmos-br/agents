@@ -4,7 +4,8 @@ description:
 capsule_summary: |
   Operator directive (2026-09-16, any rig): truth with evidence only (fake green
   is P0); canonical Make verbs only (no invented selectors, no raw tool
-  bypasses); testmon always through make test; root cause + zero residue +
+  bypasses); tests only through the test verbs owned by
+  rules/workflow/canonical-commands.md; root cause + zero residue +
   immediate rewire (no compat/shims/deferred); reality > tests (public facades
   only, no mocks, tm fixtures); strict FLEXT chain (settings→config→c→t→p→m→u→
   base→services→api→cli; reverse imports TYPE_CHECKING-only; lazy imports via
@@ -18,16 +19,16 @@ capsule_summary: |
   registries (e.g. class-nesting-mappings.yml) are exterminated in favor of
   SSOT functions. Gain from every cycle: improve skills/commands/rules/docs/ADRs.
 metadata:
-  aihub.tags: '["decision:ADR-0021", "effective:2026-09-16", "route:both"]'
+  aihub.tags: '["decision:ADR-0021", "effective:2026-10-01", "route:both"]'
 ---
 
 # Full-standards conformance sweep (universal, any rig)
 
-Truth with evidence · canonical verbs only · testmon always · root cause + zero
-residue + immediate rewire · reality > tests · strict FLEXT chain and module pattern ·
-no aliases/redeclarations/compat · DRY/YAGNI/SSOT/CA/DI always · no hand-edits of
-generated files · nothing deferred · governance self-repair every session · full
-gitflow + runtime closure or nothing.
+Truth with evidence · canonical verbs only · test verbs per `canonical commands` (rule
+file) · root cause + zero residue + immediate rewire · reality > tests · strict FLEXT
+chain and module pattern · no aliases/redeclarations/compat · DRY/YAGNI/SSOT/CA/DI
+always · no hand-edits of generated files · nothing deferred · governance self-repair
+every session · full gitflow + runtime closure or nothing.
 
 The lazy import via `__init__` is the PREFERRED form (performance): generated inits
 carry the package's real export surface. An empty generated init for a package with

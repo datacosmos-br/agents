@@ -41,6 +41,7 @@ make check
 make runtime
 make crg-check
 make waza
+make lint
 make static
 make conform
 make fmt
@@ -60,11 +61,14 @@ The development toolchain is supported on Linux x64, the platform declared in
 `.mise.toml` and resolved in `mise.lock`. The published Python sdist and wheel remain
 platform-neutral and are validated as installed artifacts by `make runtime`.
 
-`make test` and the declared full form both use the same testmon cache; the full form
-uses testmon no-selection rather than bypassing cache collection. CI invokes the same
-Make owners. The Waza gate proves the projected suite schema, every skill/evaluation
-reference, the exact spec threshold, and token ceilings; model execution belongs to a
-selected AI Hub runtime and is not claimed by this package.
+The test verbs, their testmon contract, and where each runs are declared in
+[`rules/workflow/canonical-commands.md`](rules/workflow/canonical-commands.md). CI runs
+`make ci`, whose root Makefile composition holds only fast external gates and
+`make test`, as [`rules/workflow/gate-budget.md`](rules/workflow/gate-budget.md)
+requires; `make check` and `make test-full` run only locally. The Waza gate proves the
+projected suite schema, every skill/evaluation reference, the exact spec threshold, and
+token ceilings; model execution belongs to a selected AI Hub runtime and is not claimed
+by this package.
 
 `make check` and `make ci` validate the immutable package without requiring the host's
 AI Hub runtime. Under [ADR-0010](docs/adr/ADR-0010-optional-host-runtime-boundary.md),

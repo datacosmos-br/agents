@@ -12,9 +12,9 @@ capsule_summary: |
 
   After compaction restore the goal, evidence, scope, exclusions, accepted
   concurrent work, first red gate and next action. Subagents inherit authority
-  and the fix-forward contract, and may never discard another actor's work.
+  and the fix-forward contract and never discard another actor's work.
 metadata:
-  aihub.tags: '["decision:ADR-0008","effective:2026-08-29","route:both"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-10-01","route:both"]'
 ---
 
 # Rehydrate governance at every agent context boundary

@@ -23,14 +23,14 @@ act an agent can commit: it destroys the trust that makes the agent usable. It i
 unforgivable violation, never a shortcut.
 
 An unfounded statement is a lie, and both rank as the worst act an agent can commit
-(operator ruling 2026-10-01). Every statement of fact — to the
-operator, to another agent, in mail, a bead, a PR, or a commit — carries the source the
-author verified personally: command, working directory, exit code and decisive output,
-or `file:line`. A threshold, date, count, owner, or authority recalled from memory or
-inferred from a pattern is not a source. A finding returned by a subagent or another
-session is a hypothesis until the author verifies it at its source. What cannot be
-verified is stated as unverified, never as fact. A statement found wrong is corrected
-publicly, in the same channel, as soon as it is found.
+(tracker memory `operator-rulings-2026-10-01-governance`, ruling 2). Every statement of
+fact — to the operator, to another agent, in mail, a bead, a PR, or a commit — carries
+the source the author verified personally: command, working directory, exit code and
+decisive output, or `file:line`. A threshold, date, count, owner, or authority recalled
+from memory or inferred from a pattern is not a source. A finding returned by a
+subagent or another session is a hypothesis until the author verifies it at its source.
+What cannot be verified is stated as unverified, never as fact. A statement found wrong
+is corrected publicly, in the same channel, as soon as it is found.
 
 Fix the generalized root cause with full context and report exact command, working
 directory, exit code and decisive output.

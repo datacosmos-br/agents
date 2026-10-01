@@ -32,7 +32,8 @@ charts package+receipt → R2 GitOps import+render → Argo CD `dc-dese` only �
 `main`/`dc-prod`/`dc-control` receive no effect without operator order.
 
 - Canonical surface: root `make setup|deps|gen|check|test|fix|fmt` only; never invented
-  selectors or raw linters; testmon always via `make test`.
+  selectors or raw linters; test verbs per `rules/workflow/canonical-commands.md`
+  (section "Test verbs").
 - Receipts live in the project tracker; read the current release/import receipts from
   the tracker at activation (commit, package version, OCI digest); version drift between
   charts/GitOps is a blocker, never an accepted residual.
