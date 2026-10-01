@@ -18,11 +18,13 @@ publication, or deployment verb.
 Guards are precise, not broad: they deny exact constructs and never block commands
 agents legitimately need, such as `gh pr merge --admin`.
 
-Text published to a forge, tracker, or mail channel (PR or issue body, comment, bead
-note, mail body) is passed from a file: `--body-file <file>`, `-F body=@<file>`, or
-`xargs -0 -a <file> <command> -m`. It is never written inline inside a double-quoted
-shell string, where backticks and `$( )` execute. Observed 2026-10-01: a review comment
-quoting `make upg` ran that verb and published a mangled body.
+Text published to a forge, tracker, or mail channel is never written inside a
+double-quoted shell string, where backticks and `$( )` execute. A body (PR or issue
+body, comment, bead note, mail body) is passed from a file: `--body-file <file>`,
+`-F body=@<file>`, or `xargs -0 -a <file> <command> -m`. A title or subject, which these
+CLIs accept only inline, is written in single quotes, which the shell never expands.
+Observed 2026-10-01: a review comment quoting `make upg` ran that verb and published a
+mangled body.
 
 Preserve the exact command, worktree, exit code, decisive stdout, warning, and stderr.
 Redirecting stdout to `/dev/null` is denied; `2>/dev/null` is allowed. Write long output

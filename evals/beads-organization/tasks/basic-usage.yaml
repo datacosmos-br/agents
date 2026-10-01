@@ -15,5 +15,5 @@ inputs:
   files:
   - path: scenario.yaml
 expected:
-  output_contains: ["--limit", "20", SHA, integration, claim, bead-branch-pr-cadence, app-57, deferred, bugfix, hotfix, "bd find-duplicates", sync, reconciliation, adjudication, repair, hierarchy]
+  output_contains: ["--limit", "20", SHA, integration, claim, bead-branch-pr-cadence, app-73, deferred, bugfix, hotfix, "bd find-duplicates", sync, reconciliation, adjudication, repair, hierarchy]
   output_not_contains: [force-push, push without gate, closed without reason]

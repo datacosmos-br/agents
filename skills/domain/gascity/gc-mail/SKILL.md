@@ -20,11 +20,11 @@ stored in the bead store.
 ## Sending
 
 ```text
-xargs -0 -a body.txt gc mail send <to> -s "Subject" -m      # Send; body from a file
-xargs -0 -a body.txt gc mail reply <id> -s "Re: topic" -m   # Reply in-thread; body from a file
+xargs -0 -a body.txt gc mail send <to> -s 'Subject' -m      # Send; body from a file
+xargs -0 -a body.txt gc mail reply <id> -s 'Re: topic' -m   # Reply in-thread; body from a file
 ```
 
-Bodies always come from a file (rule `bash-guard-lane-execution`).
+Bodies come from a file and subjects are single-quoted (rule `bash-guard-lane-execution`).
 
 ## Reading
 

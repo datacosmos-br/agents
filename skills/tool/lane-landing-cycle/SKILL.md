@@ -55,7 +55,7 @@ point. Preserve unrelated worktree changes and repair source drift at its owner.
 
 ```bash
 git push -u origin fix/<slug>-<date>
-gh pr create --base dev --head fix/<slug>-<date> --title "..." --body-file pr-body.md   # bead, scope, evidence
+gh pr create --base dev --head fix/<slug>-<date> --title '...' --body-file pr-body.md   # bead, scope, evidence
 gh pr checks <n> --repo datacosmos-br/ai-hub     # ci, merge-guard, release-plan, Kilo review
 gh pr merge <n> --repo datacosmos-br/ai-hub --merge
 ```
