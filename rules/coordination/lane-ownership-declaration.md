@@ -10,10 +10,14 @@ capsule_summary: |
   every touched bead is updated at least once per hour — claimed, deferred,
   and blocked included. Before opening a lane, re-check open PRs, the
   integration tip, and abandoned branches: adopt their work (fix forward),
-  never rebuild it. Colliding with an active lane is a violation; deleting an
+  never rebuild it. Operator ruling 2026-10-01: an active lane is adopted
+  immediately by cherry-picking its valid published commits into your own
+  lane cut from the fresh tip — never awaited, never asked about. Workaround
+  commits are rejected with the reason recorded, never adopted. Editing or
+  running inside another session's worktree is a violation; deleting an
   active lane is worse.
 metadata:
-  aihub.tags: '["decision:ADR-0021","effective:2026-09-27","route:both"]'
+  aihub.tags: '["decision:ADR-0021","effective:2026-10-01","route:both"]'
 ---
 
 # Lane ownership declaration and the one-hour clock
@@ -44,8 +48,27 @@ assume or duplicate.
 Before opening any lane: fetch the integration branch, list open PRs, and
 check the activity of the remote branch that would carry your work. Sessions
 in this fleet land in bursts; a lane built against a stale tip duplicates
-work that is already landing. If another session is actively working your
-target, adopt their output when it lands instead of racing it.
+work that is already landing.
+
+## Adopt active lanes by cherry-pick, immediately
+
+When another session's lane — active or abandoned — carries work your target
+needs, adopt it now (operator ruling 2026-10-01). Waiting for it to land,
+asking permission to adopt, or parking your own lane behind it is a
+violation.
+
+1. Cut your own lane from the freshly fetched integration tip.
+2. Cherry-pick the valid published commits you need, by SHA (`git
+   cherry-pick -x <sha>`), into that lane. Adoption happens through commit
+   objects only: never edit files, run commands, or check out branches inside
+   the other session's worktree.
+3. Adopt only root-cause work. A commit that carries a workaround — timeout or
+   budget inflation, suppression, catch-based normalization, fallback, retry,
+   shim — is rejected, never cherry-picked; record the rejected SHA and the
+   reason on the owning bead and PR, and cure the defect at its owner in your
+   lane.
+4. Post a `[coord]` note on the source PR and bead naming the adopted and the
+   rejected SHAs, as standard procedure, not as a request.
 
 ## Adopt abandoned work
 
