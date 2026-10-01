@@ -75,8 +75,10 @@ Rulings do operador de 2026-09-19, mais novos que o texto acima e adotados aqui:
    de veto (dirty → unpushed → open-bead → active-session → retirável) permanece, e
    evidência desconhecida veta a retirada.
 5. **Atores coordenam por correio.** `rules/coordination/inter-session-mail.md` rege a
-   tomada e a liberação de lanes (`[coord] lane claim`, `[coord] lane changed`);
-   abandono exige três provas e a precondição de backup do reaper da cidade.
+   tomada e a liberação de lanes (`[coord] lane claim`, `[coord] lane changed`).
+   Amendment (operator ruling 2026-10-01): the abandonment test is declared only in
+   `rules/coordination/bead-branch-pr-cadence.md` §2; retirement still honors the city
+   reaper's backup precondition.
 
 ## References
 

@@ -20,11 +20,11 @@ stored in the bead store.
 ## Sending
 
 ```text
-gc mail send <to> -m "message body"                    # Send a message
-gc mail send <to> -s "Subject" -m "message body"       # Send with subject
-gc mail reply <id> -m "reply body"                     # Reply to a message
-gc mail reply <id> -s "Re: topic" -m "reply body"      # Reply with subject
+xargs -0 -a body.txt gc mail send <to> -s 'Subject' -m      # Send; body from a file
+xargs -0 -a body.txt gc mail reply <id> -s 'Re: topic' -m   # Reply in-thread; body from a file
 ```
+
+Bodies come from a file and subjects are single-quoted (rule `bash-guard-lane-execution`).
 
 ## Reading
 
@@ -92,7 +92,7 @@ wrong invocation, not of the store, and it is never answered with `bd init`.
   around it. **Proof of delivery is reading it back** — `gc mail inbox human --json`
   filtered by your subject — an exit code alone is not evidence (a send can look
   successful and store nothing).
-- Answer in-thread with `gc mail reply <id> -s "Re: …" -m "…"` so `gc mail thread <id>`
+- Answer in-thread with `gc mail reply <id>` (body from a file) so `gc mail thread <id>`
   reconstructs the conversation; a fresh `send` breaks the thread.
 - `PROJECT IDENTITY MISMATCH — refusing to connect` on any mail verb means the command
   was not run through the project's direnv environment (section above); rerun it from
@@ -110,5 +110,5 @@ wrong invocation, not of the store, and it is never answered with `bd init`.
 | which sessions exist | `gc agent list` |
 | which are alive now | `gc status --json` → `running`, `gc session list --state active` |
 | what each is doing, roles | `[coord]` mail + the owning bead |
-| is a lane abandoned | unanswered `[coord] lane status?` + registration proof + publication proof + fresh backup |
+| is a lane abandoned | the test declared in rule `bead-branch-pr-cadence` §2 |
 | who touched my lane and why | lane `git log`/reflog + the author's mail + the bead cited in the commit |

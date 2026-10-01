@@ -17,8 +17,8 @@ existed as a rule before; this is the one-place sequence.
    your work: `full-landing-cycle`, `bead-branch-pr-cadence`,
    `lane-ownership-declaration`, `inter-session-mail`, `operator-precedence`.
 3. **Tracker.** `bd ready` and your claims: nothing you are about to do may
-   duplicate an open bead. Adopt abandoned work (>1h silent) instead of
-   re-creating it.
+   duplicate an open bead. Adopt abandoned work (rule
+   `bead-branch-pr-cadence` §2) instead of re-creating it.
 4. **Prior art.** Search branches (local + remote), open PRs, and recent docs
    for the scope you were given. Found a survivor? Adopt it — the mandate is
    the outcome, not the authorship.

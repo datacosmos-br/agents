@@ -25,7 +25,7 @@ env -C ~/ai-hub-worktrees/<slug>-<date> -u VIRTUAL_ENV -u UV_PROJECT_ENVIRONMENT
   physical `.venv` from `make setup`.
 - Claim the bead and declare the triple (bead + branch + PR) to the
   coordinator via `gc mail human` at claim time. `bd update --append-notes`
-  keeps the bead alive — silence over one hour means abandoned.
+  keeps the bead alive; abandonment follows rule `bead-branch-pr-cadence` §2.
 
 ## 2. The gate, in order
 
@@ -55,7 +55,7 @@ point. Preserve unrelated worktree changes and repair source drift at its owner.
 
 ```bash
 git push -u origin fix/<slug>-<date>
-gh pr create --base dev --head fix/<slug>-<date> --title "..." --body "bead, scope, evidence"
+gh pr create --base dev --head fix/<slug>-<date> --title '...' --body-file pr-body.md   # bead, scope, evidence
 gh pr checks <n> --repo datacosmos-br/ai-hub     # ci, merge-guard, release-plan, Kilo review
 gh pr merge <n> --repo datacosmos-br/ai-hub --merge
 ```
