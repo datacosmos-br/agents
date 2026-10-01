@@ -16,14 +16,13 @@ metadata:
 3. Exercise changed behavior through its real public runtime before tests.
 4. Run `make check` and the smallest distinct public root verb that owns each additional
    required gate. Never invoke a raw underlying tool or private module.
-5. Invoke every test verb directly with pytest-testmon and the same external persistent
-   database. The full verb first runs incremental selection and then no-selection.
+5. Invoke every test verb directly as declared in `rules/workflow/canonical-commands.md`
+   (section "Test verbs"), which owns the testmon contract and where each verb runs.
 6. Record verb, cwd, exit, decisive output, scope, warning, and cache accounting.
 
 A warning, skip, empty output, missing tool/report, zero collection, cache corruption,
-retry, catch, or normalized failure is RED. Zero execution is valid only as a typed
-incremental testmon cache hit with integrity and complete deselection accounting; never
-call it tests passed. Correct a broken Make or codegen owner and rerun the same root
+retry, catch, or normalized failure is RED. Zero execution is valid only as the typed
+`make test` cache hit of AGENTS.md law 14; never call it tests passed. Correct a broken Make or codegen owner and rerun the same root
 verb.
 
 ## Idempotency pre-push guard (evidence 2026-09-11, plan `docs/plans/2026-09-11-flext-conformance-sweep.md`)

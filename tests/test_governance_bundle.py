@@ -221,6 +221,52 @@ def test_coordination_policy_rejects_values_outside_its_contract(
         GovernanceBundle.load(governance_source_fixture)
 
 
+def test_gate_policy_is_a_positive_configured_pr_budget(
+    governance_bundle: GovernanceBundle,
+) -> None:
+    budget = governance_bundle.config.gates.pr_budget_minutes
+
+    assert isinstance(budget, int)
+    assert not isinstance(budget, bool)
+    assert budget > 0
+
+
+@pytest.mark.parametrize(
+    ("gates", "message"),
+    [
+        ({"pr_budget_minutes": 0}, "positive int"),
+        ({"pr_budget_minutes": False}, "positive int"),
+        ({"pr_budget_minutes": "10m"}, "positive int"),
+        ({"pr_budget_minutes": 1, "pr_budget_seconds": 60}, "gates"),
+        ({}, "gates"),
+    ],
+)
+def test_gate_policy_rejects_values_outside_its_contract(
+    governance_source_fixture: Path,
+    gates: dict[str, object],
+    message: str,
+) -> None:
+    config_path = governance_source_fixture / "config/governance.json"
+    document = json.loads(config_path.read_text())
+    document["gates"] = gates
+    config_path.write_text(json.dumps(document))
+
+    with pytest.raises(ValueError, match=message):
+        GovernanceBundle.load(governance_source_fixture)
+
+
+def test_governance_config_requires_the_gates_section(
+    governance_source_fixture: Path,
+) -> None:
+    config_path = governance_source_fixture / "config/governance.json"
+    document = json.loads(config_path.read_text())
+    del document["gates"]
+    config_path.write_text(json.dumps(document))
+
+    with pytest.raises(ValueError, match="governance config"):
+        GovernanceBundle.load(governance_source_fixture)
+
+
 def test_delivery_contract_rejects_payload_outside_grammar() -> None:
     with pytest.raises(ValueError, match="payload:<slug>"):
         DeliveryContract.from_mapping(

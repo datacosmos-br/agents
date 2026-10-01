@@ -7,11 +7,13 @@ metadata:
 # Generator declarations law
 
 Operator law 2026-09-20 (`flext-0in0k`); points 8, 11, and 12 amended by the operator
-decisions of 2026-09-29 (ADR-0031), point 12 again by the operator order of 2026-10-01. It binds every FLEXT generator, detector, and fix
-(`make gen`, `make mod`, `make fix`, the namespace validator and its gates) and every
-consumer of them: the FLEXT workspace family and every private workspace that
-consumes the fleet toolchain, with their FLEXT subprojects. A generator that violates a
-point below is defective at its owner; a consumer is never patched around it.
+decisions of 2026-09-29 (ADR-0031); point 12 amended again by tracker memory
+`operator-ruling-2026-10-01-total-extermination`. It binds every FLEXT generator,
+detector, and fix (`make gen`, `make mod`, `make fix`, the namespace validator and its
+gates) and every consumer of them: the FLEXT workspace family and every private
+workspace that consumes the fleet toolchain, with their FLEXT subprojects. A generator
+that violates a point below is defective at its owner; a consumer is never patched
+around it.
 
 1. **The owner of a facade letter is the module that declares it** in its own explicit
    `__all__` — `models.py: __all__ = ["FlextApiModels", "m"]`. Ownership is never inferred
@@ -66,12 +68,12 @@ point below is defective at its owner; a consumer is never patched around it.
     entry with a bead and the operator's deliberate, explicit authorization; without
     all four the exception does not exist and the case is a violation. A gate
     suspension, or an order that keeps a gate's findings observational, is not an
-    exception form: it is a gate relaxation, and the operator ordered its total
-    extermination on 2026-10-01. No suspension or observational machinery exists in any
-    gate, model, configuration, report, or template. Every finding blocks; it is fixed
-    at its root, or its rule is corrected at the rule's owner. Extermination comes
-    first, then every consumer is rewired, then the tests assert the real runtime
-    behavior.
+    exception form: it is a gate relaxation, exterminated in total (tracker memory
+    `operator-ruling-2026-10-01-total-extermination`). No suspension or observational
+    machinery exists in any gate, model, configuration, report, or template. Every
+    finding blocks; it is fixed at its root, or its rule is corrected at the rule's
+    owner. Extermination comes first, then every consumer is rewired, then the tests
+    assert the real runtime behavior.
 13. **A hack's permission dies with it.** Every exclusion, allowlist,
     `per-file-ignores`, validator bypass, advisory gate, single-file guard, or
     "tolerance" that **authorizes** a hack is exterminated in the same commit as the

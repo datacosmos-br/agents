@@ -23,7 +23,7 @@ override export MISE_OVERRIDE_TOOL_VERSIONS_FILENAMES := none
 unexport UV_PYTHON
 
 .DEFAULT_GOAL := help
-.PHONY: help setup upg gen docs audit check runtime waza crg-check static conform fmt fix mod mod-check shell duplication build test test-full ci validate-artifacts publish
+.PHONY: help setup upg gen docs audit check runtime waza crg-check lint static conform fmt fix mod mod-check shell duplication build test test-full ci validate-artifacts publish
 .DELETE_ON_ERROR:
 
 define BANNER
@@ -87,10 +87,14 @@ crg-check: ## verify CRG policy convergence across governed workspaces (ai-hub s
 	@ai-hub sync-crg-workspaces --check
 	@printf '%s\n' 'CRG workspace policies and watch configuration verified.'
 
-static: ## lint, formatting, and Python type analysis
-	$(call BANNER,static · ruff + pyright + mypy)
+lint: ## fast external lint and formatting check
+	$(call BANNER,lint · ruff check + ruff format --check)
 	@uv run ruff check src tests tools
 	@uv run ruff format --check src tests tools
+
+static: ## lint, formatting, and whole-program Python type analysis (local only)
+	@$(MAKE) lint
+	$(call BANNER,static · pyright + mypy)
 	@uv run pyright src tests tools
 	@uv run mypy src tests tools
 	@PYTHON_RESOURCES_OPERATION=check uv run python tools/python_resources_gate.py
@@ -150,15 +154,16 @@ test: ## run affected tests through the shared testmon cache
 	$(call BANNER,test · pytest-testmon affected selection)
 	$(call RUN_TESTMON,incremental)
 
-test-full: ## run incremental then all tests through the same cache
-	@$(MAKE) test
-	$(call BANNER,test-full · pytest-testmon no-selection)
+test-full: ## run every test locally, without testmon and without a time limit
+	$(call BANNER,test-full · pytest without testmon)
 	$(call RUN_TESTMON,full)
 
-## complete offline composition
-ci: ## run package gates and cached tests; host CRG acceptance uses make crg-check
-	@$(MAKE) check
-	@$(MAKE) test-full
+## CI composition: fast external gates and make test only
+ci: ## run the fast external gates and make test; check and test-full stay local
+	@$(MAKE) lint
+	@$(MAKE) shell
+	@$(MAKE) duplication
+	@$(MAKE) test
 
 ## release publication
 publish: ## publish the validated tag artifacts

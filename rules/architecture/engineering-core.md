@@ -3,14 +3,14 @@ description: Apply the mandatory engineering decision and delivery sequence.
 capsule_summary: |
   Every implementation: research the owner first, cut scope without a current
   consumer, elect one writable authority, make every other copy a generated
-  projection, improve the owner in place — a parallel one beside it is a
-  violation — implement through the owner, remove duplication, keep
+  projection, improve the owner in place, never a parallel one beside it,
+  implement through the owner, remove duplication, keep
   discoverable enumerations as authority data validated by grammar, never
   fixed lists or absolute paths, then exercise runtime and run every gate
   before changing phase.
 
-  At a cross-boundary failure, prove the producer's contract and fix whichever
-  side is wrong — never bend a correct owner for an invalid consumer.
+  At a cross-boundary failure, prove the producer's contract and fix the wrong
+  side; never bend a correct owner for an invalid consumer.
 
   Hardcodes, normalized failure, failover, retry, fallback, partial execution
   and unevidenced success are defects. The first exception escapes with its
@@ -50,8 +50,10 @@ Hardcodes, normalized failure, failover, retry, fallback, compatibility, partial
 execution, application keyring reads, and unevidenced success are defects. Typed owners
 keep defaults. The first exception escapes its CLI with traceback and cause.
 
-These are workarounds to exterminate at their owner, not to accommodate (operator ruling
-2026-10-01), and each is replaced by rules, configuration, and SSOT functions:
+Every one of these defects is a workaround to exterminate at its owner, never to
+accommodate (tracker memory `operator-ruling-2026-10-01-total-extermination`). The
+same holds for the classes below; the hardcode class is stated precisely first, and
+each of them is replaced by rules, configuration, and SSOT functions:
 
 - a hardcoded value — path, URL, number, name, version, or limit — instead of its
   declared owner in configuration, settings, or constants; a tunable value is declared

@@ -55,9 +55,9 @@ before the next wave.
    each verb directly. Never invent selectors, bypass with raw tools, or route around a
    broken verb: repair the verb at its owner, then rerun it. Diagnosis and validation
    obey the same rule as mutation.
-3. Incremental test selection is mandatory. Every test execution keeps the canonical
-   persistent test selection cache. The public full verb first runs the incremental
-   verb, then testmon no-selection against the same database. 3b. Class-wave repair.
+3. Test verbs follow their single owner. Every test execution runs through the test
+   verbs declared in `rules/workflow/canonical-commands.md` (section "Test verbs"),
+   which owns the testmon contract and where each verb runs. 3b. Class-wave repair.
    When the measured report exceeds one screen (~20 findings), work grouped by error
    class (defense-in-depth kill order: test-purity, aliases/owners, banned annotations,
    import-time wiring, silent failures, duplication, layout/loc), one root cause per

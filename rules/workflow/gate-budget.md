@@ -6,21 +6,28 @@ metadata:
 
 # Gate budget and offline generation
 
-A PR gate completes in 10 minutes or less without relying on cache. Generation (`gen`)
-and verification (`check`, `test`) run entirely offline; neither resolves a package,
-fetches a version manifest, or reaches a network endpoint mid-run. The one exception is
-the pre-test provisioning of a host test service, which fetches only digest-pinned
-inputs and only when the service's declared fingerprint changes.
+A PR gate completes within the budget declared once in the governance config key
+`gates.pr_budget_minutes`, without relying on cache. The key is validated whenever the
+bundle loads and is read through the published package as
+`GovernanceBundle.load().config.gates.pr_budget_minutes`; no rule, skill, command, or
+doc restates the number. Generation (`gen`) and verification (`check`, `test`) run
+entirely offline; neither resolves a package, fetches a version manifest, or reaches a
+network endpoint mid-run. The one exception is the pre-test provisioning of a host test
+service, which fetches only digest-pinned inputs and only when the service's declared
+fingerprint changes.
 
-- Nothing slow runs in CI or at pre-commit, in absolute terms (operator ruling
-  2026-10-01): whole-program type checkers, code-smell audits, the project's own custom
-  validators (the gates whose owning tool is the project's toolchain itself), and slow
-  tests run only locally and at pre-push, where they block. Which gates are local-only
-  is derived from typed gate metadata (owning tool and gate kind) declared once in the
-  project's gate registry; the CI workflow and the pre-commit hook derive their gate
-  sets from it and never list gates themselves. Pre-commit is enabled
-  and propagated by the project's generator and installed by its setup verb, never
-  hand-installed per checkout.
+- Nothing slow runs in CI or at pre-commit, in absolute terms (tracker memory
+  `operator-ruling-2026-10-01-precommit-fast-only`). CI and pre-commit run only fast
+  external gates — lint, format, and gates of that kind — plus the test verb that
+  `rules/workflow/canonical-commands.md` assigns to each of them. Whole-program type
+  checkers, code-smell audits, the project's own custom validators, and slow tests run
+  only locally and at pre-push, where they block. Whether a gate is a fast external
+  gate is typed metadata declared once in each project's gate registry; the CI workflow
+  and the pre-commit hook derive their gate sets from it and never list gates
+  themselves. That registry field is each project's implementation contract, not a
+  field of this governance repository. Pre-commit is enabled and propagated by the
+  project's generator and installed by its setup verb, never hand-installed per
+  checkout.
 - Profiling (cProfile, a coverage instrumenter, or any other collector) is opt-in and
   off by default on every gate-path runner. A pytest runner with always-on profiling is
   a toolchain defect, not an acceptable baseline.

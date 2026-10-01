@@ -1,4 +1,9 @@
-"""Run pytest-testmon with strict cache and outcome accounting."""
+"""Run the root test verbs with strict cache and outcome accounting.
+
+``incremental`` (``make test``) runs pytest-testmon selection against the shared
+persistent database. ``full`` (``make test-full``) runs every test locally without
+testmon and without a time limit. ``repair`` checkpoints the database.
+"""
 
 from __future__ import annotations
 
@@ -47,6 +52,7 @@ class DatabaseState:
 class PytestAudit:
     """One validated accounting report emitted by the pytest child."""
 
+    collected: frozenset[str]
     executed: frozenset[str]
     deselected: frozenset[str]
     warnings: int
@@ -127,7 +133,9 @@ def _audit_report(path: Path) -> PytestAudit:
     if not isinstance(raw, dict) or not all(isinstance(key, str) for key in raw):
         raise TypeError("pytest audit report must be a string-keyed mapping")
     report = cast(dict[str, object], raw)
-    expected = frozenset({"deselected", "executed", "skips", "warnings", "xfails"})
+    expected = frozenset(
+        {"collected", "deselected", "executed", "skips", "warnings", "xfails"}
+    )
     if frozenset(report) != expected:
         raise ValueError("pytest audit report fields are not canonical")
 
@@ -149,6 +157,7 @@ def _audit_report(path: Path) -> PytestAudit:
         return value
 
     return PytestAudit(
+        collected=nodeids("collected"),
         executed=nodeids("executed"),
         deselected=nodeids("deselected"),
         warnings=count("warnings"),
@@ -157,13 +166,8 @@ def _audit_report(path: Path) -> PytestAudit:
     )
 
 
-def _run(mode: str, repository: Path, datafile: Path) -> int:
-    existed = datafile.exists()
-    if mode == "full" and not existed:
-        raise ValueError("full testmon execution requires a seeded cache")
-    _validate_sidecars(datafile)
-    before = _database_state(datafile) if existed else None
-    with tempfile.TemporaryDirectory(prefix="scratch-", dir=datafile.parent) as scratch:
+def _pytest(mode: str, repository: Path, scratch_parent: Path) -> PytestAudit:
+    with tempfile.TemporaryDirectory(prefix="scratch-", dir=scratch_parent) as scratch:
         audit_path = Path(scratch) / "audit.json"
         arguments = [
             sys.executable,
@@ -171,7 +175,7 @@ def _run(mode: str, repository: Path, datafile: Path) -> int:
             "pytest",
             "--basetemp",
             scratch,
-            "--testmon",
+            *(("--testmon",) if mode == "incremental" else ()),
             "-vvv",
             "--maxfail=1",
             "-W",
@@ -181,12 +185,42 @@ def _run(mode: str, repository: Path, datafile: Path) -> int:
             "-p",
             "tools.testmon_pytest_plugin",
         ]
-        if mode == "full":
-            arguments.append("--testmon-noselect")
         environment = dict(os.environ)
         environment["TESTMON_AUDIT_PATH"] = str(audit_path)
-        run_strict(tuple(arguments), repository, "TESTMON pytest", environment)
+        run_strict(tuple(arguments), repository, f"TESTS pytest {mode}", environment)
         audit = _audit_report(audit_path)
+    if audit.warnings or audit.skips or audit.xfails:
+        raise RuntimeError(
+            "pytest emitted a forbidden outcome: "
+            f"warnings={audit.warnings} skips={audit.skips} xfails={audit.xfails}"
+        )
+    if audit.executed != audit.collected:
+        raise RuntimeError(
+            f"{mode} accounting mismatch: collected={len(audit.collected)} "
+            f"executed={len(audit.executed)}"
+        )
+    return audit
+
+
+def _run_full(repository: Path, datafile: Path) -> int:
+    audit = _pytest("full", repository, datafile.parent)
+    if not audit.executed or audit.deselected:
+        raise RuntimeError(
+            "full accounting mismatch: "
+            f"executed={len(audit.executed)} deselected={len(audit.deselected)}"
+        )
+    print(
+        f"TESTS mode=full testmon=off collected={len(audit.collected)} "
+        f"executed={len(audit.executed)} deselected=0 warnings=0 skips=0"
+    )
+    return 0
+
+
+def _run(repository: Path, datafile: Path) -> int:
+    existed = datafile.exists()
+    _validate_sidecars(datafile)
+    before = _database_state(datafile) if existed else None
+    audit = _pytest("incremental", repository, datafile.parent)
     _validate_sidecars(datafile)
     after = _database_state(datafile)
     if before is not None and (before.device, before.inode) != (
@@ -202,20 +236,8 @@ def _run(mode: str, repository: Path, datafile: Path) -> int:
         )
     if after.dependency_edges <= 0:
         raise ValueError("testmon database contains no dependency evidence")
-    if audit.warnings or audit.skips or audit.xfails:
-        raise RuntimeError(
-            "pytest emitted a forbidden outcome: "
-            f"warnings={audit.warnings} skips={audit.skips} xfails={audit.xfails}"
-        )
     deselected = audit.deselected
-    if mode == "full":
-        if deselected or audit.executed != after.tests:
-            raise RuntimeError(
-                "full testmon accounting mismatch: "
-                f"executed={len(audit.executed)} deselected={len(deselected)} "
-                f"total={len(after.tests)}"
-            )
-    elif audit.executed & deselected or audit.executed | deselected != after.tests:
+    if audit.executed & deselected or audit.executed | deselected != after.tests:
         raise RuntimeError(
             "incremental testmon accounting mismatch: "
             f"executed={len(audit.executed)} deselected={len(deselected)} "
@@ -223,7 +245,7 @@ def _run(mode: str, repository: Path, datafile: Path) -> int:
         )
     cache = "reused" if before is not None else "seeded"
     print(
-        f"TESTMON mode={mode} cache={cache} collected={len(after.tests)} "
+        f"TESTMON mode=incremental cache={cache} collected={len(after.tests)} "
         f"executed={len(audit.executed)} deselected={len(deselected)} "
         f"total={after.executions} warnings=0 skips=0 integrity=ok"
     )
@@ -292,9 +314,11 @@ def main() -> int:
         raise ValueError(f"testmon lock must be a physical file: {lock_path}")
     with lock_path.open("a+b") as lock:
         fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
-        return (
-            _repair(datafile) if mode == "repair" else _run(mode, repository, datafile)
-        )
+        if mode == "repair":
+            return _repair(datafile)
+        if mode == "full":
+            return _run_full(repository, datafile)
+        return _run(repository, datafile)
 
 
 if __name__ == "__main__":

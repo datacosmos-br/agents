@@ -52,6 +52,9 @@
       ]
     }
   },
+  "gates": {
+    "pr_budget_minutes": 10
+  },
   "guarantees": {
     "active-intent": [
       "rule:coordination/plan-topic-monopoly",

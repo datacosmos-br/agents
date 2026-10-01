@@ -1,6 +1,6 @@
 ---
 metadata:
-  aihub.tags: '["decision:ADR-0031","effective:2026-09-29","route:personal"]'
+  aihub.tags: '["decision:ADR-0031","effective:2026-10-01","route:personal"]'
 ---
 
 # Full-Standards Cleanup & Conformance Sweep (universal)
@@ -25,11 +25,11 @@ The `canonical commands` rule owns command discovery, selector-free root Make ve
 structural tooling, diagnostics, and first-failure propagation. This sweep invokes those
 owners; it does not restate or weaken them.
 
-## 3. testmon is mandatory
+## 3. Test verbs follow their single owner
 
-Every test execution flows through the canonical testmon cache — including explicitly
-requested full runs, which still go through `make test` with the cache retained. A raw
-full-suite bypass is prohibited.
+Every test execution runs through the test verbs declared in
+`rules/workflow/canonical-commands.md` (section "Test verbs"), which owns the testmon
+contract and where each verb runs. A raw test-run bypass is prohibited.
 
 ## 4. Root cause, zero residue, complete rewire
 

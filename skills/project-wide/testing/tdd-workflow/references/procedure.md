@@ -20,10 +20,9 @@ the target; tests do not invent or rewrite that contract.
    directory, exit code, and decisive output. A test that passes before the correction
    does not prove the defect. Preserve any unexpected nonzero, timeout, signal,
    exception, and causal chain; do not retry or select another command to obtain the
-   expected failure. Every Python focused, full, and CI invocation keeps the same
-   project-owned testmon cache active. Full execution uses the official no-selection
-   mode so it still records dependencies; bypassing, clearing, or replacing the cache is
-   prohibited.
+   expected failure. Every Python focused, full, and CI invocation runs through the
+   test verbs declared in `rules/workflow/canonical-commands.md` (section "Test verbs"),
+   which owns the testmon contract and where each verb runs.
 5. Correct the canonical owner with the minimum complete implementation. Do not add
    fallback behavior, dual paths, hardcoded results, or weakened assertions.
 6. Rerun the same focused command to GREEN, then run affected integration and

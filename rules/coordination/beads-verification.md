@@ -5,13 +5,13 @@ capsule_summary: |
   registered state, git history on the integration lane, measured reality
   (command, cwd, exit code, decisive output) and current integrated code.
 
-  The bead is the hypothesis and reality is the proof. Closing without all four
-  is a violation. When they diverge, fix the bead, never reality; close a
+  The bead is the hypothesis, reality the proof; closing without all four is a
+  violation. When they diverge, fix the bead, never reality; close a
   retired premise as obsolete with evidence rather than executing it.
 
-  A tracker's default listing truncates. A truncated output is never evidence
-  of a complete population; an inventory that authorizes a conclusion uses the
-  explicit unbounded form, e.g. `bd list --all --limit 0`.
+  A tracker's default listing truncates and never proves a complete
+  population; an inventory that authorizes a conclusion uses the explicit
+  unbounded form, e.g. `bd list --all --limit 0`.
 metadata:
   aihub.tags: '["decision:ADR-0007","effective:2026-09-10","route:personal"]'
 ---

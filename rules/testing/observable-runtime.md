@@ -1,7 +1,7 @@
 ---
 description: Test observable runtime behavior
 metadata:
-  aihub.tags: '["decision:ADR-0031","effective:2026-09-29","route:both"]'
+  aihub.tags: '["decision:ADR-0031","effective:2026-10-01","route:both"]'
 ---
 
 # Test observable runtime behavior
@@ -22,18 +22,16 @@ only where no `tm` matcher expresses the check. Unit tests open no network socke
 write only inside fixture-owned storage; real integration services use their public
 harness.
 
-Every incremental, full, and CI pytest execution uses a selector-free root Make verb
-invoked directly without an apply selector, pytest-testmon, and the same external
-persistent database. The full verb first completes the incremental verb, then runs
-`--testmon --testmon-noselect` with that database. Raw pytest, direct test-file
-selection, and cache deletion are prohibited.
+Every pytest execution uses a selector-free root Make verb invoked directly without an
+apply selector. Which test verb runs where, and its testmon contract, are declared
+only in `rules/workflow/canonical-commands.md` (section "Test verbs").
 
 A warning, skip, xfail, empty output, missing tool, missing report, zero collection,
-unexecuted selected suite, caught exception, retry, or normalized failure is RED. Only
-zero execution from a typed incremental testmon cache hit is acceptable, and only when
-database integrity and complete deselection accounting are proved; report it as a cache
-hit, never as tests passed. A capability deselection (below) is neither a skip nor zero
-collection. The first exception, cause, and raw traceback escape unchanged.
+unexecuted selected suite, caught exception, retry, or normalized failure is RED. The
+one acceptable zero execution is the typed `make test` cache hit of AGENTS.md law 14;
+report it as a cache hit, never as tests passed. A capability deselection (below) is
+neither a skip nor zero collection. The first exception, cause, and raw traceback escape
+unchanged.
 
 See [`runtime-is-reality.md`](../workflow/runtime-is-reality.md) for the runtime-first
 owner.
