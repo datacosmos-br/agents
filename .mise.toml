@@ -2,7 +2,6 @@
 lockfile = true
 locked = true
 lockfile_platforms = ["linux-x64"]
-minimum_release_age_excludes = ["pipx:semgrep"]
 
 [vars]
 waza_version = "0.38.8"
@@ -17,7 +16,6 @@ ast-grep = "latest"
 bun = "latest"
 gitleaks = "latest"
 "npm:jscpd" = "latest"
-"pipx:semgrep" = "latest"
 shellcheck = "latest"
 snyk = "latest"
 
