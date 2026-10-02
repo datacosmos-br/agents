@@ -19,6 +19,7 @@ A malformed, impossible, future-dated, or unresolvable reference fails loud.
 
 from __future__ import annotations
 
+import os
 import re
 import subprocess
 from dataclasses import dataclass
@@ -176,6 +177,11 @@ def _history_available(root: Path) -> bool:
     no authority over this catalog's history. There the active-inventory
     absence proof still applies in full; the history proof already ran at
     authoring time.
+
+    Git exits 128 both for a legal absence and for every other fatal probe
+    failure, so the exit code alone cannot carry the absence contract. The
+    probe therefore pins ``LC_ALL=C``: Git's message catalog is bypassed and
+    the absence diagnostic is the same under every operator locale.
     """
 
     probe = subprocess.run(
@@ -183,6 +189,7 @@ def _history_available(root: Path) -> bool:
         check=False,
         capture_output=True,
         text=True,
+        env={**os.environ, "LC_ALL": "C"},
     )
     if probe.returncode == 0:
         return Path(probe.stdout.strip()).resolve() == root.resolve()
