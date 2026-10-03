@@ -1,16 +1,17 @@
 ---
-description: Acting cadence — bead identity, dedupe mandate, one-hour staleness, and the CI=Y emission canon
+description: Acting cadence — bead identity, dedupe mandate, the configured abandonment threshold, and the CI=Y emission canon
 capsule_summary: |
   Operator rulings 2026-09-27. Every work unit is declared as bead + branch + PR
-  to the coordinator at claim time; a bead (claimed, deferred, or blocked) with
-  more than one hour without an update is ABANDONED and may be adopted by
-  anyone; before starting any unit, research whether the work already exists in
+  to the coordinator at claim time; a bead (any state), lane, worktree, branch,
+  or PR without change for the configured abandonment threshold is ABANDONED
+  and may be adopted by anyone (adoption never authorizes deletion); before
+  starting any unit, research whether the work already exists in
   abandoned branches, open PRs, or other beads — redoing existing work or two
   actors doing the same thing is a severe violation; the dedupe of the tracker
   (close superseded, realign epics, fix titles, --force when the tracker refuses) is part
   of the acting role, not an extra.
 metadata:
-  aihub.tags: '["decision:ADR-0021","effective:2026-09-27","route:both"]'
+  aihub.tags: '["decision:ADR-0021","effective:2026-10-01","route:both"]'
 ---
 
 # Bead + branch + PR cadence and the dedupe mandate (operator ruling 2026-09-27)
@@ -29,14 +30,32 @@ delivers) and [fleet-landing-corrections](fleet-landing-corrections.md).
    from the current integration tip, in a dedicated worktree on the destination
    filesystem — never `/tmp`, never a borrowed venv, never the primary checkout.
 
-## 2. One hour of silence is abandonment
+## 2. Abandonment after the configured threshold without change
 
-1. A bead — claimed, deferred, or blocked — with more than one hour without a
-   recorded update is abandoned. Anyone may adopt it.
-2. Heartbeats record the measured state on the bead as an appended note, not
+This section is the single owner of the abandonment test (tracker memory
+`operator-rulings-2026-10-01-governance`, ruling 3). Its threshold is a tunable value,
+declared only in the governance config key `coordination.abandonment_threshold_minutes`
+and validated whenever the bundle loads. Any consumer reads it through the published
+package as `GovernanceBundle.load().config.coordination.abandonment_threshold_minutes`.
+No rule, skill, command, or doc restates the number; each references this section.
+
+1. A bead in any state (claimed, deferred, blocked), a lane, a worktree, a branch,
+   or a PR is abandoned once the threshold passes without a change. A change is
+   the newest of: the bead's recorded update, the branch's last commit or push,
+   the PR's last update, and the last file modification in its worktree. Anyone
+   may adopt it; adoption is a choice, never an obligation.
+2. Adopting means claiming the bead, announcing `[coord] lane claim`, and
+   continuing the existing work with `merge --no-ff` (or by cherry-picking
+   isolated commits) into the adopter's lane. It never means rewriting work that
+   already exists.
+3. Abandonment authorizes adoption, never destruction or closure. Retiring a
+   branch or worktree follows `gitflow-branch-pr` (rule file) and the city
+   reaper's backup precondition; closing a bead follows
+   [beads-canonical-epics](beads-canonical-epics.md).
+4. Heartbeats record the measured state on the bead as an appended note, not
    "still working". Adoption supersedes re-creation: pick the bead up, record the
    adoption, continue from its notes.
-3. Epics and parents are kept alive the same way; a stale `updated_at` with a
+5. Epics and parents are kept alive the same way; a stale `updated_at` with a
    same-day comment is cured by a heartbeat, not by opening a duplicate.
 
 ## 3. Dedupe mandate (part of the acting role)

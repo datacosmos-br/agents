@@ -19,6 +19,12 @@ correct owner, rewire every consumer, and remove the wrong owner without aliases
 coexistence. Provider representation and unsupported-type behavior belong to the AI Hub
 consumer, not this bundle.
 
+**Amendment — 2026-10-01** (tracker memory
+`operator-ruling-2026-10-01-total-extermination`): the work order of a type correction
+follows the cleanup order of `rules/architecture/engineering-core.md` (exterminate the
+wrong owner, then rewire every consumer to the correct owner, then test). The correction
+still lands atomically, with no alias, coexistence, or dual path in the landed state.
+
 ## Consequences
 
 `GovernanceBundle` preserves the four inventories separately. Consumers adapt those

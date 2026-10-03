@@ -4,7 +4,7 @@ locked = true
 lockfile_platforms = ["linux-x64"]
 
 [vars]
-waza_version = "0.38.7"
+waza_version = "0.38.8"
 
 [tools]
 python = "3.13"
@@ -16,7 +16,6 @@ ast-grep = "latest"
 bun = "latest"
 gitleaks = "latest"
 "npm:jscpd" = "latest"
-"pipx:semgrep" = "latest"
 shellcheck = "latest"
 snyk = "latest"
 

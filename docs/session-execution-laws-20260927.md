@@ -29,7 +29,9 @@ process failure, not a discovery step.
 ## 4. Every execution has a timeout
 
 A gate or suite invocation carries its declared budget (120 s for full suites
-in the ai-hub law). Slowness is a defect cured at the owner (profile the stage,
+in the ai-hub law), except as the test verbs declared in
+`rules/workflow/canonical-commands.md` (section "Test verbs") state. Slowness is a
+defect cured at the owner (profile the stage,
 fix the cache, fix the discovery) — never accepted as normal, never masked by
 a bigger ceiling without the owner's measured justification.
 
@@ -42,8 +44,8 @@ decided by the contract text, never by which side is louder.
 
 ## 6. Beads are claims, not diaries
 
-Claim before the first effect; heartbeat at least hourly (a bead >1 h without
-update is abandoned and can be taken); every red found gets a bead in the same
+Claim before the first effect; heartbeat inside the abandonment threshold (a bead
+abandoned under rule `bead-branch-pr-cadence` §2 can be taken); every red found gets a bead in the same
 turn; closure carries four-source evidence (state, git, measured reality,
 integrated code). Evidence in logs scattered across tmp dirs is not evidence.
 

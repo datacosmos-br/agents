@@ -5,7 +5,7 @@ description:
   scoping"
 license: MIT
 metadata:
-  aihub.tags: '["decision:ADR-0014","effective:2026-09-11","usage:on-demand"]'
+  aihub.tags: '["decision:ADR-0014","effective:2026-10-01","usage:on-demand"]'
   version: 1.0.0
 ---
 
@@ -21,7 +21,8 @@ project law; it composes with the project's own house rules.
 
 1. **Measure.** Run the project's canonical verification verb (typically `make check`)
    and read its structured report. One numeric baseline is the unit of progress for the
-   whole loop; re-run it after every class wave.
+   whole loop; re-run it once at the end of each round, never between class waves (the
+   cleanup order of `rules/architecture/engineering-core.md`).
 2. **Scope first, repair second.** If a gate scans trees that are not production scope
    (tests/scripts/docs), declare the scan scope at the manifest SSOT BEFORE consuming
    the error triage — for namespace gates the canonical channel is manifest → conform →
@@ -30,15 +31,19 @@ project law; it composes with the project's own house rules.
    1838).
 3. **Class-wave the report.** Group findings by error class, not by file. Pick the class
    with the best kill-effort ratio (see map below), work it to zero with the project's
-   canonical fix verb, re-measure, and record the start→end numbers. Never mix two root
-   causes in one commit.
+   canonical fix verb, and continue with the next class in scope; the end-of-round
+   measurement records the start→end numbers per class. Never mix two root causes in
+   one commit.
 4. **Never suppress.** A skip, a normalized catch, a blank allowlist, or a disabled gate
    is RED like a failure. The only sanctioned scope change is a manifest SSOT edit
    regenerated through the project generator, proven at the conformance fixed point
    (`<gen-verb> --mode check`-equivalent).
-5. **Close the wave.** Incremental tests through the persistent selection cache, scoped
-   `[WIP]`-free commit per wave when green, fast-forward push. Open the draft PR once,
-   keep it open, push every wave to its same PR.
+5. **Close the round.** Scoped commit per wave as persistence, fast-forward push. After
+   every class in scope is exterminated and every consumer rewired, rewrite the tests to
+   the real runtime behavior and revalidate once: the measurement plus `make test`
+   through the persistent selection cache. A wave whose class is red in that
+   revalidation keeps the loop open. Open the draft PR once, keep it open, push every
+   wave to its same PR.
 
 ## CLI proof kit (all runnable without any UI)
 

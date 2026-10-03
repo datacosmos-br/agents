@@ -1,6 +1,6 @@
 [project]
 name = "agents-governance"
-version = "0.5.0"
+version = "0.6.0"
 description = "Provider-neutral semantic governance bundle"
 requires-python = ">=3.13"
 dependencies = [
@@ -10,7 +10,7 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-  "anthropic>=0.39.0,<1",
+  "anthropic>=0.39.0,<2",
   "mcp>=1.1.0,<2",
   "mypy>=1.17,<3",
   "playwright>=1,<2",

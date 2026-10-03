@@ -1,5 +1,5 @@
 ---
-description: "Session startup is a mandatory census: fetch the integration tip, count open PRs, census worktrees and branches (stale = adopt), census beads (silent >1h = abandoned), and declare bead + branch + PR before the first effect."
+description: "Session startup is a mandatory census: fetch the integration tip, count open PRs, census worktrees, branches, PRs and beads (abandoned ones may be adopted), and declare bead + branch + PR before the first effect."
 capsule_summary: |
   Operator ruling 2026-09-27 (session gascity-23): every session opens with a
   measured census, not with code. Measured cost of skipping it: one full lane
@@ -18,15 +18,15 @@ metadata:
    were away, and sibling sessions land in bursts.
 2. **List open PRs** on the repo and their head branches — a PR whose head is
    your target file set is someone else's active lane.
-3. **Census worktrees and branches**: last-commit date, dirty state, merged
-   into the integration branch? A branch with no activity beyond the
-   abandonment threshold (30h for lanes/worktrees) is abandoned: diff it
-   against the tip, port the useful delta into your lane, close the rest with
-   recorded disposition, delete the residue with ancestry proof.
-4. **Census beads**: every bead silent for more than 1 hour — claimed,
-   deferred, or blocked included — is abandoned and up for adoption. Claim
-   with `--force` when a stale lock blocks, and keep every touched bead on a
-   one-hour keep-alive from that moment.
+3. **Census worktrees, branches, and PRs**: last-commit date, last push, PR
+   update, dirty state, merged into the integration branch? Anything abandoned
+   under [bead-branch-pr-cadence](bead-branch-pr-cadence.md) §2 may be adopted
+   as that section declares: claim it, diff it against the tip, port the useful
+   delta into your lane, and record the disposition of the rest.
+4. **Census beads**: every bead past the same test — claimed, deferred, or
+   blocked included — is abandoned and may be adopted. Claim
+   with `--force` when a stale lock blocks, and keep every touched bead updated
+   inside the configured abandonment threshold from that moment.
 5. **Declare bead + branch + PR** to the coordinator through the mail channel
    and on the bead itself. The declaration is the lane's birth certificate: without it,
    the work is unowned and lost.

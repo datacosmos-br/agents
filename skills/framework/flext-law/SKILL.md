@@ -129,8 +129,8 @@ Read those skills and root `AGENTS.md`; this file adds only FLEXT domain law.
 - FLEXT tests exercise only public facades and observable runtime behavior. They use
   `tm`, canonical `c/t/p/m/u` contracts, the unified `conftest.py`, and typed shared
   fixtures instead of mocks, internal assertions, copied setup, or hardcoded
-  project-owned values. Every test run retains the canonical testmon cache, including an
-  explicitly requested full run.
+  project-owned values. Every test run goes through the test verbs declared in
+  `rules/workflow/canonical-commands.md` (section "Test verbs").
 
 ## Fleet boundary
 

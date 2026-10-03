@@ -11,5 +11,19 @@ open_issues:
     title: Validate invoice cancellation endpoint
     type: task
     parent: app-41
+  - id: app-11
+    title: Invoice audit reporting
+    type: feature
+  - id: app-73
+    title: Export invoice audit trail
+    type: task
+    parent: app-11
+coordination:
+  abandonment_threshold_minutes: 60
+claims:
+  - id: app-73
+    assignee: worker-a
+    last_change: 2026-10-01T01:00:00Z
+    observed_at: 2026-10-01T03:00:00Z
 closed_parents: [app-10]
 duplicate_candidates: [[app-41, app-57]]

@@ -66,10 +66,14 @@ New decisions:
     that is not executed is typed and reported, never a runtime skip and never counted
     as passed; a real service failure is RED. The `NOT EXECUTED` law generalizes from
     external tokens to host capabilities.
-12. The standing gate suspensions (`namespace`, `smells`) and the codemod observational
-    order of 2026-09-24 remain operator decisions. Strictness comes from the active
-    gates, the pytest plugins, and the project post-check; suspended and observational
-    findings are still driven to zero.
+12. A gate suspension or an order that keeps a gate's findings observational is a gate
+    relaxation and has no machinery: no suspension or observational mode exists in any
+    gate, model, configuration, report, or template, and every finding blocks.
+    The machinery is removed in the cleanup order of
+    `rules/architecture/engineering-core.md`. `rules/flext/generator-declarations.md`
+    point 12 owns the text (amended 2026-10-01; tracker memory
+    `operator-ruling-2026-10-01-total-extermination`). Routing a gate family to a
+    project-owned smells verb is ownership of that family, not a suspension.
 13. Operation retries are banned: retry helpers such as `u.retry`, automatic
     reconnection, and `until` loops on state-changing tasks. A readiness wait is
     bounded condition polling with an explicit deadline that fails loud; it is not a

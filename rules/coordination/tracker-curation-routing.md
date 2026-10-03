@@ -20,9 +20,8 @@ evidence in the coordination thread instead of closing it.
    successor pointer (the work moved to another bead).
 3. Shared trackers route through the coordinator: post id + evidence in-thread;
    the coordinator cross-checks and applies. Never close directly.
-4. Staleness law: a bead untouched for more than one hour — in any state,
-   including claimed, deferred or blocked — is abandoned; the next session
-   claims it or hands it back. Progress notes reset the clock.
+4. Staleness law: a bead abandoned under `bead-branch-pr-cadence` (rule file) §2
+   is claimed or handed back by the next session. Progress notes reset the clock.
 5. Disposition before deletion: worktrees and branches are removed only after
    an inventory proves their content is absorbed (zero unique commits vs the
    integration line) or the unique content is exported and recorded.

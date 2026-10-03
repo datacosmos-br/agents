@@ -55,22 +55,25 @@ before the next wave.
    each verb directly. Never invent selectors, bypass with raw tools, or route around a
    broken verb: repair the verb at its owner, then rerun it. Diagnosis and validation
    obey the same rule as mutation.
-3. Incremental test selection is mandatory. Every test execution keeps the canonical
-   persistent test selection cache. The public full verb first runs the incremental
-   verb, then testmon no-selection against the same database. 3b. Class-wave repair.
+3. Test verbs follow their single owner. Every test execution runs through the test
+   verbs declared in `rules/workflow/canonical-commands.md` (section "Test verbs"),
+   which owns the testmon contract and where each verb runs. 3b. Class-wave repair.
    When the measured report exceeds one screen (~20 findings), work grouped by error
    class (defense-in-depth kill order: test-purity, aliases/owners, banned annotations,
    import-time wiring, silent failures, duplication, layout/loc), one root cause per
-   commit, re-measure after each class, and record start→end numbers in the active plan
-   or tracker item. Drive each wave through canonical owners: `make mod` for rule-driven
-   codemods using the project rule SSOT, `make gen` for every generated-surface change,
-   and code-review-graph evidence per the `crg` skill when available. Prove graph
+   commit, in the cleanup order of `rules/architecture/engineering-core.md`: measure
+   once at the end of the round and record start→end numbers per class in the active
+   plan or tracker item. Drive each wave through canonical owners: `make mod` for
+   rule-driven codemods using the project rule SSOT, `make gen` for every
+   generated-surface change, and code-review-graph evidence per the `crg` skill when
+   available. Prove graph
    freshness with `build|update --repo` before `dead-code --json`, `impact --files`, or
    `query callers_of`; confirm every candidate in source. A false sweeping pass with a
    no-op bypass is never a "skip" — escalate.
 4. Root cause, zero residue, complete rewire. Remove dead, superseded, and duplicate
-   code in the same change; rewire every consumer to the final owner before the old one
-   dies. No compatibility aliases, shims, dual paths, throwaway workarounds, or deferred
+   code in the same change and rewire every consumer to the final owner, in the cleanup
+   order of `rules/architecture/engineering-core.md`; the landed change is atomic, with
+   no consumer left on a removed owner. No compatibility aliases, shims, dual paths, throwaway workarounds, or deferred
    defects. Pre-existing defects in the blast radius are adopted and fixed, never
    excused.
 5. Reality is the authority; tests are never the source of truth. Tests validate
@@ -90,11 +93,11 @@ before the next wave.
    destructive git operations; update docs in the same change as behavior. 8b.
    Mass-rewrite execution law. Tree-wide mechanical transformations and automation-apply
    cycles obey `rules/workflow/mass-rewrite-discipline.md`: test evidence brackets the
-   mass (before and after), scoped commits bound the change per transformation class,
-   applied-vs-reverted states are inventoried before commit, string literal contexts get
-   a machine-checked safety sweep, and progress is reported per violation class, never
-   as an aggregate that hides untouched structural debt. The sweep never parks a large
-   uncommitted delta on the trunk.
+   mass (baseline before, single validation after), scoped commits bound the change per
+   transformation class, applied-vs-reverted states are inventoried before commit,
+   string literal contexts get a machine-checked safety sweep, and progress is reported
+   per violation class, never as an aggregate that hides untouched structural debt. The
+   sweep never parks a large uncommitted delta on the trunk.
 9. Runtime boundary. Keep portable primitives in their reusable library and host
    indexes, daemons, forge clients, language/refactor services, hooks, and MCP in the
    runtime control plane. Cross that boundary only through a public command/hook/MCP.

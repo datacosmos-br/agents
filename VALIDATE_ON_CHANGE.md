@@ -69,8 +69,9 @@ E PERGUNTE. Nunca tente adivinhar ou deduzir.**
   pegando as funcionalidades mais novas; ao final push PR, merge --no-ff com a
   integração, push, fecha PR, apaga worktrees/branches/PRs merged e fecha beads —
   fechando os ciclos.
-- Automação máxima: ast-grep search/replace, make mod, crg, lsp refactor; testmon
-  obrigatório (nunca full-suite fora do cache); nada de seletores inventados no Make.
+- Automação máxima: ast-grep search/replace, make mod, crg, lsp refactor; verbos de
+  teste conforme `rules/workflow/canonical-commands.md` (seção "Test verbs"); nada de
+  seletores inventados no Make.
 - Qualidade total: nenhum warning/erro/indireta mal configurada fica para depois; nada
   pendente; artefatos manual-list (ex.: class-nesting-mappings.yml) proibidos —
   descoberta automatizada pelas funções SSOT.

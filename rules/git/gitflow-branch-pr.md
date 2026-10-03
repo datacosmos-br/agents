@@ -4,8 +4,8 @@ description:
   asks to commit, push, land, publish, open a pull request, or before any git push.
 capsule_summary: |
   Work on a change branch, never on `main` or the integration branch. The base is
-  whatever the repository itself declares today — read it per repository, never
-  assume or reuse one. `origin/<base>` is a cache: fetch it before any ancestry
+  what the repository declares today: read it per repository, never assume or
+  reuse one. `origin/<base>` is a cache: fetch it before any ancestry
   proof that authorizes deletion. One git root per PR; placement follows the
   active/manual Gas City boundary.
   Checkpoint: scoped add, `[WIP]` subject, fast-forward push, Draft PR. `--no-verify`
@@ -15,11 +15,11 @@ capsule_summary: |
   SHA with post-merge evidence.
   Divergence: merge the integration base in with `--no-ff`; never rebase or
   force-push.
-  Retirement is not optional: merge, push, PR, merge, then delete local and
-  remote branches and the worktree, only after `git merge-base --is-ancestor`
-  exits 0 against a fresh base.
+  Retirement is mandatory: merge, push, PR, merge, then delete local and remote
+  branches and the worktree, only after `git merge-base --is-ancestor` exits 0
+  against a fresh base.
 metadata:
-  aihub.tags: '["decision:ADR-0025","effective:2026-09-22","route:personal"]'
+  aihub.tags: '["decision:ADR-0025","effective:2026-10-01","route:personal"]'
 ---
 
 # Branch and PR — integration by merge commit

@@ -16,8 +16,26 @@ from .rules import RuleActivation, RuleSpec
 
 _OWNER = re.compile(r"(rule|skill|command|document):([A-Za-z0-9][A-Za-z0-9./_-]*)\Z")
 _GUARANTEE = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*\Z")
-_ROOT_FIELDS = frozenset({"bootstrap", "delivery", "guarantees", "version"})
+_ROOT_FIELDS = frozenset(
+    {"bootstrap", "coordination", "delivery", "gates", "guarantees", "version"}
+)
 _BOOTSTRAP_FIELDS = frozenset({"rules", "skills"})
+_COORDINATION_FIELDS = frozenset({"abandonment_threshold_minutes"})
+_GATE_FIELDS = frozenset({"pr_budget_minutes"})
+
+
+@dataclass(frozen=True)
+class CoordinationPolicy:
+    """Tunable coordination values that rules reference by key, never by number."""
+
+    abandonment_threshold_minutes: int
+
+
+@dataclass(frozen=True)
+class GatePolicy:
+    """Tunable gate values that rules reference by key, never by number."""
+
+    pr_budget_minutes: int
 
 
 @dataclass(frozen=True)
@@ -29,6 +47,33 @@ class GovernanceConfig:
     bootstrap_skills: tuple[str, ...]
     guarantees: MappingProxyType[str, tuple[str, ...]]
     delivery: DeliveryContract
+    coordination: CoordinationPolicy
+    gates: GatePolicy
+
+
+def _positive_minutes(value: object, label: str) -> int:
+    if isinstance(value, bool) or not isinstance(value, int) or value < 1:
+        raise ValueError(f"governance {label} must be a positive int")
+    return value
+
+
+def _coordination_policy(value: object) -> CoordinationPolicy:
+    mapping = cast_mapping(value, "governance coordination")
+    require_exact_fields(mapping, _COORDINATION_FIELDS, "governance coordination")
+    return CoordinationPolicy(
+        _positive_minutes(
+            mapping["abandonment_threshold_minutes"],
+            "coordination abandonment_threshold_minutes",
+        )
+    )
+
+
+def _gate_policy(value: object) -> GatePolicy:
+    mapping = cast_mapping(value, "governance gates")
+    require_exact_fields(mapping, _GATE_FIELDS, "governance gates")
+    return GatePolicy(
+        _positive_minutes(mapping["pr_budget_minutes"], "gates pr_budget_minutes")
+    )
 
 
 def load_governance_config(root: Path) -> GovernanceConfig:
@@ -83,6 +128,8 @@ def load_governance_config(root: Path) -> GovernanceConfig:
         DeliveryContract.from_mapping(
             value["delivery"], "governance delivery contract"
         ),
+        _coordination_policy(value["coordination"]),
+        _gate_policy(value["gates"]),
     )
 
 
@@ -125,6 +172,8 @@ def audit_governance_config(
 
 
 __all__ = (
+    "CoordinationPolicy",
+    "GatePolicy",
     "GovernanceConfig",
     "audit_governance_config",
     "load_governance_config",

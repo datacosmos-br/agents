@@ -49,7 +49,7 @@ session is already a finding.
    Did it treat the runtime as the acceptance authority, or chase test-green
    while the runtime was broken?
 6. **Audit hygiene.** Worktrees and branches left past their phase; tracker
-   items silent beyond one hour; PRs open without a declared owner; residue
+   items abandoned under rule `bead-branch-pr-cadence` §2; PRs open without a declared owner; residue
    deleted without ancestry proof.
 7. **Grade and prescribe.** For each finding: the fleet rule it violates (with
    path), the measured evidence (command/SHA/log line), and the structural fix

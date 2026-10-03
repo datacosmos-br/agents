@@ -1,0 +1,3 @@
+backend: dolt
+storage_database: dolt
+dolt_mode: server

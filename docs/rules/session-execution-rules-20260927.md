@@ -35,7 +35,8 @@ which side is louder.
 
 ## R-S6. Beads are claims, not diaries
 
-Claim before the first effect; heartbeat at least hourly; every red found gets
+Claim before the first effect; heartbeat inside the abandonment threshold of rule
+`bead-branch-pr-cadence` §2; every red found gets
 a bead in the same turn; closure carries four-source evidence. Evidence in
 scattered tmp logs is not evidence.
 
@@ -50,5 +51,6 @@ did not have the claim.
 ## R-S8. Respect other sessions' worktrees
 
 Never touch another session's worktree, branch, or in-flight edits. If the
-lane looks abandoned (>1h without activity), verify via beads and gc-mail
-BEFORE acting. Ask the coordinator if unsure.
+lane looks abandoned, verify every change source that rule
+`bead-branch-pr-cadence` §2 declares BEFORE acting, and announce the adoption in
+gc-mail. Ask the coordinator if unsure.

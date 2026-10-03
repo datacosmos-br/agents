@@ -70,10 +70,10 @@ perform their declared operation directly. No selector is accepted.
 the former dry-run override. Root verbs now have one execution contract without an
 acknowledgement or replacement flag. Reconciliation is tracked by `flext-ro6mj.1`.
 
-Every test run, including incremental, full, and CI runs, goes through a dedicated root
-Make verb and the same external persistent pytest-testmon database. `make test-full`
-first runs `make test`, then runs with both `--testmon` and `--testmon-noselect`; direct
-or cache-bypassing pytest is invalid.
+**Amendment — 2026-10-01** (tracker memory
+`operator-ruling-2026-10-01-testmon-make-test-only`): the test verbs, their testmon
+contract, where each runs, and the prohibition of any other pytest path are declared
+only in `rules/workflow/canonical-commands.md` (section "Test verbs").
 
 Runtime/public-contract proof precedes tests. Tests verify observable public behavior
 and never define it; they use public roots, typed fixtures, and the applicable

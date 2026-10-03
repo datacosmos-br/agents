@@ -3,8 +3,8 @@ description: mcb lane discipline — integrated-or-lost cycles, bead freshness, 
   over exit codes
 capsule_summary: |
   Operator rulings 2026-09-24..27 for agent sessions on marlonsc/mcb: work outside
-  an integrated PR is lost work; a bead untouched for over one hour (claimed,
-  deferred, or blocked included) is abandoned; "--force" is pre-authorized to
+  an integrated PR is lost work; bead abandonment follows the fleet test
+  (bead-branch-pr-cadence §2); "--force" is pre-authorized to
   unlock beads; an exit code without its log is not evidence; local make gates are
   the only CI (GitHub CI is off). Full context: docs/developer/AGENT-OPERATIONS.md
   in the repo and ADR 059 there for advisory triage.
@@ -26,13 +26,16 @@ file) laws for that repository's gates and failure modes.
 - Every lane is a dedicated `git worktree` with a physical `.venv` from `make setup`
   and `direnv allow` — never a symlinked venv, never the primary checkout.
 - Before assuming a bead, search for pre-existing work: open PRs, remote branches,
-  and upstream WIP branches. Adopt abandoned work; never redo or duplicate work
-  another session is actively driving (prove recency before touching it).
+  and upstream WIP branches. Adopt existing work instead of redoing it — an
+  abandoned lane by porting, an active lane by cherry-picking its valid
+  published commits into your own tip-based lane immediately (rule `lane
+  ownership declaration`); never edit inside the other session's worktree and
+  never adopt a workaround commit.
 
 ## Beads law
 
-- A bead untouched for more than one hour is abandoned — claimed, deferred, and
-  blocked included. Assumed beads get a lane-note comment at claim time.
+- Bead abandonment follows `bead-branch-pr-cadence` (rule file) §2. Assumed
+  beads get a lane-note comment at claim time.
 - Housekeeping is part of the job: dedupe, close superseded, realign epics, fix
   titles. `--force` is operator-authorized to unlock beads; record why in the bead.
 - Closure requires evidence in the bead: merge commit, captured gate results, or

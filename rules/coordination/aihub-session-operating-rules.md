@@ -21,12 +21,14 @@ ai-hub `.kilo/plans/2026-09-27-surfaced-inventory-runtime-recovery/00-index.md`)
   (`worktree add -b temp/land origin/dev` + `merge --no-ff <lane>` + push the
   merge tip fast-forward) and retire the merge worktree.
 - Validate before pushing; a silly red on the PR is the defect, not the CI's.
-- Never touch a lane another agent is actively driving; coordinate instead.
+- Never edit or run inside a worktree another agent is actively driving. Adopt
+  its valid published commits immediately by cherry-pick into your own lane
+  cut from the fresh tip (rule `lane ownership declaration`); never wait for it
+  to land and never adopt a workaround commit.
 
 ## Beads law
 
-- A bead untouched for more than 1 hour is abandoned — claimed, deferred, and
-  blocked included.
+- Bead abandonment follows `bead-branch-pr-cadence` (rule file) §2.
 - Closing requires command evidence: merge commit, captured gate output, or
   structural proof written into the bead. "Done" without a command output is a
   lie. Notes carry pointers (ADRs, cursor plans, handoffs), never the whole

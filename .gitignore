@@ -52,6 +52,7 @@ target/
 /.dolt/
 /.beads/*
 !/.beads/identity.toml
+!/.beads/metadata.json
 *.db
 .beads-credential-key
 .gqlout.json

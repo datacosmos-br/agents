@@ -3,7 +3,7 @@ description:
   Editing configuration, generated surfaces, or hardcoding a value. Load when changing
   config, settings, templates, tool homes, service units, or goldens.
 metadata:
-  aihub.tags: '["decision:ADR-0031","effective:2026-09-29","route:both"]'
+  aihub.tags: '["decision:ADR-0031","effective:2026-10-01","route:both"]'
 ---
 
 # Edit canonical sources, regenerate projections, prove idempotence
@@ -17,13 +17,18 @@ projection such as provider configuration, service units, or goldens.
 - Every generated file carries a standardized marker naming its writable owner, that
   hand edits are forbidden, and the exact declared Make regeneration command. A
   generated marker without a resolvable owner is a defect.
-- A file carrying a tool-managed block — an instruction file into which the selected
-  tracker or another tool writes its own begin/end integration markers — is a
-  tool-managed projection: markdown and docs gates exclude it at their SSOT exclude
-  list, never by hand-fixing lint inside managed blocks. Its text carries no authority:
-  where it contradicts a rule — an `rtk init` block prefixing git with `rtk`, a Beads
-  profile running `git pull --rebase` — the rule wins (git stays plain and is never
-  rebased), and the block is corrected or removed through its tool, never hand-edited
+- A file such as `AGENTS.md` has no single owner: each piece has its correct owner
+  (tracker memory `operator-rulings-2026-10-01-governance`, ruling 5). A block written
+  between begin/end markers by ~/agents and AI Hub, the selected tracker, or another
+  tool is a projection owned by that writer. The text outside every marker belongs to
+  the project. A whole generated file belongs to the owner its marker names. No writer
+  creates, rewrites, or removes a piece it does not own: never altering a projected
+  part and never crossing a domain are inviolable (same tracker memory, ruling 5).
+- Markdown and docs gates exclude a projected block at their SSOT exclude list, never
+  by hand-fixing lint inside it. A projected block carries no authority: where it
+  contradicts a rule — an `rtk init` block prefixing git with `rtk`, a Beads profile
+  running `git pull --rebase` — the rule wins (git stays plain and is never rebased),
+  and the block is corrected or removed through its own writer, never hand-edited
   between its markers.
 - After changing a source, regenerate and prove a second generation has no diff.
 - Rewire every consumer before deleting the superseded output. Remove obsolete

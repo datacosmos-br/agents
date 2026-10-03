@@ -25,7 +25,7 @@ env -C ~/ai-hub-worktrees/<slug>-<date> -u VIRTUAL_ENV -u UV_PROJECT_ENVIRONMENT
   physical `.venv` from `make setup`.
 - Claim the bead and declare the triple (bead + branch + PR) to the
   coordinator via `gc mail human` at claim time. `bd update --append-notes`
-  keeps the bead alive — silence over one hour means abandoned.
+  keeps the bead alive; abandonment follows rule `bead-branch-pr-cadence` §2.
 
 ## 2. The gate, in order
 
@@ -34,32 +34,31 @@ CI=Y env -C <lane> -u VIRTUAL_ENV -u UV_PROJECT_ENVIRONMENT make gen   # twice
 env -C <lane> -u VIRTUAL_ENV -u UV_PROJECT_ENVIRONMENT make fix
 env -C <lane> -u VIRTUAL_ENV -u UV_PROJECT_ENVIRONMENT make fmt
 env -C <lane> -u VIRTUAL_ENV -u UV_PROJECT_ENVIRONMENT make check
-env -C <lane> -u VIRTUAL_ENV -u UV_PROJECT_ENVIRONMENT make test-full  # bounded background
+env -C <lane> -u VIRTUAL_ENV -u UV_PROJECT_ENVIRONMENT make test
+env -C <lane> -u VIRTUAL_ENV -u UV_PROJECT_ENVIRONMENT make test-full  # local, background
 ```
 
-Run targeted tests first for fast feedback; the full suite is the landing
-gate. A red is red: cure the root cause in the wave, or record it with its
-owner and sequence — never bypass, never normalize.
+Run targeted tests first for fast feedback; the full suite is the local landing
+gate. Where each test verb runs, and its testmon contract, are declared in
+`rules/workflow/canonical-commands.md` (section "Test verbs"). A red is red: cure the
+root cause in the wave, or record it with its owner and sequence — never bypass, never
+normalize.
 
-## 3. Protect the CI-context emission
+## 3. Classify generated outputs by owner
 
-The repository canon is the CI runner's generation. A local `make gen` without
-`CI=Y` dirties exactly these paths — never sweep them into a commit; restore
-them from the origin tip if dirtied:
-
-- `.envrc`, `.github/workflows/ci.yml`, `.gitignore`, `.mise.toml`, `Makefile`,
-  `mkdocs.yml`, `pyproject.toml`,
-  `docs/api-reference/generated/overview.md`,
-  `docs/api-reference/generated/projects/`.
-
-CI symptom when violated: the "gen fixed point (blocking)" job fails with
-those files modified after generation.
+Read the project generator declaration and inspect each changed output before
+staging. A generated file belongs in the PR when its tracked source changed and
+the canonical generator produced it. In this standalone `agents` project,
+`make gen` owns `.beads/metadata.json` and `.envrc`; both are committed for
+fresh linked worktree activation. In projects where `CI=Y` changes emission,
+regenerate through that project's declared CI context and verify the fixed
+point. Preserve unrelated worktree changes and repair source drift at its owner.
 
 ## 4. Land, prove, retire
 
 ```bash
 git push -u origin fix/<slug>-<date>
-gh pr create --base dev --head fix/<slug>-<date> --title "..." --body "bead, scope, evidence"
+gh pr create --base dev --head fix/<slug>-<date> --title '...' --body-file pr-body.md   # bead, scope, evidence
 gh pr checks <n> --repo datacosmos-br/ai-hub     # ci, merge-guard, release-plan, Kilo review
 gh pr merge <n> --repo datacosmos-br/ai-hub --merge
 ```

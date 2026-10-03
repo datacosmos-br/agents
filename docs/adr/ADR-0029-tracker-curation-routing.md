@@ -33,8 +33,10 @@ and worktree disposition had no inventory-or-evidence gate.
 2. Every close carries its proof: a file:line measurement that the demanded
    capability is live, a negative reproduction, or a successor pointer to the
    bead that now owns the work. Closes without proof are reopened.
-3. A bead untouched for more than one hour, in any state, is abandoned; the
-   next session claims it or hands it back with a progress note. Progress notes
+3. A bead abandoned under the test of `rules/coordination/bead-branch-pr-cadence.md`
+   §2 (amendment of 2026-10-01, tracker memory `operator-rulings-2026-10-01-governance`,
+   rulings 3 and 7: the threshold is a configured value declared only there) is
+   claimed by the next session or handed back with a progress note. Progress notes
    reset the clock.
 4. Worktrees and branches are removed only after an inventory proves their
    content is absorbed (zero unique commits against the integration line) or

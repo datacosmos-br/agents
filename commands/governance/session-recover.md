@@ -21,8 +21,8 @@ surfaces, the environment truth, and the cursor presentation.
    confirm the store identity (`bd context --json`) before any tracker
    mutation.
 3. Run the startup census exactly as the census rule declares (integration
-   tip, open PRs, worktrees and branches, beads with the 1-hour abandonment
-   threshold).
+   tip, open PRs, worktrees and branches, beads under the abandonment test of
+   rule `bead-branch-pr-cadence` §2).
 4. Scan the coordinator inbox (gc-mail human) newest-first for directives,
    claims by other sessions, and critiques that concern the mandate.
 5. Environment preflight: the session shell's own cgroup leaf
