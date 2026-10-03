@@ -65,3 +65,17 @@ agent profile, and doc references it and never restates it.
   AGENTS.md law 14.
 - Raw pytest, direct test-file selection, and deletion or replacement of the testmon
   database are prohibited; no raw, focused, or CI path bypasses these verbs.
+
+## Zero-violation code gate
+
+This section is the single declaration of the zero-violation code gate (operator
+order 2026-10-03). Every other rule, skill, command, agent profile, and doc
+references it and never restates it.
+
+- New code is accepted only after `make mod` passes.
+- A change is never closed while `make fmt`, `make fix`, `make check`, `make mod`,
+  or the spelling gate reports any violation. The spelling gate is whichever of
+  `make spell` and `make spells` the repository `make help` lists.
+- Single-file iteration goes through `make test-file FILE=<repository-relative path>`
+  once that verb exists. flext-infra owns the verb; this rule records the contract
+  and does not define the implementation.
