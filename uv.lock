@@ -12,7 +12,7 @@ resolution-markers = [
 
 [[package]]
 name = "agents-governance"
-version = "0.6.2"
+version = "0.6.3"
 source = { editable = "." }
 dependencies = [
     { name = "flext-core" },

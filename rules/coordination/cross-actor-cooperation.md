@@ -1,7 +1,7 @@
 ---
 description: Every actor — executor session, Gas City agent, or Hermes relay — coordinates through gc mail, agrees before overlap, and adopts over rework.
 metadata:
-  aihub.tags: '["decision:ADR-0033","effective:2026-10-03","route:both"]'
+  aihub.tags: '["decision:ADR-0033","effective:2026-10-03","route:personal"]'
 ---
 
 # Cross-actor cooperation runs through gc mail

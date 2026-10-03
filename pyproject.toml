@@ -1,6 +1,6 @@
 [project]
 name = "agents-governance"
-version = "0.6.2"
+version = "0.6.3"
 description = "Provider-neutral semantic governance bundle"
 requires-python = ">=3.13"
 dependencies = [

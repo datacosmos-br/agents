@@ -1,7 +1,7 @@
 ---
 description: Runtime-bearing work is proven on the real running system (tmux counts), plans carry a recovery path, and a broken runtime outranks every other task.
 metadata:
-  aihub.tags: '["decision:ADR-0034","effective:2026-10-03","route:both"]'
+  aihub.tags: '["decision:ADR-0034","effective:2026-10-03","route:personal"]'
 ---
 
 # Runtime stability pact
