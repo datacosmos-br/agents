@@ -1,7 +1,7 @@
 ---
 description: The systems registry — every runtime in the operator's linked ecosystem, its addressing, liveness channel, and validation duty.
 metadata:
-  aihub.tags: '["decision:operator-ruling-2026-10-03", "effective:2026-10-03", "route:both"]'
+  aihub.tags: '["decision:ADR-0035", "effective:2026-10-03", "route:both"]'
 ---
 
 # Ecosystem systems registry
