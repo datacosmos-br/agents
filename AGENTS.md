@@ -45,6 +45,27 @@
 > Packaged governance `agents-governance` owns the capability indexes. Consume current
 > inventories through `GovernanceBundle`; do not copy their counts or bodies here.
 
+### Ecosystem operating rules (binding, operator ruling 2026-10-03)
+
+This repository anchors ONE linked ecosystem. Every runtime — Gas City sessions,
+ZCode, Kilo Code, Hermes and WhatsApp bridges, and any future attach — cooperates
+toward shared objectives under these binding rules:
+
+- `rules/communication/ecosystem-systems-registry.md` — the systems registry and
+  the formal-agreement contract: cross-system infrastructure mutations require a
+  prior `[coord] agreement` (announce, ack or quiet-window, landed receipt);
+  breakage announces `[coord] blocker` without retry loops or skew masking.
+- `rules/workflow/runtime-integrity-gate.md` — no plan step lands through or
+  leaves a broken runtime; deployments in ai-hub and flext are accepted only
+  after observed real-runtime functioning (tmux where interactive).
+- `rules/coordination/fix-forward-collaboration.md` — adopt every compatible
+  contribution; fix forward; supersede with evidence.
+- `rules/coordination/inter-session-mail.md` — gc mail is the only
+  cross-session channel; delivery is proven by reading back.
+
+Versions of fleet tools move only through generated locks (`make upg`), never by
+hand; shared-store schema migrations follow the agreement protocol above.
+
 This repository is the single writable authority for provider-neutral rules, skills,
 commands, agent profiles, and their semantic evaluation resources. It publishes the
 read-only `agents-governance` package. AI Hub alone discovers projects, adapts
