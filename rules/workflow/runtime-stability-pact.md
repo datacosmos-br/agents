@@ -26,6 +26,17 @@ their deployments and projections — obeys three non-negotiable terms.
    owner is broken (stale release, failing gate), dependent work uses
    native reversible mechanisms and tracks the dependency; it neither
    bypasses the owner with hacks nor waits silently.
+5. **Versions move only through generated locks.** Fork and toolchain
+   versions are never swapped by hand — not binaries, not pins, not
+   toolchain builds. New versions arrive exclusively through the declared
+   upgrade path (`make upg` regenerating locks) and are re-provisioned by
+   their owners.
+6. **Retired projections that break a consumer are live defects.** A
+   removed-but-on-disk config, pointer, or generated file that a consumer
+   parses or loads is an active breakage owned by the retire-er — even when
+   every tracked gate is green (working example 2026-10-03: an ignored
+   orphan config holding an instruction pointer kept a whole agent runtime
+   unparseable while the full check suite passed).
 
 ## Boundaries
 

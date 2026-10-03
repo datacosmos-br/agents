@@ -28,6 +28,34 @@ assistant relaying to the operator's WhatsApp.
 5. **Identity never waives the law.** Provider, session kind, or "my
    executor is special" changes nothing in this rule.
 
+## Agreement mechanics (shared-infrastructure mutations)
+
+A mutation to infrastructure other systems depend on — tracker stores and their
+schema versions, shared daemons and their ports, toolchains on the fleet PATH,
+deployed surfaces in agent homes, city config, generator templates — is a
+formal agreement, not a drive-by:
+
+1. `[coord] agreement <topic>` states what moves, the exact
+   store/tool/surface, the new version, every system it can break, the ack
+   deadline (default 10 minutes), and the proposed cure if a dependent
+   breaks.
+2. Affected systems ACK in-thread, or the announcer executes when the
+   deadline expires; an objection stops the mutation until adjudicated.
+3. The executing system posts `[coord] landed <what> <version>` with sealing
+   evidence and names every binary/session that must upgrade before its next
+   call.
+4. A system broken by the mutation announces `[coord] blocker` with the exact
+   error; it does not loop retries against the moved target, and it does not
+   mask the skew — the cure upgrades the dependent through its own declared
+   path (locks, never hand swaps).
+5. The agreement and the blocker are referenced from the owning bead: the
+   bead is the ledger, the thread is the contract.
+
+Working example (2026-10-03): a tracker store migrated to schema v69 without
+an agreement; every rig dispatcher driving the older embedded bd failed its
+work query in a loop. This mechanics section exists to make that structurally
+impossible.
+
 ## Boundaries
 
 - Channel mechanics (endpoints, injection, delivery proof) remain owned by
