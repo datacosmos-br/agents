@@ -19,9 +19,10 @@ projection such as provider configuration, service units, or goldens.
   generated marker without a resolvable owner is a defect.
 - A file such as `AGENTS.md` has no single owner: each piece has its correct owner
   (tracker memory `operator-rulings-2026-10-01-governance`, ruling 5). A block written
-  between begin/end markers by ~/agents and AI Hub, the selected tracker, or another
-  tool is a projection owned by that writer. The text outside every marker belongs to
-  the project. A whole generated file belongs to the owner its marker names. No writer
+  between begin/end markers by a declared writer — the governance owner, the consuming
+  project, the selected tracker, or another tool — is a projection owned by that
+  writer. The text outside every marker belongs to the project. A whole generated file
+  belongs to the owner its marker names. No writer
   creates, rewrites, or removes a piece it does not own: never altering a projected
   part and never crossing a domain are inviolable (same tracker memory, ruling 5).
 - Markdown and docs gates exclude a projected block at their SSOT exclude list, never
