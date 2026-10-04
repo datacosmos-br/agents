@@ -59,8 +59,8 @@ residue-free; never infer merge or closure.
 
 ## Execution discipline (fleet slices, 2026-09-10)
 
-- Dispatcher acceptance proof: `make <verb>` (help), `WHAT=<action> make <verb>` (must
-  reach the real script; downstream credential failures belong to the action, not the
-  dispatcher), `make help` listing the verbs.
+- Dispatcher acceptance proof: `make help` lists the selector-free verbs and
+  `make <verb>` reaches the real script; downstream credential failures belong to the
+  action, not the dispatcher.
 - On FF push rejection: `git merge --no-ff` the integration tip into your lane,
   revalidate, repush; never rebase or force-push.
