@@ -1,6 +1,6 @@
 ---
 metadata:
-  aihub.tags: '["decision:CONTROL-20261004","effective:2026-10-04","route:personal"]'
+  aihub.tags: '["decision:ADR-0036","effective:2026-10-04","route:personal"]'
 ---
 
 # Flext × Gas City rules of engagement
