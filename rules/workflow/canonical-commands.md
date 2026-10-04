@@ -18,7 +18,8 @@ publication, deployment, and maintenance execute only through one explicit verb 
 repository root Makefile. No Make selector, underlying-tool argument,
 environment-dispatched sub-operation, file/match filter, inline Python, raw tool,
 private module, wrapper, alias, or compatibility entry point is an operational
-substitute.
+substitute. A parameter a verb declares in `make help`, such as `make test-file FILE=`,
+is part of that verb, not a selector.
 
 Invoke each verb directly to perform its declared operation. Do not introduce an apply
 selector, acknowledgement flag, or hidden execution mode. A distinct operation receives
@@ -63,8 +64,11 @@ agent profile, and doc references it and never restates it.
   never runs in CI, at pre-commit, or at pre-push.
 - A `make test` run that executes no test is acceptable only as the typed cache hit of
   AGENTS.md law 14.
-- Raw pytest, direct test-file selection, and deletion or replacement of the testmon
-  database are prohibited; no raw, focused, or CI path bypasses these verbs.
+- `make test-file FILE=<repository-relative path>` is the sole allowed single-file
+  path. `FILE` is that verb's declared parameter, not a selector. flext-infra owns the
+  verb; this rule records the contract and does not define the implementation.
+- Raw pytest, any other test-file or match selection, and deletion or replacement of the
+  testmon database are prohibited; no raw, focused, or CI path bypasses these verbs.
 
 ## Zero-violation code gate
 
@@ -76,6 +80,3 @@ references it and never restates it.
 - A change is never closed while `make fmt`, `make fix`, `make check`, `make mod`,
   or the spelling gate reports any violation. The spelling gate is whichever of
   `make spell` and `make spells` the repository `make help` lists.
-- Single-file iteration goes through `make test-file FILE=<repository-relative path>`
-  once that verb exists. flext-infra owns the verb; this rule records the contract
-  and does not define the implementation.
