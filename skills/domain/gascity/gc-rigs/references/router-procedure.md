@@ -13,7 +13,7 @@ configured name:
 
 ```text
 gc bd create "title" --rig <rig-name>   # Create in rig's database
-gc bd list --rig <rig-name>             # List rig's beads
+gc bd list --rig <rig-name> --flat --limit 20   # Bounded slice of the rig's beads
 ```
 
 Running `gc bd` from the city root without `--rig` targets the city-level store only
@@ -24,9 +24,10 @@ HQ is required and `gc bd --rig <rig-name> ...` when a rig is required. Use
 
 ### Convention
 
-The canonical location for rigs is `<city-root>/rigs/<rig-name>`. Always use this path
-unless the user explicitly provides an alternative. Do not create rigs at the city root
-or as siblings of the city directory.
+A project the city creates goes under `<city-root>/rigs/<rig-name>` unless the user
+provides another path; never at the city root. An existing project checkout is
+registered at its own path, and that binding lives in `.gc/site.toml` — read it with
+`gc rig list`, never assume the convention.
 
 If the user asks to create a rig but does not specify where, **ask them** before
 proceeding: confirm the `rigs/` convention and offer the choice of a custom path. Do not

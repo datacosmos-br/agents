@@ -5,12 +5,20 @@ gc formula list                        # List available formulas
 gc formula show <name>                 # Show formula definition
 ```
 
-**Pack boundary.** Formulas come from packs; this city imports only `core`, `bd`, and
-`gascity` roles (`gc import list`). Formulas outside those — the `mol-polecat-*` family
-ships with the legacy polecat pack — resolve only when that pack is imported.
-`gc formula show <name>` fails loud with "not found in search paths" when it is not:
-treat that as a missing-import diagnosis, never as a reason to hand-author the
-lifecycle.
+**Pack boundary.** Formulas come from the packs the city imports; read them with
+`gc import list`, never from memory. The `mol-polecat-*` family ships with the
+`gastown` pack and resolves only where that pack is imported. `gc formula show <name>`
+fails loud with "not found in search paths" when a formula is absent: treat that as a
+missing-import diagnosis, never as a reason to hand-author the lifecycle.
+
+**Engineering entry point.** The `gascity` pack ships the convoy-first `implement`
+formula (with `same-session-implement`, `do-work`, and `do-work-item`). Route it to the
+rig's run operator: `gc sling <rig>/gc.run-operator <bead> --on implement`. The sling
+wraps the bead in an input convoy; `prepare` runs on `gc.run-operator` and each member
+drains through `do-work` on `gc.implementation-worker`. Push and PR stay off unless the
+launch passes `--var push=true --var open_pr=true`. The `do-work` prepare step cuts the
+worktree from `origin/HEAD`, so the rig's `origin/HEAD` must name its integration lane.
+Confirm with `gc formula show implement` against the pinned pack before dispatch.
 
 ## Choosing a work formula
 

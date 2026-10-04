@@ -90,13 +90,17 @@ rig's store, route it to a configured agent, and observe through the city's stat
 session, and convoy surfaces.
 
 Routing places the session in the rig's own checkout. Gas City is a router, not a merge
-queue: routing itself creates no branch or worktree. Workspace provisioning when a lane
-needs one goes through the city's transactional worktree owner
-(`gc worktree ensure|verify|cleanup`, provenance-recorded, single-registration and
-merge-gated cleanup — shipped since the 1.4.x series), driven by formulas or explicit
-callers; ad-hoc `git worktree` provisioning beside it is drift. Resolve roles and
-formulas from the city (`gc agent list`, `gc formula list`) instead of naming them from
-memory; a name that no longer resolves is drift, not a typo.
+queue: routing itself creates no branch or worktree. Resolve roles and formulas from the
+city (`gc agent list`, `gc formula list`) instead of naming them from memory; a name
+that no longer resolves is drift, not a typo.
+
+Engineering work enters through the `gascity` pack's `implement` formula on the rig's
+run operator (`gc sling <rig>/gc.run-operator <bead> --on implement`; skill `gc-dispatch`).
+Provisioning belongs to the formula's prepare step: `gc worktree ensure|verify|cleanup`
+when it calls them; when it cuts from `origin/HEAD`, as `do-work` does, that ref must
+name the rig's integration lane. The coordinator never pre-creates a dispatched worktree.
+Bases integrate by `git merge --no-ff`, never rebase; ledger reads stay bounded
+(`beads verification`, rule file).
 
 Branch ownership, repository Git, native gates, PR review, and merge-commit landing
 remain local responsibilities. Stop at the rig's declared integration lane; promotion

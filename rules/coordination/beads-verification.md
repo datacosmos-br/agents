@@ -10,8 +10,8 @@ capsule_summary: |
   retired premise as obsolete with evidence rather than executing it.
 
   A tracker's default listing truncates and never proves a complete
-  population; an inventory that authorizes a conclusion uses the explicit
-  unbounded form, e.g. `bd list --all --limit 0`.
+  population; a conclusive inventory uses the explicit flat unbounded
+  form, e.g. `bd list --all --flat --limit 0`.
 metadata:
   aihub.tags: '["decision:ADR-0007","effective:2026-10-01","route:personal"]'
 ---
@@ -34,7 +34,11 @@ violation. Fix divergence in the bead, never in reality.
 A tracker's default listing truncates. A truncated output is never evidence of a
 complete population: any inventory that authorizes a conclusion — the full open set, a
 closure claim, a dedup or reconciliation sweep — uses the explicit unbounded form (for
-`bd`, `bd list --all --limit 0`, filtered by status) and records the command it ran.
+`bd`, `bd list --all --flat --limit 0`, filtered by status) and records the command it
+ran. Without `--flat`, `--all` renders the default tree, hydrating each descendant
+against the shared Dolt server (killed after 120s on a 2656-bead store; 2.34s flat);
+bash guards `BG-EXEC-019` and `BG-EXEC-021` deny it. Every other read is a bounded
+slice.
 
 Each managed execution uses one HQ root and linked bead per rig, both carrying
 four-source checkpoints. Instructions, tracker prime, and skills enforce this;

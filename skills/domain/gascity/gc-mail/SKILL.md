@@ -88,8 +88,10 @@ wrong invocation, not of the store, and it is never answered with `bd init`.
 - The store lock is intermittent even from the project home under direnv: stderr
   `WARN native_store_unavailable … schema migration lock unavailable: timeout`, then
   `To diagnose: bd dolt status / Do NOT run 'bd init'`, and the message is **not**
-  stored. Retry the same command from the same place; never change directory to get
-  around it. **Proof of delivery is reading it back** — `gc mail inbox human --json`
+  stored. That send is red: report it, diagnose with the read-only `bd dolt status`, and
+  run the send again only as a new, recorded attempt from the same place — never a retry
+  loop, never a directory change to get around it. **Proof of delivery is reading it
+  back** — `gc mail inbox human --json`
   filtered by your subject — an exit code alone is not evidence (a send can look
   successful and store nothing).
 - Answer in-thread with `gc mail reply <id>` (body from a file) so `gc mail thread <id>`

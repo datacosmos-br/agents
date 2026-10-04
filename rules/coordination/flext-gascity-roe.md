@@ -22,8 +22,10 @@ references the single declarations and never restates them.
   `r/e/x/h/d/s`, reverse imports TYPE_CHECKING-only, one `api.py` MRO per package,
   thin CLI adapters, declaration-only Pydantic 2 models, validate external input
   once, canonical config singleton) applies to Python sources in every fleet
-  repository. Go repositories (gascity, beads) follow their own `AGENTS.md` and
-  `TESTING.md`; only the process law below is shared across languages.
+  repository. Go repositories (gascity, beads) follow idiomatic Go, their own
+  `AGENTS.md`, `TESTING.md` where the repository ships one, and their root Makefile;
+  no flext facade applies to Go. Only the process law is shared across languages:
+  dedicated worktree, bead, PR, `merge --no-ff`, never rebase.
 
 ## Green ladder, mapped
 

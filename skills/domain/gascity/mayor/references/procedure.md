@@ -68,20 +68,20 @@ arbitrary groupings (never `epics[]`); dependencies use local keys the script re
 to bead IDs. Dry-run first; pass `--city /path/to/city` only when the city is not
 discoverable:
 
-```bash
-python3 assets/scripts/create_beads_from_tasks.py --dry-run < artifact-root > / < plan-slug > /tasks.md
-python3 assets/scripts/create_beads_from_tasks.py < artifact-root > / < plan-slug > /tasks.md
+```text
+python3 assets/scripts/create_beads_from_tasks.py <artifact-root>/<plan-slug>/tasks.md --dry-run
+python3 assets/scripts/create_beads_from_tasks.py <artifact-root>/<plan-slug>/tasks.md
 ```
 
 ## Worked launches
 
-```bash
-gc sling gc.run-operator implement \
-  --var artifact_root= \
-  --var context_path= \
-  --var drain_policy=separate < implementation-convoy-id > --on < artifact-root > / < plan-slug > /build < artifact-root > / < plan-slug > /context.yaml
+```text
+gc sling gc.run-operator <implementation-convoy-id> --on implement \
+  --var artifact_root=<artifact-root>/<plan-slug>/build \
+  --var context_path=<artifact-root>/<plan-slug>/context.yaml \
+  --var drain_policy=separate
 
 gc sling gc.run-operator github-pr-review --formula \
-  --var github_pr_url=https://github.com/ \
-  post_mode=human_gate < owner > / < repo > /pull/ < number > --var
+  --var github_pr_url=https://github.com/<owner>/<repo>/pull/<number> \
+  --var post_mode=human_gate
 ```

@@ -11,7 +11,12 @@ gc convoy status <id>                                 # Show convoy progress + m
 gc convoy add <id> <bead-ids...>                      # Add beads to convoy
 gc convoy close <id>                                  # Close convoy
 gc convoy check                                       # MUTATING: scans ALL open convoys city-wide and auto-closes any where all children are resolved
-gc convoy stranded                                    # Find convoys with no progress
+gc convoy stranded                                    # Find convoys with ready work but no workers
+gc convoy land <id>                                   # Land an owned convoy (terminate + cleanup)
+gc convoy delete <id>                                 # Close or delete a convoy and all its beads
+gc convoy delete-source <bead-id>                     # Close workflows sourced from a bead
+gc convoy reopen-source <bead-id>                     # Reopen a source bead after workflow cleanup
+gc convoy control                                     # Execute control beads or run the control-dispatcher loop
 gc convoy autoclose <id>                              # Internal: invoked by bd's on_close hook to auto-close a closed bead's completed convoys
 ```
 
