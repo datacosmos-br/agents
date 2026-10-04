@@ -45,6 +45,20 @@ class WarningMessage(Protocol):
 _TESTMON_PLUGINS = ("TestmonCollect", "TestmonSelect")
 
 
+def account_testmon_deselection(names: Sequence[str], placeholders: int) -> set[str]:
+    """Return testmon's deselected names, proving they cover every placeholder.
+
+    testmon emits one anonymous placeholder per collected item whose node id is in
+    ``deselected_tests``, so more placeholders than names means lost accounting.
+    """
+
+    if placeholders > len(names):
+        raise RuntimeError(
+            f"testmon deselected {placeholders} items but named only {len(names)}"
+        )
+    return set(names)
+
+
 @dataclass
 class TestmonAuditPlugin:
     """Observe pytest/testmon without changing execution semantics.
@@ -59,6 +73,7 @@ class TestmonAuditPlugin:
     collected: set[str] = field(default_factory=set)
     executed: set[str] = field(default_factory=set)
     deselected: set[str] = field(default_factory=set)
+    placeholders: int = 0
     warnings: int = 0
     skips: int = 0
     xfails: int = 0
@@ -90,10 +105,10 @@ class TestmonAuditPlugin:
         for item in items:
             if isinstance(item, pytest.Item):
                 self.deselected.add(item.nodeid)
-            elif self.mode != "incremental":
+            elif self.mode == "incremental":
+                self.placeholders += 1
+            else:
                 raise TypeError(f"deselected entry is not a pytest item: {item!r}")
-            # testmon reports name-based deselection through anonymous placeholders;
-            # the names arrive through TestmonSelect.deselected_tests at session finish.
 
     def pytest_runtest_logreport(self, report: pytest.TestReport) -> None:
         if report.when == "call":
@@ -120,7 +135,12 @@ class TestmonAuditPlugin:
             plugin = self.config.pluginmanager.get_plugin("TestmonSelect")
             if plugin is None or not hasattr(plugin, "deselected_tests"):
                 raise TypeError("TestmonSelect plugin has an unexpected type")
-            deselected.update(cast(TestmonSelectPlugin, plugin).deselected_tests)
+            deselected.update(
+                account_testmon_deselection(
+                    cast(TestmonSelectPlugin, plugin).deselected_tests,
+                    self.placeholders,
+                )
+            )
         document = {
             "collected": sorted(self.collected),
             "executed": sorted(self.executed),
