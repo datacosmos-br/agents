@@ -25,7 +25,8 @@ HQ is required and `gc bd --rig <rig-name> ...` when a rig is required. Use
 ### Convention
 
 A project the city creates goes under `<city-root>/rigs/<rig-name>` unless the user
-provides another path; never at the city root. An existing project checkout is
+provides another path; never at the city root or as a new sibling of the city
+directory. An existing project checkout is
 registered at its own path, and that binding lives in `.gc/site.toml` — read it with
 `gc rig list`, never assume the convention.
 

@@ -37,7 +37,7 @@ closure claim, a dedup or reconciliation sweep — uses the explicit unbounded f
 `bd`, `bd list --all --flat --limit 0`, filtered by status) and records the command it
 ran. Without `--flat`, `--all` renders the default tree, hydrating each descendant
 against the shared Dolt server (killed after 120s on a 2656-bead store; 2.34s flat);
-bash guards `BG-EXEC-019` and `BG-EXEC-021` deny it. Every other read is a bounded
+ai-hub bash guards `BG-EXEC-019` and `BG-EXEC-021` (`config/hooks.yaml`) deny it. Every other read is a bounded
 slice.
 
 Each managed execution uses one HQ root and linked bead per rig, both carrying

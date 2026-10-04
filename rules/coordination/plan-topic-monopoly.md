@@ -37,7 +37,10 @@ declaration stands, no other actor edits, merges, or realigns branches there. Th
 assumes every pending WIP, branch, worktree, PR, and bead in them: it records each tip
 SHA, adopts aligned work into the integration lane by fix-forward, and closes superseded
 work with evidence. The monopoly waives no law — dedicated worktree, four-source bead,
-PR, `merge --no-ff`, no rebase, no database reset. Effects outside the held repositories
+PR, `merge --no-ff`, no rebase, no database reset. A bead closure in a shared tracker
+still routes through its curation owner (`tracker-curation-routing`), and a lane whose
+claim is under 24 hours old (`beads-canonical-epics`) is adopted only after `[coord]`
+mail to its owner, unless the operator's declaration names it. Effects outside the held repositories
 still require `[coord]` mail. The declaration lives in the current operator order and the
 city `AGENTS.md`; a later session never inherits it by assumption.
 

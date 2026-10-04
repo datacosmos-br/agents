@@ -20,7 +20,8 @@ create an isolated tracked worktree with
 `work_dir`, branch, base, and initial SHA in the repository's selected tracker. Then use
 the repository's current checkpoint and landing surface. Integrate base movement with
 `git merge --no-ff`, never `git rebase` or `git pull --rebase`. Retire the worktree only
-after `git merge-base --is-ancestor <branch> origin/<integration>` succeeds.
+after `git fetch origin <integration>` refreshes the tracking ref and
+`git merge-base --is-ancestor <branch> origin/<integration>` then succeeds.
 
 `make work` owns neither mode. Never dispatch and also create a self-owned lane, or use
 a local worktree as evidence that Gas City dispatched, placed, or ran an agent. Without

@@ -30,7 +30,8 @@ merge-review step?). Reach for the lightest one that fits:
 | ---------------------------------- | ---------------------------------- | ------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `mol-do-work`                      | none — works in the CWD            | agent commits, then **closes** the bead                                   | demos, throwaway, or a trivial single-agent fix where isolation and review are overkill                                                                                                  |
 | `mol-scoped-work`                  | worktree + explicit setup/teardown | agent-managed, no refinery — work modeled as a routable **step-bead DAG** | multi-step work you want decomposed into independently-routable steps under one owner, without a merge-review gate                                                                       |
-| `mol-polecat-work` _(legacy pack)_ | worktree + feature branch          | pushes the branch and **reassigns to the refinery** for merge review      | production multi-agent work that must be reviewed before landing on a shared branch — requires the legacy polecat pack import; **not present in a stock city** (see pack boundary above) |
+| `mol-polecat-work` _(gastown pack)_ | worktree + feature branch          | pushes the branch and **reassigns to the refinery** for merge review      | production multi-agent work that must be reviewed before landing on a shared branch — requires the `gastown` pack import (see pack boundary above) |
+| `implement` _(gascity pack)_       | `do-work` worktree from `origin/HEAD` | convoy members drain on `gc.implementation-worker`; push and PR only with `--var push=true --var open_pr=true` | engineering work in a registered rig — the city's entry point (see engineering entry point above); unrelated to the CWD-only `mol-do-work` |
 
 Two narrower siblings trade a stage away from `mol-polecat-work`:
 
@@ -43,8 +44,8 @@ Two narrower siblings trade a stage away from `mol-polecat-work`:
 
 Rule of thumb: choose **`mol-scoped-work` for anything that must survive a session
 recycle** — its step DAG and continuation metadata live in beads, so a recycled agent
-resumes instead of stranding. Add the refinery handoff only by importing the legacy
-polecat pack and using `mol-polecat-work`, which you do only when merge review must be a
+resumes instead of stranding. Add the refinery handoff only where the `gastown` pack is
+imported, using `mol-polecat-work`, which you do only when merge review must be a
 distinct routed role. Drop to **`mol-do-work`** only for the trivial single-agent case.
 
 **When the refinery handoff doesn't apply.** `mol-polecat-work` ends by pushing a

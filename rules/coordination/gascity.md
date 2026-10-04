@@ -99,8 +99,9 @@ run operator (`gc sling <rig>/gc.run-operator <bead> --on implement`; skill `gc-
 Provisioning belongs to the formula's prepare step: `gc worktree ensure|verify|cleanup`
 when it calls them; when it cuts from `origin/HEAD`, as `do-work` does, that ref must
 name the rig's integration lane. The coordinator never pre-creates a dispatched worktree.
-Bases integrate by `git merge --no-ff`, never rebase; ledger reads stay bounded
-(`beads verification`, rule file).
+Bases integrate by `git merge --no-ff`, never rebase; routine ledger reads stay
+bounded and conclusive inventories use the flat unbounded form (`beads verification`,
+rule file).
 
 Branch ownership, repository Git, native gates, PR review, and merge-commit landing
 remain local responsibilities. Stop at the rig's declared integration lane; promotion

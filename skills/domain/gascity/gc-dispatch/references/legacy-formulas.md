@@ -1,6 +1,7 @@
 # Legacy pack formulas
 
-These require the legacy pack. They extend the built-in `mol-polecat-base`.
+These ship with the `gastown` pack and resolve only where it is imported. They extend
+`mol-polecat-base` from the same pack.
 
 **mol-polecat-work** — Feature-branch variant. Creates a worktree and feature branch,
 implements, then pushes and reassigns to the refinery for merge review. Production

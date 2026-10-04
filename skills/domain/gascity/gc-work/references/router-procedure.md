@@ -60,8 +60,10 @@ gc bd ready --label role:worker --limit 10          # Filter by label
 gc bd show <id>                                     # Show bead details
 ```
 
-Ledger reads stay bounded (rule `beads verification`): `--all` without `--flat` renders
-the whole tree and is denied by the bash guards.
+Routine reads stay bounded (rule `beads verification`): `--all` without `--flat` renders
+the whole tree and is denied by the bash guards. A conclusive inventory — including the
+pre-creation search of the city store — uses the explicit flat unbounded form on this
+surface, `gc bd list --all --flat --limit 0 --status <status>`, and records the command.
 
 `gc ready` — the federated ready frontier across every store the city uses — ships in the
 1.4.2 fork line; the 1.4.1 binary rejects it as an unknown command (exit 1). Probe with

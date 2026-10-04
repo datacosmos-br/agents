@@ -76,7 +76,7 @@ python3 assets/scripts/create_beads_from_tasks.py <artifact-root>/<plan-slug>/ta
 ## Worked launches
 
 ```text
-gc sling gc.run-operator <implementation-convoy-id> --on implement \
+gc sling <rig>/gc.run-operator <implementation-convoy-id> --on implement \
   --var artifact_root=<artifact-root>/<plan-slug>/build \
   --var context_path=<artifact-root>/<plan-slug>/context.yaml \
   --var drain_policy=separate

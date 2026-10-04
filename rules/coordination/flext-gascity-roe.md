@@ -25,7 +25,7 @@ references the single declarations and never restates them.
   repository. Go repositories (gascity, beads) follow idiomatic Go, their own
   `AGENTS.md`, `TESTING.md` where the repository ships one, and their root Makefile;
   no flext facade applies to Go. Only the process law is shared across languages:
-  dedicated worktree, bead, PR, `merge --no-ff`, never rebase.
+  dedicated worktree and branch, bead, PR, `merge --no-ff`, never rebase.
 
 ## Green ladder, mapped
 
