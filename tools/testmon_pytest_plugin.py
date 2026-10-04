@@ -86,8 +86,14 @@ class TestmonAuditPlugin:
     def pytest_collection_finish(self, session: pytest.Session) -> None:
         self.collected = {item.nodeid for item in session.items}
 
-    def pytest_deselected(self, items: Sequence[pytest.Item]) -> None:
-        self.deselected.update(item.nodeid for item in items)
+    def pytest_deselected(self, items: Sequence[object]) -> None:
+        for item in items:
+            if isinstance(item, pytest.Item):
+                self.deselected.add(item.nodeid)
+            elif self.mode != "incremental":
+                raise TypeError(f"deselected entry is not a pytest item: {item!r}")
+            # testmon reports name-based deselection through anonymous placeholders;
+            # the names arrive through TestmonSelect.deselected_tests at session finish.
 
     def pytest_runtest_logreport(self, report: pytest.TestReport) -> None:
         if report.when == "call":
