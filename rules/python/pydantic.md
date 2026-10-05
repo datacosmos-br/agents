@@ -4,7 +4,7 @@ description:
   Pydantic 2 boundary law — facade-only access, obligatory model MRO presets,
   parse-once, fail-loud through r
 metadata:
-  aihub.tags: '["decision:ADR-0008","effective:2026-10-05","route:both"]'
+  aihub.tags: '["decision:ADR-0037","effective:2026-10-05","route:both","supersedes:ADR-0008"]'
 ---
 
 # Pydantic 2 boundary law
@@ -15,8 +15,10 @@ Pydantic version. Full reference: `$pydantic-development` (skill procedure).
 
 ## FLEXT Mypy policy
 
-Operator ruling 2026-10-05: Pydantic 2 and the `pydantic.mypy` plugin are mandatory
-throughout FLEXT. The canonical typed tooling configuration in flext-infra owns the
+The live operator mandate is recorded verbatim in the canonical agents tracker memory
+`operator-ruling-20261005-mypy-pydantic2`; the physically resolved `decision:ADR-0037`
+tag records this rule's approval lineage. Pydantic 2 and the `pydantic.mypy` plugin are
+mandatory throughout FLEXT. The canonical typed tooling configuration in flext-infra owns the
 policy; generated profiles, command invocations, and consumer overlays must preserve
 it. Missing or empty plugins, `pydantic.v1.mypy`, and overlays that weaken the policy
 are defects, not defaults or alternate execution routes.
