@@ -270,9 +270,7 @@ class TestsInstructionPointers:
         root.mkdir()
         build_instructions(root)
         content = (root / "CLAUDE.md").read_text(encoding="utf-8")
-        assert "AGENTS.md" in content
-        assert "make gen" in content
-        assert "AIHUB-INSTRUCTION-POINTER" in content
+        assert content == "@AGENTS.md"
 
     def test_gemini_md_content(
         self, governance_bundle: GovernanceBundle, tmp_path: Path
@@ -281,8 +279,7 @@ class TestsInstructionPointers:
         root.mkdir()
         build_instructions(root)
         content = (root / "GEMINI.md").read_text(encoding="utf-8")
-        assert "AGENTS.md" in content
-        assert "make gen" in content
+        assert content == "@AGENTS.md"
 
 
 def _snapshot_dir(root: Path) -> tuple[tuple[str, str], ...]:
