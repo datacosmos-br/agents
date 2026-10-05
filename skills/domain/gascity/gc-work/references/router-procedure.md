@@ -52,16 +52,22 @@ gc bd create "title" --label priority=high  # Create with labels
 ### Finding work
 
 ```text
-gc bd list                                # List beads in current .beads/
-gc bd list --rig <rigname>                # List beads in a specific rig
-gc bd ready                               # List beads available for claiming
-gc bd ready --label role:worker           # Filter by label
-gc bd show <id>                           # Show bead details
+gc bd count                                         # Size the store before any listing
+gc bd list --status open --flat --limit 20          # Bounded slice of current .beads/
+gc bd list --rig <rigname> --flat --limit 20        # Bounded slice of a specific rig
+gc bd ready --limit 10                              # Beads available for claiming
+gc bd ready --label role:worker --limit 10          # Filter by label
+gc bd show <id>                                     # Show bead details
 ```
 
-`gc ready` — the federated ready frontier across every store the city uses — landed on
-`edge` **after v1.4.1**: the 1.4.1 binary rejects it as an unknown command (exit 1).
-Probe with `gc ready --help` before relying on it. Its flag surface is narrower than
+Routine reads stay bounded (rule `beads verification`): `--all` without `--flat` renders
+the whole tree and is denied by the bash guards. A conclusive inventory — including the
+pre-creation search of the city store — uses the explicit flat unbounded form on this
+surface, `gc bd list --all --flat --limit 0 --status <status>`, and records the command.
+
+`gc ready` — the federated ready frontier across every store the city uses — ships in the
+1.4.2 fork line; the 1.4.1 binary rejects it as an unknown command (exit 1). Probe with
+`gc ready --help` before relying on it. Its flag surface is narrower than
 bd's: `--assignee`, `--unassigned`, `--metadata-field`, `--exclude-type`,
 `--exclude-label`, `--sort oldest|newest`, `--limit`, `--status`, `--json` — not the
 label, parent, type or priority selectors `gc bd ready` forwards. On a city that serves

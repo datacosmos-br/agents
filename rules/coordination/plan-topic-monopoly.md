@@ -30,6 +30,20 @@ its persisted configuration in pursuit of a cleaner state. Persisted-configurati
 change is scope expansion and requires a current defect or an explicit operator
 instruction. Diagnosis is not reconfiguration.
 
+## Operator-declared repository monopoly
+
+The operator may name one session the sole holder of listed repositories. While the
+declaration stands, no other actor edits, merges, or realigns branches there. The holder
+assumes every pending WIP, branch, worktree, PR, and bead in them: it records each tip
+SHA, adopts aligned work into the integration lane by fix-forward, and closes superseded
+work with evidence. The monopoly waives no law — dedicated worktree, four-source bead,
+PR, `merge --no-ff`, no rebase, no database reset. A bead closure in a shared tracker
+still routes through its curation owner (`tracker-curation-routing`), and a lane whose
+claim is under 24 hours old (`beads-canonical-epics`) is adopted only after `[coord]`
+mail to its owner, unless the operator's declaration names it. Effects outside the held repositories
+still require `[coord]` mail. The declaration lives in the current operator order and the
+city `AGENTS.md`; a later session never inherits it by assumption.
+
 ## Corpus reconciliation
 
 A reconciliation cycle selects one evidenced newest plan and retains it through its

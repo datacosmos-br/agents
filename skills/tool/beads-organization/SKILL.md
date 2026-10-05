@@ -16,10 +16,10 @@ evidence. Read the `complete procedure` (skill file) before any tracker write.
 - Resolve the canonical tracker, configured integration branch, and current Gas City
   state before effects. A suspended store remains read-only unless the operator
   explicitly authorizes mutations to that exact store.
-- Start every reorganization session from the canonical snapshot: `bd list --all
+- Start every reorganization session from the canonical snapshot: `bd list --all --flat
   --status open,in_progress,blocked,deferred --limit 0 --json
   > <project>.json`; derive the control CSV with columns `id,title,status,priority,type,parent,reval_tag,action,notes_head`.
-- Any `bd list` without `--all`/`--limit 0` truncates silently: a truncated listing
+- Any `bd list` without `--all --flat --limit 0` truncates silently or renders the tree: a truncated listing
   never authorizes conclusions about population. `--limit 0` is reserved for this
   explicitly requested complete population; bounded, reviewed slices go through
   `reconcile-inventory.sh` below.

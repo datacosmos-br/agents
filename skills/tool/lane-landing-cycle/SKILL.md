@@ -63,13 +63,23 @@ gh pr checks <n> --repo datacosmos-br/ai-hub     # ci, merge-guard, release-plan
 gh pr merge <n> --repo datacosmos-br/ai-hub --merge
 ```
 
-Post-merge proof: merge `origin/dev` into the lane, rerun the targeted tests,
-close the bead with the evidence, retire the lane:
+Base movement before landing is integrated with `git merge --no-ff origin/dev` (never
+`git rebase` or `git pull --rebase`). After the PR merges, leave the lane branch
+unchanged: fetch, prove its tip is reachable from `origin/dev`, rerun the targeted tests
+on the fetched integration tip, close the bead with the evidence, then retire:
 
 ```bash
-git worktree remove --force ~/ai-hub-worktrees/<slug>-<date>
-git branch -D fix/<slug>-<date> && git push origin --delete fix/<slug>-<date>
+git fetch origin dev \
+  && git merge-base --is-ancestor fix/<slug>-<date> origin/dev \
+  && git switch --detach origin/dev \
+  && make test \
+  && cd ~/ai-hub \
+  && git worktree remove ~/ai-hub-worktrees/<slug>-<date> \
+  && git branch -d fix/<slug>-<date> \
+  && git push origin --delete fix/<slug>-<date>
 ```
+
+A failed ancestry check, a red test, or a dirty worktree stops the chain; never force it.
 
 ## 5. Judgment calls this cycle encodes
 

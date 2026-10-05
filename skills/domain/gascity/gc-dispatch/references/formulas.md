@@ -5,12 +5,20 @@ gc formula list                        # List available formulas
 gc formula show <name>                 # Show formula definition
 ```
 
-**Pack boundary.** Formulas come from packs; this city imports only `core`, `bd`, and
-`gascity` roles (`gc import list`). Formulas outside those — the `mol-polecat-*` family
-ships with the legacy polecat pack — resolve only when that pack is imported.
-`gc formula show <name>` fails loud with "not found in search paths" when it is not:
-treat that as a missing-import diagnosis, never as a reason to hand-author the
-lifecycle.
+**Pack boundary.** Formulas come from the packs the city imports; read them with
+`gc import list`, never from memory. The `mol-polecat-*` family ships with the
+`gastown` pack and resolves only where that pack is imported. `gc formula show <name>`
+fails loud with "not found in search paths" when a formula is absent: treat that as a
+missing-import diagnosis, never as a reason to hand-author the lifecycle.
+
+**Engineering entry point.** The `gascity` pack ships the convoy-first `implement`
+formula (with `same-session-implement`, `do-work`, and `do-work-item`). Route it to the
+rig's run operator: `gc sling <rig>/gc.run-operator <bead> --on implement`. The sling
+wraps the bead in an input convoy; `prepare` runs on `gc.run-operator` and each member
+drains through `do-work` on `gc.implementation-worker`. Push and PR stay off unless the
+launch passes `--var push=true --var open_pr=true`. The `do-work` prepare step cuts the
+worktree from `origin/HEAD`, so the rig's `origin/HEAD` must name its integration lane.
+Confirm with `gc formula show implement` against the pinned pack before dispatch.
 
 ## Choosing a work formula
 
@@ -22,7 +30,8 @@ merge-review step?). Reach for the lightest one that fits:
 | ---------------------------------- | ---------------------------------- | ------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `mol-do-work`                      | none — works in the CWD            | agent commits, then **closes** the bead                                   | demos, throwaway, or a trivial single-agent fix where isolation and review are overkill                                                                                                  |
 | `mol-scoped-work`                  | worktree + explicit setup/teardown | agent-managed, no refinery — work modeled as a routable **step-bead DAG** | multi-step work you want decomposed into independently-routable steps under one owner, without a merge-review gate                                                                       |
-| `mol-polecat-work` _(legacy pack)_ | worktree + feature branch          | pushes the branch and **reassigns to the refinery** for merge review      | production multi-agent work that must be reviewed before landing on a shared branch — requires the legacy polecat pack import; **not present in a stock city** (see pack boundary above) |
+| `mol-polecat-work` _(gastown pack)_ | worktree + feature branch          | pushes the branch and **reassigns to the refinery** for merge review      | production multi-agent work that must be reviewed before landing on a shared branch — requires the `gastown` pack import (see pack boundary above) |
+| `implement` _(gascity pack)_       | `do-work` worktree from `origin/HEAD` | convoy members drain on `gc.implementation-worker`; push and PR only with `--var push=true --var open_pr=true` | engineering work in a registered rig — the city's entry point (see engineering entry point above); unrelated to the CWD-only `mol-do-work` |
 
 Two narrower siblings trade a stage away from `mol-polecat-work`:
 
@@ -35,8 +44,8 @@ Two narrower siblings trade a stage away from `mol-polecat-work`:
 
 Rule of thumb: choose **`mol-scoped-work` for anything that must survive a session
 recycle** — its step DAG and continuation metadata live in beads, so a recycled agent
-resumes instead of stranding. Add the refinery handoff only by importing the legacy
-polecat pack and using `mol-polecat-work`, which you do only when merge review must be a
+resumes instead of stranding. Add the refinery handoff only where the `gastown` pack is
+imported, using `mol-polecat-work`, which you do only when merge review must be a
 distinct routed role. Drop to **`mol-do-work`** only for the trivial single-agent case.
 
 **When the refinery handoff doesn't apply.** `mol-polecat-work` ends by pushing a
