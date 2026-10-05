@@ -55,7 +55,7 @@ toward shared objectives under these binding rules:
   the formal-agreement contract: cross-system infrastructure mutations require a
   prior `[coord] agreement` (announce, ack or quiet-window, landed receipt);
   breakage announces `[coord] blocker` without retry loops or skew masking.
-- `rules/workflow/runtime-integrity-gate.md` — no plan step lands through or
+- `rules/workflow/runtime-stability-pact.md` — no plan step lands through or
   leaves a broken runtime; deployments in ai-hub and flext are accepted only
   after observed real-runtime functioning (tmux where interactive).
 - `rules/coordination/fix-forward-collaboration.md` — adopt every compatible
