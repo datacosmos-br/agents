@@ -4,7 +4,7 @@ description:
   Pydantic 2 boundary law — facade-only access, obligatory model MRO presets,
   parse-once, fail-loud through r
 metadata:
-  aihub.tags: '["decision:ADR-0008","effective:2026-09-08","route:both"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-10-05","route:both"]'
 ---
 
 # Pydantic 2 boundary law
@@ -12,6 +12,26 @@ metadata:
 Applies to every Python project that declares `pydantic` or `pydantic-settings`. The
 project's declared dependency floor is the version authority; never assume a global
 Pydantic version. Full reference: `$pydantic-development` (skill procedure).
+
+## FLEXT Mypy policy
+
+Operator ruling 2026-10-05: Pydantic 2 and the `pydantic.mypy` plugin are mandatory
+throughout FLEXT. The canonical typed tooling configuration in flext-infra owns the
+policy; generated profiles, command invocations, and consumer overlays must preserve
+it. Missing or empty plugins, `pydantic.v1.mypy`, and overlays that weaken the policy
+are defects, not defaults or alternate execution routes.
+
+Suspend exactly the Mypy diagnostics `prop-decorator` and `call-arg` at that owner.
+This explicit exception does not authorize any other diagnostic suspension, Pyright
+relaxation, per-file ignore, or local suppression. Keep every other gate strict.
+
+Treat source changes made to accommodate these two diagnostics as regression
+candidates. Prove their cause and survival on the current integration tip, then restore
+only the affected hunks by a new fix-forward commit. Preserve independent architecture,
+validation, factory, and immutable-data corrections; never restore a whole historical
+file or adopt a mixed-policy branch blindly. Validate the restored public behavior,
+lint and typing, and regenerated consumer configuration before integration. A checker
+exception never substitutes for Pydantic runtime validation.
 
 ## Access is facade-only
 

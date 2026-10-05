@@ -11,13 +11,15 @@ capsule_summary: |
   real cluster (dc-dese). Always fix-forward adopt; never fallback or rollback.
   Periodically sync with the integration branch via merge --no-ff.
 metadata:
-  aihub.tags: '["decision:ADR-0021", "effective:2026-09-16", "route:both"]'
+  aihub.tags: '["decision:ADR-0021", "effective:2026-10-05", "route:both"]'
 ---
 
 # Strict typed quality through the FLEXT facades (universal)
 
 1. Ruff, mypy, pyright, and pyrefly run strict; violations are fixed at the owner with
-   precise types — never suppressed, never blanket-ignored.
+   precise types, never blanket-ignored. The only FLEXT Mypy exception is the explicit
+   operator policy in [Pydantic 2 boundary law](../python/pydantic.md#flext-mypy-policy);
+   it does not weaken the other checkers or runtime validation.
 2. Reach for helpers, models, protocols, typings, and constants declared in the `u`,
    `m`, `p`, `t`, `c` namespaced facades first, DRY-ly; declare new ones at the owning
    family when missing.
