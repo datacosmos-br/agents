@@ -39,16 +39,18 @@ gc mail thread <id>                    # Show full conversation thread
 ## Managing
 
 ```text
-gc mail archive <id>                   # IRRECOVERABLE bead delete
+gc mail archive <id>                   # Close the message bead; remove from mail views
 gc mail mark-read <id>                 # Mark as read without displaying
 gc mail mark-unread <id>              # Mark as unread
 gc mail delete <id>                    # alias for archive
 gc mail check                          # Check for new mail (used in hooks)
 ```
 
-`archive` and `delete` are the same operation under two names — both irreversibly delete
-the message's underlying bead; there is no reversible storage path. Prefer `mark-read`
-to remove a message from the unread count without destroying it.
+`archive` and `delete` are aliases. The built-in bead-backed provider closes the
+message bead instead of hard-deleting it; archived messages leave mail views.
+This does not guarantee retrieval through `peek`, recovery, or indefinite retention.
+Require a unique message ID and authorization before either operation. Prefer
+`mark-read` for authorized acknowledgement without closing the message.
 
 ## Always from the project home, through direnv (operator rule 2026-09-19)
 

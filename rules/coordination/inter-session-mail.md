@@ -13,11 +13,27 @@ are not communication. Mail is the record of what was said; the owning rig's bea
 is the ledger of what was decided.
 
 - Run every `gc` and `bd` command from the project home through its environment:
-  `direnv exec <project-root> gc mail …`. Outside that environment the store
-  resolves to another project and fails with an identity mismatch.
+  `direnv exec <project-root> gc mail …`. `direnv exec` selects the environment;
+  it does not change the process working directory. Before effects, verify that
+  `bd context --json` identifies the checkout's selected project and tracker
+  database. A mismatched context is not a successful preflight, even when the
+  command exits zero; stop instead of initializing a store or overriding its
+  endpoint to conceal the mismatch.
+- Gas City's default city lookup walks the working directory. From a standalone
+  project checkout, use the native `gc --city <declared-city-root> mail …`
+  selector resolved by the project's configuration while retaining that project's
+  working directory and environment. Do not switch project homes to make mail
+  succeed; city selection and effective suspension follow `gascity` (rule file).
 - A recipient is a registered session alias or `human`; `--all` reaches only live
   registered sessions and never `human`. Delivery is proven by reading the message
-  back, never by the send's exit code.
+  back, never by the send's exit code. Retain the unique message ID and use
+  `gc mail peek <id>` or `gc mail thread <id>` to inspect the available record
+  without consuming the operator's inbox.
+- The shared `human` inbox lists unread messages, not the complete mail record.
+  Another reader can remove a message from that view by marking it read. An
+  empty inbox therefore proves neither failed delivery nor absent progress;
+  consult the retained IDs, thread, and owning bead instead. This is delivery
+  evidence, not a promise of archived-message recovery or indefinite retention.
 - Answer in-thread with `gc mail reply <id>` so the thread rebuilds the
   conversation.
 - No reply means the session is not online. Act on that fact, never on a guess.
