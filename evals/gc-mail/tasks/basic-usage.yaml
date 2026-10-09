@@ -1,22 +1,20 @@
 id: gc-mail-happy-001
 name: Reply to one unread bead thread and report the blocker to city hall
-description: Read a linked agent message, preserve its bead-backed conversation, and route coordination through the live city hall.
+description: Read a linked agent message, preserve its bead-backed conversation, and route the blocker to city hall inside the campaign thread.
 tags: [gas-city, gc-mail, happy-path, coordination]
 inputs:
   prompt: >-
-    You are an external Codex session (not started by gc session new) in a live
-    city: gc status --json reports running true and suspended false, and
-    gastown.mayor is an active session. Use scenario.yaml to inspect the unread
-    count, read msg-184, view its full thread, and reply to billing/reviewer
-    with the exact red gate evidence. The red gate is a blocker, so also report
-    it to city hall and to the shared bus the other external sessions read.
-    Preserve the linked bead and report each gc mail command, cwd, exit code,
-    and decisive output, including how you prove delivery and how you will
-    learn about replies; do not archive or delete the message.
-    Exercise Gas City mail as inter-agent messaging through bead threads and the
-    canonical inbox.
+    You are an external Codex session (not started by gc session new) working
+    from a project checkout outside the city root. Use scenario.yaml: inspect
+    the unread count, read msg-184, view its full thread, and reply to
+    billing/reviewer with the exact red gate evidence. The red gate is a
+    blocker, so also report it to city hall inside the campaign thread the city
+    announced. Report each gc mail command, cwd, exit code, and decisive output,
+    say how you select the city store from your checkout, how you prove
+    delivery, and how you will learn about replies. Preserve the linked bead and
+    do not archive or delete any message.
   files:
   - path: scenario.yaml
 expected:
-  output_contains: [gc mail inbox, msg-184, gc mail thread, gc mail reply, billing-72, exit code, gastown.mayor, human]
-  output_not_contains: [archive, delete, --all]
+  output_contains: [gc mail inbox, msg-184, gc mail thread, gc mail reply, billing-72, exit code, gastown.mayor, msg-201, --city, gc mail peek]
+  output_not_contains: [gc mail archive, gc mail delete, --all, gc session new]
