@@ -61,7 +61,8 @@ toward shared objectives under these binding rules:
 - `rules/coordination/fix-forward-collaboration.md` — adopt every compatible
   contribution; fix forward; supersede with evidence.
 - `rules/coordination/inter-session-mail.md` — gc mail is the only
-  cross-session channel; delivery is proven by reading back.
+  cross-session record (an operator-authorized direct channel is repeated in it);
+  delivery is proven by reading back.
 
 Versions of fleet tools move only through generated locks (`make upg`), never by
 hand; shared-store schema migrations follow the agreement protocol above.

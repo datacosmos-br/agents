@@ -7,3 +7,21 @@ inbox:
   subject: Clarify failure receipt
 linked_bead: billing-72
 requested_action: reply with the exact red gate evidence
+red_gate:
+  command: make check
+  cwd: /srv/billing-worktrees/invoice-cancel
+  exit_code: 2
+  decisive_output: "tests/test_cancel.py::test_refund_receipt FAILED - AssertionError: receipt total 0 != 120"
+campaign:
+  city_root: /srv/city
+  city_hall: gastown.mayor
+  thread: thread-77
+  latest_city_hall_message: msg-201
+  external_sessions_declared_by_operator:
+  - alias: reviewer-claude@billing
+    executor: claude
+  - alias: worker-codex@billing
+    executor: codex
+  - alias: lint-zcode@billing
+    executor: zcode
+    last_reply: none since lane claim msg-310 posted 50 minutes ago

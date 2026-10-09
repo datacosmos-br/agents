@@ -1,63 +1,48 @@
 ---
-description: Every running session talks to every other session only through gc mail.
+description: gc mail is the only record of communication between running sessions.
 metadata:
   aihub.tags: '["decision:ADR-0008","effective:2026-09-19","route:personal"]'
 ---
 
 # Inter-session communication goes through gc mail
 
-Sessions that share a machine, a repository, or a lane talk to each other only
-through `gc mail`, the city's bead-backed mail. Chat relays, notes left in a
-working tree, comments in product files, and conclusions drawn from process state
-are not communication. Mail is the record of what was said; the owning rig's bead
-is the ledger of what was decided.
+Sessions that share a machine, a repository, or a lane coordinate only through
+`gc mail`, the city's bead-backed mail. Chat relays, notes left in a working tree,
+comments in product files, and conclusions drawn from process state are not
+communication. Mail is the record of what was said; the owning rig's bead is the
+ledger of what was decided.
 
-- Run every `gc` and `bd` command from the project home through its environment:
-  `direnv exec <project-root> gc mail …`. Outside that environment the store
-  resolves to another project and fails with an identity mismatch.
-- A recipient is a registered session alias or `human`; `--all` reaches only live
-  registered sessions and never `human`. Delivery is proven by reading the message
-  back, never by the send's exit code.
-- Answer in-thread with `gc mail reply <id>` so the thread rebuilds the
-  conversation.
-- No reply means the session is not online. Act on that fact, never on a guess.
+A provider's direct cross-session channel exists only where the operator authorized
+it. Today that is Claude↔Claude, per tracker memory
+`operator-ruling-2026-10-09-session-channel-sendmessage`. It is a fast path: a
+message sent through it counts only once it is repeated in the gc mail thread, which
+stays the record.
 
-## Subject taxonomy
+The `gc-mail` skill owns the complete contract:
+- city-store selection and addressing;
+- the five delivery receipts;
+- presence and liveness, including that a missing reply is never absence;
+- the city hall campaign thread;
+- the subject taxonomy;
+- the authority table.
 
-Subjects are filterable and recoverable; every coordination message carries one:
+It is declared once, in the skill, because a skill is the only governance artifact
+that still reaches agents other than Claude Code:
+- the session capsule carries only the bootstrap rules;
+- Codex receives execpolicy rules only;
+- Claude Code propagation is retired.
 
-- `[coord] hello <alias>` at session start: scope, repositories, lanes, owning bead.
-- `[coord] roll-call` for presence. Presence is answered, never inferred from a
-  process, a socket, a lock, or a checkout.
-- `[coord] lane claim <canonical path> <branch>` before touching a lane.
-- `[coord] lane status? <lane>` to its declared owner when the lane looks stalled.
-- `[coord] lane changed <lane> <sha>` asking the author why. The answer is the
-  attribution; it replaces the presumption of a clobber.
-- `[coord] freeze start` and `[coord] freeze end`, exact and paired.
-- `[coord] blocker <alias>` with command, working directory, exit code, and
-  decisive output.
-- `[coord] landed <repo> <sha>` after every landing on an integration lane.
+Delivery of that opt-in skill to each provider home is ai-hub's (`distribution
+routing` (rule file), law 2). A session without it follows the protocol city hall
+posts in the campaign thread.
 
 A decision, a handoff, and a blocker go to mail and to the owning rig's bead; one
 without the other is not a record.
-
-## Authority per question
-
-Mail answers what a session says about itself. The other questions have owners:
-
-| Question                      | Authority                                                              |
-| ----------------------------- | ---------------------------------------------------------------------- |
-| Which sessions exist          | `gc agent list`                                                        |
-| Which are live now            | `gc status --json`, field `running`                                    |
-| What each is doing, its role  | mail question and answer, plus the owning bead                         |
-| Whether a lane is abandoned   | the test declared in `bead-branch-pr-cadence` §2                       |
-| Who changed my lane, and why  | the lane's log and reflog, the author's mail, the bead cited in the commit |
 
 Abandonment, adoption, and their limits are declared once, in
 `bead-branch-pr-cadence` (rule file) §2. The adopter announces `[coord] lane claim`
 before the first effect. Two actors on one working tree is itself a blocker:
 declare it by mail before the next edit, and agree on one executor.
 
-The `gc-mail` skill owns the procedure; this rule owns the obligation. Compose with
-`fix-forward collaboration` (rule file), `multiagent edit breadcrumb` (rule file), and
-`operator precedence` (rule file).
+Compose with `fix-forward collaboration` (rule file), `multiagent edit breadcrumb`
+(rule file), `coordinator-ladder` (rule file), and `operator precedence` (rule file).
