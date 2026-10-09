@@ -141,9 +141,14 @@ reads it with `gc mail thread <thread-id>`.
 `gc mail reply <id>` keeps the thread and addresses the original sender. That is how
 you route inside the thread:
 
-- **To city hall:** reply to the latest `gastown.mayor` message in the thread. The
-  reply lands in the mayor's inbox and stays in the thread. Add `--notify` when city
-  hall must act now.
+- **To city hall:** reply to the latest message whose FROM is `gastown.mayor`. That is
+  the second column of `gc mail thread <thread-id>`:
+  `gc mail thread <thread-id> | awk '$2=="gastown.mayor"{id=$1} END{print id}'`.
+  - Never reply to your own message to the mayor: a reply goes to the original
+    sender, so it would land in `human` (measured 2026-10-09).
+  - The reply lands in the mayor's inbox and stays in the thread. Check the
+    `--json` result: its `to` must be `gastown.mayor`.
+  - Add `--notify` when city hall must act now.
 - **To the other externals:** reply to an external's message. The reply lands in
   `human`, which every external reads.
 
