@@ -16,8 +16,15 @@ requires.
 
 Mail is bead-based messaging between agents. Messages are beads with type=message,
 stored in the city's bead store. Rule `inter-session-mail` declares the obligation to
-communicate only through mail. This skill owns the complete contract, because it is
-the artifact every provider home receives.
+communicate only through mail. This skill owns the complete contract, because a skill
+is the only governance artifact that still reaches agents beyond Claude Code.
+Measured 2026-10-09: `~/.codex/skills/gc-mail` is installed, while no provider
+receives the rule text.
+
+- As an opt-in skill it reaches no project tree.
+- Its delivery to each provider home is ai-hub's (rule `distribution-routing`,
+  law 2).
+- A session without it follows the protocol city hall posts in the campaign thread.
 
 ## Sending
 
@@ -142,8 +149,10 @@ reads it with `gc mail thread <thread-id>`.
 you route inside the thread:
 
 - **To city hall:** reply to the latest message whose FROM is `gastown.mayor`. That is
-  the second column of `gc mail thread <thread-id>`:
-  `gc mail thread <thread-id> | awk '$2=="gastown.mayor"{id=$1} END{print id}'`.
+  the second column of `gc mail thread <thread-id>`, which lists oldest first, so the
+  last match is the latest. When the thread holds no city-hall message, the guard
+  exits 1 instead of printing an empty id:
+  `gc mail thread <thread-id> | awk '$2=="gastown.mayor"{id=$1} END{if(id=="")exit 1; print id}'`.
   - Never reply to your own message to the mayor: a reply goes to the original
     sender, so it would land in `human` (measured 2026-10-09).
   - The reply lands in the mayor's inbox and stays in the thread. Check the
@@ -166,13 +175,16 @@ hall opens one, for a new campaign.
 2. **Ownership before effect.** Before the first write, post the bead, the
    branch/worktree, the PR, and the exact file fence. Overlapping fences wait for city
    hall's arbitration in the thread.
-3. **Gate windows.** Post `[coord] [@city-hall] gate-window START <repo> <verb>`, wait
-   for city hall's ACK, run the gate, then post `END exit=<n>` with decisive output.
+3. **Gate windows.** Post `[coord] [@city-hall] gate-window START <repo> <verb>
+   <sender>` and wait for city hall's ACK. Run the gate, then post `[coord]
+   [@city-hall] gate-window END <repo> <verb> exit=<n> <sender>` with decisive output.
    One heavy gate runs per machine.
 4. **Polling.** Nothing injects mail into an external session. Poll the campaign
    thread at every phase boundary and at least every 15 minutes.
-5. **Direct channels.** A provider's cross-session channel (for example
-   Claude↔Claude) is only a fast path. Repeat every such message in the thread.
+5. **Direct channels.** A provider's cross-session channel exists only where the
+   operator authorized it: today Claude↔Claude, per tracker memory
+   `operator-ruling-2026-10-09-session-channel-sendmessage`. It is a fast path:
+   repeat every such message in the thread, which stays the record.
 6. **City hall's own duties.**
    - Use `mark-read`, never archive.
    - Keep the roster and its decisions on the campaign bead.
@@ -190,23 +202,28 @@ Every coordination subject carries:
 - the `[coord]` prefix;
 - an optional addressee tag (`[@city-hall]`, `[@all]`, `[@operator]`,
   `[@<repo>/<executor>]`);
-- the sender suffix `(<alias>@<repo>, <executor>)`.
+- a mandatory sender suffix, written `<sender>` below and meaning
+  `(<alias>@<repo>, <executor>)`. External sessions all send as `human`, so the
+  suffix is the only sender identity the thread carries.
 
 A subject without the prefix is not coordination and is not read as one.
 
-- `[coord] hello <alias>` at session start: scope, repositories, lanes, owning bead.
-- `[coord] roll-call` collects each session's alias, scope, lanes, and file fence;
-  an unanswered roll-call is a missing receipt, not an absence.
-- `[coord] lane claim <canonical path> <branch>` before touching a lane.
-- `[coord] lane status? <lane>` to its declared owner when the lane looks stalled.
-- `[coord] lane changed <lane> <sha>` asking the author why. The answer is the
-  attribution; it replaces the presumption of a clobber.
-- `[coord] gate-window START` and `[coord] gate-window END`, paired, around every
-  heavy gate, granted by the coordinator.
-- `[coord] freeze start` and `[coord] freeze end`, exact and paired.
-- `[coord] blocker <alias>` with command, working directory, exit code, and decisive
-  output.
-- `[coord] landed <repo> <sha>` after every landing on an integration lane.
+- `[coord] hello <alias> <sender>` at session start: scope, repositories, lanes,
+  owning bead.
+- `[coord] roll-call <sender>` collects each session's alias, scope, lanes, and file
+  fence. An unanswered roll-call is a missing receipt, not an absence.
+- `[coord] lane claim <canonical path> <branch> <sender>` before touching a lane.
+- `[coord] lane status? <lane> <sender>` to its declared owner when the lane looks
+  stalled.
+- `[coord] lane changed <lane> <sha> <sender>` asking the author why. The answer is
+  the attribution; it replaces the presumption of a clobber.
+- `[coord] [@city-hall] gate-window START|END <repo> <verb> <sender>`, paired,
+  around every heavy gate, granted by the coordinator.
+- `[coord] freeze start <sender>` and `[coord] freeze end <sender>`, exact and
+  paired.
+- `[coord] blocker <sender>` with command, working directory, exit code, and
+  decisive output.
+- `[coord] landed <repo> <sha> <sender>` after every landing on an integration lane.
 
 ## Authority per question (mail is the channel, not the oracle)
 

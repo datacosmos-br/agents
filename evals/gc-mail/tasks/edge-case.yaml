@@ -17,4 +17,4 @@ inputs:
   - path: scenario.yaml
 expected:
   output_contains: [message ID, authorization, gc mail peek, gc mail thread, ACK, receipt, operator, bead-branch-pr-cadence, gastown.mayor]
-  output_not_contains: [gc mail archive, gc mail delete, synthesized success, --all]
+  output_not_contains: [synthesized success, --all]

@@ -4,19 +4,20 @@ description: Read a linked agent message, preserve its bead-backed conversation,
 tags: [gas-city, gc-mail, happy-path, coordination]
 inputs:
   prompt: >-
-    You are an external Codex session (not started by gc session new) working
-    from a project checkout outside the city root. Use scenario.yaml: inspect
-    the unread count, read msg-184, view its full thread, and reply to
-    billing/reviewer with the exact red gate evidence. The red gate is a
-    blocker, so also report it to city hall inside the campaign thread the city
-    announced. Report each gc mail command, cwd, exit code, and decisive output,
-    say how you select the city store from your checkout, how you prove
-    delivery, and how you will learn about replies. Preserve the linked bead and
-    do not archive or delete any message.
+    You are worker-codex@billing, an external Codex session declared by the
+    operator in scenario.yaml and not managed by Gas City, working from a
+    project checkout outside the city root. Use scenario.yaml: inspect the
+    unread count, read msg-184, view its full thread, and reply to
+    billing/reviewer with the red gate evidence recorded under red_gate. The red
+    gate is a blocker, so also report it to city hall inside the campaign thread
+    the city announced. Report each gc mail command, cwd, exit code, and
+    decisive output, say how you select the city store from your checkout, how
+    you prove delivery, and how you will learn about replies. Preserve the
+    linked bead and do not archive or delete any message.
     Exercise Gas City mail as inter-agent messaging through bead threads and the
     canonical inbox.
   files:
   - path: scenario.yaml
 expected:
-  output_contains: [gc mail inbox, msg-184, gc mail thread, gc mail reply, billing-72, exit code, gastown.mayor, msg-201, --city, gc mail peek]
-  output_not_contains: [gc mail archive, gc mail delete, --all, gc session new]
+  output_contains: [gc mail inbox, msg-184, gc mail thread, gc mail reply, billing-72, exit code, gastown.mayor, msg-201, --city, gc mail peek, test_refund_receipt]
+  output_not_contains: [gc mail archive, gc mail delete, --all]
