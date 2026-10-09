@@ -78,19 +78,19 @@ checksum = "sha256:6e1db87ef58b8819e5d5402eff1536491b18edd8eb7bee5ef7897876e88dc
 url = "https://nodejs.org/dist/v24.21.0/node-v24.21.0-linux-x64.tar.gz"
 
 [[tools."npm:jscpd"]]
-version = "5.3.3"
-aube = { path = ".mise/locks/npm-jscpd/5.3.3", digest = "sha256:c0a62cf6050ed88df4cc0a287c1a3b795cf4f539f7d7f375413b16b29eb1dc05" }
+version = "5.4.0"
+aube = { path = ".mise/locks/npm-jscpd/5.4.0", digest = "sha256:7ee06a279c0f8db65a8ef5b5f2ce0be51c3b63d726c7c159808cc31afaa5a807" }
 backend = "npm:jscpd"
 specifiers = ["latest"]
 
 [[tools.python]]
-version = "3.13.15"
+version = "3.13.16"
 backend = "core:python"
 specifiers = ["3.13"]
 
 [tools.python."platforms.linux-x64"]
-checksum = "sha256:c552deaf9ed0e678dee4ccc760d6dcd7cab33f1bd43e8037123b4a4db8508e14"
-url = "https://github.com/astral-sh/python-build-standalone/releases/download/20260929/cpython-3.13.15+20260929-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz"
+checksum = "sha256:4595c5589fff7bf0cb158d9a88a797e0d791fa33830770fcb7bf3f4b104feeae"
+url = "https://github.com/astral-sh/python-build-standalone/releases/download/20261003/cpython-3.13.16+20261003-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz"
 provenance = "github-attestations"
 
 [[tools.shellcheck]]
@@ -104,22 +104,22 @@ url = "https://github.com/koalaman/shellcheck/releases/download/v0.11.0/shellche
 url_api = "https://api.github.com/repos/koalaman/shellcheck/releases/assets/279056942"
 
 [[tools.snyk]]
-version = "1.1307.4"
+version = "1.1308.0"
 backend = "aqua:snyk/cli"
 specifiers = ["latest"]
 
 [tools.snyk."platforms.linux-x64"]
-checksum = "sha256:b0baee4fa4d7d11b7df927a1046cf8137a8a89fafac8101a45c3c0e0777ddc35"
-url = "https://github.com/snyk/cli/releases/download/v1.1307.4/snyk-linux"
-url_api = "https://api.github.com/repos/snyk/cli/releases/assets/584104972"
+checksum = "sha256:a916d3ec9e6c27d56cf67664459885512758a1ae94418ba430fcb92e86c32ae1"
+url = "https://github.com/snyk/cli/releases/download/v1.1308.0/snyk-linux"
+url_api = "https://api.github.com/repos/snyk/cli/releases/assets/621676644"
 
 [[tools.uv]]
-version = "0.12.21"
+version = "0.12.23"
 backend = "aqua:astral-sh/uv"
 specifiers = ["latest"]
 
 [tools.uv."platforms.linux-x64"]
-checksum = "sha256:23f02075b652bb1df64178cfae41b5caf160822e720e2663568f3f5d63bc52c0"
-url = "https://github.com/astral-sh/uv/releases/download/0.12.21/uv-x86_64-unknown-linux-gnu.tar.gz"
-url_api = "https://api.github.com/repos/astral-sh/uv/releases/assets/599238020"
+checksum = "sha256:9167d72b3319674b6303c4cbe071854bba13ebdf3d76b1a7cbdc175471fb66d6"
+url = "https://github.com/astral-sh/uv/releases/download/0.12.23/uv-x86_64-unknown-linux-gnu.tar.gz"
+url_api = "https://api.github.com/repos/astral-sh/uv/releases/assets/608232628"
 provenance = "github-attestations"
