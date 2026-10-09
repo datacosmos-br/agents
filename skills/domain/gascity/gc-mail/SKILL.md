@@ -70,7 +70,8 @@ wrong invocation, not of the store, and it is never answered with `bd init`.
   zcode…) are **not** gc sessions: `gc whoami` answers `not logged in`. They cannot be
   addressed by alias and they send as `human`. Until such a session is registered, the
   shared channel between all agents is the **`human` inbox**: every agent sends to
-  `human` and reads `gc mail inbox human`.
+  `human` and reads `gc mail inbox human`; while the city is live, coordination also
+  goes to city hall (next section).
 - Put the sender alias in the subject, because every unregistered sender shows as
   `human`: `-s "[coord] hello <alias>"`, `[coord] roll-call`, `[coord] lane claim <path>
   <branch>`, `[coord] lane status? <lane>`, `[coord] lane changed <lane> <sha>`,
@@ -78,6 +79,28 @@ wrong invocation, not of the store, and it is never answered with `bd init`.
   coordination and is not read as one.
 - `bd` has **no** message command (`bd message` → `unknown command`). Mail is `gc mail`
   only; it stores each message as a bead with `type=message` in the city store.
+
+## City hall coordinates external sessions (operator rule 2026-10-09)
+
+A session not started by `gc session new` (Claude Code, Codex, zcode, kilo) is an
+**external session** of the city and its rigs. When the city is live — `gc status
+--json` reports `running: true` and `suspended: false`, and `gc session list --state
+active` shows the mayor — city hall (the mayor, `gastown.mayor`) is the organizer and
+coordinator (rule `coordinator-ladder`, tier 1):
+
+- Send hello, lane claims, blockers, approval requests, gate windows and landed
+  receipts to the mayor by alias (`gc mail send gastown.mayor …`; `--notify` once to
+  wake it) **and** mirror the same message to `human`, the bus the other external
+  sessions read.
+- Subjects name the executor: `[coord] <kind> <facts> (<alias>@<repo>, <executor>)`.
+- Nothing injects mail into an external session: poll your threads (`gc mail thread
+  <id>`) at every phase boundary and at least every 15 minutes.
+- Two sessions of one executor family may also use that executor's direct channel;
+  every such message is mirrored to the same gc mail thread, which stays the record.
+- Heavy gates are serialized through city hall: `[coord] gate-window START <repo>
+  (<alias>)` before the run and `END` after it.
+- When the mayor is not active, the ladder's tier 2 applies: an election on the
+  `human` thread.
 
 ## Operating limits (measured)
 

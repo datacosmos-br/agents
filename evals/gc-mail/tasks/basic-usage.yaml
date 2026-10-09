@@ -1,17 +1,22 @@
 id: gc-mail-happy-001
-name: Reply to one unread bead thread
-description: Read a linked agent message and preserve its bead-backed conversation.
-tags: [gas-city, gc-mail, happy-path]
+name: Reply to one unread bead thread and report the blocker to city hall
+description: Read a linked agent message, preserve its bead-backed conversation, and route coordination through the live city hall.
+tags: [gas-city, gc-mail, happy-path, coordination]
 inputs:
   prompt: >-
-    Use scenario.yaml to inspect the unread count, read msg-184, view its full
-    thread, and reply to billing/reviewer with the exact red gate evidence.
+    You are an external Codex session (not started by gc session new) in a live
+    city: gc status --json reports running true and suspended false, and
+    gastown.mayor is an active session. Use scenario.yaml to inspect the unread
+    count, read msg-184, view its full thread, and reply to billing/reviewer
+    with the exact red gate evidence. The red gate is a blocker, so also report
+    it to city hall and to the shared bus the other external sessions read.
     Preserve the linked bead and report each gc mail command, cwd, exit code,
-    and decisive output; do not archive or delete the message.
+    and decisive output, including how you prove delivery and how you will
+    learn about replies; do not archive or delete the message.
     Exercise Gas City mail as inter-agent messaging through bead threads and the
     canonical inbox.
   files:
   - path: scenario.yaml
 expected:
-  output_contains: [gc mail inbox, msg-184, gc mail thread, gc mail reply, billing-72, exit code]
-  output_not_contains: [archive, delete]
+  output_contains: [gc mail inbox, msg-184, gc mail thread, gc mail reply, billing-72, exit code, gastown.mayor, human]
+  output_not_contains: [archive, delete, --all]
