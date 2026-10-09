@@ -15,9 +15,9 @@ requires.
 # Messaging (Mail)
 
 Mail is bead-based messaging between agents. Messages are beads with type=message,
-stored in the city's bead store. Rule `inter-session-mail` owns the obligations:
-the five receipts, presence, the authority table, and the subject taxonomy. This
-skill owns the commands.
+stored in the city's bead store. Rule `inter-session-mail` declares the obligation to
+communicate only through mail. This skill owns the complete contract, because it is
+the artifact every provider home receives.
 
 ## Sending
 
@@ -58,9 +58,9 @@ message bead instead of hard-deleting it.
 - Closing does not guarantee recovery or indefinite retention.
 - Require a unique message ID and authorization before either operation.
 - Use `mark-read` to acknowledge without closing.
-- Coordination mail is never archived while its campaign is open (rule
-  `inter-session-mail`). That overrides a pack prompt's generic "read, then
-  archive" advice.
+- Never archive or delete coordination mail while its campaign is open. That
+  overrides a pack prompt's generic "read, then archive" advice.
+- Never mark another participant's inbox read.
 
 ## Select the city store
 
@@ -69,12 +69,16 @@ City mail lives in the city store. Two cases:
 - Inside the city root, or inside a gc-managed session: plain `gc mail …` resolves
   the city.
 - From an external session or any other checkout, use
-  `direnv exec <city-root> gc --city <city-root> mail …`. Verified 2026-10-09 from
-  a non-city cwd, and from inside a project environment that hid `gc` behind a mise
-  error: the route resolved the host `gc` and reached the city store.
+  `direnv exec <city-root> gc --city <city-root> mail …`.
+  - Verified 2026-10-09 from a non-city cwd, and from inside a project environment
+    that hid `gc` behind a mise error: the route resolved the host `gc` and reached
+    the city store.
+  - A project environment that hides `gc` is a defect of that environment's owner.
+    Run mail under the city root's environment, never under another project's.
 
 `gc` and `bd` verbs other than mail keep the owning project's home and direnv
-environment (`direnv exec <project-root> …`).
+environment (`direnv exec <project-root> …`). Rig-scoped `bd` must pass a
+`bd context --json` identity check before effects.
 
 A bare invocation from another directory can resolve another project's database and
 fails with `PROJECT IDENTITY MISMATCH — refusing to connect` (local `metadata.json`
@@ -90,19 +94,49 @@ answer it with `bd init`.
   - `human`.
 - `--from` accepts only those identities and `controller`. An external session
   (Claude Code, Codex, ZCode, Kilo) has no mailbox: `gc whoami` answers `not logged
-  in`, it sends as `human`, and its identity rides in the subject
-  `(<alias>@<repo>, <executor>)`.
+  in`, it sends as `human`, and its identity rides in the subject.
   - Never invent an alias.
   - Never run `gc session new` to stand in for a running external executor; that
     duplicates the executor instead of registering it.
 - `bd` has **no** message command (`bd message` → `unknown command`). Mail is `gc mail`
   only.
 
+## Receipts and presence
+
+Delivery, acknowledgement, and completion are five separate receipts; none implies
+the next:
+
+- sent: the returned message id;
+- readback: `gc mail peek <id>`, or the id listed by `gc mail thread`;
+- ACK: the addressee's reply in the thread;
+- accepted: the owner's bead claim;
+- done: command, working directory, exit code, and decisive output.
+
+A missing reply is a missing ACK receipt and nothing more. It never proves that a
+session is offline, and it never authorizes adoption, deletion, an election, or a
+closure.
+
+- The presence of an external session comes from the operator's declaration,
+  confirmed by provider-native session metadata (identity, workspace, and status
+  fields only; never transcripts or credentials).
+- Abandonment comes only from the test in rule `bead-branch-pr-cadence` §2.
+
+A gc-managed session is working only when `gc session peek <alias>` shows a model
+turn. A status listing that reports it `active` is not proof: from 2026-10-05 to
+2026-10-09 the city HQ stayed `active` in `gc status` and `gc session list` while
+every provider turn failed with `401 Invalid bearer token`. `gc status` output is
+cached (`_cache_age_s`).
+
+The shared `human` inbox lists unread messages; it is not the record. An empty inbox
+proves neither failed delivery nor absent progress. Prove readback from the retained
+id, never by filtering the unread inbox.
+
 ## City hall campaign (operator rule 2026-10-09)
 
 While the city is live, city hall (the mayor, `gastown.mayor`) organizes and
-coordinates external sessions through **one campaign thread**. City hall announces
-that thread, and every participant reads it with `gc mail thread <thread-id>`.
+coordinates external sessions through **one campaign thread** (rule
+`coordinator-ladder`, tier 1). City hall announces that thread, and every participant
+reads it with `gc mail thread <thread-id>`.
 
 `gc mail reply <id>` keeps the thread and addresses the original sender. That is how
 you route inside the thread:
@@ -116,9 +150,6 @@ you route inside the thread:
 Verified 2026-10-09: one thread listed human→human, gastown.mayor→human, and
 human→gastown.mayor messages together. A fresh `send` opens a new thread; only city
 hall opens one, for a new campaign.
-
-Subjects follow rule `inter-session-mail`:
-`[coord] [@<addressee>] <kind> <facts> (<alias>@<repo>, <executor>)`.
 
 1. **Roll-call.** Reply to city hall's roll-call message with:
    - alias, executor, and repository;
@@ -135,28 +166,64 @@ Subjects follow rule `inter-session-mail`:
    One heavy gate runs per machine.
 4. **Polling.** Nothing injects mail into an external session. Poll the campaign
    thread at every phase boundary and at least every 15 minutes.
-5. **Receipts.** Keep the returned id. Prove readback with `gc mail peek <id>` or
-   `gc mail thread`, not by filtering the unread `human` inbox. Report the sent,
-   readback, ACK, accepted, and done receipts separately.
-6. **Direct channels.** A provider's cross-session channel (for example
+5. **Direct channels.** A provider's cross-session channel (for example
    Claude↔Claude) is only a fast path. Repeat every such message in the thread.
-7. **City hall's own duties.**
+6. **City hall's own duties.**
    - Use `mark-read`, never archive.
    - Keep the roster and its decisions on the campaign bead.
    - Arbitrate overlaps in the thread.
    - Respect any operator scope fence on suspended rigs: no `gc sling` and no
      `gc rig resume` into them.
-8. **Coordinator health.** City hall is working only if `gc session peek gastown.mayor`
-   shows a model turn. If it does not, post `[coord] [@operator] blocker` to `human`
-   with the peek evidence. The `coordinator-ladder` tier 2 election applies only once
-   the coordinator's own runtime proves it unavailable, never on a missing reply or a
-   cached status.
+7. **Coordinator health.** If `gc session peek gastown.mayor` shows no model turn,
+   post `[coord] [@operator] blocker` to `human` with the peek evidence. The
+   `coordinator-ladder` tier 2 election applies only once the coordinator's own
+   runtime proves it unavailable, never on a missing reply or a cached status.
+
+## Subject taxonomy
+
+Every coordination subject carries:
+- the `[coord]` prefix;
+- an optional addressee tag (`[@city-hall]`, `[@all]`, `[@operator]`,
+  `[@<repo>/<executor>]`);
+- the sender suffix `(<alias>@<repo>, <executor>)`.
+
+A subject without the prefix is not coordination and is not read as one.
+
+- `[coord] hello <alias>` at session start: scope, repositories, lanes, owning bead.
+- `[coord] roll-call` collects each session's alias, scope, lanes, and file fence;
+  an unanswered roll-call is a missing receipt, not an absence.
+- `[coord] lane claim <canonical path> <branch>` before touching a lane.
+- `[coord] lane status? <lane>` to its declared owner when the lane looks stalled.
+- `[coord] lane changed <lane> <sha>` asking the author why. The answer is the
+  attribution; it replaces the presumption of a clobber.
+- `[coord] gate-window START` and `[coord] gate-window END`, paired, around every
+  heavy gate, granted by the coordinator.
+- `[coord] freeze start` and `[coord] freeze end`, exact and paired.
+- `[coord] blocker <alias>` with command, working directory, exit code, and decisive
+  output.
+- `[coord] landed <repo> <sha>` after every landing on an integration lane.
+
+## Authority per question (mail is the channel, not the oracle)
+
+| Question | Authority |
+| --- | --- |
+| Which managed gc actors exist | `gc agent list`, `gc session list` |
+| Whether a managed session works | a model turn shown by `gc session peek <alias>` |
+| Which external sessions exist | the operator's declaration, confirmed by provider-native session metadata |
+| What each session is doing, its role | its roll-call reply in the campaign thread, plus the owning bead |
+| Whether a lane is abandoned | the test declared in `bead-branch-pr-cadence` §2 |
+| Who changed my lane, and why | the lane's log and reflog, the author's mail, the bead cited in the commit |
 
 ## Operating limits (measured)
 
-- `gc mail send --all` reaches **only live gc sessions and excludes `human`**: for
-  external sessions it reaches nobody, and with `--notify` it hangs past two minutes.
-  Do not broadcast. Use `--notify` only for one named gc recipient that must act now.
+- `gc mail send --all` reaches **only live gc sessions and excludes `human`**. For
+  external sessions it reaches nobody. Every live gc session, pool agents included,
+  receives a copy, which becomes an open bead assigned to that agent.
+  - Measured 2026-10-09: 102 such copies kept the `bd.dog` pool draining and
+    respawning (gct-lv2pe).
+  - With `--notify` it hangs past two minutes.
+  - Do not broadcast. Use `--notify` only for one named gc recipient that must act
+    now.
 - The store lock is intermittent:
   - Symptom: stderr `WARN native_store_unavailable … schema migration lock
     unavailable: timeout`, then `To diagnose: bd dolt status / Do NOT run 'bd init'`.
@@ -166,9 +233,5 @@ Subjects follow rule `inter-session-mail`:
   - Do not issue it again: no retry, and no directory change to get around it. The
     store owner repairs the lock.
   - An exit code alone is not evidence: a send can look successful and store nothing.
-- A listed `active` session is not a working session. From 2026-10-05 to 2026-10-09
-  the city HQ stayed `active` in `gc status` and `gc session list` while every
-  provider turn failed with `401 Invalid bearer token`. Only `gc session peek` showed
-  it. `gc status` output is cached (`_cache_age_s`).
-- Read without consuming: `gc mail peek <id>`. The operator's inbox is not yours to
-  mark read. Bodies are one line; pipe them through `fold -s -w 180` to read.
+- Read without consuming: `gc mail peek <id>`. Bodies are one line; pipe them through
+  `fold -s -w 180` to read.
