@@ -99,9 +99,15 @@ answer it with `bd init`.
     an unqualified HQ alias such as `mayor`/`gastown.mayor`);
   - a configured named session;
   - `human`.
-- `--from` accepts only those identities and `controller`. An external session
-  (Claude Code, Codex, ZCode, Kilo) has no mailbox: `gc whoami` answers `not logged
-  in`, it sends as `human`, and its identity rides in the subject.
+- `--from` accepts only those identities and `controller`.
+- Classification follows the local city registry:
+  - A managed session is one gc started. `gc session list` lists it, and its
+    environment carries `GC_SESSION_ID` / `GC_ALIAS`, which gc mail uses as the
+    default sender.
+  - An external session (Claude Code, Codex, ZCode, Kilo) has none of these, so it
+    has no mailbox, sends as `human`, and carries its identity in the subject.
+  - `gc whoami` reports the hosted Gas City account (`gc login`) and says nothing
+    about local mail identity. Never use it for this classification.
   - Never invent an alias.
   - Never run `gc session new` to stand in for a running external executor; that
     duplicates the executor instead of registering it.
