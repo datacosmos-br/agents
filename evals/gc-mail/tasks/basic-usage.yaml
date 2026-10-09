@@ -13,6 +13,8 @@ inputs:
     say how you select the city store from your checkout, how you prove
     delivery, and how you will learn about replies. Preserve the linked bead and
     do not archive or delete any message.
+    Exercise Gas City mail as inter-agent messaging through bead threads and the
+    canonical inbox.
   files:
   - path: scenario.yaml
 expected:
