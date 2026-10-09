@@ -100,8 +100,12 @@ answer it with `bd init`.
   - a configured named session;
   - `human`.
 - `--from` accepts only those identities and `controller`. An external session
-  (Claude Code, Codex, ZCode, Kilo) has no mailbox: `gc whoami` answers `not logged
-  in`, it sends as `human`, and its identity rides in the subject.
+  (Claude Code, Codex, ZCode, Kilo) not registered as a managed local actor sends
+  as `human`, and its executor identity rides in the subject. Local managed
+  identity comes from the city's `gc session list` registry.
+  - `gc whoami` queries the authenticated hosted Gas City account. A hosted
+    login, or its absence, proves nothing about local managed membership or
+    external-session presence.
   - Never invent an alias.
   - Never run `gc session new` to stand in for a running external executor; that
     duplicates the executor instead of registering it.
