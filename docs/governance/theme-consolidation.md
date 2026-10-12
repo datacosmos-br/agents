@@ -64,6 +64,19 @@ include restoration — gen was broken for ALL standalone consumers),
 flext-ldap #191 (12 duplicated `self` params — SyntaxError on import),
 flext-ldap #212-era wave, agents laws 13/14 landing (6b0a52d1).
 
+## Remaining singles (2026-10-12, post-consolidation)
+
+Each is its own one-bead theme — no duplicates remain in the city store
+(17 non-closed total: 7 theme SSOTs + 2 control-plane session records
+gc-5wbfj/gc-w5gg4 with standing do-not-close dispositions + 8 singles):
+gc-jrdcsr (T9 workspace/Drive), gc-ajnk6n (T8 flext tip debt + wheel-fix
+adoption evidence), gc-ftpbnz (gc docs rewrite phase 1), gc-13572e
+(hardening + rig reactivation waves — gate: doctor clean, unblocked by T2
+F1a), gc-2hxgq (automation program: resolver/MCP-anywhere/setup-always
+legs), gc-nl6xlf (OUD HML acceptance), gc-6jgvsq (city start window —
+lifecycle), gc-nwnp2 (P3 gitignore duplicate — locus known: fleet
+config/codegen.yaml:1613/1618 dead instances).
+
 ## Session-start checklist (new sessions)
 
 1. Read this file + the SSOT beads of themes you touch.
