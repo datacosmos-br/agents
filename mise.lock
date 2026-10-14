@@ -44,6 +44,17 @@ url = "https://github.com/oven-sh/bun/releases/download/bun-v1.4.3/bun-linux-x64
 checksum = "sha256:4b5b0b5503f6ebf15161e8c56eb5a263134c05cd98a86dc11ee43ac5bda9862e"
 url = "https://github.com/oven-sh/bun/releases/download/bun-v1.4.3/bun-linux-x64-musl-baseline.zip"
 
+[[tools."github:kucherenko/jscpd"]]
+version = "5.4.1"
+backend = "github:kucherenko/jscpd"
+specifiers = ["latest"]
+
+[tools."github:kucherenko/jscpd"."platforms.linux-x64"]
+checksum = "sha256:f2017a17de2a8d5708f8354c6e7223f82da3dc6489675bce543ba00d9d529468"
+url = "https://github.com/kucherenko/jscpd/releases/download/v5.4.1/jscpd-linux-x64-gnu.tar.gz"
+url_api = "https://api.github.com/repos/kucherenko/jscpd/releases/assets/624938749"
+provenance = "github-attestations"
+
 [[tools.gitleaks]]
 version = "8.30.1"
 backend = "aqua:gitleaks/gitleaks"
@@ -76,12 +87,6 @@ specifiers = ["24"]
 [tools.node."platforms.linux-x64"]
 checksum = "sha256:6e1db87ef58b8819e5d5402eff1536491b18edd8eb7bee5ef7897876e88dc5ff"
 url = "https://nodejs.org/dist/v24.21.0/node-v24.21.0-linux-x64.tar.gz"
-
-[[tools."npm:jscpd"]]
-version = "5.4.1"
-aube = { path = ".mise/locks/npm-jscpd/5.4.1", digest = "sha256:8f7f9fc30a5926ec0e4d4558909f6919ac038eb05e6f30b55930a198bf657842" }
-backend = "npm:jscpd"
-specifiers = ["latest"]
 
 [[tools.python]]
 version = "3.13.16"
