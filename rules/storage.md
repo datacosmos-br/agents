@@ -43,7 +43,7 @@ repository reconstructs it through its declared setup owner.
 
 ## Scratch, caches, and testmon use the tools' own defaults (operator ruling, 2026-10-16)
 
-<!-- Why: tracker memory operator-ruling-2026-10-16-scratch-tool-defaults (cosmos-main store) supersedes the 2026-09-12 scratch-root section of this file -->
+<!-- Why: tracker memory operator-ruling-2026-10-16-scratch-tool-defaults supersedes the 2026-09-12 scratch-root section of this file -->
 
 No external state root exists: `.flext-runtime` is exterminated. Temporary and scratch
 files, the testmon database (`.testmondata`), and `__pycache__` live at the tools' own
