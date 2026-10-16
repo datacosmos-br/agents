@@ -3,11 +3,8 @@
 MISE_EXEC := mise exec --
 CACHE_HOME := $(if $(XDG_CACHE_HOME),$(XDG_CACHE_HOME),$(HOME)/.cache)
 PYRIGHT_CACHE_ROOT := $(CACHE_HOME)/agents-governance/pyright
-TEST_STATE_ROOT := $(CACHE_HOME)/agents-governance/pytest
-TESTMON_DATAFILE := $(TEST_STATE_ROOT)/.testmondata
 ARTIFACT_STATE_ROOT := $(CACHE_HOME)/agents-governance/artifacts
 WAZA_STATE_ROOT := $(CACHE_HOME)/agents-governance/waza
-override export TESTMON_DATAFILE := $(TESTMON_DATAFILE)
 override export COVERAGE_CORE := ctrace
 override export ARTIFACT_STATE_ROOT := $(ARTIFACT_STATE_ROOT)
 override export PYRIGHT_PYTHON_CACHE_DIR := $(PYRIGHT_CACHE_ROOT)
@@ -72,9 +69,6 @@ docs: ## validate documentation through the public bundle contract
 
 audit: ## print the complete public semantic inventory
 	$(call BANNER,audit · GovernanceBundle.load)
-	@if [ -e "$(TESTMON_DATAFILE)" ]; then \
-		test "$$(sqlite3 "$(TESTMON_DATAFILE)" 'PRAGMA quick_check;')" = ok; \
-	fi
 	@uv run python -c 'from agents_governance import GovernanceBundle; bundle = GovernanceBundle.load(); d = bundle.delivery; print(f"{len(bundle.skills)} skills, {len(bundle.commands)} commands, {len(bundle.agents)} agents, {len(bundle.rules)} rules"); print(f"capsule {d.total_chars} chars (prelude {d.prelude_chars} + rules {d.rule_summary_chars} + skills {d.skill_index_chars}), headroom {d.headroom_chars}/{d.contract.capsule_budget_chars - d.contract.restore_list_reserve_chars}")'
 
 waza: ## validate provider-neutral skill suites with Waza
@@ -150,7 +144,7 @@ runtime: ## build, install, and load the public wheel
 	$(call BANNER,runtime · atomic build + isolated sdist/wheel proof)
 	@ARTIFACT_MODE=runtime uv run python tools/artifact_gate.py
 
-test: ## run affected tests through the shared testmon cache
+test: ## run affected tests through the testmon database at its tool default
 	$(call BANNER,test · pytest-testmon affected selection)
 	$(call RUN_TESTMON,incremental)
 

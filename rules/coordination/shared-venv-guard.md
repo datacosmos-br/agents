@@ -16,8 +16,10 @@ the primary checkout.
 - Never place the environment outside that workspace, install another repository as an
   editable dependency, or let inherited environment variables route setup or execution
   to another environment. Setup owns the checkout-local environment identity.
-- Caches and temporary artifacts remain outside the checkout; they are not Python
-  environments and must never become environment-sharing paths.
+- Caches and temporary artifacts stay at their tools' own default locations
+  (`rules/storage.md`) — in-tree by default for `__pycache__` and `.testmondata`,
+  ignored by Git; they are not Python environments and must never become
+  environment-sharing paths.
 - Never replace or clear a real environment while another process may own it.
 - Every manual task uses a dedicated Git worktree and branch, including while Gas City
   orchestration is suspended. Provision that worktree's own physical environment
