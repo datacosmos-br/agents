@@ -281,7 +281,7 @@ cp -R "${COMPONENTS_DIR}/components/ui" src/components/ui
 echo "📝 Creating components.json config..."
 cat > components.json << 'EOF'
 {
-  "${schema}": "https://ui.shadcn.com/schema.json",
+  "$schema": "https://ui.shadcn.com/schema.json",
   "style": "default",
   "rsc": false,
   "tsx": true,
