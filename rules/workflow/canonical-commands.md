@@ -55,9 +55,11 @@ This section is the single declaration of the test-verb law (tracker memory
 `operator-ruling-2026-10-01-testmon-make-test-only`). Every other rule, skill, command,
 agent profile, and doc references it and never restates it.
 
-- `make test` always runs with pytest-testmon selection active against the shared
-  external persistent database. A run whose selection is deactivated is RED at the
-  runner owner, never an accepted incomplete run.
+- `make test` always runs with pytest-testmon selection active against the persistent
+  database at testmon's own default location (`.testmondata` at the pytest rootdir,
+  ignored by Git); nothing forces it elsewhere (`rules/storage.md`). A run whose
+  selection is deactivated is RED at the runner owner, never an accepted incomplete
+  run.
 - CI and pre-push run `make test`; CI persists the testmon database through its cache.
 - Pre-commit runs no tests.
 - `make test-full` runs only locally, without testmon and without any time limit. It

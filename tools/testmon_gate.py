@@ -1,8 +1,9 @@
 """Run the root test verbs with strict cache and outcome accounting.
 
-``incremental`` (``make test``) runs pytest-testmon selection against the shared
-persistent database. ``full`` (``make test-full``) runs every test locally without
-testmon and without a time limit. ``repair`` checkpoints the database.
+``incremental`` (``make test``) runs pytest-testmon selection against the database
+testmon places at its own default location (``.testmondata`` at the pytest rootdir);
+nothing forces it elsewhere. ``full`` (``make test-full``) runs every test locally
+without testmon and without a time limit. ``repair`` checkpoints the database.
 """
 
 from __future__ import annotations
@@ -33,6 +34,20 @@ def _testmon_data_version() -> int:
     if type(value) is not int:
         raise TypeError("testmon.db.DATA_VERSION must be an integer")
     return value
+
+
+def _testmon_datafile(repository: Path) -> Path:
+    """Derive the database testmon writes when nothing overrides its location."""
+
+    if "TESTMON_DATAFILE" in os.environ:
+        raise ValueError(
+            "TESTMON_DATAFILE must be unset: testmon uses its default database"
+        )
+    module = importlib.import_module("testmon.testmon_core")
+    value: object = getattr(module, "DB_FILENAME", None)
+    if type(value) is not str or not value or Path(value).name != value:
+        raise TypeError("testmon.testmon_core.DB_FILENAME must be a bare file name")
+    return repository / value
 
 
 @dataclass(frozen=True)
@@ -118,14 +133,6 @@ def _validate_sidecars(path: Path) -> None:
             sidecar.unlink()
 
 
-def _validate_path(repository: Path, datafile: Path) -> None:
-    if not datafile.is_absolute() or datafile.is_relative_to(repository):
-        raise ValueError("TESTMON_DATAFILE must be an absolute external cache path")
-    for parent in (datafile.parent, *datafile.parents):
-        if parent.exists() and parent.is_symlink():
-            raise ValueError(f"testmon cache ancestry must be physical: {parent}")
-
-
 def _audit_report(path: Path) -> PytestAudit:
     if path.is_symlink() or not path.is_file():
         raise ValueError(f"pytest did not emit a physical audit report: {path}")
@@ -166,15 +173,13 @@ def _audit_report(path: Path) -> PytestAudit:
     )
 
 
-def _pytest(mode: str, repository: Path, scratch_parent: Path) -> PytestAudit:
-    with tempfile.TemporaryDirectory(prefix="scratch-", dir=scratch_parent) as scratch:
-        audit_path = Path(scratch) / "audit.json"
+def _pytest(mode: str, repository: Path) -> PytestAudit:
+    with tempfile.TemporaryDirectory(prefix="testmon-audit-") as staging:
+        audit_path = Path(staging) / "audit.json"
         arguments = [
             sys.executable,
             "-m",
             "pytest",
-            "--basetemp",
-            scratch,
             *(("--testmon",) if mode == "incremental" else ()),
             "-vvv",
             "--maxfail=1",
@@ -202,8 +207,8 @@ def _pytest(mode: str, repository: Path, scratch_parent: Path) -> PytestAudit:
     return audit
 
 
-def _run_full(repository: Path, datafile: Path) -> int:
-    audit = _pytest("full", repository, datafile.parent)
+def _run_full(repository: Path) -> int:
+    audit = _pytest("full", repository)
     if not audit.executed or audit.deselected:
         raise RuntimeError(
             "full accounting mismatch: "
@@ -220,7 +225,7 @@ def _run(repository: Path, datafile: Path) -> int:
     existed = datafile.exists()
     _validate_sidecars(datafile)
     before = _database_state(datafile) if existed else None
-    audit = _pytest("incremental", repository, datafile.parent)
+    audit = _pytest("incremental", repository)
     _validate_sidecars(datafile)
     after = _database_state(datafile)
     if before is not None and (before.device, before.inode) != (
@@ -253,19 +258,6 @@ def _run(repository: Path, datafile: Path) -> int:
 
 
 def _repair(datafile: Path) -> int:
-    obsolete_scratch = datafile.parent / "scratch"
-    if obsolete_scratch.is_symlink() or (
-        obsolete_scratch.exists() and not obsolete_scratch.is_dir()
-    ):
-        raise ValueError(
-            f"obsolete test scratch must be a physical directory: {obsolete_scratch}"
-        )
-    if obsolete_scratch.exists():
-        if any(obsolete_scratch.iterdir()):
-            raise ValueError(
-                f"obsolete test scratch must be empty before removal: {obsolete_scratch}"
-            )
-        obsolete_scratch.rmdir()
     if not datafile.exists():
         _validate_sidecars(datafile)
         print("TESTMON repair cache=absent sidecars=0", flush=True)
@@ -303,13 +295,8 @@ def main() -> int:
     mode = os.environ.get("TESTMON_MODE")
     if mode not in {"full", "incremental", "repair"}:
         raise ValueError("TESTMON_MODE must equal full, incremental, or repair")
-    configured = os.environ.get("TESTMON_DATAFILE")
-    if configured is None:
-        raise ValueError("TESTMON_DATAFILE is required")
-    datafile = Path(configured)
-    _validate_path(repository, datafile)
-    datafile.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
-    lock_path = datafile.parent / "testmon.lock"
+    datafile = _testmon_datafile(repository)
+    lock_path = Path(f"{datafile}.lock")
     if lock_path.is_symlink() or (lock_path.exists() and not lock_path.is_file()):
         raise ValueError(f"testmon lock must be a physical file: {lock_path}")
     with lock_path.open("a+b") as lock:
@@ -317,7 +304,7 @@ def main() -> int:
         if mode == "repair":
             return _repair(datafile)
         if mode == "full":
-            return _run_full(repository, datafile)
+            return _run_full(repository)
         return _run(repository, datafile)
 
 

@@ -41,14 +41,15 @@ A repository-local `.venv` is a regenerable local runtime artifact, never a sour
 shared dependency. It is never copied or reused across checkouts; each physical
 repository reconstructs it through its declared setup owner.
 
-## Scratch root is user-home-scoped, never `/tmp` or in-tree (operator ruling, 2026-09-12)
+## Scratch, caches, and testmon use the tools' own defaults (operator ruling, 2026-10-16)
 
-<!-- Why: registers 2026-09-12 operator ruling A' on this file, the existing storage-placement owner -->
+<!-- Why: tracker memory operator-ruling-2026-10-16-scratch-tool-defaults (cosmos-main store) supersedes the 2026-09-12 scratch-root section of this file -->
 
-`TMPDIR`, `GOTMPDIR`, the pytest `basetemp`, and tool staging live under the platform
-home plus `tmp`, at `.flext-runtime<absolute project root>/scratch` — never `/tmp` and
-never inside the checked-out tree. The journal, testmon cache, and `__pycache__` stay
-beside the checkout, not under scratch. A `clean` verb that only sweeps an in-tree
-`.test-tmp` while scratch actually lives at the platform home plus `tmp` root is
-incomplete and leaks; it is corrected at its Make/codegen owner to sweep the real
-location.
+No external state root exists: `.flext-runtime` is exterminated. Temporary and scratch
+files, the testmon database (`.testmondata`), and `__pycache__` live at the tools' own
+default locations, and nothing forces them elsewhere — no generated `TMPDIR`,
+`GOTMPDIR`, pytest `basetemp`, or scratch-root variable. A forced external root filled
+the host disk. Every forced path in a template, Makefile, or consumer is a defect
+removed at its generator owner, and its consumers are rewired in the same cutover.
+Defaults that land in-tree (`__pycache__`, `.testmondata` and its SQLite sidecars) are
+ignored through the repository's `.gitignore` and never become source.

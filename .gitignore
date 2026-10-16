@@ -9,11 +9,10 @@
 **/*.py[cod]
 .mypy_cache/
 .eggs/
-.pytest-scratch/
 .pytest_cache/
 .ruff_cache/
-.test-tmp/
-.testmondata
+# testmon's default database, its SQLite sidecars, and the gate's lock beside it.
+.testmondata*
 .waza-cache/
 .reports/
 build/
