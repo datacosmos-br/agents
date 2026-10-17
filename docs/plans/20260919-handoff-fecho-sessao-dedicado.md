@@ -8,6 +8,7 @@ branch de integração.
 ## Estado por repositório (medido 02:4x–03:1x)
 
 ### agents (datacosmos-br/agents, dev) — ESTÁVEL, VERDE
+
 - `19bea8b7` fix(wip-beads): o veredito [unblock] contava dentro de subshell de
   pipeline (CRITICAL da review da PR 130 que pousou sem reparo) — corrigido com
   process substitution; gates verdes.
@@ -21,6 +22,7 @@ branch de integração.
   fences, wip-beads CSV quoting) — P3.
 
 ### algar-oud-mig (0.12.0-dev) — PR #32 MERGED (00:04Z); grind 96→1
+
 - Onda de grind (9 subagentes + integração local): namespace 96→1 (resta
   settings.py:19, **resolvida fleet-side** pelo carve-out settings-c no
   flext-infra), lint/silent-failure/loc-cap/markdown-format/layout zerados,
@@ -40,6 +42,7 @@ branch de integração.
   algar-y3u guarda o retorno ao verde.
 
 ### ai-hub (dev) — lanes ativas em runtime stabilization
+
 - Org layer: `providers` ficou obsoleto (identidade manifest-free, 208716f4f —
   extra_forbidden no schema novo); lane já corrigiu no dev; **o bloco layout
   project_overrides (wip/ canônico, ignores de runtime) precisa viver no org
@@ -56,6 +59,7 @@ branch de integração.
   aihub-jlp8n.5 census 111) — mapa de alavancagem postado no bead.
 
 ### flext-infra (flext-sh/flext-infra, 0.12.0-dev) — lanes em fluxo contínuo
+
 - Corte G1 pushed (b97622068..b5237b9a6): config pública sem dados privados +
   mecanismo de camadas (local gitignored no clone do gerador + org layer
   tracked no repo consumidor) + knob dependabot_cooldown_days + título de
@@ -83,6 +87,7 @@ _generate_workspace_config_parts + _allocation) — patch arquivado em
 (registrado). Patches de todas em eval-patches-20260918/.
 
 ## Deep-dive: descoberta e manutenção de worktrees (alinhamento wip)
+
 - **Programa canônico**: `ai-hub/wip/` = wip-hier (captura hierárquica;
   10-git.sh é o único gateway git; 60-retire aposenta worktrees/branches/PRs;
   --apply captura/alinha/puxa; --no-retire/--gates modulam). Regra do
@@ -108,6 +113,7 @@ _generate_workspace_config_parts + _allocation) — patch arquivado em
   --include-foreign.
 
 ## Restante da campanha (para a próxima janela)
+
 1. Algar: cauda do grind (lista precisa em algar-gm9) + retorno ao verde
    (algar-y3u) APÓS a onda mirror/no-lock da lane pousar.
 2. ai-hub: PR 802 herda os findings do bead oig6s.3; gates = l42it.3/jlp8n.5;
@@ -145,6 +151,7 @@ _generate_workspace_config_parts + _allocation) — patch arquivado em
 ## FECHO FINAL 2026-09-20 — evidências de entrega
 
 ### algar-oud-mig (0.12.0-dev / wip/stabilize-0.12-algar)
+
 - `make check` exit 0 confirmado 2× (pré e pós-piloto C2)
 - `pytest tests`: 324 passed, 250 skipped, 1 xfailed — 0 falhas
 - Namespace 96→0; 9 gates zerados; loc-cap converter 1231→848 LOC
@@ -152,6 +159,7 @@ _generate_workspace_config_parts + _allocation) — patch arquivado em
 - Runner CI: aguarda flext-57i4w + metadata receipt (upstream, dono flext-infra)
 
 ### ai-hub (dev)
+
 - Gates repo: TODOS PASS 0 (namespace 50→0, types 221→0, codemod 30→0)
 - Render convergence: 4/line packing implementado e revertido corretamente
 - Deploy: desbloqueado (invocação systemd-run + credencial presente no cofre);
@@ -159,12 +167,14 @@ _generate_workspace_config_parts + _allocation) — patch arquivado em
 - loc-cap 1030/1000: decisão `_lazy_map.py` registrada (aihub-jcgfm)
 
 ### flext-infra (0.12.0-dev)
+
 - Recovery noop package-owned pousado (caeddadae) — o "2 hard links" não recorre
 - Gen fixed-point restaurado (manifest-free cutover completo)
 - Settings-c carve-out pousado (c7e788510)
 - 6ep5y perna-1 documentada; perna-2 aguarda dono mise-artifacts
 
 ### agents (dev)
+
 - 918fb7dc: fleet MCP projection refresh + procedure.md fix
 - wip-beads CRITICAL fix (subshell counting) pousado e verificado
 - Backup Dolt do store agents ativo (bd backup sync 2,2 GB)
@@ -172,6 +182,7 @@ _generate_workspace_config_parts + _allocation) — patch arquivado em
 ## FECHO DE SESSÃO 2026-09-21 — estado para retomada
 
 ### Quadro final verificado
+
 | Repo | Branch | Tip | Gates |
 |---|---|---|---|
 | agents | dev | 918fb7dc+ (synced) | verde (known-red ag-j36p P3) |
@@ -180,10 +191,12 @@ _generate_workspace_config_parts + _allocation) — patch arquivado em
 | flext-infra | 0.12.0-dev | (lanes ativas) | recovery noop pousado caeddadae |
 
 ### Últimos pousos da sessão
+
 - 72f571eb1: ENFORCE-042 fix (AiHubSettingsSources herda FlextSettings) + convergence renders + hooks candidate isolation
 - 06ca264c: plan v4 handoff no algar (branch wip propagation, check 0, docs blocker roteado)
 
 ### Como retomar (gatilhos nomeados)
+
 1. **Deploy ai-hub**: deacon executa com a receita do mail gc-wisp-ogenrn (systemd-run + 6 LoadCredentialEncrypted; make build primeiro). Depois: validate-agents verde → enable --now ai-hub-storage-prune.timer → sinal 'flip done' à storage lane → e2e → S1–S4 → bead aihub-oig6s.2.1 fecha.
 2. **loc-cap**: implementar _lazy_map.py (aihub-jcgfm) OU fmt-skip no exports_tuple (skills-propagation) — área do escritor lazy_init do flext-infra.
 3. **flext-6ep5y perna-1**: root-resolution do mise-artifacts bootstrap (não escrever em templates do pacote instalado).
