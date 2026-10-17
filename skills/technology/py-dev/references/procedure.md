@@ -50,8 +50,8 @@ tools, or turn warnings/skips into green.
 
 When the project pins pytest-testmon, its test verbs, their testmon contract, and where
 each runs are declared in `rules/workflow/canonical-commands.md` (section "Test
-verbs"). Its config-owned persistent path stays outside the checkout and is passed
-directly to Testmon, never projected back through a symlink. The full verb is never an
+verbs"). Its database stays at Testmon's own default location; no variable, argument,
+or symlink forces it elsewhere (`rules/storage.md`). The full verb is never an
 implicit retry or a substitute for an ordinary impacted run. To force an explicit
 `FILE`, nodeid, or `MATCH`, resolve its exact nodeids, reject an empty or
 owner-limit-exceeding set, invalidate only those rows in the existing database

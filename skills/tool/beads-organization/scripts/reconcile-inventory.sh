@@ -123,15 +123,15 @@ render_csv() {
       --argjson limit "${limit}" \
       --argjson offset "${offset}" '
       def requested_ids:
-        if (${beads} | length) == 0 then [] else (${beads} | split("\n") | unique) end;
-      def selected(${requested}):
-        .id as ${id}
-        | (${requested} | length) == 0 or (${requested} | index(${id})) != null;
+        if ($beads | length) == 0 then [] else ($beads | split("\n") | unique) end;
+      def selected($requested):
+        .id as $id
+        | ($requested | length) == 0 or ($requested | index($id)) != null;
       def weak_title:
         (.title | ascii_downcase | test("^(wip|fix|fixes|todo|test|update|changes|misc)([: ]|$)"));
       def weak_description: ((.description // "") | length) < 40;
-      def has_label(${name}): ((.labels // []) | index(${name})) != null;
-      def review_flags(${statuses}):
+      def has_label($name): ((.labels // []) | index($name)) != null;
+      def review_flags($statuses):
         [
           if .status == "in_progress" then "verify-claim-evidence" else empty end,
           if .status == "deferred" then "verify-deferred-evidence" else empty end,
@@ -140,22 +140,22 @@ render_csv() {
           if .issue_type == "bug" and (has_label("bugfix") | not) then "missing-bugfix" else empty end,
           if has_label("bugfix") and .issue_type != "bug" then "bugfix-on-nonbug" else empty end,
           if has_label("hotfix") and (.issue_type != "bug" or .priority == null or .priority > 1) then "invalid-hotfix" else empty end,
-          if .parent != null and ${statuses}[.parent] == "closed" then "closed-parent" else empty end,
+          if .parent != null and $statuses[.parent] == "closed" then "closed-parent" else empty end,
           if weak_title then "weak-title" else empty end,
           if weak_description then "weak-description" else empty end
         ] | join(";");
       if type == "array" then . else error("bd list JSON must be an array") end
-      | . as ${all}
-      | requested_ids as ${requested}
-      | (${all} | map(.id)) as ${available}
-      | (${requested} - ${available}) as ${missing}
-      | if (${missing} | length) > 0 then error("unknown bead IDs: \(${missing} | join(","))") else . end
-      | (${all} | map({key: .id, value: .status}) | from_entries) as ${statuses}
+      | . as $all
+      | requested_ids as $requested
+      | ($all | map(.id)) as $available
+      | ($requested - $available) as $missing
+      | if ($missing | length) > 0 then error("unknown bead IDs: \($missing | join(","))") else . end
+      | ($all | map({key: .id, value: .status}) | from_entries) as $statuses
       | ["id", "revision", "status", "priority", "type", "title", "parent", "assignee", "defer_until", "labels", "review_flags", "description", "repository", "integration_ref", "integration_sha", "worktrees"],
-        (${all}
-          | map(select(selected(${requested}) and (${include_closed} == 1 or .status != "closed")))
+        ($all
+          | map(select(selected($requested) and ($include_closed == 1 or .status != "closed")))
           | sort_by(.id)
-          | .[${offset}:(if ${limit} == 0 then length else (${offset} + ${limit}) end)][]
+          | .[$offset:(if $limit == 0 then length else ($offset + $limit) end)][]
           | [
               .id,
               (.revision // ""),
@@ -167,12 +167,12 @@ render_csv() {
               (.assignee // ""),
               (.defer_until // ""),
               ((.labels // []) | join(";")),
-              review_flags(${statuses}),
+              review_flags($statuses),
               (.description // ""),
-              ${repo_root},
-              ${integration},
-              ${integration_sha},
-              ${worktrees}
+              $repo_root,
+              $integration,
+              $integration_sha,
+              $worktrees
             ])
       | @csv
       '

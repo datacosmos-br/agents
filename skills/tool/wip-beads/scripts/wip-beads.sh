@@ -163,7 +163,7 @@ write_json_report() {
     --argjson mutated "${counts[mutated]}" \
     --argjson errors "${counts[errors]}" \
     --argjson skipped "${counts[skipped]}" \
-    '{mode: ${mode}, timestamp: ${timestamp}, processed: ${processed}, mutated: ${mutated}, errors: ${errors}, skipped: ${skipped}}' >> "${JSON_REPORT}"
+    '{mode: $mode, timestamp: $timestamp, processed: $processed, mutated: $mutated, errors: $errors, skipped: $skipped}' >> "${JSON_REPORT}"
 }
 
 reset_counts() {
