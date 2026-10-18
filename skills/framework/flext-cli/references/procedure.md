@@ -57,7 +57,7 @@ call with the same keyword shape is a route table waiting to be extracted.
 `framework_execute` normalizes exits into `p.Result[bool]`: usage errors (vendored
 `ClickException`) → `e.fail_validation`; `typer.Exit`/`SystemExit`
 carrying a captured failure → `r[bool].from_failure`; non-zero int return → typed
-failure; success → `r[bool].ok(True)`. The outermost presenter (consumer:
+failure; success → `r[bool].ok(value=True)=True)`. The outermost presenter (consumer:
 `AiHubCli.present_failure` → `commands_emit_result_error` + `SystemExit(1)`) is the
 single process-contract point: success exit 0, typed failure exit 1.
 
