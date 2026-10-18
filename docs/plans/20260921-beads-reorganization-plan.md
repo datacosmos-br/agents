@@ -42,25 +42,30 @@ Cada bead é processada individualmente com:
 ## Prioridades
 
 ### P0 — Limpeza imediata
+
 - Fechar beads 100% superadas (prova de ancestralidade ou conteúdo absorvido)
 - Remover claims de sessões suspensas/encerradas
 - Deduplicar beads que descrevem o mesmo trabalho
 
 ### P1 — Reassignment + alignment
+
 - Reassign unassigned P0/P1 para lanes ativas
 - Mapear Tasks/Bugs aos Epics pais corretos
 - Garantir que cada Epic tem seus children corretos
 
 ### P2 — Grind consolidation
+
 - Consolidar gate-grind beads que se sobrepõem
 - Agrupar bugs/hotfixes por domínio
 - Consolidar duplication beads por repositório
 
 ### P3 — Bulk triage
+
 - Processar as 491 beads "other" em batches de 50
 - Cada batch: classificar, reassignar ou fechar
 
 ## Critério de conclusão
+
 - Toda bead non-closed tem: assignee, epic pai (onde aplicável), PR link, categoria
 - Zero beads referenciando branches ou PRs inexistentes
 - Zero beads duplicando outras beads
@@ -71,12 +76,14 @@ Cada bead é processada individualmente com:
 Validação item-a-item contra runtime real (grep/probe no código da tip + gates + scans):
 
 **Fechadas com evidência (10)**:
+
 - agents: `ag-vblj.5` (rota github mise-provisionada, binário em runtime), `ag-lw57.10` (staging dry-run/output implementado), `ag-lw57.5` (artefatos aihub exterminados dos homes), `ag-lw57.4` (one-release: recovery.conf ausente, units em runtime/current), `ag-bwqu` (_noop_acceptance 0 hits; AiHubNativeDeploymentAcceptance pousada)
 - ai-hub: `aihub-aooib` (AGENTS.md real no release instalado, 19967 bytes), `aihub-zj4l3` (check 20/20 failed=0; vermelho 22:04 era corrida com merge 202e603c5), `aihub-agfq7.11` (letras d/e/h/r/x vivas em flext_core; mypy/pyright 0), `aihub-agfq7.10` (AiHubSettingsSources(FlextSettings) pousado; runtime-census 0), `aihub-6o75i` (rota generate-configs wired → services/generate_configs.py)
 
 **Evidência atualizada em abertas (5)**: `ag-lw57.8` (resta 1 fail: test_concurrent_fragment_creation_is_never_overwritten), `ag-vblj.1` (censo 338 linhas de import direto), `ag-lw57.7` (references/ existe mas vazio), `aihub-73b244ef` (bloqueio sistêmico: mint de credencial falha em todo run pull_request), `aihub-636vd` (esta rodada)
 
 **Descobertas estruturais (novas beads flext)**:
+
 - `flext-yj3s0` (P1): gerador emite `flext-sh/flext` hardcoded no docs/index.md (`docs_render.py:220 _LINK_PREFIX_DOCS_INDEX = c.Infra.GITHUB_REPO_URL`) — termo que a própria auditoria proíbe fora do org flext-sh; fix = derivar do mapa governado `make.docs.github_repos`. Bloqueia o vermelho final do algar (14º issue de docs).
 - `flext-zxdl5` (P1): censo jscpd — 17 clones em `codegen/_conform/` (landlords misc.py/plan.py; consumidores beads_routes, docs_ownership, existing_plan, file_plans). algar/ai-hub/agents PASS 0 no mesmo gate.
 

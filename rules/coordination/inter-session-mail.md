@@ -19,6 +19,7 @@ message sent through it counts only once it is repeated in the gc mail thread, w
 stays the record.
 
 The `gc-mail` skill owns the complete contract:
+
 - city-store selection and addressing;
 - the five delivery receipts;
 - presence and liveness, including that a missing reply is never absence;
@@ -28,6 +29,7 @@ The `gc-mail` skill owns the complete contract:
 
 It is declared once, in the skill, because a skill is the only governance artifact
 that still reaches agents other than Claude Code:
+
 - the session capsule carries only the bootstrap rules;
 - Codex receives execpolicy rules only;
 - Claude Code propagation is retired.

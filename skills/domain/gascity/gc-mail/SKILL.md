@@ -205,6 +205,7 @@ hall opens one, for a new campaign.
 ## Subject taxonomy
 
 Every coordination subject carries:
+
 - the `[coord]` prefix;
 - an optional addressee tag (`[@city-hall]`, `[@all]`, `[@operator]`,
   `[@<repo>/<executor>]`);
