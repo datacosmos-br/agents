@@ -37,8 +37,9 @@ profiling procedure and timeout outcome have one owner:
   a toolchain defect, not an acceptable baseline.
 - Coverage collection is opt-in, invoked by its own explicit target. A gate that always
   measures coverage inflates every run's budget for a signal most runs do not need.
-- Host test-service provisioning and slow-test phases retain distinct receipts and
-  their declared per-item limits. They remain inside the enclosing command deadline;
+- Host test-service provisioning and slow-test phases retain distinct receipts.
+  Provisioning has its own deadline; slow tests retain their declared per-item limits.
+  Both remain inside the enclosing command deadline;
   moving work before the pytest clock never exempts it from that deadline. Test
   selection and invocation remain owned by `canonical-commands.md`.
 - Independent gate steps run in parallel, not sequentially, when they share no mutable

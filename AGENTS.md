@@ -6,7 +6,7 @@ This is the compact entry to the canonical rules below, not a second rule body.
 1. Evidence: `rules/ethics/professional-integrity.md`.
 2. Root-cause correction: `rules/architecture/engineering-core.md`.
 3. Selected tracker and unavailable capabilities: `rules/workflow/beads-traceability.md`.
-4. Research before effects: `rules/workflow/discovery-before-decision.md`.
+4. Research before effects and no guessed APIs: `rules/coordination/never-deduce.md`.
 5. Reuse the declared owner: `rules/workflow/declared-tool-ownership.md`.
 6. Continue within authorized scope: `rules/coordination/operator-alignment.md`.
 7. Integration and closure: `rules/git/gitflow-branch-pr.md`.
@@ -47,7 +47,9 @@ grammar in `commands/` and discovery metadata in their existing catalogs. Compos
 ancestors by reference; do not copy their bodies into child artifacts.
 
 Resolve current integration and workspace authorization before effects. Host
-coordination follows `rules/communication/ecosystem-systems-registry.md` and
-`rules/coordination/inter-session-mail.md` only when that capability is selected.
+coordination in this declared ecosystem follows
+`rules/communication/ecosystem-systems-registry.md` and
+`rules/coordination/inter-session-mail.md`. Resolve the available channel through its
+owner; suspension never silently cancels the cooperation obligation.
 Source validation, reviewed integration and installed delivery are separate receipts.
 <!-- AIHUB-AGENTS-SCOPE-LOCAL-END -->

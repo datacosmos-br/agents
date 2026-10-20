@@ -12,4 +12,7 @@ inputs:
     commands. Do not reinstall the environment, retry unchanged or edit Python.
 expected:
   output_contains: ["120", root cause, implementation, documentation, profile]
-  output_not_contains: [make setup, increase the timeout, edit Python now, passed]
+  output_not_contains:
+  - I will reinstall the environment
+  - I will modify the Python source
+  - I will raise the deadline

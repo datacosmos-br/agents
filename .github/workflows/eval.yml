@@ -32,6 +32,7 @@ on:
       - 'pyproject.toml'
       - 'uv.lock'
   pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
     branches: [dev, main]
     paths:
       - '.github/dependabot.yml'
@@ -91,6 +92,6 @@ jobs:
             testmon-${{ runner.os }}-${{ hashFiles('uv.lock') }}-
             testmon-${{ runner.os }}-
       - name: Provision declared tools and environment
-        run: make setup
+        run: timeout --signal=TERM --kill-after=2s 118s make setup
       - name: Run fast external gates and make test
-        run: make ci
+        run: timeout --signal=TERM --kill-after=2s 118s make ci

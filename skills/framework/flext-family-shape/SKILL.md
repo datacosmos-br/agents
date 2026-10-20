@@ -32,9 +32,9 @@ for internal FLEXT packages.
 
 ## Declarative Rope rules
 
-- One YAML file per rule in `src/flext_infra/codemod/rope_rules/<rule-module>/*.yml`,
-  ast-grep-like shape: `id`, `severity`, `message`, `files` globs, and a `rope:` action
-  section (`hoist_into_part_class`, `flatten_wrapper_children`).
+- Resolve rule resources through the active branch's typed rule catalog. One
+  declarative document owns each rule's identity, severity, scope and semantic action;
+  do not revive a historical source path or maintain a second rule list.
 - Parsed once through `u.Cli.yaml_*` into typed `m.Infra` rope-rule models; the loader
   fails loud. Thresholds/globs are rule data, never hardcoded.
 
@@ -44,9 +44,11 @@ for internal FLEXT packages.
   `RefactorNamespaceMoves` patterns): every mutation is a Rope `Change` applied via
   `rope_project.do(changes)` so changes replicate to all referencing modules, followed
   by rewritten-file normalization — inside the `make mod` guarded fixed-point circuit.
-- Every mutating execution wraps its files in the centralized cycle
-  `FlextInfraUtilitiesSafety.execute_safely` (backup → transform → validate → cleanup |
-  rollback). Ad-hoc writes, private backups, and repo-wide rollback are forbidden.
+- Use the existing native candidate preview and authenticated publication owner.
+  Validate producer and consumer changes as one dependency group before publishing.
+  Abort an unpublished candidate without changing live work; reconcile any published
+  effects forward through its journal. Never restore an older source snapshot, discard
+  shared WIP, create private backups or introduce another publication engine.
 
 ## Gates
 
@@ -55,8 +57,5 @@ for internal FLEXT packages.
   (`NAMESPACE_PLATFORM_FACADE_SINGLETONS`, `cli.py` `main`, `api.py` composition-root
   singleton).
 
-## First execution
-
-`flext-dbt-oracle-wms`: `_Materialization` hoist, `Dbt` wrapper flatten, consumer paths
-`c.DbtOracleWms.PROJECT_NAME` and `c.DbtOracleWms.Materialization.VIEW.value`. Evidence
-lives in the branch-matched Bead.
+Historical executions remain in Git and their canonical tracker records. They do not
+select the current repository, rule resource or migration state.

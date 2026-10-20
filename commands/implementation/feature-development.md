@@ -21,15 +21,17 @@ complete the plan while coding.
 2. Search for equivalent or reusable behavior. Apply YAGNI to remove unsupported scope,
    elect one SSOT, and change design boundaries only where the surviving requirement
    proves they are necessary.
-3. Add a focused failing acceptance test when the project contract calls for tests, then
-   implement the complete feature through the selected owner. Simplify each changed unit
-   inline and remove obsolete paths while rewiring all current consumers, documentation,
-   examples, and generated projections.
-4. Exercise the real public feature before broad tests. Propagate failures loudly; never
-   add fallback, hardcode, suppression, compatibility residue, or a weaker assertion to
-   obtain green output.
-5. Run every affected native format, lint, type, test, build, security, documentation,
-   generation, and integration gate.
+3. Establish the expected public behavior from the approved contract and its real
+   consumer. Reproduce the relevant current behavior before tests encode it; an
+   observed defect never becomes the expected contract.
+4. Implement through the selected owner, rewire current consumers and remove obsolete
+   paths. Update tests, fixtures, examples and documentation to the final public
+   interface. Generate production projections through their native owner, not pytest.
+5. Exercise the public candidate and apply `$make-check` for the affected native
+   format, lint, type, test, build, security, documentation and generation gates.
+   Deadlines and test selection follow `rules/workflow/canonical-commands.md`.
+   Respect an explicitly documentary scope; excluded implementation findings remain
+   identified without an unauthorized repair or false completion.
 
 Return the accepted behavior, owner and reuse decision, consumers changed, runtime
 proof, exact gate exits, and any blocker. Do not describe a partial, branch-only, or

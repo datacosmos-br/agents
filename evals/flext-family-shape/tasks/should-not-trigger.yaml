@@ -1,12 +1,13 @@
 id: flextfamilyshape-negative-001
-name: Should not trigger flext-family-shape
-description: Reject invalid triggers for flext-family-shape.
+name: Preserve a third-party fork architecture
+description: Do not impose FLEXT families on an upstream-owned project.
 tags: [flext, family, shape, negative, invalid-trigger]
 inputs:
   prompt: >-
-    user asks to add a sixth family, skip base composition, or hand-edit the generated api root; the skill must reject.
-  files:
-  - path: scenario.yaml
+    Review a third_party_fork that depends on flext-core but follows its upstream
+    module layout. The operator asks for an upstream-conforming bug fix, not FLEXT
+    adoption. State the applicable architecture boundary without proposing family
+    generation, facade migration or a new FLEXT layer.
 expected:
-  output_contains: ['five families', 'rejected', 'composition']
-  output_not_contains: ['sixth family added', 'skip base']
+  output_contains: ['upstream', 'third_party_fork']
+  output_not_contains: ['FLEXT adoption is required', 'Generate five FLEXT families']

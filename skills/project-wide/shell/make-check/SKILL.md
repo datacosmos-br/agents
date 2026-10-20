@@ -15,11 +15,12 @@ provisioning for an ordinary writing request.
 1. Read the authorized scope, repository instructions and root Makefile. Resolve the
    existing environment and command owners before invoking an operation.
 2. Use `make setup` when the selected physical environment is absent or its native
-   provenance check requires reconciliation. Reuse a valid environment; do not
-   reinstall it before every gate. Setup consumes declared locks; upgrades use their
-   separate owner.
-3. Exercise changed behavior through its public runtime, then select the required
-   native check and test verbs.
+   provenance check requires reconciliation and no other process owns it. Reuse a
+   valid environment; do not reinstall it before every gate. Setup consumes declared
+   locks; upgrades use their separate owner.
+3. Exercise changed behavior through its public runtime, then run `make check` and
+   the smallest distinct public verbs required for additional gates. Select test
+   verbs through the canonical test contract; a focused check does not replace it.
 4. Apply bundle rule `workflow/canonical-commands` for command deadlines, profiling,
    failure outcomes and test selection. Gate placement follows
    `workflow/gate-budget`. Resolve both under the bundle's canonical `rules/`.

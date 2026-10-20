@@ -1,114 +1,33 @@
-# Universal Law — Mandato Operacional (operador, 2026-09-16, emendada)
+# Governance repository validation
 
-## Regra 1 — Validate-On-Change
+This procedure applies to the `agents-governance` repository. Universal execution,
+command deadlines, test selection and phase closure are owned by the rules linked
+from [AGENTS.md](AGENTS.md); this guide does not restate them. Historical project
+assignments and retired lockfile instructions are not current authority.
 
-Ao criar ou alterar QUALQUER coisa — código, chart, valores, lockfile, gitlink,
-configuração, documentação — VALIDAR se está certo e funciona, imediatamente, antes de
-seguir adiante.
+## Public surfaces
 
-### O que vale FUNDAMENTALMENTE
+| Operation | Root verb | Evidence supplied |
+| --- | --- | --- |
+| Catalog and context budget | `make audit` | Validated public bundle inventory and calculated delivery margin |
+| Documentation | `make docs` | Catalog validation, ADR identities and relative links |
+| Semantic suite structure | `make waza` | Two-generation fixed point, token budgets and every suite's specification coverage |
+| Complete non-test acceptance | `make check` | Documentation, code/resources, structural rules, workflows, duplication and isolated artifacts |
+| Incremental tests | `make test` | Native testmon selection or integrity-checked cache-hit accounting |
+| Complete local tests | `make test-full` | Entire local suite; existing testmon database preserved |
+| Resource analyzer profile | `make profile-mypy-resources`, `make profile-mypy-resources-report` | cProfile data for the declared resource population |
+| Semantic gate profile | `make profile-waza`, `make profile-waza-report` | cProfile data for the complete specification gate |
 
-**O PLENO FUNCIONAMENTO EM RUNTIME.**
+Inspect the current Makefile inventory before invoking an operation. Use an existing,
+valid environment; setup provisions when required and exclusive ownership is proved.
+Immutable read-only gates may share the Make scheduler; source mutation, testmon
+updates and publication retain their own ownership boundaries.
 
-- Testes simples e evidências estáticas NÃO comprovam entrega — são, no máximo, sinais
-  de apoio. Nunca substituem o runtime.
-- Prova válida = o artefato/executável REAL operando de ponta a ponta no ambiente alvo:
-  processo rodando, endpoint respondendo, render aplicado, fleet sincronizada e
-  saudável, job concluído, dado fluindo.
-- "Está certo" = adere aos contratos e padrões (SSOT, DRY, YAGNI, DI, FLEXT, PEP,
-  Pydantic, semver strict — zero fallback/legacy/compatibilidade).
-- "Funciona" = comportamento observado no runtime real, com output decisivo.
-- Testes fora dos padrões de qualidade: remover. Testes testam realidade via interfaces
-  públicas; o resto é descartável — e nunca anulam a prova runtime.
+Specification coverage and artifact installation validate the package contract.
+They do not prove that AI Hub published a provider surface, withdrew its old copy,
+or that a native agent loaded it. Those receipts belong to AI Hub's delivery owner.
 
-## Regra 2 — Sem pressa; status, beads e wip sempre atualizados
-
-- Nunca fazer algo com pressa para concluir.
-- Sempre atualizar os status e os beads à medida que o trabalho avança.
-- Sempre gravar progresso como **wip local E remotamente** — via **worktree e branch
-  dedicada de trabalho** — para que interrupções não percam estado.
-
-## Regra 3 — Ciclo completo ou nada
-
-- Se o ciclo completo não for feito — levar o trabalho até a **branch de integração** e,
-  quando solicitado, até o **runtime** — o trabalho NÃO foi feito: é trabalho perdido.
-- Entrega = PR/ciclo integrado na branch de integração + (quando pedido) validação viva
-  no runtime. Estados intermediários são wip, não entrega.
-
-## Regra 4 — NUNCA deduzir; pesquisar, entender, perguntar
-
-**NUNCA, NUNCA, NUNCA tente deduzir. SEMPRE pesquise, entenda e, se houver dúvidas, PARE
-E PERGUNTE. Nunca tente adivinhar ou deduzir.**
-
-- Antes de qualquer comando/caminho/nome/API: descobrir o valor REAL na fonte (kubectl
-  get, make help, docs, código) — nunca inventar.
-- Dúvida ≠ decisão: dúvida = pergunta ao operador ou pesquisa funda até certificação.
-  Ambiguidade resolvida por adivinhação é falta gravíssima.
-
-## Regra 5 — Execução do plano (mandato de coordenação única)
-
-- Executar o plano aprovado: P0 = reorganizar beads, épicos, tasks, docs, ADRs; depois
-  as demais fases.
-- Lane única em cosmos-main: ASSUMIR tudo — adotar, agrupar, reaproveitar (lanes,
-  branches, PRs, wips) ou descartar dentro do plano.
-- Resultado: projeto 100% funcional e completo com as funcionalidades acordadas.
-- Green/green o tempo todo — local E CI — gravando na branch de integração a cada ponto
-  green 100%, e aplicando em runtime sem demora.
-- Máximo de subagentes (explorar/executar/validar/testar); coordenador fica com
-  coordenação, aprovação, QA final e publicação.
-- Corrigir ruff, mypy, pyright, pyrefly com tipagem strict.
-- Helpers, models, protocols, typings, constants namespaced de u/m/p/t/c, declarados no
-  dono, consumidos DRY. Lazy imports via **init** preferidos (desempenho + ciclos);
-  erros de import cíclico = violação das regras flext.
-- Sync periódico com a branch de integração via merge --no-ff.
-- Jeito mais novo e melhorado SEMPRE: zero fallback/legacy/compatibilidade — exterminar,
-  rewired, revalidado no cluster dc-dese funcionando na real. Fix-forward adopt, nunca
-  fallback/rollback.
-- SSOT, YAGNI, DRY, DI, FLEXT, PEP, Pydantic: obrigatórios e strict.
-- Resolver conflitos de PR/worktrees/branches/subprojetos: land de todos com cuidado,
-  pegando as funcionalidades mais novas; ao final push PR, merge --no-ff com a
-  integração, push, fecha PR, apaga worktrees/branches/PRs merged e fecha beads —
-  fechando os ciclos.
-- Automação máxima: ast-grep search/replace, make mod, crg, lsp refactor; verbos de
-  teste conforme `rules/workflow/canonical-commands.md` (seção "Test verbs"); nada de
-  seletores inventados no Make.
-- Qualidade total: nenhum warning/erro/indireta mal configurada fica para depois; nada
-  pendente; artefatos manual-list (ex.: class-nesting-mappings.yml) proibidos —
-  descoberta automatizada pelas funções SSOT.
-- Experiência ganha vira melhoria imediata de skills, commands, rules, docs e ADRs —
-  sempre pelos ciclos.
-
-## Non-negotiables adicionais (operador 16/09)
-
-- exclude-newer, mise.lock e uv.lock: BANIDOS. Lockfiles nunca rastreados (fleet
-  standalone contract); exclude-newer nunca injetado à mão — o gerador emite apenas
-  exclude-newer-package a partir do toolchain SSOT. Qualquer reaparição é exterminada na
-  hora, na origem.
-- Mudança de regra/estratégia documentada ou em código, sem autorização ou ordem do
-  operador, é falta gravíssima. Use a regra mais nova; se não der para determinar,
-  pesquise a fundo a hierarquia e, persistindo a dúvida, PARE E PERGUNTE.
-
-## Lições operacionais (2026-09-16, ciclo rope-modernize — operador emendando)
-
-- **Branches/stashes/PRs antigos = análise de contribuição real**: o que contêm que o
-  código atual e suas beads ainda não têm — adotar seletivamente só o unique delta útil.
-  NUNCA diff-merge completo (traz stale/cerimônia; provado: dois merges de lanes
-  aposentadas renderam tree idêntica, contribuição zero).
-- **Probe nunca vai no commit**: antes de cada commit, grep no staged por
-  `environ.get|print(|FLEXT_DEBUG` — probe é env-gated, in-file, revertido.
-- **Evidência numérica = conjunto de test-ids F/E + exit code**; totals de "passed" com
-  testmon selecionando não provam nada. Provar fix = re-run explícito do arquivo de
-  teste owner.
-- **Beads via direnv**: `eval "$(direnv export bash)"` antes de bd; endpoint dolt é
-  city-owned (gascity) — nunca pinar porta, nunca `bd dolt set`, nunca fallback.
-  `.beads/*` de membros: só as entradas permitidas pelo gate (config.yaml,
-  metadata.json, .local_version, last-touched); resíduo runtime já-durável no dolt é
-  lixo e se limpa.
-- **Loops de frota em script-arquivo** (~/tmp/kilo/\*.sh) rodando em background com
-  análise de log — nunca loops inline `bash -c` (expansão de variável dentro de aspas já
-  quebrou uma varredura inteira). Subagentes para análise de logs grandes.
-- **Dirty idêntico em N membros = drift de projeção** do template absorvido: adotar
-  (preserve-commit scoped) + merge; provar por amostragem (1 repo via
-  `git diff HEAD...origin/<integ>`), não investigar por repo.
-
-Precedence per `rules/coordination/operator-precedence.md`.
+Record the changed owner and consumers, command, cwd, exit, decisive output and
+source revision on the selected task. Review and integrate the exact candidate
+through the global Git procedure. Do not substitute a source receipt for a merged
+revision or installed runtime receipt.

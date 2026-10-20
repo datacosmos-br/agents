@@ -51,11 +51,12 @@ around a failed child is RED.
 
 ## Command deadline and performance
 
-Every command has a maximum wall-clock duration of 120 seconds, including activation,
-preflight, lock acquisition, subprocesses and termination. This operator requirement
+Invoke every command with a maximum wall-clock duration of 120 seconds, including
+activation, preflight, lock acquisition, subprocesses and termination. This requirement
 also applies to setup, complete test suites and profiling. A deadline wrapper is
-permitted only to enforce that bound; it does not replace the declared operation,
-change its scope, suppress output or turn a failure into success.
+required when the native entrypoint does not already enforce that bound. It does not
+replace the declared operation, change its scope, suppress output or turn a failure
+into success.
 
 Reserve termination time inside the bound: request termination no later than 118
 seconds and finish terminating owned children by 120 seconds. Nested operations consume
@@ -67,8 +68,11 @@ completed scope and available profile. Before another invocation, identify and c
 the measured cause; do not retry unchanged, increase the limit, move the command into
 an unbounded background job, or split its output into a false complete receipt.
 
-For Python generation or migration slowness, use cProfile through the existing native
-profiling verb. Bind the capture to source, runtime, configuration and scope; record wall
+For Python generation or migration slowness, resolve the profiling verb from the
+selected root Makefile before invoking it. Use cProfile through that native owner.
+An absent profiling verb is an explicit command-owner implementation obligation,
+not permission to invent a target or invoke a private module. Bind a capture to
+source, runtime, configuration and scope; record wall
 time separately from cumulative function time and distinguish parent waits from child
 work. Change one measured cause, revalidate its public behavior and compare the same
 operation before scaling. Reuse existing analysis owners rather than adding a parallel
@@ -78,6 +82,9 @@ cache, scanner or execution engine. Gate placement and opt-in instrumentation fo
 When the operator authorizes documentation only, a missing deadline implementation or
 broken generator remains an implementation finding. Correct its documentation and
 record the exact code obligation without editing excluded code or claiming enforcement.
+This section defines the invocation discipline; it does not assert that an unwrapped
+Make recipe already has automatic deadline enforcement. Automation calls the native
+verb through its declared deadline runner, and its workflow source proves that binding.
 
 ## Test verbs
 

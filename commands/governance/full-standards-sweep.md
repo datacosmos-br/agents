@@ -10,117 +10,37 @@ metadata:
 
 # Full-standards cleanup and conformance sweep
 
-Treat `$ARGUMENTS` as an optional focus. Resolve authority FIRST, before any effect:
-workspace root `AGENTS.md`, then the branch-matched local law skill, then the nearest
-scope `AGENTS.md`, then the active tracker item. Run `make setup`, then use
-selector-free root Make verbs only. If the rig hosts a third-party or non-framework
-project, apply only the universal layers below and follow upstream conventions; never
-impose local architecture there.
+Resolve the authorized scope from `$ARGUMENTS`, the current operator request and the
+canonical tracker. Read the active repository instructions and branch-matched domain
+law. A documentation-only scope authorizes documentary correction; an implementation
+finding does not silently expand it.
 
-## Phase A — sweep the project
+Compose `$conformance-sweep-loop` for class-wave work and `$make-check` for native
+command selection. Universal obligations remain in `rules/`; this command owns the
+sweep sequence, not another copy of those obligations.
 
-0b. Automation surfaces first. Drive classes with the declared machinery before hand
-edits: `make mod` applies the declared ast-grep rules (composed from installed
-distributions; targeted runs use an exact rule-ID filter, not ad-hoc CLI invocations);
-`make gen` twice brackets every generated-surface change and must be byte-identical; the
-persistent code-review-graph feeds discovery in CLI mode (`dead-code`, `impact`,
-`large-functions`, `query`) for nesting, callers, and split targets, operated per the
-`crg` skill (freshness gate and working-tree graph first). A violation class with no
-declared rule earns its rule at the highest applicable rule layer (universal for
-context-free patterns, framework for FLEXT deltas) in the same change; see
-`rules/workflow/structural-migrations.md` and
-`rules/workflow/mass-rewrite-discipline.md`.
+1. Establish the current source, runtime, integration base, WIP ownership and consumer
+   scope. Reuse the declared physical environment when its native provenance is valid;
+   provision through its owner only when reconciliation is required.
+2. Inventory findings through the existing native owners. Group by rule, declaration
+   owner and affected consumers. Retain complete coverage and distinguish syntactic
+   matches, admitted findings and unexecuted checks.
+3. Select one root-cause unit. Search the existing primitives before extending an owner;
+   retain the project's architecture and upstream boundary. Do not exclude tests,
+   scripts, examples or documentation merely to reduce findings.
+4. Correct that owner, rewire its consumers and remove the superseded path in the same
+   candidate. Structural code changes use the project's declared codemod; documentary
+   changes update their authorial sources and references. Generated artifacts use their
+   publisher, never a manual patch.
+5. Exercise the affected public behavior and native gates under
+   `rules/workflow/canonical-commands.md`. Preserve the first failure and its measured
+   cause. The current unit stays open until its required proofs are complete.
+6. Review and land through `rules/git/gitflow-branch-pr.md`, retaining source, PR head,
+   integration and installed-artifact evidence separately. Continue the next unit from
+   the newly verified state; never infer fleet stability from a sampled repository.
 
-0c. One class per boundary. Work violations by class wave; between waves run the
-incremental tests, commit the wave under the class name, and update the campaign tracker
-item. Mechanical waves (annotations, aliases) validate with the static-plus-runtime
-bracket; structural waves (nesting, facades) additionally re-run the integration gates
-before the next wave.
-
-0. Declaration-first scoping and dependency freshness. Before consuming any error
-   triage, declare the verification scan scope at the manifest SSOT (tests/scripts/docs
-   are never production scope) and regenerate through the project generator, proving the
-   conformance fixed point. Before any git-dependency pin or re-pin: fetch the remote
-   branch, check whether commits touching the failing symbol already landed (the bug may
-   be fixed upstream), install with `--no-cache`, and verify the bumped surface
-   (`'field' in Model.model_fields`) before the first run. Identify which interpreter
-   executes the dependency for the command at hand before touching any venv.
-1. Truth with evidence, zero tolerance. Never lie, promise, or fabricate. A claim is
-   true only with exact command, working directory, exit code, decisive output, and
-   scope. Intention, self-report, and "mergeable" are not proof. Warnings, skips, empty
-   output, and missing tools are RED; never normalize, cap, or suppress them. The first
-   exception escapes with its raw traceback; no catch, retry, fallback, or normalization
-   exists.
-2. Canonical commands only. Everything runs through the declared Make dispatcher; invoke
-   each verb directly. Never invent selectors, bypass with raw tools, or route around a
-   broken verb: repair the verb at its owner, then rerun it. Diagnosis and validation
-   obey the same rule as mutation.
-3. Test verbs follow their single owner. Every test execution runs through the test
-   verbs declared in `rules/workflow/canonical-commands.md` (section "Test verbs"),
-   which owns the testmon contract and where each verb runs. 3b. Class-wave repair.
-   When the measured report exceeds one screen (~20 findings), work grouped by error
-   class (defense-in-depth kill order: test-purity, aliases/owners, banned annotations,
-   import-time wiring, silent failures, duplication, layout/loc), one root cause per
-   commit, in the cleanup order of `rules/architecture/engineering-core.md`: measure
-   once at the end of the round and record start→end numbers per class in the active
-   plan or tracker item. Drive each wave through canonical owners: `make mod` for
-   rule-driven codemods using the project rule SSOT, `make gen` for every
-   generated-surface change, and code-review-graph evidence per the `crg` skill when
-   available. Prove graph
-   freshness with `build|update --repo` before `dead-code --json`, `impact --files`, or
-   `query callers_of`; confirm every candidate in source. A false sweeping pass with a
-   no-op bypass is never a "skip" — escalate.
-4. Root cause, zero residue, complete rewire. Remove dead, superseded, and duplicate
-   code in the same change and rewire every consumer to the final owner, in the cleanup
-   order of `rules/architecture/engineering-core.md`; the landed change is atomic, with
-   no consumer left on a removed owner. No compatibility aliases, shims, dual paths, throwaway workarounds, or deferred
-   defects. Pre-existing defects in the blast radius are adopted and fixed, never
-   excused.
-5. Reality is the authority; tests are never the source of truth. Tests validate
-   observable behavior through public interfaces with maximum automation and typed
-   shared fixtures. When tests contradict observed behavior, fix the tests. Hardcoded or
-   non-automated test forms are blocking defects.
-6. Architecture law. Apply the project's declared facade chain, module pattern, import
-   direction, typing policy, dependency injection, and composition root exactly as its
-   law states. Local redeclarations, aliases, competing layers, and direct hidden
-   dependencies are removed on sight.
-7. Disciplines in order per touched unit: discovery, necessity, single authority,
-   responsibility boundaries, inline simplification, proven duplication removal,
-   configuration ownership, and fail-loud error paths.
-8. Generated surfaces and commit hygiene. Never hand-edit generated files; change the
-   owner and regenerate, proving idempotence. Generated files keep their standardized
-   header. Commits carry zero garbage; stage by explicit paths only; fix forward without
-   destructive git operations; update docs in the same change as behavior. 8b.
-   Mass-rewrite execution law. Tree-wide mechanical transformations and automation-apply
-   cycles obey `rules/workflow/mass-rewrite-discipline.md`: test evidence brackets the
-   mass (baseline before, single validation after), scoped commits bound the change per
-   transformation class, applied-vs-reverted states are inventoried before commit,
-   string literal contexts get a machine-checked safety sweep, and progress is reported
-   per violation class, never as an aggregate that hides untouched structural debt. The
-   sweep never parks a large uncommitted delta on the trunk.
-9. Runtime boundary. Keep portable primitives in their reusable library and host
-   indexes, daemons, forge clients, language/refactor services, hooks, and MCP in the
-   runtime control plane. Cross that boundary only through a public command/hook/MCP.
-   Absence of an optional unselected host is not an error and never authorizes a
-   substitute; failure of a selected capability propagates.
-
-## Phase B — align governance
-
-Any rule, skill, command, document, decision record, template, hook, or guidance that
-conflicts with, or fails to make explicit, the standards above is corrected at its owner
-in this session. Keep knowledge hierarchical: universal conduct stays in the global
-layer, technology content in its technology layer, and framework deltas in the project
-layer; a child strengthens its parents and never copies, weakens, or replaces them.
-Revalidate with the project's advanced verification tooling and the duplication,
-single-authority, and necessity methods.
-
-## Phase C — land and propagate
-
-Done means: full scope implemented, every declared gate green with the declared mutation
-flag, zero residue, and the complete lifecycle recorded — scoped commit, fast-forward
-push, resolved review, a no-fast-forward merge into the declared integration branch,
-affected gates rerun on the merged state, runtime proved on the integrated artifact, and
-release, deploy, and activation each proven with distinct evidence. Local green, an open
-pull request, or mergeable status is never landed. Stop only for a genuinely destructive
-action or an authority conflict; ask one precise question; then continue to full
-completion.
+Report the covered population, per-unit before/after findings, owner and consumer
+changes, removed residue, command/cwd/exit evidence, integration disposition and each
+remaining obligation. The active tracker owns work state; this command creates no
+parallel queue. Release, deployment and activation require their own proofs when the
+scope includes them.

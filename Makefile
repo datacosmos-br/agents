@@ -20,7 +20,7 @@ override export MISE_OVERRIDE_TOOL_VERSIONS_FILENAMES := none
 unexport UV_PYTHON UV_PROJECT
 
 .DEFAULT_GOAL := help
-.PHONY: help setup upg gen docs audit check runtime waza crg-check lint static conform fmt fix mod mod-check shell duplication build test test-full ci validate-artifacts publish
+.PHONY: help setup upg gen docs audit check runtime waza crg-check lint static conform fmt fix mod mod-check shell duplication build test test-full ci validate-artifacts publish profile-mypy-resources profile-mypy-resources-report profile-waza profile-waza-report
 .DELETE_ON_ERROR:
 
 define BANNER
@@ -56,12 +56,7 @@ gen: ## project Beads activation and governance provider outputs
 ## development gates
 check: ## run package non-test gates; host CRG acceptance uses make crg-check
 	$(call BANNER,check · complete non-test gate composition)
-	@$(MAKE) docs
-	@$(MAKE) static
-	@$(MAKE) mod-check
-	@$(MAKE) conform
-	@$(MAKE) waza
-	@$(MAKE) runtime
+	+@$(MAKE) --jobs=2 docs static mod-check conform waza runtime
 
 docs: ## validate documentation through the public bundle contract
 	@$(MAKE) audit
@@ -72,7 +67,6 @@ audit: ## print the complete public semantic inventory
 	@uv run python -c 'from agents_governance import GovernanceBundle; bundle = GovernanceBundle.load(); d = bundle.delivery; print(f"{len(bundle.skills)} skills, {len(bundle.commands)} commands, {len(bundle.agents)} agents, {len(bundle.rules)} rules"); print(f"capsule {d.total_chars} chars (prelude {d.prelude_chars} + rules {d.rule_summary_chars} + skills {d.skill_index_chars}), headroom {d.headroom_chars}/{d.contract.capsule_budget_chars - d.contract.restore_list_reserve_chars}")'
 
 waza: ## validate provider-neutral skill suites with Waza
-	@$(MAKE) audit
 	$(call BANNER,waza · provider-neutral suites + deterministic spec proof)
 	@uv run python tools/waza_gate.py
 
@@ -89,9 +83,21 @@ lint: ## fast external lint and formatting check
 static: ## lint, formatting, and whole-program Python type analysis (local only)
 	@$(MAKE) lint
 	$(call BANNER,static · pyright + mypy)
-	@uv run pyright src tests tools
-	@uv run mypy src tests tools
 	@PYTHON_RESOURCES_OPERATION=check uv run python tools/python_resources_gate.py
+
+profile-mypy-resources: ## profile native Mypy over every declared Python skill resource
+	@mkdir -p .reports/profiles
+	@PYTHON_RESOURCES_OPERATION=profile-mypy uv run python tools/python_resources_gate.py
+
+profile-mypy-resources-report: ## read the native Mypy resource profile
+	@uv run python -c 'import pstats; pstats.Stats(".reports/profiles/mypy-resources.pstats").sort_stats("cumtime").print_stats(30)'
+
+profile-waza: ## profile the complete native semantic gate
+	@mkdir -p .reports/profiles
+	@uv run python -m cProfile -o .reports/profiles/waza.pstats tools/waza_gate.py
+
+profile-waza-report: ## read the native semantic gate profile
+	@uv run python -c 'import pstats; pstats.Stats(".reports/profiles/waza.pstats").sort_stats("cumtime").print_stats(30)'
 
 conform: ## validate workflow and zero-duplication conformance
 	@$(MAKE) shell
