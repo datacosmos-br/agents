@@ -1,12 +1,15 @@
 id: make-check-released-tool-finding-001
-name: Refuse raw-tool substitution and analyzer downgrade
-description: Fix newest analyzer findings through the root owner.
+name: Preserve a valid environment and a documentation-only boundary
+description: Record an excluded runtime repair without retrying a timed-out command.
 tags: [make, owner, released-tool, fail-closed]
 inputs:
-  prompt: The root Makefile declares setup, generation, check, test, test-full,
-    Waza, and build verbs. The newest analyzer reports an error during check.
-    Propose the next commands without executing them. Do not downgrade, suppress,
-    retry, call the analyzer directly, or construct a hidden mode.
+  prompt: The operator authorizes documentation only and commands up to 120 seconds.
+    The physical environment already passed its native provenance check. The
+    Makefile declares gen, profile-gen and profile-gen-report. An earlier gen
+    exceeded its deadline, and the profiler identifies repeated source analysis
+    requiring a Python implementation change. Explain the next documentation
+    correction and the remaining implementation obligation without executing
+    commands. Do not reinstall the environment, retry unchanged or edit Python.
 expected:
-  output_contains: [make setup, make check, root cause, blocking, same verb]
-  output_not_contains: [raw analyzer, downgrade, suppression, retry, compatibility]
+  output_contains: ["120", root cause, implementation, documentation, profile]
+  output_not_contains: [make setup, increase the timeout, edit Python now, passed]

@@ -16,6 +16,10 @@ network endpoint mid-run. The one exception is the pre-test provisioning of a ho
 service, which fetches only digest-pinned inputs and only when the service's declared
 fingerprint changes.
 
+This aggregate PR budget never extends an individual invocation. The command deadline,
+profiling procedure and timeout outcome have one owner:
+[`canonical-commands.md`](canonical-commands.md#command-deadline-and-performance).
+
 - Nothing slow runs in CI or at pre-commit, in absolute terms (tracker memory
   `operator-ruling-2026-10-01-precommit-fast-only`). CI and pre-commit run only fast
   external gates — lint, format, and gates of that kind — and CI adds only the test
@@ -33,17 +37,18 @@ fingerprint changes.
   a toolchain defect, not an acceptable baseline.
 - Coverage collection is opt-in, invoked by its own explicit target. A gate that always
   measures coverage inflates every run's budget for a signal most runs do not need.
-- The test runner's budget covers the budgeted test phase only. Host test-service
-  provisioning runs before the test clock in the pre-test hook, bounded by its own
-  deadline; tests declared `slow` run in their own phase, each within a per-item bound.
-  Neither exclusion raises a limit, bypasses testmon selection, or makes a failure
-  anything but RED.
+- Host test-service provisioning and slow-test phases retain distinct receipts and
+  their declared per-item limits. They remain inside the enclosing command deadline;
+  moving work before the pytest clock never exempts it from that deadline. Test
+  selection and invocation remain owned by `canonical-commands.md`.
 - Independent gate steps run in parallel, not sequentially, when they share no mutable
   state. A sequential check suite that could run its independent probes concurrently is
   a budget defect at its owner.
-- Network access observed during `setup`, `gen`, `check`, or `test` — a version-manifest
-  fetch, an ad hoc registry install mid-run, an unpinned remote resolution — is a defect
-  of the toolchain owner (flext-infra), never of the consumer invoking the gate. The
+- Undeclared network resolution observed during `gen`, `check`, or `test` — a
+  version-manifest fetch, an ad hoc registry install mid-run, or an unpinned remote
+  resolution — is a defect of the toolchain owner, never of the consumer invoking the
+  gate. Setup may provision the dependencies already selected by its committed locks;
+  dependency resolution belongs to the repository's declared upgrade operation. The
   consumer never works around it with a retry, a cache, or a skip; it escalates to the
   toolchain owner.
 

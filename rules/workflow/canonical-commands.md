@@ -49,6 +49,36 @@ The first command failure and raw traceback propagate. Warning, skip, empty outp
 missing tool/report, partial execution, retry, normalization, or a successful wrapper
 around a failed child is RED.
 
+## Command deadline and performance
+
+Every command has a maximum wall-clock duration of 120 seconds, including activation,
+preflight, lock acquisition, subprocesses and termination. This operator requirement
+also applies to setup, complete test suites and profiling. A deadline wrapper is
+permitted only to enforce that bound; it does not replace the declared operation,
+change its scope, suppress output or turn a failure into success.
+
+Reserve termination time inside the bound: request termination no later than 118
+seconds and finish terminating owned children by 120 seconds. Nested operations consume
+the remaining invocation budget, never a fresh budget per child. Do not signal another
+actor's process or remove its lock to obtain the window.
+
+A timeout is an incomplete failed invocation. Preserve its native output, exit,
+completed scope and available profile. Before another invocation, identify and correct
+the measured cause; do not retry unchanged, increase the limit, move the command into
+an unbounded background job, or split its output into a false complete receipt.
+
+For Python generation or migration slowness, use cProfile through the existing native
+profiling verb. Bind the capture to source, runtime, configuration and scope; record wall
+time separately from cumulative function time and distinguish parent waits from child
+work. Change one measured cause, revalidate its public behavior and compare the same
+operation before scaling. Reuse existing analysis owners rather than adding a parallel
+cache, scanner or execution engine. Gate placement and opt-in instrumentation follow
+[`gate-budget.md`](gate-budget.md).
+
+When the operator authorizes documentation only, a missing deadline implementation or
+broken generator remains an implementation finding. Correct its documentation and
+record the exact code obligation without editing excluded code or claiming enforcement.
+
 ## Test verbs
 
 This section is the single declaration of the test-verb law (tracker memory
@@ -62,8 +92,9 @@ agent profile, and doc references it and never restates it.
   run.
 - CI and pre-push run `make test`; CI persists the testmon database through its cache.
 - Pre-commit runs no tests.
-- `make test-full` runs only locally, without testmon and without any time limit. It
-  never runs in CI, at pre-commit, or at pre-push.
+- `make test-full` runs only locally, without testmon selection, while preserving the
+  existing database. It never runs in CI, at pre-commit, or at pre-push. It obeys the
+  command deadline above; an interrupted full run is not complete-suite evidence.
 - A `make test` run that executes no test is acceptable only as the typed cache hit of
   AGENTS.md law 14.
 - `make test-file FILE=<repository-relative path>` is the sole allowed single-file
@@ -71,6 +102,10 @@ agent profile, and doc references it and never restates it.
   verb; this rule records the contract and does not define the implementation.
 - Raw pytest, any other test-file or match selection, and deletion or replacement of the
   testmon database are prohibited; no raw, focused, or CI path bypasses these verbs.
+
+The repository command owner implements this contract. A template, runner or workflow
+that still runs tests at pre-commit, changes this selection contract or removes the
+deadline is nonconforming; its presence does not create another permitted workflow.
 
 ## Zero-violation code gate
 
