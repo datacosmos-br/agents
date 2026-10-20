@@ -57,6 +57,7 @@ def _spec_command(skill: Path, evaluation: Path) -> tuple[str, ...]:
         "--fail",
         "--format",
         "human",
+        "--no-update-check",
     )
 
 

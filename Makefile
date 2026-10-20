@@ -17,7 +17,7 @@ override export MISE_GLOBAL_CONFIG_FILE := $(CURDIR)/config/mise-isolation.toml
 override export MISE_SYSTEM_CONFIG_FILE := $(CURDIR)/config/mise-isolation.toml
 override export MISE_OVERRIDE_CONFIG_FILENAMES := .mise.toml
 override export MISE_OVERRIDE_TOOL_VERSIONS_FILENAMES := none
-unexport UV_PYTHON
+unexport UV_PYTHON UV_PROJECT
 
 .DEFAULT_GOAL := help
 .PHONY: help setup upg gen docs audit check runtime waza crg-check lint static conform fmt fix mod mod-check shell duplication build test test-full ci validate-artifacts publish
@@ -148,7 +148,7 @@ test: ## run affected tests through the testmon database at its tool default
 	$(call BANNER,test · pytest-testmon affected selection)
 	$(call RUN_TESTMON,incremental)
 
-test-full: ## run every test locally, without testmon and without a time limit
+test-full: ## run the complete local suite without testmon selection
 	$(call BANNER,test-full · pytest without testmon)
 	$(call RUN_TESTMON,full)
 
