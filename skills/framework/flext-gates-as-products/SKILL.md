@@ -1,66 +1,30 @@
 ---
 name: flext-gates-as-products
-description:
-  "flext gates-as-products, budget rows, registry vocabularies, atomic primitives,
-  config keys"
+description: "flext gate products, current registry, native primitives, configuration ownership"
 license: canonical flext law
 metadata:
-  aihub.tags: '["activation:detected","decision:ADR-0015","detect:dependency:python:flext-infra","detect:selected-tag:flext","effective:2026-09-11","route:project","subject:flext","usage:on-demand"]'
+  aihub.tags: '["activation:detected","decision:ADR-0015","detect:dependency:python:flext-infra","detect:selected-tag:flext","effective:2026-10-20","route:project","subject:flext","usage:on-demand"]'
 ---
 
-# FLEXT Gates as Products
+# Apply the current gate product contract
 
-Composes with `$flext-law`, `consumption-law.md` (ADR-015) and rule
-`gate-registry-ownership.md`; owns only the enforcement-product delta.
+Resolve branch-matched FLEXT law through flext-development, then inspect the
+selected tooling registry, typed configuration and native gate implementation.
+Those authors define the product contract. This procedure does not prescribe a
+historical registry symbol, configuration key, budget table or primitive owner.
 
-## Gate product law
+Trace one gate's declaration through its vocabulary, execution, diagnostics,
+reporting and generated consumers. Derive values from their current typed owner;
+a copied enumeration or a separate configuration reader is a duplicate to remove.
+Reuse the existing atomic file primitive and generation transaction at the layer
+that owns each operation, rather than copying it into the gate.
 
-- Every gate is a product: one typed config namespace under
-  `[tool.flext.project.<gate>]` (thresholds/fields are data under config SSOT, never
-  constants-only), a registry row (`SARIF_TOOL_INFO`, `ALLOWED_GATES`), a gate-class
-  entry, and a required R4 budget row (`time-seconds`, `memory-mb`, `tokens`) under
-  `[tool.flext.project.budget]` for every gate id.
-- Registry divergence fails the registry build before any gate runs.
-- Thresholds belong to project config; consumer overrides flow through the projection
-  owner and `make gen` fixed-point proof.
-- Strict gates move from advisory to hard only through the declared rollout; finding
-  baselines remain tracker evidence, never fixtures.
+Apply a budget only when the current declared contract contains it. A retired
+budget namespace or legacy row is a producer/consumer cutover finding, not
+permission to restore the removed feature. Preserve diagnostics under their
+protected canonical policy; a general cleanup request grants no new suppression.
 
-## Atomic primitives
-
-- `flext-core` owns file mutation once through `u.FlextUtilitiesFiles`.
-- Production writes preserve path trust, durability, EINTR safety, and umask-respecting
-  modes; consumers delete duplicate primitives when rewired.
-
-## Consumer grammar
-
-- Roots come from the runtime family surface.
-- An exported symbol is legal only through the owner's public `__all__`; private
-  submodules and wildcards violate, while same-root assembly is exempt.
-
-## Budget telemetry
-
-- Gate reports record measured duration and compare measured reality with the declared
-  budget before a workspace may claim green.
-
-## Automation cycle
-
-FLEXT program work uses only selector-free root Make verbs.
-
-1. Run `make gen` at the lane root before semantic rewrites.
-2. Run `make mod`; the engine owns ast-grep, fixed point, Ruff, Pyrefly, and LSP
-   diagnostics and derives scope from repository state.
-3. Run `make fix`, `make fmt`, `make check`, and the canonical test verbs declared in
-   `rules/workflow/canonical-commands.md` (section "Test verbs").
-4. Use `$crg` only for fresh graph evidence. The workspace root uses recursive submodule
-   indexing and every member lane keeps its own graph. Impact and change detection are
-   review evidence, never gate substitutes. Confirm dead-code candidates in source.
-   Refactor previews are applied only through `make mod`, then the cycle revalidates.
-5. Commit scoped work, push FF, open a PR, merge `--no-ff` into the declared integration
-   branch, rerun gates on the merged SHA, refresh graphs, and only then tag or release.
-
-Rule archives are owners, never copy sources:
-
-- Repository codemod rules live under flext-infra's declared rules owner.
-- Agent-global rules are projected under the agent rules directory and consumed only
-  through the repository Make owner.
+Change the author, regenerate through the native root verb and prove its fixed
+point and real public gate behavior. Validate the complete affected contract,
+then follow the global Git and phase owners for integration and post-merge proof.
+A report from one gate never proves the whole project or fleet green.

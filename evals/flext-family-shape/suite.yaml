@@ -1,7 +1,7 @@
 description: Flext family part shape law.
 prompt: |-
-  Grade the response against the branch-matched family owner. Require five private
-  families, direct entity declarations, family bases and MRO facade composition.
+  Grade the response against the branch-matched family owner. Read the project-owned law and apply the supplied scenario contract for private
+  families, entity declarations, family bases and MRO facade composition.
   Resolve rule resources through the typed catalog and execute structural changes
   through the shared native Rope/candidate publication cycle. Reject historical
   resource guesses, compatibility aliases, manual generated-file edits and restoration

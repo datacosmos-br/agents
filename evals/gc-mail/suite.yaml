@@ -4,3 +4,6 @@ prompt: |-
   canonical project facade, preserves strict execution, preflight, and
   evidence contracts from the skill, and routes work through the declared
   owner. Reject bypass, fallback, hardcode, or unobserved success.
+  Distinguish active selected city coordination from an explicitly authorized
+  manual execution with suspended orchestration and a retained tracker.
+  Reject starting orchestration to obtain an ACK or claiming an unreceived ACK.

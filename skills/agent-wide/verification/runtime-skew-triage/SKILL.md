@@ -29,10 +29,10 @@ dead" services. Distilled from the ai-hub model pipeline outage chain of 2026-09
 
 1. **Prove the pair.** Binary `--version` + embedded schema strings; publisher source
    constant AND deployed dist constant. Skew found → reconcile before any other
-   hypothesis (rule: `runtime-version-skew.md`).
+   hypothesis (rule: `runtime/deployment-lifecycle.md`).
 2. **Prove runtime, not unit state.** Port listening + one real endpoint call. An
    `active (exited)` unit is bookkeeping, not proof (rule:
-   `runtime-proof-and-contract-first.md`).
+   `workflow/runtime-first-contract-tests.md`).
 3. **Map the full assert chain** of the publication path (identity → CAS subset →
    generation → parse → schema → credential subset → readback) with owner and failure
    class per assert. Predict where the current fix will displace the symptom.

@@ -13,6 +13,13 @@ practice: an unverifiable form is verified at its canonical owner (declared docs
 source, the tool's own help) or not executed. A plausible command that succeeds without
 a canonical basis is still a defect.
 
+This is the lifecycle contract for governed first-party projects. A selected
+third-party fork follows its upstream command contract rather than acquiring
+another project's private control plane. Source inspection, native help and
+the selected Git, tracker and coordination APIs are preflight/control
+operations; they never substitute for a declared project gate. A broken Make
+gate does not authorize choosing another tool or CLI to obtain a green result.
+
 Diagnostics, validation, generation, formatting, correction, tests, Waza, builds,
 publication, deployment, and maintenance execute only through one explicit verb in the
 repository root Makefile. No Make selector, underlying-tool argument,
@@ -48,6 +55,13 @@ retry as build, create placeholder state, or normalize an incomplete index.
 The first command failure and raw traceback propagate. Warning, skip, empty output,
 missing tool/report, partial execution, retry, normalization, or a successful wrapper
 around a failed child is RED.
+
+A read-only predicate uses its documented native status and result schema.
+Preserve that status and the decisive result; a false predicate is neither a
+successful gate nor permission for a dependent effect. Do not reinterpret an
+unknown nonzero exit or error text as absence. Missing required gate evidence
+remains RED. Classify emitted diagnostics through their declared owner, rather
+than treating a quoted word in input data as an emitted diagnostic.
 
 ## Command deadline and performance
 

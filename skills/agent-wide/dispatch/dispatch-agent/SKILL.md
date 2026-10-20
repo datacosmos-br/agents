@@ -7,18 +7,20 @@ metadata:
 
 # dispatch-agent
 
-Activate only when bounded work materially benefits from one or more specialists exposed
-by the active client's current roster. A direct bounded answer does not activate
-delegation.
+Activate only when the current operator request or selected role authorizes
+delegation and bounded work materially benefits from specialists exposed by the
+active client's current roster. A direct bounded answer does not launch agents.
 
 Before the native dispatch effect, resolve the exact objective, complete current roster,
 trigger evidence, selected capability, authorized scope, relevant project context,
 native API, and required return evidence. A missing or conflicting roster, interface,
 authority, or boundary stops with zero effects.
 
-An implementation handoff carries the operator-approved shell forms, scoped gates,
-writable paths, and stop-and-report at 15 minutes without a written change or green
-gate.
+An implementation handoff carries the current native command contract, scoped
+gates, writable paths and observable acceptance boundary. A stalled or failed
+operation requires causal evidence and owner correction within authorization;
+elapsed time alone does not authorize abandoning the task or switching checkouts.
+Ask for new authority only when the remaining required effect actually needs it.
 
 Select one agent by strongest material trigger overlap and state the confidence
 evidence. Multiple agents are valid only when the operator or plan authorizes
@@ -38,4 +40,6 @@ secondary failure only while re-raising the first cause and removing dispatch re
 
 Report each selected agent, confidence, preserved scope and context, native handoff
 evidence, expected result, and integration order. Delegated mutation remains governed by
-the active project's existing owners.
+the active project's existing owners. The parent retains the original goal and
+closure responsibility when dispatch is unavailable; continue independently
+authorized work without inventing a substitute dispatch or claiming it succeeded.

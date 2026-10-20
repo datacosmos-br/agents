@@ -23,7 +23,8 @@ Inventory before designing: open and recently merged PRs, WIP branches and
 worktrees, ready and open beads, superseded attempts. Adopt the surviving
 implementation fix-forward and discard the duplicate without resentment;
 deduplication must delete more than it adds. An active lane carrying work
-you need is adopted by cherry-pick immediately, never awaited. Runtime
+you need is coordinated with its current writer; adopt its verified contribution
+through the authorized integration path, without launching a competing rewrite. Runtime
 reality precedes implementation and tests: establish correct behavior from
 the official contract and the real public consumer first; when runtime and
 tests disagree, the runtime is the authority and the test is fixed.
@@ -42,11 +43,10 @@ blast radius are adopted, not excused (`rules/workflow/production-readiness.md`)
 ## 4. One declaration site per fact
 
 Every orientation, policy, or value has exactly one declaration site; every
-other occurrence is a reference or a regenerated projection. Mutable rule
-values live as gated configuration at their canonical owner with per-project
-override — a policy literal hardcoded in code, rule, template, test, or doc
-is an extermination target, moved to the gated owner and regenerated in the
-same change. Projections are never hand-edited; when a declarative automation
+other occurrence is a reference or a regenerated projection. Configuration-owned values are read through their gated owner rather than
+copied into consumers. Normative rules, immutable protocol contracts and
+configuration data retain their distinct authors; a rule is not relocated into
+a second project configuration merely to duplicate it there. Projections are never hand-edited; when a declarative automation
 exists, manual propagation is forbidden.
 
 ## 5. Native commands and evidence

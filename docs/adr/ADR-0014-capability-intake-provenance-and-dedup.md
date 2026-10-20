@@ -31,7 +31,7 @@ dedup obligations:
 3. **Overlap resolves through the specialization graph.** A capability that overlaps a
    canonical owner becomes a child with `extends:<owner>` and carries only its delta,
    referencing the parent. Byte-duplicates and subsumed artifacts are retired, never
-   coexist. `flext-context-routing` folds into `flext-law`; the external
+   coexist. FLEXT project routing and law remain at their branch-matched project owner; the external
    `~/.claude/skills/skill-creator` copy is retired by the managed projection.
 4. **Short slugs at birth.** New slugs use one or two words (target ≤ 14 characters),
    match the family convention, and are unique across the catalog. Giant descriptive
@@ -45,3 +45,10 @@ dedup obligations:
   evolution propagates without drift.
 - The next intake repeats this path; a second ad-hoc adoption route is a violation of
   this ADR.
+
+## Authority consolidation — 2026-10-20
+
+The copied global `framework/flext-law` and its duplicate evaluation suite are
+retired. `flext-development` selects the project-owned branch-matched law.
+The fork boundary evaluation is retained in that router suite. A global intake
+never takes authorship of another project's law or publishes a competing body.

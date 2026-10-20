@@ -1,3 +1,10 @@
 skill: flext-family-shape
-state: canonical
+profile: internal_flext
+state: evaluation scenario, not standing project authority
+branch_law: selected project-owned ADR-014
+scenario_family_contract:
+  families: [c, t, p, m, u]
+  part_shape: direct nested entities
+  family_base: base.py
+  facade: explicit MRO composition
 gates: [gen, check, waza]

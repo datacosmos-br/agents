@@ -1,7 +1,8 @@
-description: Flext gates as products, budget rows, atomic gate primitives.
+description: FLEXT gate products follow the current typed registry and primitive owners.
 prompt: |-
-  Grade the flext-gates-as-products response. Pass only when it treats each
-  gate as an owned product with budget rows derived from the registry,
-  atomic primitives, converged config keys, and projections regenerated at
-  a proven fixed point. Reject hardcoded budgets, orphan gate rows,
-  hand-edited projections, or gates without a declared owner.
+  Grade the response against the current branch-matched contract supplied in the
+  scenario. Require current registry and configuration discovery, native primitive
+  reuse, producer/consumer consistency and a proven generation fixed point.
+  Do not require a historical budget table or primitive owner. Reject restoration
+  of retired budget machinery, copied enumerations, hand-edited projections,
+  unobserved success or a gate without its declared owner.

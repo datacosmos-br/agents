@@ -32,3 +32,9 @@ does not create a second environment for the same runtime root.
   canonical setup surface only when that mutation is authorized.
 
 See also: `strict-execution.md` (rule file) — aggregate parent policy.
+
+Foreign environment variables are reconciled at the native runtime/Make owner,
+not through caller-side environment overrides. After dependency changes, prove
+interpreter and installed-source identity against the selected declaration. A
+missing module is a diagnosis input; establish whether its cause is provisioning,
+source or topology before changing any of them.

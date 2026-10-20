@@ -37,6 +37,10 @@ documentation.
   defect at its owner, never a skip. See `observable-runtime.md` (rule file) for the
   complete sandboxing contract.
 
+A fixture-created repository specimen is isolated test data, not a development
+lane. It stays inside that fixture under the testing tool's native defaults;
+this does not permit a real checkout, runtime or publication stage under `/tmp`.
+
 A repository-local `.venv` is a regenerable local runtime artifact, never a source or
 shared dependency. It is never copied or reused across checkouts; each physical
 repository reconstructs it through its declared setup owner.
