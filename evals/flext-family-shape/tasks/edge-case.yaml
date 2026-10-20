@@ -11,5 +11,5 @@ inputs:
   files:
   - path: scenario.yaml
 expected:
-  output_contains: ['five', 'families', 'one', 'class', 'reject', 'source']
+  output_contains: [five, families, one, class, reject, source, stale, candidate, abort]
   output_not_contains: ["normalized failure"]

@@ -1,7 +1,7 @@
 ---
 description: Python environments are physical and owned by the declared runtime root
 metadata:
-  aihub.tags: '["decision:ADR-0025","effective:2026-09-22","route:both"]'
+  aihub.tags: '["decision:ADR-0025","effective:2026-10-20","route:both"]'
 ---
 
 # Python environments follow one declared runtime root

@@ -56,6 +56,12 @@ The first command failure and raw traceback propagate. Warning, skip, empty outp
 missing tool/report, partial execution, retry, normalization, or a successful wrapper
 around a failed child is RED.
 
+Test applicability and the explicit FLEXT connectivity prerequisite exception
+have one owner: `rules/testing/observable-runtime.md`. Preserve its unexecuted
+node identities and dispositions. An authorized prerequisite skip never proves
+connectivity, complete behavioral validation or production readiness; a runner
+that promotes it to any such success must be repaired.
+
 A read-only predicate uses its documented native status and result schema.
 Preserve that status and the decisive result; a false predicate is neither a
 successful gate nor permission for a dependent effect. Do not reinterpret an

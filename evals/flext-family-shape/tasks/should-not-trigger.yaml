@@ -9,5 +9,5 @@ inputs:
     adoption. State the applicable architecture boundary without proposing family
     generation, facade migration or a new FLEXT layer.
 expected:
-  output_contains: ['upstream', 'third_party_fork']
+  output_contains: [upstream, third_party_fork, never activates FLEXT law]
   output_not_contains: ['FLEXT adoption is required', 'Generate five FLEXT families']

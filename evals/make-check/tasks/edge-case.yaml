@@ -16,3 +16,4 @@ expected:
   - I will reinstall the environment
   - I will modify the Python source
   - I will raise the deadline
+  - I will retry unchanged

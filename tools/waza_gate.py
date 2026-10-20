@@ -10,6 +10,7 @@ import tempfile
 from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
+from time import perf_counter
 
 from strict_subprocess import capture_strict, describe, publish, run_strict
 
@@ -160,6 +161,7 @@ def _verify(repository: Path, projection: Path) -> None:
 
 
 def main() -> None:
+    started = perf_counter()
     repository = Path(__file__).resolve().parents[1]
     state = _state_root(repository)
     lock_path = state / "waza.lock"
@@ -169,6 +171,7 @@ def main() -> None:
         fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
         with tempfile.TemporaryDirectory(prefix="gate-", dir=state) as temporary:
             _verify(repository, Path(temporary) / "waza-projection")
+    print(f"WAZA wall time including child processes: {perf_counter() - started:.3f}s")
 
 
 if __name__ == "__main__":

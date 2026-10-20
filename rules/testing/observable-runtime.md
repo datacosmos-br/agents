@@ -1,7 +1,7 @@
 ---
 description: Test observable runtime behavior
 metadata:
-  aihub.tags: '["decision:ADR-0031","effective:2026-10-01","route:both"]'
+  aihub.tags: '["decision:ADR-0031","effective:2026-10-20","route:both"]'
 ---
 
 # Test observable runtime behavior
@@ -30,7 +30,8 @@ A warning, unexplained skip, xfail, empty output, missing tool, missing report, 
 unexecuted selected suite, caught exception, retry, or normalized failure is RED. The
 one acceptable zero execution is the typed `make test` cache hit of AGENTS.md law 14;
 report it as a cache hit, never as tests passed. A capability deselection (below) is
-neither a skip nor zero collection. The first exception, cause, and raw traceback escape
+neither a skip nor zero collection. The explicit connectivity exception below is
+an unmet prerequisite, never an acceptance receipt. The first exception, cause, and raw traceback escape
 unchanged.
 
 See [`runtime-is-reality.md`](../workflow/runtime-is-reality.md) for the runtime-first

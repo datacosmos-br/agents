@@ -21,6 +21,7 @@ owners through root make mod. Do not build another refactoring engine.
 
 Validate the changed producer and every affected consumer as one dependency group.
 Source drift invalidates the affected candidate. Preserve shared work and fix
-published effects forward through the existing journal; never restore an older
+published effects forward through the publication owner's durable receipt. An
+active invocation's journal applies only while that owner retains it; never restore an older
 source snapshot or introduce a private backup. Publish and accept only with the
 native runtime, structural and gate evidence required by the selected law.

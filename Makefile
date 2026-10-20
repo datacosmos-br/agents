@@ -101,11 +101,12 @@ profile-mypy-resources: ## profile native Mypy over every declared Python skill 
 profile-mypy-resources-report: ## read the native Mypy resource profile
 	@$(UV_RUN) python -c 'import pstats; pstats.Stats(".reports/profiles/mypy-resources.pstats").sort_stats("cumtime").print_stats(30)'
 
-profile-waza: ## profile the complete native semantic gate
+profile-waza: ## profile the Waza coordinator; child code is not instrumented
 	@mkdir -p .reports/profiles
 	@$(UV_RUN) python -m cProfile -o .reports/profiles/waza.pstats tools/waza_gate.py
 
-profile-waza-report: ## read the native semantic gate profile
+profile-waza-report: ## read coordinator costs and child waits, not child call profiles
+	$(call BANNER,profile-waza-report · parent Python only; child work appears as waits)
 	@$(UV_RUN) python -c 'import pstats; pstats.Stats(".reports/profiles/waza.pstats").sort_stats("cumtime").print_stats(30)'
 
 conform: ## validate workflow and zero-duplication conformance

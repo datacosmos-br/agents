@@ -13,6 +13,9 @@ metadata:
 Treat `$ARGUMENTS` as one authorized objective and acceptance boundary. Resolve missing
 facts through current sources before asking about a non-derivable decision. Preserve
 prior exact authorization and the current unit across interruption.
+Do not implement an empty, unrelated multi-objective or ownerless unit. An authorized
+program may contain several units; select its next bounded unit without discarding
+the program or asking for authorization already given.
 
 1. Read the active contract, canonical owner, implementation, consumers, selected
    tracker, integration state and public runtime. Adopt compatible existing work.

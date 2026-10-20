@@ -1,6 +1,6 @@
 # ADR-0025 — Dedicated manual worktrees during orchestration suspension
 
-**Status:** Accepted **Date:** 2026-09-22
+**Status:** Accepted; reconciled 2026-10-20 **Date:** 2026-09-22
 
 ## Context
 
@@ -17,18 +17,21 @@ discard that explicit selection.
 
 ## Decision
 
-1. Every manual task uses a dedicated native Git worktree, working branch, and physical
-   environment. Implementation in the primary/default checkout is prohibited.
+1. Manual placement follows `rules/coordination/gascity.md`: a dedicated native Git
+   worktree and branch are the default; an exact current operator placement
+   instruction takes precedence. Implementation in the primary checkout requires
+   that explicit authority, never an inference from orchestration suspension.
 2. Active Gas City orchestration keeps its transactional placement owner. During
    suspension, manual worktrees use native Git on the authorized destination filesystem;
    suspension does not prohibit worktrees or authorize any city, rig, Pack, agent,
    formula, run, or session orchestration action.
-3. `make setup` provisions the Python environment only in each worktree's physical,
-   exclusively owned `.venv`.
-   External or borrowed environments, symlinks, cross-repository editable installs, and
-   inherited environment variables that redirect setup are prohibited. Caches and
-   temporary artifacts remain external. `/tmp` worktree placement and backup/archive
-   copies remain prohibited.
+3. `rules/coordination/shared-venv-guard.md` owns environment identity. The manual
+   workspace provisions its own physical `.venv`; attached members declared as
+   dependencies of that runtime root consume it. An independent worktree owns
+   its independent environment. This is distinct from borrowing another
+   workspace's environment or redirecting setup with inherited variables.
+   Cache and scratch placement follow `rules/storage.md`; they are not
+   environments. Worktrees never belong under `/tmp` or in backup/archive copies.
 4. Orchestration and tracker activation are resolved independently. A separately
    selected and available canonical Beads service remains authoritative. A suspended
    tracker is never replaced with another store or ledger.
@@ -43,6 +46,11 @@ City placement wording in
 [ADR-0023](ADR-0023-worktree-discovery-maintenance-frontier.md). The discovery frontier,
 single retirement executor, active-city placement contract, and historical evidence
 remain unchanged.
+
+The 2026-10-20 reconciliation removes the earlier contradiction between one
+declared workspace runtime and a separate environment for every attached member.
+It preserves physical ownership and exclusivity at the actual runtime root;
+neither an installed binary nor an existing directory selects that root.
 
 ## Delivery
 

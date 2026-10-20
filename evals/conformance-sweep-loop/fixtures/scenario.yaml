@@ -2,14 +2,15 @@ objective: bring make check to zero findings
 project: ai-hub
 scan_scope:
   declared_in: config/tooling.yaml
-  production: [src]
-  excluded_until_declared: [tests, scripts, docs]
+  included: [src, tests, scripts, docs]
+host_enrichment:
+  crg: not selected
 git_dependency:
   name: flext-infra
   owns_class: private-import
   current_revision: 983a149b
   fixed_revision: 1d2c3b4a
-  bump_owner: pyproject.toml dependency pin plus make deps
+  bump_owner: declared native upgrade verb
 findings:
   - gate: codemod
     class: private-import
@@ -38,7 +39,7 @@ waves:
     classes: [over-cap-module]
     revalidate: make check
 loop_receipt:
-  required_at: zero residue only
+  required_at: each validated slice
   fields: [wave, class, owner, before, after, gate command, exit code]
 rejects:
   - hardcoded class list

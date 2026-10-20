@@ -16,7 +16,7 @@ assignments and retired lockfile instructions are not current authority.
 | Incremental tests | `make test` | Native testmon selection or integrity-checked cache-hit accounting |
 | Complete local tests | `make test-full` | Entire local suite; existing testmon database preserved |
 | Resource analyzer profile | `make profile-mypy-resources`, `make profile-mypy-resources-report` | cProfile data for the declared resource population |
-| Semantic gate profile | `make profile-waza`, `make profile-waza-report` | cProfile data for the complete specification gate |
+| Semantic gate profile | `make profile-waza`, `make profile-waza-report` | Coordinator cProfile and total wall time; child code is not instrumented |
 
 Inspect the current Makefile inventory before invoking an operation. Use an existing,
 valid environment; setup provisions when required and exclusive ownership is proved.
@@ -30,6 +30,8 @@ They do not prove that AI Hub published a provider surface, withdrew its old cop
 or that a native agent loaded it. Those receipts belong to AI Hub's delivery owner.
 
 Record the changed owner and consumers, command, cwd, exit, decisive output and
-source revision on the selected task. Review and integrate the exact candidate
+source revision on the selected available tracker task. When that tracker is
+unavailable, preserve receipts only through separately authorized Git/PR/CI and
+leave closure open. Review and integrate the exact candidate
 through the global Git procedure. Do not substitute a source receipt for a merged
 revision or installed runtime receipt.
