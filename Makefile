@@ -20,8 +20,16 @@ override export MISE_OVERRIDE_TOOL_VERSIONS_FILENAMES := none
 unexport UV_PYTHON UV_PROJECT
 
 .DEFAULT_GOAL := help
-.PHONY: help setup upg gen docs audit check runtime waza crg-check lint static conform fmt fix mod mod-check shell duplication build test test-full ci validate-artifacts publish profile-mypy-resources profile-mypy-resources-report profile-waza profile-waza-report
+PUBLIC_VERBS := help setup upg gen docs audit check runtime waza crg-check lint static conform fmt fix mod mod-check shell duplication build test test-full ci validate-artifacts publish profile-mypy-resources profile-mypy-resources-report profile-waza profile-waza-report
+.PHONY: $(PUBLIC_VERBS)
 .DELETE_ON_ERROR:
+
+ifeq ($(MAKELEVEL),0)
+$(PUBLIC_VERBS): _bounded
+.PHONY: _bounded
+_bounded:
+	+@timeout --signal=TERM --kill-after=2s 118s $(MAKE) --no-print-directory $(or $(MAKECMDGOALS),help)
+else
 
 define BANNER
 	@if [ -z "$$NO_COLOR" ]; then printf '\033[1;36m▶\033[0m %s\n' "$(1)"; else printf '▶ %s\n' "$(1)"; fi
@@ -169,3 +177,5 @@ ci: ## run the fast external gates and make test; check and test-full stay local
 publish: ## publish the validated tag artifacts
 	$(call BANNER,publish · immutable GitHub release)
 	@ARTIFACT_MODE=publish uv run python tools/artifact_gate.py
+
+endif

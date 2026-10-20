@@ -20,6 +20,8 @@ assignments and retired lockfile instructions are not current authority.
 
 Inspect the current Makefile inventory before invoking an operation. Use an existing,
 valid environment; setup provisions when required and exclusive ownership is proved.
+The public dispatcher enforces the command owner's deadline around the complete
+invocation, including multiple requested verbs and their recursive children.
 Immutable read-only gates may share the Make scheduler; source mutation, testmon
 updates and publication retain their own ownership boundaries.
 
