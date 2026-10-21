@@ -4,9 +4,12 @@ description: Execute the core flext-family-shape contract.
 tags: [flext, family, shape, five, private, families, flat, entity, declarations, rope, rules, basic-usage]
 inputs:
   prompt: >-
-    State the flext family shape law: five private families c t p m u under module dirs, flat entity declarations, one base per family, explicit facade composition with api.py as composition root and thin cli.py, rope rules with one yaml per rule.
+    Resolve the supplied branch-matched declarations for flext family shape.
+    Apply semantic rewiring through the native Rope owner: five private families
+    c t p m u, flat entity declarations, one base per family and MRO facade
+    composition. Use the scenario contract and current typed rule catalog.
   files:
   - path: scenario.yaml
 expected:
-  output_contains: ['flext', 'family', 'shape', 'five', 'private', 'families', 'flat', 'entity', 'declarations', 'rope', 'rules']
+  output_contains: [branch-matched, declarations, semantic rewiring, five, families, rope]
   output_not_contains: ["invented command", "skipped gate"]

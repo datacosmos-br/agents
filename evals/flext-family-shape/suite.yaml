@@ -1,4 +1,10 @@
 description: Flext family part shape law.
 prompt: |-
-  grade the flext-family-shape response, pass only when it names five private families c t p m u under _module dirs, flat entity declarations, one base per family, explicit facade composition, api composition root, cli thin adapter, rope rules one yaml per rule, shared change cycle, centralized backup cycle.
-  Reject invented family names, class-per-file violations, missing composition root, hand-edited generated roots.
+  Grade the response against the branch-matched family owner. Read the project-owned law and apply the supplied scenario contract for private
+  families, entity declarations, family bases and MRO facade composition.
+  Resolve rule resources through the typed catalog and execute structural changes
+  through the shared native Rope/candidate publication cycle. Reject historical
+  resource guesses, compatibility aliases, manual generated-file edits and restoration
+  of published or shared work. Source drift fails the current candidate without
+  inventing a successful rewire. A third-party fork keeps its upstream architecture
+  even when its dependency graph contains flext-core.

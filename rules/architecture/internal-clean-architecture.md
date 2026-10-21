@@ -18,29 +18,18 @@ Service locators, shared mutable containers, hidden singletons, import-time wiri
 string lookup, and auto-registration are violations. Create no empty layer or
 speculative port.
 
-For `internal_flext`, the structural MRO is exactly `c → t → p → m → u` and the
-operational facade set is exactly `r`, `e`, `x`, `h`, `d`, and `s`. Every facade family
-lives under `_<module>/`, begins with `base.py`, places each additional class in its own
-module, and is composed through explicit inheritance. The public API composes the
-required facades; parallel facades, tuple-unpacked bases, eager export routers,
-compatibility namespaces, and local descriptors are prohibited.
+The selected project's domain law owns its module shape, declarations, precise typing,
+configuration boundary and size limits. Read those owners instead of copying their
+values into this universal rule. Technology-specific validation follows the applicable
+language and modeling rules.
 
-Each module has exactly one top-level class and stays within the size cap its project
-declares; for `internal_flext` that cap is the flext-infra `loc-cap` gate, whose ceiling
-lives in that gate's configuration, never in a rule or skill. Declaration layers are
-pure: `c` owns constants, `t` alone owns type aliases, `p` alone owns protocols, `m`
-owns Pydantic 2 models, and `u` owns pure utilities. All structured boundary input and
-output is validated by Pydantic 2 models. Public and DI contracts contain no `Any`,
-`object`, `Optional`, or `dict`; use precise models, aliases, protocols, and explicit
-null unions.
+For `internal_flext`, compose `flext-development` and resolve the exact branch-matched
+local `flext-law` through its provider router. That domain owner defines facade MRO,
+family layout, service bases, protocol ports, handler metadata, lazy exports and
+configuration access. A missing or mismatched owner fails before effects. Do not resolve
+a same-named law from another checkout or apply it to a third-party fork.
 
-Settings own external input and config owns validated derivation before the facade
-graph. Consumers import those owner objects directly. Local aliases, copies,
-redeclarations, environment rereads, re-derivation, reverse imports, and type-only
-runtime cycles are prohibited. Services receive `p` dependencies explicitly; adapters
-stay outside domain/application.
-
-flext-infra owns validation, gates, and code generation for this structure; flext-core
-owns reusable runtime primitives. Correct every violation at that owner, regenerate all
-consumers, prove the public runtime, and remove old code, tests, fixtures,
-documentation, generated files, backups, and archives in the same cutover.
+Correct each violation at the existing declaration, implementation or generator owner,
+rewire its public consumers, prove runtime behavior and remove the superseded path.
+Tests and documentation consume the final contract; they do not require compatibility
+code to preserve an obsolete construction.

@@ -5,11 +5,12 @@ metadata:
 
 # Selected canonical tracker and Git preserve the execution record
 
-Beads applies only when the repository contains its `.beads/` boundary, the project
-authorizes it, and the workflow explicitly selects Beads. A repository without
-`.beads/` selects neither Beads nor Gas City: do not invoke, locate, or probe `bd` or
-`gc`, and do not create a replacement boundary. Installation or detection never selects
-tracking or orchestration. Before effects in a selected repository, validate tracker
+Beads applies only when the project or current operator explicitly selects its
+canonical workflow and route. That route may belong to the repository or to an
+existing central store outside the checkout. A local `.beads/` directory is not an
+authorization by itself; its absence does not revoke an explicit central-store
+selection. Installation or detection never selects tracking or orchestration.
+Before effects in a selected workflow, validate tracker
 identity, authority, configuration, and runtime; the first defect ends the selected
 workflow.
 
@@ -18,7 +19,8 @@ workflow.
 Read the active repository instructions for the scope under work and resolve one mode
 before any tracker action:
 
-- **Boundary absent:** when the repository has no `.beads/` directory, perform no Beads or
+- **Route absent:** when neither the project nor the operator selects an existing
+  canonical route, perform no Beads or
   Gas City discovery, status, context, health, initialization, routing, or mutation.
   Continue through the repository's authorized non-tracker workflow; absence is not a
   tracker failure and creates no unresolved tracker closure requirement.
@@ -33,8 +35,9 @@ before any tracker action:
   checks, and CI preserve evidence; tracker state stays unresolved, so the phase cannot
   be `DONE`.
 
-The `.beads/` boundary is the invariant selection prerequisite, not mutable runtime
-state. Never restate Available or Explicitly suspended as a durable rule, and never
+Explicit selection of the canonical route is the prerequisite. Do not create a local
+boundary, initialize another database or copy server state to satisfy it. Never
+restate Available or Explicitly suspended as a durable rule, and never
 infer either from an installed binary, a reachable endpoint, a running process, or
 another scope.
 

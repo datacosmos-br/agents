@@ -4,9 +4,12 @@ description: Handle the material boundary case for flext-family-shape.
 tags: [flext, family, shape, edge-case]
 inputs:
   prompt: >-
-    module wants a sixth family and a second top-level class; skill must reject and point to the five-family law and one-class rule.
+    An internal_flext module proposes a sixth private family and a second top-level
+    class. Its native semantic preview also reports a changed source epoch. Explain
+    the rejected layout and the fail-forward disposition without restoring files or
+    publishing a candidate from the stale preview.
   files:
   - path: scenario.yaml
 expected:
-  output_contains: ['five', 'families', 'one', 'class', 'reject']
+  output_contains: [five, families, one, class, reject, source, stale, candidate, abort]
   output_not_contains: ["normalized failure"]

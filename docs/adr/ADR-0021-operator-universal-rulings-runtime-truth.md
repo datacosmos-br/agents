@@ -4,7 +4,7 @@
 `rules/coordination/validate-on-change.md`, `rules/coordination/wip-persistence.md`,
 `rules/coordination/full-landing-cycle.md`, `rules/coordination/never-deduce.md`,
 `rules/coordination/green-green-landing.md`, `rules/coordination/lane-adoption.md`,
-`rules/coordination/fanout-qa-publication.md`, `rules/ethics/test-reality-law.md`,
+`rules/coordination/parallel-delegation.md`, `rules/ethics/test-reality-law.md`,
 `rules/ethics/strict-typed-quality.md`, `rules/ethics/conformance-sweep.md`
 
 ## Context
@@ -30,7 +30,7 @@ integration branch) was lost:
 1. Each ruling is encoded as one canonical rule under `rules/coordination/`
    (`validate-on-change`, `wip-persistence`, `full-landing-cycle`, `never-deduce`).
    Companion rules produced by the same sweep (`green-green-landing`, `lane-adoption`,
-   `fanout-qa-publication`, `test-reality-law`, `strict-typed-quality`,
+   `parallel-delegation`, `test-reality-law`, `strict-typed-quality`,
    `conformance-sweep`) may add only a narrow, non-overlapping delta and must reference
    the canonical owner instead of copying its contract. All are approved by this ADR.
 2. The rules are universal (route both): they bind every execution context — agent
@@ -45,3 +45,10 @@ integration branch) was lost:
 - Work reporting must distinguish "landed on the integration branch (and running in
   runtime when in scope)" from "in progress with the exact missing step" — partial
   cycles are never reported as done.
+
+## Governance consolidation — 2026-10-20
+
+The duplicate fan-out rule is retired into `parallel-delegation`. Current
+operator and role authorization determine inline versus delegated execution;
+the historical maximum-fan-out mandate does not launch agents for every task.
+The execution owner retains sequenced acceptance and publication.

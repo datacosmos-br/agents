@@ -1,5 +1,8 @@
 description: Ordered fresh gates, real surface, fixed point, and evidence scope.
 prompt: |-
+  Command and profiling budgets must come from canonical command ownership and
+  per-test configuration; reject copied numeric limits or treating a timed-out
+  partial run as a complete proof.
   Grade the verification-loop response. Pass only when it records each fresh
   command, exit code, decisive output and scope in order, distinguishes tests
   from real-surface proof, includes generated fixed point, and limits the claim

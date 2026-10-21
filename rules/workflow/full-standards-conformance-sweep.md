@@ -1,118 +1,46 @@
 ---
+description: Apply the complete declared standards to one bounded current scope
 metadata:
-  aihub.tags: '["decision:ADR-0031","effective:2026-10-01","route:personal"]'
+  aihub.tags: '["decision:ADR-0031","effective:2026-10-20","route:personal"]'
 ---
 
-# Full-Standards Cleanup & Conformance Sweep (universal)
+# Complete conformance in bounded slices
 
-Authority order before any effect: workspace root `AGENTS.md` → branch-matched flext-law
-skill → nearest scope `AGENTS.md` → active Bead. On a rig hosting a non-FLEXT project,
-apply only the universal layers below (truth, evidence, fail-fast, zero residue,
-canonical commands, DRY/SSOT/YAGNI) and upstream conventions — never impose FLEXT
-architecture across the fleet boundary.
+Resolve the current operator intent, selected task, repository identity, population,
+exclusions, ownership and acceptance boundary before effects. A sweep applies
+all applicable standards to that declared scope; it does not impose another
+project's framework, reinterpret a third-party fork, or expand a documentation
+assignment into a software rewrite.
 
-## 1. Truth — absolute, zero tolerance
+Research each obligation's canonical owner and consumers. Use the engineering-core
+rule's cleanup order and the selected search-first, SSOT, YAGNI, SOLID, simplify,
+DRY and anti-hardcode procedures where their responsibilities apply. A technique
+without an affected consumer is not an additional deliverable.
 
-A claim is true only with exact command, cwd, exit code, and decisive output. Intention,
-self-report, "should work", "mergeable" are NOT proof. Fake green is the most severe
-violation (P0). Warnings, skips, empty output, missing tools are RED — never normalized,
-capped, or suppressed. The first exception escapes with its raw traceback; no catch,
-retry, fallback, or normalization, ever.
+Repair the owner and rewire every affected consumer in the same validated slice.
+Generated surfaces are published by their existing owner and checked for a fixed
+point; historical projections do not define a second contract. Adopt current WIP
+and repair defects in the agreed blast radius through fix-forward collaboration.
 
-## 2. Canonical command surface — never invent
+Canonical commands own discovery, deadlines, profiling and test selection.
+Observable-runtime owns test applicability and public-behavior evidence.
+Branch-matched FLEXT law owns FLEXT architecture; the universal CA rule does not
+restate that architecture. Scope-specific prerequisites compose these owners
+without redefining their outcomes.
 
-The `canonical commands` rule owns command discovery, selector-free root Make verbs,
-structural tooling, diagnostics, and first-failure propagation. This sweep invokes those
-owners; it does not restate or weaken them.
+A valid environment is reused. Setup reconciles an absent or invalid environment
+only after exclusive ownership is established. Generation and structural migration
+apply when the slice reaches their source owners, not as unconditional unrelated
+mutation. A missing command or broken producer remains an explicit owner defect;
+it never authorizes a hidden operational route.
 
-## 3. Test verbs follow their single owner
+Correct conflicting rules, skills, commands and documentation at their authors,
+then validate the whole changed contract through native documentation, catalog,
+evaluation, runtime and code gates as applicable. Preserve independent receipts
+for corrected source, reviewed integration and installed delivery. A successful
+local slice never proves the entire fleet or a provider's activation.
 
-Every test execution runs through the test verbs declared in
-`rules/workflow/canonical-commands.md` (section "Test verbs"), which owns the testmon
-contract and where each verb runs. A raw test-run bypass is prohibited.
-
-## 4. Root cause, zero residue, complete rewire
-
-Fix at root cause, canonical owner, correct location, full context.
-Dead/superseded/duplicate code is removed IMMEDIATELY in the same change, and every
-consumer is rewired to the final owner in that change; the landed state leaves no
-consumer on a removed owner. No compat aliases, shims, dual old+new paths, undone-later
-workarounds, or "temporary" anything. Procedure: inventory
-owner/consumers/fallbacks/tests/docs → classify → the cleanup order of
-`rules/architecture/engineering-core.md` (exterminate, then rewire consumers to the
-SSOT, then rewrite the tests) → regenerate managed surfaces → prove once with
-zero-residue semantic searches, generation fixed point, full gates. "Pre-existing problem, not my responsibility" does
-not exist: every defect in the blast radius, including pre-existing ones, is adopted and
-fixed. Nothing is deferred.
-
-## 5. Reality is the authority; tests are never SSOT
-
-Runtime behavior and the real external contract come first. Tests validate WHAT the
-system does today, never how it is implemented; when tests contradict observed behavior,
-fix the tests — never bend production or freeze config. Tests exercise ONLY public
-facades and observable behavior: no mocks, no patch, no internal-construction
-assertions, no hardcoded project-owned values, no copied setup. They use tm fixtures,
-canonical c/t/p/m/u contracts, the unified conftest.py, and typed shared fixtures with
-maximum automation. Hardcoded, non-automated test forms are prohibited outright.
-
-## 6. FLEXT architecture law — strict, every managed project
-
-The `internal clean architecture` rule owns the FLEXT chain, facade families, DI
-boundaries, declaration purity, and the module size cap, which is the one FLEXT declares
-in its `loc-cap` gate. The branch-matched `flext-law` and `flext-family-shape` skill own
-the project delta. This sweep detects violations and routes repairs through those
-owners; it never restates a cap value or copies a facade contract.
-
-## 7. Disciplines applied completely, in order
-
-Per touched unit: search-first → yagni → ssot (one writable authority per fact;
-canonical defaults declared once at the typed owner) → solid → simplify → dry/jscpd
-(zero clones via the canonical duplication gate) → anti-hardcode (operational values
-live in config/*.yaml/typed settings) → fail-fast. Apply the full stack — settings,
-config, c/t/p/m/u, base, services, api, cli, deduplication, SOLID, YAGNI, DRY, SSOT, CA,
-DI, and Make setup/gen/fix/fmt/check/test — to every adjustment, completely.
-
-## 8. Generated surfaces & commit hygiene
-
-Never hand-edit AUTO-GENERATED files (`__init__.py`, facet roots, [MANAGED] sections,
-generated config/CI/docs): change the generator/SSOT, run `make gen`, prove idempotence.
-Every generated file keeps its standardized header: how it was generated, how to adjust
-it, the exact regeneration rule. Commits carry zero garbage: no debris, dead code, stale
-docs/comments, or throwaway workarounds. `git add` by explicit paths only; fix-forward —
-never reset/checkout/restore/clean/stash shared work. Docs updated in the SAME change as
-behavior.
-
-## 9. Self-repairing governance
-
-Any rule, skill, command, doc, ADR, template, hook, or guidance that conflicts with — or
-fails to make explicit — anything above is corrected at its owner immediately, this
-session, never deferred. Every session revalidates governance against these directives.
-Reinforce and revalidate with the project's advanced verification tooling (WAZA via the
-Make dispatcher) plus DRY/SSOT/YAGNI methods. Rules/config changes flow SSOT → generator
-→ projections. Experience gained in a session lands as improved
-skills/commands/rules/docs/ADRs in the same cycle. A rule or strategy change in
-code/docs without operator authorization is a severe violation; the NEWEST correct rule
-wins, and when hierarchy cannot be determined, stop and ask.
-
-## 10. Closure — the full cycle or nothing
-
-Done = full scope + green gates (fix, fmt, check, test) + WAZA + zero residue + complete
-gitflow: scoped commit → fast-forward push → PR → review resolved → `--no-ff` merge into
-the DECLARED integration branch → affected gates rerun on the merged SHA → runtime
-proved on the integrated state → release → deploy → activation, each with its own
-distinct evidence. Local green, open PR, or "mergeable" is never landed. Stop only for a
-genuinely destructive action or authority conflict — one precise question — then
-continue to full completion.
-
-## Cadence and automation
-
-- Nothing waits more than 1 minute without feedback: slow gates are defects fixed at
-  their owner (cache, parallelism, scope), never endured.
-- Heavy mechanical change uses ast-grep search/replace, LSP refactor, and code-graph
-  discovery (crg) — never manual wiring edits.
-- Lightweight discovery/verification tasks go to subagents; the coordinating thread
-  keeps integration, final QA approval, and publication only.
-- Coordinate online with other agents (board/beads messages), adopt their landed work
-  fast, and keep beads/docs/ADRs/skills current with reality.
-- Every defensible improvement to these rules lands back here in the same session
-  (self-repair), with the regeneration/provenance header intact.
+Phase-admission and Git rules own closure and retirement. Keep the task active
+through required review, integration and post-merge proof. Delegate only according
+to the current assignment and parallel-delegation rule; this sweep does not appoint
+another coordinator or launch agents.

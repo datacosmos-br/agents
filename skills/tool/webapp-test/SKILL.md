@@ -6,117 +6,38 @@ metadata:
   aihub.tags: '["activation:detected","decision:ADR-0014","detect:dependency:python:playwright","effective:2026-09-07","extends:playwright-e2e","route:project","subject:playwright","subject:web","usage:on-demand"]'
 ---
 
-Composes as the specialized delta of $playwright-e2e; the parent owns the shared conduct
-and this bundle adds only its delta.
+# Local web application testing
 
-# Web Application Testing
+Compose $playwright-e2e and resolve the current application's public behavior,
+authentication boundary, native test command and browser ownership first.
+Use that project command for execution; a bundled script is not a substitute
+for its guards, runtime or acceptance evidence.
 
-To test local web applications, write native Python Playwright scripts.
+Inspect the DOM before choosing selectors, wait for observable readiness and
+exercise the real user flow. Preserve console errors and failed requests.
+Snapshots and a successful page load alone do not prove the changed behavior.
+Use these examples as references, not copied project infrastructure:
 
-**Helper Scripts Available**:
+- [Console capture](examples/console_logging.py)
+- [Element discovery](examples/element_discovery.py)
+- [Static HTML](examples/static_html_automation.py)
 
-- `scripts/with_server.py` - Manages server lifecycle (supports multiple servers)
+## Server helper boundary
 
-**Always run scripts with `--help` first** to see usage. DO NOT read the source until
-you try running the script first and find that a customized solution is abslutely
-necessary. These scripts can be very large and thus pollute your context window. They
-exist to be called directly as black-box scripts rather than ingested into your context
-window.
+The public helper is [with_server.py](scripts/with_server.py). Read its declared
+help and source when auditing or diagnosing it; no instruction forbids source
+inspection. Its required contract is exact argv/cwd preservation, visible streams,
+bounded readiness and cleanup of owned processes on failures and termination.
+Shell expansion and another framework runtime are not required to execute argv.
+
+Implementation pending: the current helper and the reviewed async replacement
+must pass that public lifecycle contract, including signals and descendants,
+before any cleanup guarantee is claimed. Preserve the existing source work and
+repair this helper's author; do not create a second runner in the application.
+The selected task carries the current migration evidence and disposition.
 
 ## Provenance
 
 - Origin: <https://github.com/ComposioHQ/awesome-claude-skills> (`webapp-testing`)
 - Commit: `92568c1edaff1bde5371154f036d959346c145a8`
 - License: Apache-2.0
-
-## Decision Tree: Choosing Your Approach
-
-```text
-User task → Is it static HTML?
-    ├─ Yes → Read HTML file directly to identify selectors
-    │         ├─ Success → Write Playwright script using selectors
-    │         └─ Fails/Incomplete → Treat as dynamic (below)
-    │
-    └─ No (dynamic webapp) → Is the server already running?
-        ├─ No → Run: python scripts/with_server.py --help
-        │        Then use the helper + write simplified Playwright script
-        │
-        └─ Yes → Reconnaissance-then-action:
-            1. Navigate and wait for networkidle
-            2. Take screenshot or inspect DOM
-            3. Identify selectors from rendered state
-            4. Execute actions with discovered selectors
-```
-
-## Example: Using with_server.py
-
-To start a server, run `--help` first, then use the helper:
-
-**Single server:**
-
-```bash
-python scripts/with_server.py --server "npm run dev" --port 5173 -- python your_automation.py
-```
-
-**Multiple servers (e.g., backend + frontend):**
-
-```bash
-python scripts/with_server.py \
-  --server "cd backend && python server.py" --port 3000 \
-  --server "cd frontend && npm run dev" --port 5173 \
-  -- python your_automation.py
-```
-
-To create an automation script, include only Playwright logic (servers are managed
-automatically):
-
-```python
-from playwright.sync_api import sync_playwright
-
-with sync_playwright() as p:
-    browser = p.chromium.launch(
-        headless=True
-    )  # Always launch chromium in headless mode
-    page = browser.new_page()
-    page.goto("http://localhost:5173")  # Server already running and ready
-    page.wait_for_load_state("networkidle")  # CRITICAL: Wait for JS to execute
-    # ... your automation logic
-    browser.close()
-```
-
-## Reconnaissance-Then-Action Pattern
-
-1. **Inspect rendered DOM**:
-
-   ```python
-   page.screenshot(path="/tmp/inspect.png", full_page=True)
-   content = page.content()
-   page.locator("button").all()
-   ```
-
-2. **Identify selectors** from inspection results
-
-3. **Execute actions** using discovered selectors
-
-## Common Pitfall
-
-❌ **Don't** inspect the DOM before waiting for `networkidle` on dynamic apps ✅ **Do**
-wait for `page.wait_for_load_state('networkidle')` before inspection
-
-## Best Practices
-
-- **Use bundled scripts as black boxes** - To accomplish a task, consider whether one of
-  the scripts available in `scripts/` can help. These scripts handle common, complex
-  workflows reliably without cluttering the context window. Use `--help` to see usage,
-  then invoke directly.
-- Use `sync_playwright()` for synchronous scripts
-- Always close the browser when done
-- Use descriptive selectors: `text=`, `role=`, CSS selectors, or IDs
-- Add appropriate waits: `page.wait_for_selector()` or `page.wait_for_timeout()`
-
-## Reference Files
-
-- **examples/** - Examples showing common patterns:
-  - `element_discovery.py` - Discovering buttons, links, and inputs on a page
-  - `static_html_automation.py` - Using file:// URLs for local HTML
-  - `console_logging.py` - Capturing console logs during automation

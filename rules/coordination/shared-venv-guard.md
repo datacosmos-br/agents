@@ -1,31 +1,40 @@
 ---
-description: Python environments are physical and checkout-local
+description: Python environments are physical and owned by the declared runtime root
 metadata:
-  aihub.tags: '["decision:ADR-0025","effective:2026-09-22","route:both"]'
+  aihub.tags: '["decision:ADR-0025","effective:2026-10-20","route:both"]'
 ---
 
-# Python environments are physical and checkout-local
+# Python environments follow one declared runtime root
 
 Use the repository's declared setup owner and interpreter. `make setup` provisions the
-Python environment only in `<workspace>/.venv`, a physical directory exclusively owned
-by that workspace. A worktree is its own workspace; its environment never resolves to
-the primary checkout.
+Python environment only in the declared workspace's physical `.venv`. Resolve that
+workspace from the current topology and authorization before provisioning. A standalone
+checkout or independent worktree owns its environment. An attached member may use its
+containing workspace's environment when that is the declared runtime topology; it
+does not create a second environment for the same runtime root.
 
-- Never borrow another checkout's environment through a symlink, path dependency,
-  `PYTHONPATH`, editable-install path, or cross-repository reference.
-- Never place the environment outside that workspace, install another repository as an
-  editable dependency, or let inherited environment variables route setup or execution
-  to another environment. Setup owns the checkout-local environment identity.
+- Never borrow an unrelated checkout's environment through a symlink, `PYTHONPATH`
+  or a cross-workspace reference.
+- Never place the environment outside its owning workspace or let inherited variables
+  select another project's configuration or environment. Attached editable members are
+  dependencies declared by that workspace, not permission to borrow a different
+  workspace's runtime. Setup owns the physical environment identity.
 - Caches and temporary artifacts stay at their tools' own default locations
   (`rules/storage.md`) — in-tree by default for `__pycache__` and `.testmondata`,
   ignored by Git; they are not Python environments and must never become
   environment-sharing paths.
 - Never replace or clear a real environment while another process may own it.
-- Every manual task uses a dedicated Git worktree and branch, including while Gas City
-  orchestration is suspended. Provision that worktree's own physical environment
-  through its canonical setup surface; never implement in the primary/default checkout
-  or borrow its environment. Suspension does not forbid native Git worktrees.
+- Workspace placement and any exact operator exception have one owner:
+  `rules/coordination/gascity.md`, interpreted through
+  `rules/coordination/operator-precedence.md`. Provision the elected runtime root;
+  do not create another lane or environment merely because a new gate starts.
 - Missing or stale environment state is red. Repair it through the repository's
   canonical setup surface only when that mutation is authorized.
 
 See also: `strict-execution.md` (rule file) — aggregate parent policy.
+
+Foreign environment variables are reconciled at the native runtime/Make owner,
+not through caller-side environment overrides. After dependency changes, prove
+interpreter and installed-source identity against the selected declaration. A
+missing module is a diagnosis input; establish whether its cause is provisioning,
+source or topology before changing any of them.

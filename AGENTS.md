@@ -1,132 +1,55 @@
 <!-- AIHUB-INVIOLABLE-LAW-PRELUDE v1 -->
 # AIHUB Inviolable Law — Strict Prelude
 
-1. Truth: never claim done/green/resolved without command, exit code, decisive output.
-2. Root cause: exterminate bypass, fallback, shim, suppression, stub, hardcode, catch-based normalization, retry, compatibility, partial execution, keyring, or old+new coexistence.
-3. Tracker boundary: without repository `.beads/`, invoke neither `bd` nor `gc` and create no substitute. Otherwise use only the selected, available canonical tracker. If explicitly suspended, preserve authorized Git/PR/CI evidence and never declare DONE.
-4. Research first: inspect code, docs, canonical sources before acting; never invent APIs, flags, facts, or behavior.
-5. Owner first: use the project's declared facades/primitives; do not reimplement them locally.
-6. Gate persistence: a failure stops only that invocation. Correct its owner,
-   republish, and rerun until green; never switch phase or repository because a
-   check, review, approval, or merge is pending. Escalate only after every
-   authorized technical action is exhausted and the remaining condition is
-   genuinely external or requires new authority.
-7. Landing: native gates, commit, fast-forward push, bead evidence.
-8. Divergence: FF push rejected → integrate by cooperation: `git merge --no-ff` the integration base into your lane, resolve conflicts, revalidate, land. Never rebase or force-push an authorized change or integration branch; adopt all current worktree state and fix it forward.
-9. Escalation: impossible rule → exact error. Rule conflict → present both with numbers. Unclear → one targeted question. Never guess.
-10. Precedence: NEWEST > OLDEST. USER REQUEST > BEADS > ADRs > SKILLs > DOCS > default. Adjust lower/older to higher/newer. Doubt → ASK USER FIRST.
-11. Workspaces: follow `rules/coordination/gascity.md`. Every manual task uses a dedicated Git worktree, branch, and physical `.venv`, never the primary checkout. Gas City suspension keeps orchestration inactive. Worktrees and staging stay on the destination filesystem, never `/tmp`; no borrowed environment, backup, or archive. Retire worktrees after verified integration.
-12. Phase closure: keep the phase active through check repair, review resolution,
-    independent approval, merge into the configured integration branch, and
-    post-merge proof. Only then, with its Bead closed with evidence, is it DONE.
-    When the operator states that no independent reviewer exists and authorizes
-    an administrative merge, that authorization replaces the approval row alone;
-    every other row stays mandatory and closure records the approval as
-    operator-authorized, never as satisfied.
-13. Root Make only: diagnostics, validation, generation, tests, Waza,
-    publication, and deployment run only through selector-free verbs in the
-    repository root Makefile; bare verbs perform their declared operation. Test
-    verbs: `rules/workflow/canonical-commands.md`.
-14. Red means red: a warning, skip, empty output, missing tool, missing report,
-    zero collection, caught exception, retry, or normalized failure is RED. The
-    only acceptable zero-execution test result is a typed `make test` cache hit
-    with an integrity-checked database and complete deselection
-    accounting; it is never reported as tests passed. The first exception and
-    raw traceback escape unchanged.
+This is the compact entry to the canonical rules below, not a second rule body.
+
+1. Evidence: `rules/ethics/professional-integrity.md`.
+2. Root-cause correction: `rules/architecture/engineering-core.md`.
+3. Selected tracker and unavailable capabilities: `rules/workflow/beads-traceability.md`.
+4. Research before effects and no guessed APIs: `rules/coordination/never-deduce.md`.
+5. Reuse the declared owner: `rules/workflow/declared-tool-ownership.md`.
+6. Continue within authorized scope: `rules/coordination/operator-alignment.md`.
+7. Integration and closure: `rules/git/gitflow-branch-pr.md`.
+8. Preserve and integrate WIP: `rules/coordination/fix-forward-collaboration.md`.
+9. Resolve non-derivable uncertainty: `rules/coordination/never-deduce.md`.
+10. Authority and recency: `rules/coordination/operator-precedence.md`.
+11. Workspace placement: `rules/coordination/gascity.md`; storage: `rules/storage.md`.
+12. Phase exit evidence: `rules/workflow/phase-admission-protocol.md`.
+13. Commands, deadlines and test selection: `rules/workflow/canonical-commands.md`.
+14. Results: a native failure, warning or missing required proof remains RED.
+    Zero test execution is acceptable only as an integrity-checked incremental cache
+    hit with complete deselection accounting, never as tests passed. Availability
+    prerequisites follow `rules/testing/observable-runtime.md`.
 <!-- /AIHUB-INVIOLABLE-LAW-PRELUDE -->
 
 # AGENTS.md — agents
 
-> Packaged governance `agents-governance` `0.6.3` owns the capability indexes: 71 agents, 112 rules, 141 skills. Consume them through `GovernanceBundle`; do not copy their bodies here.
-
 <!-- AIHUB-AGENTS-SCOPE-LOCAL-BEGIN -->
-## AGENTS.md — agents
+## Repository scope
 
-> Packaged governance `agents-governance` owns the capability indexes. Consume current
-> inventories through `GovernanceBundle`; do not copy their counts or bodies here.
+`agents-governance` owns provider-neutral rules, skills, commands, agent profiles and
+semantic evaluations. The supported boundary is
+`from agents_governance import GovernanceBundle`; `GovernanceBundle.load()` validates
+one immutable catalog. Its public inventory owns counts and identities.
 
-### Ecosystem operating rules (binding, operator ruling 2026-10-03)
+AI Hub owns provider adaptation, publication, withdrawal and runtime delivery.
+Repository-local tools do not establish another delivery authority. This local
+section describes the governance repository; it is not universal project instruction.
 
-This repository anchors ONE linked ecosystem. Every runtime — Gas City sessions,
-ZCode, Kilo Code, Hermes and WhatsApp bridges, and any future attach — cooperates
-toward shared objectives under these binding rules:
+Read [README.md](README.md), [rules index](docs/rules-index.md),
+[ADR index](docs/adr/README.md) and [change validation](VALIDATE_ON_CHANGE.md).
+Use the public root Make verbs. `make audit` validates the bundle; `make docs` checks
+links; `make waza` verifies the semantic suites. The command rule owns their execution
+and failure contract. A successful structural evaluation is not native agent proof.
 
-- `rules/communication/ecosystem-systems-registry.md` — the systems registry and
-  the formal-agreement contract: cross-system infrastructure mutations require a
-  prior `[coord] agreement` (announce, ack or quiet-window, landed receipt);
-  breakage announces `[coord] blocker` without retry loops or skew masking.
-- `rules/workflow/runtime-stability-pact.md` — no plan step lands through or
-  leaves a broken runtime; deployments in ai-hub and flext are accepted only
-  after observed real-runtime functioning (tmux where interactive).
-- `rules/coordination/fix-forward-collaboration.md` — adopt every compatible
-  contribution; fix forward; supersede with evidence.
-- `rules/coordination/inter-session-mail.md` — gc mail is the only
-  cross-session record (an operator-authorized direct channel is repeated in it);
-  delivery is proven by reading back.
+Keep mandatory obligations in `rules/`, conditional procedures in `skills/`, invocation
+grammar in `commands/` and discovery metadata in their existing catalogs. Compose
+ancestors by reference; do not copy their bodies into child artifacts.
 
-Versions of fleet tools move only through generated locks (`make upg`), never by
-hand; shared-store schema migrations follow the agreement protocol above.
-
-This repository is the single writable authority for provider-neutral rules, skills,
-commands, agent profiles, and their semantic evaluation resources. It publishes the
-read-only `agents-governance` package. AI Hub alone discovers projects, adapts
-providers, generates hooks and instruction artifacts, deploys, and reconciles runtime
-state.
-
-### Public contract
-
-- `from agents_governance import GovernanceBundle` is the supported API.
-- `GovernanceBundle.load()` loads packaged resources; an explicit physical root is
-  accepted for source validation.
-- Loading validates the complete catalog, semantic skill evaluations, approval lineage,
-  governance ownership map, metadata, agent profiles, commands, rules, and strict
-  prelude before returning one frozen snapshot.
-- This package has no CLI, daemon, hook, publisher, projector, sync, cleanup,
-  provider-home writer, fallback loader, or compatibility API.
-- Consumer delivery is a transaction owned by AI Hub. A consumer may transform bundle
-  records but may never edit this source or treat generated output as an authority.
-
-### Repository development
-
-Read [README.md](README.md), the [rules index](docs/rules-index.md), [skills](skills),
-and [ADRs](docs/adr/README.md) before mutation. Use only selector-free root Make verbs;
-bare verbs perform their declared operation. Prove changed behavior through the public
-bundle load before adapting tests.
-
-### Lifecycle
-
-Gas City owns workspace placement while its orchestration is active; `gc status` is
-the effective-state authority. Every manual execution uses a dedicated native Git
-worktree, branch, and physical checkout-local `.venv`; never implement in the
-primary/default checkout. During suspension, keep Gas City orchestration inactive and follow the manual
-boundary in `rules/coordination/gascity.md`. A separately selected and available
-canonical Beads service remains the tracker; suspension of orchestration alone does
-not suspend that service. Create no substitute ledger. Stop at `dev` unless the
-operator explicitly authorizes promotion. No increment is DONE without required gates,
-reviewed merge-commit landing, post-merge public runtime proof, and canonical tracker
-closure.
-
-### Authority map
-
-Precedence: `rules/coordination/operator-precedence.md`.
-
-By category:
-
-- [Architecture](rules/architecture/) — clean architecture, DI, topology, ownership
-- [Coordination](rules/coordination/) — lifecycle, beads, operator alignment,
-  never-deduce, sessions
-- [Ethics](rules/ethics/) — integrity, truth, and test-reality
-- [Runtime](rules/runtime/) — execution, residue, environment, fail-fast
-- [Workflow](rules/workflow/) — discovery, generation, documentation, gates
-- [Security](rules/security/) — supply chain, scanners, prompt defense
-- [Language](rules/language/) — runtime floor, authored language
-- [Python](rules/python/) — config SSOT, Pydantic, typing
-- [Flext](rules/flext/) — FLEXT-specific governance
-- [Shell](rules/shell/) — bash guard rules
-- [Git](rules/git/) — branch workflow, destructive guard, fork locality
-- [Communication](rules/communication/) — caveman style
-
-FLEXT architecture for `internal_flext`:
-[`rules/architecture/internal-clean-architecture.md`](rules/architecture/internal-clean-architecture.md).
-Operator mandate: [`VALIDATE_ON_CHANGE.md`](VALIDATE_ON_CHANGE.md).
+Resolve current integration and workspace authorization before effects. Host
+coordination in this declared ecosystem follows
+`rules/communication/ecosystem-systems-registry.md` and
+`rules/coordination/inter-session-mail.md`. Resolve the available channel through its
+owner; suspension never silently cancels the cooperation obligation.
+Source validation, reviewed integration and installed delivery are separate receipts.
 <!-- AIHUB-AGENTS-SCOPE-LOCAL-END -->

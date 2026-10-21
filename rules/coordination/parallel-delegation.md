@@ -1,41 +1,37 @@
 ---
-description:
-  Dispatch independent bulk work to fast parallel subagents; the main thread owns
-  sequenced effects.
+description: Authorized parallel work and sequenced publication ownership
 capsule_summary: |
-  Bulk, independent work — sweeps, revalidations, inventories, research,
-  bookkeeping — is delegated to fast parallel subagents, one bounded assignment
-  each, with every result verified before acceptance; an empty subagent result
-  is not a claim. The main thread alone owns sequenced effects: operator
-  decisions, merges, landings, and tracker closure with evidence. Never
-  delegate a sequenced effect, and never serialize work that shares no state.
+  Delegate only under the current operator request or selected role contract.
+  Assign bounded, independent work with explicit write ownership and verify
+  every result. The main executor retains the task and sequenced publication;
+  another agent's output never substitutes for its acceptance evidence.
 metadata:
-  aihub.tags: '["decision:ADR-0008","effective:2026-09-10","route:both"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-10-20","route:both"]'
 ---
 
-# Dispatch independent work to fast parallel subagents
+# Authorized parallel work
 
-Bulk, independent work — sweeps, batch revalidations, inventories, research, bookkeeping
-— is delegated to fast parallel subagents, one bounded assignment each. Verify every
-subagent result against reality before accepting it; an empty or asserted result is not
-a claim.
+The current operator request and selected role contract determine whether work
+is delegated or performed inline. Available agents, an old maximum-fan-out
+instruction or a broad cleanup request do not by themselves authorize launching
+agents. An inline executor retains implementation and closure responsibility;
+collaboration with existing writers does not transfer that responsibility.
 
-The main thread alone owns sequenced effects: operator decisions, merges, landings, and
-tracker closure with evidence. Never delegate a sequenced effect, and never serialize
-work whose steps share no state.
+For authorized delegation, assign one bounded result, its repository and exact
+write ownership. Explain that the worker shares the codebase, must preserve
+others' changes and must reconcile current WIP. Independent reads may run
+concurrently; effects on shared mutable state follow its canonical serializer.
+Do not serialize independent work merely by habit, or parallelize a shared
+mutation merely because slots exist.
 
-Compose with `shared-file coordination` (rule file), `session governance` (rule file),
-and the tracker-verification rule.
+Verify the returned source and native evidence before acceptance. Empty output,
+a self-report and a delegated test result without its candidate identity do not
+prove completion. The parent retains sequenced effects and the current operator
+conversation; merge and tracker permissions follow the active assignment.
 
-## Model and effort selection follows the cost matrix (operator ruling, 2026-09-12)
+Resolve model capabilities and costs through the selected runtime's current
+catalog and policy. Do not hardcode model names, prices or effort multipliers
+in a universal rule, or invent a substitute when a required capability is absent.
 
-<!-- Why: registers 2026-09-12 operator ruling R27 on this file, the existing subagent-dispatch owner -->
-
-Route subagent dispatch by a cost index, not by habit: relative price weight Haiku 4.5 =
-0.5, Sonnet 5 = 1, Opus 5 = 2.5, Fable 5.1 = 5, multiplied by an effort factor (low ≈
-0.25, medium ≈ 0.5, high = 1). Mechanical or bounded work (search, read, verify) goes to
-Haiku at low effort or Sonnet at medium; routine edits and multi-file feature work go to
-Sonnet at medium or high; hard debugging, refactors, and architecture decisions go to
-Opus at high effort; Fable is reserved for long-horizon work at low or medium effort
-only. Decisions, merges, and operator dialogue never delegate — they stay with the
-coordinator regardless of cost.
+Compose with shared-file coordination, session governance, fix-forward and the
+selected tracker's verification contract.

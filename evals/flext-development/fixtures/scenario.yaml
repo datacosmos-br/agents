@@ -11,3 +11,9 @@ integration_branch: dev
 runtime_probe: import public api and validate one order
 existing_utility_owner: u.Infra
 obsolete_adapter: codemod/discovery.py
+
+branch_law:
+  owner: current FLEXT root
+  path: .agents/skills/flext-law/SKILL.md
+  branch: dev
+  identity_verified_for_scenario: true

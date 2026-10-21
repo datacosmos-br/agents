@@ -3,8 +3,9 @@ name: Select selector-free root validation verbs
 description: Use the root Make owner for runtime-first project validation.
 tags: [make, native-gates, project-validation, command-ownership, happy-path]
 inputs:
-  prompt: Read the supplied Makefile and return the exact ordered commands for
-    setup, public runtime validation, static validation, and incremental tests.
+  prompt: The project has no provisioned environment. Read the supplied Makefile
+    and return the exact ordered commands for setup, public runtime validation,
+    static validation, and incremental tests.
     Invoke bare Make verbs and preserve evidence required for green. Do not
     execute commands or substitute an underlying tool.
   files:

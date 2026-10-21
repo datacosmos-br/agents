@@ -1,156 +1,54 @@
 ---
 metadata:
-  aihub.tags: '["decision:ADR-0025","effective:2026-09-22","route:personal"]'
+  aihub.tags: '["decision:ADR-0025","effective:2026-10-20","route:personal"]'
 ---
 
-# Gas City boundary
+# Selected Gas City boundary
 
-The project-selected, pinned Gas City release is the orchestration contract. Selection
-requires the repository's `.beads/` boundary; without it, invoke or probe neither `gc`
-nor `bd`. Active guidance uses Gas City's native primitives: city, rig, Pack V2, agent,
-formula, run, session, order, and event. Installation never selects orchestration. An
-unselected installation adds no command, hook, tracker, workspace, or gate.
+The current operator request and repository association select orchestration;
+installation, a directory or a running process does not. The selected city's
+pinned release, project law and native API own its primitives, configuration,
+roles, formulas, topology and effective runtime state. This global rule does not
+copy a release's schema or appoint a role from memory.
 
-## Activation state is resolved, never assumed
+Tracker selection is independent and follows beads-traceability. An explicitly
+selected central store may live outside the checkout; a local .beads directory
+alone neither selects it nor cancels that route when absent. Verify the native
+store identity before tracker effects. Never initialize a substitute, restore a
+retired database or export an endpoint to work around a failed route.
 
-Activation is operational state owned by the city under work — its repository law and
-its own runtime state — not a constant restated here. Resolve it at preflight for that
-exact city before any effect:
+## Active selected orchestration
 
-- when its authority declares the city operating, its declared scope is executable under
-  every strict-execution policy, and dispatch, observation, and closure run through the
-  city's own command surface;
-- when its authority declares suspension, Gas City configuration review remains static
-  and manual repository execution follows the boundary below;
-- a scope the city's authority does not declare stays unauthorized in either case.
+Discover the current roles and workflow through that city owner. Its formula
+owns placement and preparation for dispatched work; do not pre-create a competing
+lane or executor. Repository owners retain their code, gates and authorized Git
+integration. Topology and runtime changes use the city's native command within
+an explicitly authorized cutover, not hand-edited projections.
 
-Never infer the state from installation, an available binary, a running process, another
-city, or a previous session — read it from that city's own authority. Never freeze the
-current value of this state into always-on guidance; name the owner that declares it.
+## Manual execution and suspension
 
-## Configuration
+The default manual lane is a dedicated native Git worktree and working branch
+on the authorized destination filesystem. A current explicit operator placement
+instruction supersedes that default; revalidate it without asking for the same
+authority again. Git, fix-forward and shared-venv-guard own preservation,
+runtime-root environment ownership, integration and retirement.
 
-- `city.toml` declares the city, providers, rigs, agents, and rig imports.
-- Reusable behavior is a Pack V2 (`schema = 2`) with explicit pinned imports and a
-  committed lock. Materialized files are generated output, not owners.
-- A rig registers a project. Agents are persistent configured workers. Formulas define
-  work graphs; runs and sessions provide operational evidence.
-- A selected Gas City workflow uses its explicitly declared Beads store. Beads owns
-  durable tracking and closure. Without the repository's `.beads/` boundary, Gas City
-  is also unselected and has no command, hook, tracker, workspace, or gate.
+Orchestration suspension grants no session, dispatch, topology change or resume.
+It does not suspend an independently retained tracker or erase the cooperation
+obligation. Use the selected available coordination channel and distinguish a
+sent notice, readback and ACK. Read operational state only through its authorized
+owner; stale status, an available binary and process presence do not establish
+permission or another actor's intent.
 
-## Topology and endpoint ownership
+## Runtime projections
 
-Release contract:
+The selected runtime owns its materialized provider files, links and manifests.
+Their existence is runtime state, not operator intent or source authorship.
+Derive Git exclusions and withdrawal from that producer's declaration; do not
+assert that a live projection must be absent from disk or delete foreign-owned
+files to regain green. Static governance and runtime-pack outputs remain distinct.
 
-- Headquarters is the city scope itself. The release also calls it the HQ rig; read that
-  as the city, and never register the city root as a project rig.
-- The city owns endpoint resolution. Under a managed city a rig declares inherited
-  endpoint origin and must not track host, port, or user; port mirrors are generated by
-  the city and never hand-edited.
-- A rig's bead database is the value pinned in its own metadata, which wins once
-  written. The issue prefix is only the deterministic default used to compute that
-  value. The pinned value is a database name, never a path.
-- Registering over an already initialized store is idempotent only when the server
-  answers and that store already carries its schema. An unreachable server fails closed;
-  it never authorizes reinitializing live data.
-
-Operator discipline, not release behaviour — the release permits the opposite, so state
-the intent explicitly wherever it applies:
-
-- Register a rig suspended, resume rigs one at a time in the declared order, and verify
-  each before the next. Suspended registration is opt-in and the release also offers a
-  whole-city resume.
-- Pin an external or rig-local endpoint only through the declared rig endpoint owner;
-  city configuration exposes a second, unenforced route to the same state.
-- Suspension has two layers with two owners. `suspended_on_start` in `city.toml` is the
-  declared default for every machine and changes only by cutover; the runtime suspension
-  state under `.gc/runtime/` written by `gc rig suspend|resume` is a machine-local
-  override and is never committed. Neither file alone is the effective state: read it
-  from `gc status`.
-
-Topology mutation — city state is `city.toml`, `.gc/`, and `.beads/` under the city
-root:
-
-- It changes only through the city's own commands (`gc rig add`, `gc rig remove`,
-  `gc doctor --fix`, the runtime) inside a cutover the operator authorized and a bead
-  records. No agent edits those files directly, in any rig, including a rig whose work
-  references the city.
-- A cutover that mutates topology commits that mutation in the city's own integration
-  lane in the same change that motivated it. A city left with a dirty `city.toml` after
-  a cross-repository cutover is a defect of that cutover, never of the runtime, and is
-  adopted forward at the city.
-- Runtime projections into the city root stay runtime state, never source (see below); a
-  guard asserts what Git carries, not what exists on disk.
-
-## Dispatch while the city is operating
-
-Work reaches an agent through the city's own surface: create the item in the target
-rig's store, route it to a configured agent, and observe through the city's status,
-session, and convoy surfaces.
-
-Routing places the session in the rig's own checkout. Gas City is a router, not a merge
-queue: routing itself creates no branch or worktree. Resolve roles and formulas from the
-city (`gc agent list`, `gc formula list`) instead of naming them from memory; a name
-that no longer resolves is drift, not a typo.
-
-Engineering work enters through the `gascity` pack's `implement` formula on the rig's
-run operator (`gc sling <rig>/gc.run-operator <bead> --on implement`; skill `gc-dispatch`).
-Provisioning belongs to the formula's prepare step: `gc worktree ensure|verify|cleanup`
-when it calls them; when it cuts from `origin/HEAD`, as `do-work` does, that ref must
-name the rig's integration lane. The coordinator never pre-creates a dispatched worktree.
-Bases integrate by `git merge --no-ff`, never rebase; routine ledger reads stay
-bounded and conclusive inventories use the flat unbounded form (`beads verification`,
-rule file).
-
-Branch ownership, repository Git, native gates, PR review, and merge-commit landing
-remain local responsibilities. Stop at the rig's declared integration lane; promotion
-beyond it requires an explicit operator request.
-
-## Repository boundary while suspended
-
-- Every manual task uses a dedicated native Git worktree and working branch. Never
-  implement in the primary/default checkout. Gas City suspension does not prohibit or
-  provision these worktrees; it keeps Gas City orchestration inactive.
-- Place the worktree on the operator-authorized destination filesystem, never under
-  `/tmp`. Provision its own physical environment through the repository's setup owner;
-  never borrow another checkout's environment or create backup/archive copies.
-- Repository Git, native gates, PR review, and merge-commit landing remain local
-  responsibilities. Publish recoverable commits and retire the dedicated worktree and
-  branch only after the required merge and fresh integration ancestry proof.
-- Invoke no city, rig, Pack, agent, formula, run, or session orchestration surface and
-  do not reactivate the city. Native Git worktree execution grants no topology mutation
-  or permission to create another clone, tracker, or alternate ledger.
-- Resolve tracker activation independently. If the operator selected and retained the
-  canonical Beads service, continue through that service and its declared connection
-  owner. When that tracker is itself suspended, create no substitute; preserve evidence
-  in separately authorized Git/PR/CI surfaces and leave phase closure open.
-- Static Gas City skills are personal governance and never project projections.
-
-## Runtime projections into a registered rig
-
-A registered rig's checkout is also a projection destination. The pack runtime writes
-skill symlinks and an ownership manifest into that rig's provider trees whenever it
-runs, unprompted and without the operator asking. Their presence on disk is runtime
-state, never operator intent and never source.
-
-The boundary is therefore what Git carries, not what exists on disk:
-
-- Every project-scope destination declared by the projection configuration is excluded
-  from source control, and a guard derives that list from the configuration rather than
-  repeating it by hand.
-- A projection artifact that is tracked, staged, or offered as untracked source is a
-  defect, at its owner.
-- A guard must never assert that a projection destination is absent from disk. That
-  assertion makes a clean checkout go red when an unrelated daemon runs, which is a
-  false failure, and deleting the directory to regain green is a symptom fix the runtime
-  silently undoes.
-
-## Prohibitions
-
-- No active former-runtime command, role hierarchy, compatibility pack, or fallback.
-- No mechanical old/new command translation or compatibility command.
-- No Pack V1, implicit import, generated-file edit, symlink, or cross-repo path.
-- Once selected and active, validate the whole declared city, rig, Pack, provider,
-  store, workspace, authority, and host readiness before effects. The first defect stops
-  that workflow without retry, alternate store, fallback, or direct-mode degradation.
+Do not invent symlinks, borrowed environments, cross-repository code paths,
+compatibility packs or alternate stores. Declared runtime publication pointers
+remain their producer's outputs. A failed required operation stays failed and is
+repaired at its owner within the current authorization.
