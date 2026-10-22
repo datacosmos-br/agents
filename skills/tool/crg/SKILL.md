@@ -11,8 +11,8 @@ metadata:
 Every session maps code through code-review-graph (CRG) before reading files at random
 or editing. The operator selected it for all sessions (tracker memory
 `operator-ruling-20261022-crg-every-session`). Use it for structural evidence after
-proving that the graph belongs to the current checkout and commit. AI Hub owns installation, watcher lifecycle, MCP
-routing, hooks, and generated instruction surfaces. Query technique belongs to the
+proving that the graph belongs to the current checkout and commit. AI Hub owns
+installation, watcher lifecycle, MCP routing, hooks, and generated instruction surfaces. Query technique belongs to the
 generated CRG skills; verified commands and runtime details live in the
 [operations](references/operations.md) and [runtime](references/runtime.md) references.
 
@@ -98,6 +98,12 @@ and keeps a background watch for its whole life (tracker memory
    graph (aihub-kvx0x.8). Its log must report the lane root as watched.
 4. Retirement: stop the lane watcher, `unregister` the lane, and review `prune` before
    `prune --apply`.
+
+A graph without a registered data directory lands at `<lane>/.code-review-graph`,
+inside the checkout. Generators that verify directory membership then fail mid-run
+(`make gen`: "source directory membership changed ... added=['.code-review-graph']").
+Until AI Hub registers lane graphs with an external data directory (aihub-o93c3), build
+and update the lane graph before a generation verb, never during it, and record the gap.
 
 ## Workspace topology
 
