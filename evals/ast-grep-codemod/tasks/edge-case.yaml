@@ -1,0 +1,14 @@
+id: ast-grep-codemod-inexact-001
+name: Reject a regex-only rule that over-matches
+description: A text-level rule that matches comments and longer names is inexact and must be anchored on syntax.
+tags: [ast-grep-codemod, exactness, edge-case]
+inputs:
+  prompt: >-
+    The catalog rule `ban-direct-gitpython-import` is `rule: { regex: 'import git' }`.
+    It now reports `import github_client` and a comment that reads
+    "# do not import git here". A teammate proposes adding two `not:` regex
+    exclusions and applying the result with `ast-grep scan --update-all src/`.
+    Say what you do instead.
+expected:
+  output_contains: [kind, import_statement, valid, make mod]
+  output_not_contains: ['--update-all src', 'sg -U']

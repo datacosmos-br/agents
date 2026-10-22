@@ -1,0 +1,19 @@
+description: Codemod rule authoring contract — search the catalog first, one
+  generalized law per rule, exact matching, tests and snapshots through the
+  repository verbs, and application only through Make.
+prompt: |-
+  Grade the ast-grep-codemod response. Pass only if it:
+  - checks the existing catalog and shared `utils/` matchers before proposing a new rule, and widens an existing rule (`any:` alternatives or `constraints` on a metavariable) when the law is already stated;
+  - states the law as one sentence naming the correct form;
+  - anchors the match on node kinds or patterns with `files` scoping;
+  - turns each excluded near miss into a `not:` clause covered by a `valid` test case;
+  - lists `invalid` cases for every rejected shape;
+  - regenerates snapshots only through the repository's snapshot verb;
+  - applies the rule only through `make mod` or `make mod-text` to a verified fixed point, then runs the affected tests.
+  Reject answers that:
+  - add a sibling rule that differs only by a literal;
+  - match with a bare regex where a node kind exists;
+  - apply rules with raw `ast-grep scan --update-all` or `sg -U` on the tree;
+  - hand-edit snapshots or generated files;
+  - keep a hand-maintained literal list that an owner can derive;
+  - claim completion without a fixed-point receipt.

@@ -34,14 +34,17 @@ Automation surface order (research 2026-09-11):
    produce the D1/D2 consumer and composition tables directly from Rope — use them as
    the authoritative inventory; ast-grep is the _pattern-level_ complement, not the
    owner of this data.
-3. **ast-grep for fossil patterns** (branch-agnostic): global rules live in
-   `~/agents/ast-grep-rules/universal`; per-project rules are generator output
-   (`sgconfig.yml` ← `config/codegen.yaml`, `make gen` refreshes). Ad-hoc scans:
-   `ast-grep scan --rule <file> <path>`; new recurring lint goes to the project rule dir
-   via the generator SSOT, never a hand edit.
-4. **`make mod`** (`flext-infra refactor mod --apply`) executes approved ast-grep rule
-   rewrites at the declared scope — always the dispatcher, never direct ast-grep, so
-   LSP/Rope telemetry stays consistent.
+3. **ast-grep for fossil patterns** (branch-agnostic):
+   - The rule engine's package ships the universal catalog: in FLEXT, flext-infra's
+     `src/flext_infra/config/rules/`.
+   - Each repository adds its own overlay under `config/rules/`.
+   - Rules are authored data, not generator output.
+   - Measure every rule across the fleet without rewriting through `make mod-rules`.
+   - A draft rule is tried only on scratch copies. A new recurring law extends or joins
+     the catalog per the `ast-grep-codemod` skill.
+4. **`make mod`** executes the catalog's rewrites to a verified fixed point; text rules
+   run through `make mod-text`. Always these verbs, never direct ast-grep or an engine
+   module.
 5. **CRG decision tables** (limits per the `crg` skill):
    `code-review-graph dead-code --json` (dead Protocol candidates for D4, confirmed in
    source), `impact --files <changed> [--base <sha>]` (rename blast radius for the F4
