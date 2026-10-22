@@ -10,7 +10,7 @@ metadata:
 # FLEXT Program Automation Cycle
 
 Execute one bead slice end-to-end without ad-hoc tool invocations. Gate contract:
-the `flext-gates-as-products` skill; rule authoring: the `ast-grep-codemod` skill.
+the `flext-gates-as-products` skill; rule authoring: the `codemod` skill.
 
 ```bash
 # 0. Lane preflight (worktree must exist, pins fresh; NEVER primary venv)
@@ -20,7 +20,7 @@ export UV_PROJECT_ENVIRONMENT=$PWD/.venv VIRTUAL_ENV=$PWD/.venv
 make gen
 
 # 2. Structural rewrite through the declared verbs only (ast-grep catalog,
-#    text rules, fixed point). New or widened rules: ast-grep-codemod skill.
+#    text rules, fixed point). New or widened rules: codemod skill.
 make mod
 make mod-text
 

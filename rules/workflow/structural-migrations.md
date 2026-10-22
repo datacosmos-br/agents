@@ -8,9 +8,10 @@ metadata:
 
 # Structural migration rule hierarchy and propagation
 
-Structural migrations run through the repository's declared structural verbs (`make mod`
-and the rule-test, snapshot and text-rule verbs its `make help` lists), powered by
-ast-grep. Raw `ast-grep scan --update-all`, `sg -U` or an engine module never applies a
+Structural migrations run through the repository's declared structural verbs, powered by
+ast-grep; `make help` lists them. FLEXT declares `make mod`, `make mod-text`,
+`make mod-rules` and `make mod-snapshots`. This governance repository declares
+`make mod` and `make mod-check`. Raw `ast-grep scan --update-all`, `sg -U` or an engine module never applies a
 rule to a tree. Rules are engineering law, not a per-defect catalog: each rule states
 one generalized law and names the principle it enforces. A new violation is first
 checked against an existing rule's scope; only a genuinely new law earns a new rule.
@@ -20,7 +21,7 @@ are consolidated into one rule with explicit file scoping.
 Every rule ships with a test of `valid` and `invalid` cases and the snapshot the
 repository's snapshot verb writes. A rewrite reaches a verified fixed point. A rule
 whose law is superseded is deleted with its test and snapshot in the same cutover. The
-`ast-grep-codemod` skill owns the authoring procedure; the engine owner's guide owns its
+`codemod` skill owns the authoring procedure; the engine owner's guide owns its
 schema and verbs.
 
 Rules are hierarchical. The universal layer is the catalog the rule engine's own package

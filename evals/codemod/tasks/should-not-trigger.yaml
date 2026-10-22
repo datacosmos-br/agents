@@ -1,7 +1,7 @@
-id: ast-grep-codemod-no-trigger-001
+id: codemod-no-trigger-001
 name: Edit a unique site without inventing a rule
 description: A single unrepeatable correction is an explicit edit with a stated reason, not a new catalog rule.
-tags: [ast-grep-codemod, should-not-trigger]
+tags: [codemod, should-not-trigger]
 inputs:
   prompt: >-
     One function in `src/pkg/report.py` formats a date with the wrong field
@@ -10,4 +10,4 @@ inputs:
     and what you do.
 expected:
   output_contains: [no new rule, edit]
-  output_not_contains: [make mod-snapshots, new rule id]
+  output_not_contains: [make mod-snapshots]

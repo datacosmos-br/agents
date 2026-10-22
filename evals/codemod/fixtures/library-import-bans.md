@@ -34,7 +34,8 @@ rule: { regex: 'import git' }
 ```
 
 A reviewer reports a new violation: `from requests import Session` in
-`src/pkg/client.py`, where the HTTP facade owns `requests`. The repository applies rules
-with `make mod`, regenerates snapshots with `make mod-snapshots`, and declares its
-facade-owned libraries in a typed configuration owner that the rule engine can read as
-a context predicate.
+`src/pkg/client.py`, where the HTTP facade owns `requests`. This repository's `make help`
+declares `make mod` (applies rules and verifies committed snapshots) and
+`make mod-snapshots` (the only verb that regenerates rule-test snapshots). It declares
+its facade-owned libraries in a typed configuration owner that the rule engine can read
+as a context predicate.

@@ -1,7 +1,7 @@
-id: ast-grep-codemod-happy-path-001
+id: codemod-happy-path-001
 name: Generalize sibling import bans instead of adding a fifth
 description: Exercise ast-grep codemod rules, generalized law, exact matching, rule tests, snapshots, and make verbs through a rule family consolidation.
-tags: [ast-grep-codemod, generalize, consolidate, happy-path]
+tags: [codemod, generalize, consolidate, happy-path]
 inputs:
   prompt: |
     Using the supplied catalog scenario, say how you cover the new `requests`

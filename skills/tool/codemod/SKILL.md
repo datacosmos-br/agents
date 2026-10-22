@@ -1,12 +1,12 @@
 ---
-name: ast-grep-codemod
+name: codemod
 description:
   "ast-grep codemod rules, generalized law, exact matching, rule tests, snapshots, make verbs"
 metadata:
   aihub.tags: '["activation:detected","decision:ADR-0009","detect:dependency:python:flext-infra","detect:marker:sgconfig.yml","effective:2026-10-22","route:project","subject:ast-grep","usage:on-demand"]'
 ---
 
-# ast-grep-codemod
+# codemod
 
 Write and evolve the structural rules that `make mod` applies. The obligations come
 from `rules/workflow/structural-migrations.md`: one generalized law per rule, layered,

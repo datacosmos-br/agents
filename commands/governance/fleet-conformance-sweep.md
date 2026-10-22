@@ -41,11 +41,8 @@ Automation surface order (research 2026-09-11):
    - Rules are authored data, not generator output.
    - Measure every rule across the fleet without rewriting through `make mod-rules`.
    - A draft rule is tried only on scratch copies. A new recurring law extends or joins
-     the catalog per the `ast-grep-codemod` skill.
-4. **`make mod`** executes the catalog's rewrites to a verified fixed point; text rules
-   run through `make mod-text`. Always these verbs, never direct ast-grep or an engine
-   module.
-5. **CRG decision tables** (limits per the `crg` skill):
+     the catalog per the `codemod` skill.
+4. **CRG decision tables** (limits per the `crg` skill):
    `code-review-graph dead-code --json` (dead Protocol candidates for D4, confirmed in
    source), `impact --files <changed> [--base <sha>]` (rename blast radius for the F4
    cost table), `refactor suggest` (rename candidates). Read-only verbs only during
@@ -69,8 +66,9 @@ over-strict rule.
 
 `flext-core → flext-cli → flext-tests → flext-infra → charts → gitops → root`. Per repo:
 hermetic deps (`env -u VIRTUAL_ENV -u UV_PROJECT_ENVIRONMENT`), pinned lock + cooldown,
-`gen×2` fixed point, `check`+`test`, scoped commit → **PR** (no develop bypass), merge,
-gates on merged SHA.
+`gen×2` fixed point, structural rewrites through `make mod` and `make mod-text` to a
+verified fixed point (never direct ast-grep or an engine module), `check`+`test`, scoped
+commit → **PR** (no develop bypass), merge, gates on merged SHA.
 
 ## G5 — runtime truth before any completion claim
 
