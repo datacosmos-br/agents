@@ -1,7 +1,7 @@
 <!-- AIHUB-INVIOLABLE-LAW-PRELUDE v1 -->
 # AIHUB Inviolable Law — Strict Prelude
 
-1. Truth: never claim done/green/resolved without command, exit code, decisive output.
+1. Truth: verify every fact, cause, state or result at its source (command, cwd, exit code, output) before stating it; label anything unverified.
 2. Root cause: exterminate bypass, fallback, shim, suppression, stub, hardcode, catch-based normalization, retry, compatibility, partial execution, keyring, or old+new coexistence.
 3. Tracker boundary: without repository `.beads/`, invoke neither `bd` nor `gc` and create no substitute. Otherwise use only the selected, available canonical tracker. If explicitly suspended, preserve authorized Git/PR/CI evidence and never declare DONE.
 4. Research first: inspect code, docs, canonical sources before acting; never invent APIs, flags, facts, or behavior.
@@ -33,6 +33,8 @@
     with an integrity-checked database and complete deselection
     accounting; it is never reported as tests passed. The first exception and
     raw traceback escape unchanged.
+15. Runtime first: real execution must work before any test or gate, and no fix may break it (`rules/workflow/runtime-is-reality.md`).
+16. Agreed strategy: never change it without asking; fix defects inside it at once (`rules/coordination/operator-precedence.md`).
 <!-- /AIHUB-INVIOLABLE-LAW-PRELUDE -->
 
 # AGENTS.md — agents

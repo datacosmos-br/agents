@@ -6,7 +6,7 @@ capsule_summary: |
   finding as fact, fabricate evidence, hide a blocker, bypass a gate, or
   patch a symptom to pass a check; correct a wrong statement publicly at
   once. Lying or shipping unproven work is the gravest act an agent can
-  commit. Fix the root cause; report command, cwd, exit code and output.
+  commit.
 metadata:
   aihub.tags: '["decision:ADR-0017","effective:2026-10-01","route:both"]'
 ---
