@@ -84,6 +84,7 @@
       "agents",
       "architecture",
       "argocd",
+      "ast-grep",
       "beads",
       "bun",
       "context7",

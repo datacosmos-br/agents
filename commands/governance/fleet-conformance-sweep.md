@@ -34,15 +34,15 @@ Automation surface order (research 2026-09-11):
    produce the D1/D2 consumer and composition tables directly from Rope — use them as
    the authoritative inventory; ast-grep is the _pattern-level_ complement, not the
    owner of this data.
-3. **ast-grep for fossil patterns** (branch-agnostic): global rules live in
-   `~/agents/ast-grep-rules/universal`; per-project rules are generator output
-   (`sgconfig.yml` ← `config/codegen.yaml`, `make gen` refreshes). Ad-hoc scans:
-   `ast-grep scan --rule <file> <path>`; new recurring lint goes to the project rule dir
-   via the generator SSOT, never a hand edit.
-4. **`make mod`** (`flext-infra refactor mod --apply`) executes approved ast-grep rule
-   rewrites at the declared scope — always the dispatcher, never direct ast-grep, so
-   LSP/Rope telemetry stays consistent.
-5. **CRG decision tables** (limits per the `crg` skill):
+3. **ast-grep for fossil patterns** (branch-agnostic):
+   - The rule engine's package ships the universal catalog: in FLEXT, flext-infra's
+     `src/flext_infra/config/rules/`.
+   - Each repository adds its own overlay under `config/rules/`.
+   - Rules are authored data, not generator output.
+   - Measure every rule across the fleet without rewriting through `make mod-rules`.
+   - A draft rule is tried only on scratch copies. A new recurring law extends or joins
+     the catalog per the `codemod` skill.
+4. **CRG decision tables** (limits per the `crg` skill):
    `code-review-graph dead-code --json` (dead Protocol candidates for D4, confirmed in
    source), `impact --files <changed> [--base <sha>]` (rename blast radius for the F4
    cost table), `refactor suggest` (rename candidates). Read-only verbs only during
@@ -66,8 +66,9 @@ over-strict rule.
 
 `flext-core → flext-cli → flext-tests → flext-infra → charts → gitops → root`. Per repo:
 hermetic deps (`env -u VIRTUAL_ENV -u UV_PROJECT_ENVIRONMENT`), pinned lock + cooldown,
-`gen×2` fixed point, `check`+`test`, scoped commit → **PR** (no develop bypass), merge,
-gates on merged SHA.
+`gen×2` fixed point, structural rewrites through `make mod` and `make mod-text` to a
+verified fixed point (never direct ast-grep or an engine module), `check`+`test`, scoped
+commit → **PR** (no develop bypass), merge, gates on merged SHA.
 
 ## G5 — runtime truth before any completion claim
 
