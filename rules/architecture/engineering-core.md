@@ -1,7 +1,8 @@
 ---
 description: Apply the mandatory engineering decision and delivery sequence.
 capsule_summary: |
-  Every implementation: research the owner first, cut scope without a current
+  Every implementation: map the code through code-review-graph (search, query,
+  impact, architecture, wiki) and research the owner first, cut scope without a current
   consumer, elect one writable authority, make every other copy a generated
   projection, improve the owner in place, never a parallel one beside it,
   implement through the owner, remove duplication, keep
@@ -33,8 +34,11 @@ FLEXT projects additionally obey their own stricter documented contracts and enh
 For every implementation:
 
 1. Research repository owners, dependencies, documentation, ADRs, plans and specifications
-   before changing implementation. Align and update the authoritative documents first;
-   no autonomous behavior change precedes that documented alignment.
+   before changing implementation. Map the code through code-review-graph first, then
+   confirm in source. The operator selected it for every session (tracker memory
+   `operator-ruling-20261022-crg-every-session`); the `crg` skill owns its freshness
+   gate, the lane seed and background watch, and the verbs. Align and update the authoritative documents first; no autonomous
+   behavior change precedes that documented alignment.
 2. Remove scope without a current requirement or consumer (YAGNI).
 3. Elect one writable authority; every other copy is a generated projection (SSOT).
    Improve the owner in place: writing a parallel replacement, renderer, or registry
