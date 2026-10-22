@@ -10,6 +10,11 @@ metadata:
 Apply this rule to `internal` and `internal_flext` profiles. A `third_party_fork`
 retains upstream architecture.
 
+Compose `rules/architecture/engineering-core.md` for DDD, DRY, YAGNI, SSOT, KISS,
+SOLID and business-change authorization throughout every phase. Within this internal
+architecture, model bounded contexts, keep invariants with their domain owners and
+express external capabilities through typed ports; the layer-specific contract follows.
+
 Domain and application policy import no I/O, adapter, framework, process state, global
 registry, or concrete service. They depend inward on precise typed ports. The public
 `api.py` is the only composition root: it selects concrete edges once and injects them

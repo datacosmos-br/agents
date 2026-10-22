@@ -3,7 +3,8 @@ description:
   Publishing work — creating a branch, commit, push, or opening a PR. Load when the user
   asks to commit, push, land, publish, open a pull request, or before any git push.
 capsule_summary: |
-  Work on a change branch, never on `main` or the integration branch. The base is
+  Follow the operator-declared checkout and integration route. Fixes and hotfixes
+  reach integration in the same phase, never as deferred patches. The base is
   what the repository declares today: read it per repository, never assume or
   reuse one. `origin/<base>` is a cache: fetch it before any ancestry
   proof that authorizes deletion. One git root per PR; placement follows the
@@ -24,15 +25,22 @@ metadata:
 
 # Branch and PR — integration by merge commit
 
-Work on a change branch, never on `main` or the integration branch. One git root per PR.
+Follow the operator-declared checkout and integration route. Fixes and hotfixes must
+be applied through the declared integration branch in the current phase; a correction
+left on a working branch is not an integrated delivery. An explicit integration-branch
+instruction overrides the default change-branch route. Promotion to `main` still needs
+explicit approval. One git root per PR.
 Where a tracker is selected, one work item owns the branch and PR and records head OID,
 Draft state, gate evidence and next action at every checkpoint. Lane creation and
-teardown follow `rules/coordination/gascity.md`: active orchestration uses its owner;
-every manual task uses a dedicated native Git worktree and branch. Never implement in
-the primary/default checkout or reactivate suspended orchestration to provision a lane.
+teardown follow `rules/coordination/gascity.md`: active orchestration uses its owner.
+Preserve the operator-selected existing checkout and compatible concurrent work; never
+require a clean/stable tree or create another worktree to evade it. Do not reactivate
+suspended orchestration to provision a lane. Creating another checkout or publishing
+work still requires the applicable operator authorization.
 
 **The base is read, never assumed.** The integration base is whatever the repository
-itself currently declares — its forge default branch. Never hardcode one, carry one from
+and the operator currently declare; a forge default is not automatically the integration
+branch. Never hardcode one, carry one from
 a sibling, or infer one from a local ref. Resolve it per repository at preflight, and
 preserve the command and output that proved it.
 

@@ -16,18 +16,25 @@ capsule_summary: |
   and unevidenced success are defects. The first exception escapes with its
   traceback and cause.
 
-  A managed repository keeps its exact declared-identity remote. A broken alias
-  never authorizes the generic form, and an agent never writes the operator's SSH
-  configuration or keys — identity is corrected in git, or reported.
+  Keep the declared Git identity. A broken alias never permits a generic remote
+  or operator SSH/key edits; correct identity in Git or report it.
 metadata:
   aihub.tags: '["decision:ADR-0031","effective:2026-10-01","route:both"]'
 ---
 
 # Engineering core
 
+These standards govern every current and future first-party project phase. External
+project forks follow the verified upstream-forks contract instead of importing internal
+architecture rules. `~/agents/` is the canonical cross-project and cross-agent SSOT;
+project requirements must be reconciled with it, never maintained as a divergent copy.
+FLEXT projects additionally obey their own stricter documented contracts and enhancements.
+
 For every implementation:
 
-1. Research repository owners, dependencies, and canonical documentation.
+1. Research repository owners, dependencies, documentation, ADRs, plans and specifications
+   before changing implementation. Align and update the authoritative documents first;
+   no autonomous behavior change precedes that documented alignment.
 2. Remove scope without a current requirement or consumer (YAGNI).
 3. Elect one writable authority; every other copy is a generated projection (SSOT).
    Improve the owner in place: writing a parallel replacement, renderer, or registry
@@ -36,9 +43,12 @@ For every implementation:
    code: the authority owns instances, contracts validate structure and grammar, and a
    fixed list in code that duplicates what the SSOT already derives is a bypass to
    exterminate. Absolute paths and references outside the repository are hardcodes.
-4. Apply SOLID only to a responsibility or dependency boundary under change.
-5. Implement through the owner and simplify without weakening behavior.
-6. Remove duplication and god components; recheck YAGNI, SSOT, SOLID.
+4. Apply DDD, Clean Architecture and explicit DI at the responsibility and dependency
+   boundaries under change; domain behavior does not depend on infrastructure details.
+5. Implement through the owner without losing functionality or changing business rules
+   unless the approved project plan or the operator explicitly authorizes that change.
+6. Every execution branch follows DRY, YAGNI, SSOT, KISS and SOLID. Remove duplication,
+   god components and over-engineering rather than adding parallel accommodation.
 7. Exercise runtime behavior, run every applicable native gate, and complete the
    approved landing cycle before changing phase.
 

@@ -1,5 +1,13 @@
 integration_branch: dev
 operator_authorization: rename deployment receipt to activation receipt
+concurrency:
+  continuous_changes: true
+  clean_git_state_available: false
+  globally_stable_tree_available: false
+gate_capture:
+  process_return_code: 0
+  receipt: null
+  issue: admission rejects unrelated dirty state
 lanes:
   agent_a:
     owns: [.github/workflows/ci.yml, tests/test_ci_contract.py]

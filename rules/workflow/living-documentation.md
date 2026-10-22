@@ -10,6 +10,11 @@ Documentation is a maintained product surface, not historical proof by itself. B
 editing, identify each claim's runtime/config/schema/code owner and whether the file is
 canonical, generated, historical, or proposed.
 
+The documentation-first sequence and fork boundary belong to
+`rules/architecture/engineering-core.md`. Establish that documented alignment before
+implementation, then apply this surface-maintenance contract while adopting concurrent
+work through the fix-forward rule, never requiring a globally stable checkout.
+
 - Change canonical docs, skills, commands, rules, ADRs, executable examples, and public
   docstrings in the same grain as the behavior or decision.
 - Preserve historical evidence as dated evidence; remove its authority to direct current

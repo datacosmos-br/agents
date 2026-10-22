@@ -50,3 +50,9 @@ Exact operator authorization naming targets, disposition, recovery, and validati
 survives interruption, divergence, and red gates; re-preflight and continue. Ask only
 when the effect expands beyond it or two evidenced current intentions conflict. State
 alone proves no intention, actor, or process.
+
+An agreed or requested operator strategy — its plan, execution order, checkout and
+branch layout, and validation route — is never changed by an agent without asking the
+operator first (tracker memory `operator-ruling-2026-10-22-runtime-before-tests`). A
+defect found on the way is corrected inside that strategy at its owner, at once; it is
+never routed around through a different store, checkout, or path, and never deferred.

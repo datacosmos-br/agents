@@ -12,6 +12,23 @@ Verify its revision or release identity. Only after that contract is measured ma
 be created, adapted, or invoked. An editable checkout, test assertion, snapshot, local
 cache, generated copy, or stale environment does not define runtime behavior.
 
+## The order of work is absolute
+
+This order binds every project, agent, and session without exception (tracker memory
+`operator-ruling-2026-10-22-runtime-before-tests`):
+
+1. Make the change work in real execution: the project's real verbs and public entry
+   points in the workspace, in standalone members, and in the declared external
+   consumers the change reaches.
+2. Only then correct warnings, lint, typing, and other static findings.
+3. Only then create or adjust tests that lock the observed behavior against regression.
+
+Running a test, a single-file gate, or any static checker to validate a change before
+step 1 has produced real-execution evidence is prohibited; a green gate or suite before
+that proof is not evidence. Every correction in steps 2 and 3 keeps the real execution
+working, and a correction that breaks it is a defect fixed at once, never traded for a
+green gate.
+
 - A test that only passes by keeping removed or legacy artifacts is wrong: fix or delete
   the test; never restore legacy just to make it pass.
 - A config/settings test that breaks when a valid SSOT value changes is defective. Test

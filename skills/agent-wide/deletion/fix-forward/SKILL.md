@@ -21,6 +21,9 @@ effects, preserve compatible work, integrate it forward through the repository's
 declared lane, and revalidate the combined result. Use transaction rollback only for
 effects created by the failing invocation.
 
+Apply the canonical invariant's dirty/concurrent-tree operating contract. Its express
+prohibition on cleanliness and stability preconditions governs every sync cycle.
+
 If two evidenced current intentions cannot coexist under the active authority, stop
 before the conflicting effect and ask the operator one exact question. Never classify
 ordinary overlap, divergence, a failed gate, or required merge work as a severe

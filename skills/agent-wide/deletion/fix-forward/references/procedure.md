@@ -27,6 +27,9 @@ selection and handoff; this procedure owns adoption and combined integration.
 
 ## Sync cycle
 
+Apply the canonical rule's continuous-concurrency contract at every checkpoint; a
+checkpoint observes a bounded state, it does not wait for the repository to stop moving.
+
 At start, before each shared-file edit, after each material publication or gate, and
 before commit, push, review resolution, merge, or handoff:
 
@@ -54,3 +57,12 @@ The integration lane owns the combined runtime, gates, review, landing, and post
 proof. Agent-local green never advances the phase cursor. Only two evidenced current
 intentions that cannot coexist under active authority stop before effects for one
 operator decision.
+
+## Semantic regression
+
+For the dirty-CI parallel-lane scenario, let another agent keep changing HEAD and an
+unrelated test throughout execution. A native capture reports successful execution but
+no receipt because its admission rejects dirty state. The executor must preserve all
+contributions, continue authorized disjoint work and reconcile the capture owner using
+scoped evidence. Requiring cleanup, a stable branch, a paused writer, a cleanup commit or
+a new clean checkout fails this scenario. Claiming the missing receipt passed also fails.

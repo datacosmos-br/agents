@@ -17,7 +17,13 @@ prompt: |-
   exists, require fresh preflight and continuation without asking again or
   repeating an unchanged effect. A concurrent branch, HEAD, or index change
   requires adoption and fresh preflight,
-  not asking the operator to select an exclusive writing session. Dependent Git
+  not asking the operator to select an exclusive writing session. Dirty state
+  and continuous unrelated changes must remain present throughout the scenario.
+  Reject any requirement for a clean or globally stable tree, another lane to
+  finish, a cleanup commit, a paused writer or a new clean checkout. A null
+  receipt must remain an evidence limit while scoped work and capture-owner
+  reconciliation continue; never manufacture an attestation or require cleanup.
+  Dependent Git
   mutations must consume each preceding result before proceeding. Unmanifested
   provider outputs, generated
   destinations, external files, and ambiguous objects are preserved but are

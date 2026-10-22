@@ -10,8 +10,10 @@ metadata:
 
 Use when coordinating lanes across a superproject and submodule trees.
 
-- Assign exactly one active owner per tree, including each submodule checkout. Never run
-  two lanes in the same checkout.
+- Serialize each shared Git index, merge or publication through its current owner;
+  bounded file owners collaborate in the same authorized checkout. Apply the canonical
+  fix-forward invariant's prohibition on cleanliness, stability and exclusive-writer
+  preconditions; do not turn ownership coordination into an exclusive-tree requirement.
 - When a lane is stalled for more than 30 minutes by last-write mtime, resume the
   existing `task_id`. Supply the ready decision, current evidence, next command, and
   acceptance condition; never create a duplicate tree owner.
