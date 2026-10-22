@@ -27,10 +27,10 @@ H7 pilot CYCLE EVIDENCED         one real production cycle collected as bead evi
 
 1. **A hop is proven by its own command and exit, never inferred from the previous
    hop.** "PR merged" does not prove H1; "tag pushed" does not prove H2; "service
-   loaded" does not prove H6 (see `runtime-proof-and-contract-first.md`).
+   loaded" does not prove H6 (see `workflow/runtime-first-contract-tests.md`).
 2. **Version-skew gate at every binary/publisher hop.** Before H5, prove the publisher's
    pinned schema constant equals the binary's embedded constant
-   (`runtime-version-skew.md`). A skew discovered at H6 costs a full diagnostic cycle;
+   (`runtime/deployment-lifecycle.md`). A skew discovered at H6 costs a full diagnostic cycle;
    discovered at H5 it costs one check.
 3. **Cross-repo drift is a first-class blocker.** A consumer lane (ai-hub) may not
    declare pilot readiness while its owner repo (flext-infra) has an integration branch
@@ -62,7 +62,7 @@ H7 pilot CYCLE EVIDENCED         one real production cycle collected as bead evi
 
 - ADR-0028 (repository-local generation and runtime propagation).
 - `phase-admission-protocol.md`, `production-readiness.md`, `landing-and-sweep-law.md`,
-  `runtime-version-skew.md`.
+  `runtime/deployment-lifecycle.md`.
 - Beads: `aihub-l42it` (runtime lane), `aihub-n9h36` (APPLY extermination),
   `aihub-z82dg` (delivery contract), plan
   `.kilo/plans/2026-09-11-plan-v4-execution-proposal.md` §4 (pilot definition).

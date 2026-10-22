@@ -12,6 +12,10 @@ capsule_summary: |
   At a cross-boundary failure, prove the producer's contract and fix the wrong
   side; never bend a correct owner for an invalid consumer.
 
+  Hardcodes, normalized failure, failover, retry, fallback, partial execution
+  and unevidenced success are defects. The first exception escapes with its
+  traceback and cause.
+
   Keep the declared Git identity. A broken alias never permits a generic remote
   or operator SSH/key edits; correct identity in Git or report it.
 metadata:

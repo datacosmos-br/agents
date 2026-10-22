@@ -8,26 +8,33 @@ metadata:
   aihub.tags: '["decision:ADR-0008","effective:2026-08-29","route:project"]'
 ---
 
-# Ralph loop
+# Bounded delivery loop
 
-Treat `$ARGUMENTS` as exactly one authorized objective and acceptance boundary. Refuse
-an empty request, several unrelated objectives, or work whose required owner and
-completion contract cannot be established.
+Treat `$ARGUMENTS` as one authorized objective and acceptance boundary. Resolve missing
+facts through current sources before asking about a non-derivable decision. Preserve
+prior exact authorization and the current unit across interruption.
+Do not implement an empty, unrelated multi-objective or ownerless unit. An authorized
+program may contain several units; select its next bounded unit without discarding
+the program or asking for authorization already given.
 
-1. Read active project law, architecture, existing implementation, consumers, current
-   runtime, canonical tracking contract when available, and native gates.
-2. Select one SSOT-level correction. Implement the complete bounded behavior, simplify
-   it inline, rewire all affected consumers, and delete the superseded path in the same
-   iteration.
-3. Exercise the real public runtime, then run the focused and phase-required native
-   gates. A warning, skip, missing tool, timeout, auth error, or failed cleanup blocks
-   this iteration and the next one.
-4. Land only through the active repository integration contract. If tracking, review,
-   CI, integration, or post-merge runtime is unavailable, report the exact boundary,
-   preserve it only in separately authorized Git/PR/CI evidence, create no substitute
-   tracker or ledger, and keep the iteration open.
-5. Start another iteration only after the current one meets every active phase exit
-   condition.
+1. Read the active contract, canonical owner, implementation, consumers, selected
+   tracker, integration state and public runtime. Adopt compatible existing work.
+2. Select one owner-level correction and the complete consumer closure it requires.
+   Keep the current authorization boundary explicit; do not add unrelated repairs or
+   a second execution mechanism.
+3. Implement through that owner, rewire every affected consumer and remove the
+   superseded path. Update documentation and generated artifacts through their owners.
+4. Exercise public behavior, then apply `$make-check` and the repository's required
+   gates. Command deadlines, profiling, test selection and result classification have
+   one owner: `rules/workflow/canonical-commands.md`.
+5. Review and integrate the validated candidate through the current Git/PR contract.
+   Record source validation, required review, CI, integrated SHA and applicable runtime
+   delivery separately. Keep an unavailable required proof open without a substitute
+   ledger or an invented success.
+6. Begin the next independent unit only after the current unit's acceptance boundary
+   is satisfied. A failure is corrected at its owner within authorized scope; any
+   genuinely external or newly unauthorized action is identified precisely.
 
-Return objective, owner, consumer rewiring, removed residue, runtime and gate evidence,
-integration state, and the exact blocker or next eligible objective.
+Return the objective, source and consumer changes, removed residue, commands and
+exits, integration state and the next eligible action. A branch-only result is a
+checkpoint, never completed delivery.

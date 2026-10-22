@@ -33,6 +33,7 @@ and the inherited reds with their owners. No claim without one of these.
 ## 3. Critical retrospective (mandatory, no diplomacy)
 
 Answer in the landing record's `## Retrospective` section:
+
 - **Startup**: what did I not read/claim/search that a rule already covered?
 - **Execution**: where did work get lost, redone, or broken by wrong context?
 - **Delivery**: what reached the coordinator late, incomplete, or as a blob?

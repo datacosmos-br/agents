@@ -1,7 +1,7 @@
 ---
 description: Test observable runtime behavior
 metadata:
-  aihub.tags: '["decision:ADR-0031","effective:2026-10-01","route:both"]'
+  aihub.tags: '["decision:ADR-0031","effective:2026-10-20","route:both"]'
 ---
 
 # Test observable runtime behavior
@@ -26,11 +26,12 @@ Every pytest execution goes through the test verbs declared only in
 `rules/workflow/canonical-commands.md` (section "Test verbs"), which owns how they are
 invoked, where each runs, and their testmon contract.
 
-A warning, skip, xfail, empty output, missing tool, missing report, zero collection,
+A warning, unexplained skip, xfail, empty output, missing tool, missing report, zero collection,
 unexecuted selected suite, caught exception, retry, or normalized failure is RED. The
 one acceptable zero execution is the typed `make test` cache hit of AGENTS.md law 14;
 report it as a cache hit, never as tests passed. A capability deselection (below) is
-neither a skip nor zero collection. The first exception, cause, and raw traceback escape
+neither a skip nor zero collection. The explicit connectivity exception below is
+an unmet prerequisite, never an acceptance receipt. The first exception, cause, and raw traceback escape
 unchanged.
 
 See [`runtime-is-reality.md`](../workflow/runtime-is-reality.md) for the runtime-first
@@ -48,14 +49,27 @@ fingerprint (image, configuration, schema, harness revision) changes, always und
 host lock. Tests share no data through it: each test works in its own namespace,
 derived from the worker and run identity and removed at teardown, and the harness
 sweeps stale namespaces. The service is not a borrowed environment; every checkout
-still owns its own `.venv` (`shared-venv-guard.md` (rule file)).
+uses the physical environment owned by its declared runtime root
+(`rules/coordination/shared-venv-guard.md`).
 
-A test that needs a host or remote capability declares it by marker, and resolution is
-declarative and automatic at collection: CI never executes `remote` or `docker` tests;
-locally, `docker` tests run whenever the host supports Docker. A test whose capability
-is unavailable is deselected as typed `NOT EXECUTED`, with its node id and reason in the
-run report — never a runtime skip and never counted as passed (`engineering-core.md`
-(rule file)). An executed test whose real service fails is RED.
+A test declares the capability it actually consumes. The selected project's
+applicability owner checks prerequisites before service-dependent fixtures. Retain
+node identity, prerequisite and disposition for unavailable capabilities; never count
+them as passed or infer applicability from a directory name alone. An executed test
+whose available service fails is RED.
+
+For FLEXT connectivity tests, the operator's 2026-10-10 prerequisite contract replaces
+the older capability-deselection form: require a configured local untracked `.env` and
+a reachable test environment. When either prerequisite is absent, the shared
+`flext-tests` applicability owner skips the connectivity test before its
+service-dependent fixture runs. Docker-dependent connectivity tests also skip in CI.
+Pure unit and integration tests remain active; an `integration` marker alone never
+makes a test a connectivity test.
+
+These availability skips report unmet prerequisites, never successful connectivity
+or production validation. Once the environment is available, authentication, protocol,
+application and assertion failures remain failures. No other skip, fixture catch,
+fallback or coverage exclusion is authorized by this prerequisite contract.
 
 ## Fixture composition and the fail loop (operator ruling, 2026-09-12)
 
@@ -67,8 +81,8 @@ single source of truth (`u.Tests.*` builders), never a second ad hoc constructio
 
 A red test is fixed at its contract — conftest, the `c`/`t`/`p`/`m`/`u` facades, or the
 fixture itself — never by loosening an assertion, skipping, or marking it xfail.
-Classify every red test first: one that is fake, mocked, exercises implementation shape,
-or bypasses the public interface is deleted — the test and any test-only production
-symbol it required — and a real failure is fixed at its root-cause owner and rewired to
-every consumer. Lowering a coverage floor to complete this extermination is acceptable;
-every surviving test stays a real functional test.
+Classify every red test first. Replace a fake, mocked, implementation-shaped or
+private-interface test with public behavioral coverage preserving its failure
+scenarios. Remove a test-only production symbol only after proving it has no remaining
+consumer. Fix a real failure at its root-cause owner and rewire every consumer. Do not
+lower coverage or weaken assertions to obtain a passing result.

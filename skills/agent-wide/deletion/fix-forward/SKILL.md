@@ -18,8 +18,9 @@ Load the canonical invariant `rules/coordination/fix-forward-collaboration.md` a
 follow the `sync procedure` (skill file). Adopt the complete current authorized-
 worktree state regardless of provenance or age, inventory owners and intent before
 effects, preserve compatible work, integrate it forward through the repository's
-declared lane, and revalidate the combined result. Use transaction rollback only for
-effects created by the failing invocation.
+declared lane, and revalidate the combined result. Apply the canonical invariant's
+cleanup boundary to owned unpublished staging and locks; published effects remain
+inputs to fix-forward.
 
 Apply the canonical invariant's dirty/concurrent-tree operating contract. Its express
 prohibition on cleanliness and stability preconditions governs every sync cycle.

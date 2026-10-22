@@ -15,11 +15,10 @@ requires.
 # Messaging (Mail)
 
 Mail is bead-based messaging between agents. Messages are beads with type=message,
-stored in the city's bead store. Rule `inter-session-mail` declares the obligation to
-communicate only through mail. This skill owns the complete contract, because a skill
-is the only governance artifact that still reaches agents beyond Claude Code.
-Measured 2026-10-09: `~/.codex/skills/gc-mail` is installed, while no provider
-receives the rule text.
+stored in the city's bead store. Rule `inter-session-mail` owns when and through
+which selected channel sessions coordinate. This skill owns the native procedure
+and message grammar below. An older provider-delivery observation does not create
+a second policy owner or establish current availability.
 
 - As an opt-in skill it reaches no project tree.
 - Its delivery to each provider home is ai-hub's (rule `distribution-routing`,
@@ -146,6 +145,12 @@ id, never by filtering the unread inbox.
 
 ## City hall campaign (operator rule 2026-10-09)
 
+This campaign procedure applies when the current assignment selects a city hall
+campaign. An explicitly authorized manual execution uses its selected
+coordination boundary. Without a selected campaign, targeted mail is a notice
+only: it does not create an orchestration session, assign work, establish an ACK
+or authorize another actor's file fence.
+
 While the city is live, city hall (the mayor, `gastown.mayor`) organizes and
 coordinates external sessions through **one campaign thread** (rule
 `coordinator-ladder`, tier 1). City hall announces that thread, and every participant
@@ -181,10 +186,16 @@ hall opens one, for a new campaign.
 2. **Ownership before effect.** Before the first write, post the bead, the
    branch/worktree, the PR, and the exact file fence. Overlapping fences wait for city
    hall's arbitration in the thread.
-3. **Gate windows.** Post `[coord] [@city-hall] gate-window START <repo> <verb>
+3. **Gate windows under active selected city coordination.** Post
+   `[coord] [@city-hall] gate-window START <repo> <verb>
    <sender>` and wait for city hall's ACK. Run the gate, then post `[coord]
    [@city-hall] gate-window END <repo> <verb> exit=<n> <sender>` with decisive output.
    One heavy gate runs per machine.
+   A current operator-authorized manual execution follows its declared
+   coordination and serialization boundary. Orchestration suspension does not
+   suspend an independently retained tracker or silently cancel cooperation;
+   do not start orchestration to obtain an ACK. Preserve the distinction
+   between sent, readback and acknowledged evidence.
 4. **Polling.** Nothing injects mail into an external session. Poll the campaign
    thread at every phase boundary and at least every 15 minutes.
 5. **Direct channels.** A provider's cross-session channel exists only where the
@@ -205,6 +216,7 @@ hall opens one, for a new campaign.
 ## Subject taxonomy
 
 Every coordination subject carries:
+
 - the `[coord]` prefix;
 - an optional addressee tag (`[@city-hall]`, `[@all]`, `[@operator]`,
   `[@<repo>/<executor>]`);

@@ -16,6 +16,10 @@ inputs:
     worker-codex@billing a managed local actor because gc whoami reports an
     authenticated hosted account. Use the fixture to explain which registry
     owns local membership and whether hosted authentication proves it.
+    In a separate operator-authorized manual execution, orchestration is
+    explicitly suspended while the canonical tracker remains available.
+    Explain how that authorization affects the gate-window procedure without
+    starting orchestration, dropping cooperation or claiming an unreceived ACK.
   files:
   - path: scenario.yaml
 expected:

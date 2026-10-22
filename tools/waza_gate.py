@@ -7,8 +7,10 @@ import os
 import subprocess
 import sys
 import tempfile
+from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
+from time import perf_counter
 
 from strict_subprocess import capture_strict, describe, publish, run_strict
 
@@ -57,6 +59,7 @@ def _spec_command(skill: Path, evaluation: Path) -> tuple[str, ...]:
         "--fail",
         "--format",
         "human",
+        "--no-update-check",
     )
 
 
@@ -71,12 +74,13 @@ def _verify_suites(
     order and the first failure escapes as its native exception with the
     suite's own stdout/stderr forwarded first.
     """
+    owners_by_name: dict[str, list[Path]] = defaultdict(list)
+    for path in (projection / "skills").rglob("SKILL.md"):
+        owners_by_name[path.parent.name].append(path.parent)
     jobs: list[tuple[str, tuple[str, ...]]] = []
     for evaluation in evaluations:
         name = evaluation.parent.name
-        owners = tuple(
-            path for path in (projection / "skills").rglob(name) if path.is_dir()
-        )
+        owners = owners_by_name[name]
         if len(owners) != 1:
             raise ValueError(f"projected skill owner is not unique: {name}")
         jobs.append((name, _spec_command(owners[0], evaluation)))
@@ -157,6 +161,7 @@ def _verify(repository: Path, projection: Path) -> None:
 
 
 def main() -> None:
+    started = perf_counter()
     repository = Path(__file__).resolve().parents[1]
     state = _state_root(repository)
     lock_path = state / "waza.lock"
@@ -166,6 +171,7 @@ def main() -> None:
         fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
         with tempfile.TemporaryDirectory(prefix="gate-", dir=state) as temporary:
             _verify(repository, Path(temporary) / "waza-projection")
+    print(f"WAZA wall time including child processes: {perf_counter() - started:.3f}s")
 
 
 if __name__ == "__main__":

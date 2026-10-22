@@ -6,25 +6,25 @@ set -e
 # Detect Node version
 NODE_VERSION=$(node -v | cut -d'v' -f2 | cut -d'.' -f1)
 
-echo "🔍 Detected Node.js version: $NODE_VERSION"
+echo "🔍 Detected Node.js version: ${NODE_VERSION}"
 
-if [ "$NODE_VERSION" -lt 18 ]; then
+if [ "${NODE_VERSION}" -lt 18 ]; then
   echo "❌ Error: Node.js 18 or higher is required"
   echo "   Current version: $(node -v)"
   exit 1
 fi
 
 # Set Vite version based on Node version
-if [ "$NODE_VERSION" -ge 20 ]; then
+if [ "${NODE_VERSION}" -ge 20 ]; then
   VITE_VERSION="latest"
   echo "✅ Using Vite latest (Node 20+)"
 else
   VITE_VERSION="5.4.11"
-  echo "✅ Using Vite $VITE_VERSION (Node 18 compatible)"
+  echo "✅ Using Vite ${VITE_VERSION} (Node 18 compatible)"
 fi
 
 # Detect OS and set sed syntax
-if [[ "$OSTYPE" == "darwin"* ]]; then
+if [[ "${OSTYPE}" == "darwin"* ]]; then
   SED_INPLACE="sed -i ''"
 else
   SED_INPLACE="sed -i"
@@ -44,34 +44,34 @@ fi
 
 PROJECT_NAME="$1"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-COMPONENTS_DIR="$SCRIPT_DIR/shadcn-components"
+COMPONENTS_DIR="${SCRIPT_DIR}/shadcn-components"
 
 # Check if components directory exists
-if [ ! -d "$COMPONENTS_DIR" ]; then
+if [ ! -d "${COMPONENTS_DIR}" ]; then
   echo "❌ Error: shadcn-components directory not found in script directory"
-  echo "   Expected location: $COMPONENTS_DIR"
+  echo "   Expected location: ${COMPONENTS_DIR}"
   exit 1
 fi
 
-echo "🚀 Creating new React + Vite project: $PROJECT_NAME"
+echo "🚀 Creating new React + Vite project: ${PROJECT_NAME}"
 
 # Create new Vite project (always use latest create-vite, pin vite version later)
-pnpm create vite "$PROJECT_NAME" --template react-ts
+pnpm create vite "${PROJECT_NAME}" --template react-ts
 
 # Navigate into project directory
-cd "$PROJECT_NAME"
+cd "${PROJECT_NAME}"
 
 echo "🧹 Cleaning up Vite template..."
-$SED_INPLACE '/<link rel="icon".*vite\.svg/d' index.html
-$SED_INPLACE 's/<title>.*<\/title>/<title>'"$PROJECT_NAME"'<\/title>/' index.html
+${SED_INPLACE} '/<link rel="icon".*vite\.svg/d' index.html
+${SED_INPLACE} 's/<title>.*<\/title>/<title>'"${PROJECT_NAME}"'<\/title>/' index.html
 
 echo "📦 Installing base dependencies..."
 pnpm install
 
 # Pin Vite version for Node 18
-if [ "$NODE_VERSION" -lt 20 ]; then
-  echo "📌 Pinning Vite to $VITE_VERSION for Node 18 compatibility..."
-  pnpm add -D vite@$VITE_VERSION
+if [ "${NODE_VERSION}" -lt 20 ]; then
+  echo "📌 Pinning Vite to ${VITE_VERSION} for Node 18 compatibility..."
+  pnpm add -D vite@${VITE_VERSION}
 fi
 
 echo "📦 Installing Tailwind CSS and dependencies..."
@@ -275,7 +275,7 @@ pnpm install sonner cmdk vaul embla-carousel-react react-day-picker react-resiza
 # Copy shadcn components into the project
 echo "📦 Installing shadcn/ui components..."
 mkdir -p src/components
-cp -R "$COMPONENTS_DIR/components/ui" src/components/ui
+cp -R "${COMPONENTS_DIR}/components/ui" src/components/ui
 
 # Create components.json for reference
 echo "📝 Creating components.json config..."
@@ -314,7 +314,7 @@ echo "  - select, separator, sheet, skeleton, slider, sonner"
 echo "  - switch, table, tabs, textarea, toast, toggle, toggle-group, tooltip"
 echo ""
 echo "To start developing:"
-echo "  cd $PROJECT_NAME"
+echo "  cd ${PROJECT_NAME}"
 echo "  pnpm dev"
 echo ""
 echo "📚 Import components like:"

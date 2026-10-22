@@ -13,6 +13,13 @@ practice: an unverifiable form is verified at its canonical owner (declared docs
 source, the tool's own help) or not executed. A plausible command that succeeds without
 a canonical basis is still a defect.
 
+This is the lifecycle contract for governed first-party projects. A selected
+third-party fork follows its upstream command contract rather than acquiring
+another project's private control plane. Source inspection, native help and
+the selected Git, tracker and coordination APIs are preflight/control
+operations; they never substitute for a declared project gate. A broken Make
+gate does not authorize choosing another tool or CLI to obtain a green result.
+
 Diagnostics, validation, generation, formatting, correction, tests, Waza, builds,
 publication, deployment, and maintenance execute only through one explicit verb in the
 repository root Makefile. No Make selector, underlying-tool argument,
@@ -49,19 +56,72 @@ The first command failure and raw traceback propagate. Warning, skip, empty outp
 missing tool/report, partial execution, retry, normalization, or a successful wrapper
 around a failed child is RED.
 
+Test applicability and the explicit FLEXT connectivity prerequisite exception
+have one owner: `rules/testing/observable-runtime.md`. Preserve its unexecuted
+node identities and dispositions. An authorized prerequisite skip never proves
+connectivity, complete behavioral validation or production readiness; a runner
+that promotes it to any such success must be repaired.
+
+A read-only predicate uses its documented native status and result schema.
+Preserve that status and the decisive result; a false predicate is neither a
+successful gate nor permission for a dependent effect. Do not reinterpret an
+unknown nonzero exit or error text as absence. Missing required gate evidence
+remains RED. Classify emitted diagnostics through their declared owner, rather
+than treating a quoted word in input data as an emitted diagnostic.
+
+## Command deadline and performance
+
+Invoke every command with a maximum wall-clock duration of 120 seconds, including
+activation, preflight, lock acquisition, subprocesses and termination. This requirement
+also applies to setup, complete test suites and profiling. A deadline wrapper is
+required when the native entrypoint does not already enforce that bound. It does not
+replace the declared operation, change its scope, suppress output or turn a failure
+into success.
+
+Reserve termination time inside the bound: request termination no later than 118
+seconds and finish terminating owned children by 120 seconds. Nested operations consume
+the remaining invocation budget, never a fresh budget per child. Do not signal another
+actor's process or remove its lock to obtain the window.
+
+A timeout is an incomplete failed invocation. Preserve its native output, exit,
+completed scope and available profile. Before another invocation, identify and correct
+the measured cause; do not retry unchanged, increase the limit, move the command into
+an unbounded background job, or split its output into a false complete receipt.
+
+For Python generation or migration slowness, resolve the profiling verb from the
+selected root Makefile before invoking it. Use cProfile through that native owner.
+An absent profiling verb is an explicit command-owner implementation obligation,
+not permission to invent a target or invoke a private module. Bind a capture to
+source, runtime, configuration and scope; record wall
+time separately from cumulative function time and distinguish parent waits from child
+work. Change one measured cause, revalidate its public behavior and compare the same
+operation before scaling. Reuse existing analysis owners rather than adding a parallel
+cache, scanner or execution engine. Gate placement and opt-in instrumentation follow
+[`gate-budget.md`](gate-budget.md).
+
+When the operator authorizes documentation only, a missing deadline implementation or
+broken generator remains an implementation finding. Correct its documentation and
+record the exact code obligation without editing excluded code or claiming enforcement.
+This section defines the invocation discipline; it does not assert that an unwrapped
+Make recipe already has automatic deadline enforcement. Automation calls the native
+verb through its declared deadline runner, and its workflow source proves that binding.
+
 ## Test verbs
 
 This section is the single declaration of the test-verb law (tracker memory
 `operator-ruling-2026-10-01-testmon-make-test-only`). Every other rule, skill, command,
 agent profile, and doc references it and never restates it.
 
-- `make test` always runs with pytest-testmon selection active against the shared
-  external persistent database. A run whose selection is deactivated is RED at the
-  runner owner, never an accepted incomplete run.
+- `make test` always runs with pytest-testmon selection active against the persistent
+  database at testmon's own default location (`.testmondata` at the pytest rootdir,
+  ignored by Git); nothing forces it elsewhere (`rules/storage.md`). A run whose
+  selection is deactivated is RED at the runner owner, never an accepted incomplete
+  run.
 - CI and pre-push run `make test`; CI persists the testmon database through its cache.
 - Pre-commit runs no tests.
-- `make test-full` runs only locally, without testmon and without any time limit. It
-  never runs in CI, at pre-commit, or at pre-push.
+- `make test-full` runs only locally, without testmon selection, while preserving the
+  existing database. It never runs in CI, at pre-commit, or at pre-push. It obeys the
+  command deadline above; an interrupted full run is not complete-suite evidence.
 - A `make test` run that executes no test is acceptable only as the typed cache hit of
   AGENTS.md law 14.
 - `make test-file FILE=<repository-relative path>` is the sole allowed single-file
@@ -69,6 +129,10 @@ agent profile, and doc references it and never restates it.
   verb; this rule records the contract and does not define the implementation.
 - Raw pytest, any other test-file or match selection, and deletion or replacement of the
   testmon database are prohibited; no raw, focused, or CI path bypasses these verbs.
+
+The repository command owner implements this contract. A template, runner or workflow
+that still runs tests at pre-commit, changes this selection contract or removes the
+deadline is nonconforming; its presence does not create another permitted workflow.
 
 ## Zero-violation code gate
 

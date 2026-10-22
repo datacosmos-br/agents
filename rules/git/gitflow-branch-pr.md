@@ -14,6 +14,8 @@ capsule_summary: |
   Promotion: green local round, non-`[WIP]` commit, green checks, resolved review,
   independent approval, merge commit — never squash or rebase. Revalidate the merge
   SHA with post-merge evidence.
+  Divergence: merge the integration base in with `--no-ff`; never rebase or
+  force-push.
   Retirement is mandatory: merge, push, PR, merge, then delete local and remote
   branches and the worktree, only after `git merge-base --is-ancestor` exits 0
   against a fresh base.

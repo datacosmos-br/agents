@@ -136,7 +136,7 @@ gate runs at a time.
 
 | Theme | Defect | Rule | Correction |
 |---|---|---|---|
-| Merge authority | About 12 workers merged whenever ready; the flext-infra freeze was broken 4 times | parallel-delegation.md:23, fanout-qa-publication | One merger per repo; `ag-k47r` |
+| Merge authority | About 12 workers merged whenever ready; the flext-infra freeze was broken 4 times | parallel-delegation (current owner; duplicate fanout rule retired) | One merger per repo; `ag-k47r` |
 | Load | Load 55-68 on 20 cores; timeouts produced false reds (t8p7n, idihq, gdm8w) | heavy-gate-serialization (ADR-0021) | One heavy-gate slot; `ag-g29z` |
 | Tracker | 16 claims made at the same second with no worktree; duplicate beads (s64n2/bv8gs, d3nwq/t8p7n); merged work left in_progress | bead-branch-pr-cadence §1-3 | Fixed this session: released 10 flext and 15 ai-hub claims; closed 1um47, gdm8w, xgq4t; superseded d3nwq; contradictions filed as `ag-e3ul`, `ag-h31o` |
 | Test law | Merges with make test red; infra CI has no pytest | AGENTS #14, R-S3 | Ruling void (§2); `flext-pxonf` is first in the queue |

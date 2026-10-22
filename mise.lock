@@ -14,35 +14,46 @@ url_api = "https://api.github.com/repos/rhysd/actionlint/releases/assets/3849248
 provenance = "github-attestations"
 
 [[tools.ast-grep]]
-version = "0.45.3"
+version = "0.50.0"
 backend = "aqua:ast-grep/ast-grep"
 specifiers = ["latest"]
 
 [tools.ast-grep."platforms.linux-x64"]
-checksum = "sha256:f8ac830881339d1edee6b2652f54798c0f4da5a827f2db38a08ee31117783ce8"
-url = "https://github.com/ast-grep/ast-grep/releases/download/0.45.3/app-x86_64-unknown-linux-gnu.zip"
-url_api = "https://api.github.com/repos/ast-grep/ast-grep/releases/assets/537332692"
+checksum = "sha256:0fd3f489639abb8465a914b74b8779171577582318d8a940d00399f59dba81c5"
+url = "https://github.com/ast-grep/ast-grep/releases/download/0.50.0/app-x86_64-unknown-linux-gnu.zip"
+url_api = "https://api.github.com/repos/ast-grep/ast-grep/releases/assets/625203767"
 
 [[tools.bun]]
-version = "1.4.2"
+version = "1.4.3"
 backend = "core:bun"
 specifiers = ["latest"]
 
 [tools.bun."platforms.linux-x64"]
-checksum = "sha256:36368faef7527875d5ffa52e53cd48021741f2a83eb6208a8dd64068d422a913"
-url = "https://github.com/oven-sh/bun/releases/download/bun-v1.4.2/bun-linux-x64.zip"
+checksum = "sha256:3e730528d89775f03f87f05c06787c4df4099d0a37f3f252e7b829cb23816e18"
+url = "https://github.com/oven-sh/bun/releases/download/bun-v1.4.3/bun-linux-x64.zip"
 
 [tools.bun."platforms.linux-x64-baseline"]
-checksum = "sha256:c678040f14fe0440eb839d37cbd0ce4c051a32da72806ac97de6a6aab6bf728f"
-url = "https://github.com/oven-sh/bun/releases/download/bun-v1.4.2/bun-linux-x64-baseline.zip"
+checksum = "sha256:1fc2edac843102909e3a1be1d8d9802cc6071cf074e67e88231f4ffe0f8b397b"
+url = "https://github.com/oven-sh/bun/releases/download/bun-v1.4.3/bun-linux-x64-baseline.zip"
 
 [tools.bun."platforms.linux-x64-musl"]
-checksum = "sha256:4835eca59d6da70f4674f5642f6e459dcadab773695b2ed9922d131057989742"
-url = "https://github.com/oven-sh/bun/releases/download/bun-v1.4.2/bun-linux-x64-musl.zip"
+checksum = "sha256:6e9ea98554ea0d05efda5840ae292618aaa3adefd66b0853520c5c86a37eac9c"
+url = "https://github.com/oven-sh/bun/releases/download/bun-v1.4.3/bun-linux-x64-musl.zip"
 
 [tools.bun."platforms.linux-x64-musl-baseline"]
-checksum = "sha256:76e1db84e98f22f78de0a87e309bfbbf297732847f9720db36750646c85c8c18"
-url = "https://github.com/oven-sh/bun/releases/download/bun-v1.4.2/bun-linux-x64-musl-baseline.zip"
+checksum = "sha256:4b5b0b5503f6ebf15161e8c56eb5a263134c05cd98a86dc11ee43ac5bda9862e"
+url = "https://github.com/oven-sh/bun/releases/download/bun-v1.4.3/bun-linux-x64-musl-baseline.zip"
+
+[[tools."github:kucherenko/jscpd"]]
+version = "5.4.1"
+backend = "github:kucherenko/jscpd"
+specifiers = ["latest"]
+
+[tools."github:kucherenko/jscpd"."platforms.linux-x64"]
+checksum = "sha256:f2017a17de2a8d5708f8354c6e7223f82da3dc6489675bce543ba00d9d529468"
+url = "https://github.com/kucherenko/jscpd/releases/download/v5.4.1/jscpd-linux-x64-gnu.tar.gz"
+url_api = "https://api.github.com/repos/kucherenko/jscpd/releases/assets/624938749"
+provenance = "github-attestations"
 
 [[tools.gitleaks]]
 version = "8.30.1"
@@ -55,13 +66,13 @@ url = "https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8
 url_api = "https://api.github.com/repos/gitleaks/gitleaks/releases/assets/378332058"
 
 [[tools.go]]
-version = "1.26.8"
+version = "1.26.9"
 backend = "core:go"
 specifiers = ["1.26"]
 
 [tools.go."platforms.linux-x64"]
-checksum = "sha256:d0f743b33e8d8945e6b1f432edd15785c70507121d6e2a723b21285eddf8b57b"
-url = "https://dl.google.com/go/go1.26.8.linux-amd64.tar.gz"
+checksum = "sha256:42d158b4d8f7b61ac0a830567c940a86098fb7aac52e467a5ebec03ef5cc2f8d"
+url = "https://dl.google.com/go/go1.26.9.linux-amd64.tar.gz"
 
 [[tools."go:github.com/microsoft/waza/cmd/waza"]]
 version = "0.38.8"
@@ -77,20 +88,14 @@ specifiers = ["24"]
 checksum = "sha256:6e1db87ef58b8819e5d5402eff1536491b18edd8eb7bee5ef7897876e88dc5ff"
 url = "https://nodejs.org/dist/v24.21.0/node-v24.21.0-linux-x64.tar.gz"
 
-[[tools."npm:jscpd"]]
-version = "5.4.0"
-aube = { path = ".mise/locks/npm-jscpd/5.4.0", digest = "sha256:7ee06a279c0f8db65a8ef5b5f2ce0be51c3b63d726c7c159808cc31afaa5a807" }
-backend = "npm:jscpd"
-specifiers = ["latest"]
-
 [[tools.python]]
 version = "3.13.16"
 backend = "core:python"
 specifiers = ["3.13"]
 
 [tools.python."platforms.linux-x64"]
-checksum = "sha256:4595c5589fff7bf0cb158d9a88a797e0d791fa33830770fcb7bf3f4b104feeae"
-url = "https://github.com/astral-sh/python-build-standalone/releases/download/20261003/cpython-3.13.16+20261003-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz"
+checksum = "sha256:24801ea31c7d406d559a17e2226325c723d50c56900b9c0da7b62adaae2affc9"
+url = "https://github.com/astral-sh/python-build-standalone/releases/download/20261009/cpython-3.13.16+20261009-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz"
 provenance = "github-attestations"
 
 [[tools.shellcheck]]
@@ -114,12 +119,12 @@ url = "https://github.com/snyk/cli/releases/download/v1.1308.0/snyk-linux"
 url_api = "https://api.github.com/repos/snyk/cli/releases/assets/621676644"
 
 [[tools.uv]]
-version = "0.12.23"
+version = "0.13.0"
 backend = "aqua:astral-sh/uv"
 specifiers = ["latest"]
 
 [tools.uv."platforms.linux-x64"]
-checksum = "sha256:9167d72b3319674b6303c4cbe071854bba13ebdf3d76b1a7cbdc175471fb66d6"
-url = "https://github.com/astral-sh/uv/releases/download/0.12.23/uv-x86_64-unknown-linux-gnu.tar.gz"
-url_api = "https://api.github.com/repos/astral-sh/uv/releases/assets/608232628"
+checksum = "sha256:1468ebd5a5541121837c5a2817b9972ba6090fa6caa3d142620850a47fb75154"
+url = "https://github.com/astral-sh/uv/releases/download/0.13.0/uv-x86_64-unknown-linux-gnu.tar.gz"
+url_api = "https://api.github.com/repos/astral-sh/uv/releases/assets/626003332"
 provenance = "github-attestations"

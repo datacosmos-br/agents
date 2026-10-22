@@ -1,17 +1,16 @@
-id: flext-gates-as-products-budget-rows-001
-name: Derive gate budgets from registry
-description: Treat one flext gate as a product with budget rows, registry vocabularies, atomic primitives and config keys.
-tags: [flext, gates-as-products, budget-rows, registry-vocabularies, atomic-primitives, config-keys, happy-path]
+id: flext-gates-as-products-registry-001
+name: Derive a gate from its current registry
+description: Apply the declared gate contract without reviving a retired budget namespace.
+tags: [flext, gates-as-products, registry, atomic-primitives, happy-path]
 inputs:
   prompt: |-
-    Add the gate described in scenario.yaml as a flext gate-as-product: declare
-    its registry entry and its registry vocabulary row, derive its budget rows
-    (time, memory, tokens) from that registry entry, wire its atomic primitive
-    owned once by flext-core and its converged config key, regenerate the
-    projections, and prove the fixed point with two generations and an empty
-    second-pass diff.
+    Use scenario.yaml to design the requested flext gate products change. Resolve
+    the current registry, configuration ownership and native primitives first;
+    the old budget table has been retired. Rewire the declared consumers,
+    regenerate at the author and prove the fixed point. Do not invent an API
+    name or restore a former product table.
   files:
   - path: scenario.yaml
 expected:
-  output_contains: [registry, vocabulary, budget row, atomic primitive, config key, fixed point]
-  output_not_contains: [hand-edited projection, hardcoded budget, orphan row]
+  output_contains: [registry, configuration, atomic primitive, owner, fixed point]
+  output_not_contains: [I will restore the budget table, I will hand-edit the projection]

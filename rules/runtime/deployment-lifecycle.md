@@ -19,6 +19,12 @@ activate atomically, and prove version, commit, configuration identity, and beha
 after activation. Development or an editable checkout is never production evidence.
 Rollback is attributable cleanup only and does not turn a failed deployment green.
 
+Prove the producer and consumer's version/schema contract through their public
+provenance before deployment and again on the staged artifacts. Source HEAD does
+not prove installed bytes. A mismatch retains both identities and fails at its
+owner; reconcile forward rather than downgrading source or guessing a compatible
+peer. Runtime-skew-triage supplies the diagnostic procedure.
+
 For a `third_party_fork`, use the upstream layout, language level, build system, tests,
 and style. Local governance owns only source/upstream identity, delta provenance,
 artifact integrity, deployment configuration, and runtime proof.

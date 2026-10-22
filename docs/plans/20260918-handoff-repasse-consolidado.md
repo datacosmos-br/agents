@@ -55,6 +55,7 @@ repo e permanecem.
 
 ### G1 — Fronteira flext-infra: CIRÚRGICA (auditoria fina concluiu: design é genérico)
 Fica intocável: enum de backend com tiers local/none; toolchain com seletores públicos
+
 + `protected_mise_tools`; parametrização Jinja; gitignore/excludes de projeções de
 runtime; mecanismos providers/project_overrides/ci_private_submodules/github_repos
 (defaults vazios). **Sai do público** (dados privados comitados; mecanismo permanece):
