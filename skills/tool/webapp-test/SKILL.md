@@ -17,6 +17,12 @@ To test local web applications, write native Python Playwright scripts.
 
 - `scripts/with_server.py` - Manages server lifecycle (supports multiple servers)
 
+The helper uses Python's standard-library asyncio executor, not a shell or FLEXT
+runtime. Server commands are argv strings; the documented leading `cd DIRECTORY &&`
+sets that server's working directory. Shell expansion, pipelines and command
+substitution are not evaluated. Server output is inherited, readiness has a deadline,
+and owned processes are cleaned up even when the trailing command fails.
+
 **Always run scripts with `--help` first** to see usage. DO NOT read the source until
 you try running the script first and find that a customized solution is abslutely
 necessary. These scripts can be very large and thus pollute your context window. They
