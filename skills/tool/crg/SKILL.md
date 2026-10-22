@@ -99,8 +99,9 @@ and keeps a background watch for its whole life (tracker memory
 4. Retirement: stop the lane watcher, `unregister` the lane, and review `prune` before
    `prune --apply`.
 
-A graph without a registered data directory lands at `<lane>/.code-review-graph`,
-inside the checkout. Generators that verify directory membership then fail mid-run
+Data-directory resolution is registry, then configured environment, then
+`<lane>/.code-review-graph` ([operations](references/operations.md)). When neither the
+registry nor the environment names one, the graph lands inside the checkout. Generators that verify directory membership then fail mid-run
 (`make gen`: "source directory membership changed ... added=['.code-review-graph']").
 Until AI Hub registers lane graphs with an external data directory (aihub-o93c3), build
 and update the lane graph before a generation verb, never during it, and record the gap.
