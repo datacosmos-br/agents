@@ -18,4 +18,26 @@ build/CI owners, manifests, and generated artifacts. Any active opposite blocks 
 Historical Git and evidence records remain truthful history; they are not runtime
 residue or rollback authority.
 
+## Exterminate without fear
+
+Operator order 2026-10-24 (verbatim): "é melhore apagar e se precisar podemos recuperar
+do histórico do git, e o a funcionalidade tem que ser a real e tirar exageros, coisas
+erradsa e que duplciacoes de execucoes como essa em qq lugar".
+
+- For tracked source, Git history is the recovery contract. Deleting committed code,
+  tests, configuration or docs needs no backup, archive, approval or second opinion:
+  delete it, rewire the consumers, and recover it from history if it is ever needed.
+- Keep only the real functionality a current consumer exercises. Exaggerations (ceremony
+  that adds no guarantee), wrong behavior, and duplicated executions are defects to
+  exterminate at their owner wherever they are found, not tolerated scope.
+- A duplicated execution is the same verification, resolution or derivation run twice
+  for one purpose: a setup that re-checks what `check` owns, a planner re-run that
+  re-derives an artifact already in hand, two owners of one fact. Keep the single owner
+  in the verb that owns that concern and delete the copy.
+- Uncertainty about an unexercised path is resolved by measuring its consumers (code
+  graph, ast-grep, grep, runtime), never by keeping it "just in case".
+
+The `safe delete` skill governs untracked, foreign, live or ownership-ambiguous state,
+which Git cannot restore. It never protects tracked code from extermination.
+
 See also: `strict-execution.md` (rule file) — aggregate parent policy.
