@@ -46,6 +46,12 @@ is red or unresolved.
 - Adopt all concurrent work in the integration lane (`git merge --no-ff`), resolve every
   review comment with runtime evidence, and prove CI green before merge; post-merge
   proof closes the increment.
+- A PR merges into an integration branch only with its CI green (operator order
+  2026-10-24, tracker memory
+  `operator-ruling-2026-10-24-compat-warning-and-green-ci-merge`: "para PR merge para as
+  branchs de integracao tem que sempre passar com o CI verde"). An administrative merge
+  never lands a red or still-pending CI run; a red CI keeps the PR open and is fixed
+  forward on its branch.
 
 Compose with `rules/runtime/strict-execution.md`,
 `rules/coordination/fix-forward-collaboration.md`, and
