@@ -41,3 +41,20 @@ The `safe delete` skill governs untracked, foreign, live or ownership-ambiguous 
 which Git cannot restore. It never protects tracked code from extermination.
 
 See also: `strict-execution.md` (rule file) — aggregate parent policy.
+
+## Marked compatibility while rewiring
+
+Operator order 2026-10-24 (verbatim): "tudo que for código antigo, compatibilidade ,
+fallback vc tem que ser sempre marcar compatibildidade e como corrigir com warning
+enquanto estiver ajustando wiring para exterminar o caminho por ele em todo o codeset".
+This refines the atomic cutover above for a rewiring that spans more than one change.
+
+- An old, compatibility or fallback path may survive only while its consumers are being
+  rewired, and only when it is marked. Unmarked residue remains a blocking defect.
+- In Python the marker is the standard-library `warnings.deprecated` (PEP 702) on the
+  old function, method, class or alias, with the message
+  `compat: <old> -> <new owner>; fix: <exact rewire>`. Static type checkers then report
+  every remaining caller, which is the census; at runtime the warning names the fix.
+  Other languages use their native deprecation marker with the same message shape.
+- The marker never becomes a resting state: the path and its marker are deleted in the
+  same change that rewires the last consumer. No marker means no surviving path.
