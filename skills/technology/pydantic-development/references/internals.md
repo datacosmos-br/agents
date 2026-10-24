@@ -68,14 +68,18 @@ produce smaller schemas than many near-duplicate models.
 
 The FLEXT failure mode: models nested as inner classes of a facade namespace class.
 While the outer class body executes, the outer name is not yet bound in module
-globals. A field that names a sibling through it (`Outer.Sibling`) therefore leaves
-the model a mock until first use, which is the source of the historical
-`model_rebuild` calls.
+globals, and a later sibling is not yet in the body snapshot
+(`docs/internals/resolving_annotations.md:136-140@v2.14.1`). A field that names a
+sibling through the outer class (`Outer.Sibling`), or a later sibling by bare name,
+therefore leaves the model a mock until first use
+(`pydantic/_internal/_mock_val_ser.py:156-172@v2.14.1`), which is the source of the
+historical `model_rebuild` calls.
 
-Reordering is not the cure. The bare sibling name that pydantic would resolve from
-the body snapshot is rejected by every static checker the gates run. The cure is
-extraction: the referenced model moves to its own family module and is reached through
-that module's bound class (see `declaration.md` §1).
+Reordering is not the cure. An earlier sibling named bare does resolve from the snapshot
+in pydantic, but the FLEXT gates reject the bare form, a gate policy that follows
+Python's class-block scoping (`declaration.md` §1). The cure is extraction: the
+referenced model moves to its own family module and is reached through that module's
+bound class.
 
 ## 4. Configuration merge is shallow and follows `bases` order
 

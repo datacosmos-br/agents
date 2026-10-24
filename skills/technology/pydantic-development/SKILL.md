@@ -32,8 +32,9 @@ Read the `pydantic procedure` (skill file). It owns the complete reference:
   as `c` StrEnums, protocol-typed fields through `InstanceOf`, discriminated unions,
   library payloads validated once at their adapter, objects reused instead of
   re-validated.
-- `model_rebuild` banned and cured by declaration order; `p` protocols generated from
-  `m` models by flext-infra in `make gen`.
+- `model_rebuild` banned. A nested model referenced by a sibling is extracted into its
+  own family module so it is complete at import (`declaration.md` §1). `p` protocols
+  are generated from `m` models by flext-infra in `make gen`.
 - The complete capability inventory, upstream performance guidance, internals, and the
   removal list that the ast-grep rules and `make mod` migrations enforce — every claim
   cited against the pinned upstream source tag.

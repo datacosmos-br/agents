@@ -80,8 +80,8 @@ strict = config.Dispatcher.strict_mode  # validated static rule
 
 ### Reference parts
 
-- [declaration.md](declaration.md) — `model_rebuild` cure by declaration order
-  (measured), facade law, obligatory model MRO, preset selection.
+- [declaration.md](declaration.md) — `model_rebuild` cure by extraction to a family
+  module (source-cited), facade law, obligatory model MRO, preset selection.
 - [composition.md](composition.md) — identity models, inheritance and config merge,
   protocol declaration in `p`, protocol-typed fields, StrEnum domains, minimal models.
 - [boundary.md](boundary.md) — conversions, library data exchange, updating validated
