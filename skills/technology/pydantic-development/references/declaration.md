@@ -17,9 +17,34 @@ Node.model_rebuild()  # violation — fix the declaration owner
 ```
 
 Fix the owner (export the symbol through the correct facade, break the cycle by moving
-the alias to `t`, hoist the model out of the function), never call `model_rebuild`. The
-only tolerated form is inside the framework owner that provably cannot know its types
-before runtime, documented at that owner.
+the alias to `t`, hoist the model out of the function), never call `model_rebuild`.
+The operator ruling of 2026-10-24 bans it without exception; `ban-model-rebuild` is an
+error-severity rule.
+
+How pydantic resolves names (`internals.md` §3): module globals, then the defining
+frame snapshot taken at class creation, then `{ClassName: cls}`. Names bound later are
+never visible through the snapshot, and inside a facade namespace class the outer name
+is not yet bound while its body executes. Patterns that always complete at class
+creation:
+
+- Declare nested models in dependency order; a model references only siblings defined
+  above it (by bare name), `t`/`c`/`p` aliases, or itself.
+
+```python
+class FlextFooModels(FlextModels):
+    class Line(m.FrozenModel):
+        sku: t.NonEmptyStr
+
+    class Order(m.FrozenModel):
+        lines: tuple[Line, ...]  # ok — Line is in the body snapshot
+        parent: FlextFooModels.Order | None = None  # violation — outer not bound yet
+        replaces: Order | None = None  # ok — self-reference always resolves
+```
+
+- Mutual recursion between two models is a modeling smell; express it as one model with
+  a self-reference or a discriminated union of variants declared in order.
+- A cross-module cycle is an import-direction defect; move the shared type down to the
+  lower facade instead of rebuilding.
 
 ## 2. Facade law (FLEXT members)
 
@@ -115,12 +140,19 @@ fields (`created_by`/`modified_by`) come from `m.Metadata`, not ad-hoc fields.
 
 ## 6. Inheritance and MRO rules
 
-- Explicit inheritance only; every base named. Mixin order matters: later bases win
-  `ConfigDict` merges, so specific mixins come after general presets, matching the
-  `Entity` composition.
+- Explicit inheritance only; every base named. Config merges shallowly in **`bases`
+  order** (not MRO): a later base overrides an earlier one key by key, then the class
+  body, then class keywords (`pydantic/_internal/_config.py:148-189@v2.14.1`). Specific
+  mixins therefore come after general presets, matching the `Entity` composition.
+- Overriding a field requires an annotation; a bare `x = 1` over a parent field raises
+  `model-field-overridden` (`pydantic/_internal/_fields.py:353-358@v2.14.1`).
 - `model_post_init` overrides use `@override` and call `super()`.
 - `__eq__`/`__hash__` must stay consistent: identity pair on entities, value pair on
-  value objects; never mix.
+  value objects; never mix. Value objects never hand-write them: `frozen=True` already
+  generates a field-value hash and pydantic's `__eq__` compares field values
+  (`pydantic/_internal/_model_construction.py:261-262,512-525@v2.14.1`;
+  `pydantic/main.py:1225-1282@v2.14.1`). Use hashable field types (`tuple`,
+  `frozenset`).
 - After model validators are instance methods (v2.12+ deprecated the `@classmethod`
   form):
 
@@ -156,3 +188,73 @@ class ShipmentSink(p.Base, Protocol):
 A service annotating a dependency with a concrete model class or framework type where a
 `p` protocol exists is a violation. New ports join the existing protocol family; do not
 create parallel protocol namespaces.
+
+Protocols for models are generated, not hand-mirrored: flext-infra derives the `p`
+surface of every `m` model in `make gen` and `make check` fails when it drifts (operator
+decision 2026-10-24).
+
+## 8. Protocol-typed fields
+
+A model field may hold any object satisfying a `@runtime_checkable` protocol. Annotate it
+`InstanceOf[p.X]` (FLEXT alias `t.Port[p.X]`), never through `arbitrary_types_allowed`:
+
+- `InstanceOf` validates Python input with `isinstance` against the protocol, which for
+  a runtime-checkable protocol checks the declared members structurally, and falls back
+  to the normal schema for JSON (`pydantic/functional_validators.py:760-817@v2.14.1`;
+  `tests/test_types.py:1861-1886@v2.14.1`).
+- It is scoped to that field; the preset keeps rejecting unknown types everywhere else
+  (`pydantic/_internal/_generate_schema.py:738-753@v2.14.1`).
+
+```python
+class Pipeline(m.FrozenModel):
+    sink: t.Port[p.ShipmentSink]  # ok — structural check, no global relaxation
+```
+
+## 9. Closed domains are StrEnum members of `c`
+
+Every closed set of values — kinds, modes, statuses, tags — is a `StrEnum` declared in
+`c` and used directly as the field type. No string `Literal[...]` domain, no magic string
+comparison:
+
+- Lax mode accepts the member or its value; strict Python input requires the member;
+  JSON accepts the value (`pydantic-core/src/validators/enum_.rs:104-173@v2.14.1`;
+  `docs/plugins/conversion_table.py:1385-1422@v2.14.1`).
+- Python dumps keep the member; JSON dumps emit `.value`
+  (`docs/api/standard_library_types.md:745-750@v2.14.1`). Do not set `use_enum_values`:
+  it discards the member type that lets consumers skip narrowing.
+- Discriminated unions take `Literal[c.Kind.LINE]` tags; enum members are valid
+  discriminator values (`tests/types/unions/test_discriminated_union.py:406-434@v2.14.1`).
+
+```python
+class Event(m.FrozenModel):
+    kind: c.Shipping.EventKind  # ok
+
+
+class Created(m.TaggedModel):
+    tag: Literal[c.Shipping.EventKind.CREATED]
+
+
+type ShippingEvent = Annotated[Created | Delivered, m.Field(discriminator="tag")]
+```
+
+## 10. Minimal models, maximal reuse
+
+The project carries the fewest models and fields that express the contracts:
+
+- **One model per payload shape.** Near-duplicate models that differ by one field are
+  merged through inheritance (a base declares the shared fields, subclasses add only
+  their delta) or composition (a nested model reused as a field).
+- **Reuse the object.** A validated instance passed where its model is expected is not
+  revalidated (`revalidate_instances='never'`,
+  `pydantic-core/src/validators/model.rs:174-175@v2.14.1`). Pass models between
+  components; never dump and re-validate owned data.
+- **Constraints live in types, not fields.** A constraint repeated on several fields is
+  a `t` alias (`type NonEmptyStr = Annotated[str, ...]`); a field carries `m.Field(...)`
+  only for field-specific facts (default, alias, discriminator, description).
+- **Derived values are `computed_field`s**, not stored fields kept in sync by hand.
+- **Preset first.** A model never repeats configuration its preset already encodes.
+- Use the existing `t` surface (`t.NonEmptyStr`, `t.PositiveInt`, `t.JsonValue`,
+  `t.JsonMapping`, …) before declaring a new alias; a duplicate alias is a violation.
+
+The goal is that consumers receive values already validated, typed and shaped, so they
+need no `isinstance`, `cast`, conversion or re-validation.
