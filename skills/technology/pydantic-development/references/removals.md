@@ -18,7 +18,7 @@ plus FLEXT law. Each row is enforced by an ast-grep rule applied by `make mod`.
 | `conint`, `confloat`, `constr`, `condecimal`, `conbytes`, `conlist`, `conset`, `confrozenset`, `condate` | `Annotated[..., Field(...)]` / `StringConstraints` aliases in `t` | `pydantic/types.py:167-174,428-433,771-778,1066-1071@v2.14.1` |
 | Instance access to `model_fields` / `model_computed_fields` | class access | `pydantic/main.py:292-312@v2.14.1` |
 | `Final` field with a default | `ClassVar[...]` | `_internal/_fields.py:511-521@v2.14.1` |
-| `model_rebuild()` / `_types_namespace` | declaration order and facade exports (`declaration.md` §1) | FLEXT law; `internals.md` §3 |
+| `model_rebuild()` / `_types_namespace` | extraction to a family module and facade exports (`declaration.md` §1) | FLEXT law; `internals.md` §3 |
 | `model_construct()` | `model_validate` / constructor | skips validation entirely (`pydantic/main.py:356-408@v2.14.1`) |
 | `model_copy(update=...)` on validated data | `type(model).model_validate(model.model_dump() \| update)` at an owner, or a new instance | does not validate and bypasses `frozen` (`pydantic/main.py:422-468@v2.14.1`) |
 | `SkipValidation`, `PlainValidator` without owner justification | real validation | stores wrong data silently (`functional_validators.py:834-853@v2.14.1`; `validators.md:801-807`) |

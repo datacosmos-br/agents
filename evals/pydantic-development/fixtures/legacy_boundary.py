@@ -15,7 +15,7 @@ from flext_core import m, p, t
 
 class FlextShippingModels:
     class Order(m.FrozenModel):
-        lines: tuple[FlextShippingModels.Line, ...]  # forward ref to a later sibling
+        lines: tuple[FlextShippingModels.Line, ...]  # sibling via its enclosing family
         status: Literal["open", "closed"]  # string domain instead of a c StrEnum
 
     class Line(m.FrozenModel):

@@ -24,11 +24,13 @@ error-severity rule.
 How pydantic resolves an annotation while it builds a model:
 - The globals are the module namespace of the class
   (`pydantic/_internal/_namespace_utils.py:255@v2.14.1`).
-- The locals are, from lowest to highest priority:
+- The locals are, from lowest to highest priority (`_namespace_utils.py:259-285@v2.14.1`):
   - the parent namespace;
+  - while a nested type is being resolved, the outermost type being built
+    (`_namespace_utils.py:262-264@v2.14.1`);
   - `__type_params__`;
   - `vars(cls)`;
-  - `{cls.__name__: cls}` (`_namespace_utils.py:259-285@v2.14.1`).
+  - `{cls.__name__: cls}`.
 - The parent namespace is a snapshot of the defining frame's locals, taken once at
   class creation (`pydantic/_internal/_model_construction.py:209-215@v2.14.1`,
   `pydantic/_internal/_typing_extra.py:134-195@v2.14.1`).
@@ -43,28 +45,16 @@ Consequences, each a defect in FLEXT:
   (`_model_construction.py:202@v2.14.1`) and installs mock validators and serializers
   (`_model_construction.py:249@v2.14.1`, `_mock_val_ser.py:156@v2.14.1`). On first use
   they call `model_rebuild(raise_errors=False)` (`_mock_val_ser.py:170-172@v2.14.1`).
-  FLEXT requires every model complete when its module is imported (ADR-028 Decision 14;
-  the flext-infra fresh-import gate reports any class with `__pydantic_complete__`
-  false). The lazy rebuild is therefore a defect, and
-  `ban-enclosing-family-field-reference` (severity error) detects the form.
-- **A bare sibling name is not the fix.** Pydantic can resolve it through the parent
-  namespace, but the static checkers follow Python scoping. Under that scoping, names
-  bound in a class block are not visible to the blocks nested in it (Python Language
-  Reference, Execution model §4.2.2 "Resolution of names"). An in-tree measurement on
-  2026-10-24, under the gates' exact bindings, confirmed the rejection:
-  - pyright reports `reportUndefinedVariable`;
-  - mypy reports `name-defined`;
-  - pyrefly reports an error.
-
-  Code that the gates reject is not conformant, so the bare form is banned too. The
-  flext-infra completeness scenario's green case binds the referenced model *outside*
-  the family class, never as a bare sibling inside it.
-- **Canonical form: a model referenced by a sibling lives in its own family module.**
-  Consumers reach it through that module's bound family class, imported from the family
-  package's lazy exports. Every name in the annotation is then bound when the
-  referencing class is created. The model is complete at import and every checker
-  resolves it. `make mod` performs the extraction as an automated pass
-  (bead flext-itpd1.11.7); nobody moves classes by hand.
+  FLEXT requires models complete at import (flext-sh/flext ADR-028 Decision 14); the
+  flext-infra fresh-import gate reports any `__pydantic_complete__` false, and
+  `ban-enclosing-family-field-reference` detects the form.
+- **A bare sibling name is not the fix.** Pydantic resolves it from the snapshot, but a
+  class block's names are not visible in nested blocks (Python Language Reference
+  §4.2.2), and the FLEXT gates' checkers reject it. That is gate policy, measured in the
+  FLEXT tree with evidence on FLEXT bead `flext-itpd1.11.7`.
+- **Canonical form: a model referenced by a sibling lives in its own family module**,
+  reached through that module's bound family class, so it is complete at import and
+  every checker resolves it. `make mod` performs the extraction (flext-itpd1.11.7).
 
 Other cases:
 

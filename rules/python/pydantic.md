@@ -91,9 +91,11 @@ exception never substitutes for Pydantic runtime validation.
 
 ## Removal catalog (must not survive in code)
 
-`model_rebuild()` without exception (operator ruling 2026-10-24 — cure by declaration
-order and facade exports across `config`/`settings`/`c`/`t`/`p`/`m`/`u`, `base.py`,
-`services/`, `api.py`, `cli.py`); `model_construct()`; `model_copy(update=...)` on
+`model_rebuild()` without exception — a nested model referenced by a sibling is
+extracted into its own family module so every model is complete at import; declaration
+order cannot cure it, because an enclosing-class reference stays unresolved and the bare
+sibling name fails the type checkers (tracker item `flext-itpd1.11.7`, which records the
+operator's root-cause order); `model_construct()`; `model_copy(update=...)` on
 validated data; `arbitrary_types_allowed` and `extra="allow"` on general presets; raw
 `model_config` dicts; hand-written `__eq__`/`__hash__` on value models;
 `SkipValidation`/`PlainValidator` without a documented owner justification; the runtime
