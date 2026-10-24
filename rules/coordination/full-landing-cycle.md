@@ -11,6 +11,12 @@ capsule_summary: |
   Partial cycles (code written, gates green locally, "done" reports) count as
   zero. The cycle definition per grain is declared up front; closing the cycle
   is what converts work into delivered work.
+
+  Standing authorization (operator, 2026-10-24): always commit, push and
+  merge --no-ff without asking. One elected checkpoint integrator records shared
+  checkpoints. At the end of every phase, PRs into the integration branch of every
+  project ahead of it are opened, evaluated as a whole, merged, revalidated on the
+  merged SHA, and the correlated bead is closed with evidence — mandatory.
 metadata:
   aihub.tags: '["decision:ADR-0021", "effective:2026-09-16", "route:both"]'
 ---
