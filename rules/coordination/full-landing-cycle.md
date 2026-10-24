@@ -41,3 +41,31 @@ todo o trabalho.
    other item is finished in the same turn. Observed 2026-10-24: a ruff sweep was
    counted outside one member, reported as done with 7 remaining, while the
    operator's whole-tree run showed 27.
+6. Operator order, 2026-10-24, verbatim: "VC TEM QUE FAZER SEMPRE COMMIT, AVANÇAR,
+   fazer merge no-ff,. PR com as branchs de integracao, de todos os projetos, ao final
+   de cada fase, autaliando o todo e fechando a bead correlacionada (obrigatório) e com
+   estabilzacao coordenada entre todo os agentes, vc tem sempre esta autorização, só
+   defina um checkpoint estável com os outros agetnes para um de voces fazer isso
+   sempre, isso tem que estar dentro das regras gerais e ser sempre seguindo em todas
+   as sessoes e agentes". Every session and agent follows it:
+   - **Standing authorization.** Commit owned paths by explicit path, push and
+     `merge --no-ff` at every green increment without asking. Green means the touched
+     files are clean under the repository's linters and type checkers and the changed
+     surface is proven at runtime.
+   - **One checkpoint integrator.** Concurrent agents elect, through the coordination
+     channel, one integrator for shared records (superproject gitlinks, stable
+     checkpoints). The others post `[coord] member <repo> <sha>` per push; the
+     integrator records them and marks a stable checkpoint `[checkpoint]` once the whole
+     combined state is runtime-proven and lint/type clean. An integrator silent past the
+     abandonment threshold is replaced by the next agent, who records and announces.
+   - **Phase-end closure, mandatory.** When a phase's scope is done, the owner announces
+     `[coord] phase-end <phase> <bead>`. All agents stop new edits and push; the
+     integrator records a stable checkpoint; then, for every project whose working
+     branch is ahead of its integration branch, a PR is opened or updated into the
+     integration branch, the whole combined state is evaluated (CI plus runtime proof),
+     and the PR merges with a merge commit. The gates rerun on the merged SHA, and the
+     phase owner closes the correlated bead with four-source evidence: PR URLs and merge
+     SHAs, gates, runtime proof, and the integrated code. A phase with any project left
+     unmerged or its bead open is not finished.
+   - Refs are always fully qualified (`refs/heads/<branch>`): a tag or remote that
+     shares the branch name makes a bare refspec ambiguous and silently stale.
