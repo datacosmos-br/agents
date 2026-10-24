@@ -17,9 +17,47 @@ Node.model_rebuild()  # violation — fix the declaration owner
 ```
 
 Fix the owner (export the symbol through the correct facade, break the cycle by moving
-the alias to `t`, hoist the model out of the function), never call `model_rebuild`. The
-only tolerated form is inside the framework owner that provably cannot know its types
-before runtime, documented at that owner.
+the alias to `t`, hoist the model out of the function), never call `model_rebuild`.
+The operator ruling of 2026-10-24 bans it without exception; `ban-model-rebuild` is an
+error-severity rule.
+
+How pydantic resolves names (`internals.md` §3): module globals, then the defining
+frame snapshot taken at class creation, then `{ClassName: cls}`. Names bound later are
+never visible through the snapshot, and inside a facade namespace class the outer name
+is not yet bound while its body executes. Patterns that always complete at class
+creation:
+
+- Declare nested models in dependency order; a model references only siblings defined
+  above it **by bare name**, `t`/`c`/`p` aliases, or itself.
+
+Measured on pydantic 2.14.1 (study script, 2026-10-24):
+
+| Reference inside a namespace class | Complete at definition | First use |
+| --- | --- | --- |
+| earlier sibling, bare name | yes | ok |
+| earlier or later sibling, `Outer.Name` path | no (mock) | ok — automatic rebuild from module globals |
+| later sibling, bare name | no | `class-not-fully-defined` |
+| subclass field referencing a parent-namespace model | yes | ok |
+
+```python
+class FlextFooModels(FlextModels):
+    class Line(m.FrozenModel):
+        sku: t.NonEmptyStr
+
+    class Order(m.FrozenModel):
+        lines: tuple[Line, ...]  # ok — complete at class creation
+        replaces: Order | None = None  # ok — self-reference always resolves
+        tail: Later | None = None  # violation — later sibling: reorder the declarations
+```
+
+The `Outer.Name` path resolves only lazily (the class stays a mock until first use and
+pays the build then); prefer bare names in dependency order so every model is complete
+when its module finishes importing.
+
+- Mutual recursion between two models is a modeling smell; express it as one model with
+  a self-reference or a discriminated union of variants declared in order.
+- A cross-module cycle is an import-direction defect; move the shared type down to the
+  lower facade instead of rebuilding.
 
 ## 2. Facade law (FLEXT members)
 
@@ -89,70 +127,4 @@ Decision order: read-only domain data → frozen; external input → strict; mut
 managed; never "flexible" at a boundary; never frozen where the domain requires
 assignment.
 
-## 5. Identity models — id, timestamps, version
-
-Use `m.Entity` (composed `m.TimestampedModel` + `m.IdentifiableMixin` +
-`m.VersionableMixin`):
-
-- `unique_id`: `uuid4` default, non-empty string.
-- `created_at`: frozen, UTC-enforced validator, ISO 8601 JSON serializer.
-- `updated_at`: set in `model_post_init` when absent; must be ≥ `created_at`.
-- `version`: optimistic-lock counter with minimum validation.
-- `domain_events`: `MutableSequence` event-sourcing buffer (`p.HasDomainEvents`).
-- Equality/hash is identity-based for `Entity`, value-based for `Value`.
-
-```python
-class Shipment(m.Entity):
-    origin: t.NonEmptyStr
-
-
-s = Shipment(origin="GRU")  # unique_id, created_at, version set
-```
-
-Compose mixins only through the documented order (timestamped first, then identifiable,
-then versionable); timestamps are timezone-aware UTC, never naive datetimes. Audit actor
-fields (`created_by`/`modified_by`) come from `m.Metadata`, not ad-hoc fields.
-
-## 6. Inheritance and MRO rules
-
-- Explicit inheritance only; every base named. Mixin order matters: later bases win
-  `ConfigDict` merges, so specific mixins come after general presets, matching the
-  `Entity` composition.
-- `model_post_init` overrides use `@override` and call `super()`.
-- `__eq__`/`__hash__` must stay consistent: identity pair on entities, value pair on
-  value objects; never mix.
-- After model validators are instance methods (v2.12+ deprecated the `@classmethod`
-  form):
-
-```python
-@u.model_validator(mode="after")
-def check(self) -> Self:
-    if self.end < self.start:
-        raise ValueError("end before start")
-    return self
-```
-
-- A validator defined on a base runs for subclasses; overriding replaces it.
-
-## 7. Protocol declaration in p — obligatory
-
-Cross-boundary dependencies are structural contracts in the `p` family, never concrete
-model/service types (DIP):
-
-- Nested inside the `FlextProtocols*` container; `@runtime_checkable class X(Protocol)`,
-  extending `p.Base` when it generalizes an existing contract.
-- Members are the minimal consumed capability (ISP): instance attributes and methods
-  with `...` bodies and docstrings. Class-level Pydantic APIs stay on dedicated class
-  protocols (`p.Model` instance API vs `ModelType`).
-- Imports of `m`/`t` inside protocols are `TYPE_CHECKING`-only.
-- Outcomes use `p.Result[T]`; routable messages use `CommandRoutable` / `EventRoutable`
-  / `QueryRoutable`.
-
-```python
-class ShipmentSink(p.Base, Protocol):
-    def accept(self, shipment: Shipment) -> p.Result[t.JsonPayload]: ...
-```
-
-A service annotating a dependency with a concrete model class or framework type where a
-`p` protocol exists is a violation. New ports join the existing protocol family; do not
-create parallel protocol namespaces.
+Continued in `composition.md` (identity, inheritance, protocols, domains, compression).

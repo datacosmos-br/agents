@@ -2,7 +2,7 @@
 name: pydantic-development
 description: "pydantic v2 models, validation, serialization, flext facade contracts"
 metadata:
-  aihub.tags: '["activation:detected","decision:ADR-0008","detect:dependency:python:pydantic","detect:dependency:python:pydantic-settings","detect:marker:pyproject.toml","effective:2026-09-08","extends:py-dev","route:project","subject:python","usage:router"]'
+  aihub.tags: '["activation:detected","decision:ADR-0037","detect:dependency:python:pydantic","detect:dependency:python:pydantic-settings","detect:marker:pyproject.toml","effective:2026-09-08","extends:py-dev","route:project","subject:python","usage:router"]'
 ---
 
 # Pydantic Development
@@ -27,8 +27,16 @@ Read the `pydantic procedure` (skill file). It owns the complete reference:
 - Validation and serialization practice at the current Pydantic floor (constraints,
   validator modes and ordering, validation context, polymorphic serialization,
   `exclude_if`).
-- The complete good/bad practice catalog and the removal list that the boundary audit
-  and `make mod` migrations enforce.
+- Maximal use of Pydantic so consumers never re-validate, narrow or convert: minimal
+  models composed by inheritance and composition, reusable `t` aliases, closed domains
+  as `c` StrEnums, protocol-typed fields through `InstanceOf`, discriminated unions,
+  library payloads validated once at their adapter, objects reused instead of
+  re-validated.
+- `model_rebuild` banned and cured by declaration order; `p` protocols generated from
+  `m` models by flext-infra in `make gen`.
+- The complete capability inventory, upstream performance guidance, internals, and the
+  removal list that the ast-grep rules and `make mod` migrations enforce — every claim
+  cited against the pinned upstream source tag.
 
 Pydantic's own documentation is the external reference for behavior; this procedure is
 the project law for how that behavior may be used. Runtime behavior and project-owned

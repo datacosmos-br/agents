@@ -33,6 +33,31 @@ def handler(raw: str) -> r[t.JsonMapping]:
 - Round-trip law: validate once on ingress, dump once on egress; never re-validate owned
   data flowing between internal components.
 
+### Library data exchange — every third-party payload enters as a model
+
+Every value a library hands back (YAML, TOML, JSON, pydantic-settings, structlog, HTTP,
+LDAP, database drivers) is validated into an `m` model at the one adapter that calls the
+library, and every value FLEXT hands to a library leaves through `model_dump` /
+`model_dump_json` at that same adapter. Consumers see only models.
+
+| Library output | Ingress | Never |
+| --- | --- | --- |
+| JSON text/bytes | `Model.model_validate_json(raw)` / `adapter.validate_json(raw)` | `json.loads` then validate |
+| `yaml.safe_load(...)` / `tomllib.load(...)` value | `Model.model_validate(loaded)` or a module-level adapter | `cast(...)` or `isinstance` walks on the loaded value |
+| ORM / attribute objects | `model_validate(obj, from_attributes=True)` | hand-copying attributes |
+| Mapping a library requires back (structlog processor event, pydantic-settings source `_read_file`) | build from `model.model_dump(mode="json")` at the adapter | passing a FLEXT dict contract around |
+
+The mapping a library requires back is that library's contract
+(`pydantic_settings/sources/base.py:237-239@v2.15.0`), produced and consumed inside the
+adapter; it never becomes a FLEXT type.
+
+### Updating validated data
+
+`model_copy(update=...)` writes the update into `__dict__` without validation and
+bypasses `frozen` (`pydantic/main.py:422-468@v2.14.1`). For owned data, build the new
+state through validation: `type(model).model_validate(model.model_dump() | update)` at
+the owning utility, or construct the new instance directly with typed values.
+
 ## 2. Validation practice — centralized owners
 
 - Validators are centralized: reusable constraints live as `t` annotated aliases;
@@ -65,43 +90,21 @@ type MachineId = Annotated[
   frozen presets reject assignment outright.
 - Sequences with expensive item validation may use `Annotated[list[T], m.FailFast()]` to
   stop at the first error — an explicit, documented trade-off, not a default.
-
-## 3. Serialization practice
-
-- Subclass exposure uses `polymorphic_serialization` (v2.13+), not the global
-  duck-typing flag:
-
-```python
-outer.model_dump(polymorphic_serialization=True)  # ok — models/dataclasses
-outer.model_dump(serialize_as_any=True)  # forbidden — applies to every value
-```
-
-Per-field duck typing, when the contract genuinely requires it, uses
-`SerializeAsAny[User]` on that field only.
-
-- Conditional exclusion is declarative: `Field(exclude=True)`,
-  `Field(exclude_if=lambda v: v == 0)`, `computed_field(exclude_if=...)` (v2.13+), or
-  call-level `exclude_unset/exclude_none/exclude_defaults`.
-- One serializer per field/model; `@field_serializer` validates field names (v2.13).
-  Root payloads wrap in `m.RootModel[...]` instead of dict contracts.
-- Temporal/bytes JSON shapes come from constants/config (`ser_json_timedelta`,
-  `ser_json_bytes` — already set by `ContractModel`), never ad-hoc string formatting in
-  serializers.
-
-## 4. Typing with p and r
-
-- Services and handlers declare outcomes as `p.Result[ModelT]` and construct through the
-  railway: `r[ModelT].ok(model)` / `e.fail_validation(...)`.
-- The only authorized `ValidationError` conversion point is the result boundary
-  (`u.model.validate_value`, `e.fail_validation`), which catches the constant
-  `c.EXC_ATTR_RUNTIME_VALIDATION` and preserves the cause:
-
-```python
-def parse(raw: str) -> p.Result[Shipment]:
-    return u.model.validate_value(Shipment, raw, from_json=True)
-```
-
-- Catching `ValidationError` anywhere else to normalize, default, retry, or aggregate is
-  a violation — the first exception escapes with its traceback.
-- Models annotate ports: `p` protocols + `r` outcomes + `m` payloads; `t` aliases carry
-  reusable annotated types; `Any`/`object`/`dict` never appear as contracts.
+- Annotated validator order: `before`/`wrap` run right-to-left, then `after`
+  left-to-right; decorator validators are appended last
+  (`docs/concepts/validators.md:727-747@v2.14.1`). Put the reusable `t` alias first and
+  layer field-specific validators on top.
+- `info.data` holds only fields declared (and validated) earlier, and is `None` in
+  model validators (`docs/concepts/validators.md:631-636@v2.14.1`).
+- Model `before` validators receive raw input that is not always a dict; never mutate
+  it and then raise — with unions the mutated value reaches the next branch
+  (`docs/concepts/validators.md:492-520@v2.14.1`).
+- `Annotated[int, Field(...)] | None` applies the `Field` to `int`, not to the field;
+  put `= m.Field(...)` on the assignment for defaults, aliases and discriminators
+  (`docs/concepts/fields.md:31-97@v2.14.1`). Named `type` aliases may carry
+  constraints and JSON metadata only, never `default`/`alias`/`deprecated`
+  (`docs/concepts/types.md:305-345@v2.14.1`).
+- `validate_call` builds its schema once at decoration and validates every call; it is
+  for public entry points that receive untyped input, not internal calls between typed
+  components (`pydantic/_internal/_validate_call.py:86-137@v2.14.1`;
+  `docs/concepts/validation_decorator.md:410-418@v2.14.1`).
