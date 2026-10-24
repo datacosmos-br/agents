@@ -27,6 +27,8 @@ This is the compact entry to the canonical rules below, not a second rule body.
     breaks it: `rules/workflow/runtime-is-reality.md`.
 16. Agreed strategy: never changed without asking; defects are fixed inside it
     at once: `rules/coordination/operator-precedence.md`.
+17. Finish: always go to the end over the whole declared scope; never abandon near
+    the end, under any circumstance: `rules/coordination/full-landing-cycle.md`.
 <!-- /AIHUB-INVIOLABLE-LAW-PRELUDE -->
 
 # AGENTS.md — agents
