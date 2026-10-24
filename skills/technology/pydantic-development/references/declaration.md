@@ -21,38 +21,52 @@ the alias to `t`, hoist the model out of the function), never call `model_rebuil
 The operator ruling of 2026-10-24 bans it without exception; `ban-model-rebuild` is an
 error-severity rule.
 
-How pydantic resolves names (`internals.md` §3): module globals, then the defining
-frame snapshot taken at class creation, then `{ClassName: cls}`. Names bound later are
-never visible through the snapshot, and inside a facade namespace class the outer name
-is not yet bound while its body executes. Patterns that always complete at class
-creation:
+How pydantic resolves an annotation while it builds a model:
+- The globals are the module namespace of the class
+  (`pydantic/_internal/_namespace_utils.py:255@v2.14.1`).
+- The locals are, from lowest to highest priority:
+  - the parent namespace;
+  - `__type_params__`;
+  - `vars(cls)`;
+  - `{cls.__name__: cls}` (`_namespace_utils.py:259-285@v2.14.1`).
+- The parent namespace is a snapshot of the defining frame's locals, taken once at
+  class creation (`pydantic/_internal/_model_construction.py:209-215@v2.14.1`,
+  `pydantic/_internal/_typing_extra.py:134-195@v2.14.1`).
 
-- Declare nested models in dependency order; a model references only siblings defined
-  above it **by bare name**, `t`/`c`/`p` aliases, or itself.
+Inside a facade namespace class that snapshot is the outer class body still executing,
+so the outer class name itself is not yet bound.
 
-Measured on pydantic 2.14.1 (study script, 2026-10-24):
+Consequences, each a defect in FLEXT:
 
-| Reference inside a namespace class | Complete at definition | First use |
-| --- | --- | --- |
-| earlier sibling, bare name | yes | ok |
-| earlier or later sibling, `Outer.Name` path | no (mock) | ok — automatic rebuild from module globals |
-| later sibling, bare name | no | `class-not-fully-defined` |
-| subclass field referencing a parent-namespace model | yes | ok |
+- **`Outer.Sibling` in a nested model's annotation leaves the model incomplete at
+  import.** The name fails to resolve, so pydantic marks the class incomplete
+  (`_model_construction.py:202@v2.14.1`) and installs mock validators and serializers
+  (`_model_construction.py:249@v2.14.1`, `_mock_val_ser.py:156@v2.14.1`). On first use
+  they call `model_rebuild(raise_errors=False)` (`_mock_val_ser.py:170-172@v2.14.1`).
+  FLEXT requires every model complete when its module is imported (ADR-028 Decision 14;
+  the flext-infra fresh-import gate reports any class with `__pydantic_complete__`
+  false). The lazy rebuild is therefore a defect, and
+  `ban-enclosing-family-field-reference` (severity error) detects the form.
+- **A bare sibling name is not the fix.** Pydantic can resolve it through the parent
+  namespace, but the static checkers follow Python scoping. Under that scoping, names
+  bound in a class block are not visible to the blocks nested in it (Python Language
+  Reference, Execution model §4.2.2 "Resolution of names"). An in-tree measurement on
+  2026-10-24, under the gates' exact bindings, confirmed the rejection:
+  - pyright reports `reportUndefinedVariable`;
+  - mypy reports `name-defined`;
+  - pyrefly reports an error.
 
-```python
-class FlextFooModels(FlextModels):
-    class Line(m.FrozenModel):
-        sku: t.NonEmptyStr
+  Code that the gates reject is not conformant, so the bare form is banned too. The
+  flext-infra completeness scenario's green case binds the referenced model *outside*
+  the family class, never as a bare sibling inside it.
+- **Canonical form: a model referenced by a sibling lives in its own family module.**
+  Consumers reach it through that module's bound family class, imported from the family
+  package's lazy exports. Every name in the annotation is then bound when the
+  referencing class is created. The model is complete at import and every checker
+  resolves it. `make mod` performs the extraction as an automated pass
+  (bead flext-itpd1.11.7); nobody moves classes by hand.
 
-    class Order(m.FrozenModel):
-        lines: tuple[Line, ...]  # ok — complete at class creation
-        replaces: Order | None = None  # ok — self-reference always resolves
-        tail: Later | None = None  # violation — later sibling: reorder the declarations
-```
-
-The `Outer.Name` path resolves only lazily (the class stays a mock until first use and
-pays the build then); prefer bare names in dependency order so every model is complete
-when its module finishes importing.
+Other cases:
 
 - Mutual recursion between two models is a modeling smell; express it as one model with
   a self-reference or a discriminated union of variants declared in order.
