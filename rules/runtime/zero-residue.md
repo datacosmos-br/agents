@@ -37,24 +37,25 @@ erradsa e que duplciacoes de execucoes como essa em qq lugar".
 - Uncertainty about an unexercised path is resolved by measuring its consumers (code
   graph, ast-grep, grep, runtime), never by keeping it "just in case".
 
-## Mark every compatibility path until the rewiring removes it
+## Mark every compatibility declaration; fail every use until the rewiring removes it
 
 Operator order 2026-10-24 (tracker memory
 `operator-ruling-2026-10-24-compat-warning-and-green-ci-merge`, verbatim): "tudo que for
 código antigo, compatibilidade , fallback vc tem que ser sempre marcar compatibildidade e
 como corrigir com warning enquanto estiver ajustando wiring para exterminar o caminho
-por ele em todo o codeset".
+por ele em todo o codeset", and "código marcado stdlib de warning em sua declaracao nao
+faz o CI travar, mas os seus usaurios tem que travar com CI falhando".
 
-- While a cutover is rewiring consumers, every legacy, compatibility or fallback path
-  still present is marked by the project's rule engine — a declarative detection rule,
-  never a code comment or a runtime switch. The finding names the path as
-  compatibility, where it is, and how to fix it: the owner to call instead and the
-  rewiring step that removes the path.
-- The marker is a blocking finding, not a pass. It exists so every remaining consumer
-  is visible across the whole codeset until the rewiring exterminates it; the cutover
-  lands only when the marker reports zero.
-- The marker rule lives with the project's other rules and propagates fleet-wide through
-  them; it is retired together with the last path it marks.
+- While a cutover is rewiring consumers, every legacy, compatibility or fallback
+  declaration still present carries the language's standard deprecation marker (Python:
+  `warnings.deprecated`) whose message names it as compatibility and states the fix:
+  the owner to call instead and the rewiring step that removes it. Never a plain
+  comment, a runtime switch, or a suppression.
+- The marked declaration itself does not fail CI. Every remaining use of it does: the
+  type checkers report deprecated use as an error and the project's rule engine reports
+  each consumer, so the rewiring is forced across the whole codeset.
+- The declaration and its marker are deleted together with the last consumer; the
+  cutover lands only when no use remains.
 
 The `safe delete` skill governs untracked, foreign, live or ownership-ambiguous state,
 which Git cannot restore. It never protects tracked code from extermination.
