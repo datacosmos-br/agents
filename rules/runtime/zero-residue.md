@@ -56,5 +56,10 @@ This refines the atomic cutover above for a rewiring that spans more than one ch
   `compat: <old> -> <new owner>; fix: <exact rewire>`. Static type checkers then report
   every remaining caller, which is the census; at runtime the warning names the fix.
   Other languages use their native deprecation marker with the same message shape.
+- Operator order 2026-10-24 (verbatim): "código marcado stdlib de warning em sua
+  declaracao nao faz o CI travar, mas os seus usaurios tem que travar com CI falhando".
+  The marked declaration itself passes CI; every use of it fails CI (deprecated use is
+  reported as an error by the repository's type checkers), so the rewire cannot be
+  postponed.
 - The marker never becomes a resting state: the path and its marker are deleted in the
   same change that rewires the last consumer. No marker means no surviving path.
