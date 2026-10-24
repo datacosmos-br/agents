@@ -80,13 +80,18 @@ strict = config.Dispatcher.strict_mode  # validated static rule
 
 ### Reference parts
 
-- [declaration.md](declaration.md) — obligatory model MRO, `model_rebuild`
-  extermination, facade law, preset selection, identity models, inheritance, protocol
-  declaration in `p`.
-- [boundary.md](boundary.md) — conversions (dict, TypedDict, dataclass, JSON),
-  centralized validation practice, serialization practice, typing with `p` and `r`.
+- [declaration.md](declaration.md) — `model_rebuild` cure by declaration order
+  (measured), facade law, obligatory model MRO, preset selection.
+- [composition.md](composition.md) — identity models, inheritance and config merge,
+  protocol declaration in `p`, protocol-typed fields, StrEnum domains, minimal models.
+- [boundary.md](boundary.md) — conversions, library data exchange, updating validated
+  data, centralized validation practice.
+- [serialization.md](serialization.md) — serialization practice, aliases, typing with
+  `p` and `r`.
 - [catalog.md](catalog.md) — capability inventory, performance, experimental policy,
-  the removal catalog, evidence and gates.
-- [internals.md](internals.md) — how class creation, forward references, config merge,
-  the Rust validator, equality, TypeAdapter and settings sources work, and why each
-  practice makes consumer code lighter.
+  evidence and gates.
+- [removals.md](removals.md) — every banned form with its replacement and source.
+- [internals.md](internals.md) — architecture, class creation, forward references,
+  config merge.
+- [runtime.md](runtime.md) — Rust validation runtime, equality, TypeAdapter cost,
+  pydantic-settings source pipeline.
