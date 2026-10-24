@@ -13,10 +13,12 @@ rewire, and deletion are one atomic change, never a compatibility or rollback se
 2. Delete the old tracked code, then rewire every valid consumer to the final owner, in
    the same scoped patch and in the cleanup order of
    `rules/architecture/engineering-core.md`. Git history is the recovery contract; do not archive, quarantine,
-   copy, deprecate, alias, dual-read, or retain a rollback path.
+   copy, alias, dual-read, or retain a rollback path. The only marked form an old
+   public signature may take while consumers remain is the pass-through of the
+   `zero residue` rule's "Deprecated-signature window" section.
 3. Delete tests and artifacts that exist only for the old contract; rewrite tests for
-   surviving behavior. A remaining valid consumer means the rewire continues, not that
-   compatibility is preserved.
+   surviving behavior. A remaining valid consumer means the rewire continues through
+   that window's census, not that compatibility is preserved.
 4. Prove zero residue, public runtime behavior, causal failure propagation, and native
    gates before the cutover can land.
 

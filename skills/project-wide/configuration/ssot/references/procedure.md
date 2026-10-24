@@ -24,7 +24,8 @@ stop before mutation; never guess or synchronize them.
 4. Rewire every current reader and writer.
 5. Remove competing constants, schemas, defaults, writers, loaders, dual reads/writes,
    fallback precedence, aliases, copied fixtures/examples/docs, and obsolete formats.
-   Old input fails explicitly; old/new owners never coexist.
+   Old input fails explicitly; old/new owners never coexist. An old public signature
+   with consumers is only the marked pass-through of the `zero residue` rule's "Deprecated-signature window" section.
 6. Use `dry` for cross-file consolidation, apply `simplify`, then recheck `yagni`, the
    authority map, and `solid`.
 

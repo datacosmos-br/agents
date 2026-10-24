@@ -34,7 +34,8 @@ protected:
   behaviour tends to become a workaround for the workaround.
 - When the tool is rewired, all code that redid its job leaves in the same cutover, with
   its tests, verbs, constants, documentation and the decisions that authorised it. One
-  active residue reopens the route.
+  active residue reopens the route. A public signature of that code that still has
+  consumers follows the `zero residue` rule's "Deprecated-signature window" section until its census reaches zero.
 - A supersession note that asserts operator authorisation follows `operator precedence`
   (rule file): it grants nothing until the operator confirms it.
 

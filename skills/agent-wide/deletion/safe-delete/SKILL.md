@@ -16,7 +16,9 @@ Git history is that contract: exterminate superseded, excessive, wrong or duplic
 without backups or hesitation, per the `zero residue` rule's "Exterminate without fear"
 section. This skill also applies when an approved cutover supersedes tracked code: the
 replacement, consumer rewire, and deletion are one atomic change, never a compatibility
-or rollback sequence. Its caution is for untracked, foreign, live or
+or rollback sequence; an old public signature that still has consumers follows the
+`zero residue` rule's "Deprecated-signature window" section until its census reaches
+zero. Its caution is for untracked, foreign, live or
 ownership-ambiguous state that Git cannot restore.
 Follow the complete `router procedure` (project file) and preserve its owners, evidence
 contracts, failure propagation, and required output standard.
