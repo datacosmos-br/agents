@@ -69,9 +69,11 @@ todo o trabalho.
      integrator records a stable checkpoint; then, for every project whose working
      branch is ahead of its integration branch, a PR is opened or updated into the
      integration branch, the whole combined state is evaluated (CI plus runtime proof),
-     and the PR merges with a merge commit. The gates rerun on the merged SHA, and the
-     phase owner closes the correlated bead with four-source evidence: PR URLs and merge
-     SHAs, gates, runtime proof, and the integrated code. A phase with any project left
-     unmerged or its bead open is not finished.
+     and the PR merges with a merge commit only on green CI (operator, 2026-10-24: "PR
+     merge para as branchs de integracao tem que sempre passar com o CI verde";
+     `--admin` may bypass a missing review, never a red or missing CI). The gates rerun
+     on the merged SHA, and the phase owner closes the correlated bead with four-source
+     evidence: PR URLs and merge SHAs, gates, runtime proof, and the integrated code. A
+     phase with any project left unmerged or its bead open is not finished.
    - Refs are always fully qualified (`refs/heads/<branch>`): a tag or remote that
      shares the branch name makes a bare refspec ambiguous and silently stale.
