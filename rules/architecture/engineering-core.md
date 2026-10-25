@@ -61,7 +61,9 @@ invalid or the receiver when it conforms. Never alter a correct adjacent owner f
 invalid consumer; symptom workarounds are defects.
 
 Hardcodes, normalized failure, failover, retry, fallback, compatibility, partial
-execution, application keyring reads, and unevidenced success are defects. Typed owners
+execution, application keyring reads, and unevidenced success are defects; the only
+transitional form of an old signature is the `zero residue` rule's "Deprecated-signature window" section, which is the
+mechanism of zero residue, never a retained compatibility path. Typed owners
 keep defaults. The first exception escapes its CLI with traceback and cause.
 
 Every one of these defects is a workaround to exterminate at its owner, never to
@@ -93,7 +95,9 @@ and agent profile references it:
 
 1. Exterminate absolutely every violation in scope first, with no heavy validation
    between extermination steps.
-2. Then rewire every consumer to the final owner.
+2. Then rewire every consumer to the final owner; while consumers remain, the old
+   signature lives only as the marked pass-through of the `zero residue` rule's "Deprecated-signature window" section,
+   deleted when its census reaches zero.
 3. Then rewrite the tests to the real runtime behavior and run them. Validation runs
    once, at the end.
 

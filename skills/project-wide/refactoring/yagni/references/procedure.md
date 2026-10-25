@@ -29,7 +29,7 @@ supported non-default overrides.
    tests, fixtures, examples, docs, shims, aliases, fallback, and old paths in the same
    change.
 5. Search for the removed identity and alternate construction paths; old/new surfaces
-   never coexist.
+   never coexist beyond the marked pass-through of the `zero residue` rule's "Deprecated-signature window" section.
 
 Run the real public runtime for retained behavior and removed/unsupported input, then
 affected native gates. A removed request fails causally without rerouting or effects.

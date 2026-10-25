@@ -6,7 +6,9 @@ capsule_summary: |
   is P0); canonical Make verbs only (no invented selectors, no raw tool
   bypasses); tests only through the test verbs owned by
   rules/workflow/canonical-commands.md; root cause + zero residue +
-  immediate rewire (no compat/shims/deferred); reality > tests (public facades
+  immediate rewire (no compat/shims/deferred; an old signature with consumers is
+  only the marked pass-through of the zero-residue deprecated-signature window);
+  reality > tests (public facades
   only, no mocks, tm fixtures); strict FLEXT chain (settings→config→c→t→p→m→u→
   base→services→api→cli; reverse imports TYPE_CHECKING-only; lazy imports via
   __init__ preferred for performance — import cycles come from broken strict
@@ -26,7 +28,8 @@ metadata:
 
 Truth with evidence · canonical verbs only · test verbs per `canonical commands` (rule
 file) · root cause + zero residue + immediate rewire · reality > tests · strict FLEXT
-chain and module pattern · no aliases/redeclarations/compat · DRY/YAGNI/SSOT/CA/DI
+chain and module pattern · no aliases/redeclarations/compat outside the `zero residue`
+rule's "Deprecated-signature window" section · DRY/YAGNI/SSOT/CA/DI
 always · no hand-edits of generated files · nothing deferred · governance self-repair
 every session · full gitflow + runtime closure or nothing.
 

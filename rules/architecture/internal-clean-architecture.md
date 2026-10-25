@@ -37,4 +37,5 @@ a same-named law from another checkout or apply it to a third-party fork.
 Correct each violation at the existing declaration, implementation or generator owner,
 rewire its public consumers, prove runtime behavior and remove the superseded path.
 Tests and documentation consume the final contract; they do not require compatibility
-code to preserve an obsolete construction.
+code to preserve an obsolete construction; a rewire spanning waves follows
+the `zero residue` rule's "Deprecated-signature window" section.

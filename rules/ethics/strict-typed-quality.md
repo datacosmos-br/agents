@@ -26,7 +26,7 @@ metadata:
 3. SSOT, YAGNI, DRY, DI, FLEXT family shape, PEP, and Pydantic-2 are mandatory and
    strict.
 4. Fix everything the newest and improved way: no fallback, no legacy, no compatibility
-   surface — exterminated, rewired, and revalidated functioning in the real cluster
+   surface outside the `zero residue` rule's "Deprecated-signature window" section — exterminated, rewired, and revalidated functioning in the real cluster
    (dc-dese). Fix forward: do not discard work through historical or destructive
    rollback. Correct proven checker regressions only through the new-commit,
    causal-hunk restoration defined by the Pydantic policy above; preserve independent

@@ -94,6 +94,10 @@ primitives.
 - Delivery can evolve in AI Hub without making provider details part of the semantic
   package contract.
 - A cutover removes every old consumer, test, fixture, document, generated projection,
-  backup, and archive in the same change. Old and new never coexist.
+  backup, and archive in the same change. Old and new never coexist; an old public
+  signature that still has consumers survives only as the marked pass-through declared
+  once in `rules/runtime/zero-residue.md` (section "Deprecated-signature window",
+  tracker memory `operator-ruling-2026-10-24-deprecated-signature-window`) and is
+  deleted in the cycle its census reaches zero.
 - Model-dependent evaluation and runtime validation remain AI Hub work; Waza here
   validates only the packaged provider-neutral skill resources.

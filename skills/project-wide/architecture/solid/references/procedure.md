@@ -52,5 +52,5 @@ differ materially. File or method count alone does not justify a boundary.
 Run the real public runtime and one contract suite across every implementation,
 including the first causal error and zero-effect failure. Then run the declared native
 gates and search for superseded construction or duplicate owners. Never keep old/new
-paths, normalize failure through catch/retry/fallback, or claim SOLID from pattern names
+paths beyond the `zero residue` rule's "Deprecated-signature window" section, normalize failure through catch/retry/fallback, or claim SOLID from pattern names
 alone.

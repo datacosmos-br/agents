@@ -17,7 +17,8 @@ rule's cleanup order and the selected search-first, SSOT, YAGNI, SOLID, simplify
 DRY and anti-hardcode procedures where their responsibilities apply. A technique
 without an affected consumer is not an additional deliverable.
 
-Repair the owner and rewire every affected consumer in the same validated slice.
+Repair the owner and rewire every affected consumer in the same validated slice; a
+rewire that spans waves or consumer projects follows the `zero residue` rule's "Deprecated-signature window" section.
 Generated surfaces are published by their existing owner and checked for a fixed
 point; historical projections do not define a second contract. Adopt current WIP
 and repair defects in the agreed blast radius through fix-forward collaboration.

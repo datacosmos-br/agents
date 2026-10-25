@@ -14,7 +14,9 @@ Retries, fallback implementations, alternate providers/models/accounts, cached-s
 substitution, undeclared or competing defaults, compatibility aliases, dual
 reads/writes, deprecated inputs, best-effort branches, partial execution, and reduced
 modes are prohibited. Optional behavior exists only as an explicit typed absence in the
-canonical schema; it cannot be inferred from a failure.
+canonical schema; it cannot be inferred from a failure. A renamed or removed signature
+that still has consumers is not an alternate path: it follows the `zero residue` rule's "Deprecated-signature window" section and
+selects no behavior of its own.
 
 A retry is any repetition of a failed operation: a retry helper (`u.retry` and its
 kind), automatic reconnection, or an `until` loop around a state-changing task. A
