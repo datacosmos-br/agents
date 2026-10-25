@@ -4,6 +4,10 @@ from __future__ import annotations
 
 import hashlib
 import json
+import stat
+import subprocess
+import sys
+from dataclasses import replace
 from importlib.metadata import distribution
 from pathlib import Path
 
@@ -12,12 +16,15 @@ import pytest
 from agents_governance import (
     BUNDLE_SCHEMA_VERSION,
     CAPSULE_MARKER,
+    CatalogResource,
     EvalPolicy,
     GovernanceBundle,
     __version__,
+    catalog_resources,
     render_capsule,
 )
 from agents_governance.delivery import DeliveryContract
+from agents_governance.frontmatter import parse_frontmatter
 from agents_governance.skill_resources import ResourcePolicy
 
 
@@ -70,6 +77,159 @@ def test_public_inventories_have_unique_physical_owners(
 def test_distribution_exposes_no_runtime_executable() -> None:
     metadata = distribution("agents-governance")
     assert not metadata.entry_points
+
+
+def test_neutral_catalog_excludes_repository_local_instructions(
+    governance_source_fixture: Path,
+) -> None:
+    root = governance_source_fixture
+    instructions = root / "AGENTS.md"
+    local_instruction = "Repository-local instruction: do not publish this sentence."
+    instructions.write_text(
+        instructions.read_text() + "\n" + local_instruction + "\n",
+        encoding="utf-8",
+    )
+    bundle = GovernanceBundle.load(root)
+    resources = catalog_resources(bundle)
+    identities = [resource.relative_path for resource in resources]
+    assert identities == sorted(set(identities))
+    neutral = next(
+        item.content for item in resources if item.relative_path == "AGENTS.md"
+    )
+    assert local_instruction.encode() not in neutral
+    assert bundle.law.prelude.encode() in neutral
+    assert CAPSULE_MARKER.encode() in neutral
+
+
+def test_catalog_retains_bootstrap_rule_bytes_and_mode_after_source_edit(
+    governance_source_fixture: Path,
+) -> None:
+    root = governance_source_fixture
+    bundle = GovernanceBundle.load(root)
+    original = catalog_resources(bundle)
+    by_identity = {resource.relative_path: resource for resource in original}
+    rule = next(
+        rule
+        for rule in bundle.rules
+        if rule.identity == bundle.config.bootstrap_rules[0]
+    )
+    identity = rule.path.relative_to(root).as_posix()
+    metadata, body = parse_frontmatter(rule.path)
+    summary = "The revised rule summary belongs to the next loaded snapshot."
+    metadata["capsule_summary"] = summary
+    rule.path.write_text(
+        f"---\n{json.dumps(metadata)}\n---\n\n{body}", encoding="utf-8"
+    )
+    rule.path.chmod(by_identity[identity].mode ^ stat.S_IROTH)
+
+    assert catalog_resources(bundle) == original
+    assert summary.encode() not in by_identity["AGENTS.md"].content
+    assert by_identity[identity].content != rule.path.read_bytes()
+    assert by_identity[identity].mode != stat.S_IMODE(rule.path.stat().st_mode)
+    updated = {
+        resource.relative_path: resource
+        for resource in catalog_resources(GovernanceBundle.load(root))
+    }
+    assert summary.encode() in updated["AGENTS.md"].content
+    assert updated[identity].content == rule.path.read_bytes()
+    assert updated[identity].mode == stat.S_IMODE(rule.path.stat().st_mode)
+
+
+def test_catalog_retains_inventory_when_a_skill_resource_is_added_after_load(
+    governance_source_fixture: Path,
+) -> None:
+    root = governance_source_fixture
+    bundle = GovernanceBundle.load(root)
+    original = catalog_resources(bundle)
+    added = bundle.skills[0].directory / "references" / "catalog-snapshot-probe.md"
+    added.parent.mkdir(exist_ok=True)
+    added.write_text("Added after the first snapshot.\n", encoding="utf-8")
+    policy = ResourcePolicy.parse(
+        json.loads((root / "config/skills.json").read_text())["resources"]
+    )
+    added.chmod(policy.file_mode)
+    identity = added.relative_to(root).as_posix()
+
+    assert catalog_resources(bundle) == original
+    assert identity not in {resource.relative_path for resource in original}
+    updated = {
+        resource.relative_path: resource
+        for resource in catalog_resources(GovernanceBundle.load(root))
+    }
+    assert updated[identity].content == added.read_bytes()
+    assert updated[identity].mode == policy.file_mode
+    assert len(updated) == len(original) + 1
+
+
+@pytest.mark.parametrize("identity", ["../escape", "/escape"])
+def test_public_catalog_record_rejects_invalid_identity(
+    governance_bundle: GovernanceBundle,
+    identity: str,
+) -> None:
+    original: CatalogResource = catalog_resources(governance_bundle)[0]
+    with pytest.raises(ValueError):
+        replace(original, relative_path=identity)
+
+
+@pytest.mark.parametrize("mode", [-1, stat.S_IFREG, True])
+def test_public_catalog_record_rejects_invalid_mode(
+    governance_bundle: GovernanceBundle,
+    mode: int,
+) -> None:
+    original = catalog_resources(governance_bundle)[0]
+    with pytest.raises(ValueError):
+        replace(original, mode=mode)
+
+
+def test_public_catalog_record_rejects_inconsistent_digest(
+    governance_bundle: GovernanceBundle,
+) -> None:
+    original = catalog_resources(governance_bundle)[0]
+    with pytest.raises(ValueError):
+        replace(original, sha256="inconsistent digest")
+
+
+def test_untyped_python_consumer_cannot_supply_mutable_catalog_bytes() -> None:
+    consumer = (
+        "from agents_governance import CatalogResource\n"
+        "from hashlib import sha256\n"
+        "from stat import S_IRUSR\n"
+        "from unittest import TestCase\n"
+        "payload = bytearray(b'mutable content')\n"
+        "with TestCase().assertRaises(TypeError):\n"
+        "    CatalogResource('entry.md', payload, S_IRUSR, sha256(payload).hexdigest())\n"
+    )
+    subprocess.run([sys.executable, "-I", "-c", consumer], check=True)
+
+
+def test_catalog_rejects_a_real_symlink_substitution(
+    governance_source_fixture: Path,
+    tmp_path: Path,
+) -> None:
+    bundle = GovernanceBundle.load(governance_source_fixture)
+    original = catalog_resources(bundle)
+    foreign = tmp_path / "foreign.md"
+    foreign.write_text("Foreign content must not enter the catalog.", encoding="utf-8")
+    enrolled = bundle.root / "README.md"
+    enrolled.unlink()
+    enrolled.symlink_to(foreign)
+    assert catalog_resources(bundle) == original
+    with pytest.raises(ValueError, match="physical"):
+        GovernanceBundle.load(governance_source_fixture)
+
+
+@pytest.mark.parametrize(
+    "unsafe_bits", [0o020, 0o002, 0o4000, 0o2000, 0o100, 0o010, 0o001]
+)
+def test_catalog_rejects_an_unsafe_file_mode(
+    governance_source_fixture: Path,
+    unsafe_bits: int,
+) -> None:
+    enrolled = governance_source_fixture / "README.md"
+    enrolled.chmod(stat.S_IMODE(enrolled.stat().st_mode) | unsafe_bits)
+    bundle = GovernanceBundle.load(governance_source_fixture)
+    with pytest.raises(ValueError, match="mode is unsafe"):
+        catalog_resources(bundle)
 
 
 def test_resources_preserve_declared_policy_and_content(

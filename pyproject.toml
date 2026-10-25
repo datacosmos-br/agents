@@ -1,6 +1,6 @@
 [project]
 name = "agents-governance"
-version = "0.6.3"
+version = "0.7.0"
 description = "Provider-neutral semantic governance bundle"
 requires-python = ">=3.13"
 dependencies = [
@@ -44,7 +44,8 @@ packages = ["src/agents_governance"]
 "docs/research" = "agents_governance/_data/docs/research"
 "AGENTS.md" = "agents_governance/_data/AGENTS.md"
 "README.md" = "agents_governance/_data/README.md"
-"docs/security/security-triage.md" = "agents_governance/_data/docs/security/security-triage.md"
+"docs/security" = "agents_governance/_data/docs/security"
+"pyproject.toml" = "agents_governance/_data/pyproject.toml"
 
 [tool.hatch.build.targets.sdist]
 only-include = [
@@ -63,7 +64,7 @@ only-include = [
   ".github/workflows/release.yml",
   "docs/adr",
   "docs/research",
-  "docs/security/security-triage.md",
+  "docs/security",
   "evals",
   "mise.lock",
   "pyproject.toml",

@@ -1,10 +1,7 @@
 id: require-basic-usage-fixture
 snapshots:
-  ? |-
-    inputs:
-      prompt: >-
-        Review the attached scenario and preserve its owner.
-  : fixed: |-
+  "inputs:\n  prompt: >-\n    Review the attached scenario and preserve its owner.":
+    fixed: |-
       inputs:
         prompt: >-
           Review the attached scenario and preserve its owner.
@@ -18,10 +15,8 @@ snapshots:
       style: primary
       start: 0
       end: 77
-  ? |-
-    inputs:
-      prompt: Review the attached scenario.
-  : fixed: |-
+  "inputs:\n  prompt: Review the attached scenario.":
+    fixed: |-
       inputs:
         prompt: Review the attached scenario.
         files:

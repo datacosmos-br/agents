@@ -3,8 +3,11 @@
 from __future__ import annotations
 
 import hashlib
+from collections.abc import Mapping
 from dataclasses import dataclass
 from pathlib import Path
+
+from .resources import CatalogResource, source_text
 
 PRELUDE_START = "<!-- AIHUB-INVIOLABLE-LAW-PRELUDE v1 -->"
 PRELUDE_END = "<!-- /AIHUB-INVIOLABLE-LAW-PRELUDE -->"
@@ -18,9 +21,11 @@ class LawSurface:
     digest: str
 
     @classmethod
-    def load(cls, root: Path) -> LawSurface:
+    def load(
+        cls, root: Path, *, captured: Mapping[Path, CatalogResource] | None = None
+    ) -> LawSurface:
         source = root / "AGENTS.md"
-        content = source.read_text(encoding="utf-8")
+        content = source_text(source, captured)
         if not content.startswith(PRELUDE_START + "\n"):
             raise ValueError(
                 f"canonical AGENTS.md must start with {PRELUDE_START}: {source}"
