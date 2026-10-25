@@ -155,6 +155,18 @@ def test_catalog_rejects_a_real_symlink_substitution(
         catalog_resources(bundle)
 
 
+@pytest.mark.parametrize("unsafe_bits", [0o020, 0o002, 0o4000, 0o2000])
+def test_catalog_rejects_an_unsafe_file_mode(
+    governance_source_fixture: Path,
+    unsafe_bits: int,
+) -> None:
+    bundle = GovernanceBundle.load(governance_source_fixture)
+    enrolled = bundle.root / "README.md"
+    enrolled.chmod(stat.S_IMODE(enrolled.stat().st_mode) | unsafe_bits)
+    with pytest.raises(ValueError, match="mode is unsafe"):
+        catalog_resources(bundle)
+
+
 def test_resources_preserve_declared_policy_and_content(
     governance_bundle: GovernanceBundle,
 ) -> None:
