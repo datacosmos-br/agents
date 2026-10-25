@@ -4,6 +4,10 @@ from __future__ import annotations
 
 import hashlib
 import json
+import stat
+import subprocess
+import sys
+from dataclasses import replace
 from importlib.metadata import distribution
 from pathlib import Path
 
@@ -12,9 +16,11 @@ import pytest
 from agents_governance import (
     BUNDLE_SCHEMA_VERSION,
     CAPSULE_MARKER,
+    CatalogResource,
     EvalPolicy,
     GovernanceBundle,
     __version__,
+    catalog_resources,
     render_capsule,
 )
 from agents_governance.delivery import DeliveryContract
@@ -70,6 +76,83 @@ def test_public_inventories_have_unique_physical_owners(
 def test_distribution_exposes_no_runtime_executable() -> None:
     metadata = distribution("agents-governance")
     assert not metadata.entry_points
+
+
+def test_neutral_catalog_excludes_repository_local_instructions(
+    governance_source_fixture: Path,
+) -> None:
+    root = governance_source_fixture
+    instructions = root / "AGENTS.md"
+    local_instruction = "Repository-local instruction: do not publish this sentence."
+    instructions.write_text(
+        instructions.read_text() + "\n" + local_instruction + "\n",
+        encoding="utf-8",
+    )
+    bundle = GovernanceBundle.load(root)
+    resources = catalog_resources(bundle)
+    identities = [resource.relative_path for resource in resources]
+    assert identities == sorted(set(identities))
+    neutral = next(
+        item.content for item in resources if item.relative_path == "AGENTS.md"
+    )
+    assert local_instruction.encode() not in neutral
+    assert bundle.law.prelude.encode() in neutral
+    assert CAPSULE_MARKER.encode() in neutral
+
+
+@pytest.mark.parametrize("identity", ["../escape", "/escape"])
+def test_public_catalog_record_rejects_invalid_identity(
+    governance_bundle: GovernanceBundle,
+    identity: str,
+) -> None:
+    original: CatalogResource = catalog_resources(governance_bundle)[0]
+    with pytest.raises(ValueError):
+        replace(original, relative_path=identity)
+
+
+@pytest.mark.parametrize("mode", [-1, stat.S_IFREG, True])
+def test_public_catalog_record_rejects_invalid_mode(
+    governance_bundle: GovernanceBundle,
+    mode: int,
+) -> None:
+    original = catalog_resources(governance_bundle)[0]
+    with pytest.raises(ValueError):
+        replace(original, mode=mode)
+
+
+def test_public_catalog_record_rejects_inconsistent_digest(
+    governance_bundle: GovernanceBundle,
+) -> None:
+    original = catalog_resources(governance_bundle)[0]
+    with pytest.raises(ValueError):
+        replace(original, sha256="inconsistent digest")
+
+
+def test_untyped_python_consumer_cannot_supply_mutable_catalog_bytes() -> None:
+    consumer = (
+        "from agents_governance import CatalogResource\n"
+        "from hashlib import sha256\n"
+        "from stat import S_IRUSR\n"
+        "from unittest import TestCase\n"
+        "payload = bytearray(b'mutable content')\n"
+        "with TestCase().assertRaises(TypeError):\n"
+        "    CatalogResource('entry.md', payload, S_IRUSR, sha256(payload).hexdigest())\n"
+    )
+    subprocess.run([sys.executable, "-I", "-c", consumer], check=True)
+
+
+def test_catalog_rejects_a_real_symlink_substitution(
+    governance_source_fixture: Path,
+    tmp_path: Path,
+) -> None:
+    bundle = GovernanceBundle.load(governance_source_fixture)
+    foreign = tmp_path / "foreign.md"
+    foreign.write_text("Foreign content must not enter the catalog.", encoding="utf-8")
+    enrolled = bundle.root / "README.md"
+    enrolled.unlink()
+    enrolled.symlink_to(foreign)
+    with pytest.raises(ValueError, match="physical"):
+        catalog_resources(bundle)
 
 
 def test_resources_preserve_declared_policy_and_content(
