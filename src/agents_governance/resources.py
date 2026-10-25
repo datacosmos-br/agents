@@ -146,7 +146,9 @@ def catalog_resources(bundle: GovernanceBundle) -> tuple[CatalogResource, ...]:
     for path in _catalog_files(root):
         identity = path.relative_to(root).as_posix()
         mode = stat.S_IMODE(path.lstat().st_mode)
-        if mode & 0o7022:
+        resource = skill_resources.get(path)
+        # Execute bits are legitimate only where a skill declares the mode.
+        if mode & (0o7022 if resource is not None else 0o7133):
             raise ValueError(f"catalog resource mode is unsafe: {path} ({mode:#o})")
         if identity == "AGENTS.md":
             content = (bundle.law.prelude + "\n" + render_capsule(bundle).text).encode(
@@ -155,7 +157,6 @@ def catalog_resources(bundle: GovernanceBundle) -> tuple[CatalogResource, ...]:
         else:
             content = path.read_bytes()
         digest = hashlib.sha256(content).hexdigest()
-        resource = skill_resources.get(path)
         if resource is not None and (
             digest != resource.sha256 or mode != resource.mode
         ):

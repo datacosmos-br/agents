@@ -155,7 +155,9 @@ def test_catalog_rejects_a_real_symlink_substitution(
         catalog_resources(bundle)
 
 
-@pytest.mark.parametrize("unsafe_bits", [0o020, 0o002, 0o4000, 0o2000])
+@pytest.mark.parametrize(
+    "unsafe_bits", [0o020, 0o002, 0o4000, 0o2000, 0o100, 0o010, 0o001]
+)
 def test_catalog_rejects_an_unsafe_file_mode(
     governance_source_fixture: Path,
     unsafe_bits: int,
