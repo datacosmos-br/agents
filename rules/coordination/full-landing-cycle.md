@@ -35,7 +35,9 @@ todo o trabalho.
 3. Anything short of the closed cycle is reported as in-progress with the exact missing
    step — never as done. Losing closed-cycle discipline loses the work entirely.
 4. This composes with wip-persistence: wip protects the work in flight; the landing
-   cycle is what delivers it. Both are mandatory.
+   cycle is what delivers it. Both are mandatory. One phase at a time, never a new one
+   beside an incomplete one, and where incomplete work may be pushed, are declared once
+   in `rules/workflow/phase-admission-protocol.md` Laws 0 and 4.
 5. Operator order, 2026-10-24, verbatim: "ao fazer alguma coisa SEMPRE TEM QUE IR ATÉ O
    FINAL, NÃO ABANDONE PERTO DO FINAL, EM HIPÓTESE ALGUMA". A started task is carried
    to its declared stop condition over its whole declared population. Measuring a

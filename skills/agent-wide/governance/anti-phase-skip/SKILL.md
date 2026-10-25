@@ -4,7 +4,7 @@ description: "phase lifecycle, runtime validation, integration closure"
 license: MIT
 metadata:
   aihub.tags: '["decision:ADR-0008","effective:2026-08-29","usage:router"]'
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 # Anti Phase Skip
@@ -19,7 +19,9 @@ completion. Read the `complete procedure` (skill file).
 A phase cannot be DONE until implementation, real runtime, applicable native gates,
 integration update, commit, push, approved and merged PR, post-merge runtime, zero
 residue, and canonical tracker closure all have fresh evidence. Missing one step keeps
-the same phase open.
+the same phase open, and no other phase or work starts beside it; incomplete work is
+pushed only to a preservation ref. `rules/workflow/phase-admission-protocol.md` (rule
+file) Laws 0 and 4 own both.
 
 An external-token validation excluded before invocation is recorded as `NOT EXECUTED`,
 not green, and does not become a missing phase step. If invoked, it is applicable and

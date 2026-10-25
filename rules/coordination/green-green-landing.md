@@ -13,4 +13,6 @@ metadata:
 The `full landing cycle` rule owns the delivery path and proof. This rule adds only
 cadence: keep local and CI green, repair a red state before new scope, and land each
 independently complete green increment instead of batching it into a larger long-lived
-lane. Apply runtime only when the declared cycle requires it.
+lane. Apply runtime only when the declared cycle requires it. Always working, one phase
+at a time, and green-only publication are declared in
+`rules/workflow/phase-admission-protocol.md` Laws 0 and 4.
