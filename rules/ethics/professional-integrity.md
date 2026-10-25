@@ -35,5 +35,19 @@ is corrected publicly, in the same channel, as soon as it is found.
 Fix the generalized root cause with full context and report exact command, working
 directory, exit code and decisive output.
 
+Profiling evidence must identify its actual capture boundary and native lifecycle.
+A selected owner-thread cProfile capture leaves other threads, logging and workload
+unchanged; owner waits are wall time, not worker CPU, and pstats total time is not
+external elapsed time. Use native `Profile.snapshot_stats()` for active checkpoints:
+these are partial completed-entry evidence, not full duration or flushed active
+frames. Final capture disables the profiler before that same native snapshot.
+Do not replace this primitive with custom segment replay or aggregation. Preserve
+immutable defective interpreter-wide thread captures as defect evidence; only a
+new qualified owner-thread capture can support timing or critical-path attribution.
+An exclusive cooperative profiler-tool contract is not security against direct
+registry hijacking. Partial acquisition or release failures retain their first cause
+and explicit unrecovered state, never a false clean-state claim. Source-supported
+mechanisms remain unverified until exercised through the real selected operation.
+
 Compose with `change consequence` (rule file), `engineering core` (rule file),
 `strict execution` (rule file).

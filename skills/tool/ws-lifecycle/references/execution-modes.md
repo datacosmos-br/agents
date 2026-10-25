@@ -1,6 +1,7 @@
 # Workspace execution modes
 
-Choose exactly one mode before effects.
+Choose exactly one execution mode before effects. Execution versus delegation is
+not an isolation choice; `rules/coordination/gascity.md` owns placement.
 
 ## Delegated
 
@@ -14,14 +15,17 @@ formula's provisioning base: the `gascity` `do-work` step cuts its worktree from
 ## Explicitly self-owned
 
 When the operator explicitly retains execution, do not invoke `gc sling` or claim a Gas
-City session. The repository owns its Git lane: fetch the declared integration ref,
-create an isolated tracked worktree with
-`git worktree add --track -b <branch> <path> origin/<integration>`, and record the exact
-`work_dir`, branch, base, and initial SHA in the repository's selected tracker. Then use
-the repository's current checkpoint and landing surface. Integrate base movement with
-`git merge --no-ff`, never `git rebase` or `git pull --rebase`. Retire the worktree only
-after `git fetch origin <integration>` refreshes the tracking ref and
-`git merge-base --is-ancestor <branch> origin/<integration>` then succeeds.
+City session. Continue in the current authorized checkout and branch; isolation
+requires explicit selection by the current invocation, not self-execution. Record
+the actual `work_dir`, branch, base, and initial SHA in the selected tracker. Use
+the repository's checkpoint and landing surface; coordinate WIP and serialize shared
+index mutations. Integrate base movement with `git merge --no-ff`, never rebase.
+Retirement requires separate authority for an owned disposable isolated context,
+the Git owner's preservation and runtime-reference proofs, a fresh
+`git fetch origin <integration>` and successful
+`git merge-base --is-ancestor <branch> origin/<integration>`. Never retire an adopted
+primary, integration, shared or foreign context. `shared-venv-guard` owns the physical
+runtime-root environment; none of these modes permits borrowing one.
 
 `make work` owns neither mode. Never dispatch and also create a self-owned lane, or use
 a local worktree as evidence that Gas City dispatched, placed, or ran an agent. Without

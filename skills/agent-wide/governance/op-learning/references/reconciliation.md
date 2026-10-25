@@ -43,6 +43,10 @@ dual-tracking period.
    quotable older sentence. Anything unrecoverable is reported unproven and never
    completed by inference: attributing an approval the operator did not give is a
    governance defect of the same class as a fabricated gate result.
+   A campaign's selected checkout or isolation procedure is not a universal
+   requirement for later tasks. Verify its explicit scope before generalizing it;
+   keep unsupported attribution visibly historical and reference the current
+   canonical owner instead of copying the inferred restriction into consumers.
 4. Change canonical owners and every affected consumer as one atomic cutover, not
    projections. When the incident exposes an agent decision failure, update the owning
    skill procedure and one of its three semantic regression roles in the same cutover.

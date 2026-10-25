@@ -15,6 +15,14 @@ settings, or constants owner declares; inputs a fixture synthesizes are scenario
 A test changes the process environment only through a scoped context that restores it
 on exit (FLEXT: `u.Tests.env_vars_context`); a change that outlives the test fails it.
 
+Use an independent behavioral oracle from the approved public contract: expected
+outputs, errors, ordering, persistence and external effects must not be calculated
+by the same implementation being tested. Tautologies, self-verifying receipts, an
+assertion that only echoes a reported success, or copied implementation branches
+prove nothing. Deriving scenario inputs from their configuration owner is valid;
+deriving the expected answer from the subject under test is not. Implementation and
+real-execution proof precede test edits under `runtime-is-reality`.
+
 For `internal_flext`, all construction comes from `flext-tests` and its public `tm`,
 `c`, `t`, `p`, `m`, and `u` facets. A local fixture binds scenario data but never
 redeclares that machinery. Assertions use a `tm` matcher; a bare `assert` is allowed

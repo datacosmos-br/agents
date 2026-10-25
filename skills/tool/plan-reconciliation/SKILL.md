@@ -25,7 +25,11 @@ configured automation, not a manual prerequisite.
 
 Use automated inventories as evidence, never as semantic decisions. Read the active plan
 and all linked material completely. Reconcile one plan at a time, newest first, and its
-projects in dependency order; retain the same plan through its integration proof.
-Execution state lives only in the selected Beads owner. Publish through the configured
-document and AI Hub distribution owners, never through a new projector or provider-home
-edit.
+projects in dependency order. Transfer valid pending work to Beads and maintained
+documentation, then retire that plan only after complete transfer and preservation
+proof; do not implement historical proposals. Reconciliation completion is distinct from
+implementation completion. Execution state lives only in the selected Beads owner;
+`rules/workflow/beads-traceability.md` owns AI Hub's generated TODO view. Publish through
+the configured document and AI Hub distribution owners, never through a new projector or
+provider-home edit. Keep the same plan active through required validation and retirement
+receipts; neither this skill nor a historical plan grants Git or deployment authority.

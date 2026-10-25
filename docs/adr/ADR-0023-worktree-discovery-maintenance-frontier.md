@@ -6,10 +6,10 @@ owner de placement: Gas City · programa canônico: o programa wip do projeto (d
 
 ## Context
 
-`wip-persistence` exige worktree e branch dedicadas por esforço, e
-`gitflow-branch-pr` já legisla a aposentadoria de lane com prova de ancestralidade.
-`gascity.md` declara que provisionamento é do owner transacional da cidade e que
-`git worktree` ad-hoc é drift. Nenhuma dessas regras, porém, nomeia **quem descobre e
+Preservação de WIP e isolamento eram indevidamente acoplados. ADR-0025 agora
+seleciona placement pela chamada, adotando o contexto autorizado atual; a descoberta
+não exige outro checkout. `gitflow-branch-pr` rege a retirada de lanes descartáveis.
+O problema original era que as regras não nomeavam **quem descobre e
 planeja** o estado WIP dos worktrees, nem garante que a **execução da aposentadoria**
 tenha um dono único.
 
@@ -32,9 +32,9 @@ descobertos por nenhum dos dois.
 2. **Aposentadoria tem um único executor.** O executor residente consome a MESMA fila
    de candidatos que o planejador wip produz. Duas superfícies planejando aposentadoria
    sobre os mesmos worktrees com políticas diferentes são proibidas.
-3. **Placement não é descoberta.** Provisionamento e placement permanecem com a Gas
-   City (`gascity.md`); `git worktree` ad-hoc segue sendo drift. A descoberta lê as
-   superfícies de registro e medição do próprio projeto, nunca uma lista mantida à mão.
+3. **Placement não é descoberta.** A chamada seleciona seu contexto segundo ADR-0025
+   e `gascity.md`; descobrir WIP não cria uma exigência de isolamento. A descoberta
+   lê registro e medição do projeto, nunca uma lista mantida à mão.
 4. **Escopo.** Worktrees órfãos/husks sem entrada de registro estão no escopo da
    descoberta do projeto; worktrees de runtime de rig (estado da cidade) e clones
    estrangeiros same-origin ficam fora, salvo flag explícita.
@@ -58,18 +58,14 @@ Rulings do operador de 2026-09-19, mais novos que o texto acima e adotados aqui:
    `status`, `next`, `doctor`; plano `wip-automation`, épico `aihub-hjsdg`). Toda outra
    implementação de wip no ai-hub é exterminada verbo a verbo, com exatamente uma
    implementação por verbo em cada momento.
-2. **Placement delega o cálculo do caminho.** A Gas City continua dona do placement
-   (decisão 3); o caminho canônico de uma lane é calculado por uma única primitiva pura,
-   `FlextInfraWorktreeService.canonical_lane_path(primary_root, branch)`, que resolve
-   para `~/.worktrees/<repo>-<sha12>/<branch>`, e `gc worktree ensure|verify|cleanup`
-   consome esse cálculo. Nenhuma regra, config ou verbo escreve caminho de lane à mão.
-   `~/<repo>-worktrees/` e `<repo>/.claude/worktrees/` são roots legados em migração,
-   provados entrada a entrada (registro, publicação, ancestralidade) antes da retirada.
+2. **Placement delega o cálculo do caminho.** Apenas uma chamada que seleciona um
+   novo contexto isolado pede seu caminho ao dono de placement. Uma worktree adotada
+   não precisa ser realocada nem se torna descartável. A emenda de 2026-10-23
+   (ag-wibx.2) substitui o cálculo universal de lanes; nenhum prefixo de diretório
+   é exigência global.
 3. **Conformidade é aderência, não existência.** Violação desta fronteira é uma
-   superfície que planeja ou executa descoberta ou retirada fora do programa wip, ou uma
-   lane fora do caminho calculado. A existência de uma lane nunca é violação. O detector
-   de lane fora do lugar acusa contra o caminho calculado, nunca contra um sufixo de
-   configuração.
+   superfície que atua fora do dono ou do placement efetivamente selecionado pela
+   chamada. A existência ou localização de uma worktree adotada não é violação.
 4. **A sonda git vive no dono autorizado.** O executor residente de storage consome fatos
    já apurados pelo programa wip, dono autorizado de git; ele não executa git. A escada
    de veto (dirty → unpushed → open-bead → active-session → retirável) permanece, e

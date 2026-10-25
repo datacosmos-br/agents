@@ -65,6 +65,10 @@ A record whose class cannot be established is a failure, not a default.
 
 ## Reconciliation preserves executable truth
 
+Plan reconciliation transfers valid pending work to canonical Beads before source
+retirement; it does not authorize implementing historical proposals. Use the
+`plan-reconciliation` skill for the single-plan transfer and retirement proof.
+
 When the operator selects backlog reconciliation, inspect the complete requested
 population through explicit limits and mutate in batches of at most 20. Re-read each
 bead immediately before its write and use its opaque revision when the backend exposes
@@ -81,3 +85,46 @@ Weak commit subjects are discovery evidence only. Preserve published SHAs and de
 current summaries from the diff, integration reachability, merged PR, and live code.
 Validate duplicates, cycles, parent state, and conventions before external sync. Record
 the command, working directory, exit status, and remote result after every synced batch.
+
+## AI Hub owns the versioned Beads-to-TODO view
+
+Where this Beads projection is selected, AI Hub automatically generates and maintains
+`TODO.md` for workspace roots, members and standalone projects. Beads alone owns work
+state; no independent checklist, hand-edited projection or Markdown-to-Beads input path
+is permitted. Each versioned view contains only its own project's nonterminal issues
+across issue types, including active, blocked and deferred work. A root never aggregates
+members. Terminal issues remain in Beads history; terminality comes from the selected
+tracker's native lifecycle contract, not a guessed status list.
+
+Ownership is one explicit issue metadata entry referencing AI Hub's canonical project
+identity. Its key and schema belong to AI Hub's typed owner; verify the native metadata
+round-trip before migration and preserve unrelated entries. Ledger identity, redirects,
+folder names, issue prefixes and free text do not establish project ownership. Do not
+invent a native Beads field or repurpose Jira's `external_ref`.
+
+Before publication, enumerate and validate every nonterminal issue in the canonical
+source, not merely ready issues or one destination's subset. Unknown, missing or
+ambiguous attribution blocks every destination fed by that source, with exact blocking
+issue IDs. Independent validated sources are not blocked by association. Initial
+migration excludes terminal history; reopening requires valid ownership. Authorized
+tracker clients own attribution writes; the renderer never silently repairs issue state.
+
+AI Hub's existing maintenance and publication owners must provide automatic convergence,
+complete snapshots, deterministic changed-byte views and destination precondition
+checks. Failed reads, incomplete enumeration or attribution, concurrent manual edits
+and failed publication never become an empty, partial or fresh-success view. Preserve
+existing bytes and causal diagnostics without a fallback store. Adopting handwritten
+content first requires complete semantic transfer and per-item receipts under the
+plan-reconciliation source contract; never overwrite unaccounted or changed bytes.
+The 2026-10-23T21:26:27Z operator correction selects Git history for recovery of old
+TODO versions/data, not a parallel backup/archive store or separate TODO backup writer.
+Unique untracked/uncommitted content stays in place until accounted for; Git history
+does not recover those bytes. No automatic commits are permitted for preservation.
+This correction changes no CAS publication safety requirement. Unrelated private plan
+evidence and attachments retain their approved protected-evidence contract.
+
+`TODO.md` is versioned, not ignored. Automatic updates may change the shared worktree
+but never stage, commit or push; first generation is not Git publication. Source
+alignment describes the required contract, not evidence of implemented or activated
+automation. Real AI Hub runtime and distribution receipts are separate prerequisites
+before relying on the projection for plan retirement.

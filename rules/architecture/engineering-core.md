@@ -8,7 +8,7 @@ capsule_summary: |
   implement through the owner, remove duplication, keep
   discoverable enumerations as authority data validated by grammar, never
   fixed lists or absolute paths, then exercise runtime and run every gate
-  before changing phase.
+   before changing phase; align documents before code and real execution before tests.
 
   At a cross-boundary failure, prove the producer's contract and fix the wrong
   side; never bend a correct owner for an invalid consumer.
@@ -37,8 +37,12 @@ For every implementation:
    before changing implementation. Map the code through code-review-graph first, then
    confirm in source. The operator selected it for every session (tracker memory
    `operator-ruling-20261022-crg-every-session`); the `crg` skill owns its freshness
-   gate, the lane seed and background watch, and the verbs. Align and update the authoritative documents first; no autonomous
-   behavior change precedes that documented alignment.
+   gate, the lane seed and background watch, and the verbs. Consult affected guides,
+   README, AGENTS, ADRs, the selected available tracker, project-local skills and
+   propagated skill identities against their canonical sources. Align and update the
+   authoritative documents first; no autonomous behavior change precedes that
+   documented alignment. Generated and propagated copies change only through their
+   declared owners, never by editing installed output.
 2. Remove scope without a current requirement or consumer (YAGNI).
 3. Elect one writable authority; every other copy is a generated projection (SSOT).
    Improve the owner in place: writing a parallel replacement, renderer, or registry
@@ -100,6 +104,13 @@ and agent profile references it:
 The order is the work sequence inside one cutover, not a landing sequence: the cutover
 still lands atomically, with zero residue and every consumer rewired, and a scoped WIP
 commit between steps is persistence, not validation.
+
+For the bounded `flext-0029c` native-bootstrap route declared in
+`rules/workflow/canonical-commands.md`, the cleanup-once wording above does not
+prohibit repeated real native runtime QA, causal repair revalidation or convergence
+proof. Align documentation first, repair and rewire the current owner, prove the
+installed subsystem and cold bootstrap, then change tests last. This exception
+does not authorize unchanged retries, fake evidence or premature suite-driven design.
 
 Git, runtime, build, and tests are baseline. Every other executable is an authorized,
 selected capability; installation or PATH presence never selects it. Do not load,

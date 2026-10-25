@@ -22,16 +22,37 @@ alias do checkout.
 
 ## Decision
 
-1. **Projeção de leitura universal, fonte única no repo.** `~/.agents` materializa o
-   catálogo semântico do checkout (`skills/`, `rules/`, `commands/`, `agents/`,
+1. **Projeção de leitura universal, fonte semântica única no SDK.** `~/.agents` materializa o
+   catálogo semântico pela API pública `catalog_resources(bundle)` do SDK, não por
+   cópia do checkout ou override da raiz de dados no controlador (`skills/`,
+   `rules/`, `commands/`, `agents/`,
    `evals/`, `docs/adr/`, `docs/research/`, `docs/security/`, `AGENTS.md`,
    `README.md`, `metadata.json`) — e nada mais: nenhum `.git/`, `.venv/`, `.beads/`,
    `.gc/`, `worktrees/`, `dist/`, superfícies de provider do checkout (`.claude/`,
    `.codex/`, `.cursor/`, `.gemini/`, `.opencode/`, `.kilo/`) nem config viva de
-   usuário. `AGENTS.md` entra por consumidor medido: é alvo declarado do
+   usuário. O `force-include` existente do wheel em `pyproject.toml` é a autoridade
+   de inscrição dos recursos; `config/` e o próprio documento de inscrição são
+   entradas privadas do SDK, não publicações centrais. O sdist conserva as mesmas
+   fontes inscritas. A API retorna uma tupla ordenada por caminho de registros
+   congelados `CatalogResource(relative_path: str, content: bytes, mode: int,
+   sha256: str)`, com caminhos relativos físicos, bytes exatos, permissões e digest
+   SHA-256 desses bytes. Links simbólicos e tipos não regulares falham; hardlinks
+   regulares mantêm identidades por caminho, como no catálogo de skills existente.
+   Recursos de skills conservam a política e o digest do leitor já existente.
+   `AGENTS.md` central é composto de `bundle.law.prelude` e
+   `render_capsule(bundle).text`, pelos donos semânticos existentes, sem o bloco
+   de escopo local do repositório nem instruções do repositório AI Hub.
+   `UNIVERSAL_CORE.md` legado não é inscrito automaticamente: um relinker antigo
+   não cria autoridade de catálogo. `AGENTS.md` entra por consumidor medido: é
+   alvo declarado do
    `ssot_relink` e da gate fail-closed `projection_identity_gate` do ai-hub
    (`config/governance.yaml:10-16`). Consumidores lêem; nenhum consumidor escreve —
    escrita de consumer no home é defeito reportado, não estado aceito.
+   Esta fronteira declara o protocolo de fonte; não atesta publicação ou execução.
+   Igualdade de bytes, modos e digests entre fonte e distribuições instaladas exige
+   prova nativa separada, assim como o consumo transacional efetivo pelo AI Hub.
+   A adoção desta API pelo runtime AI Hub não é comprovada pela alteração de fonte
+   do SDK; os consumidores citados acima descrevem a motivação histórica.
 2. **Carimbo de versão + digest (P5/ADR-0015).** O home carrega
    `.agents-governance.json` com `owner`, versão do bundle, `generated_at` e digests
    por árvore. Convergência se decide por versão+digest, nunca por byte-diff cego.

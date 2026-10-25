@@ -4,13 +4,18 @@ description: "native gates, root make verbs, runtime-first validation"
 license: MIT
 metadata:
   aihub.tags: '["decision:ADR-0008","effective:2026-09-10","usage:router"]'
-  version: 2.4.0
+  version: 2.5.0
 ---
 
 # Make Check
 
 Activate when selecting or executing a repository's validation workflow. Do not start
 provisioning for an ordinary writing request.
+
+For `flext-0029c` only, apply the bounded direct-public-Infra route in canonical
+`rules/workflow/canonical-commands.md` instead of the Make-first steps below.
+That rule owns repeated native QA and final Make integration; it does not authorize
+runtime effects during a documentation-only slice.
 
 1. Read the authorized scope, repository instructions and root Makefile. Resolve the
    existing environment and command owners before invoking an operation.
@@ -21,8 +26,13 @@ provisioning for an ordinary writing request.
 3. Exercise changed behavior through its public runtime, then run `make check` and
    the smallest distinct public verbs required for additional gates. Select test
    verbs through the canonical test contract; a focused check does not replace it.
+   Inspect the mutation population before running a repair or formatter: when it
+   includes tests, schedule that invocation after the slice's real runtime proof,
+   under the engineering rule's test-last sequence.
 4. Apply bundle rule `workflow/canonical-commands` for command deadlines, profiling,
-   failure outcomes and test selection. Gate placement follows
+   operation ownership, failure outcomes and test selection. Invoke each required
+   operation explicitly; never obtain checks or generation as hidden effects of
+   formatting, repair, setup, upgrades or tests. Gate placement follows
    `workflow/gate-budget`. Resolve both under the bundle's canonical `rules/`.
 5. Record command, cwd, exit, decisive output, scope and cache accounting. A focused
    result proves only its named scope.

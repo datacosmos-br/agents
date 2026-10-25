@@ -1,6 +1,6 @@
 ---
 metadata:
-  aihub.tags: '["decision:ADR-0025","effective:2026-10-20","route:personal"]'
+  aihub.tags: '["decision:ADR-0025","effective:2026-10-23","route:personal"]'
 ---
 
 # Selected Gas City boundary
@@ -27,11 +27,17 @@ an explicitly authorized cutover, not hand-edited projections.
 
 ## Manual execution and suspension
 
-The default manual lane is a dedicated native Git worktree and working branch
-on the authorized destination filesystem. A current explicit operator placement
-instruction supersedes that default; revalidate it without asking for the same
-authority again. Git, fix-forward and shared-venv-guard own preservation,
-runtime-root environment ownership, integration and retirement.
+Continue in the current operator-authorized checkout and branch, including a
+primary or shared checkout. Fix forward, adopt and collaborate with existing WIP;
+dirty or concurrent state is not a reason to relocate. A new task does not require
+a new worktree, branch or environment. Isolation is optional: use it only when the
+selected invocation's type/mode or current operator request calls for it. A generic
+campaign, profile or historical instruction cannot turn that choice into a universal
+prerequisite. Revalidate retained authority without asking for it again.
+
+Git, fix-forward and shared-venv-guard retain ownership of preservation, the actual
+runtime-root environment, integration and safe retirement of existing worktrees.
+This placement rule authorizes no deletion, provisioning or Git publication.
 
 Orchestration suspension grants no session, dispatch, topology change or resume.
 It does not suspend an independently retained tracker or erase the cooperation

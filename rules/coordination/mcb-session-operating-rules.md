@@ -2,19 +2,18 @@
 description: mcb lane discipline — integrated-or-lost cycles, bead freshness, evidence
   over exit codes
 capsule_summary: |
-  Operator rulings 2026-09-24..27 for agent sessions on marlonsc/mcb: work outside
-  an integrated PR is lost work; bead abandonment follows the fleet test
-  (bead-branch-pr-cadence §2); "--force" is pre-authorized to
-  unlock beads; an exit code without its log is not evidence; local make gates are
-  the only CI (GitHub CI is off). Full context: docs/developer/AGENT-OPERATIONS.md
-  in the repo and ADR 059 there for advisory triage.
+   Procedures for an explicitly selected marlonsc/mcb context, not universal
+   permissions. Resolve current repository gates and tracker authorization from
+   their owners; historical campaign settings do not authorize present effects.
+   Placement follows gascity and environment identity follows shared-venv-guard.
+   Bead abandonment follows bead-branch-pr-cadence §2; read the actual gate log.
 metadata:
   aihub.tags: '["decision:ADR-0021", "effective:2026-09-27", "route:both"]'
 ---
 
 # mcb session operating rules
 
-For sessions working `marlonsc/mcb` (internal_flext rig). These rules specialize the
+Only when the current operator request selects `marlonsc/mcb`, these rules specialize the
 fleet-wide `full landing cycle or nothing` (rule file) and `beads verification` (rule
 file) laws for that repository's gates and failure modes.
 
@@ -23,21 +22,22 @@ file) laws for that repository's gates and failure modes.
 - Land in small cycles: lane, gates, PR, no-ff merge to `develop`, bead closed with
   evidence, lane retired. Minutes between green gates and merge, not hours; the
   integration branch tip is the only delivered state.
-- Every lane is a dedicated `git worktree` with a physical `.venv` from `make setup`
-  and `direnv allow` — never a symlinked venv, never the primary checkout.
+- Placement follows `rules/coordination/gascity.md`; this repository profile does
+  not authorize a worktree, branch or environment, or prohibit its primary checkout.
 - Before assuming a bead, search for pre-existing work: open PRs, remote branches,
   and upstream WIP branches. Adopt existing work instead of redoing it — an
   abandoned lane by porting, an active lane by cherry-picking its valid
   published commits into your own tip-based lane immediately (rule `lane
-  ownership declaration`); never edit inside the other session's worktree and
-  never adopt a workaround commit.
+   ownership declaration`). Coordinate shared-checkout changes under current
+   authorization; never overwrite unknown WIP or adopt a workaround commit.
 
 ## Beads law
 
 - Bead abandonment follows `bead-branch-pr-cadence` (rule file) §2. Assumed
   beads get a lane-note comment at claim time.
 - Housekeeping is part of the job: dedupe, close superseded, realign epics, fix
-  titles. `--force` is operator-authorized to unlock beads; record why in the bead.
+   titles. A historical `--force` note is not current authorization; resolve the
+   permitted tracker operation through its owner and record the actual authority.
 - Closure requires evidence in the bead: merge commit, captured gate results, or
   structural proof. "Done" without a command output is a lie.
 

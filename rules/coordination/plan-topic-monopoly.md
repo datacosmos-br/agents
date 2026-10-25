@@ -15,9 +15,9 @@ When required work has not reached the integration branch, adopt it into the own
 branch by reviewed non-FF merge. Preserve attribution and revalidate the integrated
 result.
 
-Keep repository scope within the operator's authorization. Every manual task uses a
-dedicated native Git worktree and branch per `rules/coordination/gascity.md`; never
-implement in the primary/default checkout. Do not invoke suspended orchestration or a
+Keep repository scope within the operator's authorization. Placement follows
+`rules/coordination/gascity.md`; a plan does not independently authorize new isolation.
+Do not invoke suspended orchestration or a
 suspended tracker. Orchestration suspension alone leaves an independently selected and
 available canonical Beads service usable. If the tracker is suspended, create no
 substitute tracker or ledger and preserve evidence only in separately authorized
@@ -36,7 +36,7 @@ The operator may name one session the sole holder of listed repositories. While 
 declaration stands, no other actor edits, merges, or realigns branches there. The holder
 assumes every pending WIP, branch, worktree, PR, and bead in them: it records each tip
 SHA, adopts aligned work into the integration lane by fix-forward, and closes superseded
-work with evidence. The monopoly waives no law — dedicated worktree, four-source bead,
+work with evidence. The monopoly waives no law — authorized placement, four-source bead,
 PR, `merge --no-ff`, no rebase, no database reset. A bead closure in a shared tracker
 still routes through its curation owner (`tracker-curation-routing`), and a lane whose
 claim is under 24 hours old (`beads-canonical-epics`) is adopted only after `[coord]`

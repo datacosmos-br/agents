@@ -15,7 +15,7 @@ from typing import Literal, cast
 
 from strict_subprocess import run_strict
 
-from agents_governance import GovernanceBundle
+from agents_governance import GovernanceBundle, catalog_resources
 
 _IGNORED_DIST_FILES = frozenset({".gitignore"})
 
@@ -85,6 +85,7 @@ def _smoke(
     cache_root: Path,
     version: str,
     resources: Mapping[str, tuple[str, int, str]],
+    catalog: Mapping[str, tuple[str, int]],
 ) -> None:
     environment = _smoke_environment()
     environment["ARTIFACT_RESOURCE_EXPECTATIONS"] = json.dumps(resources)
@@ -92,6 +93,9 @@ def _smoke(
         prefix=f"{artifact.name}-", dir=cache_root
     ) as temporary:
         smoke = Path(temporary)
+        catalog_expectations = smoke / "catalog-expectations.json"
+        catalog_expectations.write_text(json.dumps(catalog), encoding="utf-8")
+        environment["ARTIFACT_CATALOG_EXPECTATIONS"] = str(catalog_expectations)
         environment_path = smoke / "venv"
         run_strict(
             ("uv", "venv", str(environment_path)),
@@ -114,8 +118,9 @@ def _smoke(
         )
         proof = "\n".join(
             (
-                "from agents_governance import GovernanceBundle, __version__",
+                "from agents_governance import GovernanceBundle, catalog_resources, __version__",
                 "from importlib.resources import files",
+                "from pathlib import Path",
                 "import hashlib, json, os, stat",
                 "if not files('agents_governance').joinpath('py.typed').is_file():",
                 "    raise ValueError('installed PEP 561 marker missing')",
@@ -134,6 +139,16 @@ def _smoke(
                 "if actual_resources != expected_resources:",
                 "    raise ValueError('installed resource inventory, bytes, mode or format mismatch')",
                 "print('ARTIFACT resources', len(actual_resources), 'exact bytes/modes/formats')",
+                "expected_catalog = json.loads(Path(os.environ['ARTIFACT_CATALOG_EXPECTATIONS']).read_text(encoding='utf-8'))",
+                "actual_catalog = {}",
+                "for resource in catalog_resources(bundle):",
+                "    digest = hashlib.sha256(resource.content).hexdigest()",
+                "    if digest != resource.sha256:",
+                "        raise ValueError('installed catalog digest disagrees with its bytes')",
+                "    actual_catalog[resource.relative_path] = [digest, resource.mode]",
+                "if actual_catalog != expected_catalog:",
+                "    raise ValueError('installed neutral catalog inventory, bytes or mode mismatch')",
+                "print('ARTIFACT neutral catalog', len(actual_catalog), 'exact bytes/modes/digests')",
                 "print('ARTIFACT', __version__, bundle.schema_version, len(bundle.skills))",
             )
         )
@@ -155,9 +170,10 @@ def _smoke(
                 "--strict",
                 "-c",
                 (
-                    "from agents_governance import GovernanceBundle\n"
+                    "from agents_governance import GovernanceBundle, CatalogResource, catalog_resources\n"
                     "from agents_governance import agent_profiles, catalog, commands, rules\n"
                     "bundle: GovernanceBundle = GovernanceBundle.load()\n"
+                    "resources: tuple[CatalogResource, ...] = catalog_resources(bundle)\n"
                 ),
             ),
             smoke,
@@ -170,6 +186,12 @@ def _validate(repository: Path, cache_root: Path) -> tuple[Path, Path]:
     artifacts = _artifacts(_dist(repository))
     version = _project_version(repository)
     bundle = GovernanceBundle.load(repository)
+    catalog: dict[str, tuple[str, int]] = {}
+    for resource in catalog_resources(bundle):
+        digest = hashlib.sha256(resource.content).hexdigest()
+        if digest != resource.sha256:
+            raise ValueError("source catalog digest disagrees with its bytes")
+        catalog[resource.relative_path] = (digest, resource.mode)
     resources = {
         resource.path.relative_to(bundle.root).as_posix(): (
             resource.sha256,
@@ -180,7 +202,7 @@ def _validate(repository: Path, cache_root: Path) -> tuple[Path, Path]:
         for resource in skill.resources
     }
     for artifact in artifacts:
-        _smoke(artifact, cache_root, version, resources)
+        _smoke(artifact, cache_root, version, resources, catalog)
     return artifacts
 
 

@@ -34,8 +34,10 @@ BLOCKED, with evidence for every item:
 5. **Root cause** — no bypass, shim, retry, catch normalization, silent filtering,
    or gate suppression anywhere in the diff. A fix at the sink with a warning beats
    a fix at the edge with silence.
-6. **Lane hygiene** — physical `.venv`, dedicated worktree, no stray branches or
-   worktrees left behind, remote branch pruned after merge.
+6. **Lane hygiene** — current authorization under the canonical placement rule,
+   actual runtime-root environment ownership and
+   preservation proofs for any separately authorized retirement. A dedicated
+   worktree is not a universal requirement or inferred permission to remove one.
 
 You never edit anything. You return the verdict, the evidence per item, and the
 exact missing proof when the verdict is not LAND.

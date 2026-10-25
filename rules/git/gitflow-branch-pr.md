@@ -16,9 +16,9 @@ capsule_summary: |
   SHA with post-merge evidence.
   Divergence: merge the integration base in with `--no-ff`; never rebase or
   force-push.
-  Retirement is mandatory: merge, push, PR, merge, then delete local and remote
-  branches and the worktree, only after `git merge-base --is-ancestor` exits 0
-  against a fresh base.
+  Retire only authorized, invocation-owned disposable lanes after ownership and
+  fresh ancestry proof. Never delete the adopted primary/shared checkout or
+  integration branch because one task ends.
 metadata:
   aihub.tags: '["decision:ADR-0025","effective:2026-10-01","route:personal"]'
 ---
@@ -72,13 +72,12 @@ and force-push are prohibited.
 PR and cite the owning commit. Never narrow a gate or exclude a failing path to look
 green on a red base.
 
-**Retirement closes the cycle; it is not optional.** A lane is carried to the
-integration branch and retired in the same cycle it opened: merge integration in,
-resolve fix-forward, push, open the PR, merge it, then delete the local branch, its
-remote branch and its worktree. Leaving a lane published-but-unmerged, or
-merged-but-not-retired, is the accumulation this rule exists to prevent. Remove a branch
-or worktree only after `git merge-base --is-ancestor <ref> origin/<integration>` exits 0
-against a base just fetched from the remote.
+**Retirement closes disposable lanes, not adopted workspaces.** Carry authorized
+work through integration and retire its eligible invocation-owned lane in that cycle.
+Never infer deletion authority over the primary/shared checkout, integration branch
+or another actor's context. Preserve all WIP. Ownership and recovery proof must
+precede removal. Require `git merge-base --is-ancestor <ref> origin/<integration>`
+against a freshly fetched base; ancestry alone is insufficient.
 
 A failed check, actionable finding or missing approval keeps the cycle active: fix and
 rerun rather than reporting the open PR and moving on.

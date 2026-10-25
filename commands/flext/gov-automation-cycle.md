@@ -11,9 +11,11 @@ metadata:
 
 Execute one bead slice end-to-end without ad-hoc tool invocations. Gate contract:
 the `flext-gates-as-products` skill; rule authoring: the `codemod` skill.
+Placement follows `rules/coordination/gascity.md` in the current authorized context;
+`shared-venv-guard` owns physical runtime-root identity, never a borrowed environment.
 
 ```bash
-# 0. Lane preflight (worktree must exist, pins fresh; NEVER primary venv)
+# 0. Authorized-context preflight (actual runtime root, pins fresh)
 export UV_PROJECT_ENVIRONMENT=$PWD/.venv VIRTUAL_ENV=$PWD/.venv
 
 # 1. Generation first (config SSOT → projections)

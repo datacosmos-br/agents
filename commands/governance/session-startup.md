@@ -22,10 +22,11 @@ existed as a rule before; this is the one-place sequence.
 4. **Prior art.** Search branches (local + remote), open PRs, and recent docs
    for the scope you were given. Found a survivor? Adopt it — the mandate is
    the outcome, not the authorship.
-5. **Lane ownership.** Identify the primary checkout's owner session; hands
-   off. Your lane is a dedicated worktree on the destination filesystem.
-6. **Declare the triple.** Claim the bead, create the branch, and announce
-   bead + branch + PR to the coordinator via `gc mail human` — before the
-   first commit, not after the first scolding.
+5. **Placement and ownership.** Resolve the current authorization through
+   `rules/coordination/gascity.md` and coordinate overlapping WIP through
+   `fix-forward-collaboration`; do not create isolation merely to start a task.
+6. **Declare the triple.** Claim the selected bead and announce the actual
+   authorized branch and PR state through the available coordination owner.
+   A declaration grants no branch creation or Git publication authority.
 7. **Cycle declared.** State which integration branch, which gates, and what
    runtime proof closes the unit (full-landing-cycle step 1).

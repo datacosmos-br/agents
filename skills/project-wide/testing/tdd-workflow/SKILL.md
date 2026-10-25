@@ -1,14 +1,15 @@
 ---
 name: tdd-workflow
-description: "test driven development, behavior contracts, regression tests"
+description: "runtime-first behavior, observable contracts, regression validation"
 metadata:
-  aihub.tags: '["decision:ADR-0008","effective:2026-08-29","usage:on-demand"]'
+  aihub.tags: '["decision:ADR-0031","effective:2026-10-23","usage:on-demand"]'
 ---
 
-# TDD Workflow
+# Behavioral Regression Workflow
 
-Activate when implementing or correcting observable behavior through a
-red-green-refactor cycle. Before changing behavior, read the `complete procedure` (skill
-file) and follow the active project's public contract and native validation surface. Do
-not add tests for a prose-only or configuration-preserving edit with no behavior
+Activate when implemented observable behavior needs real-runtime proof and subsequent
+regression validation. Read the `complete procedure` (skill file) and compose the
+documentation-first and runtime-first rule owners before effects. Implement and prove
+the actual behavior before changing tests; this procedure has no test-first branch.
+Do not add tests for a prose-only or configuration-preserving edit with no behavior
 boundary.

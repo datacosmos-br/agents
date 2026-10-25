@@ -24,7 +24,7 @@ does not create a second environment for the same runtime root.
   ignored by Git; they are not Python environments and must never become
   environment-sharing paths.
 - Never replace or clear a real environment while another process may own it.
-- Workspace placement and any exact operator exception have one owner:
+- Workspace placement and current operator authorization have one owner:
   `rules/coordination/gascity.md`, interpreted through
   `rules/coordination/operator-precedence.md`. Provision the elected runtime root;
   do not create another lane or environment merely because a new gate starts.

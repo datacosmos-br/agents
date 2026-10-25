@@ -6,25 +6,21 @@ metadata:
 
 # ai-hub session operating rules
 
-Acting rules for any agent session working ai-hub (distilled from the
-operator's directives across the 2026-09 runtime campaigns; each rule earned
-the hard way — the campaign retrospective lives in
-ai-hub `.kilo/plans/2026-09-27-surfaced-inventory-runtime-recovery/00-index.md`).
+These procedures apply to the selected ai-hub context. Campaign retrospectives
+are evidence, not universal placement authorization; current placement follows
+`rules/coordination/gascity.md`.
 
 ## Integration law
 
 - One mandate per lane. Lane → gates green → commit (≈15 min cadence: the
   commit is the context checkpoint) → `merge --no-ff` with the tip →
   fast-forward push → close the bead with evidence → retire the lane.
-- The primary checkout may be another session's lane. Never merge, generate, or
-  install from it; land through a dedicated merge worktree
-  (`worktree add -b temp/land origin/dev` + `merge --no-ff <lane>` + push the
-  merge tip fast-forward) and retire the merge worktree.
+- Resolve the actual authorized checkout and branch through the placement owner;
+  do not invent a primary-checkout ban or a separate merge-worktree prerequisite.
 - Validate before pushing; a silly red on the PR is the defect, not the CI's.
-- Never edit or run inside a worktree another agent is actively driving. Adopt
-  its valid published commits immediately by cherry-pick into your own lane
-  cut from the fresh tip (rule `lane ownership declaration`); never wait for it
-  to land and never adopt a workaround commit.
+- Coordinate overlapping owners and adopt compatible work under
+  `fix-forward-collaboration`; concurrent edits do not invalidate shared-checkout
+  authorization. Never overwrite unknown WIP or adopt a workaround commit.
 
 ## Beads law
 
@@ -46,7 +42,7 @@ ai-hub `.kilo/plans/2026-09-27-surfaced-inventory-runtime-recovery/00-index.md`)
   assertion) before declaring RED or GREEN.
 - Zero-execution results, warnings, and skips are RED. Generated artifacts
   (`source-receipt.json` and siblings) must exist before a battery is honest —
-  run the repository's generator verb in a fresh worktree first.
+   run the repository's generator verb in the authorized checkout first.
 - Attribute before re-running: group failures by file and reason, run one
   representative per group, cure each at its owner, then re-run the full
   battery.
@@ -57,8 +53,8 @@ ai-hub `.kilo/plans/2026-09-27-surfaced-inventory-runtime-recovery/00-index.md`)
   `GC_SUPERVISOR_*`) say nothing about the current process; context comes from
   the cgroup leaf (ADR-0030). Unsetting a marker to pass a guard is a bypass —
   cure the guard.
-- A worktree's environment is physical and exclusive (`make setup`, own
-  `.venv`); never borrow, symlink, or place it under `/tmp`.
+- `shared-venv-guard` owns the physical environment at the actual runtime root;
+  a new task or gate does not imply a new environment.
 - Read the domain model's validators before writing fixtures or tests — the
   typed model is the specification (uniqueness, ordering, and map-shape
   contracts live there).

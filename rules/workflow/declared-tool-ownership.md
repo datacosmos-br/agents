@@ -35,6 +35,14 @@ protected:
 - When the tool is rewired, all code that redid its job leaves in the same cutover, with
   its tests, verbs, constants, documentation and the decisions that authorised it. One
   active residue reopens the route.
+- Native environment managers own interpretation of their project/workspace
+  declarations and locks, platform selection and package installation. Bootstrap acquires
+  them through their official mechanism and sequences native operations; moving a
+  custom Python installer or lock parser into shell, AWK or another parser is not
+  native adoption. Installed project verification follows successful provisioning.
+  Keep independently required runtime source authentication separate, and document
+  explicitly any approved change from pre-install attestation to native declarations
+  and locked consistency; a post-install check cannot attest an earlier installation.
 - A supersession note that asserts operator authorisation follows `operator precedence`
   (rule file): it grants nothing until the operator confirms it.
 

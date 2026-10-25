@@ -154,4 +154,9 @@ suspended, execution is manual in worktrees under each checkout and tracked by `
 Operator directive, 2026-09-06: proceed to full implementation and landing under the
 same authorization.
 
+Placement in that historical suspension record is superseded by the operator's
+2026-10-23 correction (ag-wibx.2 / ADR-0025). Manual execution adopts its authorized
+current context; only the selected invocation can call for isolation. The explicitly
+isolated learning formula retains its own call-type contract.
+
 <!-- aihub.approval: decision:ADR-0011; effective:2026-09-06 -->

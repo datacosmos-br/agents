@@ -8,26 +8,23 @@ metadata:
 # Lane landing cycle
 
 The verified mechanical cycle for one work unit on a governed repository lane,
-from lane creation to retirement. Composes with the rules `full-landing-cycle`,
+from authorized placement to any authorized retirement. Composes with the rules `full-landing-cycle`,
 `beads-canonical-epics`, and `bead-branch-pr-cadence`.
 
 ## 1. Lane and bead first
 
-```bash
-git fetch origin dev
-git worktree add ~/ai-hub-worktrees/<slug>-<date> -b fix/<slug>-<date> <dev-tip>
-chmod 700 ~/ai-hub-worktrees/<slug>-<date>/.beads
-env -C ~/ai-hub-worktrees/<slug>-<date> -u VIRTUAL_ENV -u UV_PROJECT_ENVIRONMENT make setup
-```
-
-- One mandate per lane; the primary checkout is never a work surface; the
-  worktree lives on the destination filesystem, never `/tmp`, with its own
-  physical `.venv` from `make setup`.
+Resolve placement through `rules/coordination/gascity.md`, environment identity
+through `shared-venv-guard` and WIP preservation through `fix-forward-collaboration`.
+This skill does not create isolation or grant checkout-changing authority.
 - Claim the bead and declare the triple (bead + branch + PR) to the
   coordinator via `gc mail human` at claim time. `bd update --append-notes`
   keeps the bead alive; abandonment follows rule `bead-branch-pr-cadence` §2.
 
 ## 2. The gate, in order
+
+First complete documented alignment, implementation and real public-runtime proof
+under `engineering-core` and `runtime-is-reality`. Only then enter this validation
+sequence or change regression tests; the gate list is not permission for test-first work.
 
 ```bash
 CI=Y env -C <lane> -u VIRTUAL_ENV -u UV_PROJECT_ENVIRONMENT make gen   # twice
@@ -38,8 +35,8 @@ env -C <lane> -u VIRTUAL_ENV -u UV_PROJECT_ENVIRONMENT make test
 env -C <lane> -u VIRTUAL_ENV -u UV_PROJECT_ENVIRONMENT make test-full  # local, background
 ```
 
-Run targeted tests first for fast feedback; the full suite is the local landing
-gate. Where each test verb runs, and its testmon contract, are declared in
+Within final test validation, run targeted tests before the full local landing suite.
+Where each test verb runs, and its testmon contract, are declared in
 `rules/workflow/canonical-commands.md` (section "Test verbs"). A red is red: cure the
 root cause in the wave, or record it with its owner and sequence — never bypass, never
 normalize.
@@ -66,7 +63,13 @@ gh pr merge <n> --repo datacosmos-br/ai-hub --merge
 Base movement before landing is integrated with `git merge --no-ff origin/dev` (never
 `git rebase` or `git pull --rebase`). After the PR merges, leave the lane branch
 unchanged: fetch, prove its tip is reachable from `origin/dev`, rerun the targeted tests
-on the fetched integration tip, close the bead with the evidence, then retire:
+on the fetched integration tip, close the bead with the evidence, then assess retirement:
+
+The following retirement example is conditional on explicit removal authority for
+an owned disposable isolated lane and the Git owner's full tracked, staged and untracked
+preservation proof, runtime-reference and activity checks. Integration ancestry alone
+does not authorize removal. Never apply it to an adopted primary, integration,
+shared or foreign context.
 
 ```bash
 git fetch origin dev \
