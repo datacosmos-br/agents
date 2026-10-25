@@ -2,7 +2,7 @@
 globs: ["*.py", "**/*.py", "pyproject.toml"]
 description: Python rules
 metadata:
-  aihub.tags: '["decision:ADR-0031","effective:2026-09-29","route:both"]'
+  aihub.tags: '["decision:ADR-0031","effective:2026-10-24","route:both"]'
 ---
 
 # Python rules
@@ -101,9 +101,9 @@ Make/codegen owner and rerun its public verb.
 ## Portability
 
 No private absolute path, symlink, editable dependency to another checkout,
-cross-repository reference, inherited secret, or project state under `/tmp`. The one
-editable route to a local supplier checkout is the setup verb's declared supplier-root
-parameter (`rules/coordination/shared-venv-guard.md`); it is passed per invocation and
-never committed. Technology
-skills are installed only in explicitly selected projects where local markers prove
-Python.
+cross-repository reference, inherited secret, or project state under `/tmp` in any
+committed file. The sole exemption is the setup verb's supplier-root argument
+(`rules/coordination/shared-venv-guard.md`): a path to a local supplier checkout given
+on one invocation (FLEXT: `make setup FLEXT=<path>`), never written to a committed
+file, configuration, environment selector or lock. Technology skills are installed only
+in explicitly selected projects where local markers prove Python.
