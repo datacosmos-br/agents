@@ -4,7 +4,7 @@ description: "completion evidence, runtime verification, native gates"
 license: MIT
 metadata:
   aihub.tags: '["decision:ADR-0008","effective:2026-09-03","usage:router"]'
-  version: 1.2.0
+  version: 1.3.0
 ---
 
 # Verification Loop
@@ -29,6 +29,10 @@ on the merged checkout, and measured runtime reconciliation. Never treat “merg
 open PR, or local-only success as landed. When the repository owns the deployed runtime,
 completion also requires installing or reconciling that runtime from the merged
 integration SHA and proving the public surface there.
+
+A completion boundary is also a phase boundary: no next phase starts while this loop is
+red or incomplete, and unverified work is never pushed to a working branch or PR —
+`rules/workflow/phase-admission-protocol.md` (rule file) Laws 0 and 4 own both.
 
 ## Investigation protocol delta (evidence 2026-09-11)
 

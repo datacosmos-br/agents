@@ -18,6 +18,9 @@ WIP publication records every validation and attestation as `NOT SELECTED`, neve
 green. Only the non-WIP promotion head may enter integration, and it retains the full
 reviewed-PR and remote-check contract.
 
+A Draft carries only work that completed its green round; incomplete work is pushed only
+to a preservation ref (`rules/workflow/phase-admission-protocol.md` Law 4).
+
 ## Control-plane Review transition
 
 A Draft may persist changes to `.agents/**`, `.claude/**`, `.codex/**`, `.github/**`,

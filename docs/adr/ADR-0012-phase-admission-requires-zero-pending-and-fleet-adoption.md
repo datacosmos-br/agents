@@ -35,3 +35,13 @@ integration debt that cost more than the original work.
   with the newest-correct rule, instead of accidental textual merges.
 - An operator command and recorded law that disagree produce a visible question,
   preserving both the operator's supremacy and the audit trail of law changes.
+
+## Amendment 2026-10-24
+
+Operator orders recorded in the tracker memories
+`operator-order-2026-10-24-always-working-never-skip-phase`,
+`operator-order-2026-10-24-no-incomplete-pushes`, and
+`operator-ruling-2026-10-24-wip-preservation-ref-only` add Law 0 (always working, one
+phase at a time) and replace the WIP clause of decision 4: incomplete work is pushed only
+to a preservation ref, and the working branch and its PR receive only green work. The
+rule `rules/workflow/phase-admission-protocol.md` is the single declaration of both.

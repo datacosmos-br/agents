@@ -102,9 +102,12 @@ checkpoint. An unreconciled correction pauses the affected feature work until ow
 consumers agree.
 
 When a correction governs Git checkpoint cadence, elect the branch/PR rule as the
-invariant owner. Persist each coherent increment as an explicitly marked `[WIP]`
-checkpoint through repository-owned hooks without `--no-verify`. Keep its PR Draft and
-WIP-labelled; no local or external validation is selected, including attestations,
+invariant owner. Incomplete work is pushed only to a preservation ref and the working
+branch receives only green work (`rules/workflow/phase-admission-protocol.md` Law 4).
+Persist each increment that completed its green local validation round as an explicitly
+marked `[WIP]` checkpoint through repository-owned hooks without `--no-verify`. Keep its
+PR Draft and WIP-labelled; the checkpoint push selects no further local or external
+validation, including attestations,
 Actions, CodeQL, Copilot and review agents. WIP heads never enter integration. The agent
 declares only one maintained PR and any finite number `N >= 1` of source Drafts.
 Automation discovers their state, records every PR/branch/head/bead, performs ordered

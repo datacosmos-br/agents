@@ -56,6 +56,14 @@ The first command failure and raw traceback propagate. Warning, skip, empty outp
 missing tool/report, partial execution, retry, normalization, or a successful wrapper
 around a failed child is RED.
 
+Every Make verb runs under an active bound, always (operator order 2026-10-24,
+tracker memory `operator-order-2026-10-24-make-always-with-timeout`):
+`timeout --signal=TERM --kill-after=10s <seconds> make <verb>`, with any shared
+serialization lock taken with a bounded wait (`flock -w <seconds>`). The bound comes
+from the gate budget, never from guesswork. An expired bound is a RED slowness or hang
+defect of that verb. It is fixed at the verb's owner and never answered by raising the
+bound, rerunning, or waiting idle on a queue of slow runs.
+
 Test applicability and the explicit FLEXT connectivity prerequisite exception
 have one owner: `rules/testing/observable-runtime.md`. Preserve its unexecuted
 node identities and dispositions. An authorized prerequisite skip never proves

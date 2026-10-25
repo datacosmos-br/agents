@@ -9,8 +9,10 @@ capsule_summary: |
   reuse one. `origin/<base>` is a cache: fetch it before any ancestry
   proof that authorizes deletion. One git root per PR; placement follows the
   active/manual Gas City boundary.
-  Checkpoint: scoped add, `[WIP]` subject, fast-forward push, Draft PR. `--no-verify`
-  is prohibited and a `[WIP]` commit never heads a merge.
+  Checkpoint: incomplete work goes only to a preservation ref
+  (phase-admission-protocol Law 4); after a green round, scoped add, `[WIP]`
+  subject, fast-forward push, Draft PR. `--no-verify` is prohibited and a `[WIP]`
+  commit never heads a merge.
   Promotion: green local round, non-`[WIP]` commit, green checks, resolved review,
   independent approval, merge commit — never squash or rebase. Revalidate the merge
   SHA with post-merge evidence.
@@ -20,7 +22,7 @@ capsule_summary: |
   branches and the worktree, only after `git merge-base --is-ancestor` exits 0
   against a fresh base.
 metadata:
-  aihub.tags: '["decision:ADR-0025","effective:2026-10-01","route:personal"]'
+  aihub.tags: '["decision:ADR-0025","effective:2026-10-24","route:personal"]'
 ---
 
 # Branch and PR — integration by merge commit
@@ -52,10 +54,14 @@ authorizes deletion, and confirm the refspec actually covers it. A deletion auth
 by a stale ref destroys work and is the same class of failure as deleting without proof
 at all.
 
-**Checkpoint.** Stage scoped paths, commit with a `[WIP]` subject, push fast-forward,
-open or update a Draft PR against integration, apply the `WIP` label. Draft selects no
-validation — gates and attestations record `NOT SELECTED`, never green. `--no-verify` is
-prohibited, and a `[WIP]` commit never heads a merge into integration.
+**Checkpoint.** Incomplete or red work is pushed only to a preservation ref, never to
+the working branch or a PR, and no gate runs on it
+(`rules/workflow/phase-admission-protocol.md` Law 4). Once the work passes its green
+round, stage scoped paths, commit with a `[WIP]` subject, push fast-forward to the
+working branch, open or update a Draft PR against integration, apply the `WIP` label.
+Draft selects no validation — gates and attestations record `NOT SELECTED`, never
+green. `--no-verify` is prohibited, and a `[WIP]` commit never heads a merge into
+integration.
 
 **Promotion.** One green local round on the exact head, then a non-`[WIP]` commit,
 remove the label, Draft to Review, require green checks, resolved conversations and
@@ -65,8 +71,9 @@ when GitHub, Git history, runtime and integrated code agree. Promotion to `main`
 for explicit operator approval.
 
 **Divergence.** Merge `origin/<integration>` into the lane with `--no-ff` and a `[WIP]`
-subject, preserve valid concurrent work, revalidate. `[skip ci]`, `--no-verify`, rebase
-and force-push are prohibited.
+subject, preserve valid concurrent work, revalidate green before pushing it
+(phase-admission Law 4). `[skip ci]`, `--no-verify`, rebase and force-push are
+prohibited.
 
 **Red base.** When the base already fails its own gate, adopt those defects in the same
 PR and cite the owning commit. Never narrow a gate or exclude a failing path to look
