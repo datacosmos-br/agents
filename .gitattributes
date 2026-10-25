@@ -1,0 +1,4 @@
+# ast-grep writes these rule-test snapshots; whitespace inside them is data (empty
+# test-input lines and exact fix outputs), not authored formatting. Declared exception,
+# operator decision operator-decision-2026-10-25-agents-astgrep-snapshot-whitespace.
+ast-grep-rule-tests/__snapshots__/*.yml whitespace=-trailing-space,-blank-at-eol

@@ -1,11 +1,7 @@
 id: no-partial-eval-metric
 snapshots:
-  ? |-
-    - name: task_completion
-      weight: 1.0
-      threshold: 0.8
-      description: Partial completion.
-  : fixed: |-
+  "- name: task_completion\n  weight: 1.0\n  threshold: 0.8\n  description: Partial completion.":
+    fixed: |-
       - name: behavior_quality
         weight: 1.0
         threshold: 1.0
