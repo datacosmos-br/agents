@@ -45,23 +45,25 @@ def detect_duplicate_key(node: Node) -> str | None:
 
 
 @overload
-def parse_frontmatter(path: Path) -> tuple[dict[str, object], str]: ...
+def parse_frontmatter(
+    path: Path, *, text: str | None = None
+) -> tuple[dict[str, object], str]: ...
 
 
 @overload
 def parse_frontmatter(
-    path: Path, *, required: Literal[False]
+    path: Path, *, required: Literal[False], text: str | None = None
 ) -> tuple[dict[str, object] | None, str]: ...
 
 
 @overload
 def parse_frontmatter(
-    path: Path, *, required: bool
+    path: Path, *, required: bool, text: str | None = None
 ) -> tuple[dict[str, object] | None, str]: ...
 
 
 def parse_frontmatter(
-    path: Path, *, required: bool = True
+    path: Path, *, required: bool = True, text: str | None = None
 ) -> tuple[dict[str, object] | None, str]:
     """Parse YAML frontmatter from a Markdown file.
 
@@ -71,7 +73,8 @@ def parse_frontmatter(
     loudly.
     """
 
-    text = path.read_text(encoding="utf-8")
+    if text is None:
+        text = path.read_text(encoding="utf-8")
     if not text.startswith("---\n"):
         if not required:
             return None, text

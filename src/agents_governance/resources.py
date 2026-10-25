@@ -11,7 +11,9 @@ from __future__ import annotations
 import hashlib
 import stat
 import tomllib
+from collections.abc import Mapping
 from dataclasses import dataclass
+from io import BytesIO, TextIOWrapper
 from pathlib import Path, PurePosixPath
 from typing import TYPE_CHECKING
 
@@ -92,10 +94,26 @@ def _physical_path(root: Path, relative: PurePosixPath) -> Path:
     return cursor
 
 
-def _catalog_files(root: Path) -> tuple[Path, ...]:
+def source_bytes(
+    path: Path, captured: Mapping[Path, CatalogResource] | None = None
+) -> bytes:
+    """Read the captured source, or the physical input of an isolated reader."""
+    return path.read_bytes() if captured is None else captured[path].content
+
+
+def source_text(
+    path: Path, captured: Mapping[Path, CatalogResource] | None = None
+) -> str:
+    """Decode source with the same universal-newline behavior as Path.read_text."""
+    with TextIOWrapper(
+        BytesIO(source_bytes(path, captured)), encoding="utf-8"
+    ) as source:
+        return source.read()
+
+
+def _catalog_files(root: Path, manifest: CatalogResource) -> tuple[Path, ...]:
     """Use the existing artifact enrollment, never scan the checkout root."""
-    manifest = _physical_path(root, PurePosixPath("pyproject.toml"))
-    document = tomllib.loads(manifest.read_text(encoding="utf-8"))
+    document = tomllib.loads(manifest.content.decode("utf-8"))
     enrollment = cast_mapping(
         document["tool"]["hatch"]["build"]["targets"]["wheel"]["force-include"],
         "wheel force-include",
@@ -121,48 +139,78 @@ def _catalog_files(root: Path) -> tuple[Path, ...]:
         if destination != expected:
             raise ValueError(f"catalog enrollment must preserve identity: {source}")
         path = _physical_path(root, relative)
-        # These packaged inputs serve SDK loading, not the central catalog.
-        if source not in {"config", "pyproject.toml"}:
-            collect(path)
+        collect(path)
     return tuple(sorted(files, key=lambda path: path.relative_to(root).as_posix()))
 
 
-def catalog_resources(bundle: GovernanceBundle) -> tuple[CatalogResource, ...]:
-    """Capture the enrolled central catalog with neutral SDK-owned instructions.
+def capture_resources(root: Path) -> tuple[CatalogResource, ...]:
+    """Capture enrolled bytes once, including private inputs used by SDK readers.
 
     Regular hardlinks retain their distinct path identities, as in the skill
     resource owner. Symlinks and unsupported entries fail before content is read.
     No publication, filesystem writes or consumer-specific adaptation occurs.
     """
-    root = bundle.root
     if root.is_symlink() or not root.is_dir() or root != root.resolve(strict=True):
         raise ValueError(f"catalog root must be a resolved physical directory: {root}")
+    manifest_path = _physical_path(root, PurePosixPath("pyproject.toml"))
+    manifest_content = manifest_path.read_bytes()
+    manifest = CatalogResource(
+        "pyproject.toml",
+        manifest_content,
+        stat.S_IMODE(manifest_path.lstat().st_mode),
+        hashlib.sha256(manifest_content).hexdigest(),
+    )
+    captured: list[CatalogResource] = []
+    for path in _catalog_files(root, manifest):
+        identity = path.relative_to(root).as_posix()
+        if identity == manifest.relative_path:
+            captured.append(manifest)
+            continue
+        content = path.read_bytes()
+        captured.append(
+            CatalogResource(
+                identity,
+                content,
+                stat.S_IMODE(path.lstat().st_mode),
+                hashlib.sha256(content).hexdigest(),
+            )
+        )
+    return tuple(captured)
+
+
+def catalog_resources(bundle: GovernanceBundle) -> tuple[CatalogResource, ...]:
+    """Return the frozen public catalog, never reread its mutable source checkout."""
     skill_resources = {
         resource.path: resource
         for skill in bundle.skills
         for resource in skill.resources
     }
     captured: list[CatalogResource] = []
-    for path in _catalog_files(root):
-        identity = path.relative_to(root).as_posix()
-        mode = stat.S_IMODE(path.lstat().st_mode)
+    for original in bundle._catalog_resources:
+        identity = original.relative_path
+        # These captured inputs serve SDK loading, not the central catalog.
+        if identity == "pyproject.toml" or PurePosixPath(identity).parts[0] == "config":
+            continue
+        path = bundle.root / identity
         resource = skill_resources.get(path)
         # Execute bits are legitimate only where a skill declares the mode.
-        if mode & (0o7022 if resource is not None else 0o7133):
-            raise ValueError(f"catalog resource mode is unsafe: {path} ({mode:#o})")
+        if original.mode & (0o7022 if resource is not None else 0o7133):
+            raise ValueError(
+                f"catalog resource mode is unsafe: {path} ({original.mode:#o})"
+            )
         if identity == "AGENTS.md":
             content = (bundle.law.prelude + "\n" + render_capsule(bundle).text).encode(
                 "utf-8"
             )
         else:
-            content = path.read_bytes()
+            content = original.content
         digest = hashlib.sha256(content).hexdigest()
         if resource is not None and (
-            digest != resource.sha256 or mode != resource.mode
+            digest != resource.sha256 or original.mode != resource.mode
         ):
             raise ValueError(f"skill resource changed bytes or declared mode: {path}")
-        captured.append(CatalogResource(identity, content, mode, digest))
-    if skill_resources.keys() - {root / item.relative_path for item in captured}:
+        captured.append(CatalogResource(identity, content, original.mode, digest))
+    if skill_resources.keys() - {bundle.root / item.relative_path for item in captured}:
         raise ValueError("catalog enrollment omits validated skill resources")
     if not any(item.relative_path == "AGENTS.md" for item in captured):
         raise ValueError("catalog enrollment omits neutral AGENTS.md")

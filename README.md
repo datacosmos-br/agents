@@ -9,15 +9,23 @@ runtime reconciliation, and global distribution.
 ## Public API
 
 ```python
-from agents_governance import GovernanceBundle
+from agents_governance import GovernanceBundle, catalog_resources
 
 bundle = GovernanceBundle.load()
+resources = catalog_resources(bundle)
 ```
 
 The returned frozen snapshot exposes `root`, `schema_version`, `distribution_version`,
 `config`, `eval_policy`, `skills`, `skill_metadata`, `commands`, `agents`, `rules`, and
 `law`. Loading is read-only and fails on the first catalog, evaluation-resource,
 approval, ownership, metadata, profile, command, rule, or strict-prelude defect.
+
+`catalog_resources(bundle)` returns the path-sorted central catalog as immutable
+`CatalogResource` records with content bytes, publication modes and their SHA-256
+digests. Loading captures the enrolled inputs before validating them; the capsule and
+catalog use those same inputs. Later source edits or additions affect only a new load.
+Configuration and packaging enrollment remain private SDK inputs. Physical-file and
+permission checks still reject invalid inputs before publication.
 
 There is deliberately no executable runtime, projector, provider adapter, hook
 generator, home-directory writer, cleanup command, live model runner, security runner,
