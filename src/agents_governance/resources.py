@@ -202,14 +202,16 @@ def catalog_resources(bundle: GovernanceBundle) -> tuple[CatalogResource, ...]:
             content = (bundle.law.prelude + "\n" + render_capsule(bundle).text).encode(
                 "utf-8"
             )
+            record = CatalogResource(
+                identity, content, original.mode, hashlib.sha256(content).hexdigest()
+            )
         else:
-            content = original.content
-        digest = hashlib.sha256(content).hexdigest()
+            record = original
         if resource is not None and (
-            digest != resource.sha256 or original.mode != resource.mode
+            record.sha256 != resource.sha256 or record.mode != resource.mode
         ):
             raise ValueError(f"skill resource changed bytes or declared mode: {path}")
-        captured.append(CatalogResource(identity, content, original.mode, digest))
+        captured.append(record)
     if skill_resources.keys() - {bundle.root / item.relative_path for item in captured}:
         raise ValueError("catalog enrollment omits validated skill resources")
     if not any(item.relative_path == "AGENTS.md" for item in captured):

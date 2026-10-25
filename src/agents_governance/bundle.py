@@ -21,7 +21,6 @@ from .provenance import version as distribution_version
 from .resources import (
     CatalogResource,
     capture_resources,
-    catalog_resources,
     resource_root,
 )
 from .rules import RuleSpec, audit_rule_specs
@@ -80,7 +79,7 @@ class GovernanceBundle:
             config.bootstrap_rules,
             config.bootstrap_skills,
         )
-        bundle = cls(
+        return cls(
             source,
             BUNDLE_SCHEMA_VERSION,
             distribution_version(),
@@ -95,8 +94,6 @@ class GovernanceBundle:
             delivery,
             captured,
         )
-        catalog_resources(bundle)
-        return bundle
 
 
 def _approved_artifacts(

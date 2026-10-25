@@ -22,10 +22,11 @@ approval, ownership, metadata, profile, command, rule, or strict-prelude defect.
 
 `catalog_resources(bundle)` returns the path-sorted central catalog as immutable
 `CatalogResource` records with content bytes, publication modes and their SHA-256
-digests. Loading captures the enrolled inputs before validating them; the capsule and
-catalog use those same inputs. Later source edits or additions affect only a new load.
-Configuration and packaging enrollment remain private SDK inputs. Physical-file and
-permission checks still reject invalid inputs before publication.
+digests. Loading captures the enrolled inputs before semantic validation; the capsule
+and catalog use those same inputs. Later source edits or additions affect only a new
+load. Configuration and packaging enrollment remain private SDK inputs. Catalog
+construction validates publication permissions when that API is requested; loading
+does not construct and discard a publication. Physical-file checks remain mandatory.
 
 There is deliberately no executable runtime, projector, provider adapter, hook
 generator, home-directory writer, cleanup command, live model runner, security runner,
@@ -92,9 +93,10 @@ without a source checkout and performs no writes when loaded.
 
 Skill resources expose their format, SHA-256 and configured publication mode through
 `GovernanceBundle`. `make runtime` attests the exact resource inventory, bytes and
-physical modes after installing both artifacts. `make static` includes every Python
-resource selected from that inventory, with SDK dependencies owned by the development
-dependency group.
+physical modes after installing both artifacts. It also exercises the public catalog
+API and compares its paths, bytes, modes and digests with the source snapshot.
+`make static` includes every Python resource selected from that inventory, with SDK
+dependencies owned by the development dependency group.
 
 For continuation, use `plan-handoff` and `strategic-compact`: retain links to the
 current owner/source revision, refs, measured gates, freshness and next action in the

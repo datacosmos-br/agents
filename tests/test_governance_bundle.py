@@ -227,8 +227,9 @@ def test_catalog_rejects_an_unsafe_file_mode(
 ) -> None:
     enrolled = governance_source_fixture / "README.md"
     enrolled.chmod(stat.S_IMODE(enrolled.stat().st_mode) | unsafe_bits)
+    bundle = GovernanceBundle.load(governance_source_fixture)
     with pytest.raises(ValueError, match="mode is unsafe"):
-        GovernanceBundle.load(governance_source_fixture)
+        catalog_resources(bundle)
 
 
 def test_resources_preserve_declared_policy_and_content(
