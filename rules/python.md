@@ -101,6 +101,9 @@ Make/codegen owner and rerun its public verb.
 ## Portability
 
 No private absolute path, symlink, editable dependency to another checkout,
-cross-repository reference, inherited secret, or project state under `/tmp`. Technology
+cross-repository reference, inherited secret, or project state under `/tmp`. The one
+editable route to a local supplier checkout is the setup verb's declared supplier-root
+parameter (`rules/coordination/shared-venv-guard.md`); it is passed per invocation and
+never committed. Technology
 skills are installed only in explicitly selected projects where local markers prove
 Python.
