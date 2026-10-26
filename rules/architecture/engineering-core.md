@@ -27,8 +27,9 @@ metadata:
 
 These standards govern every current and future first-party project phase. External
 project forks follow the verified upstream-forks contract instead of importing internal
-architecture rules. `~/agents/` is the canonical cross-project and cross-agent SSOT;
-project requirements must be reconciled with it, never maintained as a divergent copy.
+architecture rules. The declared governance owner is the canonical cross-project
+and cross-agent SSOT; project requirements must be reconciled with it, never
+maintained as a divergent copy.
 FLEXT projects additionally obey their own stricter documented contracts and enhancements.
 
 For every implementation:
