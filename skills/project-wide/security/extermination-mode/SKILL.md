@@ -25,7 +25,8 @@ data, repositories, branches, runtime state, or unrelated work.
    cutover leaves no consumer on the removed owner. Use structural search/replace for
    mechanical migrations and review every match. Elide every field and call argument
    equal to a canonical typed default. Never add a compatibility alias, dual reader,
-   fallback, or undeclared default-on-error behavior to make deletion easier.
+   fallback, or undeclared default-on-error behavior to make deletion easier; an old
+   public signature with consumers follows the `zero residue` rule's "Deprecated-signature window" section.
 5. Rewrite the classified tests to the real runtime behavior, then prove the cutover
    once, at the end, with zero-residue semantic searches, focused behavior tests,
    generation fixed point, static gates, and the repository's full gate. A failed gate

@@ -39,6 +39,15 @@ Grep and file reads confirm exact lines and the facts the graph cannot express
 A delegated mapping or refactor-discovery assignment names CRG as its primary tool,
 carries the freshness result, and returns the CRG commands it ran.
 
+Use the CLI capabilities pertinent to the current question and complement them
+with applicable MCP tools and bounded specialist work under
+`architecture/engineering-core` (rule file). Do not run
+the entire command catalog without a purpose. Invoke the declared binary directly:
+a project-resolving launcher such as `uv run` can synchronize the consumer
+environment before starting an otherwise immutable host tool. Preserve the
+selected tool's source and runtime provenance; a diagnostic must not install or
+replace dependencies as a side effect.
+
 ## Use for
 
 - Mapping owners, consumers, duplication and size before any change.

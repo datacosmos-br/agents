@@ -10,8 +10,11 @@ prompt: |-
   as “implementation complete” plus “phase not done”, partial completion,
   test-only runtime claims, deferred validation, warnings in place of failure,
   report-and-abandon behavior, or silent task switching. Red checks and
-  actionable review findings must be corrected and revalidated inside the
-  same phase; missing approval stays active until solicited or escalated after
+   actionable review findings must be corrected and revalidated inside the
+   same phase. A recorded warning or failure never becomes readiness merely
+   because another bead owns it. Compatible moving WIP requires bounded
+   coordination and forward adoption, not an exclusive writer or clean checkout.
+   Missing approval stays active until solicited or escalated after
   all technical work is green. On an incomplete contract, require the first
   missing prerequisite and zero phase-transition or substitute-tracker
   effects. An absent external-token workflow recorded as NOT EXECUTED is not

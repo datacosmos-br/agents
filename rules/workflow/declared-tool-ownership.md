@@ -1,7 +1,7 @@
 ---
 description: A declared fleet tool owns its job; code that reimplements it is the defect
 metadata:
-  aihub.tags: '["decision:ADR-0027","effective:2026-10-01","route:both"]'
+  aihub.tags: '["decision:ADR-0027","effective:2026-10-25","route:both"]'
 ---
 
 # A declared fleet tool owns its job; reimplementing it is the defect
@@ -29,12 +29,28 @@ protected:
 - Before writing a mechanism, check whether the toolchain already installs one (`which
   <tool>`, the version manager's registry). One command answers it.
 - An unwired tool is reported as a defect and rewired; it is never replaced by local code.
+- Use the selected tool's native model, discovery, references, graph, cache,
+  invalidation and refactorings before adding custom machinery. Confirm required
+  semantics through its current public contract and real consumer. A custom adapter
+  covers only a demonstrated gap; it never duplicates an available parse, index,
+  traversal or operation. Keep capability interfaces independent of library identity
+  under `rules/architecture/internal-clean-architecture.md`.
 - A limit, error or behaviour attributed to an external tool is measured against that
   tool in isolation before it justifies workaround code. A workaround built on unmeasured
   behaviour tends to become a workaround for the workaround.
 - When the tool is rewired, all code that redid its job leaves in the same cutover, with
   its tests, verbs, constants, documentation and the decisions that authorised it. One
-  active residue reopens the route.
+  active residue reopens the route. A public signature with remaining consumers
+  follows the `zero residue` rule's "Deprecated-signature window" section; it never
+  retains the superseded implementation.
+- Native environment managers own interpretation of their project/workspace
+  declarations and locks, platform selection and package installation. Bootstrap acquires
+  them through their official mechanism and sequences native operations; moving a
+  custom Python installer or lock parser into shell, AWK or another parser is not
+  native adoption. Installed project verification follows successful provisioning.
+  Keep independently required runtime source authentication separate, and document
+  explicitly any approved change from pre-install attestation to native declarations
+  and locked consistency; a post-install check cannot attest an earlier installation.
 - A supersession note that asserts operator authorisation follows `operator precedence`
   (rule file): it grants nothing until the operator confirms it.
 

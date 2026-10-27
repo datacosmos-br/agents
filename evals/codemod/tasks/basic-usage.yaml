@@ -7,7 +7,8 @@ inputs:
     Using the supplied catalog scenario, say how you cover the new `requests`
     violation. Give the rule shape you end with, what happens to the existing
     rules, their tests and snapshots, how you prove the rule, and the commands
-    you run to apply it.
+    you run to apply it. Address the duplicate parser, native invalidation and
+    compatible shared WIP in the scenario.
   files:
   - path: library-import-bans.md
 expected:
@@ -17,3 +18,4 @@ expected:
   - make mod
   - invalid
   - fixed point
+  - invalidation

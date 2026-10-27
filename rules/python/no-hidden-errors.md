@@ -18,7 +18,8 @@ Never swallow, mask, demote, or invent a successful result for a failed operatio
 - Do not add compatibility accessors, aliases, dual behavior, retry, alternate
   providers, error-triggered or competing defaults, manual exit translation, partial
   results, or silent degradation. A typed canonical default resolved before failure is
-  normal owner behavior.
+  normal owner behavior. An old public signature with consumers follows
+  the `zero residue` rule's "Deprecated-signature window" section.
 - Tests prove the material error, cancellation, timeout, and should-not-trigger behavior
   through the public surface.
 

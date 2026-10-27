@@ -9,18 +9,19 @@ capsule_summary: |
   reuse one. `origin/<base>` is a cache: fetch it before any ancestry
   proof that authorizes deletion. One git root per PR; placement follows the
   active/manual Gas City boundary.
-  Checkpoint: scoped add, `[WIP]` subject, fast-forward push, Draft PR. `--no-verify`
-  is prohibited and a `[WIP]` commit never heads a merge.
+  Checkpoint: complete green slice, scoped add, fast-forward push and reviewed PR.
+  Incomplete work may be published only to explicitly authorized preservation refs,
+  never the working or integration branch. Preservation is not delivery.
   Promotion: green local round, non-`[WIP]` commit, green checks, resolved review,
   independent approval, merge commit — never squash or rebase. Revalidate the merge
   SHA with post-merge evidence.
   Divergence: merge the integration base in with `--no-ff`; never rebase or
   force-push.
-  Retirement is mandatory: merge, push, PR, merge, then delete local and remote
-  branches and the worktree, only after `git merge-base --is-ancestor` exits 0
-  against a fresh base.
+  Retire only authorized, invocation-owned disposable lanes after ownership and
+  fresh ancestry proof. Never delete the adopted primary/shared checkout or
+  integration branch because one task ends.
 metadata:
-  aihub.tags: '["decision:ADR-0025","effective:2026-10-01","route:personal"]'
+  aihub.tags: '["decision:ADR-0025","effective:2026-10-25","route:personal"]'
 ---
 
 # Branch and PR — integration by merge commit
@@ -52,10 +53,15 @@ authorizes deletion, and confirm the refspec actually covers it. A deletion auth
 by a stale ref destroys work and is the same class of failure as deleting without proof
 at all.
 
-**Checkpoint.** Stage scoped paths, commit with a `[WIP]` subject, push fast-forward,
-open or update a Draft PR against integration, apply the `WIP` label. Draft selects no
-validation — gates and attestations record `NOT SELECTED`, never green. `--no-verify` is
-prohibited, and a `[WIP]` commit never heads a merge into integration.
+**Checkpoint.** Complete the slice, prove its public runtime and pass its declared
+native gates before committing scoped paths, pushing fast-forward and opening or
+updating its PR. Operator order 2026-10-24, recorded in
+`operator-order-2026-10-24-no-incomplete-pushes`, supersedes the earlier checkpoint
+instruction to publish incomplete `[WIP]` heads on the working branch. Incomplete work
+may be published only to an explicitly authorized preservation ref, never to a working
+or integration branch or a PR. Preservation grants no landing, validation or completion
+claim. A Draft state does not waive local acceptance; unselected external checks remain
+`NOT SELECTED`, never green. `--no-verify` is prohibited.
 
 **Promotion.** One green local round on the exact head, then a non-`[WIP]` commit,
 remove the label, Draft to Review, require green checks, resolved conversations and
@@ -64,21 +70,20 @@ prohibited. Revalidate the merge SHA, record it and post-merge evidence, and clo
 when GitHub, Git history, runtime and integrated code agree. Promotion to `main` waits
 for explicit operator approval.
 
-**Divergence.** Merge `origin/<integration>` into the lane with `--no-ff` and a `[WIP]`
-subject, preserve valid concurrent work, revalidate. `[skip ci]`, `--no-verify`, rebase
-and force-push are prohibited.
+**Divergence.** Merge `origin/<integration>` into the lane with `--no-ff`, preserve valid
+concurrent work and revalidate before publishing. An in-progress integration is not a
+green checkpoint. `[skip ci]`, `--no-verify`, rebase and force-push are prohibited.
 
 **Red base.** When the base already fails its own gate, adopt those defects in the same
 PR and cite the owning commit. Never narrow a gate or exclude a failing path to look
 green on a red base.
 
-**Retirement closes the cycle; it is not optional.** A lane is carried to the
-integration branch and retired in the same cycle it opened: merge integration in,
-resolve fix-forward, push, open the PR, merge it, then delete the local branch, its
-remote branch and its worktree. Leaving a lane published-but-unmerged, or
-merged-but-not-retired, is the accumulation this rule exists to prevent. Remove a branch
-or worktree only after `git merge-base --is-ancestor <ref> origin/<integration>` exits 0
-against a base just fetched from the remote.
+**Retirement closes disposable lanes, not adopted workspaces.** Carry authorized
+work through integration and retire its eligible invocation-owned lane in that cycle.
+Never infer deletion authority over the primary/shared checkout, integration branch
+or another actor's context. Preserve all WIP. Ownership and recovery proof must
+precede removal. Require `git merge-base --is-ancestor <ref> origin/<integration>`
+against a freshly fetched base; ancestry alone is insufficient.
 
 A failed check, actionable finding or missing approval keeps the cycle active: fix and
 rerun rather than reporting the open PR and moving on.

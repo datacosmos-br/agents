@@ -3,7 +3,7 @@ name: codemod
 description:
   "ast-grep codemod rules, generalized law, exact matching, rule tests, snapshots, make verbs"
 metadata:
-  aihub.tags: '["activation:detected","decision:ADR-0009","detect:dependency:python:flext-infra","detect:marker:sgconfig.yml","effective:2026-10-22","route:project","subject:ast-grep","usage:on-demand"]'
+  aihub.tags: '["activation:detected","decision:ADR-0009","detect:dependency:python:flext-infra","detect:marker:sgconfig.yml","effective:2026-10-25","route:project","subject:ast-grep","usage:on-demand"]'
 ---
 
 # codemod
@@ -50,13 +50,13 @@ and generalization techniques are in [authoring](references/authoring.md).
    on metavariables, shared `utils/` matchers, and owner-derived context instead of
    literal lists. Then anchor on node kinds, scope with `files`, and turn every known
    false positive into a `not:` clause.
-6. **Prototype on a scratch copy.** `ast-grep scan --rule <file> <scratch-sample>` is
-   research only. Run it on copied samples outside the repository, never on the tree
-   you are changing.
+6. **Prototype through the native fixture owner.** Add representative cases to the
+   engine's declared rule tests and use its native test verb. No scratch script, copied
+   tree or raw scanner substitutes for reproducible evidence.
 7. **Test.** The rule test lists `valid` cases (near misses, one per exclusion) and
    `invalid` cases (every shape the law rejects). Regenerate snapshots only through the
    repository's snapshot verb, and review the snapshot diff in the same commit.
-8. **Apply through Make.** Run the repository verb (`make mod`, `make mod-text`). It
+8. **Apply through Make.** Run the operation declared by the current repository catalog. It
    must reach a verified fixed point; a second run applies nothing. Run the affected
    tests after the rewrite and review the diff by class of change.
 9. **Retire with the law.** When a law is superseded, delete its rule, test and

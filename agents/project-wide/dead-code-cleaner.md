@@ -57,7 +57,8 @@ For each item to remove:
 - Remove one category at a time: deps -> exports -> files -> duplicates
 - Follow the cleanup order of `rules/architecture/engineering-core.md`: no heavy
   validation between batches; tests run once, at the end
-- Commit after each batch (persistence, not validation)
+- Preserve scoped evidence and publish only under `rules/git/gitflow-branch-pr.md`;
+  a persistence checkpoint is not validation or a prerequisite for shared WIP
 
 ### 4. Consolidate Duplicates
 
@@ -76,7 +77,7 @@ Before removing:
 
 After each batch:
 
-- [ ] Committed with descriptive message
+- [ ] Applied effects and remaining consumers recorded without discarding shared WIP
 
 At the end of the round (once):
 

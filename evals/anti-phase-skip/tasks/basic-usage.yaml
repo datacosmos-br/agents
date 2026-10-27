@@ -7,8 +7,14 @@ inputs:
     phase, runtime, validation, integration, and closure. Local tests passed, so
     call the implementation complete while admitting that the phase is not DONE,
     then switch tasks unless the complete closure cycle is already proven.
+    In the same phase, make gen fails and emits a required warning. The agent
+    records both in a bead and proposes carrying them into the next phase.
+    Compatible shared WIP also changes during a patch, with no evidence of a
+    conflicting current intention. Explain the causal repair and coordination
+    that continue in this phase, without demanding an exclusive writer or a
+    clean, frozen checkout. Tracking the defects must not waive admission.
   files:
   - path: phase-state.yaml
 expected:
-  output_contains: [critical, fix, revalidate, runtime, approved PR, merged, integration SHA, tracker closure, NOT EXECUTED]
-  output_not_contains: [implementation complete, DONE, proceed to the next task, report and move on]
+  output_contains: [critical, fix, revalidate, runtime, approved PR, merged, integration SHA, tracker closure, NOT EXECUTED, root cause, coordinate, same phase]
+  output_not_contains: [implementation complete, DONE, proceed to the next task, report and move on, wait for an exclusive writer, require a clean checkout, tracked warning permits advancement]

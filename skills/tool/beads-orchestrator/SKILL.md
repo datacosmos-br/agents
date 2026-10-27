@@ -65,9 +65,11 @@ When coordinating an owned plan across repositories or submodules:
 - Classify every dirty file as mine vs foreign-lane before acting; never stage, stash
   away, checkout-away, or clean foreign edits in a shared checkout. Detect rival
   concurrent edits via `git status` plus file mtimes inside your own execution window;
-  in a contended clone, validate in a detached `git worktree` instead.
+  coordinate contention and serialize index mutations with the current owner.
+  Placement follows `rules/coordination/gascity.md`, not contention.
 - Check PR state (`gh pr view --json state`) before assuming a lane is mid-flight:
   merged PRs relocate your projection commits to the integration branch.
-- Baseline every gate against the merge parent (`HEAD^2` for merges) in a detached
-  worktree before attributing failures; push only strict improvements and report
-  inherited red with its owner lane.
+- Baseline every gate against the merge parent (`HEAD^2` for merges) before
+  attributing failures, using captured evidence or an authorized comparison context.
+  New isolation requires explicit invocation selection; never switch away shared WIP.
+  Push only strict improvements and report inherited red with its owner lane.

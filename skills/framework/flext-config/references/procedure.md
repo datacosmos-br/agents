@@ -57,10 +57,12 @@ Grounded in `flext-core` `_settings.py`, `_config.py`, `_protocols/settings.py`,
 
 ## Service consumption law
 
-Services consume settings/config only through explicit parameters or the validated
-global facade (`settings.AiHub.<domain>`, `config.AiHub.<domain>`). Never `os.environ`,
-`Path.home()`, `os.getcwd()`, or a re-parsed YAML file in a service: each is a second,
-unvalidated answer beside the singleton, invisible to `reset_for_testing` repointing.
+Services receive validated settings/config values through explicit parameters from
+the composition root. In the AiHub example, the root binds
+`settings.AiHub.<domain>` and `config.AiHub.<domain>` and supplies the values.
+Services neither read global facades nor fetch their singletons. Never read
+`os.environ`, `Path.home()`, `os.getcwd()`, or re-parse a YAML file in a service:
+each bypasses the explicit dependency and its owning source.
 `config.AiHub` is a validated frozen model, not a `Result`: validation happened exactly
 once at load and consumers trust typed attributes. Result wrapping belongs at operation
 boundaries - service methods return `p.Result[T]` and wrap failure there, never around

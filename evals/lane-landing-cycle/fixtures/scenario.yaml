@@ -2,6 +2,8 @@ tracker:
   runtime: available
   claimed_issue: aihub-5j4cw.7
   claim_note: lane note comment recorded at claim time with the branch name.
+invocation:
+  placement: explicitly isolated
 lane:
   branch: fix/f6-protocols-20260927
   worktree: dedicated native git worktree with its own physical .venv from make setup
@@ -9,7 +11,7 @@ lane:
 cycle:
   - lane creation from the fetched tip
   - generation with the CI context (make gen, twice to the fixed point)
-  - gates in order (make check, CI=Y make check, make test)
+  - real runtime, declared static gates, then the catalog-declared complete test suite
   - pull request opened from the pushed lane branch
   - merge with --no-ff after green CI
   - post-merge proof on the integration tip
@@ -19,12 +21,13 @@ forbidden:
   - rebase of the authorized change branch
   - force-push to any shared branch
   - skipping a red gate or waiving a finding
-native_evidence:
-  command: gh pr merge --merge
-  cwd: the lane worktree
-  exit_code: 0
-  decisive_output: Merge commit on the integration branch; ancestry proof returns true; worktree removed.
+required_receipt_fields:
+  - exact native command
+  - selected physical context
+  - actual exit status and decisive output
+  - authorized disposable target and fresh ancestry proof
 instruction: >
   Execute the unit in the declared order and state, at each step, the exact
-  evidence left on the claimed bead. Never rebase or force-push; a red gate
-  stops the cycle at its owner's cure.
+  evidence required on the claimed bead. This fixture describes a requested scenario,
+  not completed execution. Never invent outcomes; a red gate stops that invocation
+  for repair at its owner.

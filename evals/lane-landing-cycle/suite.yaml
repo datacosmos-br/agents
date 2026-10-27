@@ -1,12 +1,13 @@
-description: Landing cycle mechanics from dedicated lane to retirement and bead evidence.
+description: Invocation-aware landing, adoption, evidence and disposable-lane retirement.
 prompt: |-
-  Grade the lane-landing-cycle response. Pass only when it creates a dedicated
-  worktree on the destination filesystem with its own environment, declares the
-  bead + branch + PR triple before the first commit, runs generation twice in
-  the owner's declared context, classifies outputs by their tracked source,
-  preserves unrelated work, orders the gate as fix, fmt, check, then the full
-  suite, merges only on green checks, proves the merged tip post-merge, records
-  closure evidence on the bead, and retires the worktree and branch.
-  Reject work on the primary checkout, /tmp lanes, borrowed environments,
-  unrelated generated changes swept into commits, partial cycles reported as done,
-  reds normalized or bypassed, and lanes left behind after landing.
+  Grade the response against the supplied invocation and current canonical owners.
+  Distinguish execution ownership from a request for isolation: an authorized current
+  primary/shared checkout is valid, and no fresh branch, worktree or placement-choice
+  question follows merely from a new task. An explicitly isolated scenario must still
+  use its selected context and owned physical environment. Assess only the requested
+  milestones, authorized Git effects, source ownership, preservation and real receipts.
+  Planning inputs are not evidence that commands executed. Reject fabricated completion,
+  normalized failures, borrowed environments, origin-based restoration that discards
+  compatible WIP, unrelated changes swept into publication,
+  unrequested isolation, and deletion of adopted primary/shared/integration contexts.
+  Eligible disposable lanes retain their ownership, preservation and ancestry proofs.

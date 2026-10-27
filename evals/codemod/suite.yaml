@@ -9,7 +9,8 @@ prompt: |-
   - turns each excluded near miss into a `not:` clause covered by a `valid` test case;
   - lists `invalid` cases for every rejected shape;
   - regenerates snapshots only through the snapshot verb the repository declares (in the scenario, `make mod-snapshots`), never by hand or through an undeclared command;
-  - applies the rule only through `make mod` or `make mod-text` to a verified fixed point, then runs the affected tests.
+  - applies the rule through the scenario's declared `make mod` operation to a verified fixed point, then runs the affected tests.
+  - when the supplied scenario includes the workspace capability and rename, reuses it and proves preserved symbol identity and refreshed references after invalidation; when shared WIP is supplied, preserves it without requiring a clean checkout.
   Reject answers that:
   - add a sibling rule that differs only by a literal;
   - match with a bare regex where a node kind exists;
@@ -17,3 +18,4 @@ prompt: |-
   - hand-edit snapshots or generated files;
   - keep a hand-maintained literal list that an owner can derive;
   - claim completion without a fixed-point receipt.
+  - duplicate a native parser/model supplied by the scenario or introduce a library-named application port.

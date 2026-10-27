@@ -32,7 +32,7 @@ as applied.
 ```python
 check = u.Cli.run_raw(["git", "diff", "--cached", "--quiet"], cwd=repo)
 if check.failure:
-    return r[...].from_failure(check)          # the command could not run
+    return r[...].from_failure(check)  # the command could not run
 if not u.Cli.process_succeeded(check.value.outcome):
-    ...                                        # exit != 0 → there IS something
+    ...  # exit != 0 → there IS something
 ```

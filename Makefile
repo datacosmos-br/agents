@@ -73,7 +73,7 @@ docs: ## validate documentation through the public bundle contract
 
 audit: ## print the complete public semantic inventory
 	$(call BANNER,audit · GovernanceBundle.load)
-	@$(UV_RUN) python -c 'from agents_governance import GovernanceBundle; bundle = GovernanceBundle.load(); d = bundle.delivery; print(f"{len(bundle.skills)} skills, {len(bundle.commands)} commands, {len(bundle.agents)} agents, {len(bundle.rules)} rules"); print(f"capsule {d.total_chars} chars (prelude {d.prelude_chars} + rules {d.rule_summary_chars} + skills {d.skill_index_chars}), headroom {d.headroom_chars}/{d.contract.capsule_budget_chars - d.contract.restore_list_reserve_chars}")'
+	@$(UV_RUN) python -c 'from agents_governance import GovernanceBundle, catalog_resources; bundle = GovernanceBundle.load(); resources = catalog_resources(bundle); d = bundle.delivery; print(f"{len(bundle.skills)} skills, {len(bundle.commands)} commands, {len(bundle.agents)} agents, {len(bundle.rules)} rules"); print(f"{len(resources)} authenticated neutral catalog resources"); print(f"capsule {d.total_chars} chars (prelude {d.prelude_chars} + rules {d.rule_summary_chars} + skills {d.skill_index_chars}), headroom {d.headroom_chars}/{d.contract.capsule_budget_chars - d.contract.restore_list_reserve_chars}")'
 
 waza: ## validate provider-neutral skill suites with Waza
 	$(call BANNER,waza · provider-neutral suites + deterministic spec proof)

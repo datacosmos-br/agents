@@ -15,6 +15,14 @@ settings, or constants owner declares; inputs a fixture synthesizes are scenario
 A test changes the process environment only through a scoped context that restores it
 on exit (FLEXT: `u.Tests.env_vars_context`); a change that outlives the test fails it.
 
+Use an independent behavioral oracle from the approved public contract: expected
+outputs, errors, ordering, persistence and external effects must not be calculated
+by the same implementation being tested. Tautologies, self-verifying receipts, an
+assertion that only echoes a reported success, or copied implementation branches
+prove nothing. Deriving scenario inputs from their configuration owner is valid;
+deriving the expected answer from the subject under test is not. Implementation and
+real-execution proof precede test edits under `runtime-is-reality`.
+
 For `internal_flext`, all construction comes from `flext-tests` and its public `tm`,
 `c`, `t`, `p`, `m`, and `u` facets. A local fixture binds scenario data but never
 redeclares that machinery. Assertions use a `tm` matcher; a bare `assert` is allowed
@@ -78,6 +86,33 @@ fallback or coverage exclusion is authorized by this prerequisite contract.
 Fixtures compose the gen-generated lazy-import pattern: one nested class per module,
 built from `settings`/`config`/`c`/`t`/`p`/`m`/`u` and the shared conftest as the tests'
 single source of truth (`u.Tests.*` builders), never a second ad hoc construction path.
+
+### Artifact-only fixture storage (operator ruling, 2026-10-26)
+
+`tests/fixtures/` owns shared test artifacts and data exclusively. It contains no
+executable test code: classes, functions, aliases, models, package initializers and
+`conftest` modules belong to the declared test-code owners. FLEXT declarations and
+builders use `c.Tests`, `t.Tests`, `p.Tests`, `m.Tests` and `u.Tests`; pytest wiring
+belongs to `conftest.py`, and behavioral cases belong to unit, integration or
+end-to-end test layers.
+
+Artifact bytes are inputs to behavioral tests, never source populations for lint,
+type analysis, refactoring or generation. Enforce this boundary through path
+inventory and imports in the surrounding executable source, without parsing or
+interpreting artifact content. Reject `__init__.py` and `conftest.py` anywhere
+beneath the artifact root, executable source discovery there, and imports or
+executable loads by surrounding test code whose resolved origin lies there.
+An artifact may retain a real source filename and extension, including `.py` or
+`.pyi`, and may intentionally contain invalid Python. Extension alone never
+establishes executable ownership: those bytes remain data and are not imported
+or executed in the suite process.
+
+The declared shared enforcement owner applies the contract to every governed
+project; local exclusions or relocated duplicate checks do not establish another
+owner. Source alignment, generated propagation and installed validation are
+separate receipts. See the
+ADR-0031, section "Artifact-only fixture storage amendment - 2026-10-26",
+and `tdd-workflow` (skill), procedure section "Test selection".
 
 A red test is fixed at its contract — conftest, the `c`/`t`/`p`/`m`/`u` facades, or the
 fixture itself — never by loosening an assertion, skipping, or marking it xfail.

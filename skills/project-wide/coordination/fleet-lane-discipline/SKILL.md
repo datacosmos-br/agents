@@ -9,6 +9,8 @@ metadata:
 # Fleet Lane Discipline
 
 Use when coordinating lanes across a superproject and submodule trees.
+Use the execution context selected by the current invocation, including an authorized
+primary/shared checkout; this procedure adds no isolation prerequisite.
 
 - Serialize each shared Git index, merge or publication through its current owner;
   bounded file owners collaborate in the same authorized checkout. Apply the canonical
@@ -40,9 +42,10 @@ and parallel actors.
   on its declared integration branch; re-fetch the remote and prove
   `git merge-base --is-ancestor <sha> origin/<base>` before any deletion the rollup
   justifies.
-- Retire a lane in the same cycle it lands: ancestor-proof against a just-fetched base,
-  then remove the worktree, delete the local branch, the remote branch, and prune stale
-  tracking refs. Empty `git worktree list` is the acceptance evidence.
+- Retire only an owned disposable isolated context with explicit removal authority,
+  the Git owner's preservation/runtime-reference proofs and ancestry against a
+  just-fetched base. Never remove adopted primary, integration, shared or foreign
+  contexts. Account for the authorized lane only, not an empty global worktree list.
 - Prove zero residue (`*.bak`, `*.tmp`, generated backups) through the generator itself
   — a green `make gen` fixed point — never through a manual `find` after failed or
   partial runs, and never through literal-grep heuristics (a literal environment probe

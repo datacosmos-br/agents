@@ -1,7 +1,7 @@
 interface:
-  display_name: "TDD Workflow"
-  short_description: "Test-driven development with coverage gates"
+  display_name: "Behavioral Regression"
+  short_description: "Real runtime first, regression tests last"
   brand_color: "#22C55E"
-  default_prompt: "Use $tdd-workflow to drive the change with tests before implementation."
+  default_prompt: "Use $tdd-workflow to align documentation, implement and prove real behavior, then validate it with independent regression tests."
 policy:
   allow_implicit_invocation: true

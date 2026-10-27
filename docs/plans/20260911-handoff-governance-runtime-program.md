@@ -4,7 +4,12 @@
 > Plano canônico: `docs/plans/20260910-governance-runtime-program.md` (fonte única de
 > sequência/DoD).
 
-## 1. Prompt de reinício (colar numa sessão nova)
+## 1. Registro histórico de reinício
+
+Este registro não seleciona o contexto de uma nova chamada. A exigência antiga de
+isolamento foi revogada pelo operador em 2026-10-23 (ag-wibx.2); o dono atual é
+`rules/coordination/gascity.md`. Revalidar as demais instruções históricas em seus
+donos antes de qualquer retomada, preservando os fatos medidos abaixo.
 
 ```text
 Handoff: Governance Runtime Program (bead épico ag-zrh).
@@ -23,8 +28,8 @@ Handoff: Governance Runtime Program (bead épico ag-zrh).
 6. PROPOSTA aguarda aprovação do operador (seção PROPOSTA do plano; beads
    ag-q4w1 esteira, ag-m9lu piloto). Sem aprovação, o grind por classe continua
    usando só make fix/mod/check/test + make gen ×2.
-7. Disciplina permanente: toda correção usa worktree dedicada (nunca checkout
-   compartilhado), roda gates após cada onda ({make fix → test → check}),
+7. Placement segue o dono canônico e a chamada atual; não exige outra worktree.
+   Runtime real, estática e testes finais seguem seus donos vigentes,
    docs/beads/plano atualizados no mesmo passo, evidência de 4 fontes para
    qualquer fechamento, push pendente do plano dev agents (aguardar WIP do ator
    AGENTS.md/CLAUDE.md liberar, depois git pull --rebase && push).
@@ -108,5 +113,5 @@ verde. Sem o item 1 o piloto publicaria com aceitação simulada — proibido em
 
 ---
 
-Gerado na sessão 2026-09-11 (opencode). Nova sessão: este arquivo + bd prime + plano
-canônico = tudo que é preciso.
+Gerado na sessão 2026-09-11 (opencode). Este é um registro histórico, não uma
+autorização de execução nem substituto das regras e do estado atuais.

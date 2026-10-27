@@ -5,7 +5,14 @@ This is the compact entry to the canonical rules below, not a second rule body.
 
 1. Evidence: verify every fact, cause, state or result at its source before
    stating it; label anything unverified: `rules/ethics/professional-integrity.md`.
-2. Root-cause correction: `rules/architecture/engineering-core.md`.
+2. Prove the causal owner before any repair: reproduce, research, debug and trace;
+   never patch a guess or invent a rule: `rules/architecture/engineering-core.md`.
+   Every problem requires evidence-backed debugging and tracing before repair;
+   hypotheses permit investigation only, never speculative implementation.
+   Corrections follow verified canonical rules, never invented exceptions; validate
+   each adjustment immediately and return to diagnosis if it fails.
+   Exterminate superseded, excessive, wrong or duplicated code; Git preserves
+   recovery: `rules/runtime/zero-residue.md`.
 3. Selected tracker and unavailable capabilities: `rules/workflow/beads-traceability.md`.
 4. Research before effects and no guessed APIs: `rules/coordination/never-deduce.md`.
 5. Reuse the declared owner: `rules/workflow/declared-tool-ownership.md`.

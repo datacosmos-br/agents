@@ -60,7 +60,9 @@ a defect repaired at its owner and rerun through, never routed around.
 
 ## 6. Landing
 
-Commit and push early by explicit paths; never accumulate uncommitted mass
+Complete and validate each small slice before committing and pushing its explicit
+paths; incomplete preservation follows the Git owner's declared ref boundary. Never
+accumulate an unreviewable mass
 (`rules/workflow/mass-rewrite-discipline.md` for tree-wide effects, test
 evidence bracketing the mass). Absorb the integration base before publishing,
 merge with review of both sides, and land the full cycle —

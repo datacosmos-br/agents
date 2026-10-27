@@ -12,13 +12,14 @@ metadata:
 
 # Pre-push keepalive and push batching
 
-## Set the keepalive when the lane is created
+## Set the keepalive in the selected context
 
 ```bash
 git config core.sshCommand "ssh -o ServerAliveInterval=30 -o ServerAliveCountMax=60"
 ```
 
-Run it once in the lane worktree right after `worktree add`. Without it, a
+When publication is authorized, configure the selected checkout through its Git
+owner, whether adopted or explicitly created. It requires no `worktree add`. Without it, a
 pre-push hook longer than the host's idle window (gascity's `test-fast-parallel`
 runs ~15–18 min) kills the connection between the hook and the ref update:
 the gate is green, the push still fails, and the only way to retry is to pay

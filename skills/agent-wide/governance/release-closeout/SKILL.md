@@ -46,9 +46,9 @@ directly without an apply selector.
 
 ## Superproject PR merge playbook (release lane → integration branch)
 
-- Execute the merge in a dedicated worktree
-  (`git worktree add <path> -b merge/<pr>-<from>-to-<to> <integration-branch>`), never
-  in a live checkout; never push from the analysis phase.
+- Resolve placement through `rules/coordination/gascity.md` and preserve concurrent
+  WIP through the Git owner. Closeout does not require a new merge worktree or
+  authorize checkout changes or publication from the analysis phase.
 - Conflict classes: (1) submodule/gitlink → OURS when integration tips are newer and
   pushed; (2) generated facade `__init__.py` → THEIRS when theirs is the more complete
   public facade; (3) prohibited lock/pin artifacts → remove from the merged result and
@@ -65,8 +65,8 @@ directly without an apply selector.
 
 - A sibling lane running `flext_infra codegen conform` loops creates transient
   `.git/index.lock`; never delete a live lock, never kill the other lane's processes.
-- Retry the commit in a bounded loop (e.g. 40 attempts, 15s sleep) — the commit window
-  between conform iterations is enough.
+- Coordinate and serialize index mutations with the current owner; retry only within
+  the agreed bounded window. Contention does not select another worktree.
 - Commit by explicit paths only: gitlinks + stable projections first; leave files a
   sibling lane is actively rewriting (for example the typed dependency config or
   generated `pyproject.toml`) to that lane, then verify and adopt after their push. A

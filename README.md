@@ -9,15 +9,40 @@ runtime reconciliation, and global distribution.
 ## Public API
 
 ```python
-from agents_governance import GovernanceBundle
+from agents_governance import GovernanceBundle, catalog_resources
 
 bundle = GovernanceBundle.load()
+resources = catalog_resources(bundle)
 ```
 
 The returned frozen snapshot exposes `root`, `schema_version`, `distribution_version`,
 `config`, `eval_policy`, `skills`, `skill_metadata`, `commands`, `agents`, `rules`, and
 `law`. Loading is read-only and fails on the first catalog, evaluation-resource,
 approval, ownership, metadata, profile, command, rule, or strict-prelude defect.
+
+The central-catalog data boundary is `catalog_resources(bundle)`, returning a
+path-sorted tuple of frozen `CatalogResource(relative_path, content, mode, sha256)`
+records. Paths are portable relative physical-file identities, content is bytes,
+mode is the publication permission bits, and SHA-256 addresses those exact bytes.
+Construction rejects mutable content, noncanonical paths, negative/non-integer modes
+or bits outside native permissions, and digests that do not match the immutable bytes.
+The existing wheel `force-include` enrollment in `pyproject.toml` selects the
+catalog; configuration and the packaged enrollment document are SDK inputs, not
+central publications. The sdist retains these same enrolled sources. No arbitrary
+checkout traversal or repository-root copy is part of this protocol.
+
+As specified by [ADR-0022](docs/adr/ADR-0022-home-global-materialized-projection.md),
+AI Hub must consume these records to publish the neutral central catalog. In particular,
+the central `AGENTS.md` consists of `bundle.law.prelude` and
+`render_capsule(bundle).text`, never the checkout's repository-local scope block or
+AI Hub's own instructions. Legacy `UNIVERSAL_CORE.md` is not enrolled by this
+contract. AI Hub retains transaction, destination, activation and withdrawal ownership.
+`make audit` loads the public bundle and captures this catalog through the same public
+API; `make runtime` compares that inventory, its content digests and modes in each
+installed wheel and sdist against the public source API, separately from skill resources.
+This source contract is not an installed-artifact or live-publication receipt;
+source/installed byte, mode and digest equality must be measured separately. Native
+AI Hub adoption of this API is not established by this SDK source change.
 
 There is deliberately no executable runtime, projector, provider adapter, hook
 generator, home-directory writer, cleanup command, live model runner, security runner,
@@ -70,6 +95,12 @@ projected suite schema, every skill/evaluation reference, the exact spec thresho
 token ceilings; model execution belongs to a selected AI Hub runtime and is not claimed
 by this package.
 
+Workspace placement has one owner:
+[`rules/coordination/gascity.md`](rules/coordination/gascity.md). Project procedures
+reference that contract rather than deriving a universal isolation requirement from
+a campaign's selected checkout. The correction and historical attribution boundary
+are recorded in [ADR-0025](docs/adr/ADR-0025-manual-worktrees-during-orchestration-suspension.md).
+
 `make check` and `make ci` validate the immutable package without requiring the host's
 AI Hub runtime. Under [ADR-0010](docs/adr/ADR-0010-optional-host-runtime-boundary.md),
 host CRG convergence is a separate, mandatory installed-integration acceptance step:
@@ -106,3 +137,10 @@ The `/reconcile-plans` command selects the
 It composes the existing documentation, architecture, tracker-revalidation, and
 interruption owners. Collection adapters and projection destinations remain consumer
 configuration; AI Hub alone distributes the complete skill resources.
+
+Reconciliation transfers valid pending work to Beads and maintained documentation before
+retiring one fully accounted plan at a time; it does not implement historical proposals.
+The [tracker rule](rules/workflow/beads-traceability.md) owns AI Hub's required automatic,
+versioned, own-project `TODO.md` view, never an independent checklist or automatic Git
+publication. This governance contract does not claim that the automation is implemented
+or activated; real runtime and delivery receipts remain with AI Hub.

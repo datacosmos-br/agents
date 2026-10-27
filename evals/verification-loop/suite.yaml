@@ -24,3 +24,17 @@ prompt: |-
   External-token workflows excluded before invocation must be recorded as
   NOT EXECUTED and never treated as green or as a landing blocker; once
   invoked, their missing credential or runtime failure remains red.
+  Reject speculative patch-and-see repairs: hypotheses guide observations only.
+  Require source/runtime identity, original public reproduction and diagnostic causal
+  evidence before patching; an independent probe or changed error proves no resolution.
+  Require conformance with canonical rules and researched contracts, never invented
+  exceptions. Every correction requires immediate verification through the original
+  failing operation and applicable admitted tests. Failure returns to causal diagnosis
+  before another edit; reject speculative patch stacking and delayed verification.
+  An unchanged original error leaves the defect unresolved: require debugging/tracing
+  of the loaded artifact and failing path before any further edit. An altered message
+  alone cannot prove correctness.
+  For the separate proven-owner scenario, require the parser trace, sole YAML source
+  owner, same original public invocation after correction and negative reproduction.
+  Its supplied receipts support only that bounded source repair, not installed AI Hub
+  delivery or an independently observed native-agent result.

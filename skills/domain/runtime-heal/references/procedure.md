@@ -17,9 +17,9 @@ state.
 3. If a credential-projection guard refuses an operator-session action, the
    guard is the defect when the cgroup leaf is a `.scope`; cure the guard at
    its owner. `env -u <MARKER> <command>` is a forbidden bypass.
-4. Fresh worktree: run the repository's generator verb (e.g. `make gen`)
-   before any battery — generated artifacts (receipts, locks) are part of an
-   honest run.
+4. In the current authorized context (`rules/coordination/gascity.md`), run the
+   repository's generator verb (e.g. `make gen`) before any battery; generated
+   artifacts (receipts, locks) are part of an honest run, not a reason for isolation.
 
 ## 1. Diagnose at the failing layer
 

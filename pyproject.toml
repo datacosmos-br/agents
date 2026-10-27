@@ -44,7 +44,9 @@ packages = ["src/agents_governance"]
 "docs/research" = "agents_governance/_data/docs/research"
 "AGENTS.md" = "agents_governance/_data/AGENTS.md"
 "README.md" = "agents_governance/_data/README.md"
-"docs/security/security-triage.md" = "agents_governance/_data/docs/security/security-triage.md"
+"docs/security" = "agents_governance/_data/docs/security"
+"metadata.json" = "agents_governance/_data/metadata.json"
+"pyproject.toml" = "agents_governance/_data/pyproject.toml"
 
 [tool.hatch.build.targets.sdist]
 only-include = [
@@ -63,9 +65,10 @@ only-include = [
   ".github/workflows/release.yml",
   "docs/adr",
   "docs/research",
-  "docs/security/security-triage.md",
+  "docs/security",
   "evals",
   "mise.lock",
+  "metadata.json",
   "pyproject.toml",
   "rules",
   "skills",

@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import re
 import stat
+from collections.abc import Mapping
 from dataclasses import dataclass
 from enum import StrEnum
 from pathlib import Path, PurePosixPath
@@ -13,6 +14,7 @@ from typing import cast
 from .approvals import APPROVAL_NAMESPACES, resolve_approval_tags
 from .frontmatter import cast_mapping, parse_frontmatter, require_exact_fields
 from .markdown_references import local_reference_targets, resolve_physical_reference
+from .resources import CatalogResource, source_text
 from .skill_resources import ResourcePolicy, SkillResource
 
 NON_PORTABLE_PROJECT_REFERENCE = re.compile(
@@ -107,10 +109,13 @@ class SkillRecord:
 class Catalog:
     """Discover and validate every canonical skill before returning any record."""
 
-    def __init__(self, root: Path) -> None:
+    def __init__(
+        self, root: Path, *, captured: Mapping[Path, CatalogResource] | None = None
+    ) -> None:
         self.root = root.resolve(strict=True)
+        self._captured = captured
         policy_path = self.root / "config" / "skills.json"
-        self._policy = self._load_policy(policy_path)
+        self._policy = self._load_policy(policy_path, captured)
         self._resource_policy = ResourcePolicy.parse(self._policy["resources"])
         (
             self._usage_tags,
@@ -133,10 +138,12 @@ class Catalog:
             resolve_approval_tags(self.root, record.tags, record.directory / "SKILL.md")
 
     @staticmethod
-    def _load_policy(path: Path) -> dict[str, object]:
+    def _load_policy(
+        path: Path, captured: Mapping[Path, CatalogResource] | None = None
+    ) -> dict[str, object]:
         if path.is_symlink() or not path.is_file():
             raise ValueError(f"skills policy must be a physical file: {path}")
-        loaded = cast_mapping(json.loads(path.read_text(encoding="utf-8")), str(path))
+        loaded = cast_mapping(json.loads(source_text(path, captured)), str(path))
         require_exact_fields(
             loaded,
             frozenset({"version", "budgets", "resources", "vocabulary"}),
@@ -194,8 +201,10 @@ class Catalog:
         )
 
     @staticmethod
-    def _frontmatter(path: Path) -> dict[str, object]:
-        frontmatter, _ = parse_frontmatter(path)
+    def _frontmatter(
+        path: Path, captured: Mapping[Path, CatalogResource] | None = None
+    ) -> dict[str, object]:
+        frontmatter, _ = parse_frontmatter(path, text=source_text(path, captured))
         unknown = frozenset(frontmatter) - _FRONTMATTER_FIELDS
         if unknown:
             raise ValueError(
@@ -242,7 +251,7 @@ class Catalog:
         return paths
 
     def _require_local_links(self, directory: Path, markdown: Path) -> None:
-        text = markdown.read_text(encoding="utf-8")
+        text = source_text(markdown, self._captured)
         for target in local_reference_targets(markdown, text):
             resolved = resolve_physical_reference(directory, markdown, target)
             resolved.relative_to(self.root)
@@ -250,11 +259,11 @@ class Catalog:
     def _validate_record(self, record: SkillRecord) -> None:
         directory = record.directory
         skill_file = directory / "SKILL.md"
-        frontmatter = self._frontmatter(skill_file)
+        frontmatter = self._frontmatter(skill_file, self._captured)
         self._require_description(frontmatter.get("description"), skill_file)
         budgets = cast(dict[str, int], self._policy["budgets"])
         if (
-            len(skill_file.read_text(encoding="utf-8").splitlines())
+            len(source_text(skill_file, self._captured).splitlines())
             > budgets["max_lines"]
         ):
             raise ValueError(f"{skill_file}: skill exceeds max_lines")
@@ -272,7 +281,7 @@ class Catalog:
             ),
         )
         for path in textual:
-            text = path.read_text(encoding="utf-8")
+            text = source_text(path, self._captured)
             if project_distributed and NON_PORTABLE_PROJECT_REFERENCE.search(text):
                 raise ValueError(f"project-distributed skill is not portable: {path}")
             if path.suffix == ".md":
@@ -365,7 +374,7 @@ class Catalog:
     def _record(
         self, skill_file: Path, category: SkillCategory, slug: str
     ) -> SkillRecord:
-        frontmatter = self._frontmatter(skill_file)
+        frontmatter = self._frontmatter(skill_file, self._captured)
         if "name" not in frontmatter:
             raise ValueError(f"{skill_file}: name is required")
         name = frontmatter["name"]
@@ -469,7 +478,7 @@ class Catalog:
             detectors,
             parents,
             tuple(
-                self._resource_policy.resource(self.root, path)
+                self._resource_policy.resource(self.root, path, captured=self._captured)
                 for path in self._physical_tree(skill_file.parent)
                 if path.is_file() and path != skill_file
             ),
@@ -518,7 +527,7 @@ class Catalog:
             SkillCategory.DOMAIN: 2,
         }
         for record in self._records:
-            router = (record.directory / "SKILL.md").read_text(encoding="utf-8")
+            router = source_text(record.directory / "SKILL.md", self._captured)
             for parent_name in record.parents:
                 parent = by_name.get(parent_name)
                 if parent is None:

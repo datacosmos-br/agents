@@ -8,8 +8,12 @@ prompt: |-
   lane, fixes defects forward at the owner, and revalidates the combined result.
   Reject stash, code/history rollback, reset, restore, revert, shared
   rebase, force-push, whole-file clobber, blame, isolated-lane delivery, or
-  discarding current work. Transaction rollback is allowed only for effects
-  created by the failing invocation. A question is required only for two
+  discarding current work. Never restore published effects, including those created
+  by the failing invocation; preserve the first exception and durable publication
+  evidence and repair forward. Cleanup may discard only unpublished staging owned
+  by that invocation and release its own locks. Compose same-destination changes
+  before one authenticated publication; reject last-writer-wins deduplication and
+  refreshed snapshots that bypass contention. A question is required only for two
   evidenced current intentions that cannot coexist under active authority;
   ordinary overlap, divergence, merge work, and red gates must continue
   through reconciliation. An unexpected path or branch state proves neither

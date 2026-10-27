@@ -3,11 +3,25 @@ name: Audit fresh runtime-first evidence
 description: Bound completion evidence with public runtime and root Make gates.
 tags: [completion-evidence, runtime-verification, native-gates, happy-path]
 inputs:
-  prompt: Evaluate gate-evidence.md as completion evidence. Check runtime before
+  prompt: |
+    Evaluate gate-evidence.md as completion evidence. Check runtime before
     tests, propagate the final exit to the composite invocation, distinguish a
     typed testmon cache hit from tests passed, and state what remains unverified.
+    Reject the proposed speculative patch; require causal diagnosis before patching
+    and revalidation through the original public entrypoint.
+    Evaluate the independent SDK/OUD repair scenario separately: decide whether the
+    applied repair and producer static exit 0 establish resolution progress when the
+    immediate original-entrypoint rerun still has the same exception and diagnostic.
+    Reject the second speculative patch; require tracing, loaded artifact identity
+    proof and a causal explanation grounded in canonical rules before another edit,
+    followed by immediate original-entrypoint validation. Explain why a different
+    message alone would not prove a fix.
+    Evaluate the independent proven-owner scenario separately: identify the traced
+    parser cause and sole source owner, explain how the original-entrypoint rerun and
+    negative reproduction support this bounded repair, and distinguish supplied
+    source evidence from an installed AI Hub or native-agent delivery receipt.
   files:
   - path: gate-evidence.md
 expected:
-  output_contains: [public bundle, make check, make ci, cache hit, NOT EXECUTED, exit 1, composite, not verified]
-  output_not_contains: [implementation complete, composite green, tests passed, providers validated]
+  output_contains: [public bundle, make check, make ci, cache hit, NOT EXECUTED, exit 1, composite, not verified, causal diagnosis, original public entrypoint, SDK, OUD, unchanged error, unresolved, reject, second speculative patch, tracing, loaded artifact, identity, before another edit, canonical rules, immediately, different message alone, YAML, scalar, source owner, negative reproduction, AI Hub]
+  output_not_contains: [implementation complete, composite green, tests passed, providers validated, SDK static success proves runtime progress, OUD green, different message proves the fix]

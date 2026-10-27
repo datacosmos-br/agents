@@ -1,7 +1,7 @@
 # ADR-0031 — Contradiction resolution and test-service ownership
 
-**Status:** Accepted 2026-09-29; consolidated 2026-10-20 under the approved
-governance repair. Historical tracking: ag-3l2q.
+**Status:** Accepted 2026-09-29; consolidated 2026-10-20; ordering amendment
+2026-10-23, tracked by ag-wibx. Historical tracking: ag-3l2q.
 
 ## Context
 
@@ -28,6 +28,10 @@ and documents supersession; it does not copy their contracts.
 | Source publication and recovery | runtime/atomic-effects, storage |
 | Architecture and declaration layout | selected branch-matched project law |
 | Configuration-owned values | their typed source; workflow/runtime-is-reality |
+| Documentation before implementation | architecture/engineering-core; workflow/living-documentation |
+| Implemented runtime before test changes | workflow/runtime-is-reality |
+| Independent behavioral oracle, no mocks or tautologies | testing/observable-runtime |
+| Beads-derived TODO ownership and publication | workflow/beads-traceability |
 
 The earlier allowance to exclude provisioning from the outer command deadline
 is superseded. Earlier capability-deselection text does not replace a newer
@@ -41,7 +45,50 @@ Module ceilings are read from their current project owner rather than copied
 into global rules or procedures. Current outcome classification preserves native
 causes and required red results; it never manufactures success.
 
+The operator's 2026-10-23 correction explicitly reaffirms these owners. The RED-test-
+before-implementation sequence in the conditional `tdd-workflow` procedure, provider
+prompt and semantic expectations is superseded, not an exception to runtime-first law.
+The existing skill identity remains one procedure with no alternate test-first path.
+Canonical documentation, selected tracker references and affected skill sources are
+aligned before code; tests validate implemented and observed real functionality at
+the end. The source correction does not itself establish installed AI Hub delivery.
+
+### Reconciliation and TODO decision amendment — 2026-10-23
+
+The newer operator decision replaces an independent TODO checklist with AI Hub's
+automatic, versioned Beads-derived view. The tracker rule owns its project attribution,
+nonterminal source-wide publication barrier and no-automatic-Git contract. This changes
+the documented delivery requirement, not the observed implementation state. AI Hub's
+existing runtime owners must still establish capability and activation receipts.
+
+The `plan-reconciliation` procedure transfers valid pending work and useful knowledge
+before retiring one fully accounted source at a time; historical proposals do not become
+implementation authorization. Reconciliation completion is distinct from completing the
+transferred work. This amendment records the changed decisions without replacing the
+existing runtime-first and documentation-first bodies or rewriting historical plans.
+
+### Command catalog reconciliation - 2026-10-23
+
+Tracked by ag-wibx.1: repository command catalogs own grammar, test populations,
+selection modes and execution contexts; `workflow/canonical-commands` owns their
+execution semantics. A global fixed-name or implicit-mode mapping must not reinstate
+retired commands or impose another project's catalog. Complete-suite and explicitly
+declared incremental operations retain distinct accounting and persistent database
+ownership. This supersedes the old fixed mapping, not historical receipts or the ban
+on raw-runner bypasses. Source, implementation and installed delivery remain separate
+proofs; this amendment does not assert their convergence.
+
 ## Consequences
+
+### Artifact-only fixture storage amendment - 2026-10-26
+
+The operator assigns shared artifact storage and executable test ownership to
+distinct populations. The normative contract is
+[`testing/observable-runtime`](../../rules/testing/observable-runtime.md#artifact-only-fixture-storage-operator-ruling-2026-10-26);
+the [behavioral regression procedure](../../skills/project-wide/testing/tdd-workflow/references/procedure.md#test-selection)
+consumes it. The shared enforcement implementation and its project projections must
+follow that owner without interpreting artifact bytes. This amendment records
+source authority, not published propagation or installed acceptance.
 
 Global rules and conditional procedures compose by reference. Provider-managed
 blocks are withdrawn by their existing authors, and AI Hub owns deployment of

@@ -1,9 +1,14 @@
-description: Observable RED, minimal owner correction, GREEN, and refactor evidence.
+description: Documented contract, implemented real behavior, then independent regression validation.
 prompt: |-
-  Grade the tdd-workflow response. Pass only when it derives observable cases
-  from the supplied public contract, starts with a test that reproduces the 0
-  defect as RED, changes only parse_limit minimally, reruns the same command to
-  GREEN, and refactors only while behavior remains green. Reject implementation-
-  detail tests, arbitrary coverage targets, fallbacks, or editing tests to match
-  broken runtime. Require unexpected command failure to remain causal, failed
-  preflight to leave zero effects, atomic consumer rewiring, and residue proof.
+  Grade the actual decision and ordered actions, not a list of matching words.
+  Pass only when the response aligns authoritative documentation first, corrects
+  the owner, proves corrected real execution, and changes regression tests only
+  afterward. Inspecting the old defect does not authorize test edits before the
+  implementation. Require independent public-contract expectations for zero and
+  the other supplied parser cases, not expectations computed by parse_limit.
+  Reject RED-before-code, mocks, monkeypatching, implementation-shaped or
+  tautological tests, copied policy, fallback paths, weakened assertions and
+  fabricated execution receipts. The fixture is a contract, not an executable
+  runtime; a proposed command or response description must never count as a run.
+  Require first-failure preservation, zero effects at missing prerequisites,
+  complete consumer rewiring and residue proof appropriate to the stated scope.

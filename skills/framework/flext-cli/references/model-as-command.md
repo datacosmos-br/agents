@@ -1,79 +1,69 @@
 # FLEXT-INFRA model-as-command routes
 
-Grounded in the real `flext-infra` sources (paths under `flext_infra/`). This is
-the framework-side sibling of [the route procedure](procedure.md): procedure.md
-owns the consumer contract (`ResultCommandRoute` fields, `model_command`
-field-to-option mapping, success/exit semantics); this page owns the
-flext-infra authoring form — the command model IS the service class, and the
-handler is derived from it.
+Read this alongside [the route procedure](procedure.md), which owns the
+`ResultCommandRoute` fields, model-to-option mapping and framework exit semantics.
+Verify the current `flext-infra` sources before changing a route. Paths below are
+relative to `flext_infra/`.
 
 ## Owners
 
-| Capability             | Owner                                       | Source (under `flext_infra/`)   |
-| ---------------------- | ------------------------------------------- | ------------------------------- |
-| Handler erasure        | `CliRouteBase.result_handler`               | `services/cli_route_base.py`    |
-| Check/codegen/deps table | `CodegenRoutes.codegen_routes`            | `services/cli_routes_codegen.py`|
-| Per-group lazy resolve | `CliRouteService.route_table_for`           | `services/cli_routes.py`        |
-| Group dispatch         | `CliDispatchService.run_group`              | `services/cli_dispatch.py`      |
-| Service-as-model seam  | `FlextInfraServiceBase.execute_command`     | `base.py`                       |
+| Capability | Owner | Source |
+| ---------- | ----- | ------ |
+| Group selection | `FlextInfraCliRouteService.route_table_for` | `services/cli_routes.py` |
+| Check, codegen and deps routes | `FlextInfraCodegenRoutes.check_routes`, `codegen_routes`, `deps_routes` | `services/cli_routes_codegen.py` |
+| Release and workspace routes | `FlextInfraWorkspaceRoutes.release_routes`, `workspace_routes` | `services/cli_routes_workspace.py` |
+| Refactor routes | `FlextInfraRefactorRoutes.refactor_routes` | `services/cli_routes_refactor.py` |
+| Docs, maintenance and validate routes | `FlextInfraValidationRoutes.validation_routes` | `services/cli_routes_validate.py` |
+| Group execution | `FlextInfraCliDispatchService.run_group` | `services/cli_dispatch.py` |
+| Service-model delegation | `FlextInfraServiceBase.execute_command` | `base.py` |
 
-## The mechanism
+## Model and handler binding
 
-1. The service class is a Pydantic model. `FlextInfraServiceBase` declares the
-   abstract `execute() -> p.Result[TDomainResult]` plus one classmethod seam,
-   `execute_command(cls, params: Self) -> p.Result[TDomainResult]` — the
-   framework-validated model instance is the service (`base.py:146-159`).
-2. The CLI surface comes from the fields. Annotated model fields become
-   options (`output_format` with `alias="format"`, `no_fail` with
-   `alias="no-fail"`); service collaborators are `m.Field(exclude=True, ...)`
-   with `default_factory` (consumer: `deps`, `runner` in
-   `deps/detector.py:47-54`) so they never become flags.
-3. The handler is derived, never written. `model_cls.execute_command` already
-   has the `Callable[[TParams], p.Result[TResult]]` shape;
-   `CliRouteBase.result_handler` wraps it and erases the concrete payload to
-   `t.Cli.ResultValue` via `.map(as_route_value)` — the table is heterogeneous,
-   so each command's `TResult` is erased at that one boundary
-   (`services/cli_route_base.py:19-25`).
-4. The route table is `ClassVar` data keyed by group constant
-   (`services/cli_routes_codegen.py:36-38`). Deps rows carry only
-   `(route_name, help_text, model_cls)` and the generator derives the handler
-   (`services/cli_routes_codegen.py:207-231`):
-   `handler=CliRouteBase.result_handler(model_cls.execute_command)`. The split
-   shape — separate input model plus service payload handler (`m.Infra.RunCommand`
-   - `FlextInfraWorkspaceChecker.execute_payload`) — stays available when the
-   operation lives on another class than the input model.
-5. Resolution is per group, lazily. `CliRouteService.route_table_for(group)`
-   imports only the dispatched group's owner module inside a `functools.cache`
-   classmethod backed by `_GROUP_OWNERS` (`services/cli_routes.py:23-104`).
-   Building every group's table at class-definition time eagerly imported all
-   owner modules on every invocation (~5.9s measured via
-   `python -X importtime`) — the regression this layout guards against.
-6. Registration is the same facade call as any consumer:
-   `CliDispatchService.run_group` builds the group app with
-   `create_app_with_common_params`, registers via
-   `register_result_routes(app, self.route_table_for(group))`, runs
-   `execute_app`, then maps the returned `p.Result[bool]` to process exit codes
-   (`services/cli_dispatch.py:72-106`). The same shape repeats in
-   `ValidationRoutes` and `WorkspaceRoutes`.
+The input class remains concrete at registration: `model_command` reads its
+`model_fields` to construct help and options. Annotated fields and their aliases
+define the CLI surface. Collaborators declared with `exclude=True` remain internal.
 
-## Adding a flext-infra command
+When the input model is the service, its unbound `execute` method receives the
+validated service instance. Dependency routes use `handler=model_cls.execute`;
+the operation's domain result remains typed inside that service. The existing
+`execute_command` seam delegates to the validated instance where a route uses it.
 
-1. Author the service model: subclass the selection/service base, annotate the
-   CLI fields (aliases for multi-word flags), mark collaborators
-   `exclude=True`, implement `execute() -> p.Result[...]`.
-2. Append one data tuple `(route_name, help_text, model_cls)` to the owning
-   group's table in `services/cli_routes_codegen.py` (or its validate/workspace
-   sibling).
-3. Nothing else changes: the group constant, lazy table, and dispatch pick the
-   row up; drive it as `flext-infra <group> <route_name>`.
+When the input and operation have different owners, bind the existing public
+facade, `execute_payload` or `execute_request` boundary appropriate to that
+operation. Generation and conformance use the existing `execute_codegen_generate`
+and `execute_codegen_conform` handlers to erase their receipts to the CLI result
+type while propagating failures. Reuse those owners instead of adding another
+handler-erasure layer.
 
-## Laws
+Keep `workspace_propagate` bound to `flext_infra.infra.workspace_propagate`:
+that facade injects the propagation collaborators.
 
-- Never write a handler lambda or a bespoke `register_result_command` call
-  where `result_handler(model_cls.execute_command)` derives it.
-- Never import a route-owner module at module scope outside the lazy
-  `_GROUP_OWNERS` path — eager imports re-create the startup regression.
-- Never expose a collaborator service or runner as a CLI field without
-  `exclude=True`.
-- Never widen the erasure: concrete `TResult` flows inside `execute()`; only
-  the heterogeneous table boundary sees `t.Cli.ResultValue`.
+## Group construction and execution
+
+`route_table_for(group)` selects one owner through the existing public `services`
+barrel. The check/codegen/deps and release/workspace factories return ordered tuples
+of native `m.Cli.ResultCommandRoute` models. Each factory resolves only its own
+group's models and handlers. Refactor and validation retain their existing owners.
+
+The owners of these five factories use the existing public lazy barrels
+(`codegen`, `deps`, `workspace`, `check`). Their access to `flext_infra.infra`
+occurs inside a selected factory or the operation's handler. The validation owner
+still constructs its shared mapping eagerly, and the refactor owner still
+constructs its tuple eagerly when imported. Shared facades and dependencies of
+the selected group still load; this structure alone proves no measured startup
+improvement or per-command lazy loading.
+
+The dispatcher registers the selected tuple through `register_result_routes` and
+executes the app through the framework. Registration, output and exit semantics
+remain with `flext-cli`.
+
+## Adding a command
+
+1. Define the concrete input model or service model on its declared owner. Annotate
+   CLI fields, preserve their aliases and exclude internal collaborators.
+2. Add the native route to the selected group's existing factory or table. Preserve
+   its order, handler, success message, formatter and message type.
+3. Use `route_table_for` when consuming a group; keep the group selector in that
+   owner. Do not introduce a parallel registry, cross-group eager table or cache.
+4. Exercise the real public route and its failure behavior before changing tests.
+   Then validate through the repository's declared root Make verbs.

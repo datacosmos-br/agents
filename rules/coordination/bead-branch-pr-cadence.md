@@ -22,13 +22,13 @@ delivers) and [fleet-landing-corrections](fleet-landing-corrections.md).
 ## 1. Identity at claim time
 
 1. Every work unit carries its triple from the moment work starts: the claimed
-   **bead**, the dedicated **branch**, and the **PR** (opened as soon as the
-   commit exists, updated as work lands).
+   **bead**, the authorized **branch**, and the **PR** (opened when publication is
+   authorized, updated as work lands).
 2. The coordinator is informed of the triple through the coordinator mail channel
    at claim time and at every material state change (land, blocker, scope change).
-3. The branch is dedicated (one mandate per lane, ruling 58): `fix/<slug>-<date>`
-   from the current integration tip, in a dedicated worktree on the destination
-   filesystem — never `/tmp`, never a borrowed venv, never the primary checkout.
+3. Record the actual selected checkout and branch under
+   `rules/coordination/gascity.md`. Declaring work identity does not require creating
+   a branch, worktree or environment, nor exclude the primary checkout.
 
 ## 2. Abandonment after the configured threshold without change
 
@@ -75,10 +75,10 @@ No rule, skill, command, or doc restates the number; each references this sectio
 1. The local gate runs BEFORE the PR exists: `CI=Y make gen` ×2, `make fix`,
    `make fmt`, `make check`, and the full suite — a silly red on CI is a
    violation, not bad luck.
-2. The repository canon for generation is the CI runner's emission
-   (`CI=Y make gen` on a fresh checkout). A local-context generation must never
-   be swept into a commit: if the CI-context paths were dirtied, restore them
-   from the origin tip before pushing.
+2. Use the repository-declared generator and emission contract in the authorized
+   current context. Attribute unexpected differences, preserve compatible WIP, fix
+   the tracked producer and prove its fixed point. Neither a fresh checkout nor
+   restoration from an origin tip substitutes for source-owned convergence.
 3. Land in short cycles (commit + push early, PR immediately, merge on green) —
    unlanded work is lost work (ruling 2026-09-27, "full landing cycle"
    [full-landing-cycle](full-landing-cycle.md)).

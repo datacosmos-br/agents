@@ -189,6 +189,7 @@ def _update_manifest(
 ) -> None:
     """Update the ``managed`` section of a manifest with new file digests."""
 
+    manifest: dict[str, dict[str, dict[str, str]]]
     if manifest_path.is_file():
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     else:

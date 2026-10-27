@@ -2,7 +2,7 @@
 globs: "**/*.py"
 description: FLEXT typing is strict; Any and object are grave violations
 metadata:
-  aihub.tags: '["decision:ADR-0008","effective:2026-09-04","route:both"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-10-26","route:both"]'
 ---
 
 # FLEXT typing: strict always — `Any` and `object` are grave violations
@@ -12,15 +12,22 @@ third-party fork is excluded even when it contains Python files or depends on
 FLEXT-compatible packages.
 
 Using `Any` or bare `object` in a Python annotation is a grave violation, in any module,
-test, or scratch script that lands in a governed tree. Typing is strict everywhere,
-without exception and without temporary authorization.
+test, executable documentation or scratch script that lands in a governed tree.
+Typing is strict everywhere, without temporary weakening.
 
-Annotate by `t.*` type aliases and `p.*` protocols; for composites use one `t.*` alias
-with `| None` at the outermost position.
+Reuse contracts from their declaring owner at the strongest supported precision.
+Data fields retain their originating model contracts; behavioral dependencies use
+the owning typed ports. Consume project aliases and protocols through their declared
+facades. Do not replace a Pydantic data model with a behavioral protocol or copy an
+owned callable into a weaker consumer-local declaration to obtain a passing checker.
 
-- Import `p` and `m` under TYPE_CHECKING to avoid runtime cycles.
-- Python 3.13 + Pydantic 2 only (`X | None`, builtin generics, `field_validator`,
-  `model_validate`/`model_dump`); zero Pydantic v1.
+- Use `TYPE_CHECKING` only when the annotation is not required for runtime validation.
+  Runtime model annotations resolve through runtime-safe imports at their declaring
+  owner; static success cannot replace model completeness at import.
+- The branch-matched project law and accepted topic ADR own facade composition,
+  alias shape and the exact runtime floor. Use its native syntax and Pydantic
+  generation; do not restore compatibility imports or Pydantic v1.
 - No `# type: ignore` / `noqa` shims — fix the type at its root.
-- A type that seems to need `Any` or `object` is a missing alias or protocol: define
-  that alias or protocol at its owner, then annotate strictly.
+- Search the existing contract first. When extension, improvement or generalization
+  is necessary, change that owner and propagate it to consumers; never create a
+  parallel alias, model or protocol to hide the mismatch.

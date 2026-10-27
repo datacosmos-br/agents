@@ -20,7 +20,8 @@ skill owns only the settings/config ownership delta.
 
 Read the `ownership procedure` (skill file). Settings loads external inputs and stays
 mutable through its owner (`fetch_global`/`update_global`/`clone`); config derives one
-validated frozen root from governed YAML and is read-only. Services consume explicit
-parameters or the validated global facades - never `os.environ`, `Path.home`, or a
-re-parsed file. Placeholder residue, a patched config ClassVar, or a second answer to
-one directory question fails before effects.
+validated frozen root from governed YAML and is read-only. The composition root binds
+ these owners and injects validated values into services. Services neither read global
+ facades nor fetch their singletons, inspect `os.environ` or `Path.home`, or re-parse
+ files. Placeholder residue, a patched config ClassVar, or a second answer to
+ one directory question fails before effects.

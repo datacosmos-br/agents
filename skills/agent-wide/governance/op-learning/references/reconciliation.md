@@ -20,6 +20,13 @@ dual-tracking period.
 ## Reconcile
 
 1. Identify the correction, current mode, scope, incident, and intended owners. For a
+   technical repair, follow `rules/architecture/engineering-core.md`'s evidence-before-
+   repair contract: reproduce and trace the real failure, separate observations from
+   hypotheses, and establish the causal mechanism before implementation. Random edits,
+   trial-and-error fixes and apparent success never replace that proof. Ground the
+   correction in verified canonical rules, never invented behavior or exceptions.
+   Validate each adjustment immediately at the original public failure; on failure,
+   return to diagnosis and establish the next correction before editing again. For a
    cross-boundary defect, prove the producing owner's declared contract and actual
    output first. A conforming producer is not a remediation target: correct the invalid
    receiver. A nonconforming producer is corrected only at its canonical owner. Never
@@ -43,6 +50,10 @@ dual-tracking period.
    quotable older sentence. Anything unrecoverable is reported unproven and never
    completed by inference: attributing an approval the operator did not give is a
    governance defect of the same class as a fabricated gate result.
+   A campaign's selected checkout or isolation procedure is not a universal
+   requirement for later tasks. Verify its explicit scope before generalizing it;
+   keep unsupported attribution visibly historical and reference the current
+   canonical owner instead of copying the inferred restriction into consumers.
 4. Change canonical owners and every affected consumer as one atomic cutover, not
    projections. When the incident exposes an agent decision failure, update the owning
    skill procedure and one of its three semantic regression roles in the same cutover.
@@ -102,26 +113,15 @@ checkpoint. An unreconciled correction pauses the affected feature work until ow
 consumers agree.
 
 When a correction governs Git checkpoint cadence, elect the branch/PR rule as the
-invariant owner. Persist each coherent increment as an explicitly marked `[WIP]`
-checkpoint through repository-owned hooks without `--no-verify`. Keep its PR Draft and
-WIP-labelled; no local or external validation is selected, including attestations,
-Actions, CodeQL, Copilot and review agents. WIP heads never enter integration. The agent
-declares only one maintained PR and any finite number `N >= 1` of source Drafts.
-Automation discovers their state, records every PR/branch/head/bead, performs ordered
-`--no-ff` merges and the first push, comments the transfer on every source and closes
-it. The maintained PR may be any kind and may remain Draft; no count or kind limit is
-permitted. When it enters Review, run the complete local matrix once on the aggregate
-head and transparently publish its attestation. An empty promotion commit is permitted
-as the typed transition into Review. Require all external validation and independent
-approval only there, merge the exact head by merge commit, close source Drafts as
-aggregated, and revalidate integration. The first failing gate stops with its original
-exit status and preserves the aggregate lane for fix-forward correction; it performs no
-rollback, cleanup, retry, fallback, attestation, or further Review transition. Never use
-`[skip ci]`, `[ci skip]`, or `--no-verify`.
+invariant owner. Its completed-slice checkpoint and authorized preservation-ref
+contracts govern publication; a skill never authorizes an incomplete working-branch
+or PR checkpoint. The companion `docs/gitflow-landing-detail.md` owns aggregation,
+Draft selection and the Review transition. Apply the newest correction there and
+regenerate consumers rather than repeating a second workflow here.
 
 When the canonical tracker is selected, make its work item and the GitHub PR one state
-machine: each WIP checkpoint records branch, exact head OID, Draft/WIP state, validation
-`NOT SELECTED`, and next action with the required cross-checks. Promotion fails closed
+machine: each checkpoint records branch, exact head OID, PR state, actual validation
+results and next action with the required cross-checks. Promotion fails closed
 if tracker and GitHub disagree. Landing records the merge SHA and post-merge proof in
 the same item before closure; never create a second ledger for this relationship.
 

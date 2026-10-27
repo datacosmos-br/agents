@@ -41,8 +41,10 @@ without the other is not a record.
 
 Abandonment, adoption, and their limits are declared once, in
 `bead-branch-pr-cadence` (rule file) §2. The adopter announces `[coord] lane claim`
-before the first effect. Two actors on one working tree is itself a blocker:
-declare it by mail before the next edit, and agree on one executor.
+before the first effect. Shared worktrees follow
+[fix-forward collaboration](fix-forward-collaboration.md): coordinate bounded owners
+and serialize overlapping mutations, without requiring an exclusive writer or a
+clean, frozen checkout.
 
 Compose with `fix-forward collaboration` (rule file), `multiagent edit breadcrumb`
 (rule file), `coordinator-ladder` (rule file), and `operator precedence` (rule file).

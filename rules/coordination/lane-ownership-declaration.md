@@ -13,10 +13,11 @@ capsule_summary: |
   never rebuild it. Tracker memory operator-ruling-2026-10-01-adopt-by-cherry-pick:
   an active lane is adopted
   immediately by cherry-picking its valid published commits into your own
-  lane cut from the fresh tip — never awaited, never asked about. Workaround
+   authorized lane — never rebuilt unnecessarily. Workaround
   commits are rejected with the reason recorded, never adopted. Editing or
-  running inside another session's worktree is a violation; deleting an
-  active lane is worse.
+   running in an unselected checkout grants no authority; a shared checkout
+   explicitly selected by the operator remains usable with coordinated WIP.
+   Deleting an active lane is prohibited.
 metadata:
   aihub.tags: '["decision:ADR-0021","effective:2026-10-01","route:both"]'
 ---
@@ -29,8 +30,8 @@ A lane is declared with three identifiers, sent to the coordinator through the
 mail channel and written on the canonical bead:
 
 - **bead** — claimed (`--claim`) with the scope comment;
-- **branch** — cut from the freshly fetched integration tip in a dedicated
-  worktree on the destination filesystem;
+- **branch** — the current authorized branch and checkout, selected through
+  `rules/coordination/gascity.md`, with its relationship to the current integration tip;
 - **PR** — the receiving integration branch, named in the declaration even
   before the PR exists.
 
@@ -58,11 +59,13 @@ needs, adopt it now (tracker memory
 `operator-ruling-2026-10-01-adopt-by-cherry-pick`). Waiting for it to land, asking
 permission to adopt, or parking your own lane behind it is a violation.
 
-1. Cut your own lane from the freshly fetched integration tip.
+1. Resolve the authorized checkout and branch through the placement owner and
+   inspect the current integration tip; do not create a new lane by implication.
 2. Cherry-pick the valid published commits you need, by SHA (`git
    cherry-pick -x <sha>`), into that lane. Adoption happens through commit
-   objects only: never edit files, run commands, or check out branches inside
-   the other session's worktree.
+   objects when that Git action is authorized. Shared-checkout collaboration follows
+   current operator authorization and `fix-forward-collaboration`; do not switch
+   another actor's branch or overwrite its WIP.
 3. Adopt only root-cause work. A commit that carries a workaround — timeout or
    budget inflation, suppression, catch-based normalization, fallback, retry,
    shim — is rejected, never cherry-picked; record the rejected SHA and the
@@ -82,8 +85,8 @@ did not read.
 
 ## Boundaries
 
-- The primary checkout carrying another session's live work is hands-off —
-  even when it looks like churn you would have restored.
+- Preserve every actor's live contributions. Coordinate overlapping owners without
+  treating their presence as a ban on an operator-authorized shared checkout.
 - Criticism of another session's violations goes through the coordinator mail
   channel, with the rule numbers, never through their files.
 - Critical doubt goes to the coordinator; the coordinator escalates to the

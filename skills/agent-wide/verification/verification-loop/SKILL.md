@@ -32,9 +32,13 @@ integration SHA and proving the public surface there.
 
 ## Investigation protocol delta (evidence 2026-09-11)
 
-- Define the hypothesis and the evidence method BEFORE touching anything: artifacts go
-  to files (`difflib.unified_diff` written to a log path), never relied on through
-  flooded stdout.
+- Apply `workflow/runtime-is-reality` (rule file), section "Causal diagnosis", before
+  patching. Hypotheses guide diagnostic observations only, never implementation trials.
+  Preserve decisive artifacts through the existing evidence owner, not flooded stdout.
+- Establish the governing canonical rules before selecting a correction. Validate each
+  repair immediately through the original failing operation and applicable admitted
+  tests. A failure returns to causal diagnosis before another edit, never speculative
+  patch stacking or an invented exception to obtain green.
 - An experiment that fails silently and yields nothing is NOT evidence. Never relabel
   poorly-instrumented work as "out of scope" or "pre-existing"; re-instrument until the
   diff speaks, or file the defect with the hypothesis and the trigger so the next

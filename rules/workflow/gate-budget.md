@@ -34,7 +34,8 @@ profiling procedure and timeout outcome have one owner:
   checkout.
 - Profiling (cProfile, a coverage instrumenter, or any other collector) is opt-in and
   off by default on every gate-path runner. A pytest runner with always-on profiling is
-  a toolchain defect, not an acceptable baseline.
+  a toolchain defect, not an acceptable baseline. Budget repairs remove redundant
+  execution; they do not add parallel profiling or receipt frameworks.
 - Coverage collection is opt-in, invoked by its own explicit target. A gate that always
   measures coverage inflates every run's budget for a signal most runs do not need.
 - Host test-service provisioning and slow-test phases retain distinct receipts.

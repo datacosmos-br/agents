@@ -137,11 +137,8 @@ When a new finding appears, check these before writing a new rule:
 
 ## Prototyping
 
-Try a draft rule on copied samples in a scratch directory:
-
-```bash
-ast-grep scan --rule draft.yml scratch/sample.py
-```
-
-This is evidence about the draft only. The repository's verbs test the rule, write
-snapshots and apply it to the tree.
+Put draft cases in the engine's declared rule fixtures. Resolve native test, snapshot
+and transformation operations from its catalog, then exercise those cases under the
+real configuration. Review the snapshot and a second-run fixed point. The canonical
+fixture and receipt owners preserve the evidence; do not create a scratch scanner,
+copied tree or external script.

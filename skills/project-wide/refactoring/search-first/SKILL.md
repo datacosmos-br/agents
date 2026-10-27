@@ -25,3 +25,8 @@ Do not activate for pure summarization, translation, formatting, or non-technica
 questions. Do not rerun discovery while its owner, scope, dependency set, and consumer
 evidence remain current. Missing or contradictory project evidence is a loud blocker,
 never permission to invent architecture or duplicate code.
+
+When correcting a reported failure, use
+`rules/workflow/runtime-is-reality.md#causal-diagnosis`
+after owner discovery; this skill never turns a plausible reuse candidate into
+permission to patch without a trace and verified contract.

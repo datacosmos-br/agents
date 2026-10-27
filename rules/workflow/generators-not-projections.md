@@ -34,4 +34,5 @@ projection such as provider configuration, service units, or goldens.
 - After changing a source, regenerate and prove a second generation has no diff.
 - Rewire every consumer before deleting the superseded output. Remove obsolete
   projections, manifests, tests, fixtures, docs, backups, and archives in the same
-  cutover; never keep an old and new generator path.
+  cutover; never keep an old and new generator path. A renamed generator entry point
+  or other public signature that still has consumers follows the `zero residue` rule's "Deprecated-signature window" section.

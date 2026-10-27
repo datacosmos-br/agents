@@ -8,15 +8,17 @@ restated at every prompt.
 Nothing here is new. It is the text that lived inside the rule until `ag-qio` moved it,
 preserved so the compaction removed length, not law.
 
-## Draft validation is not selected
+## Draft state does not waive acceptance
 
-No validation is selected for Draft/WIP: local gates, attestations, GitHub Actions,
-CodeQL, Copilot review and review agents all remain dormant. WIP commits never merge
-into integration.
+The branch/PR rule's checkpoint contract requires a complete slice and local native
+acceptance before publication on a working branch or PR. Incomplete work belongs only
+on an explicitly authorized preservation ref. Historical Drafts are adopted and
+revalidated, never discarded or treated as current proof.
 
-WIP publication records every validation and attestation as `NOT SELECTED`, never as
-green. Only the non-WIP promotion head may enter integration, and it retains the full
-reviewed-PR and remote-check contract.
+A repository may leave external checks unselected while a PR is Draft. Record those
+checks as `NOT SELECTED`, never green; that external selection does not waive the
+required local evidence. Only a fully reviewed, validated promotion head enters
+integration.
 
 ## Control-plane Review transition
 
