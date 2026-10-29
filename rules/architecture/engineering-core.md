@@ -31,7 +31,7 @@ metadata:
 
 These standards govern all first-party phases. External forks follow the verified
 upstream-forks contract. Reconcile project requirements with the canonical
-cross-project and cross-agent governance owner.
+cross-project and cross-agent governance owner, never a divergent local copy.
 FLEXT also obeys its stricter local contracts.
 
 The 2026-10-26 operator ruling governs every session and task: use selected,

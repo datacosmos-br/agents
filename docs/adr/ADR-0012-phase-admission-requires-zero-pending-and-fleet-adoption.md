@@ -41,3 +41,17 @@ integration debt that cost more than the original work.
   with the newest-correct rule, instead of accidental textual merges.
 - Current authority is reconciled before effects, preserving operator precedence and
   the audit trail without reviving superseded publication or closure instructions.
+
+## Amendment history reconciled 2026-10-29
+
+Operator orders recorded in the tracker memories
+`operator-order-2026-10-24-always-working-never-skip-phase`,
+`operator-order-2026-10-24-no-incomplete-pushes`, and
+`operator-ruling-2026-10-24-wip-preservation-ref-only` add Law 0 (always working, one
+phase at a time) and prohibit incomplete working-branch or PR checkpoints.
+The 2026-10-26 reconciliation above retains that intent while routing publication
+authority and preservation refs through `rules/git/gitflow-branch-pr.md`.
+Required repair and diagnosis continue while RED; the historical wording is not
+a ban on running the failing command needed to prove the correction.
+`rules/workflow/phase-admission-protocol.md` owns phase admission. Tracking a
+defect never waives closure, and current operator authority supersedes stale text.

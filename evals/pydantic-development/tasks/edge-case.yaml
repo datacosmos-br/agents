@@ -1,11 +1,11 @@
 id: pydantic-dev-edge-002
-name: Reject normalization and rebuild shortcuts
-description: Handle a broken declaration and a validation failure the strict way.
-tags: [pydantic-dev, edge-case, failure]
+name: Rewrite a legacy boundary with maximal Pydantic usage
+description: Replace every removal-catalog construct, including rebuild and normalization shortcuts, with the canonical Pydantic and FLEXT form.
+tags: [pydantic-dev, edge-case, failure, removal-catalog]
 inputs:
-  prompt: A consumer model fails at import because a forward reference does not resolve, and a teammate proposes Model.model_rebuild(_types_namespace=...) plus a try/except ValidationError returning a default payload. Explain why both are violations, name the owner-side fixes (facade export, alias placement, scope hoist, r.Fail at the result boundary), and rewrite the boundary.
+  prompt: Review legacy_boundary.py. A teammate also proposes wrapping load() in try/except ValidationError returning a default payload. Name every violation and rewrite the module so the YAML payload is validated once at the adapter, the sibling-referenced nested model is extracted into its own family module so every model is complete at import instead of a rebuild call, the status domain is a c StrEnum, the protocol-typed field needs no global type relaxation, value equality comes from the frozen preset, the status change goes through validation instead of an unvalidated copy, and failures leave as r.Fail through e.fail_validation.
   files:
-  - path: broken_node.py
+  - path: legacy_boundary.py
 expected:
-  output_contains: [declaration, owner, facade, r.Fail, e.fail_validation, violation, strict]
-  output_not_contains: [model_rebuild, except ValidationError, default payload, fallback]
+  output_contains: [StrEnum, InstanceOf, family module, frozen, model_validate, r.Fail, e.fail_validation, violation]
+  output_not_contains: ['arbitrary_types_allowed=True', 'model_copy(update', 'except ValidationError:', 'default payload']

@@ -62,9 +62,10 @@ and parallel actors.
 - Close a bead only with evidence scoped to the exact gate state at closure: a partially
   failing pipeline is never cited as green; name which part is green and file the
   failing remainder as its own bead.
-- When landing under admin merge with checks still pending, rerun the affected gates on
-  the merged SHA before the next wave, and record which gates were rerun. Pending-CI
-  merges are an authorized exception, never a silent norm.
+- Integration merges follow `full landing cycle` (rule file), phase-end closure: an
+  administrative merge may bypass a missing review, never a red, missing or pending CI.
+  After every merge, rerun the affected gates on the merged SHA before the next wave and
+  record which gates were rerun.
 - Bulk edits over many files need a declared owner (Make verb or generator), per-file
   review intent, and downstream gates rerun; blanket textual replacement over prose
   without reading each diff is a residue generator.

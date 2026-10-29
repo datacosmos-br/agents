@@ -56,5 +56,24 @@ boundary that forbids registries and server-name selection.
 
 External contract: [PEP 702](https://peps.python.org/pep-0702/) and the
 [Python 3.13 warning API](https://docs.python.org/3.13/library/warnings.html).
+## Exterminate without fear
+
+The 2026-10-24 removal and marked-rewire orders are reconciled here on 2026-10-29.
+Their valid intent is to retain real functionality and remove excess, wrong behavior
+and duplicated execution at the causal owner. The deprecated-signature window above
+is the sole migration contract; it grants no behavior-carrying fallback or frozen alias.
+
+A duplicated execution is the same verification, resolution or derivation repeated
+for one purpose: setup rechecking what check owns, a planner re-deriving an artifact
+already in hand, or two owners of one fact. Keep the operation's existing owner.
+Resolve uncertainty by measuring consumers through current source and runtime,
+never by retaining an unused path "just in case".
+
+Within an authorized source cutover, Git retains history; do not create backup or
+archive copies of retired tracked source. History is evidence, not permission to
+restore published effects or discard current WIP. Apply `atomic-effects.md` and
+fix forward. The `safe delete` skill still guards exact ownership, untracked,
+foreign, live and ownership-ambiguous state; tracked status alone is not deletion
+authority over another contribution.
 
 See also: `strict-execution.md` (rule file) — aggregate parent policy.

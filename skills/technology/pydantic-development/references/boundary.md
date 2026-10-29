@@ -2,13 +2,10 @@
 
 Parse untrusted input exactly once, at the boundary — JSON always through Pydantic:
 
-```python
-model = Shipment.model_validate(payload)  # dict -> model
-model = Shipment.model_validate_json(raw)  # JSON -> model (single pass)
-model = Shipment.model_validate(dto, from_attributes=True)  # dataclass/ORM -> model
-payload = u.model.dump(model)  # model -> JsonMapping
-raw = model.model_dump_json(indent=2)  # model -> JSON
-```
+Use the originating model's native Python validator for Python values and its JSON
+validator for raw JSON. Attribute-sourced inputs use the declared `from_attributes`
+boundary. Output uses that model's native serializer in the mode required by the
+outward protocol; do not assume that every dump returns a mapping.
 
 - Never `Model.model_validate(json.loads(raw))`; use the native JSON validation
   entry point. Non-model JSON work uses the selected public `u` owner, not a
@@ -29,6 +26,33 @@ raw = model.model_dump_json(indent=2)  # model -> JSON
   reuses the instance without revalidation. Where required, select native
   `revalidate_instances` at the model owner and test nested instances and subclasses;
   never dump to a dict or JSON merely to force another admission.
+
+### Library data exchange — every third-party payload enters as a model
+
+An owned payload returned by a library is admitted at the adapter that calls it.
+The adapter uses the library's native representation at its outward boundary; the
+domain receives the owning validated contract. Runtime collaborators and library-local
+mappings do not become another payload model or a public FLEXT mapping contract.
+
+| Library output | Ingress | Never |
+| --- | --- | --- |
+| JSON text/bytes | `Model.model_validate_json(raw)` / `adapter.validate_json(raw)` | `json.loads` then validate |
+| Captured YAML/TOML document | the existing `u.Cli.config_decode` source grammar and owning model | `strict=False`, JSON readmission or consumer-side field conversion |
+| ORM / attribute objects | `model_validate(obj, from_attributes=True)` | hand-copying attributes |
+| Mapping required by a library (processor event or settings source) | its declared native representation inside the adapter; select the owning payload's dump mode when serialization applies | promoting a library-local mapping to a FLEXT contract or forcing JSON coercion |
+
+Select Python or JSON serialization according to that outward contract. A Python
+mapping accepted by a library does not automatically require JSON-mode coercion.
+The mapping a library requires back is that library's contract
+(`pydantic_settings/sources/base.py:237-239@v2.15.0`), produced and consumed inside the
+adapter; it never becomes a FLEXT type.
+
+### Updating validated data
+
+`model_copy(update=...)` does not validate its update and cannot replace admission of
+changed data (`pydantic/main.py:422-468@v2.14.1`). Construct the new state at its owner
+with the declared typed values and native validation. Do not prescribe a model dump,
+mapping surgery and reparse as a universal update mechanism.
 
 ## 2. Validation practice — centralized owners
 
@@ -69,55 +93,33 @@ raw = model.model_dump_json(indent=2)  # model -> JSON
 - Sequences with expensive item validation may use `Annotated[list[T], m.FailFast()]` to
   stop at the first error — an explicit, documented trade-off, not a default.
 
+Additional versioned validation details:
+
+- `info.data` contains only earlier validated fields and is `None` for model
+  validators (`docs/concepts/validators.md:631-636@v2.14.1`).
+- A model `before` validator may receive a non-mapping value. Do not mutate input
+  and then raise: a union may pass the changed object to another branch
+  (`docs/concepts/validators.md:492-520@v2.14.1`).
+- Field-wide defaults, aliases and discriminators belong on their declaring field;
+  reusable aliases retain constraints and appropriate metadata. Verify how `Annotated`
+  placement affects constructor synthesis at the selected floor
+  (`docs/concepts/fields.md:31-97@v2.14.1`; `types.md:305-345`).
+- `validate_call` owns repeated validation at an explicitly untyped public boundary;
+  it is not required between already typed internal components
+  (`docs/concepts/validation_decorator.md:410-418@v2.14.1`).
+
 These contracts follow [validators](https://github.com/pydantic/pydantic/blob/v2.14.1/docs/concepts/validators.md)
 and [instance revalidation](https://github.com/pydantic/pydantic/blob/v2.14.1/pydantic/config.py)
 at v2.14.1. They are not permission to weaken the project's presets.
 
 ## 3. Serialization practice
 
-- Subclass exposure uses `polymorphic_serialization` (v2.13+), not the global
-  duck-typing flag:
-
-```python
-outer.model_dump(polymorphic_serialization=True)  # ok — models/dataclasses
-outer.model_dump(serialize_as_any=True)  # forbidden — applies to every value
-```
-
-Per-field duck typing, when the contract genuinely requires it, uses
-`SerializeAsAny[User]` on that field only.
-
-Python dumps and JSON dumps have different output contracts. Under the selected
-type-preserving enum policy, Python fields/dumps retain enum members while the
-JSON boundary emits their values. A structural payload projection delegates both
-directions to its original concrete annotation; it does not copy serializers.
-The schema's validation and serialization modes are checked independently.
-For DI fields, `SkipJsonSchema` excludes schema exposure and `Field(exclude=True)`
-excludes dumps; neither marker implies the other. Keep those declarations at the
-port's existing owner instead of treating a runtime object as a payload.
-
-- Conditional exclusion is declarative: `Field(exclude=True)`,
-  `Field(exclude_if=lambda v: v == 0)`, `computed_field(exclude_if=...)` (v2.13+), or
-  call-level `exclude_unset/exclude_none/exclude_defaults`.
-- One serializer per field/model; `@field_serializer` validates field names (v2.13).
-  Root payloads wrap in `m.RootModel[...]` instead of dict contracts.
-- Temporal/bytes JSON shapes come from constants/config (`ser_json_timedelta`,
-  `ser_json_bytes` — already set by `ContractModel`), never ad-hoc string formatting in
-  serializers.
+Continue with [serialization contracts](serialization.md#3-serialization-practice).
+Python representation, JSON wire shape, field exposure and schema completeness are
+separate obligations. A model annotation does not imply a mapping output.
 
 ## 4. Typing with p and r
 
-- Services and handlers declare outcomes as `p.Result[ModelT]` and construct through the
-  railway: `r[ModelT].ok(model)` / `e.fail_validation(...)`.
-- The only authorized `ValidationError` conversion point is the result boundary
-  (`u.model.validate_value`, `e.fail_validation`), which catches the constant
-  `c.EXC_ATTR_RUNTIME_VALIDATION` and preserves the cause:
-
-```python
-def parse(raw: str) -> p.Result[Shipment]:
-    return u.model.validate_value(Shipment, raw, from_json=True)
-```
-
-- Catching `ValidationError` anywhere else to normalize, default, retry, or aggregate is
-  a violation — the first exception escapes with its traceback.
-- Models annotate ports: `p` protocols + `r` outcomes + `m` payloads; `t` aliases carry
-  reusable annotated types; `Any`/`object`/`dict` never appear as contracts.
+Continue with [typed outcomes](serialization.md#4-typing-with-p-and-r). The existing
+error boundary preserves the original failure; consumer normalization and readmission
+do not repair a producer contract.

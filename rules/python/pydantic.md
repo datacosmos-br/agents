@@ -111,13 +111,40 @@ the existing diagnostic exceptions above do not authorize another suppression.
   normally does not revalidate it. A changed trust boundary uses its declared native
   revalidation policy, never a dict/JSON reconstruction or unchecked copy.
 
+## Use Pydantic to the maximum
+
+- Consumers do not re-validate, narrow (`isinstance`), `cast` or convert data already
+  admitted under the same contract and trust state:
+  constraints, validators and serializers live in reusable `t` aliases and presets, and
+  validated objects are passed and reused, never dumped and re-validated.
+- The fewest models and fields: shared fields in a base, deltas in subclasses, nested
+  models reused by composition, derived values as `computed_field`.
+- Full closed string domains use their `c` enum; subsets and discriminators keep
+  the narrower `Literal` contract described above.
+- Runtime collaborators use the existing field-scoped `t.Port[p.X]` owner instead of
+  globally allowing arbitrary payload types. Serializable payload projection follows
+  its originating schema, not the DI port's schema-excluded contract.
+- Owned library payloads are admitted at the calling adapter and serialized at the
+  required outward boundary. Native library mappings and runtime collaborators remain
+  inside their adapters; they do not require a second model or become public contracts.
+- Model/service protocols follow the accepted generation owner above; never mirror them
+  by hand or describe an unqualified projection target as implemented.
+
 ## Removal catalog (must not survive in code)
 
-`model_rebuild()` (a strict fleet never needs it — fix the declaration owner across
-`config`/`settings`/`c`/`t`/`p`/`m`/`u`, `base.py`, `services/`, `api.py`, `cli.py`);
-`model_construct()` outside a documented owner justification;
+Consumer-authored `model_rebuild()` without exception — diagnose the actual namespace,
+export or dependency defect through the complete-import procedure and repair its
+owner. A historical sibling-reference case (`flext-itpd1.11.7`) does not prove that
+every local or nested model requires extraction; preserve runtime identity and
+closure and apply proven structural moves through the native refactorer.
+Also prohibited: `model_construct()`; `model_copy(update=...)` on
+validated data; `arbitrary_types_allowed` and `extra="allow"` on general presets; raw
+`model_config` dicts; hand-written `__eq__`/`__hash__` on value models;
 `SkipValidation`/`PlainValidator` without a documented owner justification; the runtime
 `serialize_as_any=True` flag (use `polymorphic_serialization=True` or per-field
-`SerializeAsAny`); v1-style `@validator`; `@classmethod` after model validators;
+`SerializeAsAny`); v1-style `@validator`; `@classmethod` on an `after` model validator;
 duplicated local `TypeAdapter` instances; stdlib `json` at model boundaries;
-`os.environ` access and copied config/settings values in leaf modules.
+consumer casts or structural walks over admitted loader output; behavior methods in
+declaration-layer models;
+`os.environ` access and copied config/settings values in leaf modules; every upstream
+deprecated API. The complete, source-cited list is the skill's removal catalog.

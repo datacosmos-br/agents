@@ -9,10 +9,9 @@ qualified by a later rebuild; preserve the selected project's strict boundary.
 - flext-core is the sole owner of `pydantic`, `pydantic_settings`, and `pydantic_core`
   imports. Consumers import only through `m`, `t`, `p`, `u`, `r`, `e`:
 
-```python
-from flext_core import m, t, p, r  # ok
-import pydantic  # violation outside flext-core
-```
+Ordinary consumers use their declaring project's public facades; a model declaration
+uses its selected upstream preset owner. Preserve the canonical family dependency
+order instead of copying a deep import or manufacturing a local re-export.
 
 - A missing facade symbol is a gap to close at flext-core in the same change, never a
   reason for a direct import or a local re-export.
@@ -28,15 +27,10 @@ import pydantic  # violation outside flext-core
 Every model class extends an `m.*` preset. Declaring a consumer model on the raw base is
 a violation; presets are the single source of configuration (SSOT/DRY).
 
-```python
-class OrderLine(m.FrozenModel):  # ok — preset encodes config
-    sku: t.NonEmptyStr
-    qty: t.PositiveInt
-
-
-class OrderLine(m.BaseModel):  # violation — raw base at consumer
-    model_config = m.ConfigDict(frozen=True, strict=True)  # duplicates presets
-```
+Choose the existing preset for the actual contract, as the
+[selection table](presets.md) explains. A consumer declaration on the raw base with
+a copied `ConfigDict` does not become conforming merely because its sample fields
+validate.
 
 - Facade families are namespace containers composed by explicit inheritance
   (`FlextModelsBase` chains its parts; `FlextModels` composes the families). Never
@@ -82,83 +76,19 @@ See [the versioned configuration contract](https://github.com/pydantic/pydantic/
 
 ## 5. Identity models — id, timestamps, version
 
-Use the selected public entity preset and its declared fields, timestamp and
-version contracts. Resolve its mixin order and equality/hash behavior from the
-branch-matched model owner; a copied field inventory cannot establish that API.
-Under FLEXT ADR-028 Decision 14, entity identity is compared explicitly by id,
-while native Pydantic value equality remains intact. Mutable entities are
-unhashable; a frozen model's hash still depends on hashable field values.
-
-```python
-class Shipment(m.Entity):
-    origin: t.NonEmptyStr
-
-
-s = Shipment(origin="GRU")  # unique_id, created_at, version set
-```
-
-Compose only the owner's documented mixins. Timestamp and audit fields reuse
-their native declarations rather than a second consumer implementation.
+Continue with [identity contracts](composition.md#5-identity-models--id-timestamps-version).
+The selected public owner establishes fields, timestamp/version behavior and native
+equality; an old field inventory does not establish the current API.
 
 ## 6. Inheritance and MRO rules
 
-- Explicit inheritance only; every base named. Inspect effective `model_config`
-  through the public model before composing presets. Pydantic documents that
-  multiple-base configuration merging does not currently follow Python MRO;
-  never infer C3 configuration semantics or repair a conflict with a local copy.
-  See [configuration inheritance](https://docs.pydantic.dev/latest/concepts/config/).
-- `model_post_init` overrides use `@override` and call `super()`.
-- Preserve native model-value equality for entities and value objects. Compare entity
-  identity explicitly by id; do not restore identity-based `__eq__`/`__hash__`.
-  Frozen models are hashable only when their field values support hashing.
-- After model validators are instance methods (v2.12+ deprecated the `@classmethod`
-  form):
-
-```python
-@m.model_validator(mode="after")
-def check(self) -> Self:
-    if self.end < self.start:
-        raise ValueError("end before start")
-    return self
-```
-
-- A validator defined on a base runs for subclasses; overriding replaces it.
-- Compose nested models by fields and model specialization by explicit generic
-  arguments; neither is namespace-facade inheritance. An enclosing family's name
-  is not bound while its body executes, so qualify annotations through an already
-  bound declaring owner. Do not copy configuration from an outer model into a
-  nested one: each native model owns its configuration boundary.
-- `frozen=True` prevents attribute reassignment, not mutation inside a contained
-  list or mapping. `validate_assignment=True` checks assignment, not in-place
-  container changes. Choose immutable containers only where the domain requires
-  them; freezing a model is not proof that all reachable data remains valid.
+Continue with [data inheritance and MRO](composition.md#6-inheritance-and-mro-rules).
+Facade composition, data inheritance, nested containment and service DI retain
+different owners. Verify effective policy rather than treating C3 as config merging.
 
 ## 7. Protocol declaration in p — obligatory
 
-Cross-boundary dependencies are structural contracts in the `p` family, never concrete
-model/service types (DIP):
-
-- Nested inside the `FlextProtocols*` container; `@runtime_checkable class X(Protocol)`,
-  extending `p.Base` when it generalizes an existing contract.
-- Members are the minimal consumed capability (ISP): instance attributes and methods
-  with `...` bodies and docstrings. Class-level Pydantic APIs stay on dedicated class
-  protocols (`p.Model` instance API vs `ModelType`).
-- Imports of `m`/`t` inside protocols are `TYPE_CHECKING`-only.
-- Outcomes use `p.Result[T]`; routable messages use `CommandRoutable` / `EventRoutable`
-  / `QueryRoutable`.
-
-```python
-class ShipmentSink(p.Base, Protocol):
-    def accept(self, shipment: Shipment) -> p.Result[t.JsonPayload]: ...
-```
-
-A service annotating a dependency with a concrete model class or framework type where a
-`p` protocol exists is a violation. New ports join the existing protocol family; do not
-create parallel protocol namespaces.
-
-Under the project's ADR-018, a serializable payload projected to `p` preserves
-its original concrete validation and serialization through `GetPydanticSchema`.
-It does not become an ADR-019 DI port: `t.Port` is a FLEXT annotation based on
-native hooks, excludes the dependency from JSON Schema and checks runtime member
-presence rather than signatures or nested payloads. Resolve generic parameters
-at their owner; never substitute an unconstrained schema for an unresolved port.
+Continue with [structural contracts](composition.md#7-protocol-declaration-in-p--obligatory)
+and [protocol-typed fields](composition.md#8-protocol-typed-fields). The project-owned
+payload projection preserves the original schema; a runtime DI port is a distinct
+schema-excluded capability.

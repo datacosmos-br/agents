@@ -5,15 +5,17 @@
 ### 1. Composition and authority
 
 Apply `$py-dev` first; it composes `$solid`. This procedure owns the Pydantic delta.
-External behavior reference: the official Pydantic documentation for the project's
-declared version. Project law: this file and the `rules/python/pydantic.md` rule.
+External behavior reference: official Pydantic documentation for the selected version.
+`rules/python/pydantic.md` owns the boundary law; selected project ADRs own scoped
+policy. This procedure explains their application rather than declaring another owner.
 Generated files remain outputs; runtime behavior and project-owned configuration are
 authoritative.
 
-For the current FLEXT baseline, use the
-[Pydantic v2.14.1 reference](https://github.com/pydantic/pydantic/tree/v2.14.1/docs)
-for API semantics, the selected lock for resolution and the loaded distribution for
-runtime proof. Pydantic Settings has its own version; never infer it from Pydantic's.
+The references include research against
+[Pydantic v2.14.1](https://github.com/pydantic/pydantic/tree/v2.14.1/docs).
+That tag is not a universal dependency floor. The project declaration, selected lock
+and loaded distribution establish its available behavior. Pydantic Settings has its
+own version; never infer it from Pydantic's.
 
 ### 2. Version authority
 
@@ -23,6 +25,9 @@ runtime proof. Pydantic Settings has its own version; never infer it from Pydant
 - Choose features at the declared floor and verify the installed version against
   the selected lock. A version observed in one workspace is not a universal
   dependency declaration; v3-only behavior is unavailable to a v2 project.
+- A source citation carries the upstream tag used for that research (`@v2.14.1`
+  for Pydantic and `@v2.15.0` for Pydantic Settings); re-verify it when the selected
+  floor moves instead of turning the cited tag into a new project pin.
 - A floor change is a workspace-level atomic migration: dependency SSOT, then templates,
   generated config, analyzers, tests, CI, docs.
 
@@ -63,8 +68,8 @@ Upstream behavior references: [standard types](https://docs.pydantic.dev/latest/
 
 ### 3. settings, config, and the c·t·p·m·u wiring
 
-Two independent typed objects own every configurable fact (ADR-005); each facade letter
-has exactly one concern:
+Settings and config own distinct input authorities (ADR-005); a configurable fact has
+one owner rather than a mirrored field in both. Each facade letter has one concern:
 
 | Facade     | Receives                  | Owner of                                                                                       |
 | ---------- | ------------------------- | ---------------------------------------------------------------------------------------------- |
@@ -76,15 +81,11 @@ has exactly one concern:
 | `settings` | runtime-adjustable values | environment/CLI-overridable runtime inputs, typed `settings.<Namespace>.*` (pydantic-settings) |
 | `config`   | static rules              | validated declarative rules from `config/*.yaml`, exposed as `config.<Namespace>.*`            |
 
-```python
-from flext_cli import config, settings
-
-name = config.Cli.name  # reviewed supplier identity
-debug = settings.debug  # runtime input
-```
-
-The example selects values at a composition boundary. A domain service receives
+Select values at a composition boundary. A domain service receives
 the selected values and capabilities explicitly, not the global singletons.
+Inherited supplier fields retain their actual public identity; do not manufacture a
+namespace mirror merely to fit an example. New project domains use their declaring
+namespace and the selected supplier's public contract.
 
 - `settings` models read the environment; leaf modules never touch `os.environ` or
   process state directly — the knob enters through `settings`.
@@ -130,19 +131,6 @@ the actual public consumer, loaded origin, command, exit and limitations. A late
 project decision updates its owner and consumers; it does not create another
 universal rule body in each project's AGENTS.
 
-### Reference parts
-
-- [declaration.md](declaration.md) — obligatory model MRO, `model_rebuild`
-  extermination, facade law, preset selection, identity models, inheritance, protocol
-  declaration in `p`.
-- [boundary.md](boundary.md) — conversions (dict, TypedDict, dataclass, JSON),
-  centralized validation practice, serialization practice, typing with `p` and `r`.
-- [catalog.md](catalog.md) — types and annotations, performance, experimental policy,
-  advanced types, the removal catalog, evidence and gates.
-- [presets.md](presets.md) — contract-to-preset selection.
-- [typing-diagnosis.md](typing-diagnosis.md) — runtime/static evidence and originating
-  specifications for constructor, facade, overload and MRO findings.
-
 ### Static/runtime typing diagnosis
 
 Read [the complete diagnosis procedure](typing-diagnosis.md) before attributing
@@ -154,3 +142,46 @@ runtime/static evidence matrix and links to originating specifications.
 Read [project-owned protocol projection](typing-diagnosis.md#project-owned-model-and-service-protocol-projection)
 and the selected ADR-018 before changing generation or consumers. That reference
 retains full inventory, originating schema, semantic-owner and rollout requirements.
+
+### 4. pydantic-settings
+
+- `BaseSettings` defaults to `extra="forbid"`, `validate_default=True` and
+  `arbitrary_types_allowed=True` (`pydantic_settings/main.py:617-656@v2.15.0`); FLEXT
+  settings extend the flext-core settings preset, which owns those choices once.
+- Source priority (highest first): CLI when enabled, init kwargs, environment, dotenv,
+  secrets directory, field defaults (`docs/index.md:3096-3106@v2.15.0`). Sources are
+  deep-merged, so a lower source fills nested keys a higher one omits
+  (`pydantic_settings/main.py:485-507@v2.15.0`).
+- Extra sources (YAML, TOML, JSON, pyproject) are added only through
+  `settings_customise_sources` (`pydantic_settings/main.py:264-286@v2.15.0`); setting
+  `yaml_file` without the source only warns (`main.py:587-615@v2.15.0`).
+- Nested models come from the environment through `env_nested_delimiter`
+  (`sources/providers/env.py:267-338@v2.15.0`); nested defaults update partially only
+  with `nested_model_default_partial_update` (`docs/index.md:639-688@v2.15.0`).
+- A custom file source implements `_read_file(path) -> dict[str, Any]`
+  (`sources/base.py:237-239@v2.15.0`); that mapping is pydantic-settings' contract and
+  the settings model validates it. Do not pre-validate it into a second model or keep a
+  per-call `TypeAdapter` there.
+- Runtime overrides are typed constructor arguments or the documented underscore
+  kwargs (`_env_file`, `_case_sensitive`, …; `main.py:193-392@v2.15.0`), never manual
+  `Mapping` merges in FLEXT code.
+
+### Reference parts
+
+- [declaration.md](declaration.md) — facade law, presets and complete-declaration
+  diagnosis, with stable continuation links for the composition topics.
+- [composition.md](composition.md) — identity, inheritance, protocols, runtime ports,
+  enum domains and minimal models under their selected project contracts.
+- [boundary.md](boundary.md) — conversions, library exchange, changed trust state,
+  native validation and continuation links for serialization/outcomes.
+- [serialization.md](serialization.md) — output mode, schema/exposure, aliases,
+  projected payloads and typed outcomes.
+- [catalog.md](catalog.md) — capability inventory, performance, experimental policy,
+  evidence and gates.
+- [removals.md](removals.md) — detailed forms, replacements and source references;
+  actual automatic cures require their own native rule/fixture evidence.
+- [presets.md](presets.md) — contract-to-preset selection.
+- [typing-diagnosis.md](typing-diagnosis.md) — runtime/static matrix, complete
+  declarations and the project-owned protocol projection contract.
+- [internals.md](internals.md) and [runtime.md](runtime.md) — versioned implementation
+  research, with current policy kept at the declaring owners above.

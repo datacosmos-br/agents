@@ -26,6 +26,11 @@ records. Paths are portable relative physical-file identities, content is bytes,
 mode is the publication permission bits, and SHA-256 addresses those exact bytes.
 Construction rejects mutable content, noncanonical paths, negative/non-integer modes
 or bits outside native permissions, and digests that do not match the immutable bytes.
+Loading captures the enrolled inputs before semantic validation; the capsule and
+catalog use those same inputs. Later source edits or additions affect only a new
+load. Publication permissions are validated when the catalog API is requested;
+loading does not construct and discard a publication. Physical-file checks remain
+mandatory.
 The existing wheel `force-include` enrollment in `pyproject.toml` selects the
 catalog; configuration and the packaged enrollment document are SDK inputs, not
 central publications. The sdist retains these same enrolled sources. No arbitrary
@@ -127,9 +132,10 @@ without a source checkout and performs no writes when loaded.
 
 Skill resources expose their format, SHA-256 and configured publication mode through
 `GovernanceBundle`. `make runtime` attests the exact resource inventory, bytes and
-physical modes after installing both artifacts. `make static` includes every Python
-resource selected from that inventory, with SDK dependencies owned by the development
-dependency group.
+physical modes after installing both artifacts. It also exercises the public catalog
+API and compares its paths, bytes, modes and digests with the source snapshot.
+`make static` includes every Python resource selected from that inventory, with SDK
+dependencies owned by the development dependency group.
 
 For causal artifact-runtime diagnosis, `ARTIFACT_PROFILE=1 make check` (or the
 existing `make runtime`) enables cProfile on that same operation. It changes no

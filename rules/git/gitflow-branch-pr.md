@@ -21,7 +21,7 @@ capsule_summary: |
   fresh ancestry proof. Never delete the adopted primary/shared checkout or
   integration branch because one task ends.
 metadata:
-  aihub.tags: '["decision:ADR-0025","effective:2026-10-25","route:personal"]'
+  aihub.tags: '["decision:ADR-0025","effective:2026-10-29","route:personal"]'
 ---
 
 # Branch and PR — integration by merge commit
@@ -90,3 +90,8 @@ rerun rather than reporting the open PR and moving on.
 
 Control-plane Review transition, Draft aggregation, managed forks, attestation and the
 operator-authorized approval row are law too, kept in `docs/gitflow-landing-detail.md`.
+
+The 2026-10-29 reconciliation preserves the 2026-10-24 green-checkpoint order
+without reviving its older ban on diagnostic gates for incomplete work. The
+operator's current publication authorization persists within its declared scope;
+it never waives current-SHA CI, review, integration or required runtime proof.

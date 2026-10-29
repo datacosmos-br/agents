@@ -20,6 +20,9 @@ checks as `NOT SELECTED`, never green; that external selection does not waive th
 required local evidence. Only a fully reviewed, validated promotion head enters
 integration.
 
+A Draft carries only work that completed its green round; incomplete work is pushed only
+to a preservation ref (`rules/workflow/phase-admission-protocol.md` Law 4).
+
 ## Control-plane Review transition
 
 A Draft may persist changes to `.agents/**`, `.claude/**`, `.codex/**`, `.github/**`,

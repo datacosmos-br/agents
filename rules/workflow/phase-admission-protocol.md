@@ -4,15 +4,17 @@ description:
   tracker item, or lane. Load when a phase or work item is about to be declared
   finished, when picking up the next phase, or when adopting concurrent work.
 metadata:
-  aihub.tags: '["decision:ADR-0012","effective:2026-10-26","route:both"]'
+  aihub.tags: '["decision:ADR-0012","effective:2026-10-29","route:both"]'
 capsule_summary: |
+  Carry the full declared phase through its integrated and required runtime proof;
+  do not abandon its remaining population or start unrelated work beside it.
   A phase is admitted as finished only with zero pending items: required failures,
   warnings and missing proof resolved, never merely tracked. Reconcile authority,
   owners and evidence at every phase start. Publication and integration follow the
   authorized gated PR contract, never a direct integration push. Before entering
   the next phase, sweep the fleet for existing fixes first: open PRs, foreign
   branches, and worktrees may already carry the work; adopt the newest correct
-   side through the merge contract owned by git/gitflow-branch-pr, never
+  side through the merge contract owned by git/gitflow-branch-pr, never
   keeping dead code, fallback, or compatibility. Revalidate the merged SHA before
   closure. Resolve authority by operator precedence; surface genuine conflicts.
 ---
@@ -24,6 +26,14 @@ adoption debt exists.
 
 ## Law
 
+0. **Always working, one phase at a time.** The 2026-10-24 operator order
+   `operator-order-2026-10-24-always-working-never-skip-phase` requires the whole
+   declared population and complete delivery cycle, not a successful sample or
+   local-only result. Finish required runtime restoration, applicable native
+   generation/repair/check/test contracts, current-SHA CI, reviewed integration
+   and post-merge proof before phase closure. An already failing runtime requires
+   causal recovery in the active phase; it is not a clean-state prerequisite or
+   permission to abandon remaining work. Do not start an unrelated phase beside it.
 1. **Zero pending closure.** At the beginning of every phase, reconcile current operator
    intent, canonical owners, concurrent work and required evidence before dependent
    effects. A required failure, warning or missing proof is RED and remains agent-owned
@@ -54,7 +64,10 @@ adoption debt exists.
 
 ## Violations this rule exterminates
 
-Advancing a phase with red gates or untracked warnings; re-implementing a fix that an
+Starting a new phase, slice, or unrelated work while another is incomplete; skipping or
+deferring any part of a cycle; leaving the project broken or its runtime failing;
+pushing incomplete or red work to an integration, working, or upload branch or to a PR;
+advancing a phase with red gates or untracked warnings; re-implementing a fix that an
 open PR already carries; adopting a lane wholesale with its dead code; landing without
 merged-SHA revalidation; retaining lower or older authority that contradicts the current
 operator intent instead of reconciling its canonical owner.
@@ -63,6 +76,12 @@ The operator's 2026-10-26 amendment applies continuously to every session and ta
 Its verbatim source is the operator record in `ag-h1k1`; a tracked required defect
 never waives phase acceptance or the executing agent's responsibility for causal
 repair.
+
+Reconciled 2026-10-29: the 2026-10-24 no-incomplete-push and preservation-ref
+orders remain routed through Law 4's Git owner. Their historical no-test wording
+does not prohibit required causal diagnostics or correction revalidation while RED.
+Current operator authorization governs effects within scope; no older text overrides
+it, waives CI/review/runtime proof or authorizes destructive recovery.
 
 ## Precedent
 

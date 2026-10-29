@@ -7,7 +7,7 @@ capsule_summary: |
   inferred from a task. Git checkpointing and publication require their current
   authority; preservation is not landing or runtime delivery.
 metadata:
-  aihub.tags: '["decision:ADR-0021", "effective:2026-10-23", "route:both"]'
+  aihub.tags: '["decision:ADR-0021", "effective:2026-10-29", "route:both"]'
 ---
 
 # No rushed work: preserve WIP and report its actual state
@@ -27,3 +27,7 @@ does not establish a dedicated worktree or branch requirement.
    next piece, not "later".
 4. Wip is preservation, not landing: the full landing cycle (PR to the integration
    branch; runtime when required) still applies before completion is claimed.
+
+The 2026-10-29 reconciliation retains the 2026-10-24 no-incomplete-push intent.
+Its older dedicated-placement and no-testing wording does not override the
+current placement owner or the diagnosis required to restore a failing runtime.
