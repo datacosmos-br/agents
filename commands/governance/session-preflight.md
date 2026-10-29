@@ -35,9 +35,11 @@ adoption, lane creation and announcements are explicit subsequent effects.
    Report unresolved alignment before implementation; this inspection does not
    itself perform or certify those owner updates.
 7. For an authorized transaction, identify its existing publication owner,
-   cooperative reader barrier and authenticated effect/compensation receipts under
+   cooperative reader barrier and authenticated partial-effect/recovery receipts under
    `rules/runtime/atomic-effects.md`. Report missing enforcement without inventing
-   a substitute transaction. Preserve the specification under
+   a substitute transaction. Apply that rule's 2026-10-29 supersession of the earlier
+   compensation permission when inspecting incomplete publications. Preserve the
+   specification under
    `rules/coordination/operator-precedence.md`; a faster validation route must retain
    its declared population and acceptance evidence.
 

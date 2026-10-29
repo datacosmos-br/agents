@@ -84,10 +84,12 @@ Retirement requires authenticated current ownership as well as declared scope; a
 glob, version mismatch or missing marker is insufficient. Conflicting edits, ambiguous
 ownership, invalid syntax and changed source/target identities fail before publication.
 Reconcile forward through the existing owner, without a competing publisher or parser.
-For an explicitly authorized transaction, apply the cooperative barrier and minimal
-compare-and-swap compensation contract of `rules/runtime/atomic-effects.md`.
-Publication compensation does not authorize reversal of external runtime effects or
-additional restarts. Retain the first causal failure and unresolved effect evidence.
+Apply the cooperative barrier, authenticated effects and fix-forward recovery contract
+of `rules/runtime/atomic-effects.md`. Its 2026-10-29 operator supersession retires the
+earlier 2026-10-28 compensation permission. Preserve published effects and reconcile
+drift at the existing owner; retain the first causal failure and partial-effect
+evidence. Discard only owned unpublished staging and release owned locks. Recovery
+does not authorize additional restarts or reverse external runtime effects.
 
 ## 4. Readiness evidence (activation ≠ readiness)
 

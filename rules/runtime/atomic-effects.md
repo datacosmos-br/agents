@@ -1,7 +1,7 @@
 ---
 description: Authenticate publication, preserve committed effects and repair forward.
 metadata:
-  aihub.tags: '["decision:ADR-0008","effective:2026-10-28","route:both"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-10-29","route:both"]'
 ---
 
 # Effects publish atomically
@@ -50,32 +50,33 @@ When the operator authorizes a multi-artifact transaction, the existing operatio
 owner serializes its publication with the declared cooperative readers, including
 Make and native refactoring readers. Those readers must use the same barrier before
 observing affected artifacts; hold it through publication, postcondition verification
-and any authorized compensation. Do not claim all-reader atomicity from independent
+and recording of partial effects. Do not claim all-reader atomicity from independent
 file renames: readers outside that protocol require their own verified consistency
 contract. The barrier does not require a clean checkout, frozen HEAD, idle unrelated
 writers or suspension of shared WIP.
 
-Capture authenticated before-images and effects through the existing transaction
-receipt. On failure, the operator's minimal rollback authorization permits compensation
-only for effects attributable to this invocation. Compare-and-swap must prove that
-the affected current content and metadata still equal this invocation's published
-after-image before restoring its authenticated before-image or removing an artifact
-it created. Preserve independent edits and prior WIP in both images. A mismatch,
-unknown ownership or unverified state forbids that compensation; record the unresolved
-effect and repair forward without overwriting current work.
+**Supersession 2026-10-29 — operator order, tracked by `ag-ssut`.** The earlier
+2026-10-28 permission for invocation-owned compare-and-swap compensation is historical
+and no longer authorizes restoration or removal of published effects. The current
+order requires preservation, adoption, cooperation and correction forward, including
+the effects of the failing invocation.
 
-This permission never authorizes a global rollback, Git reset/restore/revert, index
-or history replacement, restoration of unrelated artifacts, or removal of another
-actor's lock. It does not reverse prior successful transactions or external runtime
-effects without their separately authorized owner contract. Preserve the first
-original exception and traceback; compensation failure is additional durable evidence,
-never its replacement, a retry or a successful receipt.
+Capture authenticated before-images, confirmed after-images and partial effects
+through the existing transaction receipt. Keep source and target authentication,
+compare-and-swap admission, scope and the cooperative barrier mandatory. On failure,
+preserve the first original exception and traceback and record the unresolved effects;
+repair their canonical owner forward against freshly authenticated current state.
+Before-images remain causal evidence, never restoration instructions. Do not undo
+published files, modes, directories, index changes or runtime effects, even when this
+invocation owns them. Preserve independent edits and prior WIP; a drift requires
+diagnosis and reconciliation, never replacement by a historical image.
 
-Outside that explicit transaction authorization, follow
-`coordination/fix-forward-collaboration.md`: preserve published effects and repair
-forward. Cleanup may discard only this invocation's unpublished staging objects and
+Follow `coordination/fix-forward-collaboration.md`. Git reset/restore/revert, index or
+history replacement and removal of another actor's lock are not recovery actions.
+Cleanup may discard only this invocation's unpublished staging objects and
 release its own locks. Never delete unknown, foreign, live, dirty or ownership-ambiguous
 state. This rule specifies the contract; its publication is not evidence that a
-consumer implements the barrier, receipts or compensation.
+consumer implements the barrier, receipts or fix-forward recovery. Cleanup failure is
+additional evidence attached to the primary failure, never its replacement or success.
 
 See also: `strict-execution.md` (rule file) — aggregate parent policy.
