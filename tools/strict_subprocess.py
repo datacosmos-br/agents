@@ -7,6 +7,7 @@ import shlex
 import subprocess
 import sys
 from pathlib import Path
+from time import perf_counter
 
 _WARNING = re.compile(r"\bwarn(?:ing)?\b", re.IGNORECASE)
 
@@ -60,23 +61,43 @@ def run_strict(
     cwd: Path,
     label: str,
     environment: dict[str, str] | None = None,
+    *,
+    timing: bool = False,
 ) -> str:
     """Forward exact output and raise on nonzero, empty, or warning evidence."""
+    started = perf_counter()
     header = describe(command, cwd, label)
     print(header, flush=True)
+    if timing:
+        print(f"COMMAND start {label}: monotonic={started:.6f}", flush=True)
     try:
-        stdout, stderr = capture_strict(command, cwd, label, environment)
-    except subprocess.CalledProcessError as failure:
-        sys.stdout.write(failure.stdout or "")
+        try:
+            stdout, stderr = capture_strict(command, cwd, label, environment)
+        except subprocess.CalledProcessError as failure:
+            sys.stdout.write(failure.stdout or "")
+            sys.stdout.flush()
+            sys.stderr.write(failure.stderr or "")
+            sys.stderr.flush()
+            raise
+        sys.stdout.write(stdout)
         sys.stdout.flush()
-        sys.stderr.write(failure.stderr or "")
+        sys.stderr.write(stderr)
         sys.stderr.flush()
-        raise
-    sys.stdout.write(stdout)
-    sys.stdout.flush()
-    sys.stderr.write(stderr)
-    sys.stderr.flush()
-    return f"{stdout}\n{stderr}"
+        return f"{stdout}\n{stderr}"
+    finally:
+        if timing:
+            primary = sys.exception()
+            try:
+                print(
+                    f"COMMAND elapsed {label}: {perf_counter() - started:.6f}s",
+                    flush=True,
+                )
+            except BaseException as diagnostic_failure:
+                if primary is None:
+                    raise
+                primary.add_note(
+                    f"command timing output failed: {diagnostic_failure!r}"
+                )
 
 
 __all__ = ("capture_strict", "describe", "publish", "run_strict")

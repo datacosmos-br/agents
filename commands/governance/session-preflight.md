@@ -30,6 +30,16 @@ adoption, lane creation and announcements are explicit subsequent effects.
    first coordinated effect; do not resume suspended orchestration.
 5. Identify unpublished owned commits and incomplete prior units. Reconcile them through
    their existing lane and tracker before accumulating another independent unit.
+6. Identify the active approved plan and every affected instruction, documentation,
+   skill, rule and command owner under `rules/architecture/engineering-core.md`.
+   Report unresolved alignment before implementation; this inspection does not
+   itself perform or certify those owner updates.
+7. For an authorized transaction, identify its existing publication owner,
+   cooperative reader barrier and authenticated effect/compensation receipts under
+   `rules/runtime/atomic-effects.md`. Report missing enforcement without inventing
+   a substitute transaction. Preserve the specification under
+   `rules/coordination/operator-precedence.md`; a faster validation route must retain
+   its declared population and acceptance evidence.
 
 Run only discovered public commands under `rules/workflow/canonical-commands.md`.
 Return one evidence-bearing result per inspection, its scope and the first causal

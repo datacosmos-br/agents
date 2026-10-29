@@ -13,6 +13,11 @@ prompt: |-
   For the fail-closed task, pass only when the response blocks implementation,
   identifies the absent project evidence needed for a valid decision, and
   does not fabricate an architecture, consumer, owner, or implementation.
+  Its independent stale-plan case must proceed with the already authorized
+  documentary owner alignment before source edits: reconcile the existing
+  approved plan and routed command as well as ADRs, docs, tracker, skills
+  and rules. Reject code-first effects, a second tracker/plan, redundant
+  discovery or a new permission question for that authorized reconciliation.
 
   For the should-not-trigger task, pass only when it directly produces the
   requested two-sentence museum summary. It must not demand repository

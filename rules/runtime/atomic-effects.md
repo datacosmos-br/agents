@@ -1,7 +1,7 @@
 ---
 description: Authenticate publication, preserve committed effects and repair forward.
 metadata:
-  aihub.tags: '["decision:ADR-0008","effective:2026-10-26","route:both"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-10-28","route:both"]'
 ---
 
 # Effects publish atomically
@@ -16,16 +16,66 @@ Preserve the originally authenticated snapshot, ownership and mode. Last-writer-
 deduplication, refreshed snapshots to bypass contention and competing publishers
 violate the contract.
 
+Reuse the authenticated capture and parsed representation within one planning
+operation. Adjustable entries belong to typed declarative collections, not mirrored
+per-entry properties or orchestration branches. Integrity and source/target identity
+rechecks remain mandatory; efficiency never removes authentication.
+
+For shared configuration, declarations own the permitted artifact, field, entry or
+block effects. Current target bytes are preservation and ownership evidence, never a
+second policy source. Preserve foreign content and syntax outside changed spans.
+Native adapters own format handling; one existing planner and publisher own selection,
+composition and effects. Conflicting edits fail before publication.
+
+A satisfied declaration retains exact bytes and metadata, without a write or consumer
+restart. Retirement also requires authenticated current ownership; familiar paths,
+globs, age, version drift and missing markers alone grant no deletion authority.
+Recheck source and target identities before commit. Activate only authorized consumers
+whose declared configuration, executable binding or dependencies actually changed.
+ADR-0022's 2026-10-28 minimum authenticated publication amendment owns the
+catalog-publication boundary.
+
+Generated artifacts must already satisfy their declared format and strict analysis
+contracts. Repair and regenerate through the producer; a separate post-generation
+fixer or manual projection edit is not acceptance.
+
 For mass retirement, hold serialization through postcondition and atomically isolate
 each root before internal reclamation. The rename is the commit point; sequential
 unlinks are cleanup, not an atomic batch. Cleanup failure remains red, preserves its
 manifest, and requires causal correction plus fresh preflight.
 
-Follow `coordination/fix-forward-collaboration.md`: never restore published source,
-the index or history, including effects published by the failing invocation.
-Preserve the first original exception and the owner's durable publication evidence;
-reconcile current inputs and repair forward. Cleanup may discard only this invocation's
-unpublished staging objects and release its own locks. Never delete unknown, foreign,
-live, dirty or ownership-ambiguous state.
+## Cooperative transaction boundary
+
+When the operator authorizes a multi-artifact transaction, the existing operation
+owner serializes its publication with the declared cooperative readers, including
+Make and native refactoring readers. Those readers must use the same barrier before
+observing affected artifacts; hold it through publication, postcondition verification
+and any authorized compensation. Do not claim all-reader atomicity from independent
+file renames: readers outside that protocol require their own verified consistency
+contract. The barrier does not require a clean checkout, frozen HEAD, idle unrelated
+writers or suspension of shared WIP.
+
+Capture authenticated before-images and effects through the existing transaction
+receipt. On failure, the operator's minimal rollback authorization permits compensation
+only for effects attributable to this invocation. Compare-and-swap must prove that
+the affected current content and metadata still equal this invocation's published
+after-image before restoring its authenticated before-image or removing an artifact
+it created. Preserve independent edits and prior WIP in both images. A mismatch,
+unknown ownership or unverified state forbids that compensation; record the unresolved
+effect and repair forward without overwriting current work.
+
+This permission never authorizes a global rollback, Git reset/restore/revert, index
+or history replacement, restoration of unrelated artifacts, or removal of another
+actor's lock. It does not reverse prior successful transactions or external runtime
+effects without their separately authorized owner contract. Preserve the first
+original exception and traceback; compensation failure is additional durable evidence,
+never its replacement, a retry or a successful receipt.
+
+Outside that explicit transaction authorization, follow
+`coordination/fix-forward-collaboration.md`: preserve published effects and repair
+forward. Cleanup may discard only this invocation's unpublished staging objects and
+release its own locks. Never delete unknown, foreign, live, dirty or ownership-ambiguous
+state. This rule specifies the contract; its publication is not evidence that a
+consumer implements the barrier, receipts or compensation.
 
 See also: `strict-execution.md` (rule file) — aggregate parent policy.

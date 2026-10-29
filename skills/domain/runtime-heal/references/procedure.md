@@ -1,30 +1,32 @@
 # Runtime-heal procedure
 
-Ordered checklist for recovering a failed runtime service (ai-hub fleet
-shapes; generalize the owners, keep the discipline). Every step ends in a
+Ordered checklist for recovering a failed declared runtime service.
+Every step ends in a
 captured command. Sources of truth: the service's own journal, the decision
 records the project declares, and the live endpoints — never a remembered
 state.
 
 ## 0. Preflight (environment truth)
 
-1. `systemctl --user list-units '<prefix>-*' --all` — which services are
-   failed/inactive/active; record the invocation.
+1. Resolve the repository's root Make diagnostic operation and declared service
+   inventory. Capture failed, inactive and active states through that owner;
+   raw service-manager commands do not replace its public gate.
 2. Environment truth per ADR-0030: read the process's own cgroup
-   (`cat /proc/self/cgroup`, rightmost `.service`/`.scope` segment decides).
+   (the rightmost `.service`/`.scope` segment decides).
    Inherited `INVOCATION_ID`/`SYSTEMD_EXEC_PID`/`GC_SUPERVISOR_*` are not
    evidence of unit membership.
 3. If a credential-projection guard refuses an operator-session action, the
    guard is the defect when the cgroup leaf is a `.scope`; cure the guard at
    its owner. `env -u <MARKER> <command>` is a forbidden bypass.
-4. In the current authorized context (`rules/coordination/gascity.md`), run the
-   repository's generator verb (e.g. `make gen`) before any battery; generated
-   artifacts (receipts, locks) are part of an honest run, not a reason for isolation.
+4. In the currently authorized context, reconcile the applicable ADRs, documentation,
+   selected plan, tracker and canonical skill/rule/command owners before code.
+   Generation, lock resolution, provisioning and publication retain their distinct
+   native operation owners; generated artifacts are not a reason for isolation.
 
 ## 1. Diagnose at the failing layer
 
-1. Read the failing unit's journal (`journalctl --user -u <unit> -n 200`) to
-   the raw traceback; the first exception is the layer.
+1. Read the failing unit's journal through the declared diagnostic owner to the
+   original traceback; the first exception is the failing layer.
 2. Name the owner the traceback names: a validator → the model contract; a
    resolver → the graph/index owner; a transport → the client owner. Cure at
    the owner, never around it.
@@ -49,13 +51,43 @@ state.
 
 ## 3. Activation contracts
 
-1. `install` is the development contract (a release built from one identified
-   local worktree); `deploy` is the production contract (the attested
-   published release). Never fall back between them.
-2. Run `install` from the checkout that holds the cure, twice; the second run
-   must produce zero diff (idempotency proof).
-3. Dependent services restart through the install flow, not hand restarts;
-   prove sockets and units after, not during.
+1. Resolve source selection, preparation, publication and activation from the
+   current project ADR and root Make surface. An explicit checkout-runtime
+   authorization and an immutable-release contract are distinct; never substitute
+   one for the other or infer the verb's effects from its name.
+2. Use the existing transaction for its complete selected cohort. Recheck accepted
+   identities before effects and prove its public second-run no-op. A source change,
+   staged file or prepared receipt is not installed-runtime evidence.
+3. Restart only authorized consumers whose accepted configuration, executable binding
+   or declared dependencies changed. A no-op neither writes nor restarts. Prove
+   sockets and consumer behavior after activation.
+
+### Minimum-effect publication
+
+Before activation, apply `rules/runtime/atomic-effects.md` and the project's
+owning projection ADR. Resolve enabled surfaces and owned selectors from declarations.
+Native adapters preserve format and validate consumers; the existing planner and
+publisher compose the complete effects for each destination.
+
+Reuse typed declaration collections and each authenticated capture/parse within the
+operation; retain source/target identity rechecks. Supported entry or value changes
+belong to policy data, not mirrored protocol/model properties or provider dispatch.
+Generated artifacts must already meet their declared strict contracts; repair their
+producer rather than appending a fixer or changing a projection.
+
+Capture existing target bytes, ownership and metadata without treating them as source
+policy. Stage only the necessary owned field, entry, block or artifact changes.
+Validate each declared consumer separately and preserve foreign/manual content outside
+the changed spans. Disabled capabilities must remain disabled across every producer.
+
+Retirement requires authenticated current ownership as well as declared scope; a path,
+glob, version mismatch or missing marker is insufficient. Conflicting edits, ambiguous
+ownership, invalid syntax and changed source/target identities fail before publication.
+Reconcile forward through the existing owner, without a competing publisher or parser.
+For an explicitly authorized transaction, apply the cooperative barrier and minimal
+compare-and-swap compensation contract of `rules/runtime/atomic-effects.md`.
+Publication compensation does not authorize reversal of external runtime effects or
+additional restarts. Retain the first causal failure and unresolved effect evidence.
 
 ## 4. Readiness evidence (activation ≠ readiness)
 
@@ -64,7 +96,8 @@ state.
 2. End-to-end probes through public surfaces only (`status`, health-check,
    doctor verbs); no private method or source-text assertions.
 3. Record the evidence on the tracking bead: installed release id, generation
-   number, receipt digest, unit states. Then close.
+   number, receipt digest, unit states and per-consumer behavior. Close only after
+   the required integrated-source and current-SHA CI proofs as well.
 
 ## Traps (each earned in the 2026-09 campaigns)
 

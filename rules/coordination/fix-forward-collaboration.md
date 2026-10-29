@@ -33,7 +33,9 @@ replacement requires `divergent-object adjudication` (rule file).
 
 Never stash, reset, restore, revert, rebase, force-push, roll back code/history, or
 replace shared files to remove work. Never restore published source, Git state,
-the index, or history, including effects published by the failing invocation.
+the index, or history. The sole bounded exception for this invocation's own failed
+publication is the explicitly authorized compare-and-swap compensation contract in
+[atomic effects](../runtime/atomic-effects.md); it grants no global rollback.
 Fix the canonical owner forward and preserve valid sibling gains and the original
 native failure. Cleanup may discard only the invocation's own unpublished staging
 objects and release its own locks.

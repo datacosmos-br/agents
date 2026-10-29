@@ -16,13 +16,19 @@ implementation, then apply this surface-maintenance contract while adopting conc
 work through the fix-forward rule, never requiring a globally stable checkout.
 
 - Consult and reconcile affected guides, README, AGENTS, ADRs, selected tracker
-  references, local skills and propagated skill/source identities before code changes.
-   Change canonical docs, skills, commands, rules, executable examples and public
+  references, approved plans, local skills, rules, commands and propagated
+  skill/source identities before code changes.
+   Change canonical docs, plans, skills, commands, rules, executable examples and public
    docstrings in the same grain as the behavior or decision, through their owners.
    Repeat this consultation at phase transitions, context recovery and new operator
    decisions; keep the affected sources aligned throughout execution, not just at intake.
 - Preserve historical evidence as dated evidence; remove its authority to direct current
   execution. Never present a proposal, plan, or old gate result as live architecture.
+- Keep each delivery's source, integration and installed-runtime claims linked to
+  their distinct receipts through [Beads traceability](beads-traceability.md) and
+  [phase admission](phase-admission-protocol.md). Documentation alignment never
+  supplies missing execution evidence or publication authority. Project-specific
+  recovery authorization remains in that project's owner, not in universal rules.
 - Change generated documentation only through its config/template/generator, regenerate
   it with the repository's canonical verb, and prove a second-run fixed point.
 - Validate links, commands, snippets, schemas, and the real public consumer.

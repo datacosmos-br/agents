@@ -7,10 +7,13 @@ metadata:
 
 # Beads
 
-Activate only when the repository contains `.beads/`, selects Beads, and the request
-concerns its durable tracker. If `.beads/` is absent, do not invoke or probe `bd` or
-`gc`; continue through the repository's authorized non-tracker workflow. The active
-repository contract owns lifecycle and closure.
+Activate when the project or current operator explicitly selects an existing
+canonical Beads route and the request concerns its durable tracker. The route may
+be repository-local or an existing central store outside the checkout; `.beads/`
+presence alone selects nothing, and its absence does not revoke a selected central
+route. Without a selected route, perform no `bd` or `gc` discovery or probe and
+continue through the authorized non-tracker workflow. Resolve selection and
+lifecycle through `rules/workflow/beads-traceability.md`.
 
 Resolve Available versus Explicitly suspended from the active repository contract; never
 infer availability from a binary, port, or old instruction.
@@ -20,7 +23,8 @@ infer availability from a binary, port, or old instruction.
 Preflight the declared storage scope, repository identity, canonical runtime, live
 endpoint, current issue revision, actor authority, operation scope, integration state,
 and non-derivable process credentials. Require `bd context --json` and `bd ping --json`
-to prove the intended store before a write. A project keeps its identity/database
+through the selected route's declared activation and working directory to prove
+the intended store before a write. A project keeps its identity/database
 authority while inheriting a managed endpoint declared by its runtime owner; do not
 select an alternate endpoint or ledger by inference.
 
@@ -48,6 +52,13 @@ into local evidence. Verify the durable post-state before reporting it.
   bead is abandonment of the root cause, not scoping.
 - Closure requires the four-evidence pattern: recorded state, git history, measured
   reality, integrated code.
+
+At each delivery checkpoint, record the exact source revision, command, working
+directory, exit status, decisive output and next required proof on the selected
+available item. Source validation, reviewed integration and installed delivery remain
+distinct under `rules/workflow/phase-admission-protocol.md`
+and `rules/git/gitflow-branch-pr.md`; this procedure grants
+no commit, push, merge or runtime activation authority.
 
 ## Explicitly suspended
 

@@ -1,13 +1,15 @@
 # Public development surface for the immutable semantic governance bundle.
 
 MISE_EXEC := mise exec --
-UV_RUN := $(MISE_EXEC) uv run
+UV_RUN := $(MISE_EXEC) uv run --no-sync
 CACHE_HOME := $(if $(XDG_CACHE_HOME),$(XDG_CACHE_HOME),$(HOME)/.cache)
 PYRIGHT_CACHE_ROOT := $(CACHE_HOME)/agents-governance/pyright
 ARTIFACT_STATE_ROOT := $(CACHE_HOME)/agents-governance/artifacts
 WAZA_STATE_ROOT := $(CACHE_HOME)/agents-governance/waza
 override export COVERAGE_CORE := ctrace
 override export ARTIFACT_STATE_ROOT := $(ARTIFACT_STATE_ROOT)
+# Opt-in artifact-runtime instrumentation; it never selects an operation or scope.
+export ARTIFACT_PROFILE
 override export PYRIGHT_PYTHON_CACHE_DIR := $(PYRIGHT_CACHE_ROOT)
 override export WAZA_STATE_ROOT := $(WAZA_STATE_ROOT)
 override export UV_PROJECT_ENVIRONMENT := $(CURDIR)/.venv
@@ -34,6 +36,7 @@ else
 
 define BANNER
 	@if [ -z "$$NO_COLOR" ]; then printf '\033[1;36m▶\033[0m %s\n' "$(1)"; else printf '▶ %s\n' "$(1)"; fi
+	@if [ "$$ARTIFACT_PROFILE" = "1" ]; then printf 'COMMAND stage %s utc=' "$(1)"; date -u '+%Y-%m-%dT%H:%M:%SZ'; fi
 endef
 
 define RUN_TESTMON
@@ -54,7 +57,6 @@ upg: ## resolve newest declared tools and dependencies into committed locks
 	$(call BANNER,upg · mise lock + uv lock)
 	@MISE_LOCKED=false mise lock --upgrade --bump
 	@MISE_LOCKED=false $(MISE_EXEC) uv lock --upgrade --refresh
-	@MISE_LOCKED=false $(MISE_EXEC) uv sync --all-groups --locked
 
 ## generation + mutation
 gen: ## project Beads activation and governance provider outputs
@@ -65,7 +67,7 @@ gen: ## project Beads activation and governance provider outputs
 ## development gates
 check: ## run package non-test gates; host CRG acceptance uses make crg-check
 	$(call BANNER,check · complete non-test gate composition)
-	+@$(MAKE) --jobs=2 docs static mod-check conform waza runtime
+	+@$(MAKE) --jobs=2 runtime docs static mod-check conform waza
 
 docs: ## validate documentation through the public bundle contract
 	@$(MAKE) audit

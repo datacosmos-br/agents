@@ -52,6 +52,9 @@ section describes the governance repository; it is not universal project instruc
 
 Read [README.md](README.md), [rules index](docs/rules-index.md),
 [ADR index](docs/adr/README.md) and [change validation](VALIDATE_ON_CHANGE.md).
+For Pydantic work, compose the [boundary rule](rules/python/pydantic.md) and
+[development procedure](skills/technology/pydantic-development/references/procedure.md)
+with the project's selected, branch-matched ADR owners.
 Use the public root Make verbs. `make audit` validates the bundle; `make docs` checks
 links; `make waza` verifies the semantic suites. The command rule owns their execution
 and failure contract. A successful structural evaluation is not native agent proof.

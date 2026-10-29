@@ -1,25 +1,8 @@
 ## 1. model_rebuild is a defect — declarations are always strict
 
-`Model.model_rebuild()` (and `_types_namespace` hacks) exist to patch annotations that
-failed to resolve. In a strict fleet, every namespace that declarations depend on —
-`config`, `settings`, `c`, `t`, `p`, `m`, `u`, `base.py`, `services/`, `api.py`,
-`cli.py` — must be importable and resolved at class creation. A required rebuild is
-therefore evidence of a broken declaration: a forward reference to a name not exported
-by its facade, an import cycle, a TYPE_CHECKING-only symbol used at runtime, or a model
-defined in a function scope.
-
-```python
-class Node(m.FrozenModel):
-    child: Node | None = None  # ok — module-level, resolves itself
-
-
-Node.model_rebuild()  # violation — fix the declaration owner
-```
-
-Fix the owner (export the symbol through the correct facade, break the cycle by moving
-the alias to `t`, hoist the model out of the function), never call `model_rebuild`. The
-only tolerated form is inside the framework owner that provably cannot know its types
-before runtime, documented at that owner.
+Read [complete-declaration diagnosis](typing-diagnosis.md#complete-declarations-at-import)
+for the cause analysis and owner repair. A schema required at import is not
+qualified by a later rebuild; preserve the selected project's strict boundary.
 
 ## 2. Facade law (FLEXT members)
 
@@ -70,36 +53,41 @@ class OrderLine(m.BaseModel):  # violation — raw base at consumer
 
 ## 4. Preset selection — read-only, mutable, strict
 
-Choose by contract, not taste:
+Read [preset selection](presets.md) for the required contract-to-preset mapping.
+Its table describes intent; prove effective configuration on the selected public
+model rather than treating a copied preset name as runtime evidence.
 
-| Preset                                    | Config essence                                    | Use for                                        |
-| ----------------------------------------- | ------------------------------------------------- | ---------------------------------------------- |
-| `m.FrozenModel`                           | frozen + strict chain                             | read-only domain payloads, value data          |
-| `m.FrozenValueModel` / `m.Value`          | frozen + value `__eq__`/`__hash__`                | value objects compared by content              |
-| `m.ContractModel`                         | frozen, `validate_return`, `hide_input_in_errors` | immutable public contracts                     |
-| `m.StrictModel` / `m.StrictBoundaryModel` | strict, `validate_default`                        | external ingress boundaries                    |
-| `m.ManagedModel`                          | mutable, `validate_assignment`, `extra=forbid`    | validated mutable state                        |
-| `m.FlexibleInternalModel`                 | normalized, `extra=ignore`                        | internal domain plumbing                       |
-| `m.TaggedModel`                           | `extra=forbid` + `tag`                            | discriminated-union variants                   |
-| `m.Metadata`                              | frozen audit fields                               | metadata blocks (timestamps, tags, attributes) |
-| `m.Entity` / `m.AggregateRoot`            | id + timestamps + version + events                | DDD entities/aggregates                        |
-| `m.TimestampedModel`                      | created/updated timestamps                        | any time-audited record                        |
+### FLEXT enum and schema contracts
 
-Decision order: read-only domain data → frozen; external input → strict; mutable state →
-managed; never "flexible" at a boundary; never frozen where the domain requires
-assignment.
+Resolve enum storage and Python/JSON representation from the selected
+branch-matched ADR-005/ADR-028 revision, including its explicit supersession.
+Do not copy a volatile enum setting into this skill or a consumer preset.
+Declare full string domains with their owning `c.*` `StrEnum`, retaining
+subset and discriminator `Literal`s. Validate defaults, factories, assignment,
+Python dumps, JSON and schema independently; strictness and enum storage are
+different options. Generated reads/writes preserve the originating model's
+actual contract, and frozen fields have no setter. Preset owners configure
+once; consumers neither reconstruct validated values nor copy `ConfigDict`.
+
+Import-time schema completeness is separate from lazy module imports. Where
+ADR-028 requires complete declarations after import, `defer_build=True` is an
+implementation gap, not permission to defer proof to later validation.
+
+Native `use_enum_values=False` retains enum members in validated Python data;
+`True` extracts primitive values during validation. JSON serialization is a
+separate operation. The selected FLEXT ADR currently requires type preservation;
+the older primitive-storage target is superseded. Keep enum defaults validated
+and make generated read/write annotations match the concrete model's semantics.
+See [the versioned configuration contract](https://github.com/pydantic/pydantic/blob/v2.14.1/pydantic/config.py).
 
 ## 5. Identity models — id, timestamps, version
 
-Use `m.Entity` (composed `m.TimestampedModel` + `m.IdentifiableMixin` +
-`m.VersionableMixin`):
-
-- `unique_id`: `uuid4` default, non-empty string.
-- `created_at`: frozen, UTC-enforced validator, ISO 8601 JSON serializer.
-- `updated_at`: set in `model_post_init` when absent; must be ≥ `created_at`.
-- `version`: optimistic-lock counter with minimum validation.
-- `domain_events`: `MutableSequence` event-sourcing buffer (`p.HasDomainEvents`).
-- Equality/hash is identity-based for `Entity`, value-based for `Value`.
+Use the selected public entity preset and its declared fields, timestamp and
+version contracts. Resolve its mixin order and equality/hash behavior from the
+branch-matched model owner; a copied field inventory cannot establish that API.
+Under FLEXT ADR-028 Decision 14, entity identity is compared explicitly by id,
+while native Pydantic value equality remains intact. Mutable entities are
+unhashable; a frozen model's hash still depends on hashable field values.
 
 ```python
 class Shipment(m.Entity):
@@ -109,23 +97,25 @@ class Shipment(m.Entity):
 s = Shipment(origin="GRU")  # unique_id, created_at, version set
 ```
 
-Compose mixins only through the documented order (timestamped first, then identifiable,
-then versionable); timestamps are timezone-aware UTC, never naive datetimes. Audit actor
-fields (`created_by`/`modified_by`) come from `m.Metadata`, not ad-hoc fields.
+Compose only the owner's documented mixins. Timestamp and audit fields reuse
+their native declarations rather than a second consumer implementation.
 
 ## 6. Inheritance and MRO rules
 
-- Explicit inheritance only; every base named. Mixin order matters: later bases win
-  `ConfigDict` merges, so specific mixins come after general presets, matching the
-  `Entity` composition.
+- Explicit inheritance only; every base named. Inspect effective `model_config`
+  through the public model before composing presets. Pydantic documents that
+  multiple-base configuration merging does not currently follow Python MRO;
+  never infer C3 configuration semantics or repair a conflict with a local copy.
+  See [configuration inheritance](https://docs.pydantic.dev/latest/concepts/config/).
 - `model_post_init` overrides use `@override` and call `super()`.
-- `__eq__`/`__hash__` must stay consistent: identity pair on entities, value pair on
-  value objects; never mix.
+- Preserve native model-value equality for entities and value objects. Compare entity
+  identity explicitly by id; do not restore identity-based `__eq__`/`__hash__`.
+  Frozen models are hashable only when their field values support hashing.
 - After model validators are instance methods (v2.12+ deprecated the `@classmethod`
   form):
 
 ```python
-@u.model_validator(mode="after")
+@m.model_validator(mode="after")
 def check(self) -> Self:
     if self.end < self.start:
         raise ValueError("end before start")
@@ -133,6 +123,15 @@ def check(self) -> Self:
 ```
 
 - A validator defined on a base runs for subclasses; overriding replaces it.
+- Compose nested models by fields and model specialization by explicit generic
+  arguments; neither is namespace-facade inheritance. An enclosing family's name
+  is not bound while its body executes, so qualify annotations through an already
+  bound declaring owner. Do not copy configuration from an outer model into a
+  nested one: each native model owns its configuration boundary.
+- `frozen=True` prevents attribute reassignment, not mutation inside a contained
+  list or mapping. `validate_assignment=True` checks assignment, not in-place
+  container changes. Choose immutable containers only where the domain requires
+  them; freezing a model is not proof that all reachable data remains valid.
 
 ## 7. Protocol declaration in p — obligatory
 
@@ -156,3 +155,10 @@ class ShipmentSink(p.Base, Protocol):
 A service annotating a dependency with a concrete model class or framework type where a
 `p` protocol exists is a violation. New ports join the existing protocol family; do not
 create parallel protocol namespaces.
+
+Under the project's ADR-018, a serializable payload projected to `p` preserves
+its original concrete validation and serialization through `GetPydanticSchema`.
+It does not become an ADR-019 DI port: `t.Port` is a FLEXT annotation based on
+native hooks, excludes the dependency from JSON Schema and checks runtime member
+presence rather than signatures or nested payloads. Resolve generic parameters
+at their owner; never substitute an unconstrained schema for an unresolved port.

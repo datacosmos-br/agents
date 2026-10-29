@@ -46,6 +46,16 @@ deleted by this source cutover; their owned retirement belongs to AI Hub. Comple
 references, scripts, and evaluation resources remain part of the read-only package and
 its distribution contract.
 
+**Amendment — 2026-10-29 (development-local generation):** the later `ag-la3h`
+selection and commits `19e64c01` and `8226eafc` retain `make gen` for development
+outputs inside this repository checkout. The renderer in `tools/` is excluded
+from the distribution and proves its generated hooks, plugin and instruction
+pointers reach a deterministic fixed point. This narrows the earlier removal of
+the development route; it does not restore a package projector, HOME writer,
+installed runtime publisher or another delivery authority. AI Hub alone adapts
+and publishes installed consumer surfaces from the public bundle. Repository
+generation never establishes installed native-agent delivery.
+
 **Amendment — 2026-09-14 (resource contract):** each skill exposes its complete typed
 resource inventory, with format, executable policy, configured mode and SHA-256.
 `config/skills.json` owns that policy. `make runtime` compares installed sdist and wheel

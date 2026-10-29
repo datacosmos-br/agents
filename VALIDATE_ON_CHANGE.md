@@ -29,6 +29,19 @@ Specification coverage and artifact installation validate the package contract.
 They do not prove that AI Hub published a provider surface, withdrew its old copy,
 or that a native agent loaded it. Those receipts belong to AI Hub's delivery owner.
 
+`ARTIFACT_PROFILE=1` instruments the existing `make check`/`make runtime` artifact
+path without changing its operation, scope or active deadline. The declared
+external artifact-state owner retains unique parent and isolated public-load
+cProfile captures, including native termination checkpoints, plus elapsed command
+times. Parent waits are not child-call profiles; inspect the separate child
+captures before attributing a hot path. An absent or interrupted capture never
+proves zero work or runtime acceptance. No standalone script, selector, new verb
+or instrumentation-related budget increase is authorized by this binding.
+
+The complete `make check` keeps its existing two-job limit and all gate contracts;
+it starts the independent, locked artifact runtime first so its measured build
+and isolated-load critical path overlaps the other read-only gates.
+
 Record the changed owner and consumers, command, cwd, exit, decisive output and
 source revision on the selected available tracker task. When that tracker is
 unavailable, preserve receipts only through separately authorized Git/PR/CI and

@@ -10,61 +10,68 @@ payload = u.model.dump(model)  # model -> JsonMapping
 raw = model.model_dump_json(indent=2)  # model -> JSON
 ```
 
-- Never `Model.model_validate(json.loads(raw))`; the direct JSON entry point parses and
-  validates in one pass. The stdlib `json` module never appears at a model boundary —
-  `u` owns `from_json`/`to_json`/`to_jsonable_python` for non-model JSON work.
-- Non-model types (unions, collections, scalars) validate through cached
-  `t.TypeAdapters` factories — module-level, constructed once, the `@classmethod @cache`
-  catalog pattern. A local `TypeAdapter(...)` inside a function is a violation (rebuilds
-  validators per call).
-
-```python
-def handler(raw: str) -> r[t.JsonMapping]:
-    return u.model.validate_value(
-        t.TypeAdapters.json_mapping_adapter(), raw, from_json=True
-    )
-```
+- Never `Model.model_validate(json.loads(raw))`; use the native JSON validation
+  entry point. Non-model JSON work uses the selected public `u` owner, not a
+  copied parser or an assumed helper name.
+- Non-model types (unions, collections, scalars) validate through the selected
+  owner's reusable adapter. Runtime construction belongs to `u`; `t.TypeAdapter[T]`
+  is an annotation, not a callable factory. Do not recreate an adapter per item,
+  invent a `t.TypeAdapters` catalog, or add a consumer cache beside its owner.
 
 - `TypedDict` never crosses a public boundary as a contract; if an upstream API hands
   one over, convert at the edge through a `t.*` alias + adapter into a model. Same for
   plain `dict` payloads: they are ingress data, not contracts.
-- Stdlib dataclasses and ORM objects convert with `from_attributes=True` (field-level
-  `ConfigDict(from_attributes=True)` when the type is always attribute-sourced).
-- Round-trip law: validate once on ingress, dump once on egress; never re-validate owned
-  data flowing between internal components.
+- Attribute-sourced dataclass/ORM inputs use `from_attributes=True` at their declared
+  boundary; a shared model policy belongs to its preset, not a consumer `ConfigDict`.
+- Validate new external data once and pass admitted models by reference. A changed
+  trust boundary still needs its declared validation; an earlier parse is not proof
+  that a mutable instance remains valid. `model_validate(existing_model)` normally
+  reuses the instance without revalidation. Where required, select native
+  `revalidate_instances` at the model owner and test nested instances and subclasses;
+  never dump to a dict or JSON merely to force another admission.
 
 ## 2. Validation practice — centralized owners
 
-- Validators are centralized: reusable constraints live as `t` annotated aliases;
-  runtime invariants live in `u`/runtime validation owners (e.g. the UTC enforcer used
-  by timestamps); per-field logic uses `u.field_validator`/ `u.model_validator` in the
-  model. Copy-pasted validator bodies across models are a violation — promote the logic
-  to the `t`/`u` owner.
+- Reusable constraints live as `t` annotations. Native field/model validators
+  belong to the declaring model through its `m` Pydantic surface. Reusable
+  algorithms remain with their approved `u` owner; models do not discover
+  services or perform I/O. Respect the selected family's import boundary
+  rather than importing its unfinished own utility facade.
 - Prefer declarative constraints over imperative checks:
   `Field(gt=0, pattern=..., min_length=...)`, `StringConstraints` (v2.13 adds
-  `ascii_only`), and reusable aliases declared in `t`:
+  `ascii_only`), and reusable aliases declared in `t`. Use only capabilities
+  present at the selected dependency floor and exposed by its public facade.
 
-```python
-type MachineId = Annotated[
-    str, mp.StringConstraints(pattern=r"^[a-z0-9-]+$", to_lower=True)
-]
-```
-
-- Validator modes: `after` (default, typed — first choice), `before` (raw input, `Any` —
-  normalization only), `wrap` (handler-based — restricted to documented cases; slowest),
-  `plain` (replaces validation entirely — forbidden without a documented owner
-  justification).
+- Validator modes: prefer typed `after` invariants; use `before` only for the declared
+  raw ingress shape, without loose public contracts. A required `wrap` delegates to
+  the native handler; profile its cost rather than assuming a universal ranking.
+  `plain` replaces validation, so its owner must prove the complete positive/negative
+  contract; it never authorizes accepting invalid data or returning a default.
 - Ordering: before/wrap run right-to-left, after run left-to-right; field order defines
   when `info.data` is populated — never read a field validated after the current one.
-- Validation context replaces globals: pass `Model.model_validate(data, context={...})`
-  and read `info.context` in validators; the same exists for serialization.
-- Raise `ValueError` (or `PydanticCustomError` for typed errors) inside validators; the
-  first exception escapes — never catch to default, coerce, or aggregate.
+- Validators are data invariants, not effect hooks: nested generic validation may run
+  a model validator again. Keep them free of I/O and externally visible side effects.
+  A `computed_field` exposes derived output; it does not validate an input field.
+- Explicit validation context can carry boundary facts through `info.context`;
+  it is not a service locator or a reason to read process globals. The same
+  distinction applies to serialization context.
+- Raise `ValueError` or the exported native custom-error type for data invariants.
+  Pydantic packages those failures as `ValidationError`; preserve that native result
+  and cause at the declared error boundary. Programming errors are not input
+  normalization opportunities. Never recover with a default or retry.
 - Defaults: unvalidated unless `validate_default=True` (strict presets set it).
   `validate_assignment=True` (managed presets) revalidates on attribute assignment;
   frozen presets reject assignment outright.
+- Assignment validation does not intercept every in-place mutation of a nested
+  collection, and frozen models are not recursively immutable. Select the native
+  collection contract at its owner. `model_copy(update=...)` does not validate
+  updates; it cannot replace admission of changed external data.
 - Sequences with expensive item validation may use `Annotated[list[T], m.FailFast()]` to
   stop at the first error — an explicit, documented trade-off, not a default.
+
+These contracts follow [validators](https://github.com/pydantic/pydantic/blob/v2.14.1/docs/concepts/validators.md)
+and [instance revalidation](https://github.com/pydantic/pydantic/blob/v2.14.1/pydantic/config.py)
+at v2.14.1. They are not permission to weaken the project's presets.
 
 ## 3. Serialization practice
 
@@ -78,6 +85,15 @@ outer.model_dump(serialize_as_any=True)  # forbidden — applies to every value
 
 Per-field duck typing, when the contract genuinely requires it, uses
 `SerializeAsAny[User]` on that field only.
+
+Python dumps and JSON dumps have different output contracts. Under the selected
+type-preserving enum policy, Python fields/dumps retain enum members while the
+JSON boundary emits their values. A structural payload projection delegates both
+directions to its original concrete annotation; it does not copy serializers.
+The schema's validation and serialization modes are checked independently.
+For DI fields, `SkipJsonSchema` excludes schema exposure and `Field(exclude=True)`
+excludes dumps; neither marker implies the other. Keep those declarations at the
+port's existing owner instead of treating a runtime object as a payload.
 
 - Conditional exclusion is declarative: `Field(exclude=True)`,
   `Field(exclude_if=lambda v: v == 0)`, `computed_field(exclude_if=...)` (v2.13+), or

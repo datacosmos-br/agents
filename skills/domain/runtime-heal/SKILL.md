@@ -4,7 +4,7 @@ description:
   "runtime service recovery, failure diagnosis, installed-release activation, readiness"
 license: MIT
 metadata:
-  aihub.tags: '["activation:opt-in","decision:ADR-0030","detect:opt-in:runtime-heal","effective:2026-09-27","route:project","subject:deployment","usage:on-demand"]'
+  aihub.tags: '["activation:opt-in","decision:ADR-0030","detect:opt-in:runtime-heal","effective:2026-10-28","route:project","subject:deployment","usage:on-demand"]'
 ---
 
 # Runtime heal
@@ -19,6 +19,11 @@ triage, snapshot/publication contracts, compare-and-swap publication,
 development-versus-production activation contracts, credential-projection
 guard interplay, and idempotent-install proof. Every step ends in a captured
 command; a step without captured output did not happen.
+
+For configuration changes, apply `rules/runtime/atomic-effects.md` through the existing
+publisher. The procedure requires an accepted minimum diff, authenticated withdrawal,
+per-consumer validation and a byte-identical no-op before activation; source edits
+alone prove none of them. Concrete provider eligibility stays in consumer policy.
 
 A failure is cured at the owner the traceback names — never suppressed,
 retried, bypassed, or normalized; an inherited environment marker is never

@@ -8,6 +8,17 @@ current consumers, manifests and lockfiles, installed dependency versions,
 generated-file owner, runtime path, and native gates. Local repository evidence comes
 first; primary dependency documentation follows only after its pinned version is known.
 
+Complete the affected plan, documentation and command-owner alignment required by
+`rules/architecture/engineering-core.md` before entering implementation. Reading an
+obsolete instruction does not reconcile it; update its canonical owner and retain the
+current accepted decision in the existing delivery record.
+
+The reuse decision preserves the approved specification under
+`rules/coordination/operator-precedence.md`. Before a multi-artifact transformation,
+resolve the existing transaction and cooperative reader protocol under
+`rules/runtime/atomic-effects.md`; missing enforcement is a defect to repair at that
+owner, never permission for manual rewiring or global rollback.
+
 Missing or contradictory authority, an unresolved generated owner, or a hypothetical
 consumer blocks implementation. A filename, one keyword search, or historical code never
 proves absence or ownership.

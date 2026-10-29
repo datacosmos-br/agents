@@ -16,9 +16,12 @@ primary/shared checkout; this procedure adds no isolation prerequisite.
   bounded file owners collaborate in the same authorized checkout. Apply the canonical
   fix-forward invariant's prohibition on cleanliness, stability and exclusive-writer
   preconditions; do not turn ownership coordination into an exclusive-tree requirement.
-- When a lane is stalled for more than 30 minutes by last-write mtime, resume the
-  existing `task_id`. Supply the ready decision, current evidence, next command, and
-  acceptance condition; never create a duplicate tree owner.
+- Apply the canonical abandonment test in
+  `rules/coordination/bead-branch-pr-cadence.md`, section 2, using the threshold
+  loaded from the governance configuration and activity
+  attributable to the lane. Resume the existing `task_id`; supply the ready decision,
+  current evidence, next command and acceptance condition. Do not create another
+  timer, duplicate tree owner or infer abandonment from mtime alone.
 - CI workspace validation follows gitlinks: gate every submodule projection before
   changing its root pointer. Land submodules first, then update pointers in a separate
   root commit.

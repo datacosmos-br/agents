@@ -79,6 +79,14 @@ as "the module imports `tm` from its facade", goes to `utils/<name>.yml` once:
     has: { matches: tm-imported-from-flext, stopBy: end }
 ```
 
+**Fixed-point bottom-up cascades for multi-step ladders.** When an engine repeats its
+`ast-grep` catalog to a fixed point (such as `make mod` in FLEXT), write railway or
+control-flow rules targeting the **terminal** guard/return pair at the end of a block
+(`not: { precedes: { kind: _, stopBy: end } }`). Each pass collapses the bottom-most
+guard into a combinator expression (`.map`, `.flat_map`, `.unwrap_or`, `.map_or`),
+turning the preceding guard into the new terminal pair on the next pass without custom
+multi-statement AST walkers.
+
 **Context patterns for fragments.** Match a method, field or argument by giving the
 pattern its enclosing syntax and selecting the node you mean:
 

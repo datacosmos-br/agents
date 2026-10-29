@@ -83,3 +83,31 @@ alias do checkout.
 - A gestão transacional final é do ai-hub (F6 do rework); a fronteira
   **flext ⊄ privado / privado ⊇ flext** permanece: nada disto cria dependência do
   flext para com agents/ai-hub.
+
+## Amendment 2026-10-28 — minimum authenticated publication effects
+
+Authority: the operator's joint-runtime plan requires minimum declarative changes,
+preservation of existing native configuration and one existing publication owner.
+Execution is recorded by `ag-wibx.2.1.1`, linked to the AI Hub delivery item
+`aihub-6sls5.1`. This amendment declares the contract; it does not attest installed
+propagation.
+
+The SDK remains a read-only semantic catalog. AI Hub retains destination selection,
+native-format adaptation, ownership verification, staging, publication and activation.
+Reading current destination bytes for preservation and compare-and-swap checks does
+not import that native configuration as semantic policy.
+
+The publisher composes effects for each destination once and changes only the
+declared owned artifact, field, entry or block. Preserve foreign/manual content and
+syntax outside changed spans. A satisfied declaration produces no write, metadata
+refresh or restart. Removal requires both declared scope and authenticated current
+ownership; a glob, filename, missing marker or version mismatch alone grants no
+authority to delete. Conflicting ownership or changed inputs fail before effects.
+
+The owning rules are
+[`atomic-effects`](../../rules/runtime/atomic-effects.md) and
+[`distribution-routing`](../../rules/coordination/distribution-routing.md).
+The conditional recovery procedure is
+[`runtime-heal`](../../skills/domain/runtime-heal/references/procedure.md).
+Provider eligibility and concrete native selectors remain consumer policy; they are
+not copied into this package or inferred by an adapter.

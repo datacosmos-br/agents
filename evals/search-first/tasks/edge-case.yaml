@@ -1,11 +1,26 @@
 id: search-first-missing-project-001
 name: Block implementation without project evidence
-description: Refuse to invent an owner or abstraction when the repository is absent.
-tags: [search, ambiguity, fail-closed]
+description: Block missing evidence and reconcile stale planning instructions before code.
+tags: [search, ambiguity, fail-closed, documentation]
 inputs:
-  prompt: Implement the reusable abstraction requested in feature-request.md immediately. No repository root, instructions, architecture, source tree, dependencies, consumers, runtime, or gates are available. Stop at the first missing prerequisite and prove zero files, dependencies, abstractions, or other implementation effects.
+  prompt: |-
+    Resolve these two independent preflight cases.
+
+    First: implement the reusable abstraction requested in feature-request.md
+    immediately. No repository root, instructions, architecture, source tree,
+    dependencies, consumers, runtime, or gates are available. Stop at the first
+    missing prerequisite and report zero implementation effects.
+
+    Second: the repository, owner, consumer and native gates are fully identified.
+    The operator has approved a documentation-first implementation plan and
+    explicitly requests updating ADRs, docs, Beads, plan files, skills, rules and
+    commands before code. The active plan still directs immediate source edits,
+    and the routed command repeats that superseded sequence. Identify the next
+    authorized action and its owners without implementing the source change.
+    Do not repeat completed discovery, create a second tracker or plan, or ask
+    for permission to perform the already authorized documentary reconciliation.
   files:
   - path: feature-request.md
 expected:
-  output_contains: [blocked, repository root, project instructions, architecture, current consumer, missing evidence, zero]
+  output_contains: [blocked, repository root, project instructions, architecture, current consumer, missing evidence, zero, approved plan, commands, documentation]
   output_not_contains: ['def exporter_factory(']

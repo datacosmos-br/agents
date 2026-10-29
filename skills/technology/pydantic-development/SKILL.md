@@ -15,6 +15,9 @@ Read the `pydantic procedure` (skill file). It owns the complete reference:
 
 - Version authority: the project's declared dependency floor, never a global assumption;
   capabilities are chosen at that floor.
+- Static/runtime typing diagnosis: the procedure's evidence matrix compares
+  public facade identity, field synthesis, configuration inheritance and resolved
+  analyzer environments before any false-positive classification.
 - Facade-only access in FLEXT members (`m`/`t`/`p`/`u`/`r`/`e`); flext-core is the sole
   owner of Pydantic imports.
 - Obligatory model MRO declaration through `m.*` presets; read-only vs mutable vs strict

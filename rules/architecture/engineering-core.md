@@ -24,14 +24,14 @@ capsule_summary: |
   Keep the declared Git identity. A broken alias never permits a generic remote
   or operator SSH/key edits; correct identity in Git or report it.
 metadata:
-  aihub.tags: '["decision:ADR-0031","effective:2026-10-26","route:both"]'
+  aihub.tags: '["decision:ADR-0031","effective:2026-10-28","route:both"]'
 ---
 
 # Engineering core
 
 These standards govern all first-party phases. External forks follow the verified
-upstream-forks contract. The declared canonical governance owner maintains
-cross-project and cross-agent rules; reconcile project requirements with that owner.
+upstream-forks contract. Reconcile project requirements with the canonical
+cross-project and cross-agent governance owner.
 FLEXT also obeys its stricter local contracts.
 
 The 2026-10-26 operator ruling governs every session and task: use selected,
@@ -51,9 +51,10 @@ For every implementation:
 
 1. Map through CRG and confirm source (`operator-ruling-20261022-crg-every-session`);
    `crg` owns freshness, lane seeds, watches and verbs. Research owners, dependencies,
-   README, AGENTS, guides, ADRs, plans, specifications, selected tracker and skills.
-   Verify propagated identities; align canonical docs before behavior changes.
-   Regenerate through declared owners, never edit installed output.
+   README, AGENTS, guides, ADRs, approved plans, specifications, selected tracker,
+   skills, rules and command contracts. Update affected owners before code;
+   consultation alone never admits stale instructions. Verify propagated identities;
+   regenerate through declared owners, never edit installed output.
 2. Remove scope without a current requirement or consumer (YAGNI).
 3. Elect one writable authority; every other copy is a generated projection (SSOT).
    Improve it in place; parallel replacements, renderers, registries and copied
@@ -64,6 +65,8 @@ For every implementation:
    boundaries under change; domain behavior does not depend on infrastructure details.
 5. Implement through the owner without losing functionality or changing business rules
    unless the approved project plan or the operator explicitly authorizes that change.
+   Specification changes require prior discussion and approval under
+   [operator precedence](../coordination/operator-precedence.md).
 6. Every execution branch follows DRY, YAGNI, SSOT, KISS and SOLID. Remove duplication,
    god components and over-engineering rather than adding parallel accommodation.
 7. Exercise runtime behavior, run every applicable native gate, and complete the
@@ -71,6 +74,11 @@ For every implementation:
 
 Across boundaries, prove producer contract/output; fix the nonconforming producer or
 invalid receiver, never a correct adjacent owner or symptom workaround.
+
+Transactions follow [atomic effects](../runtime/atomic-effects.md), including its
+reader barrier and bounded compensation. Incremental gates follow
+[canonical commands](../workflow/canonical-commands.md); optimization preserves
+the specification and required proof.
 
 Hardcodes, normalized failure, failover, retry, fallback, compatibility, partial
 execution, application keyring reads, and unevidenced success are defects. Old signatures

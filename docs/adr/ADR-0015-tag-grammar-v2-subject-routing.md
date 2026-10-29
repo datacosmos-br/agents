@@ -44,9 +44,11 @@ Measured on 2026-09-07 against the live catalog and the AI Hub projection path:
    ownership in its frontmatter (`managed-by` naming the publishing distribution) plus
    the `agents-governance` version that produced it. Canonical sources carry no marker:
    the projector injects it at render time. A projected file whose version differs from
-   the installed bundle version is stale and is swept by the planner on the next
-   publish. Retirement reach is explicit: `retire:` globs in the consumer surface config
-   cover pre-marker residue, renamed slugs, and unmanaged vendor copies.
+   the installed bundle version requires reconciliation. Version drift alone is not
+   deletion authority. Declared retire globs bound discovery of potential pre-marker
+   residue and renamed slugs; retirement also requires authenticated ownership of
+   each current artifact. Unknown or foreign content is preserved, and conflicting
+   ownership fails before publication.
 4. **Rename lineage.** Slug renames travel with `supersedes:skill:<old>` (rules: their
    path identity), and the old slug appears in the consumer retire globs of the same
    release. The catalog validator enforces that a superseded slug is absent from the
@@ -87,5 +89,17 @@ about another private project.
   bumps to 0.4.0 and consumers regenerate, never tolerate, the old forms.
 - The subject/detector model becomes the live project-routing path; leaving it unwired
   while conditional categories exist is a defect against this ADR.
-- Homes converge to one reality: managed, versioned, sweepable. A projected file without
-  a marker is by definition residue to retire.
+- Homes converge through authenticated, versioned publication. A missing marker is an
+  ownership finding, not automatic permission to retire a file.
+
+## Amendment 2026-10-28 — retirement requires ownership
+
+The operator's minimum-effect publication directive supersedes the former instruction
+to sweep artifacts based only on markers, versions or globs. Preserve native/manual
+content and use the existing publisher for the declared owned changes. A no-op leaves
+bytes and metadata intact. See
+[ADR-0022](ADR-0022-home-global-materialized-projection.md#amendment-2026-10-28-minimum-authenticated-publication-effects)
+and the owning
+[distribution rule](../../rules/coordination/distribution-routing.md).
+`ag-wibx.2.1.1` tracks source qualification; installed delivery remains separately
+owned by the consumer.

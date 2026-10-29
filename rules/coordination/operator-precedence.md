@@ -13,8 +13,11 @@ capsule_summary: |
   Exact operator authorization survives interruption, divergence and red gates:
   re-preflight and continue. Ask only when the effect expands beyond it or two
   evidenced current intentions genuinely conflict.
+
+  Approved specifications, execution order and acceptance are binding. Present
+  evidence, impact and alternatives and obtain operator approval before any deviation.
 metadata:
-  aihub.tags: '["decision:ADR-0008","effective:2026-10-01","route:both"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-10-28","route:both"]'
 ---
 
 # Authority order and recency precedence
@@ -54,8 +57,22 @@ survives interruption, divergence, and red gates; re-preflight and continue. Ask
 when the effect expands beyond it or two evidenced current intentions conflict. State
 alone proves no intention, actor, or process.
 
-An agreed or requested operator strategy — its plan, execution order, checkout and
-branch layout, and validation route — is never changed by an agent without asking the
-operator first (tracker memory `operator-ruling-2026-10-22-runtime-before-tests`). A
-defect found on the way is corrected inside that strategy at its owner, at once; it is
-never routed around through a different store, checkout, or path, and never deferred.
+An agreed specification and operator strategy — required behavior, scope, plan,
+execution order, checkout and branch layout, validation route and acceptance
+criteria — are binding. An agent never simplifies or deviates from them without
+first discussing the exact proposed difference and its arguments with the
+operator and obtaining approval (tracker memories
+`operator-order-2026-10-28-no-specification-deviation` and
+`operator-ruling-2026-10-22-runtime-before-tests`). Difficulty, a red gate, time
+pressure or context pressure grants no exception. A defect found on the way is
+corrected inside that strategy at its owner, at once; it is never routed around
+through a different store, checkout, or path, and never deferred.
+
+The operator's literal implementation requirement is:
+
+> NA IMPLEMENTAÇÃO voce não pode simplificar ou desviar da especificação sem discutir e apresentar argumentos para o OPERADOR, ISSO É UMA REGRA FUNDAMENTAL
+
+This is the specification-preservation contract recorded by
+`operator-order-2026-10-28-no-specification-deviation`. Optimization changes the
+execution mechanism within that contract; it never silently reduces behavior,
+population, evidence, acceptance criteria or required completion.

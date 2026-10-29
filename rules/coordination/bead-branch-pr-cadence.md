@@ -11,7 +11,7 @@ capsule_summary: |
   (close superseded, realign epics, fix titles, --force when the tracker refuses) is part
   of the acting role, not an extra.
 metadata:
-  aihub.tags: '["decision:ADR-0021","effective:2026-10-01","route:both"]'
+  aihub.tags: '["decision:ADR-0021","effective:2026-10-28","route:both"]'
 ---
 
 # Bead + branch + PR cadence and the dedupe mandate (operator ruling 2026-09-27)
@@ -41,8 +41,10 @@ No rule, skill, command, or doc restates the number; each references this sectio
 
 1. A bead in any state (claimed, deferred, blocked), a lane, a worktree, a branch,
    or a PR is abandoned once the threshold passes without a change. A change is
-   the newest of: the bead's recorded update, the branch's last commit or push,
-   the PR's last update, and the last file modification in its worktree. Anyone
+   the newest of: the bead's recorded progress update, the branch's last commit
+   or push, the PR's last update, and relevant file activity in its worktree.
+   Attribute that activity to the lane's declared scope: unrelated shared-tree
+   edits or process duration alone do not establish progress or abandonment. Anyone
    may adopt it; adoption is a choice, never an obligation.
 2. Adopting means claiming the bead, announcing `[coord] lane claim`, and
    continuing the existing work with `merge --no-ff` (or by cherry-picking

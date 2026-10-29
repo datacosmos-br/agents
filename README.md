@@ -50,6 +50,18 @@ compatibility alias, or second loading path in this package.
 
 ## Development
 
+`make upg` resolves dependency and tool locks; `make setup` installs the declared
+locked environment. Generation and gates run the existing environment without
+implicit dependency synchronization. Run setup explicitly when installation is
+required and authorized.
+
+`make gen` retains the development-local provider outputs selected by `ag-la3h`
+and commits `19e64c01` and `8226eafc`, as clarified in
+[ADR-0008](docs/adr/ADR-0008-governance-bundle-as-public-facade.md).
+Its renderer lives outside the package, writes only inside this checkout and
+proves a deterministic fixed point. It neither publishes HOME/runtime surfaces
+nor replaces AI Hub's installed delivery owner.
+
 `make gen` also projects the portable `.beads/metadata.json` from
 `config/beads.yaml`, `config/beads-activation.yaml`, and `.beads/identity.toml`,
 and the tracked `.envrc` from
@@ -118,6 +130,19 @@ Skill resources expose their format, SHA-256 and configured publication mode thr
 physical modes after installing both artifacts. `make static` includes every Python
 resource selected from that inventory, with SDK dependencies owned by the development
 dependency group.
+
+For causal artifact-runtime diagnosis, `ARTIFACT_PROFILE=1 make check` (or the
+existing `make runtime`) enables cProfile on that same operation. It changes no
+gate, artifact, dependency, deadline or validation scope. Captures use unique,
+retained directories under the existing external `ARTIFACT_STATE_ROOT`: the
+parent profile measures coordination and child waits after its bootstrap; each
+isolated artifact's public-load profile starts before the package import. Make
+stage timestamps precede command activation, while profile starts and elapsed
+command times are emitted separately with parent/child capture paths. Native termination checkpoints
+preserve the original signal action and failures; missing captures remain missing
+evidence. This binding does not add a profiling verb or claim source validation
+is installed delivery. The docs-first and runtime-before-tests work remains with
+`ag-wibx`; the active Bead records command outcomes.
 
 For continuation, use `plan-handoff` and `strategic-compact`: retain links to the
 current owner/source revision, refs, measured gates, freshness and next action in the
