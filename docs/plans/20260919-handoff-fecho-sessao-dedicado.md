@@ -82,7 +82,7 @@ Nenhuma perda real: 757/589/732 (mesma head WIP, regressiva) JUNK; 764/792
 SUPERSEDED (revertiam lei vigente); 785 ALREADY-LANDED; 795 JUNK (86% churn de
 lockfile); 740 SUPERSEDED (patch mantido como referência de compat Dolt↔Beads);
 **796 = única salva real** (design da decomposição do god-module 687 LOC,
-_generate_workspace_config_parts + _allocation) — patch arquivado em
+_generate_workspace_config + _allocation) — patch arquivado em
 ~/ai-hub-worktrees/eval-patches-20260918/, minerável no bead aihub-jlp8n.3
 (registrado). Patches de todas em eval-patches-20260918/.
 
@@ -132,7 +132,7 @@ _generate_workspace_config_parts + _allocation) — patch arquivado em
    válidos (PROXY_INTERNAL_API_KEY.cred incluído, geração atual). O
    "required credential is absent" acontece só quando o `make deploy` roda
    fora do contrato systemd. Caminho correto (documentado em
-   `_host_runtime_parts/credentials.py:87-93`): `systemd-run --user --wait
+   `_host_runtime/credentials.py:87-93`): `systemd-run --user --wait
    --pipe --collect -p LoadCredentialEncrypted=<id>:$HOME/.local/state/
    ai-hub/credentials/current/<id>.cred (×6) make deploy`.
 2. **algar**: check local 100% VERDE (400→0; gm9/qou fechadas); r5t FECHADA

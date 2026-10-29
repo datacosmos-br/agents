@@ -15,7 +15,7 @@ relative to `flext_infra/`.
 | Refactor routes | `FlextInfraRefactorRoutes.refactor_routes` | `services/cli_routes_refactor.py` |
 | Docs, maintenance and validate routes | `FlextInfraValidationRoutes.validation_routes` | `services/cli_routes_validate.py` |
 | Group execution | `FlextInfraCliDispatchService.run_group` | `services/cli_dispatch.py` |
-| Service-model delegation | `FlextInfraServiceBase.execute_command` | `base.py` |
+| Service-model delegation | `s.execute_command` | `base.py` |
 
 ## Model and handler binding
 
