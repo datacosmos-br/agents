@@ -66,14 +66,11 @@ model/service types (DIP):
 - Outcomes use `p.Result[T]`; routable messages use `CommandRoutable` / `EventRoutable`
   / `QueryRoutable`.
 
-A service annotating a dependency with a concrete model class or framework type where a
-`p` protocol exists is a violation. New ports join the existing protocol family; do not
-create parallel protocol namespaces.
-
 Model/service projection follows the accepted branch-matched ADR-018 and
 [projection procedure](typing-diagnosis.md#project-owned-model-and-service-protocol-projection).
 Its target coverage is not proof of implementation. Never hand-mirror an omitted
 contract or replace an authored DI port with a service's projected implementation.
+New ports join the existing family; consume its capability instead of the implementation.
 
 ## 8. Protocol-typed fields
 
@@ -90,6 +87,12 @@ FLEXT DI `t.Port` is schema-excluded. A serializable payload projected to `p` in
 retains its original concrete validation and serialization through its schema hook,
 such as `GetPydanticSchema`. Resolve generic arguments at the owner; an unresolved
 port never receives an unconstrained schema as a substitute.
+
+Compose model data with existing admitted objects and inject runtime capabilities by
+their `p` contracts through the approved port. Do not transport either through dumps,
+reconstructed mappings or copied implementations. Preserve each consumer's read/write
+rights: mutable operation state can be referenced by an immutable authenticated
+transaction without making that state immutable or allowing transaction mutation.
 
 ## 9. Closed domains are StrEnum members of `c`
 
@@ -118,16 +121,18 @@ The project carries the fewest models and fields that express the contracts:
   merged through inheritance (a base declares the shared fields, subclasses add only
   their delta) or composition (a nested model reused as a field).
 - **Reuse the admitted object.** Under the same contract and trust state, pass the
-  instance directly. A changed trust boundary or mutable state uses the owner's
-  native revalidation policy; neither copying nor serialization proves validity.
+  instance directly; changed trust follows the [boundary policy](boundary.md).
 - **Constraints live in types, not fields.** A constraint repeated on several fields is
   a `t` alias (`type NonEmptyStr = Annotated[str, ...]`); a field carries `m.Field(...)`
   only for field-specific facts (default, alias, discriminator, description).
 - **Derived values are `computed_field`s**, not stored fields kept in sync by hand.
 - **Preset first.** A model never repeats configuration its preset already encodes.
+- **Defaults belong to the field owner.** Give genuinely omissible inputs their
+  approved default or factory once; `T | None` alone still declares a required input.
+  Never invent `None`, an empty collection or a business default to satisfy callers.
+  Callers omit an owned default instead of restating it; required facts stay required.
 - Use the existing `t` surface (`t.NonEmptyStr`, `t.PositiveInt`, `t.JsonValue`,
   `t.JsonMapping`, …) before declaring a new alias; a duplicate alias is a violation.
 
-Consumers should receive the validated shape they need. Do not duplicate narrowing,
-casts, parsing or schemas merely to compensate for a producer that still requires
-repair. A real representation or trust transition retains its declared boundary.
+Consumers receive their validated contract; producer defects require owner repair,
+not duplicated narrowing, casts, parsing or schemas.

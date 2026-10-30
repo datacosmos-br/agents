@@ -38,8 +38,10 @@ The [causal-diagnosis rule](../workflow/runtime-is-reality.md#causal-diagnosis)
 governs proof before a correction and renewed tracing when the original error remains.
 
 Profiling evidence must identify its actual capture boundary and native lifecycle.
-A selected owner-thread cProfile capture leaves other threads, logging and workload
-unchanged; owner waits are wall time, not worker CPU, and pstats total time is not
+A selected owner-thread cProfile capture preserves the declared operation and scope,
+but adds observer overhead and changes timing; profiled latency is not an uninstrumented
+baseline. It does not profile other threads. Owner waits are wall time, not worker CPU,
+and pstats total time is not
 external elapsed time. Use native `Profile.snapshot_stats()` for active checkpoints:
 these are partial completed-entry evidence, not full duration or flushed active
 frames. Final capture disables the profiler before that same native snapshot.

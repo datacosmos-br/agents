@@ -69,8 +69,11 @@ remain prerequisites; this amendment removes no worktree or branch.
 
 ## Consequences
 
-- The accumulated merged lanes across the fleet are retired with Git, lane by lane, each
-  with an ancestry proof and recorded evidence. No new verb is a precondition.
+- Eligible invocation-owned disposable lanes may be retired through the current Git
+  owner, each with explicit authority, preservation/activity/runtime-reference checks,
+  freshly fetched ancestry proof and recorded evidence. Adopted primary/shared,
+  integration and foreign contexts remain protected; fleet inventory alone grants
+  no removal authority. No new verb is a precondition.
 - A lane that is not merged is adjudicated by its authored content before retirement.
   Projection-only diffs are not a contribution unless the operator overrides a specific
   item.

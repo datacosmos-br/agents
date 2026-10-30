@@ -24,7 +24,10 @@ prompt: |-
   updates canonical owners rather than projections and reconciles every
   conflicting skill, rule, decision, document, tracker item, plan, template,
   projection, and generated consumer; permits no lower-authority artifact to
-  narrow, reinterpret, or defer the operator instruction; removes semantic
+  narrow, reinterpret, or defer the operator instruction; a proposed deviation
+  identifies the exact difference, evidence, reasons, impact, alternatives and
+  affected workspace/member/standalone coverage, and obtains the operator's
+  decision before dependent implementation; removes semantic
   opposites; adds an owning-skill semantic regression when agent behavior
   caused the incident; performs an evidence-based skill-exit review without
   cosmetic or project-specific governance churn; repeats contradiction
@@ -35,7 +38,8 @@ prompt: |-
   may be published only to explicitly authorized preservation refs, never to
   working branches or PRs; preserves historical Drafts without treating them as
   current validation; never merges a WIP head; after a complete local matrix creates
-  a material promotion commit without WIP, rejects an empty promotion commit,
+  the promotion commit declared by the Git owner without WIP, including only its
+  authorized typed empty transition when applicable,
   uses the normal hook path; removes the
   WIP label; converts Draft to Review; requires Actions and independent
   approval; merges the exact head by merge commit; revalidates the exact

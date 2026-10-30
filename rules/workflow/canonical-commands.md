@@ -99,13 +99,16 @@ wall-clock bound covering activation, preflight, locks, children and termination
 Wrap unenforced entrypoints without changing operation/scope, suppressing output
 or normalizing failure.
 
-Make always uses `timeout --signal=TERM --kill-after=10s <seconds> make <verb>`;
-shared locks use bounded `flock -w <seconds>`. Select bounds from the declared
-budget, never guesswork (operator order 2026-10-24, tracker memory
+Use the Make owner's native deadline runner. Where enforcement is absent, the
+external form is `timeout --signal=TERM --kill-after=<reserve>s <work-budget>s make <verb>`;
+work budget plus termination reserve must fit the declared total bound. Shared locks
+use bounded `flock -w <seconds>`. Resolve both values from the selected owner, never
+freeze a sibling's reserve or add a second budget (operator order 2026-10-24, tracker memory
 `operator-order-2026-10-24-make-always-with-timeout`).
 
-Reserve termination time: request it by 118 seconds and finish terminating owned
-children by 120 seconds. Nested operations consume the remaining invocation budget,
+Reserve termination time inside the 120-second total bound: TERM begins no later than
+total minus reserve, and all owned children terminate within that total. Nested
+operations consume the remaining invocation budget,
 never a fresh child budget. Do not signal another actor's process or remove its lock
 to obtain the window.
 

@@ -1,6 +1,7 @@
 # ADR-0021 — Operator universal rulings of 2026-09-15/16: runtime truth, no rushed work, full landing cycle
 
-**Status:** Accepted; placement attribution corrected 2026-10-23
+**Status:** Accepted; placement attribution corrected 2026-10-23;
+failure-boundary supersession 2026-10-29
 **Date:** 2026-09-16 **Scope:**
 `rules/coordination/validate-on-change.md`, `rules/coordination/wip-persistence.md`,
 `rules/coordination/full-landing-cycle.md`, `rules/coordination/never-deduce.md`,
@@ -75,3 +76,15 @@ attribution correction in
 [ADR-0025](ADR-0025-manual-worktrees-during-orchestration-suspension.md).
 Runtime truth, WIP preservation and authorized integration remain mandatory;
 none grants deletion, isolation or Git publication authority by implication.
+
+## Failure-boundary supersession — 2026-10-29
+
+The latest operator instruction replaces the blanket no-catch/no-aggregation and
+global-escape requirements. Expected conditions use typed branches, not exceptions;
+defaults cover declared optional absence only. The single normative owner is
+[fail loud](https://github.com/datacosmos-br/agents/blob/dev/rules/runtime/fail-loud.md), including responsible translation,
+causal metadata, independent outcomes, unexpected-error containment and cancellation.
+[Python guidance](https://github.com/datacosmos-br/agents/blob/dev/rules/python/no-hidden-errors.md) and
+[engineering core](https://github.com/datacosmos-br/agents/blob/dev/rules/architecture/engineering-core.md) consume that rule.
+This changes authority, not runtime qualification or acceptance. Publication recovery
+still follows the [atomic-effects supersession](https://github.com/datacosmos-br/agents/blob/dev/rules/runtime/atomic-effects.md).

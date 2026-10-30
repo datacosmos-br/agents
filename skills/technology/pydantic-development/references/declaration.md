@@ -52,6 +52,13 @@ Read [preset selection](presets.md) for the required contract-to-preset mapping.
 Its table describes intent; prove effective configuration on the selected public
 model rather than treating a copied preset name as runtime evidence.
 
+Choose mutability from lifecycle: operational state uses the existing managed preset
+(and its strict variant when required), not a frozen snapshot plus repeated copies.
+Authenticated inputs, publication preconditions and receipts retain their declared
+immutability. This distinction authorizes no blanket unfreezing or weaker validation.
+Compose validated data and capability references under the
+[composition contract](composition.md#8-protocol-typed-fields).
+
 ### FLEXT enum and schema contracts
 
 Resolve enum storage and Python/JSON representation from the selected

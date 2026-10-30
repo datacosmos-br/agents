@@ -54,6 +54,12 @@ changed data (`pydantic/main.py:422-468@v2.14.1`). Construct the new state at it
 with the declared typed values and native validation. Do not prescribe a model dump,
 mapping surgery and reparse as a universal update mechanism.
 
+For mutable operational state, use the selected managed preset and its declared
+assignment/lifecycle operations instead of freezing it and copying on every update.
+Immutable authenticated snapshots and preconditions remain immutable; updates that
+change their meaning require a newly admitted snapshot. Requiredness and omission
+defaults stay with the [field owner](composition.md#10-minimal-models-maximal-reuse).
+
 ## 2. Validation practice — centralized owners
 
 - Reusable constraints live as `t` annotations. Native field/model validators

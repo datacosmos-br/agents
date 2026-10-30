@@ -17,14 +17,13 @@ capsule_summary: |
   At a cross-boundary failure, prove the producer's contract and fix the wrong
   side; never bend a correct owner for an invalid consumer.
 
-  Hardcodes, normalized failure, failover, retry, fallback, partial execution
-  and unevidenced success are defects. The first exception escapes with its
-  traceback and cause.
+  Hardcodes, hidden failure, retry, fallback and false success are defects.
+  Typed branches and causal exceptions follow the fail-loud boundary owner.
 
   Keep the declared Git identity. A broken alias never permits a generic remote
   or operator SSH/key edits; correct identity in Git or report it.
 metadata:
-  aihub.tags: '["decision:ADR-0031","effective:2026-10-28","route:both"]'
+  aihub.tags: '["decision:ADR-0031","effective:2026-10-29","route:both"]'
 ---
 
 # Engineering core
@@ -34,7 +33,8 @@ upstream-forks contract. Reconcile project requirements with the canonical
 cross-project and cross-agent governance owner, never a divergent local copy.
 FLEXT also obeys its stricter local contracts.
 
-The 2026-10-26 operator ruling governs every session and task: use selected,
+The 2026-10-26 operator ruling recorded in `ag-h1k1` governs every session and task:
+use selected,
 functioning CRG CLI, MCP and specialists under `crg` and `dispatch-agent`, applicable
 skills and ADRs. Selection authorizes no installation, removal, destruction or unrelated
 commands. Repair causal owners under [tool ownership](../workflow/declared-tool-ownership.md).
@@ -76,14 +76,20 @@ Across boundaries, prove producer contract/output; fix the nonconforming produce
 invalid receiver, never a correct adjacent owner or symptom workaround.
 
 Transactions follow [atomic effects](../runtime/atomic-effects.md), including its
-reader barrier and bounded compensation. Incremental gates follow
+reader barrier and 2026-10-29 preservation/fix-forward supersession. Incremental gates
+follow
 [canonical commands](../workflow/canonical-commands.md); optimization preserves
 the specification and required proof.
 
-Hardcodes, normalized failure, failover, retry, fallback, compatibility, partial
-execution, application keyring reads, and unevidenced success are defects. Old signatures
+Hardcodes, hidden failure, failover, retry, fallback, compatibility, partial
+success presented as complete, application keyring reads, and unevidenced success are
+defects. Old signatures
 follow only `zero residue`'s "Deprecated-signature window". Typed owners keep defaults.
-The first exception escapes its CLI with traceback and cause.
+Expected branches, optional defaults, causal translation, independent outcomes and
+unexpected-error containment follow [fail loud](../runtime/fail-loud.md), amended by
+[ADR-0021](https://github.com/datacosmos-br/agents/blob/dev/docs/adr/ADR-0021-operator-universal-rulings-runtime-truth.md#failure-boundary-supersession--2026-10-29).
+The [Python consumer rule](../python/no-hidden-errors.md) applies that contract without
+a second exception policy; it does not require every failure to escape globally.
 
 Exterminate these defects at their owners, never accommodate them (tracker memory
 `operator-ruling-2026-10-01-total-extermination`). Replace the following classes
@@ -140,7 +146,7 @@ host indexes, daemons, forges, language servers and refactor orchestration. Libr
 consume available host capabilities only through public commands, hooks or MCP;
 never import the host as a library, reproduce its state or create a substitute runtime.
 An absent unselected capability is not an error; a selected capability's first failure
-propagates without fallback.
+remains causal and visible through its responsible boundary, without fallback.
 
 Remote access follows current Git/forge configuration. Never rewrite protocols,
 create identity aliases or change user SSH configuration for Git operations. A broken
@@ -156,7 +162,8 @@ never counted as passed, never a runtime skip. A missing token does not block of
 gates, landing, or post-merge proof. A missing host capability does not turn the run
 that lacks it red, and the behavior it covers counts as proven only by a run where the
 capability is present. Direct invocation selects the check: the capability becomes
-required and any failure escapes without skip, catch, fallback, or normalization.
+required and any failure remains red under the responsible failure-boundary contract,
+without skip, fallback or success normalization.
 
 Compose with `generalized ownership` (rule file), `strict execution` (rule file),
 `runtime evidence` (rule file), `storage isolation` (rule file), `security closure`

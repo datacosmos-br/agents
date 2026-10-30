@@ -26,7 +26,7 @@ residue; keep ongoing invariants. Record counts through the existing typed rule 
 Every rule ships with a test of `valid` and `invalid` cases and the snapshot the
 repository's snapshot verb writes. A rewrite reaches a verified fixed point. A rule
 whose law is superseded is deleted with its test and snapshot in the same cutover. The
-selected structural-migration skill owns authoring procedure; the engine owner's guide
+`codemod` skill owns authoring procedure for ast-grep catalogs; the selected engine's guide
 owns its schema and verbs.
 
 Rules are hierarchical. The canonical governance owner holds provider-neutral law. The engine package

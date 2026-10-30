@@ -7,7 +7,7 @@ metadata:
 
 # Behavioral Regression Workflow
 
-Activate when implemented observable behavior needs real-runtime proof and subsequent
+Activate when implementing or correcting observable behavior that needs real-runtime proof and subsequent
 regression validation. Read the `complete procedure` (skill file) and compose the
 documentation-first and runtime-first rule owners before effects. Implement and prove
 the actual behavior before changing tests; this procedure has no test-first branch.

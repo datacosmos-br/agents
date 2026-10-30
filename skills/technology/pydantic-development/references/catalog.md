@@ -33,7 +33,7 @@ versioned in [internals](internals.md) and [runtime](runtime.md).
 | Discriminators, `Tag`, `StrEnum`, narrow `Literal` | Actual variant/domain contracts in [composition](composition.md#9-closed-domains-are-strenum-members-of-c) |
 | `InstanceOf`, DI `t.Port`, payload schema hooks | Distinct static/runtime/schema obligations in [composition](composition.md#8-protocol-typed-fields) |
 | `RootModel`, parameterized models | Root or generic payloads; preserve specialization and [output shape](serialization.md) |
-| `TypeAdapter`, direct JSON validation, `from_attributes` | Reusable adapter and native [ingress](boundary.md#1-conversions--dict-typeddict-dataclass-json) |
+| `TypeAdapter`, direct JSON validation, `from_attributes` | `t` annotations, existing `u` runtime adapter and native [ingress](boundary.md#1-conversions--dict-typeddict-dataclass-json) |
 | Validation/serialization context | Boundary facts in [validation](boundary.md), output facts in [serialization](serialization.md); no globals |
 | `SecretStr`, `SecretBytes` | Sensitive representations; versioned source `pydantic/types.py:1819-1858@v2.14.1` |
 | `FailFast`, `validate_call` | Explicit trade-offs at the declared [boundary](boundary.md#2-validation-practice--centralized-owners) |
@@ -57,8 +57,8 @@ versioned in [internals](internals.md) and [runtime](runtime.md).
   waive schema completeness once that module loads. Elsewhere, upstream support
   for deferred building is a capability, not automatic project authorization.
 - The official "use `TypedDict` over nested models" performance advice is rejected:
-  `TypedDict` is not a FLEXT contract. The conforming alternatives are frozen presets,
-  narrower models, and adapter reuse.
+  `TypedDict` is not a FLEXT contract. Use narrower models, adapter reuse and the
+  lifecycle-appropriate [preset](declaration.md#4-preset-selection--read-only-mutable-strict).
 - Preserve the selected preset's string-cache and mutability settings. An upstream
   optimization does not authorize a consumer override or automatic feature enablement.
 

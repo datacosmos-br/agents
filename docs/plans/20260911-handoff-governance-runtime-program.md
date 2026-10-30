@@ -1,8 +1,8 @@
 # HANDOFF — Governance Runtime Program (ag-zrh) · 2026-09-11
 
-> Use com `bd prime` no checkout `~/agents` e leia este arquivo antes da primeira ação.
-> Plano canônico: `docs/plans/20260910-governance-runtime-program.md` (fonte única de
-> sequência/DoD).
+> Registro histórico de 2026-09-11. A seleção atual de plano, tracker e contexto
+> vem de seus owners canônicos; este arquivo não é um preflight obrigatório.
+> Plano citado à época: `docs/plans/20260910-governance-runtime-program.md`.
 
 ## 1. Registro histórico de reinício
 
@@ -10,6 +10,8 @@ Este registro não seleciona o contexto de uma nova chamada. A exigência antiga
 isolamento foi revogada pelo operador em 2026-10-23 (ag-wibx.2); o dono atual é
 `rules/coordination/gascity.md`. Revalidar as demais instruções históricas em seus
 donos antes de qualquer retomada, preservando os fatos medidos abaixo.
+O bloco abaixo é transcrição histórica para referência, não comandos ativos ou
+autorização para executar a sequência antiga.
 
 ```text
 Handoff: Governance Runtime Program (bead épico ag-zrh).

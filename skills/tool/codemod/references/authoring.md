@@ -80,12 +80,15 @@ as "the module imports `tm` from its facade", goes to `utils/<name>.yml` once:
 ```
 
 **Fixed-point bottom-up cascades for multi-step ladders.** When an engine repeats its
-`ast-grep` catalog to a fixed point (such as `make mod` in FLEXT), write railway or
-control-flow rules targeting the **terminal** guard/return pair at the end of a block
-(`not: { precedes: { kind: _, stopBy: end } }`). Each pass collapses the bottom-most
-guard into a combinator expression (`.map`, `.flat_map`, `.unwrap_or`, `.map_or`),
-turning the preceding guard into the new terminal pair on the next pass without custom
-multi-statement AST walkers.
+`ast-grep` catalog to a fixed point, a qualified rule may consume a terminal
+guard/return pair and expose the preceding pair to the next pass. Prove the payload,
+failure metadata, control flow and effects before choosing a Result operation; a
+default-valued extraction must never hide failure. Reuse the engine's tested rules
+and semantic witnesses rather than introducing another multi-statement AST walker.
+Use a documented [syntax kind](https://ast-grep.github.io/reference/rule.html#kind)
+or [metavariable](https://ast-grep.github.io/guide/pattern-syntax.html#meta-variable):
+`kind: _` is not an any-node matcher. A cascade remains unqualified until its
+declared catalog tests prove cardinality, near misses and fixed point.
 
 **Context patterns for fragments.** Match a method, field or argument by giving the
 pattern its enclosing syntax and selecting the node you mean:

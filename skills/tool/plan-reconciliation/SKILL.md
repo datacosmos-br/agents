@@ -25,8 +25,8 @@ configured automation, not a manual prerequisite.
 
 Use automated inventories as evidence, never as semantic decisions. Read the active plan
 and all linked material completely. Reconcile one plan at a time, newest first, and its
-projects in dependency order. Transfer valid pending work to Beads and maintained
-documentation, then retire that plan only after complete transfer and preservation
+projects in dependency order. Transfer valid pending work to selected Beads and useful
+knowledge to maintained documentation, then retire that plan only after complete transfer and preservation
 proof; do not implement historical proposals. Reconciliation completion is distinct from
 implementation completion. Execution state lives only in the selected Beads owner;
 `rules/workflow/beads-traceability.md` owns AI Hub's generated TODO view. Publish through

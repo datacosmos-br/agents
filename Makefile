@@ -166,7 +166,7 @@ test: ## run affected tests through the testmon database at its tool default
 	$(call BANNER,test · pytest-testmon affected selection)
 	$(call RUN_TESTMON,incremental)
 
-test-full: ## run the complete local suite without testmon selection
+test-full: ## run the complete local suite without the testmon plugin or database
 	$(call BANNER,test-full · pytest without testmon)
 	$(call RUN_TESTMON,full)
 

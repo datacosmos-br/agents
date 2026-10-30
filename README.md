@@ -144,7 +144,8 @@ API and compares its paths, bytes, modes and digests with the source snapshot.
 dependencies owned by the development dependency group.
 
 For causal artifact-runtime diagnosis, `ARTIFACT_PROFILE=1 make check` (or the
-existing `make runtime`) enables cProfile on that same operation. It changes no
+existing `ARTIFACT_PROFILE=1 make runtime`) enables cProfile on that same operation.
+It changes no
 gate, artifact, dependency, deadline or validation scope. Captures use unique,
 retained directories under the existing external `ARTIFACT_STATE_ROOT`: the
 parent profile measures coordination and child waits after its bootstrap; each

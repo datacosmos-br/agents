@@ -91,7 +91,7 @@ At the end of the round (once):
 2. **Test once, at the end** -- the cleanup order of
    `rules/architecture/engineering-core.md`; never between batches
 3. **Be conservative** -- when in doubt, don't remove
-4. **Document** -- descriptive commit messages per batch
+4. **Document** -- record each batch's effects and consumers; commits follow the Git owner
 5. **Never remove** during active feature development or before deploys
 
 ## When NOT to Use

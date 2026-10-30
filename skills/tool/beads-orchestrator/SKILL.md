@@ -71,5 +71,6 @@ When coordinating an owned plan across repositories or submodules:
   merged PRs relocate your projection commits to the integration branch.
 - Baseline every gate against the merge parent (`HEAD^2` for merges) before
   attributing failures, using captured evidence or an authorized comparison context.
-  New isolation requires explicit invocation selection; never switch away shared WIP.
+  New isolation requires explicit invocation selection; contention alone never
+  authorizes switching away from shared WIP. Preserve it under the placement owner.
   Push only strict improvements and report inherited red with its owner lane.

@@ -12,9 +12,10 @@ are evidence, not universal placement authorization; current placement follows
 
 ## Integration law
 
-- One mandate per lane. Lane → gates green → commit (≈15 min cadence: the
-  commit is the context checkpoint) → `merge --no-ff` with the tip →
-  fast-forward push → close the bead with evidence → retire the lane.
+- One mandate follows the current Git owner's complete reviewed integration cycle,
+  native acceptance and required runtime proof. Retire only an explicitly authorized,
+  invocation-owned disposable lane after that owner's preservation and fresh ancestry
+  proof; never retire an adopted primary/shared/integration context by task closure.
 - Resolve the actual authorized checkout and branch through the placement owner;
   do not invent a primary-checkout ban or a separate merge-worktree prerequisite.
 - Validate before pushing; a silly red on the PR is the defect, not the CI's.

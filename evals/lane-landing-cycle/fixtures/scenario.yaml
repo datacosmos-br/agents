@@ -4,6 +4,13 @@ tracker:
   claim_note: lane note comment recorded at claim time with the branch name.
 invocation:
   placement: explicitly isolated
+runtime_proof:
+  requirement: required
+  selected_target: null
+  consumed_identity: null
+  observation_contract: null
+  disposition: unresolved in this planning input
+  preflight: Resolve the real public consumer and identity/observation contract from the declared repository owner before effects; do not invent a command or receipt.
 lane:
   branch: fix/f6-protocols-20260927
   worktree: dedicated native git worktree with its own physical .venv from make setup
@@ -27,7 +34,9 @@ required_receipt_fields:
   - actual exit status and decisive output
   - authorized disposable target and fresh ancestry proof
 instruction: >
-  Execute the unit in the declared order and state, at each step, the exact
+  Plan the unit in the declared order and state, at each step, the exact
   evidence required on the claimed bead. This fixture describes a requested scenario,
   not completed execution. Never invent outcomes; a red gate stops that invocation
-  for repair at its owner.
+  for repair at its owner. Runtime proof remains required and unresolved until its
+  real consumer contract is elected; do not treat the missing target as acceptance
+  or invent a new approval requirement.

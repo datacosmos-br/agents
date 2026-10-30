@@ -25,8 +25,10 @@ existed as a rule before; this is the one-place sequence.
 5. **Placement and ownership.** Resolve the current authorization through
    `rules/coordination/gascity.md` and coordinate overlapping WIP through
    `fix-forward-collaboration`; do not create isolation merely to start a task.
-6. **Declare the triple.** Claim the selected bead and announce the actual
-   authorized branch and PR state through the available coordination owner.
+6. **Declare the triple.** In a selected tracker workflow, claim the bead and record
+   the actual authorized branch and PR state both there and through the selected
+   available coordination channel, before the first effect, under
+   `rules/coordination/lane-ownership-declaration.md`.
    A declaration grants no branch creation or Git publication authority.
 7. **Cycle declared.** State which integration branch, which gates, and what
    runtime proof closes the unit (full-landing-cycle step 1).

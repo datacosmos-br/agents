@@ -33,9 +33,10 @@ dual-tracking period.
    redirect the fix to a correct generator, dependency, validator, test, facade, or
    adjacent layer because it is easier to change than the causal owner.
 2. Resolve precedence. A newer operator rule replaces conflicting lower or older
-   guidance. Reconcile every affected skill, rule, command, decision, document,
-   tracker item, plan, template, projection, and generated consumer before the
-   dependent source change; none may remain as an active
+   guidance. Reconcile affected normative skills, rules, commands, decisions, documents,
+   tracker items and plans before dependent implementation. Update templates and
+   regenerate projections and consumers through their owners in the same atomic
+   source cutover under step 4; none may remain as an active
    exception or reinterpret the operator's requested outcome. Two current operator rules
    that materially conflict require one precise question before mutation. A prior exact
    operator authorization remains authoritative across interruption, state divergence,

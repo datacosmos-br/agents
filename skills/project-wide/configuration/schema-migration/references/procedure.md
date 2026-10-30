@@ -36,7 +36,7 @@ representative sample never authorizes the remaining population.
 
 Do not add aliases for removed fields, fallback readers, dual writes, feature flags,
 deprecation windows, hardcoded translations, or ad hoc backup files. Persisted formats
-migrate atomically; only a renamed public code signature of the loader follows
+migrate atomically; only a renamed or removed public code signature of the loader follows
 the `zero residue` rule's "Deprecated-signature window" section. Validate the
 complete source and destination before the first persisted effect; the first invalid or
 ambiguous value raises unchanged and publishes nothing.

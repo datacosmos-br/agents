@@ -1,23 +1,40 @@
 ---
-description: Raw exception propagation and first-defect validation.
+description: Typed expected branches and causal failure at the responsible boundary.
 metadata:
-  aihub.tags: '["decision:ADR-0008","effective:2026-08-29","route:both"]'
+  aihub.tags: '["decision:ADR-0021","effective:2026-10-29","route:both"]'
 ---
 
-# Fail loud on the first defect
+# Preserve failures at their responsible boundary
 
-The first exception terminates the workflow with its original traceback and causal
-chain. CLI boundaries, validators, and orchestrators do not catch workflow failures.
-They never translate a failure into a finding, warning, skip, boolean, sentinel, empty
-collection, partial result, log-only event, formatted error, or manually selected exit
-code.
+The 2026-10-29 operator supersession in
+[ADR-0021](https://github.com/datacosmos-br/agents/blob/dev/docs/adr/ADR-0021-operator-universal-rulings-runtime-truth.md#failure-boundary-supersession--2026-10-29)
+replaces the blanket no-catch/no-aggregation and global-explosion requirements.
+This is the canonical failure-boundary contract; consumer guidance references it.
 
-Validators execute in deterministic dependency order and raise on the first defect. They
-do not aggregate independent errors. A later invocation may expose the next defect only
-after the earlier owner is corrected.
+Expected conditions use the owner's typed Result, validation outcome or explicit
+branch before dependent effects. Do not raise/catch an exception to choose an ordinary
+branch. Defaults apply only to declared optional absence, never invalid values,
+required input, unavailable selected capabilities or failed execution.
 
-Only cleanup and rollback may catch an exception. They must retain the original
-exception as the one re-raised, attach any cleanup/rollback exception to its causal
-evidence, and never replace the original failure with cleanup success or failure.
+Translate genuine external exceptions once at the responsible public boundary;
+preserve exception, cause, traceback, code and data through native APIs. A formatted
+message alone loses causality. Preserve existing typed failures, without repeated
+wrapping or helper catches.
+
+Stop unsafe dependents on their first failure. Proven independent units retain each
+outcome; any required failure makes the aggregate nonzero. Partial-effect evidence is
+not complete success, a warning waiver or a reduced population. Unknown independence
+does not authorize continuing dependent effects.
+
+Record and contain unexpected errors at the real isolation/cleanup boundary; retain
+their causal failure without crashing unrelated units or acknowledging success.
+Without a proven boundary, propagate the original error, never invent a global catch.
+Cancellation/termination retain native control semantics after owned cleanup, never
+ordinary recovery or success.
+
+Cleanup failure is secondary evidence attached to the original cause, never its
+replacement. Recovery follows [atomic effects](atomic-effects.md): preserve published
+effects and correct forward. No catch-and-success, fallback, error-triggered default,
+unchanged retry or unreported dropped outcome is permitted.
 
 See also: `strict-execution.md` (rule file) — aggregate parent policy.

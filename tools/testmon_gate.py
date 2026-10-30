@@ -2,8 +2,9 @@
 
 ``incremental`` (``make test``) runs pytest-testmon selection against the database
 testmon places at its own default location (``.testmondata`` at the pytest rootdir);
-nothing forces it elsewhere. ``full`` (``make test-full``) runs every test locally
-without testmon and without a time limit. ``repair`` checkpoints the database.
+nothing forces it elsewhere. ``full`` (``make test-full``) runs every test without
+loading pytest-testmon or resolving/leasing its database. Every mode retains the
+root Make deadline. ``repair`` checkpoints the persistent incremental database.
 """
 
 from __future__ import annotations
@@ -180,7 +181,7 @@ def _pytest(mode: str, repository: Path) -> PytestAudit:
             sys.executable,
             "-m",
             "pytest",
-            *(("--testmon",) if mode == "incremental" else ()),
+            *(("--testmon",) if mode == "incremental" else ("-p", "no:pytest-testmon")),
             "-vvv",
             "--maxfail=1",
             "-W",
@@ -295,6 +296,8 @@ def main() -> int:
     mode = os.environ.get("TESTMON_MODE")
     if mode not in {"full", "incremental", "repair"}:
         raise ValueError("TESTMON_MODE must equal full, incremental, or repair")
+    if mode == "full":
+        return _run_full(repository)
     datafile = _testmon_datafile(repository)
     lock_path = Path(f"{datafile}.lock")
     if lock_path.is_symlink() or (lock_path.exists() and not lock_path.is_file()):
@@ -303,8 +306,6 @@ def main() -> int:
         fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
         if mode == "repair":
             return _repair(datafile)
-        if mode == "full":
-            return _run_full(repository)
         return _run(repository, datafile)
 
 

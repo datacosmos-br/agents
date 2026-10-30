@@ -39,13 +39,10 @@ only for type checking before changing the declaration. A function-local model i
 automatically defective: native Pydantic resolves supported local names and recursive
 self references. Exercise its actual creation scope and consumer lifetime.
 
-```python
-class Node(m.FrozenModel):
-    child: Node | None = None  # ok — module-level, resolves itself
-
-
-Node.model_rebuild()  # violation — fix the declaration owner
-```
+Recursive declarations use the selected runtime's supported forward-annotation form;
+on a floor requiring postponed evaluation, an unquoted self-reference without that
+postponement fails before Pydantic can resolve it. Prove a fresh public import and
+recursive validation under the actual floor rather than copying an incomplete snippet.
 
 Fix a proven export, dependency or namespace defect at its owner, without rebuild
 calls, copied namespace maps or metadata patches. Under FLEXT ADR-018, a local class

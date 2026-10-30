@@ -9,7 +9,6 @@ from __future__ import annotations
 from typing import Literal, cast
 
 import yaml
-
 from flext_core import m, p, t
 
 
@@ -29,7 +28,10 @@ class FlextShippingModels:
         amount: int
 
         def __eq__(self, other: object) -> bool:  # hand-written value equality
-            return isinstance(other, FlextShippingModels.Money) and other.amount == self.amount
+            return (
+                isinstance(other, FlextShippingModels.Money)
+                and other.amount == self.amount
+            )
 
 
 def load(path: str) -> FlextShippingModels.Order:

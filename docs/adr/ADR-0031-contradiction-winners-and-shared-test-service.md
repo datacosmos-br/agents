@@ -55,8 +55,9 @@ the end. The source correction does not itself establish installed AI Hub delive
 
 ### Reconciliation and TODO decision amendment — 2026-10-23
 
-The newer operator decision replaces an independent TODO checklist with AI Hub's
-automatic, versioned Beads-derived view. The tracker rule owns its project attribution,
+Where the project or operator selects Beads and its projection, the newer decision
+replaces an independent TODO checklist with AI Hub's automatic, versioned Beads-derived
+view. The tracker rule owns selection, project attribution,
 nonterminal source-wide publication barrier and no-automatic-Git contract. This changes
 the documented delivery requirement, not the observed implementation state. AI Hub's
 existing runtime owners must still establish capability and activation receipts.

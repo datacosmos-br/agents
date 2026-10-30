@@ -10,10 +10,8 @@ capsule_summary: |
   every touched bead is updated within the configured abandonment threshold —
   claimed, deferred, and blocked included. Before opening a lane, re-check open PRs, the
   integration tip, and abandoned branches: adopt their work (fix forward),
-  never rebuild it. Tracker memory operator-ruling-2026-10-01-adopt-by-cherry-pick:
-  an active lane is adopted
-  immediately by cherry-picking its valid published commits into your own
-   authorized lane — never rebuilt unnecessarily. Workaround
+  never rebuild it. Adoption follows the current Git owner after refreshing the
+  declared integration ref, not the historical cherry-pick mechanism. Workaround
   commits are rejected with the reason recorded, never adopted. Editing or
    running in an unselected checkout grants no authority; a shared checkout
    explicitly selected by the operator remains usable with coordinated WIP.
@@ -52,23 +50,23 @@ check the activity of the remote branch that would carry your work. Sessions
 in this fleet land in bursts; a lane built against a stale tip duplicates
 work that is already landing.
 
-## Adopt active lanes by cherry-pick, immediately
+## Adopt current work through the Git owner
 
 When another session's lane — active or abandoned — carries work your target
-needs, adopt it now (tracker memory
-`operator-ruling-2026-10-01-adopt-by-cherry-pick`). Waiting for it to land, asking
-permission to adopt, or parking your own lane behind it is a violation.
+needs, reconcile it promptly through `rules/git/gitflow-branch-pr.md`. The historical
+2026-10-01 cherry-pick instruction does not override that owner's current merge,
+preservation and publication contract.
 
 1. Resolve the authorized checkout and branch through the placement owner and
-   inspect the current integration tip; do not create a new lane by implication.
-2. Cherry-pick the valid published commits you need, by SHA (`git
-   cherry-pick -x <sha>`), into that lane. Adoption happens through commit
-   objects when that Git action is authorized. Shared-checkout collaboration follows
+   fetch the declared integration ref and retain its refspec/tip evidence before
+   comparing contributions; do not create a new lane by implication.
+2. Identify the valid published commits by SHA and adopt through the current Git
+   owner, accounting for work already integrated in the fresh base. Shared-checkout collaboration follows
    current operator authorization and `fix-forward-collaboration`; do not switch
    another actor's branch or overwrite its WIP.
 3. Adopt only root-cause work. A commit that carries a workaround — timeout or
    budget inflation, suppression, catch-based normalization, fallback, retry,
-   shim — is rejected, never cherry-picked; record the rejected SHA and the
+   shim — is rejected, never adopted; record the rejected SHA and the
    reason on the owning bead and PR, and cure the defect at its owner in your
    lane.
 4. Post a `[coord]` note on the source PR and bead naming the adopted and the

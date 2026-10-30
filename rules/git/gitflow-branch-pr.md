@@ -9,7 +9,7 @@ capsule_summary: |
   reuse one. `origin/<base>` is a cache: fetch it before any ancestry
   proof that authorizes deletion. One git root per PR; placement follows the
   active/manual Gas City boundary.
-  Checkpoint: complete green slice, scoped add, fast-forward push and reviewed PR.
+  Checkpoint: complete green slice, scoped add, fast-forward push and its Draft PR.
   Incomplete work may be published only to explicitly authorized preservation refs,
   never the working or integration branch. Preservation is not delivery.
   Promotion: green local round, non-`[WIP]` commit, green checks, resolved review,
