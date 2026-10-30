@@ -60,6 +60,12 @@ locked environment. Generation and gates run the existing environment without
 implicit dependency synchronization. Run setup explicitly when installation is
 required and authorized.
 
+The isolated repository toolchain declares every required gate executable in
+`.mise.toml`, including Waza. `make setup` provisions the selected locked requests;
+an executable inherited from the host PATH is not provisioning evidence. The
+committed `mise.lock` retains the selected resolution; adding a missing request
+does not authorize an unrelated tool upgrade.
+
 `make gen` retains the development-local provider outputs selected by `ag-la3h`
 and commits `19e64c01` and `8226eafc`, as clarified in
 [ADR-0008](docs/adr/ADR-0008-governance-bundle-as-public-facade.md).

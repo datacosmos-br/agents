@@ -5,8 +5,14 @@ prompt: |-
   retained under canonical fail redaction, and the explicit read_port branch with
   from_failure and int(loaded.value), preserving raw ValueError. Require the parent route
   solid -> py-dev -> flext-development -> flext-result. Explain why map/flat_map/flow_through/tap
-  catch only the configured runtime exception set, why unwrap cannot restore the original
-  exception, and why defaults/recovery cannot hide failures. Reject invented aliases,
+  catch only the configured runtime exception set, and why unwrap/value re-raises the
+  stored exception object when present, adding the SDK's structured diagnostic note;
+  only a logical failure without a stored exception raises RuntimeError. A note is
+  diagnostic evidence, not restoration of structured Result fields at another return
+  boundary: require direct failed-Result return or from_failure when that is the
+  caller's contract. Re-raising later does not make a map-converted return equivalent
+  to the original raw-exception boundary. Explain why defaults/recovery cannot hide
+  failures. Reject invented aliases,
   local helpers, long lambda pipelines, changed effect order, and broad refactors.
   For absent callback/type/exception evidence, require no rewrite and a precise request
   for the missing contract, not an assumed total function. For the plain Python report

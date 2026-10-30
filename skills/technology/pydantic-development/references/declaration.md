@@ -39,8 +39,9 @@ validate.
   layers stay pure —
   models carry data (fields, validators, computed fields), behavior lives in
   `u`/services.
-- Within flext-core, new shared presets join the existing `FlextModelsBase(_part02)`
-  inheritance chain; consumers never redefine them.
+- New shared presets belong to flext-core's existing public model family. Verify
+  its composition at the selected supplier revision; consumers never redefine them
+  or choose an owner from a historical private-part name.
 - Models are the starting point of every boundary design: define the payload model
   first, then derive its `t` aliases, `p` ports, and service signatures from it — never
   the reverse, and never a dict shape standing in for the model.

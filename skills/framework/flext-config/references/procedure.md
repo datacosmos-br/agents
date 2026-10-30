@@ -12,8 +12,10 @@ Grounded in `flext-core` `_settings.py`, `_config.py`, `_protocols/settings.py`,
 - `FlextSettings` (pydantic `BaseSettings`) owns EXTERNAL INPUTS: environment variables
   through `env_prefix`, `.env` discovery through `FLEXT_ENV_FILE` (`resolve_env_file`),
   and nested settings sources. Mutable per-class singleton: `fetch_global`,
-  `update_global` (pure `model_copy(update=...)` plus revalidation), `clone`,
-  `reset_for_testing`. Exported as `settings = FlextXSettings.fetch_global()`.
+  `update_global`, `clone`, `reset_for_testing`. `update_global` validates an isolated
+  override candidate before publishing into the stable root under its owner lock;
+  callers never reproduce that implementation. Mutation authority follows
+  `$settings-vs-config`. Exported as `settings = FlextXSettings.fetch_global()`.
 - `FlextConfig` (sibling base, flext ADR-005) owns GOVERNED DECLARATIVE RULES: every
   `config/*.yaml` auto-discovered and deep-merged (governed files carry the `AiHub:`
   envelope; lists concatenate, never replace), validated into one frozen Pydantic root
@@ -87,12 +89,11 @@ Before (defect: unvalidated second answer, invisible to repointing):
         root = os.environ.get("AI_HUB_CARRIERS_ROOT")
         return Path(root) if root else Path.home() / ".carriers"
 
-After (one owner, typed, repointable through the settings facade):
-
-    # AiHubSettingsModels.Root declares the field once; the settings root
-    # rebuilds it from the Flext dir owner in model_post_init.
-    def carrier_root(self) -> Path:
-        return settings.AiHub.paths.carriers_root
+Apply the [service consumption law](#service-consumption-law): the composition
+root selects the validated carrier path and passes it through the service's
+existing typed dependency. The service consumes that supplied value. Verify the
+selected public constructor or port before changing its call sites; this example
+does not declare another service API.
 
 ### 2. Test patching the config owner - before/after
 
@@ -122,8 +123,7 @@ After (the real seam, from test_aihub_config_env_seam.py):
 Why it fails: the service owns a private, untyped configuration channel - no coercion,
 no repoint, no singleton consistency; `state` silently disagrees with
 `settings.state_dir`, and a hermetic `AI_HUB_STATE_DIR` test run writes to the real
-home. The owner-correct form takes `settings.AiHub` (or its fields) as explicit
-parameters or reads the validated facade, and derives state under the owned `state_dir`.
-Real consumers follow this: deployment parts read
-`config.AiHub.products.products.entries`, MCP doctor reads
-`config.AiHub.agents.agents.items()`.
+home. The composition root selects the owned `state_dir` and other validated
+dependencies, then injects them through the service's public contract. Services
+derive state from those supplied values. A consumer's direct facade read is a
+migration finding under the service consumption law, not a conforming example.

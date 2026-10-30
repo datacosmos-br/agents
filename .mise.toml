@@ -3,6 +3,9 @@ lockfile = true
 locked = true
 lockfile_platforms = ["linux-x64"]
 
+[vars]
+waza_version = "0.38.8"
+
 [tools]
 python = "3.13"
 uv = "latest"
@@ -15,3 +18,7 @@ gitleaks = "latest"
 "github:kucherenko/jscpd" = "latest"
 shellcheck = "latest"
 snyk = "latest"
+
+[tools."go:github.com/microsoft/waza/cmd/waza"]
+version = "{{ vars.waza_version }}"
+install_env = { GOFLAGS = "-ldflags=-X=main.version={{ vars.waza_version }}" }
