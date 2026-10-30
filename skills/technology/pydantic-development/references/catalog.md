@@ -7,66 +7,43 @@ against the selected project before use.
 
 ## 1. Type ownership and capability inventory
 
-- Domain aliases are PEP 695 `type X = ...` (or `Annotated`) declarations in `t`,
-  never copied into consumers. Reuse an originating domain contract such as
-  `t.JsonPayload` instead of redeclaring it. A generic collection synonym is not a
-  domain contract: native `Sequence[T]`, `Mapping[K, V]`, `list[T]`, `dict[K, V]`
-  and fixed or variadic tuple annotations preserve their distinct contracts.
+- Domain aliases are PEP 695 `type`/`Annotated` declarations in `t`; reuse existing
+  contracts such as `t.JsonPayload`. Native containers retain item types, mutability
+  and fixed/variadic tuple arity; a generic synonym is not a domain contract.
 - For FLEXT, the 2026-10-28 generic collection-wrapper retirement is owned by
   [ADR-028 Decision 7](https://github.com/flext-sh/flext/blob/0.12.0-dev/docs/architecture/adr/028-facade-boundary-orchestrators-declarative-enforcement.md#decision-7)
-  and tracker memory
-  `operator-ruling-2026-10-28-generic-typing-wrapper-cutover`. Complete consumers,
-  rules, templates and documentation before accepting the cutover. Preserve
-  tuple arity, positional element types, mutability and validation metadata.
-  Domain aliases and external typing constructs such as PEP 747 `TypeForm`
-  remain with their owners; this is not a ban on generic domain contracts.
+  and memory `operator-ruling-2026-10-28-generic-typing-wrapper-cutover`.
+  Close consumers, rules, templates and docs, preserving validation metadata.
+  Genuine domain generics and external constructs such as PEP 747 `TypeForm` remain.
+- Reuse the public typed surface (`NonEmptyStr`, numeric constraints, `JsonValue`,
+  `JsonMapping`) before adding aliases. No `Any`, `object`, bare containers or
+  unparameterized generic fields. A declaration may remain generic, but admission
+  needs its concrete/bound/constrained/default contract. Never replace an unresolved
+  port with `Any` or duplicate its generic/schema registry.
 
-- Use the internal typed surface first: `t.NonEmptyStr`, `t.PositiveInt`,
-  `t.StrictInt`/`t.StrictStr`/`t.StrictFloat`, `t.JsonValue`, `t.JsonMapping`,
-  `t.NonNegativeInt` — before writing a new alias; a new alias that duplicates an
-  existing `t` member is a violation.
-- Model annotations use the originating domain types and reusable `t` constraints;
-  `Any`, `object`, bare `dict` and unparameterized collections are not contracts.
-  A typed native container retains its actual item, mutation and tuple-arity contract.
-  `InstanceOf[T]` validates a runtime class, not method signatures or nested payloads;
-  use the selected DI port owner when that is the contract.
-- Generic models parameterize explicitly (`m.RootModel[RootValueT]`-style);
-  unparameterized generics on fields are violations.
-- A generic declaration may keep a type parameter until specialization; an admitted
-  value must have its declared concrete, bound, constrained or default contract.
-  Never substitute `Any` for an unresolved port. Preserve source generic arguments,
-  nested aliases and validators through projection, without a parallel type registry.
+The inventory routes each capability to its detailed owner; source mechanics are
+versioned in [internals](internals.md) and [runtime](runtime.md).
 
-| Capability | Use it for | Reference |
-| --- | --- | --- |
-| `ConfigDict` presets (`m.*`) | one configuration contract per preset, inherited | `pydantic/config.py:34@v2.14.1` |
-| `Field` metadata | constraints, aliases, `discriminator`, `frozen`, `exclude`, `exclude_if`, `default_factory` (may take validated data) | `pydantic/fields.py:1327-1366@v2.14.1`; `_fields.py:844-857` |
-| `Annotated` aliases (`type X = Annotated[...]`) in `t` | reusable constraints + validators + serializers; one `$defs` entry | `docs/concepts/types.md:203-260@v2.14.1` |
-| `StringConstraints` | strip/case/length/pattern/`ascii_only` on `str` | `pydantic/types.py:699-756@v2.14.1` |
-| `AfterValidator` / `BeforeValidator` / `WrapValidator` | reusable validation inside `t` aliases | `pydantic/functional_validators.py:30,91,258@v2.14.1` |
-| `field_validator` / `model_validator` (`after` = instance method) | per-model invariants | `functional_validators.py:375-493,735-743@v2.14.1` |
-| `PlainSerializer` / `WrapSerializer` / `field_serializer` / `model_serializer` | output shape owned by the type | `pydantic/functional_serializers.py:21,91,224-230,355-361@v2.14.1` |
-| `computed_field` | derived read-only values serialized with the model | `pydantic/fields.py:1865-2060@v2.14.1` |
-| Discriminated unions (`Field(discriminator=)`, `Discriminator` + `Tag`) | polymorphic payloads, O(1) dispatch, exact narrowing | `docs/concepts/unions.md:18,188-258@v2.14.1` |
-| `StrEnum` field types and `Literal[c.X.MEMBER]` tags | closed domains; enum tags work as discriminators | `tests/types/unions/test_discriminated_union.py:406-434@v2.14.1` |
-| `InstanceOf[T]` | field typed by a class or `@runtime_checkable` protocol without `arbitrary_types_allowed` | `functional_validators.py:760-817@v2.14.1`; `tests/test_types.py:1861-1886@v2.14.1` |
-| `RootModel[T]` | root payloads (lists, scalars) as models | `pydantic/root_model.py:34-118@v2.14.1` |
-| Generic models (`BaseModel, Generic[T]`) | parametrized containers, cached per parametrization | `pydantic/_internal/_generics.py:57-144,464-553@v2.14.1` |
-| `TypeAdapter` (module-level) | non-model types: unions, collections, scalars | `pydantic/type_adapter.py:160-678@v2.14.1` |
-| `model_validate_json` / `TypeAdapter.validate_json` | single-pass JSON ingress in Rust | `docs/concepts/performance.md:8-19@v2.14.1` |
-| `model_validate(..., from_attributes=True)` | ORM/dataclass/attribute objects | `pydantic-core/src/input/input_python.rs:513-540@v2.14.1` |
-| Validation and serialization `context` | per-call data instead of globals | `docs/concepts/validators.md:638-663@v2.14.1`; `serialization.md:505-533` |
-| `polymorphic_serialization` | subclass-aware dumps (models/dataclasses) | `pydantic/config.py:1209@v2.14.1`; `serialization.md:616-644` |
-| `SecretStr` / `SecretBytes` | credentials; masked repr/JSON, constant-time compare | `pydantic/types.py:1819-1858@v2.14.1` |
-| `FailFast` | stop sequence validation at first error (documented trade-off) | `pydantic/types.py:3370-3403@v2.14.1` |
-| `validate_call` | validated public entry points (cost per call, schema built once) | `pydantic/_internal/_validate_call.py:86-137@v2.14.1`; `validation_decorator.md:410-418` |
-| `MISSING` sentinel | explicit absence distinct from `None` — import from `pydantic` | `pydantic/experimental/missing_sentinel.py:18-25@v2.14.1` |
-| pydantic-settings sources | env/dotenv/secrets/YAML/TOML/JSON/pyproject/CLI with deep merge | `pydantic_settings/__init__.py:5-29@v2.15.0` |
+| Capability family | Use and detailed reference |
+| --- | --- |
+| `ConfigDict`, `Field`, factories | [Presets](presets.md), field-specific defaults/aliases/constraints in [boundary](boundary.md) |
+| `Annotated`, `StringConstraints`, before/after/wrap metadata | Reusable `t` constraints and [validation](boundary.md#2-validation-practice--centralized-owners) |
+| `field_validator`, `model_validator`, `computed_field` | Native invariants and derived output; [composition](composition.md), no I/O |
+| Plain/wrap and field/model serializers, polymorphic output | Owned shape and subclass exposure in [serialization](serialization.md) |
+| Discriminators, `Tag`, `StrEnum`, narrow `Literal` | Actual variant/domain contracts in [composition](composition.md#9-closed-domains-are-strenum-members-of-c) |
+| `InstanceOf`, DI `t.Port`, payload schema hooks | Distinct static/runtime/schema obligations in [composition](composition.md#8-protocol-typed-fields) |
+| `RootModel`, parameterized models | Root or generic payloads; preserve specialization and [output shape](serialization.md) |
+| `TypeAdapter`, direct JSON validation, `from_attributes` | Reusable adapter and native [ingress](boundary.md#1-conversions--dict-typeddict-dataclass-json) |
+| Validation/serialization context | Boundary facts in [validation](boundary.md), output facts in [serialization](serialization.md); no globals |
+| `SecretStr`, `SecretBytes` | Sensitive representations; versioned source `pydantic/types.py:1819-1858@v2.14.1` |
+| `FailFast`, `validate_call` | Explicit trade-offs at the declared [boundary](boundary.md#2-validation-practice--centralized-owners) |
+| Settings sources | Native source precedence and merge in [runtime](runtime.md#8-pydantic-settings-source-pipeline) |
+| `MISSING` and experimental APIs | Explicit absence and the admission policy below, not silent defaults |
 
 ## 2. Performance within the existing contract
 
-- Validate JSON through the direct entry points (`model_validate_json`,
-  `TypeAdapter.validate_json`) — a single Rust-side pass.
+- Validate JSON through native entry points (`model_validate_json`,
+  `TypeAdapter.validate_json`), preserving configured validators and JSON semantics.
 - Reuse adapters through their existing native owner; do not add a second cache.
 - Use concrete containers when the existing domain promises them. An optimization
   does not authorize replacing a read-only `Mapping`, fixed tuple or mutable sequence

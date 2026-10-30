@@ -8,11 +8,10 @@ Use the project's public `r` facade for construction and `p.Result[T]` for contr
 dependency and branch-matched source. Private modules are research evidence, never
 consumer imports.
 
-The source and ai_hub installed dependency inspected on 2026-09-17 agree on the
-operations below. This is a source observation, not runtime test evidence or a promise
-about another installed version. Context7 has no matching flext-core reference; local
-authoritative implementation and protocol govern. If they diverge, resolve the
-dependency owner before choosing syntax.
+The selected FLEXT source was rechecked on 2026-10-29, including failure extraction
+through `behavior.py` and `unwrap.py`. This is source evidence, not installed-runtime
+proof or a promise about another revision. Local authoritative implementation and
+protocol govern; resolve loaded dependency origins before applying these operations.
 
 For the one requested call site, establish input/output types, failure fields, which
 exceptions must escape, callback invocation count/order, and existing effects. Prefer
@@ -60,10 +59,12 @@ domain or the existing selected boundary explicitly requires this precise Result
 conversion and project policy permits it. A framework capability never overrides a
 stricter project fail-fast rule.
 
-`unwrap()` on failure raises a new `RuntimeError` using the error text. It does not
-re-raise the stored exception or explicitly chain it as the cause. Appending `.unwrap()`
-cannot restore raw fail-fast semantics. `.value` on failure also raises `RuntimeError`;
-inspect success before extracting a value.
+`unwrap()` delegates to `.value`: a failed Result re-raises its stored exception,
+retaining the original object and adding a structured error/code/data note. A logical
+failure without an exception raises `RuntimeError`. This differs from the older
+text-only extraction contract. Extraction remains a deliberate exception boundary;
+return a failed Result directly, or use `from_failure` across payload types, when the
+caller requires structured Result propagation.
 
 `unwrap_or`, `unwrap_or_else`, `map_or`, and `result | default` erase failure at
 extraction. `recover` and `lash` may turn failure into success; `lash` is not a
@@ -144,9 +145,9 @@ def read_port(self) -> p.Result[int]:
 ```
 
 Rejected rewrite: `return self.store.read_text().map(int)`. Invalid text now becomes a
-failed Result instead of raising `ValueError`. Calling `.unwrap()` on that result raises
-`RuntimeError`, not the original exception. Keep the explicit branch; do not add a
-rethrow helper or modify the library to justify a mnemonic.
+failed Result instead of raising `ValueError` at this boundary. Later extraction can
+re-raise that stored exception, but does not make these return contracts equivalent.
+Keep the explicit branch; do not add a rethrow helper to justify a mnemonic.
 
 ## Proof for a selected rewrite
 

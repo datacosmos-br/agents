@@ -21,9 +21,8 @@ underlying-tool argument, environment dispatch, file/match filter, inline Python
 tool, private module, wrapper, alias or compatibility substitute. Native-help
 parameters belong to their verb, not undeclared filters or retired commands.
 
-Invoke directly: no apply selectors, acknowledgement flags or hidden modes.
-Distinct operations require distinct public root verbs; repair missing verbs at
-the Make/codegen owner first.
+Repair missing public verbs at the Make/codegen owner; no acknowledgement flags
+or hidden modes substitute for them.
 
 ### Bounded FLEXT native-bootstrap route
 
@@ -80,23 +79,13 @@ The indexed tool's host owns build/update/storage/readiness. Query public readin
 directories, empty databases and failed initialization prove no index.
 Never retry update as build, create placeholders or normalize incomplete state.
 
-Propagate the first command failure and raw traceback. Warning, skip, empty output,
-missing tool/report, partial execution, retry, normalization, or a successful wrapper
-around a failed child is RED.
+Apply [strict execution](../runtime/strict-execution.md) and
+[observable outcomes](../testing/observable-runtime.md): preserve first failure and
+raw traceback; wrappers never turn failed children green.
 
-Every Make verb runs under an active bound, always (operator order 2026-10-24,
-tracker memory `operator-order-2026-10-24-make-always-with-timeout`):
-`timeout --signal=TERM --kill-after=10s <seconds> make <verb>`, with any shared
-serialization lock taken with a bounded wait (`flock -w <seconds>`). The bound comes
-from the gate budget, never from guesswork. An expired bound is a RED slowness or hang
-defect of that verb. It is fixed at the verb's owner and never answered by raising the
-bound, rerunning, or waiting idle on a queue of slow runs.
-
-Test applicability and the explicit FLEXT connectivity prerequisite exception
-have one owner: `rules/testing/observable-runtime.md`. Preserve its unexecuted
-node identities and dispositions. An authorized prerequisite skip never proves
-connectivity, complete behavioral validation or production readiness; a runner
-that promotes it to any such success must be repaired.
+Test applicability, FLEXT connectivity prerequisites and their non-success
+dispositions follow [observable-runtime](../testing/observable-runtime.md#host-services-and-capability-gating-operator-decisions-2026-09-29).
+Preserve unexecuted node identities; repair runners that promote them to acceptance.
 
 Read-only predicates preserve native status, schema and decisive result. False
 permits no dependent effect and proves no gate success. Unknown nonzero/error text is
@@ -110,6 +99,11 @@ wall-clock bound covering activation, preflight, locks, children and termination
 Wrap unenforced entrypoints without changing operation/scope, suppressing output
 or normalizing failure.
 
+Make always uses `timeout --signal=TERM --kill-after=10s <seconds> make <verb>`;
+shared locks use bounded `flock -w <seconds>`. Select bounds from the declared
+budget, never guesswork (operator order 2026-10-24, tracker memory
+`operator-order-2026-10-24-make-always-with-timeout`).
+
 Reserve termination time: request it by 118 seconds and finish terminating owned
 children by 120 seconds. Nested operations consume the remaining invocation budget,
 never a fresh child budget. Do not signal another actor's process or remove its lock
@@ -117,7 +111,8 @@ to obtain the window.
 
 A timeout is incomplete failure. Preserve output, exit, completed scope and profile.
 Correct its measured cause before repeating; no unchanged retry, higher limit,
-unbounded background job or false complete receipt assembled from partial outputs.
+unbounded background job, idle slow-run queue or false complete receipt assembled
+from partial outputs.
 
 Profile slow Python generation/migration through the root Make operation's declared
 opt-in cProfile binding. Repair missing bindings at their owner; never invent targets,
@@ -137,9 +132,9 @@ the previous resolution. Setup remains locked and never advances locks.
 Gate placement and opt-in instrumentation follow
 [`gate-budget.md`](gate-budget.md).
 
-Documentation-only work records missing deadline/generator enforcement without editing
-excluded code or claiming enforcement. Unwrapped recipes prove no deadline.
-Automation binds native verbs to the declared deadline runner, evidenced in workflow source.
+Workflow source proves native deadline-runner binding; unwrapped recipes prove no
+enforcement. Documentation-only work records missing enforcement without editing
+excluded code or claiming it implemented.
 
 ## Test verbs
 
@@ -160,17 +155,14 @@ historical receipts. Repository catalogs own grammar, population, selection and 
 - Complete-suite operations execute the whole applicable nonempty inventory once,
   preserving the database in catalog-declared contexts. Interrupted or preceding
   incremental runs are not complete-suite evidence.
-- A declared full operation without Testmon loads no Testmon plugin, performs no
-  incremental pre-run and neither reads, leases nor writes its database. Preserve
-  that cache for ordinary incremental operations. The explicit 2026-10-28
-  clarification keeps operation names in project catalogs, not another universal
-  alias list. Full execution
-  retains admission, applicability, failure accounting and the active deadline.
-- Zero execution is acceptable only for an explicitly declared incremental operation
-  with the integrity-checked typed cache hit of AGENTS.md law 14, never as tests passed.
+- A declared full operation without Testmon loads no Testmon plugin and neither
+  reads, leases nor writes its database; preserve it for incremental operations.
+  The 2026-10-28 clarification keeps names in project catalogs, never a universal
+  alias list. Admission, applicability, failures and deadline remain binding.
+- Zero execution follows `AGENTS.md` law 14: an integrity-checked
+  incremental cache hit, never tests passed.
 - Single-file operations require catalog declaration and typed repository-relative
   input; whole-suite-only catalogs permit no file/match filters. This rule adds no verb.
-- No raw pytest or undeclared selection; focused, full and CI routes obey this contract.
 
 Repair violating templates/runners/workflows; they authorize no alternative.
 

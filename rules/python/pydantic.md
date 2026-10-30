@@ -119,16 +119,13 @@ the existing diagnostic exceptions above do not authorize another suppression.
   validated objects are passed and reused, never dumped and re-validated.
 - The fewest models and fields: shared fields in a base, deltas in subclasses, nested
   models reused by composition, derived values as `computed_field`.
-- Full closed string domains use their `c` enum; subsets and discriminators keep
-  the narrower `Literal` contract described above.
-- Runtime collaborators use the existing field-scoped `t.Port[p.X]` owner instead of
-  globally allowing arbitrary payload types. Serializable payload projection follows
-  its originating schema, not the DI port's schema-excluded contract.
+- Enum domains and runtime collaborators follow [Parse once](#parse-once-at-the-boundary),
+  including narrow literals, field-scoped ports and separate payload schemas.
 - Owned library payloads are admitted at the calling adapter and serialized at the
   required outward boundary. Native library mappings and runtime collaborators remain
   inside their adapters; they do not require a second model or become public contracts.
-- Model/service protocols follow the accepted generation owner above; never mirror them
-  by hand or describe an unqualified projection target as implemented.
+- [Protocol projection](#protocols-in-p-outcomes-in-r) stays generation-owned;
+  never mirror it manually or claim an unqualified target is implemented.
 
 ## Removal catalog (must not survive in code)
 

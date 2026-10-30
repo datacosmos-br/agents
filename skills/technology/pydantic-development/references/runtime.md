@@ -57,8 +57,8 @@ against reuse at the selected floor before making a cost claim.
 
 ## 8. pydantic-settings source pipeline
 
-The [settings procedure](procedure.md#4-pydantic-settings) owns source selection and
-FLEXT admission. The citations below explain that selected implementation:
+The selected settings preset/source owns precedence and admission; the
+[procedure](procedure.md#4-pydantic-settings) routes its use. Versioned details:
 
 - Sources are called in priority order and deep-merged with `deep_update` so a lower
   source can still fill missing nested keys (`pydantic_settings/main.py:485-507@v2.15.0`;
@@ -67,9 +67,17 @@ FLEXT admission. The citations below explain that selected implementation:
   defaults; CLI first when enabled (`docs/index.md:3096-3106@v2.15.0`).
 - `BaseSettings` defaults: `extra='forbid'`, `validate_default=True`,
   `arbitrary_types_allowed=True` (`pydantic_settings/main.py:617-656@v2.15.0`).
+- Extra YAML/TOML/JSON/pyproject sources use `settings_customise_sources`; configuring
+  `yaml_file` without its source only warns (`main.py:264-286,587-615@v2.15.0`).
+- Nested environment input uses `env_nested_delimiter`; partial nested-default
+  updates require `nested_model_default_partial_update`
+  (`sources/providers/env.py:267-338`; `docs/index.md:639-688@v2.15.0`).
 - A custom file source implements `_read_file(path) -> dict[str, Any]`; the parsed
   mapping is handed to `InitSettingsSource` and validated by the settings model
   (`pydantic_settings/sources/base.py:215-239@v2.15.0`,
   `sources/providers/json.py:42-47@v2.15.0`). The mapping is the library's contract,
   not a FLEXT contract: it is produced and consumed inside the source and never
   escapes it.
+- Runtime overrides use typed constructor arguments or documented underscore kwargs
+  (`_env_file`, `_case_sensitive`, …; `main.py:193-392@v2.15.0`), not manual mapping
+  merges in consumers. Preserve the preset's validation and source contract.
