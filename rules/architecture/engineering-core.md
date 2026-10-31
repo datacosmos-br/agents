@@ -87,7 +87,7 @@ defects. Old signatures
 follow only `zero residue`'s "Deprecated-signature window". Typed owners keep defaults.
 Expected branches, optional defaults, causal translation, independent outcomes and
 unexpected-error containment follow [fail loud](../runtime/fail-loud.md), amended by
-[ADR-0021](https://github.com/datacosmos-br/agents/blob/dev/docs/adr/ADR-0021-operator-universal-rulings-runtime-truth.md#failure-boundary-supersession--2026-10-29).
+ADR-0021 (failure-boundary supersession, 2026-10-29).
 The [Python consumer rule](../python/no-hidden-errors.md) applies that contract without
 a second exception policy; it does not require every failure to escape globally.
 
