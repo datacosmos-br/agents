@@ -43,9 +43,9 @@ receive the migration law of the projects they import.
    Repository catalogs own verb names; project law owns adapter placement and facade
    shape. FLEXT-specific tool names, paths and limits are not universal rules.
 7. The flext-infra catalog is the universal layer for Python codemod rules. This
-   repository keeps only its own overlay; its rules are neither universal nor FLEXT and
-   agents-governance owns them. An overlay rule, when one exists, lives under
-   `config/rules/ast-grep/` and ships in the wheel.
+   repository may hold only its own overlay, never universal or FLEXT rules, and
+   agents-governance owns it. A future overlay rule lives under
+   `config/rules/ast-grep/` and ships in the wheel; today none exists.
 8. An invariant the bundle loader already validates is enforced by the loader, not by a
    parallel rule. The happy-path fixture law (`require-basic-usage-fixture`) is enforced
    by the evaluation loader: a `happy_path` task without `inputs.files` fails loud naming
