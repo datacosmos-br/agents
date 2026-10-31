@@ -36,3 +36,4 @@
 | `ADR-0035` | 2026-10-03 | Accepted | The fleet is one ecosystem: every runtime registers identity, addressing, and liveness in `rules/communication/ecosystem-systems-registry.md` before it participates. |
 | `ADR-0036` | 2026-10-04 | Accepted; amended 2026-10-20 | Universal execution, project architecture and selected orchestration compose without copied cores or campaign cutoffs. |
 | `ADR-0037` | 2026-10-05 | Accepted | The recorded live operator mandate owns the bounded FLEXT Mypy/Pydantic policy; proven checker regressions are restored by new fix-forward commits, preserving independent work and all runtime, lint, test, CI, and integrated-delivery requirements. |
+| `ADR-0038` | 2026-10-30 | Accepted | No preexisting debt: every surfaced failure is owned and repaired at its root in the same campaign; gate bypasses carry documented equivalent validation and their canonical cure; rollback is not a fix. |
