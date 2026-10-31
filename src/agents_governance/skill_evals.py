@@ -175,7 +175,7 @@ def _task_files(
     return tuple((suite / relative, role) for role, relative in declared)
 
 
-def _audit_inputs(path: Path, value: object, fixtures: set[Path]) -> str:
+def _audit_inputs(path: Path, value: object, role: str, fixtures: set[Path]) -> str:
     inputs = cast_mapping(value, f"{path}: inputs")
     fields = frozenset(inputs)
     if "prompt" not in fields or not fields <= _INPUT_FIELDS:
@@ -183,6 +183,8 @@ def _audit_inputs(path: Path, value: object, fixtures: set[Path]) -> str:
     prompt = _nonempty_text(inputs["prompt"], f"{path}: inputs.prompt")
     raw_files = inputs.get("files")
     if raw_files is None:
+        if role == "happy_path":
+            raise ValueError(f"{path}: happy_path requires inputs.files")
         return prompt
     if not isinstance(raw_files, list) or not raw_files:
         raise TypeError(f"{path}: inputs.files must be a non-empty array")
@@ -236,7 +238,7 @@ def _audit_task(
     for field in ("name", "description"):
         _trimmed_text(task[field], f"{path}: {field}")
     string_array(task["tags"], f"{path}: tags")
-    prompt = _audit_inputs(path, task["inputs"], fixtures)
+    prompt = _audit_inputs(path, task["inputs"], role, fixtures)
     if prompt in prompts:
         raise ValueError(f"{path}: evaluation prompt is duplicated")
     prompts.add(prompt)

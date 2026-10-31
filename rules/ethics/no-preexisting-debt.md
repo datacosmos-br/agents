@@ -8,7 +8,7 @@ capsule_summary: |
   fallback. `--no-verify` and any gate bypass are prohibited. Rollback is
   not a fix: correct or optimize forward.
 metadata:
-  aihub.tags: '["operator-ruling:2026-10-30","route:both"]'
+  aihub.tags: '["decision:ADR-0012","effective:2026-10-30","route:both"]'
 ---
 
 # No preexisting debt
