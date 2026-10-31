@@ -7,7 +7,7 @@ metadata:
 # Preserve failures at their responsible boundary
 
 The 2026-10-29 operator supersession in
-[ADR-0021](https://github.com/datacosmos-br/agents/blob/dev/docs/adr/ADR-0021-operator-universal-rulings-runtime-truth.md#failure-boundary-supersession--2026-10-29)
+ADR-0021 (failure-boundary supersession, 2026-10-29)
 replaces the blanket no-catch/no-aggregation and global-explosion requirements.
 This is the canonical failure-boundary contract; consumer guidance references it.
 
