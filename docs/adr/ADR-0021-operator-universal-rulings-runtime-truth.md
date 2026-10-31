@@ -1,13 +1,14 @@
 # ADR-0021 — Operator universal rulings of 2026-09-15/16: runtime truth, no rushed work, full landing cycle
 
 **Status:** Accepted; placement attribution corrected 2026-10-23;
-failure-boundary supersession 2026-10-29
+failure-boundary supersession 2026-10-29; no-preexisting-debt ruling 2026-10-30
 **Date:** 2026-09-16 **Scope:**
 `rules/coordination/validate-on-change.md`, `rules/coordination/wip-persistence.md`,
 `rules/coordination/full-landing-cycle.md`, `rules/coordination/never-deduce.md`,
 `rules/coordination/green-green-landing.md`, `rules/coordination/lane-adoption.md`,
 `rules/coordination/parallel-delegation.md`, `rules/ethics/test-reality-law.md`,
-`rules/ethics/strict-typed-quality.md`, `rules/ethics/conformance-sweep.md`
+`rules/ethics/strict-typed-quality.md`, `rules/ethics/conformance-sweep.md`,
+`rules/ethics/no-preexisting-debt.md`
 
 ## Context
 
@@ -88,3 +89,11 @@ causal metadata, independent outcomes, unexpected-error containment and cancella
 [engineering core](https://github.com/datacosmos-br/agents/blob/dev/rules/architecture/engineering-core.md) consume that rule.
 This changes authority, not runtime qualification or acceptance. Publication recovery
 still follows the [atomic-effects supersession](https://github.com/datacosmos-br/agents/blob/dev/rules/runtime/atomic-effects.md).
+
+## No-preexisting-debt ruling — 2026-10-30
+
+The operator ruled on 2026-10-30 that no failure is pre-existing: every failure surfaced
+while working is owned and fixed at its root, without bypass, fallback, or rollback. The
+single normative owner is
+[no preexisting debt](https://github.com/datacosmos-br/agents/blob/dev/rules/ethics/no-preexisting-debt.md),
+approved by this ADR as a universal (route both) companion ruling.
