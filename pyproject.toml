@@ -56,8 +56,6 @@ only-include = [
   ".mise.toml",
   ".waza.yaml",
   "agents",
-  "ast-grep-rule-tests",
-  "ast-grep-rules",
   "commands",
   "config",
   ".github/workflows/eval.yml",
@@ -74,7 +72,6 @@ only-include = [
   "tests",
   "tools",
   "uv.lock",
-  "sgconfig.yml",
 ]
 
 [tool.pytest.ini_options]

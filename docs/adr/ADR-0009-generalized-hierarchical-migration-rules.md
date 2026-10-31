@@ -6,6 +6,9 @@ Accepted — 2026-09-05
 
 Amended — 2026-10-25: native capability reuse, minimal rule execution and project scope.
 
+Amended — 2026-10-31: universal Python layer owner and retirement of this repository's
+overlay.
+
 ## Context
 
 The `make mod` / `make mod-check` surface accumulated one narrow ast-grep rule per
@@ -39,6 +42,14 @@ receive the migration law of the projects they import.
    [structural migrations](../../rules/workflow/structural-migrations.md).
    Repository catalogs own verb names; project law owns adapter placement and facade
    shape. FLEXT-specific tool names, paths and limits are not universal rules.
+7. The flext-infra catalog is the universal layer for Python codemod rules. This
+   repository may hold only its own overlay, never universal or FLEXT rules, and
+   agents-governance owns it. A future overlay rule lives under
+   `config/rules/ast-grep/` and ships in the wheel; today none exists.
+8. An invariant the bundle loader already validates is enforced by the loader, not by a
+   parallel rule. The happy-path fixture law (`require-basic-usage-fixture`) is enforced
+   by the evaluation loader: a `happy_path` task without `inputs.files` fails loud naming
+   its path.
 
 ## Consequences
 
@@ -46,6 +57,16 @@ The evaluation-suite rule corpus consolidated from 24 files to 7 (one generalize
 owner-policy rule plus hygiene, outcome, and fixture rules). New legacy key shapes are
 covered by the generalized rule without new files. Projects across the fleet receive the
 universal layer through delivery instead of copying it.
+
+On 2026-10-31 the remaining seven rules, misnamed `universal`, were retired. A census
+under `make mod-check` found zero matches. Six were one-shot migrations:
+`no-owner-owned-policy-in-suites`, `no-partial-eval-metric`,
+`no-task-completed-outcome`, and the three deletion-whitespace rules. Each was deleted
+with its test and snapshot. The owner-policy rule also deleted a `version:` key that the
+loader accepts, so retiring it removes that conflict. The fixture rule moved into the
+loader (decision 8). The repository now has no ast-grep overlay, no `sgconfig.yml` and
+no snapshot whitespace exception. `make mod` and `make mod-check` keep only the
+evaluation YAML normalization.
 
 ## Approval
 
@@ -59,3 +80,7 @@ generalized-rule orders, recorded under
 It supersedes this global rule's copied FLEXT command inventory and library-specific
 implementation assumptions. Acceptance still requires the affected consumer and native
 gates; this decision is not an implementation or delivery receipt.
+
+The 2026-10-31 amendment records operator rulings D1 and D2. Their words are kept under
+`operator-ruling-2026-10-31-agents-astgrep-overlay` in the selected agents tracker, and
+the execution is tracked by bead `ag-edq0`.

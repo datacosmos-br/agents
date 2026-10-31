@@ -127,16 +127,12 @@ fix: ## apply canonical corrections
 	@PYTHON_RESOURCES_OPERATION=fix $(UV_RUN) python tools/python_resources_gate.py
 	@TESTMON_MODE=repair $(UV_RUN) python tools/testmon_gate.py
 
-mod-check: ## test ast-grep rules and reject structural migration residue
-	$(call BANNER,mod-check · ast-grep tests + strict structural scan)
-	@$(MISE_EXEC) ast-grep test --config "$(CURDIR)/sgconfig.yml"
-	@$(MISE_EXEC) ast-grep scan --config "$(CURDIR)/sgconfig.yml" --error "$(CURDIR)/evals"
+mod-check: ## reject unnormalized evaluation YAML
+	$(call BANNER,mod-check · evaluation YAML normalization)
 	@EVAL_YAML_MODE=check $(UV_RUN) python tools/normalize_eval_yaml.py
 
-mod: ## apply tested structural migrations
-	$(call BANNER,mod · ast-grep structural rewrite)
-	@$(MISE_EXEC) ast-grep test --config "$(CURDIR)/sgconfig.yml" --update-all
-	@$(MISE_EXEC) ast-grep scan --config "$(CURDIR)/sgconfig.yml" --update-all "$(CURDIR)/evals"
+mod: ## normalize evaluation YAML and audit the bundle
+	$(call BANNER,mod · evaluation YAML normalization)
 	@$(UV_RUN) python tools/normalize_eval_yaml.py
 	@$(MAKE) mod-check
 	@$(MAKE) audit
