@@ -28,16 +28,13 @@ metadata:
 
 # Engineering core
 
-These standards govern all first-party phases. External forks follow the verified
-upstream-forks contract. Reconcile project requirements with the canonical
-cross-project and cross-agent governance owner, never a divergent local copy.
-FLEXT also obeys its stricter local contracts.
+First-party phases compose canonical cross-project/agent governance, never divergent
+copies. External forks follow verified upstream-forks; FLEXT retains stricter local law.
 
-The 2026-10-26 operator ruling recorded in `ag-h1k1` governs every session and task:
-use selected,
-functioning CRG CLI, MCP and specialists under `crg` and `dispatch-agent`, applicable
-skills and ADRs. Selection authorizes no installation, removal, destruction or unrelated
-commands. Repair causal owners under [tool ownership](../workflow/declared-tool-ownership.md).
+The 2026-10-26 ruling `ag-h1k1` governs every session/task: use selected, functioning
+CRG CLI, MCP and specialists under `crg`/`dispatch-agent`, applicable skills and ADRs.
+Selection authorizes no installation, removal, destruction or unrelated commands.
+Repair causal owners under [tool ownership](../workflow/declared-tool-ownership.md).
 Before advancing, converge Make/CLI, gates, docs, ADRs, skills and Beads with measured
 behavior and integration. Adopt and fix forward; unresolved warnings remain pending.
 
@@ -111,10 +108,8 @@ with rules, configuration and SSOT functions (tracker memory
 - a hand-maintained registry, roster, allowlist, or mapping that duplicates what an SSOT
   function derives.
 
-Accommodation growth is itself a defect.
-
-Cleanup order (tracker memory `operator-ruling-2026-10-01-total-extermination`);
-other artifacts reference this owner:
+Cleanup order (tracker memory `operator-ruling-2026-10-01-total-extermination`),
+referenced by other artifacts:
 
 1. Exterminate every violation in scope at its proven cause. Validate each correction
    immediately through [causal diagnosis](../workflow/runtime-is-reality.md#causal-diagnosis)
@@ -125,35 +120,31 @@ other artifacts reference this owner:
 3. Rewrite tests to the proven runtime behavior and run them. Run the complete gates
    after the cutover; they never replace immediate verification of each correction.
 
-The order is the work sequence inside one cutover, not a landing sequence: the cutover
-still lands atomically, with zero residue and every consumer rewired, and a scoped WIP
-commit between steps is persistence, not validation.
+This sequence is internal to one atomic cutover with zero residue and all consumers
+rewired. Intermediate scoped WIP commits preserve work; they validate nothing.
 
-For the bounded `flext-0029c` native-bootstrap route declared in
-`rules/workflow/canonical-commands.md`, the cleanup order above does not
-prohibit repeated real native runtime QA, causal repair revalidation or convergence
-proof. Align documentation first, repair and rewire the current owner, prove the
-installed subsystem and cold bootstrap, then change tests last. This exception
-does not authorize unchanged retries, fake evidence or premature suite-driven design.
+The bounded `flext-0029c` native-bootstrap route in
+`rules/workflow/canonical-commands.md` permits repeated real runtime QA, causal repair
+revalidation and convergence proof. Align docs, repair/rewire the current owner,
+prove the installed subsystem and cold bootstrap, then change tests. No unchanged
+retry, fake evidence or premature suite-driven design is authorized.
 
 Git, runtime, build, and tests are baseline. Every other executable is an authorized,
 selected capability; installation or PATH presence never selects it. Do not load,
 locate, probe, or gate dormant capabilities. A selected invalid capability fails without
 fallback and requires only non-derivable values.
 
-A portable library owns host-independent primitives. The runtime control plane owns
+Portable libraries own host-independent primitives; the runtime control plane owns
 host indexes, daemons, forges, language servers and refactor orchestration. Libraries
-consume available host capabilities only through public commands, hooks or MCP;
-never import the host as a library, reproduce its state or create a substitute runtime.
-An absent unselected capability is not an error; a selected capability's first failure
-remains causal and visible through its responsible boundary, without fallback.
+consume host capabilities through public commands, hooks or MCP only; never import
+the host, copy its state or substitute its runtime. Unselected absence is not an error;
+selected failures remain causal and visible at their responsible boundary, without fallback.
 
-Remote access follows current Git/forge configuration. Never rewrite protocols,
-create identity aliases or change user SSH configuration for Git operations. A broken
-alias never authorizes a generic remote: preserve the declared identity and repair
-through its owner. Agents never write operator SSH configuration or keys, including
-repair, fragment deployment or access restoration. Correct identity in Git; report
-required SSH configuration changes to the operator.
+Remote access follows current Git/forge configuration. Preserve declared protocols
+and identities; never create aliases or write operator SSH configuration/keys,
+including repair, fragment deployment or access restoration. A broken alias never
+authorizes a generic remote. Repair through the owner; correct identity in Git and
+report required SSH changes to the operator.
 
 A check whose declared capability is unavailable — an external token, or a host
 capability such as Docker or a remote service that the environment (CI included) lacks —
