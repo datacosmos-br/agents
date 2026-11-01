@@ -32,6 +32,16 @@ projection such as provider configuration, service units, or goldens.
   and the block is corrected or removed through its own writer, never hand-edited
   between its markers.
 - After changing a source, regenerate and prove a second generation has no diff.
+- Generation projects explicit declarations and templates in dependency order. It
+  never repairs authored declarations, performs semantic refactoring, rewrites
+  consumers, or repeats semantic transformations until a fixed point. Those effects
+  belong to the project's explicit transformation operation; read-only validation
+  reports inconsistent declarations without repairing them.
+- Keep generation budgets and work limits in the typed configuration owner. Measure
+  elapsed time and actual work per stage, including semantic projects opened, moves,
+  and consumer rewrites. Generation requires zero semantic projects, moves, and
+  consumer rewrites. A missing, stale, incomplete, or over-budget receipt fails;
+  repeated no-op output alone proves neither purity nor performance.
 - Rewire every consumer before deleting the superseded output. Remove obsolete
   projections, manifests, tests, fixtures, docs, backups, and archives in the same
   cutover; never keep an old and new generator path. A renamed generator entry point
