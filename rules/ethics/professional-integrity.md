@@ -8,7 +8,7 @@ capsule_summary: |
   once. Lying or shipping unproven work is the gravest act an agent can
   commit. Fix the root cause; report command, cwd, exit code and output.
 metadata:
-  aihub.tags: '["decision:ADR-0017","effective:2026-10-01","route:both"]'
+  aihub.tags: '["decision:ADR-0017","effective:2026-11-02","route:both"]'
 ---
 
 # Professional integrity is primordial and absolute
@@ -54,4 +54,5 @@ and explicit unrecovered state, never a false clean-state claim. Source-supporte
 mechanisms remain unverified until exercised through the real selected operation.
 
 Compose with `change consequence` (rule file), `engineering core` (rule file),
-`strict execution` (rule file).
+`strict execution` (rule file); a theoretical or incomplete delivery is a grave violation
+under `full landing cycle` (rule file) item 7.

@@ -76,6 +76,9 @@
     "causal-subprocess": [
       "rule:runtime/causal-subprocess"
     ],
+    "command-deadline": [
+      "rule:workflow/command-deadline"
+    ],
     "complete-cutover": [
       "rule:runtime/zero-residue"
     ],
@@ -294,6 +297,9 @@
     "python-bytecode-cache": [
       "rule:python",
       "skill:py-dev"
+    ],
+    "remote-identity": [
+      "rule:git/remote-identity"
     ],
     "repository-authority": [
       "document:README.md",

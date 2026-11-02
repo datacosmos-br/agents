@@ -1,7 +1,7 @@
 ---
 description: Internal projects enforce inward dependencies and explicit typed DI
 metadata:
-  aihub.tags: '["decision:ADR-0031","effective:2026-10-25","route:project"]'
+  aihub.tags: '["decision:ADR-0031","effective:2026-11-02","route:project"]'
 ---
 
 # Clean Architecture and DI for internal projects
@@ -37,6 +37,17 @@ local `flext-law` through its provider router. That domain owner defines facade 
 family layout, service bases, protocol ports, handler metadata, lazy exports and
 configuration access. A missing or mismatched owner fails before effects. Do not resolve
 a same-named law from another checkout or apply it to a third-party fork.
+
+For `internal_flext`, the family patterns are foundational: constants, typings,
+protocols, models and utilities (`c`, `t`, `p`, `m`, `u`) declare only in their own
+family, and their placement, imports, module names, class names, MRO, facades and
+import order follow the branch-matched law exactly, because every consumer breaks when
+one is wrong (operator order 2026-11-02, tracker memory
+`operator-order-2026-11-02-structural-patterns-automatic`). Declaration families carry
+zero behavior: a concrete method in a protocol module is intolerable, and behavior
+lives only in the utilities family and in orchestrators. Detection and correction of
+these patterns are automatic rules under `rules/workflow/structural-migrations.md`,
+never tolerated failures.
 
 Correct each violation at the existing declaration, implementation or generator owner,
 rewire its public consumers, prove runtime behavior and remove the superseded path.

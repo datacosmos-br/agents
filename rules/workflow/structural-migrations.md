@@ -3,7 +3,7 @@ description:
   Structural migration rules are maximally generalized, layered, and propagate through
   project imports.
 metadata:
-  aihub.tags: '["decision:ADR-0009","effective:2026-10-25","route:both"]'
+  aihub.tags: '["decision:ADR-0009","effective:2026-11-02","route:both"]'
 ---
 
 # Structural migration rule hierarchy and propagation
@@ -28,6 +28,31 @@ repository's snapshot verb writes. A rewrite reaches a verified fixed point. A r
 whose law is superseded is deleted with its test and snapshot in the same cutover. The
 `codemod` skill owns authoring procedure for ast-grep catalogs; the selected engine's guide
 owns its schema and verbs.
+
+## Every pattern fix becomes one automatic rule
+
+Convergence is continuous and rule-driven (operator orders 2026-11-02, tracker memory
+`operator-order-2026-11-02-structural-patterns-automatic`, verbatim excerpt: "isso tem
+que ser arrumado de forma automatica, ajustado e rápido, nao podemos ficar tolerando
+falhas como essas"):
+
+- A pattern fix found by the operator or any agent, including one applied by hand, is
+  not finished until it exists as an automatic rule of the selected engine's catalog.
+  A recurring shape corrected manually is a defect; write the rule and re-apply it.
+- A small batch is one rule, that is one law, applied at fleet scale at a time. Manual
+  per-file edits are never the batch. Validation and application of that rule run
+  through the owner's scoped command under `rules/workflow/canonical-commands.md`
+  ("Scoped validation of one change").
+- Exactly one rule per law: duplicate or diverging rules for the same law are
+  consolidated at the highest applicable layer in the same change.
+- Rule output needs zero manual follow-up: the rewrite reaches its fixed point and
+  passes the gates with no secondary fixer, formatter or hand edit.
+- Detection is exact: every violating site is found and no legitimate site is touched,
+  proven against the complete census with the expected match cardinality.
+- The engine is fast and runs on every root: branch, worktree, member and external
+  consumer, with no assumption about a particular checkout layout.
+- Any violation of a foundational pattern is a disaster, fixed first at its owner
+  (rule, generator or engine) before other work, never tolerated or deferred.
 
 Rules are hierarchical. The canonical governance owner holds provider-neutral law. The engine package
 owns executable implementations and their schema; consumers receive declared

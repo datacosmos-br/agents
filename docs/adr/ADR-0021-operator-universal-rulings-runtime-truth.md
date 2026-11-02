@@ -1,14 +1,18 @@
 # ADR-0021 — Operator universal rulings of 2026-09-15/16: runtime truth, no rushed work, full landing cycle
 
 **Status:** Accepted; placement attribution corrected 2026-10-23;
-failure-boundary supersession 2026-10-29; no-preexisting-debt ruling 2026-10-30
+failure-boundary supersession 2026-10-29; no-preexisting-debt ruling 2026-10-30;
+operator orders 2026-11-02
 **Date:** 2026-09-16 **Scope:**
 `rules/coordination/validate-on-change.md`, `rules/coordination/wip-persistence.md`,
 `rules/coordination/full-landing-cycle.md`, `rules/coordination/never-deduce.md`,
 `rules/coordination/green-green-landing.md`, `rules/coordination/lane-adoption.md`,
 `rules/coordination/parallel-delegation.md`, `rules/ethics/test-reality-law.md`,
 `rules/ethics/strict-typed-quality.md`, `rules/ethics/conformance-sweep.md`,
-`rules/ethics/no-preexisting-debt.md`
+`rules/ethics/no-preexisting-debt.md`,
+`rules/workflow/canonical-commands.md`, `rules/workflow/structural-migrations.md`,
+`rules/workflow/mass-rewrite-discipline.md`, `rules/workflow/generators-not-projections.md`,
+`rules/architecture/internal-clean-architecture.md`
 
 ## Context
 
@@ -97,3 +101,45 @@ while working is owned and fixed at its root, without bypass, fallback, or rollb
 single normative owner is
 [no preexisting debt](https://github.com/datacosmos-br/agents/blob/dev/rules/ethics/no-preexisting-debt.md),
 approved by this ADR as a universal (route both) companion ruling.
+
+## Operator orders — 2026-11-02
+
+The operator issued six universal orders in a live session on 2026-11-02, recorded in
+the tracker memories `operator-rulings-2026-11-02-lint-gate-decisions`,
+`operator-order-2026-11-02-complete-cycle-zero-tolerance`,
+`operator-order-2026-11-02-generated-patterns-from-rules` and
+`operator-order-2026-11-02-structural-patterns-automatic`. Each lands as a delta in
+exactly one owner; this ADR approves them as universal (every session, project and
+provider) companions of the rulings above:
+
+1. No claim without executed proof in the same turn (command, working directory, exit
+   status, decisive output):
+   [validate on change](https://github.com/datacosmos-br/agents/blob/dev/rules/coordination/validate-on-change.md), point 6.
+2. Every pattern fix becomes one automatic engine rule, one law at a time at fleet
+   scale, with exact detection, zero manual follow-up and a root-agnostic engine:
+   [structural migrations](https://github.com/datacosmos-br/agents/blob/dev/rules/workflow/structural-migrations.md),
+   referenced by
+   [mass rewrite discipline](https://github.com/datacosmos-br/agents/blob/dev/rules/workflow/mass-rewrite-discipline.md).
+3. A single change is validated through the owner's scoped, parametrized command, never
+   a global run:
+   [canonical commands](https://github.com/datacosmos-br/agents/blob/dev/rules/workflow/canonical-commands.md),
+   "Scoped validation of one change". The bounded `flext-0029c` route is unchanged and
+   no longer the only place a direct owner command is lawful for scoped validation.
+4. Generated patterns come only from the generator driven by config rules, never
+   hand-written, not even in generator format:
+   [generators, not projections](https://github.com/datacosmos-br/agents/blob/dev/rules/workflow/generators-not-projections.md).
+5. Family placement, imports, names, MRO, facades and import order are foundational and
+   declaration families carry zero behavior:
+   [internal clean architecture](https://github.com/datacosmos-br/agents/blob/dev/rules/architecture/internal-clean-architecture.md).
+   The FLEXT-specific detail stays with the project-owned, branch-matched `flext-law`
+   and its ADRs (ADR-0014); this repository declares no copy.
+6. Zero tolerance for incomplete, non-functional or theoretical delivery; sessions plan
+   only sufficient, executable steps that end in effective, complete-cycle deliveries;
+   regressions, pattern escapes, fallbacks and compatibility layers are graver still:
+   [full landing cycle](https://github.com/datacosmos-br/agents/blob/dev/rules/coordination/full-landing-cycle.md), item 7.
+
+Same-cutover owner repairs: `rules/workflow/canonical-commands.md` and
+`rules/architecture/engineering-core.md` already exceeded the rule token limit on the
+integration branch; their "Command deadline and performance" section and remote-access
+paragraph moved verbatim to `rules/workflow/command-deadline.md` and
+`rules/git/remote-identity.md`, with every consumer rewired.

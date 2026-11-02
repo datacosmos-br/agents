@@ -23,7 +23,8 @@ This is the compact entry to the canonical rules below, not a second rule body.
 10. Authority and recency: `rules/coordination/operator-precedence.md`.
 11. Workspace placement: `rules/coordination/gascity.md`; storage: `rules/storage.md`.
 12. Phase exit evidence: `rules/workflow/phase-admission-protocol.md`.
-13. Commands, deadlines and test selection: `rules/workflow/canonical-commands.md`.
+13. Commands and test selection: `rules/workflow/canonical-commands.md`; deadlines:
+    `rules/workflow/command-deadline.md`.
 14. Results: a native failure, warning or missing required proof remains RED.
     Zero test execution is acceptable only as an integrity-checked incremental cache
     hit with complete deselection accounting, never as tests passed. Availability

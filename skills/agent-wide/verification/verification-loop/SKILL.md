@@ -47,7 +47,7 @@ red or incomplete, and unverified work is never pushed to a working branch or PR
   poorly-instrumented work as "out of scope" or "pre-existing"; re-instrument until the
   diff speaks, or file the defect with the hypothesis and the trigger so the next
   session continues from a real artifact.
-- Command deadlines and profiling follow `rules/workflow/canonical-commands.md`.
+- Command deadlines and profiling follow `rules/workflow/command-deadline.md`.
   Per-test limits come from the selected test owner's configuration. Correct excessive
   work at its measured owner; do not raise limits, freeze them in this skill or move
   provisioning into test bodies.

@@ -121,3 +121,15 @@ private-interface test with public behavioral coverage preserving its failure
 scenarios. Remove a test-only production symbol only after proving it has no remaining
 consumer. Fix a real failure at its root-cause owner and rewire every consumer. Do not
 lower coverage or weaken assertions to obtain a passing result.
+
+## Unavailable capability: typed NOT EXECUTED
+
+A check whose declared capability is unavailable — an external token, or a host
+capability such as Docker or a remote service that the environment (CI included) lacks —
+is not executed and is recorded as typed `NOT EXECUTED` with its reason: never green,
+never counted as passed, never a runtime skip. A missing token does not block offline
+gates, landing, or post-merge proof. A missing host capability does not turn the run
+that lacks it red, and the behavior it covers counts as proven only by a run where the
+capability is present. Direct invocation selects the check: the capability becomes
+required and any failure remains red under the responsible failure-boundary contract,
+without skip, fallback or success normalization.

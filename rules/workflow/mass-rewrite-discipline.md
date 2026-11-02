@@ -2,7 +2,7 @@
 description:
   Tree-wide rewrites preserve shared work, inventory effects, and prove public behavior.
 metadata:
-  aihub.tags: '["decision:ADR-0008","effective:2026-10-25","route:both"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-11-02","route:both"]'
 ---
 
 # Mass rewrite discipline: inventory, boundaries, evidence
@@ -36,6 +36,10 @@ change, not free bookkeeping. It is graded like code.
   (annotations, aliases) while structural classes (nesting, facades, module shape) stand
   untouched is not aggregate progress; declare counts per class, and let the structural
   classes own the remaining phase plan.
+- **The batch unit is one law.** A mass rewrite is one automatic rule at a time; its
+  definition, exactness and zero-follow-up contract live in
+  `rules/workflow/structural-migrations.md` ("Every pattern fix becomes one automatic
+  rule"), and manual file-by-file rewriting is never a batch.
 - **Tracker evidence cadence.** Each class landed updates the campaign tracker item in
   the same session with command, counts, and decisive output; a campaign without
   per-step tracker evidence is not a campaign.
