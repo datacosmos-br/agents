@@ -15,7 +15,7 @@
 | `ADR-0016` | 2026-09-07 | Accepted | rtk is the fleet command and output economy layer; the skill teaches the manual surface, AI Hub owns routing.                                         |
 | `ADR-0014` | 2026-09-07 | Accepted; amended 2026-10-20 | Canonical capability intake; FLEXT law remains project-owned and its copied global body is retired. |
 | `ADR-0015` | 2026-09-07 | Accepted | Tag grammar v2: closed namespace set, subject-detector routing per project, versioned managed projections, and supersedes-backed renames.             |
-| `ADR-0017` | 2026-09-10 | Accepted | Ethics is primordial; change consequence is authorship; operator alignment is a duty; owners are refactored in place, never paralleled.               |
+| `ADR-0017` | 2026-09-10 | Accepted; amended 2026-11-02 | Ethics is primordial; change consequence is authorship; operator alignment is a duty; owners are refactored in place, never paralleled; 2026-11-02 ethics orders land at their single owners.            |
 | `ADR-0018` | 2026-09-10 | Accepted | Release line 0.5.0 carries behavioral conscience and the delivery contract; tag grammar is closed as measured.                                        |
 | `ADR-0019` | 2026-09-10 | Accepted | The delivery contract is typed data: capsule budget gate at load, closed lifecycle event map, and enforced docs linking.                              |
 | `ADR-0020` | 2026-09-10 | Accepted | One `advance` command owns resumption and forced advancement; skill routing owns deltas; the research dossier is referenced evidence.                 |

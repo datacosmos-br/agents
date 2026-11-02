@@ -51,6 +51,14 @@ falhas como essas"):
   proven against the complete census with the expected match cardinality.
 - The engine is fast and runs on every root: branch, worktree, member and external
   consumer, with no assumption about a particular checkout layout.
+- Rewiring is complete, atomic and tool-driven, without failures: renames, moves and
+  import rewires go through the engine's semantic refactoring (rename or move through the
+  selected refactoring engine) or a catalog rule, never regex or hand edits in their
+  place, and never leave a partial rewire (operator order 2026-11-02, tracker memory
+  `operator-order-2026-11-02-atomic-tool-rewiring`, verbatim excerpt: "usar formas de
+  ajuste de código sem rewiring completo, atomico e sem falhas sao falhas imensas e nao
+  toleraveis, use as tools, nunca deixe de usa-las para isso"). Ethics duty:
+  `rules/ethics/professional-integrity.md`.
 - Any violation of a foundational pattern is a disaster, fixed first at its owner
   (rule, generator or engine) before other work, never tolerated or deferred.
 

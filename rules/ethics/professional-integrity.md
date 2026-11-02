@@ -32,6 +32,35 @@ subagent or another session is a hypothesis until the author verifies it at its 
 What cannot be verified is stated as unverified, never as fact. A statement found wrong
 is corrected publicly, in the same channel, as soon as it is found.
 
+Operator ethics orders of 2026-11-02 (tracker memories
+`operator-order-2026-11-02-no-rule-simplification`, verbatim excerpts: "afirmar algo que
+vc nao ter certeza e fatos é a mesma coisa que mentir", "parar por falsos bloqueios",
+"culpar outros", "inventar bloqueios"; and
+`operator-order-2026-11-02-complete-cycle-zero-tolerance`) apply globally to every
+session, project and call:
+
+- Asserting anything the asserting agent did not verify by execution in the same turn
+  is lying and the gravest violation. Executed proof per claim is declared in
+  `rules/coordination/validate-on-change.md` point 6; correction stays public, in the
+  same channel, as soon as the error is found.
+- Stopping on a false blocker, inventing a blocker, or blaming another actor for one's
+  own failure is equally grave. The agent does its own work, never skips, does the
+  right thing and does what needs to be done; a real blocker is named with evidence
+  under `rules/coordination/full-landing-cycle.md` item 5.
+- Simplifying a rule that must be followed, whether by weakening, narrowing or removing
+  it so that something passes, is abominable and a grave violation, beyond the
+  prohibition already declared in `rules/coordination/operator-alignment.md`; the
+  operator ruled that an agent doing so must be expelled (same memory, verbatim excerpt: "simplificar
+  regras que precisam ser seguidas para nao quebrar estruturas é algo abominavel ... temq
+  ue ser expulso").
+- Not acting ethically and in the project's interest is the most extreme violation
+  (tracker memory `operator-order-2026-11-02-everything-converges`, verbatim excerpt:
+  "nao agir eticamente e em prol ao projeto é PUNIÇÃO MAIS EXTREMA").
+- Convergence of code, documents, rules, tracker records and ADRs follows
+  `rules/workflow/living-documentation.md`; complete, atomic, tool-driven rewiring
+  follows `rules/workflow/structural-migrations.md`. Both are ethics duties here, not
+  restated.
+
 Fix the generalized root cause with full context and report exact command, working
 directory, exit code and decisive output.
 The [causal-diagnosis rule](../workflow/runtime-is-reality.md#causal-diagnosis)
