@@ -23,7 +23,7 @@ capsule_summary: |
   Keep the declared Git identity. A broken alias never permits a generic remote
   or operator SSH/key edits; correct identity in Git or report it.
 metadata:
-  aihub.tags: '["decision:ADR-0031","effective:2026-10-29","route:both"]'
+  aihub.tags: '["decision:ADR-0031","effective:2026-11-02","route:both"]'
 ---
 
 # Engineering core
@@ -111,7 +111,8 @@ with rules, configuration and SSOT functions (tracker memory
 - a hand-maintained registry, roster, allowlist, or mapping that duplicates what an SSOT
   function derives.
 
-Accommodation growth is itself a defect.
+Accommodation growth is itself a defect. Rule exceptions survive only as axioms under
+[rule exceptions](rule-exceptions.md).
 
 Cleanup order (tracker memory `operator-ruling-2026-10-01-total-extermination`);
 other artifacts reference this owner:

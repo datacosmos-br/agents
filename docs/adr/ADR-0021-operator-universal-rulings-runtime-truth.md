@@ -12,7 +12,7 @@ operator orders 2026-11-02
 `rules/ethics/no-preexisting-debt.md`,
 `rules/workflow/canonical-commands.md`, `rules/workflow/structural-migrations.md`,
 `rules/workflow/mass-rewrite-discipline.md`, `rules/workflow/generators-not-projections.md`,
-`rules/architecture/internal-clean-architecture.md`
+`rules/architecture/internal-clean-architecture.md`, `rules/architecture/rule-exceptions.md`
 
 ## Context
 
@@ -104,9 +104,11 @@ approved by this ADR as a universal (route both) companion ruling.
 
 ## Operator orders — 2026-11-02
 
-The operator issued six universal orders in a live session on 2026-11-02, recorded in
+The operator issued seven universal orders in a live session on 2026-11-02, recorded in
 the tracker memories `operator-rulings-2026-11-02-lint-gate-decisions`,
 `operator-order-2026-11-02-complete-cycle-zero-tolerance`,
+`operator-order-2026-11-02-exceptions-martial-law`,
+`operator-order-2026-11-02-exceptions-axioms-only`,
 `operator-order-2026-11-02-generated-patterns-from-rules` and
 `operator-order-2026-11-02-structural-patterns-automatic`. Each lands as a delta in
 exactly one owner; this ADR approves them as universal (every session, project and
@@ -137,6 +139,12 @@ provider) companions of the rulings above:
    only sufficient, executable steps that end in effective, complete-cycle deliveries;
    regressions, pattern escapes, fallbacks and compatibility layers are graver still:
    [full landing cycle](https://github.com/datacosmos-br/agents/blob/dev/rules/coordination/full-landing-cycle.md), item 7.
+7. Exterminating rule exceptions is martial law; only axioms declared once in the tooling
+   SSOT and enforced by tooling survive:
+   [rule exceptions](https://github.com/datacosmos-br/agents/blob/dev/rules/architecture/rule-exceptions.md)
+   (new rule: no existing owner declared exception policy generically, and
+   `engineering-core.md` has no token headroom; scattered prohibitions in
+   `scanner-closure.md` and `strict-typed-quality.md` stay mechanism-specific).
 
 Same-cutover owner repairs: `rules/workflow/canonical-commands.md` and
 `rules/architecture/engineering-core.md` already exceeded the rule token limit on the

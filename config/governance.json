@@ -316,6 +316,9 @@
       "rule:architecture/engineering-core",
       "rule:runtime/zero-residue"
     ],
+    "rule-exceptions": [
+      "rule:architecture/rule-exceptions"
+    ],
     "runtime-first": [
       "rule:testing/observable-runtime",
       "rule:workflow/runtime-is-reality"
