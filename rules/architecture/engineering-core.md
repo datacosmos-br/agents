@@ -23,7 +23,7 @@ capsule_summary: |
   Keep the declared Git identity. A broken alias never permits a generic remote
   or operator SSH/key edits; correct identity in Git or report it.
 metadata:
-  aihub.tags: '["decision:ADR-0031","effective:2026-10-29","route:both"]'
+  aihub.tags: '["decision:ADR-0031","effective:2026-11-02","route:both"]'
 ---
 
 # Engineering core
@@ -111,7 +111,8 @@ with rules, configuration and SSOT functions (tracker memory
 - a hand-maintained registry, roster, allowlist, or mapping that duplicates what an SSOT
   function derives.
 
-Accommodation growth is itself a defect.
+Accommodation growth is itself a defect. Rule exceptions survive only as axioms under
+[rule exceptions](rule-exceptions.md).
 
 Cleanup order (tracker memory `operator-ruling-2026-10-01-total-extermination`);
 other artifacts reference this owner:
@@ -148,22 +149,10 @@ never import the host as a library, reproduce its state or create a substitute r
 An absent unselected capability is not an error; a selected capability's first failure
 remains causal and visible through its responsible boundary, without fallback.
 
-Remote access follows current Git/forge configuration. Never rewrite protocols,
-create identity aliases or change user SSH configuration for Git operations. A broken
-alias never authorizes a generic remote: preserve the declared identity and repair
-through its owner. Agents never write operator SSH configuration or keys, including
-repair, fragment deployment or access restoration. Correct identity in Git; report
-required SSH configuration changes to the operator.
+Remote access and Git identity follow [remote identity](../git/remote-identity.md).
 
-A check whose declared capability is unavailable — an external token, or a host
-capability such as Docker or a remote service that the environment (CI included) lacks —
-is not executed and is recorded as typed `NOT EXECUTED` with its reason: never green,
-never counted as passed, never a runtime skip. A missing token does not block offline
-gates, landing, or post-merge proof. A missing host capability does not turn the run
-that lacks it red, and the behavior it covers counts as proven only by a run where the
-capability is present. Direct invocation selects the check: the capability becomes
-required and any failure remains red under the responsible failure-boundary contract,
-without skip, fallback or success normalization.
+A check whose declared capability is unavailable is recorded as typed `NOT EXECUTED`,
+never green; see [observable runtime](../testing/observable-runtime.md#unavailable-capability-typed-not-executed).
 
 Compose with `generalized ownership` (rule file), `strict execution` (rule file),
 `runtime evidence` (rule file), `storage isolation` (rule file), `security closure`

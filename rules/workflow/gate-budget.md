@@ -18,7 +18,7 @@ fingerprint changes.
 
 This aggregate PR budget never extends an individual invocation. The command deadline,
 profiling procedure and timeout outcome have one owner:
-[`canonical-commands.md`](canonical-commands.md#command-deadline-and-performance).
+[`command-deadline.md`](command-deadline.md).
 
 - Nothing slow runs in CI or at pre-commit, in absolute terms (tracker memory
   `operator-ruling-2026-10-01-precommit-fast-only`). CI and pre-commit run only fast

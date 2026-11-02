@@ -1,7 +1,7 @@
 ---
 description: Documentation follows runtime reality
 metadata:
-  aihub.tags: '["decision:ADR-0008","effective:2026-10-25","route:both"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-11-02","route:both"]'
 ---
 
 # Documentation follows runtime reality
@@ -22,6 +22,16 @@ work through the fix-forward rule, never requiring a globally stable checkout.
    docstrings in the same grain as the behavior or decision, through their owners.
    Repeat this consultation at phase transitions, context recovery and new operator
    decisions; keep the affected sources aligned throughout execution, not just at intake.
+- Every adjustment converges everything it touches: code, Markdown documents, rules,
+  tracker records and ADRs, in every project, in the same change (operator order
+  2026-11-02, tracker memory `operator-order-2026-11-02-everything-converges`, verbatim
+  excerpt: "os ajsutes tem que ser feitos em tudo, código, docuemtnos md, rules, beads,
+  TUDO, em todos os projetos, sempre, nunca em pedeças quebrados que quebra o resto, nao
+  podemos ter contradicoes, conflitos entre os docuemntos e sources e entre eles, tudo
+  tem que convergir"). No contradiction or conflict may remain between documents and
+  sources or among documents, and a fix never lands as a broken piece. A document that
+  is a projection converges by editing its source and regenerating every projection,
+  never by editing the copy. Ethics duty: `rules/ethics/professional-integrity.md`.
 - Preserve historical evidence as dated evidence; remove its authority to direct current
   execution. Never present a proposal, plan, or old gate result as live architecture.
 - Keep each delivery's source, integration and installed-runtime claims linked to

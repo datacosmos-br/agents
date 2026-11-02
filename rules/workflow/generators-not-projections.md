@@ -3,7 +3,7 @@ description:
   Editing configuration, generated surfaces, or hardcoding a value. Load when changing
   config, settings, templates, tool homes, service units, or goldens.
 metadata:
-  aihub.tags: '["decision:ADR-0031","effective:2026-10-01","route:both"]'
+  aihub.tags: '["decision:ADR-0031","effective:2026-11-02","route:both"]'
 ---
 
 # Edit canonical sources, regenerate projections, prove idempotence
@@ -14,6 +14,14 @@ projection such as provider configuration, service units, or goldens.
 
 - No product-, agent-, or daemon-specific hardcoded value anywhere — parametrize it.
   Each managed binary is installed by its declared local owner.
+- Generated patterns are always produced by the generator, driven by rules that come
+  from config and follow Clean Architecture and DI without exception; they are never
+  hand-written, not even in the generator's output format (operator order 2026-11-02,
+  tracker memory `operator-order-2026-11-02-generated-patterns-from-rules`, verbatim
+  excerpt: "eles tem que ser SEMPRE gerados nas regras e para o que os projetos
+  precisam com as regras sempre vindo de config e seguindo padroes CA/DI sem
+  excessao"). A literal block that imitates generator output is a hand-edited
+  projection; the generator or its config rule is repaired and the output regenerated.
 - Every generated file carries a standardized marker naming its writable owner, that
   hand edits are forbidden, and the exact declared Make regeneration command. A
   generated marker without a resolvable owner is a defect.

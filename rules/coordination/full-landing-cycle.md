@@ -18,7 +18,7 @@ capsule_summary: |
   in-scope project ahead of it are evaluated as a whole, merged, revalidated on the
   merged SHA, and the correlated bead is closed with evidence — mandatory.
 metadata:
-  aihub.tags: '["decision:ADR-0021", "effective:2026-09-16", "route:both"]'
+  aihub.tags: '["decision:ADR-0021", "effective:2026-11-02", "route:both"]'
 ---
 
 # Full landing cycle or nothing (universal)
@@ -82,3 +82,22 @@ todo o trabalho.
      phase with any project left unmerged or its bead open is not finished.
    - Refs are always fully qualified (`refs/heads/<branch>`): a tag or remote that
      shares the branch name makes a bare refspec ambiguous and silently stale.
+7. Zero tolerance for non-delivery (operator order 2026-11-02, tracker memory
+   `operator-order-2026-11-02-complete-cycle-zero-tolerance`, verbatim: "nao vou tolerar
+   em hipótese alguma mais, entregars incompletas, nao funcionais e coias puramente
+   teórica, tudo tem que ser prático, validado, testado e com generalização completa,
+   menos que isso é falta gravíssima ... tolerancia zero, não entregar nada, é a mesma
+   coisa., executar uma sessão e não fazer uma entrega nesse nível, é extremamente pior
+   que nem sequer fazer, então sempre planeje suas ações para passos suficientes e
+   exequíveis dentro dela e com entregas efetivas e com ciclo completo, retorno de
+   problemas, fuga de padroes, fallbacks, layers de compatibilidae e fuga de padroes são
+   classificados tb como falhas gravíssimas e até pior"). It applies globally to every
+   session, project and call:
+   - An incomplete, non-functional or purely theoretical delivery is no delivery and a
+     grave violation. Delivery means practical, validated, tested and fully generalized.
+   - A session that ends without a delivery at that level is worse than a session that
+     never ran.
+   - Plan only steps that are sufficient and executable within the session, each ending
+     in an effective delivery with a complete cycle.
+   - Regressions, pattern escapes, fallbacks and compatibility layers are grave
+     violations, worse than an undelivered step.

@@ -13,7 +13,7 @@ capsule_summary: |
   never the proof. A change proven only by tests but not observed functioning in
   the real runtime is NOT validated and NOT landed.
 metadata:
-  aihub.tags: '["decision:ADR-0021", "effective:2026-09-16", "route:both"]'
+  aihub.tags: '["decision:ADR-0021", "effective:2026-11-02", "route:both"]'
 ---
 
 # Validate-on-change: runtime functioning is the only proof (universal)
@@ -34,3 +34,15 @@ runtime.
    blocker and stop that grain.
 5. This composes with runtime-is-reality and strict execution; where tests disagree with
    observed runtime behavior, runtime wins and the test is corrected or removed.
+6. A claim carries its executed proof in the same turn. Saying that something was done,
+   fixed, validated or landed is not enough: the actor executes it, puts it into
+   practice and proves it, recording command, working directory, exit status and
+   decisive output in that turn. A report, plan, intention or self-assessment without
+   that executed proof is an unproven claim and is reported as such. This holds
+   globally and totally, for every session, every project and every call issued
+   (operator order 2026-11-02, tracker memory
+   `operator-rulings-2026-11-02-lint-gate-decisions`, verbatim: "nao basta me falar e me
+   dize que fez, tem que executar, colocar em prática e provar ... isso vale para tudo
+   de forma global e total em todas as sessoes e todos projetos, qq chamada que for
+   dada"). A delivery that is incomplete, non-functional or theoretical is governed by
+   `rules/coordination/full-landing-cycle.md` item 7.
