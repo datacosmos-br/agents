@@ -5,7 +5,7 @@ prompt: |-
   OBSOLETE, or DONE reasons, metadata-proven legitimate triads are adjudicated
   instead of blindly closed, every inventory has an explicit limit, a claim
   is released only on measured evidence that no executor exists, a claim
-  abandoned after the configured threshold of rule bead-branch-pr-cadence §2
+  idle past the abandonment threshold that rule inter-session-mail configures
   (never a remembered number) changes hands only through an adopter who claims
   it, abandonment never closes a bead, deferred state requires live
   evidence, bugs remain at root with

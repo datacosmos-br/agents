@@ -1,7 +1,7 @@
 interface:
   display_name: "Search First"
-  short_description: "Research project owners before implementation"
+  short_description: "Shortest correct route before any code"
   brand_color: "#155E75"
-  default_prompt: "Use $search-first once, pass evidence through $yagni and relevant $solid boundaries, simplify inline, route only proven structural waste to $dry, recheck, and validate runtime."
+  default_prompt: "Use $search-first to take the first correct option: delete the need, use the owning tool, extend the owner, or write the smallest new code."
 policy:
   allow_implicit_invocation: true

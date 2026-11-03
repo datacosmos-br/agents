@@ -4,8 +4,8 @@
 
 The approved public contract and measured real execution define the target. Tests
 validate implemented functionality; they neither invent behavior nor precede its
-implementation. Compose `engineering-core`, `runtime-is-reality` and
-`observable-runtime` for their mandatory ordering and evidence contracts.
+implementation. Compose `rules/law.md` item 9 and `rules/testing/observable-runtime.md`
+for their mandatory ordering and evidence contracts.
 
 ## Procedure
 
@@ -36,12 +36,11 @@ implementation. Compose `engineering-core`, `runtime-is-reality` and
 
 ## Test selection
 
-Apply `testing/observable-runtime` (rule file), section "Artifact-only fixture storage",
-before choosing source populations. `tests/fixtures/` supplies data, never executable
-test modules or analysis/refactoring/generation inputs. Keep declarations and builders
-in their declared project owners (`c/t/p/m/u.Tests` for `internal_flext`), pytest wiring in `conftest.py`, and test
-behavior in the unit, integration or end-to-end layers. Enforce paths and source
-imports without interpreting artifact bytes.
+`tests/fixtures/` supplies data, never executable test modules or
+analysis/refactoring/generation inputs. Keep declarations and builders in their declared
+project owners (`c/t/p/m/u.Tests` for `internal_flext`), pytest wiring in `conftest.py`,
+and test behavior in the unit, integration or end-to-end layers. Enforce paths and
+source imports without interpreting artifact bytes.
 
 - Unit tests cover pure behavior and boundary conditions.
 - Integration tests cover real component contracts and persistence boundaries.

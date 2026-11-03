@@ -1,6 +1,6 @@
 # ADR-0025 - Adopted workspaces and invocation-selected isolation
 
-**Status:** Accepted; amended 2026-10-23; former isolation mandate retired.
+**Status:** Superseded by ADR-0038
 **Date:** 2026-09-22
 
 At 21:56:04 UTC on 2026-10-23, the operator explicitly required adoption of the
@@ -69,7 +69,7 @@ not prove consumer propagation.
 ## Correction — 2026-10-23
 
 The canonical placement owner is
-[`rules/coordination/gascity.md`](../../rules/coordination/gascity.md).
+[`rules/coordination/gascity.md`](https://github.com/datacosmos-br/agents/blob/f9161bfb/rules/coordination/gascity.md).
 Consumers reference that owner rather than invent isolation from a historical
 record or campaign profile. Explicit worktree-mode calls and assigned city jobs
 retain their invocation-selected placement and physical environment contracts.

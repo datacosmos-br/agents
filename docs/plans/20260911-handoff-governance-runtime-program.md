@@ -7,9 +7,9 @@
 ## 1. Registro histórico de reinício
 
 Este registro não seleciona o contexto de uma nova chamada. A exigência antiga de
-isolamento foi revogada pelo operador em 2026-10-23 (ag-wibx.2); o dono atual é
-`rules/coordination/gascity.md`. Revalidar as demais instruções históricas em seus
-donos antes de qualquer retomada, preservando os fatos medidos abaixo.
+isolamento foi revogada pelo operador em 2026-10-23 (ag-wibx.2). Revalidar as demais
+instruções históricas em seus donos antes de qualquer retomada, preservando os fatos
+medidos abaixo.
 O bloco abaixo é transcrição histórica para referência, não comandos ativos ou
 autorização para executar a sequência antiga.
 

@@ -3,33 +3,26 @@ name: plan-reconciliation
 description: "plan corpus reconciliation, attachment provenance, sequential integration"
 license: MIT
 metadata:
-  aihub.tags: '["activation:opt-in","decision:ADR-0008","detect:opt-in:plan-reconciliation","effective:2026-09-14","extends:arch-docs","extends:beads-reval","extends:doc-criteria","extends:focus-recovery","route:agent","subject:beads","usage:router"]'
+  aihub.tags: '["activation:opt-in","decision:ADR-0038","detect:opt-in:plan-reconciliation","effective:2026-11-03","extends:arch-docs","extends:beads-reval","extends:doc-criteria","extends:focus-recovery","route:agent","subject:beads","usage:router"]'
 ---
 
 # Plan reconciliation
 
 Activate for an explicit request to reconcile a project's accumulated plans, their
-attachments, implementation evidence, and tracker links. Do not activate for a single
-document translation, a plan review without reconciliation, or an isolated code defect.
-The command `/reconcile-plans` selects this workflow.
+attachments, implementation evidence and tracker links (`/reconcile-plans`); never for a
+single document translation, a plan review without reconciliation or an isolated code
+defect. Compose $doc-criteria for artifact selection, $arch-docs for decision evidence,
+$beads-reval for tracker revalidation and $focus-recovery for interruption continuity,
+from the same catalog.
 
-Compose $doc-criteria for artifact selection, $arch-docs for decision evidence,
-$beads-reval for tracker revalidation, and $focus-recovery for interruption continuity.
-Load those parents from the same catalog; do not copy their law.
+An approved plan owns its topic: reconciling it adopts every correlated owner, WIP,
+branch and PR by reviewed no-ff merge without destroying, stashing or reverting anything;
+a diagnosis that ends in a verified-healthy service is complete, never a mandate to
+reconfigure; and an operator-declared repository monopoly binds only the session the
+operator names.
 
-Read [the procedure](references/procedure.md) and
-[the source contract](references/input-contract.md) completely before effects. Resolve
-source adapters, repository destinations, the home projection, project dependencies, and
-integration lanes from the active configuration. Provider exports are collected by the
-configured automation, not a manual prerequisite.
-
-Use automated inventories as evidence, never as semantic decisions. Read the active plan
-and all linked material completely. Reconcile one plan at a time, newest first, and its
-projects in dependency order. Transfer valid pending work to selected Beads and useful
-knowledge to maintained documentation, then retire that plan only after complete transfer and preservation
-proof; do not implement historical proposals. Reconciliation completion is distinct from
-implementation completion. Execution state lives only in the selected Beads owner;
-`rules/workflow/beads-traceability.md` owns AI Hub's generated TODO view. Publish through
-the configured document and AI Hub distribution owners, never through a new projector or
-provider-home edit. Keep the same plan active through required validation and retirement
-receipts; neither this skill nor a historical plan grants Git or deployment authority.
+The outcomes are in [the procedure](references/procedure.md). Execution state lives only
+in the selected Beads owner (`rules/workflow/beads-traceability.md`). Adapters,
+destinations and the home projection come from the active configuration and AI Hub's
+distribution owners, never from a new collector, projector or provider-home edit, and
+neither this skill nor a historical plan grants Git or deployment authority.

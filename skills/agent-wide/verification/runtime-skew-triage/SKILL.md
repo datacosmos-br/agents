@@ -12,8 +12,7 @@ metadata:
 
 Use when a daemon that publishes configuration to a long-running binary fails after a
 redeploy, upgrade, or restart — 4xx/5xx on publication, CAS conflicts, or "active but
-dead" services. Distilled from the ai-hub model pipeline outage chain of 2026-09-11
-(dc8→dc9 skew, stale intent, CAS active-flip, credential-refs race).
+dead" services.
 
 ## When this applies
 
@@ -29,23 +28,22 @@ dead" services. Distilled from the ai-hub model pipeline outage chain of 2026-09
 
 1. **Prove the pair.** Binary `--version` + embedded schema strings; publisher source
    constant AND deployed dist constant. Skew found → reconcile before any other
-   hypothesis (rule: `runtime/deployment-lifecycle.md`).
+   hypothesis.
 2. **Prove runtime, not unit state.** Port listening + one real endpoint call. An
-   `active (exited)` unit is bookkeeping, not proof (rule:
-   `workflow/runtime-first-contract-tests.md`).
+   `active (exited)` unit is bookkeeping, not proof (`rules/law.md` item 9).
 3. **Map the full assert chain** of the publication path (identity → CAS subset →
    generation → parse → schema → credential subset → readback) with owner and failure
    class per assert. Predict where the current fix will displace the symptom.
-4. **Quarantine, never delete, orphaned transaction state.** Move the stale artifact
-   aside with a suffix naming the dead provenance (`intent-v3.json.stale-dc8-<date>`)
-   and file the typed-rejection defect at the transaction-store owner.
+4. **Route orphaned transaction state to its owner.** A persisted intent from an earlier
+   binary is a defect of the transaction-store owner, which rejects it with a typed
+   error and owns its removal; no quarantine copy is kept (`rules/storage.md`).
 5. **Fix at the owner, fix-forward.** Volatile fact classes (health, quota, suspension,
    credential-derived actives) belong in the CAS volatile set, not in snapshot freezing;
-   the race root cause is fetch→publish non-atomicity, tracked separately.
+   a race's root cause is fetch→publish non-atomicity.
 6. **Close with bead evidence**: exact commands, exit codes, and the chain map updated
    with which assert now fails (or none).
 
-## Anti-patterns (all measured 2026-09-11)
+## Anti-patterns
 
 - Redeploying dist from source without re-proving binary compatibility.
 - Trusting `systemctl is-active` twice before checking the port.

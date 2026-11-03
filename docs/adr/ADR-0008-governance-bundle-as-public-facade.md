@@ -1,8 +1,10 @@
 # ADR-0008 — GovernanceBundle is the read-only semantic boundary
 
-- **Status:** Accepted
+- **Status:** Amended by ADR-0038
 - **Date:** 2026-09-03
-- **Scope:** Package ownership, public API, validation, and delivery boundary
+- **Scope:** Package ownership, public API, validation, and delivery boundary; the
+  test-verb contract is `rules/workflow/canonical-commands.md`, marked delegations are
+  law 6 of `rules/law.md`
 - **Supersedes:** The provider-projection, runtime CLI, and composed-delivery decisions
   formerly recorded by ADR-0003, ADR-0004, and ADR-0005
 

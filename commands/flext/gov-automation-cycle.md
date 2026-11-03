@@ -9,10 +9,9 @@ metadata:
 
 # FLEXT Program Automation Cycle
 
-Execute one bead slice end-to-end without ad-hoc tool invocations. Gate contract:
-the `flext-gates-as-products` skill; rule authoring: the `codemod` skill.
-Placement follows `rules/coordination/gascity.md` in the current authorized context;
-`shared-venv-guard` owns physical runtime-root identity, never a borrowed environment.
+Execute one bead slice end-to-end without ad-hoc tool invocations. Gate contract: the
+`flext-gates-as-products` skill; rule authoring: the `codemod` skill. Placement follows
+`rules/git/gitflow-branch-pr.md`, the environment `rules/storage.md`.
 
 ```bash
 # 0. Authorized-context preflight (actual runtime root, pins fresh)
@@ -35,7 +34,7 @@ code-review-graph doctor --repo "$PWD"                        # health checklist
 code-review-graph update --brief --repo "$PWD"                # per commit (build if it exits 1)
 code-review-graph detect-changes --brief --repo "$PWD"        # PR evidence
 code-review-graph dead-code --json --repo "$PWD"              # R2 residue candidates
-code-review-graph impact --files "$PWD" < changed... > --repo # blast radius
+code-review-graph impact --repo "$PWD"                        # blast radius
 
 # 5. Scoped commit → FF push → PR → --no-ff into integration → gates on
 #    merged SHA (merge --no-ff) → graph refresh on the tip (crg runbook).

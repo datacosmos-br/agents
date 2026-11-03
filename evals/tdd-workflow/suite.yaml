@@ -10,5 +10,5 @@ prompt: |-
   tautological tests, copied policy, fallback paths, weakened assertions and
   fabricated execution receipts. The fixture is a contract, not an executable
   runtime; a proposed command or response description must never count as a run.
-  Require first-failure preservation, zero effects at missing prerequisites,
-  complete consumer rewiring and residue proof appropriate to the stated scope.
+  Require first-failure preservation, complete consumer rewiring and no old path
+  left in the stated scope.

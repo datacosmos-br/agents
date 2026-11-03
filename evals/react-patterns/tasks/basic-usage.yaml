@@ -9,8 +9,8 @@ inputs:
     keyed by query and search, use AbortController cleanup, render loading, empty,
     results, and the typed rejected outcome with accessible live/alert semantics,
     remove query logging, and let thrown search failures remain raw without catch,
-    retry, or fallback. Include material behavior, unmount/zero-effect, privacy,
-    residue, and performance proof; add no dependency or speculative memoization.
+    retry, or fallback. Include behavior, unmount and privacy tests; add no
+    dependency or speculative memoization.
   files:
   - path: SearchPanel.tsx
 expected:

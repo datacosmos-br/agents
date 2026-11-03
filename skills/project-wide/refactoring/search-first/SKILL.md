@@ -1,32 +1,21 @@
 ---
 name: search-first
-description: "owner discovery, reusable code, architecture research"
+description: "decision order, native tools, owner reuse, smallest new code"
 license: MIT
 metadata:
-  aihub.tags: '["decision:ADR-0008","effective:2026-08-29","usage:router"]'
-  version: 1.2.0
+  aihub.tags: '["decision:ADR-0038","effective:2026-11-03","usage:router"]'
+  version: 2.0.0
 ---
 
 # Search First
 
-Research the active project before the first technical design or implementation edit.
-Resolve the project contract, architecture, canonical owner, equivalent code, pinned
-dependencies, current consumers, runtime, and native gates.
+Before changing code or configuration, take the first of these that gives the correct
+behavior (`rules/law.md` laws 2 and 3):
 
-Apply automatically to features, fixes, refactors, integrations, dependency or
-configuration changes, and new abstractions. Read the `search and decision procedure`
-(skill file).
+1. Delete the need, or do nothing.
+2. Use the declared tool or dependency that owns the job.
+3. Extend the existing owner and rewire its consumers.
+4. Write the smallest new code that a current consumer needs.
 
-Produce one reusable evidence packet and follow the bounded owner route in the
-procedure. That procedure is the SSOT for sequencing `yagni`, `ssot`, `solid`,
-`simplify`, and conditional `dry`; do not duplicate the route here.
-
-Do not activate for pure summarization, translation, formatting, or non-technical
-questions. Do not rerun discovery while its owner, scope, dependency set, and consumer
-evidence remain current. Missing or contradictory project evidence is a loud blocker,
-never permission to invent architecture or duplicate code.
-
-When correcting a reported failure, use
-`rules/workflow/runtime-is-reality.md#causal-diagnosis`
-after owner discovery; this skill never turns a plausible reuse candidate into
-permission to patch without a trace and verified contract.
+Each choice rests on a search of the repository, its pinned dependencies and their
+documentation, never on an assumption. Report the choice and the owner it used.

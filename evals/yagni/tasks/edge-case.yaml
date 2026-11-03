@@ -1,11 +1,11 @@
-id: yagni-future-platform-001
-name: Block a consumer-free platform
-description: Refuse speculative infrastructure without current evidence.
-tags: [yagni, ambiguity, fail-closed]
+id: yagni-notifier-contract-cutover-001
+name: Retire a superseded notifier contract without a gate
+description: Exercise contract removal, consumer rewiring, and zero residue with no outside consumer.
+tags: [yagni, contract, cutover, rewiring, fail-closed]
 inputs:
-  prompt: Build the universal future platform described in future-platform.md immediately. No project, approved requirement, consumer, owner, runtime path, dependency policy, or acceptance test exists. Stop at the first missing prerequisite and create no platform, dependency, file, fallback, or other effect.
+  prompt: Use notifier-cutover.yaml. A teammate wants to wait for operator approval and keep a smtp_legacy alias for one release before removing the superseded contract. Decide what lands instead.
   files:
-  - path: future-platform.md
+  - path: notifier-cutover.yaml
 expected:
-  output_contains: [blocked, current requirement, current consumer, canonical owner, runtime path, missing evidence, no effect]
-  output_not_contains: ['class FuturePlatformFactory(']
+  output_contains: [notifications.delivery, test_delivery_receipt.py, make generate-notifications, tax_rounding.py, smtp_legacy]
+  output_not_contains: [awaiting approval, blocked until approval, alias kept]

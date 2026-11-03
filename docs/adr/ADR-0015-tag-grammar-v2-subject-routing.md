@@ -1,7 +1,8 @@
 # ADR-0015: Tag grammar v2 — subject routing and versioned managed projections
 
-Date: 2026-09-07 Status: Accepted Amends: ADR-0002 (validated tag namespaces) Rule:
-`rules/coordination/distribution-routing.md`
+Date: 2026-09-07 Status: Amended by ADR-0038 Amends: ADR-0002 (validated tag namespaces)
+Scope: `config/skills.json` and `src/agents_governance/catalog.py` own the tag grammar;
+AI Hub owns projection
 
 ## Context
 
@@ -100,6 +101,6 @@ content and use the existing publisher for the declared owned changes. A no-op l
 bytes and metadata intact. See
 [ADR-0022](ADR-0022-home-global-materialized-projection.md#amendment-2026-10-28-minimum-authenticated-publication-effects)
 and the owning
-[distribution rule](../../rules/coordination/distribution-routing.md).
+[distribution rule](https://github.com/datacosmos-br/agents/blob/f9161bfb/rules/coordination/distribution-routing.md).
 `ag-wibx.2.1.1` tracks source qualification; installed delivery remains separately
 owned by the consumer.

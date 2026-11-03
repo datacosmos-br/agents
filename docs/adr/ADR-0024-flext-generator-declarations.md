@@ -1,6 +1,7 @@
 # ADR-0024 — FLEXT generator declaration authority
 
-**Status:** Accepted 2026-09-20; authority routing amended 2026-10-20.
+**Status:** Amended by ADR-0038 **Date:** 2026-09-20 **Scope:** universal source and
+projection conduct, now `rules/workflow/canonical-commands.md` and `rules/law.md`
 
 ## Context
 

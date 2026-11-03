@@ -1,6 +1,6 @@
 # ADR-0017 — Behavioral conscience: primordial ethics, author responsibility, operator alignment
 
-**Status:** Accepted; amended 2026-11-02 **Date:** 2026-09-10 **Scope:** `rules/ethics`,
+**Status:** Superseded by ADR-0038 **Date:** 2026-09-10 **Scope:** `rules/ethics`,
 `rules/coordination`, `rules/architecture`, `rules/workflow/living-documentation.md`,
 `rules/workflow/structural-migrations.md`, `config/governance.json` **Evidence:**
 `docs/research/agent-instruction-design.md` (13 sources, WS-D)
@@ -65,10 +65,10 @@ project and call) and land at one owner each:
 - Unverified assertion is lying; false or invented blockers and blame are equally grave;
   rule simplification is abominable; acting against ethics and the project's interest is
   the most extreme violation:
-  [professional integrity](https://github.com/datacosmos-br/agents/blob/dev/rules/ethics/professional-integrity.md).
+  [professional integrity](https://github.com/datacosmos-br/agents/blob/f9161bfb/rules/ethics/professional-integrity.md).
 - Convergence of code, documents, rules, tracker records and ADRs, with no contradiction:
-  [living documentation](https://github.com/datacosmos-br/agents/blob/dev/rules/workflow/living-documentation.md).
+  [living documentation](https://github.com/datacosmos-br/agents/blob/f9161bfb/rules/workflow/living-documentation.md).
 - Complete, atomic, tool-driven rewiring:
-  [structural migrations](https://github.com/datacosmos-br/agents/blob/dev/rules/workflow/structural-migrations.md).
+  [structural migrations](https://github.com/datacosmos-br/agents/blob/f9161bfb/rules/workflow/structural-migrations.md).
 - Zero tolerance for non-delivery stays with
-  [full landing cycle](https://github.com/datacosmos-br/agents/blob/dev/rules/coordination/full-landing-cycle.md) item 7 (ADR-0021).
+  [full landing cycle](https://github.com/datacosmos-br/agents/blob/f9161bfb/rules/coordination/full-landing-cycle.md) item 7 (ADR-0021).

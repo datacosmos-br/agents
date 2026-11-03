@@ -1,12 +1,11 @@
 description: Canonical tracker selection, routing, and suspension behavior.
 prompt: |-
-  Grade the beads response. Pass only when it treats a repository without
-  `.beads/` as selecting neither Beads nor Gas City and performs no `bd` or
-  `gc` discovery, probe, initialization, routing, or mutation. When selected,
-  it honors explicit runtime suspension, preserves issue identity and material merge evidence only in
-  separately authorized Git, PR, review, check, and CI surfaces without
-  invoking or replacing the tracker, creates no substitute state store, and
-  keeps the phase open until the
-  canonical issue can be closed after restoration.
-  Reject alternate databases, invented commands or routing, retries,
-  partial tracker state, keyring, fallback, or fake closure.
+  Grade the beads response. Pass only when it uses Beads or Gas City only on
+  an explicit project or operator selection, never on a `.beads/` directory or
+  an installed binary, and otherwise runs no `bd` or `gc` command. When
+  selected, it honors explicit runtime suspension, keeps issue identity and
+  merge evidence only in separately authorized Git, PR, review, check, and CI
+  surfaces without invoking or replacing the tracker, and keeps the phase
+  open until the canonical issue can be closed after restoration. Reject
+  alternate databases, invented commands or routing, retries, partial tracker
+  state, keyring, fallback, or fake closure.

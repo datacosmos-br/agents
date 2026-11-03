@@ -2,67 +2,46 @@
 name: beads
 description: "beads, issue tracking, task workflow"
 metadata:
-  aihub.tags: '["activation:opt-in","decision:ADR-0008","detect:opt-in:beads","effective:2026-08-29","route:agent","subject:beads","usage:router"]'
+  aihub.tags: '["activation:opt-in","decision:ADR-0038","detect:opt-in:beads","effective:2026-11-03","route:agent","subject:beads","usage:router"]'
 ---
 
 # Beads
 
-Activate when the project or current operator explicitly selects an existing
-canonical Beads route and the request concerns its durable tracker. The route may
-be repository-local or an existing central store outside the checkout; `.beads/`
-presence alone selects nothing, and its absence does not revoke a selected central
-route. Without a selected route, perform no `bd` or `gc` discovery or probe and
-continue through the authorized non-tracker workflow. Resolve selection and
-lifecycle through `rules/workflow/beads-traceability.md`.
-
-Resolve Available versus Explicitly suspended from the active repository contract; never
-infer availability from a binary, port, or old instruction.
+Activate when the project or current operator explicitly selects an existing canonical
+Beads route and the request concerns its durable tracker. The route may be
+repository-local or a central store outside the checkout; `.beads/` alone selects
+nothing, and without a selected route no `bd` or `gc` command runs.
+`rules/workflow/beads-traceability.md` owns selection, the Available and Explicitly
+suspended modes and closure evidence.
 
 ## Available
 
-Preflight the declared storage scope, repository identity, canonical runtime, live
-endpoint, current issue revision, actor authority, operation scope, integration state,
-and non-derivable process credentials. Require `bd context --json` and `bd ping --json`
-through the selected route's declared activation and working directory to prove
-the intended store before a write. A project keeps its identity/database
-authority while inheriting a managed endpoint declared by its runtime owner; do not
-select an alternate endpoint or ledger by inference.
-
-Historical records produced while tracking was suspended are immutable input only for an
-operator-authorized reconciliation. Convert them to the canonical Beads import schema,
-prove the conversion with a stdin dry run, import through the supported owner, verify
-every resulting identity, and leave the source unmodified. Never hand-edit Dolt storage,
-retain an alternate store, overwrite newer live state, or use stale import
-authorization.
-
-Apply one authorized tracker operation against the current revision only after all
-checks pass. The first runtime, conflict, authorization, or persistence failure
-propagates unchanged. Do not retry, fall back, partially update, or translate a failure
-into local evidence. Verify the durable post-state before reporting it.
-
-## Mutation coupling delta (evidence 2026-09-11, plan `docs/plans/2026-09-11-flext-conformance-sweep.md`)
-
-- A bead must exist BEFORE the first repo-state mutation of its scope: file write, shell
-  effect on the tree, or history rewrite. Git is the mirror; Beads is the execution
-  truth — a change that exists only in git does not exist for the fleet's coordination
-  views.
-- Every newly discovered red (test failure, gate failure, runtime defect) gets a bead in
-  the SAME turn it is observed, carrying the failing site, the best current root-cause
-  hypothesis, and the observable trigger. Classifying a red as "pre-existing" without a
-  bead is abandonment of the root cause, not scoping.
-- Closure requires the four-evidence pattern: recorded state, git history, measured
-  reality, integrated code.
-
-At each delivery checkpoint, record the exact source revision, command, working
-directory, exit status, decisive output and next required proof on the selected
-available item. Source validation, reviewed integration and installed delivery remain
-distinct under `rules/workflow/phase-admission-protocol.md`
-and `rules/git/gitflow-branch-pr.md`; this procedure grants
-no commit, push, merge or runtime activation authority.
+- Before a write, `bd context --json` and `bd ping --json`, run through the route's
+  declared activation and working directory, prove the intended store. A project keeps
+  its identity and database while inheriting the endpoint its runtime owner declares;
+  no endpoint or ledger is chosen by inference.
+- One authorized operation applies against the current revision. Its first runtime,
+  conflict, authorization or persistence failure propagates unchanged, and the durable
+  post-state is read back before it is reported.
+- A bead exists before the first change in its scope, and every new red (test, gate or
+  runtime defect) gets a bead the same turn with its failing site, best root-cause
+  hypothesis and trigger.
+- A bug bead never has an epic parent and task and feature beads sit under few
+  canonical epics; a bead closes only as DONE, SUPERSEDED naming its survivor, or
+  OBSOLETE, each with evidence, never while a child is open or another live lane holds
+  it, and every duplicate scan is unbounded.
+- Records written while tracking was suspended enter only through an
+  operator-authorized import: converted to the canonical import schema, proven by a
+  stdin dry run, imported through the supported owner, every identity verified and the
+  source left unmodified. Dolt storage is never hand-edited, and newer live state is
+  never overwritten.
+- Each delivery checkpoint records the source revision, command, directory, exit,
+  decisive output and next required proof on the item; it grants no commit, push, merge
+  or runtime authority (`rules/git/gitflow-branch-pr.md`).
 
 ## Explicitly suspended
 
-Do not invoke the tracker, select an endpoint, start an embedded database, recreate
-issues elsewhere, or claim tracker state. Create no substitute tracker or ledger.
-Preserve evidence only in separately authorized Git, PR, review, check, and CI surfaces;
-keep tracker state and phase closure unresolved.
+No tracker command runs, no endpoint is selected and no embedded database starts; no
+issue, substitute tracker or ledger is created elsewhere. Evidence stays in separately
+authorized Git, PR, review, check and CI surfaces, and tracker state and phase closure
+stay unresolved.

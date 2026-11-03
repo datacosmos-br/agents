@@ -1,8 +1,6 @@
 # ADR-0021 — Operator universal rulings of 2026-09-15/16: runtime truth, no rushed work, full landing cycle
 
-**Status:** Accepted; placement attribution corrected 2026-10-23;
-failure-boundary supersession 2026-10-29; no-preexisting-debt ruling 2026-10-30;
-operator orders 2026-11-02
+**Status:** Superseded by ADR-0038
 **Date:** 2026-09-16 **Scope:**
 `rules/coordination/validate-on-change.md`, `rules/coordination/wip-persistence.md`,
 `rules/coordination/full-landing-cycle.md`, `rules/coordination/never-deduce.md`,
@@ -76,7 +74,7 @@ The execution owner retains sequenced acceptance and publication.
 The current operator explicitly rejects a mandatory new worktree, branch and
 environment for every manual task. The historical placement claim above cannot
 be used to impose it or prohibit the primary checkout. Follow the single
-placement owner, [`gascity`](../../rules/coordination/gascity.md), and the
+placement owner, [`gascity`](https://github.com/datacosmos-br/agents/blob/f9161bfb/rules/coordination/gascity.md), and the
 attribution correction in
 [ADR-0025](ADR-0025-manual-worktrees-during-orchestration-suspension.md).
 Runtime truth, WIP preservation and authorized integration remain mandatory;
@@ -87,19 +85,19 @@ none grants deletion, isolation or Git publication authority by implication.
 The latest operator instruction replaces the blanket no-catch/no-aggregation and
 global-escape requirements. Expected conditions use typed branches, not exceptions;
 defaults cover declared optional absence only. The single normative owner is
-[fail loud](https://github.com/datacosmos-br/agents/blob/dev/rules/runtime/fail-loud.md), including responsible translation,
+[fail loud](https://github.com/datacosmos-br/agents/blob/f9161bfb/rules/runtime/fail-loud.md), including responsible translation,
 causal metadata, independent outcomes, unexpected-error containment and cancellation.
-[Python guidance](https://github.com/datacosmos-br/agents/blob/dev/rules/python/no-hidden-errors.md) and
-[engineering core](https://github.com/datacosmos-br/agents/blob/dev/rules/architecture/engineering-core.md) consume that rule.
+[Python guidance](https://github.com/datacosmos-br/agents/blob/f9161bfb/rules/python/no-hidden-errors.md) and
+[engineering core](https://github.com/datacosmos-br/agents/blob/f9161bfb/rules/architecture/engineering-core.md) consume that rule.
 This changes authority, not runtime qualification or acceptance. Publication recovery
-still follows the [atomic-effects supersession](https://github.com/datacosmos-br/agents/blob/dev/rules/runtime/atomic-effects.md).
+still follows the [atomic-effects supersession](https://github.com/datacosmos-br/agents/blob/f9161bfb/rules/runtime/atomic-effects.md).
 
 ## No-preexisting-debt ruling — 2026-10-30
 
 The operator ruled on 2026-10-30 that no failure is pre-existing: every failure surfaced
 while working is owned and fixed at its root, without bypass, fallback, or rollback. The
 single normative owner is
-[no preexisting debt](https://github.com/datacosmos-br/agents/blob/dev/rules/ethics/no-preexisting-debt.md),
+[no preexisting debt](https://github.com/datacosmos-br/agents/blob/f9161bfb/rules/ethics/no-preexisting-debt.md),
 approved by this ADR as a universal (route both) companion ruling.
 
 ## Operator orders — 2026-11-02
@@ -116,32 +114,32 @@ provider) companions of the rulings above:
 
 1. No claim without executed proof in the same turn (command, working directory, exit
    status, decisive output):
-   [validate on change](https://github.com/datacosmos-br/agents/blob/dev/rules/coordination/validate-on-change.md), point 6.
+   [validate on change](https://github.com/datacosmos-br/agents/blob/f9161bfb/rules/coordination/validate-on-change.md), point 6.
 2. Every pattern fix becomes one automatic engine rule, one law at a time at fleet
    scale, with exact detection, zero manual follow-up and a root-agnostic engine:
-   [structural migrations](https://github.com/datacosmos-br/agents/blob/dev/rules/workflow/structural-migrations.md),
+   [structural migrations](https://github.com/datacosmos-br/agents/blob/f9161bfb/rules/workflow/structural-migrations.md),
    referenced by
-   [mass rewrite discipline](https://github.com/datacosmos-br/agents/blob/dev/rules/workflow/mass-rewrite-discipline.md).
+   [mass rewrite discipline](https://github.com/datacosmos-br/agents/blob/f9161bfb/rules/workflow/mass-rewrite-discipline.md).
 3. A single change is validated through the owner's scoped, parametrized command, never
    a global run:
-   [canonical commands](https://github.com/datacosmos-br/agents/blob/dev/rules/workflow/canonical-commands.md),
+   [canonical commands](https://github.com/datacosmos-br/agents/blob/f9161bfb/rules/workflow/canonical-commands.md),
    "Scoped validation of one change". The bounded `flext-0029c` route is unchanged and
    no longer the only place a direct owner command is lawful for scoped validation.
 4. Generated patterns come only from the generator driven by config rules, never
    hand-written, not even in generator format:
-   [generators, not projections](https://github.com/datacosmos-br/agents/blob/dev/rules/workflow/generators-not-projections.md).
+   [generators, not projections](https://github.com/datacosmos-br/agents/blob/f9161bfb/rules/workflow/generators-not-projections.md).
 5. Family placement, imports, names, MRO, facades and import order are foundational and
    declaration families carry zero behavior:
-   [internal clean architecture](https://github.com/datacosmos-br/agents/blob/dev/rules/architecture/internal-clean-architecture.md).
+   [internal clean architecture](https://github.com/datacosmos-br/agents/blob/f9161bfb/rules/architecture/internal-clean-architecture.md).
    The FLEXT-specific detail stays with the project-owned, branch-matched `flext-law`
    and its ADRs (ADR-0014); this repository declares no copy.
 6. Zero tolerance for incomplete, non-functional or theoretical delivery; sessions plan
    only sufficient, executable steps that end in effective, complete-cycle deliveries;
    regressions, pattern escapes, fallbacks and compatibility layers are graver still:
-   [full landing cycle](https://github.com/datacosmos-br/agents/blob/dev/rules/coordination/full-landing-cycle.md), item 7.
+   [full landing cycle](https://github.com/datacosmos-br/agents/blob/f9161bfb/rules/coordination/full-landing-cycle.md), item 7.
 7. Exterminating rule exceptions is martial law; only axioms declared once in the tooling
    SSOT and enforced by tooling survive:
-   [rule exceptions](https://github.com/datacosmos-br/agents/blob/dev/rules/architecture/rule-exceptions.md)
+   [rule exceptions](https://github.com/datacosmos-br/agents/blob/f9161bfb/rules/architecture/rule-exceptions.md)
    (new rule: no existing owner declared exception policy generically, and
    `engineering-core.md` has no token headroom; scattered prohibitions in
    `scanner-closure.md` and `strict-typed-quality.md` stay mechanism-specific).

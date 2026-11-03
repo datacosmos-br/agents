@@ -22,12 +22,10 @@ the owner tip moves.
 
 ## G1 — discovery (read-only, start immediately)
 
-Automation surface order (research 2026-09-11):
+Automation surface order:
 
-1. **Graph refresh first** (`rules/workflow/graph-truth-freshness.md`, operated per the
-   `crg` skill freshness gate): `code-review-graph status --json --repo <root>` →
-   `update --brief` (or `build` when update exits 1 or after rewrites) — never reason
-   from a graph whose built commit differs from the target HEAD.
+1. **Graph refresh first** (the `crg` skill freshness gate): never reason from a graph
+   whose built commit differs from the target HEAD.
 2. **Facade census at the owner tooling** (cheaper and stricter than grep):
    `flext-infra refactor census --repository-root <repo> --output-format json` and
    `flext-infra refactor namespace-enforce --repository-root <repo> --namespace c|m|p|u ...`
@@ -59,7 +57,7 @@ consumer-facing mutation waits here.
 
 ## G3 — owner lawship
 
-Fix rule ambiguity at the validator owner and republish; do not burn 1,300 renames on an
+Fix rule ambiguity at the validator owner and republish; never mass-rename to satisfy an
 over-strict rule.
 
 ## G4 — per-repo conformance (dependency order)

@@ -3,7 +3,7 @@ name: Converge delivery timeout policy on one authority
 description: Exercise single authority, projection convergence, and ownership mapping.
 tags: [ssot, authority, ownership, projections, drift, convergence, happy-path]
 inputs:
-  prompt: Apply the complete search-first -> YAGNI -> optional SOLID -> SSOT -> simplify-inline flow to policy-project, using DRY only for confirmed structural rewiring. Make the declared delivery-policy config the only writable authority, remove every competing default/default-on-error path and copied mutable value, preserve the first explicit failure with zero effects, and define real runtime, two-run generation fixed point, residue search, and native-gate proof.
+  prompt: Make the declared delivery-policy config the only writable authority in policy-project. Delete every competing default, default-on-error path and copied mutable value, keep the explicit unknown-channel failure, and name the real CLI run, the second generation that changes nothing, and the native gate that prove it.
   files:
   - path: policy-project/AGENTS.md
   - path: policy-project/docs/architecture.md
@@ -15,5 +15,5 @@ inputs:
   - path: policy-project/src/delivery/cli.py
   - path: policy-project/tests/test_delivery.py
 expected:
-  output_contains: [config/delivery-policy.toml, sole writable authority, render_policy.py, generated_policy.py, EMAIL_TIMEOUT_SECONDS, fixed point, python -m delivery.cli email, pytest, zero effects]
+  output_contains: [config/delivery-policy.toml, sole writable authority, render_policy.py, generated_policy.py, EMAIL_TIMEOUT_SECONDS, python -m delivery.cli email, pytest]
   output_not_contains: [hand-edit generated_policy.py, keep both defaults]

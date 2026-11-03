@@ -3,51 +3,21 @@ name: verification-loop
 description: "completion evidence, runtime verification, native gates"
 license: MIT
 metadata:
-  aihub.tags: '["decision:ADR-0008","effective:2026-09-03","usage:router"]'
-  version: 1.3.0
+  aihub.tags: '["decision:ADR-0038","effective:2026-11-03","usage:router"]'
+  version: 2.0.0
 ---
 
 # Verification Loop
 
-Review claims about PR threads and checks are gated evidence too: use `pr-sheriff` with
-AI Hub forge resolution and direct `gh` evidence before repeating them as status.
-Activate after behavior changes and before any pass, resolution, readiness, or
-completion claim. Read the `complete procedure` (skill file), prove the smallest real
-runtime first, and then run the repository-owned gates for the affected scope. Later
-edits invalidate earlier evidence where their scopes overlap. Production readiness
-adopts every defect in the blast radius, including pre-existing ones; read
-`rules/workflow/production-readiness.md` (rule file) before any completion claim over a
-red or unresolved base. Tree-wide mechanical rewrites, enforcer/codemod apply cycles,
-and bulk migrations additionally obey `rules/workflow/mass-rewrite-discipline.md` (rule
-file): bracket the mass with test evidence on both sides, carry scoped commit
-boundaries, inventory what the automation applied versus reverted, prove no string
-literal was corrupting, and report progress per violation class.
+Before claiming that a change works, is done or is ready, prove it on the smallest real
+runtime (`rules/law.md` law 9), then run the repository's declared gates for the touched
+scope (`rules/workflow/canonical-commands.md`).
 
-For an increment with a PR, integration proof includes unresolved-thread triage, green
-required checks, a no-ff merge commit on the integration branch, rerun of affected gates
-on the merged checkout, and measured runtime reconciliation. Never treat “mergeable”, an
-open PR, or local-only success as landed. When the repository owns the deployed runtime,
-completion also requires installing or reconciling that runtime from the merged
-integration SHA and proving the public surface there.
-
-A completion boundary is also a phase boundary: no next phase starts while this loop is
-red or incomplete, and unverified work is never pushed to a working branch or PR —
-`rules/workflow/phase-admission-protocol.md` (rule file) Laws 0 and 4 own both.
-
-## Investigation protocol delta (evidence 2026-09-11)
-
-- Apply `workflow/runtime-is-reality` (rule file), section "Causal diagnosis", before
-  patching. Hypotheses guide diagnostic observations only, never implementation trials.
-  Preserve decisive artifacts through the existing evidence owner, not flooded stdout.
-- Establish the governing canonical rules before selecting a correction. Validate each
-  repair immediately through the original failing operation and applicable admitted
-  tests. A failure returns to causal diagnosis before another edit, never speculative
-  patch stacking or an invented exception to obtain green.
-- An experiment that fails silently and yields nothing is NOT evidence. Never relabel
-  poorly-instrumented work as "out of scope" or "pre-existing"; re-instrument until the
-  diff speaks, or file the defect with the hypothesis and the trigger so the next
-  session continues from a real artifact.
-- Command deadlines and profiling follow `rules/workflow/command-deadline.md`.
-  Per-test limits come from the selected test owner's configuration. Correct excessive
-  work at its measured owner; do not raise limits, freeze them in this skill or move
-  provisioning into test bodies.
+- Each claim carries law 1 evidence from this turn; a run that executed nothing is not a
+  pass.
+- The first failure is the result: fix its cause and rerun from the runtime proof; law 6
+  owns the one red-base exception.
+- A later edit voids earlier evidence for the scope it touches.
+- A hook's refusal is a failing gate and is never bypassed (law 8).
+- Done means landed under law 10 and `rules/git/gitflow-branch-pr.md`; local green or an
+  open pull request is in progress.

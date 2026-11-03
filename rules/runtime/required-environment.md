@@ -1,41 +1,18 @@
 ---
-description: Validation of genuinely non-derivable process-environment inputs.
+description: Required environment values, service credentials and the operator's keyring
 metadata:
-  aihub.tags: '["decision:ADR-0008","effective:2026-08-29","route:both"]'
+  aihub.tags: '["decision:ADR-0038","effective:2026-11-03","route:both"]'
 ---
 
-# Required environment values are exact
+# Required environment
 
-First resolve every deterministic default from its typed SSOT. Do not require an
-environment variable, setting, parameter, or call argument for a value that the owner
-can derive and validate without operator input. Only a current external value with no
-canonical derivation is required.
-
-Read each genuinely required environment variable once at the typed boundary from the
-current process environment. A variable that is absent, empty, whitespace-only,
-conflicting with another owner, contains an unexpanded placeholder, violates its schema,
-or is unauthorized raises immediately before effects.
-
-Do not load a missing value from a file, shell profile, OS keyring, service, alternate
-name, inherited compatibility alias, prompt, or error-triggered default. Do not silently
-trim, coerce, repair, or substitute it. Never print secret values, derived fingerprints,
-or full environments in failure evidence.
-
-## One credential, one variable, every consumer
-
-A credential that authenticates one external service is read from a single variable
-shared by every project and every tool that needs it. A tool-scoped alias of the same
-credential is a prohibited compatibility alias, even when the tool documents it: the
-tool is configured to read the shared variable instead.
-
-The consequence of an absent credential is the tool's own declared failure, not a
-degraded mode. A tool that silently continues unauthenticated — with a lower quota,
-reduced verification, or unsigned artifacts — is failing quietly; require the variable
-at its boundary so the workflow stops instead.
-
-## Encrypted credential store
-
-A service's credentials come from its encrypted credential store; the host rule
-`encrypted credential store` (rule file) owns that mechanism.
-
-See also: `strict-execution.md` (rule file) — aggregate parent policy.
+Only values no typed owner can derive are required. Each is read once from the process
+environment at the typed boundary; an absent, blank, conflicting, unexpanded, invalid or
+unauthorized value fails before any effect, never trimmed, repaired, substituted or
+defaulted, and evidence never shows a secret, fingerprint or whole environment. An
+external service has one credential variable for every project and tool; a missing
+credential is the tool's declared failure, never a degraded mode. A service gets
+credentials only from its encrypted store (`LoadCredentialEncrypted=` under systemd), a
+unit missing it fails at startup until the unit is fixed, and no session variable such
+as `XDG_RUNTIME_DIR` is exported statically. No application code, configuration, test or
+document uses the operator's OS keyring; agents touch only entries the operator names.

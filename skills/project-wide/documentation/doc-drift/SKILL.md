@@ -18,9 +18,9 @@ stops with zero writes and no inferred replacement.
 2. Inventory commands, flags, paths, schemas, versions, and generated files.
 3. Verify each claim against owning code or a pinned upstream source.
 4. Remove extinct contracts and update all consumers, fixtures, and evals as one atomic
-   cutover. Its internal order belongs to `engineering-core` and `runtime-is-reality`:
-   align documentation before implementation, then change tests only after the
-   implemented real behavior is proven. Atomic publication does not reverse that order.
+   cutover. Documentation aligns before implementation, and tests change only after
+   the real behavior is proven (`rules/law.md` items 9 and 12); atomic publication
+   does not reverse that order.
 5. Change generated output only through its owner and prove fixed point.
 6. Run native documentation, validation, and contradiction gates.
 

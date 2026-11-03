@@ -10,11 +10,11 @@ against the selected project before use.
 - Domain aliases are PEP 695 `type`/`Annotated` declarations in `t`; reuse existing
   contracts such as `t.JsonPayload`. Native containers retain item types, mutability
   and fixed/variadic tuple arity; a generic synonym is not a domain contract.
-- For FLEXT, the 2026-10-28 generic collection-wrapper retirement is owned by
+- For FLEXT, generic collection wrappers retire under
   [ADR-028 Decision 7](https://github.com/flext-sh/flext/blob/0.12.0-dev/docs/architecture/adr/028-facade-boundary-orchestrators-declarative-enforcement.md#decision-7)
-  and memory `operator-ruling-2026-10-28-generic-typing-wrapper-cutover`.
-  Close consumers, rules, templates and docs, preserving validation metadata.
-  Genuine domain generics and external constructs such as PEP 747 `TypeForm` remain.
+  (tracker key `operator-ruling-2026-10-28-generic-typing-wrapper-cutover`): close
+  consumers, rules, templates and docs, preserving validation metadata. Genuine domain
+  generics and external constructs such as PEP 747 `TypeForm` remain.
 - Reuse the public typed surface (`NonEmptyStr`, numeric constraints, `JsonValue`,
   `JsonMapping`) before adding aliases. No `Any`, `object`, bare containers or
   unparameterized generic fields. A declaration may remain generic, but admission
@@ -92,9 +92,8 @@ strict Python/JSON behavior are verified separately.
 ## 5. Removal catalog — what must not survive in code
 
 The [removal reference](removals.md) keeps the detailed form, replacement and
-versioned evidence in one table. The required boundary law remains
-`rules/python/pydantic.md`; this discovery index grants no new exception or automatic
-rewrite authority.
+versioned evidence in one table. The boundary law stays in `rules/python.md`; this
+index grants no exception or automatic rewrite authority.
 
 ## 6. Evidence and gates
 

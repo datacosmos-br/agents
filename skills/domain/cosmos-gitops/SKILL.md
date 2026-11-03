@@ -32,8 +32,7 @@ charts package+receipt → R2 GitOps import+render → Argo CD `dc-dese` only �
 `main`/`dc-prod`/`dc-control` receive no effect without operator order.
 
 - Canonical surface: root `make setup|deps|gen|check|test|fix|fmt` only; never invented
-  selectors or raw linters; test verbs per `rules/workflow/canonical-commands.md`
-  (section "Test verbs").
+  selectors or raw linters; test verbs per `rules/workflow/canonical-commands.md`.
 - Receipts live in the project tracker; read the current release/import receipts from
   the tracker at activation (commit, package version, OCI digest); version drift between
   charts/GitOps is a blocker, never an accepted residual.
@@ -42,9 +41,7 @@ charts package+receipt → R2 GitOps import+render → Argo CD `dc-dese` only �
 - Land one PR per repository, merge `--no-ff` into `develop`, bump root submodule
   pointers in a separate commit, rerun affected gates on the merged SHA; delete
   branch/worktree only after integration evidence.
-- Tracker hierarchy follows the canonical-epics rule under `rules/coordination/` (rule
-  file): bug/hotfix items stay outside epics; tasks attach to the few canonical epics.
-  Keep item status truthful; deferred needs a reason and a date.
+- Bug and hotfix items stay outside epics; tasks attach to the few canonical epics.
 
 ## Environment channel automation ladder (ADR-144)
 

@@ -1,6 +1,6 @@
 # ADR-0014: Capability intake is provenance-governed and deduplicated
 
-Date: 2026-09-07 Status: Accepted Rule: `rules/workflow/capability-intake.md`
+Date: 2026-09-07 Status: Superseded by ADR-0038 Rule: `rules/workflow/capability-intake.md`
 
 ## Context
 

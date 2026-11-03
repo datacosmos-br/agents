@@ -1,6 +1,6 @@
 # ADR-0035 — Ecosystem systems registry: one linked fleet, registration and liveness
 
-- **Status:** Accepted
+- **Status:** Superseded by ADR-0038
 - **Date:** 2026-10-03
 - **Tracking:** operator ruling 2026-10-03; rule `rules/communication/ecosystem-systems-registry.md`
 

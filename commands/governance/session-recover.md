@@ -7,12 +7,10 @@ metadata:
   aihub.tags: '["decision:ADR-0030","effective:2026-09-27","route:project"]'
 ---
 
-Recover the context for `$ARGUMENTS` in order, and stop at step 9 to present
-the cursor before any effect. Every step records what it found; a step whose
-surface is absent says so explicitly. Compose with
-`rules/coordination/session-startup-census.md`: it owns the census steps
-(tip, PRs, worktrees, beads, declaration); this command owns the recorded
-surfaces, the environment truth, and the cursor presentation.
+Recover the context for `$ARGUMENTS` in order and present the cursor (last step)
+before any effect. Each step records what it found, or that its surface is absent.
+`rules/coordination/inter-session-mail.md` owns adoption and lane declaration; this
+command owns the recorded surfaces, the environment truth and the cursor.
 
 1. Read the newest handoff/resume document in the repository's handoff surface
    (`docs/handoffs/`, latest date first) and the cursor plan it names. State
@@ -20,12 +18,10 @@ surfaces, the environment truth, and the cursor presentation.
 2. Resolve the explicitly selected tracker route and its activation through
    `rules/workflow/beads-traceability.md`; confirm its native context identity
    before mutation. Local `.beads/` presence neither selects nor revokes a route.
-3. Run the startup census exactly as the census rule declares (integration
-   tip, open PRs, worktrees and branches, beads under the abandonment test of
-   rule `bead-branch-pr-cadence` §2).
-4. Resolve the selected channel through `rules/coordination/inter-session-mail.md`
-   and scan its coordinator inbox newest-first for directives,
-   claims by other sessions, and critiques that concern the mandate.
+3. Census the integration tip, open PRs, worktrees and branches, and beads under
+   the abandonment test of `rules/coordination/inter-session-mail.md`.
+4. Scan the coordinator's `gc mail` inbox newest-first for directives, claims by
+   other sessions, and critiques that concern the mandate.
 5. Environment preflight: the session shell's own cgroup leaf
    (`.service` vs `.scope`), inherited unit markers, and whether the
    worktree's generated artifacts exist for an honest battery.

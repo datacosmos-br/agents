@@ -13,15 +13,12 @@ Use the execution context selected by the current invocation, including an autho
 primary/shared checkout; this procedure adds no isolation prerequisite.
 
 - Serialize each shared Git index, merge or publication through its current owner;
-  bounded file owners collaborate in the same authorized checkout. Apply the canonical
-  fix-forward invariant's prohibition on cleanliness, stability and exclusive-writer
-  preconditions; do not turn ownership coordination into an exclusive-tree requirement.
-- Apply the canonical abandonment test in
-  `rules/coordination/bead-branch-pr-cadence.md`, section 2, using the threshold
-  loaded from the governance configuration and activity
-  attributable to the lane. Resume the existing `task_id`; supply the ready decision,
-  current evidence, next command and acceptance condition. Do not create another
-  timer, duplicate tree owner or infer abandonment from mtime alone.
+  bounded file owners collaborate in the same authorized checkout, and no cleanliness,
+  stability or exclusive-writer precondition applies (`rules/law.md` item 11).
+- Apply the abandonment test of `rules/coordination/inter-session-mail.md` to activity
+  attributable to the lane. Resume the existing `task_id` with the ready decision,
+  current evidence, next command and acceptance condition; never add a timer or tree
+  owner, or infer abandonment from mtime alone.
 - CI workspace validation follows gitlinks: gate every submodule projection before
   changing its root pointer. Land submodules first, then update pointers in a separate
   root commit.
@@ -62,8 +59,8 @@ and parallel actors.
 - Close a bead only with evidence scoped to the exact gate state at closure: a partially
   failing pipeline is never cited as green; name which part is green and file the
   failing remainder as its own bead.
-- Integration merges follow `full landing cycle` (rule file), phase-end closure: an
-  administrative merge may bypass a missing review, never a red, missing or pending CI.
+- Integration merges follow `rules/law.md` item 10: an administrative merge may bypass
+  a missing review, never a red, missing or pending CI.
   After every merge, rerun the affected gates on the merged SHA before the next wave and
   record which gates were rerun.
 - Bulk edits over many files need a declared owner (Make verb or generator), per-file

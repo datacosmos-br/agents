@@ -1,6 +1,6 @@
 # ADR-0026 — Native lane retirement; the projection-landing law is removed
 
-**Status:** Accepted **Date:** 2026-09-24
+**Status:** Superseded by ADR-0038 **Date:** 2026-09-24
 
 ## Context
 

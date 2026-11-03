@@ -5,5 +5,4 @@ prompt: |-
   owners, provides a material validation-boundary correction, and proposes an
   observable raw failure-path test. Reject advice that assumes a frontend
   framework, catches/normalizes rejection, retries/falls back, publishes
-  partial output, or silences the type checker. Require zero-effect and
-  residue proof.
+  partial output, or silences the type checker.

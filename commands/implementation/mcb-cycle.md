@@ -19,8 +19,7 @@ its invocation does not grant isolation, Git publication or retirement authority
 1. **Startup**: pull the integration branch with drift restored; search open PRs and
    remote branches for pre-existing work on the bead; claim the bead with a
    lane-note comment; mail the coordinator the bead, branch, and (later) PR.
-2. **Placement**: use the canonical placement rule for the existing authorized
-   checkout and branch; `shared-venv-guard` owns the actual runtime root.
+2. **Placement**: `rules/git/gitflow-branch-pr.md`; runtime root: `rules/storage.md`.
 3. **Battery**: `make gen check`, `CI=Y make check`, `CI=N make check`, `make test`,
    `make rust WHAT=test` (add `MATCH=$ARGUMENTS` filter when given). Each gate
    isolated, exit code captured; read the logs, never trust a bare rc.
