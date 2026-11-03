@@ -3,55 +3,26 @@ name: make-check
 description: "native gates, root make verbs, runtime-first validation"
 license: MIT
 metadata:
-  aihub.tags: '["decision:ADR-0008","effective:2026-09-10","usage:router"]'
-  version: 2.5.0
+  aihub.tags: '["decision:ADR-0038","effective:2026-11-03","usage:router"]'
 ---
 
-# Make Check
+# Make check
 
-Activate when selecting or executing a repository's validation workflow. Do not start
-provisioning for an ordinary writing request.
+Activate when selecting or running a repository's validation; an ordinary writing request
+starts no provisioning.
 
-For `flext-0029c` only, apply the bounded direct-public-Infra route in canonical
-`rules/workflow/canonical-commands.md` instead of the Make-first steps below.
-That rule owns repeated native QA and final Make integration; it does not authorize
-runtime effects during a documentation-only slice.
+Read the repository instructions and root Makefile, then run its declared verbs directly,
+never an underlying tool in their place. `rules/workflow/canonical-commands.md` owns the
+verbs, deadlines, profiling, locks and test selection.
 
-1. Read the authorized scope, repository instructions and root Makefile. Resolve the
-   existing environment and command owners before invoking an operation.
-2. Use `make setup` when the selected physical environment is absent or its native
-   provenance check requires reconciliation and no other process owns it. Reuse a
-   valid environment; do not reinstall it before every gate. Setup consumes declared
-   locks; upgrades use their separate owner.
-3. Exercise changed behavior through its public runtime, then run `make check` and
-   the smallest distinct public verbs required for additional gates. Select test
-   verbs through the canonical test contract; a focused check does not replace it.
-   Inspect the mutation population before running a repair or formatter: when it
-   includes tests, schedule that invocation after the slice's real runtime proof,
-   under the engineering rule's test-last sequence.
-4. Apply bundle rule `workflow/canonical-commands` for command deadlines, profiling,
-   operation ownership, failure outcomes and test selection. Invoke each required
-   operation explicitly; never obtain checks or generation as hidden effects of
-   formatting, repair, setup, upgrades or tests. Gate placement follows
-   `workflow/gate-budget`. Resolve both under the bundle's canonical `rules/`.
-5. Record command, cwd, exit, decisive output, scope and cache accounting. A focused
-   result proves only its named scope.
+- `make setup` runs only when the environment is absent or fails its own check; a valid
+  environment is reused, and lock changes belong to the upgrade verb.
+- The changed behavior is shown through its real entry point first; then `make check`,
+  any further declared gate verb and the test verb run, each invoked explicitly and never
+  obtained as a side effect of another.
+- Each run records command, directory, exit and decisive output; a focused run proves only
+  its own scope.
 
-## Generation and source stability
-
-For changed generation inputs, use the repository's declared fixed-point proof and
-retain the exact source and artifact identities. A divergent second generation is a
-producer defect. Coordinate a stable input window, correct its owner within the
-authorized scope and rerun the invalidated proof. Do not kill another actor's lock
-owner, remove its lock or restore an older tree.
-
-## Structural work
-
-Compose `$crg` when the selected host provides graph analysis and the change needs
-structural impact evidence. The repository's domain router owns its codemod and
-generation sequence. Graph candidates do not establish dead code without consumer
-verification.
-
-An excluded code repair does not become authorized because a documentation gate exposes
-it. Preserve the failure, finish independent authorized corrections and report source,
-integration and installed delivery separately.
+Compose `$crg` when the change needs structural impact; a graph hit is not dead code until
+its consumers are checked. A failure outside the authorized scope is reported with its
+evidence, never repaired in passing.

@@ -2,12 +2,10 @@
 
 ## Status
 
-Accepted — 2026-09-05
+Amended by ADR-0038 (accepted 2026-09-05; amended 2026-10-25 and 2026-10-31).
 
-Amended — 2026-10-25: native capability reuse, minimal rule execution and project scope.
-
-Amended — 2026-10-31: universal Python layer owner and retirement of this repository's
-overlay.
+Scope: the global contract is law 7 of `rules/law.md`; rule authoring is the `codemod`
+skill.
 
 ## Context
 
@@ -39,7 +37,7 @@ receive the migration law of the projects they import.
    consumer census, retaining ongoing invariant enforcement. Catalog-owned measurements
    record the actual rule count.
 6. The global contract is
-   [structural migrations](../../rules/workflow/structural-migrations.md).
+   [structural migrations](https://github.com/datacosmos-br/agents/blob/f9161bfb/rules/workflow/structural-migrations.md).
    Repository catalogs own verb names; project law owns adapter placement and facade
    shape. FLEXT-specific tool names, paths and limits are not universal rules.
 7. The flext-infra catalog is the universal layer for Python codemod rules. This

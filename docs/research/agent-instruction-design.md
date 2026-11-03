@@ -17,7 +17,7 @@ instructions, executable verification loops, and externalized state across compa
 This dossier grounds ADR-0017..0020 decisions; each section maps findings to the
 artifact that owns them here.
 
-## 1. Authority resolution (→ engineering-core, operator-precedence)
+## 1. Authority resolution (→ `rules/law.md`)
 
 - Instructions are ranked in an explicit chain of command; a later instruction at the
   same level supersedes an earlier one; quoted text, tool outputs, and multimodal data

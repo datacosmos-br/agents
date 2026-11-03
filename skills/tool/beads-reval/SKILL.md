@@ -11,8 +11,8 @@ Use for an explicitly requested revalidation of registered issues, including clo
 issues. Do not activate for an unrelated implementation or translation.
 
 Read [the procedure](references/procedure.md) completely before changing tracker state.
-Follow the existing coordination/beads-verification and coordination/plan-topic-monopoly
-rules for evidence and the active intent.
+Evidence follows `rules/workflow/beads-traceability.md`; the active intent follows
+`rules/law.md`.
 
 Beads owns execution state and the resumption cursor. Exported inventories are read-only
 evidence, never a second status ledger. Use only the selected available tracker;

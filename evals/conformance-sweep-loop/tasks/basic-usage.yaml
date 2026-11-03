@@ -7,12 +7,12 @@ inputs:
     Run a conformance sweep loop over the measured findings. Use a class-wave
     repair map, declaration-first scoping and the declared git-dep bump owner.
     Inventory each owner and its complete consumer closure, reuse existing
-    low-level logic, execute through native Make verbs, prove the fixed point
-    and revalidate each complete slice before its receipt. Inspect upstream
-    before a dependency bump and verify the installed artifact and interpreter.
-    Tests and scripts remain in scope. CRG is not selected in this scenario.
+    low-level logic, execute through native Make verbs, and validate each slice
+    with its gate command and exit before the next. Inspect upstream before a
+    dependency bump and verify the installed artifact and interpreter. Tests and
+    scripts remain in scope. CRG is not selected in this scenario.
   files:
   - path: scenario.yaml
 expected:
-  output_contains: [inventory, class, owner, wave, revalidate, receipt, git-dep bump, declaration-first, scope, Make, fixed point]
+  output_contains: [inventory, class, owner, wave, git-dep bump, declaration-first, scope, Make, exit]
   output_not_contains: [I will exclude tests, I will run ast-grep directly, I will delete the cache]

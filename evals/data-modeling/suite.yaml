@@ -1,6 +1,15 @@
-description: Data boundary, mutation, and serialization analysis.
+description: Composed models with each field at one owner, fewer models, and mirrors that follow the hierarchy.
 prompt: |-
-  Grade the data-modeling response. Pass only when it traces the supplied model across validation,
-  mutation, and serialization boundaries, distinguishes evidence from
-  inference, and reports a concrete owner-level risk. Reject language-library
-  assumptions and generic data-modeling advice.
+  Grade according to the scenario. For the crm-project composition, pass only when the
+  response merges CustomerAddress and SupplierAddress into one address part, moves the
+  fields Customer and Supplier share into one base so each field is declared once at
+  its owner, deletes Client as a second model of the customer domain and rewires
+  export.py to Customer, keeps validation in api.py, regenerates protocols.py with
+  make gen so the protocol mirror follows the same hierarchy, and names the
+  make runtime run showing consumers read and write the same data, then a second
+  make gen that changes nothing. For the loyalty field, pass only when it rejects
+  CustomerV2, the Client alias and the hand-written protocol and declares
+  loyalty_tier once, on Customer. For the estate note, pass only for a plain family
+  summary with no software analysis. Reject repeated inherited fields, a second model
+  for one domain, a generic catch-all model, a parallel schema owner, a hand-edited
+  projection or a flattened mirror.

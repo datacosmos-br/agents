@@ -38,9 +38,6 @@ waves:
   - order: 3
     classes: [over-cap-module]
     revalidate: make check
-loop_receipt:
-  required_at: each validated slice
-  fields: [wave, class, owner, before, after, gate command, exit code]
 rejects:
   - hardcoded class list
   - unowned repair

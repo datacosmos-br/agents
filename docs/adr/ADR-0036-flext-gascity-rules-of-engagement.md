@@ -1,6 +1,8 @@
 # ADR-0036 — Project law and selected orchestration
 
-**Status:** Accepted 2026-10-04; authority routing amended 2026-10-20.
+**Status:** Amended by ADR-0038 **Date:** 2026-10-04 **Scope:** global execution
+subjects, now `rules/law.md`, `rules/git/gitflow-branch-pr.md`,
+`rules/workflow/beads-traceability.md` and the `gc-city` skill
 
 ## Context
 

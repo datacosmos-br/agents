@@ -11,8 +11,7 @@ is held in Beads; this directory holds only pointers and rulings.
    window.
 2. The owning beads named in `handoff.md`. Run `bd show <id>` in each rig
    through `direnv exec <rig-home>`.
-3. `docs/rules/session-execution-rules-20260927.md` (R-S1..) and
-   `rules/coordination/heavy-gate-serialization.md`.
+3. `rules/law.md` and `rules/workflow/canonical-commands.md`.
 
 ## Pointers
 

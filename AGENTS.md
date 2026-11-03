@@ -1,40 +1,11 @@
 <!-- AIHUB-INVIOLABLE-LAW-PRELUDE v1 -->
-# AIHUB Inviolable Law — Strict Prelude
+# AIHUB Law — Prelude
 
-This is the compact entry to the canonical rules below, not a second rule body.
-
-1. Evidence: verify every fact, cause, state or result at its source before
-   stating it; label anything unverified: `rules/ethics/professional-integrity.md`.
-2. Prove the causal owner before any repair: reproduce, research, debug and trace;
-   never patch a guess or invent a rule: `rules/architecture/engineering-core.md`.
-   Every problem requires evidence-backed debugging and tracing before repair;
-   hypotheses permit investigation only, never speculative implementation.
-   Corrections follow verified canonical rules, never invented exceptions; validate
-   each adjustment immediately and return to diagnosis if it fails.
-   Exterminate superseded, excessive, wrong or duplicated code; Git preserves
-   recovery: `rules/runtime/zero-residue.md`.
-3. Selected tracker and unavailable capabilities: `rules/workflow/beads-traceability.md`.
-4. Research before effects and no guessed APIs: `rules/coordination/never-deduce.md`.
-5. Reuse the declared owner: `rules/workflow/declared-tool-ownership.md`.
-6. Continue within authorized scope: `rules/coordination/operator-alignment.md`.
-7. Integration and closure: `rules/git/gitflow-branch-pr.md`.
-8. Preserve and integrate WIP: `rules/coordination/fix-forward-collaboration.md`.
-9. Resolve non-derivable uncertainty: `rules/coordination/never-deduce.md`.
-10. Authority and recency: `rules/coordination/operator-precedence.md`.
-11. Workspace placement: `rules/coordination/gascity.md`; storage: `rules/storage.md`.
-12. Phase exit evidence: `rules/workflow/phase-admission-protocol.md`.
-13. Commands and test selection: `rules/workflow/canonical-commands.md`; deadlines:
-    `rules/workflow/command-deadline.md`.
-14. Results: a native failure, warning or missing required proof remains RED.
-    Zero test execution is acceptable only as an integrity-checked incremental cache
-    hit with complete deselection accounting, never as tests passed. Availability
-    prerequisites follow `rules/testing/observable-runtime.md`.
-15. Runtime first: real execution works before any test or gate, and no fix
-    breaks it: `rules/workflow/runtime-is-reality.md`.
-16. Agreed strategy: never changed without asking; defects are fixed inside it
-    at once: `rules/coordination/operator-precedence.md`.
-17. Finish: always go to the end over the whole declared scope; never abandon near
-    the end, under any circumstance: `rules/coordination/full-landing-cycle.md`.
+Read `rules/law.md` before any work. It is the whole universal law, one page of
+outcomes, ranked below only the operator's own words and above every other rule,
+skill, ADR and document. Every other rule adds one tool or project fact and never
+restates a law. When two paths are correct, take the shorter: less code, the native
+tool called directly, the cause deleted rather than covered.
 <!-- /AIHUB-INVIOLABLE-LAW-PRELUDE -->
 
 # AGENTS.md — agents
@@ -45,29 +16,14 @@ This is the compact entry to the canonical rules below, not a second rule body.
 `agents-governance` owns provider-neutral rules, skills, commands, agent profiles and
 semantic evaluations. The supported boundary is
 `from agents_governance import GovernanceBundle`; `GovernanceBundle.load()` validates
-one immutable catalog. Its public inventory owns counts and identities.
-
-AI Hub owns provider adaptation, publication, withdrawal and runtime delivery.
-Repository-local tools do not establish another delivery authority. This local
-section describes the governance repository; it is not universal project instruction.
+one immutable catalog. AI Hub owns provider adaptation, publication and delivery.
 
 Read [README.md](README.md), [rules index](docs/rules-index.md),
 [ADR index](docs/adr/README.md) and [change validation](VALIDATE_ON_CHANGE.md).
-For Pydantic work, compose the [boundary rule](rules/python/pydantic.md) and
-[development procedure](skills/technology/pydantic-development/references/procedure.md)
-with the project's selected, branch-matched ADR owners.
-Use the public root Make verbs. `make audit` validates the bundle; `make docs` checks
-links; `make waza` verifies the semantic suites. The command rule owns their execution
-and failure contract. A successful structural evaluation is not native agent proof.
+`make audit` validates the bundle, `make docs` checks links and `make waza` verifies the
+semantic suites.
 
-Keep mandatory obligations in `rules/`, conditional procedures in `skills/`, invocation
-grammar in `commands/` and discovery metadata in their existing catalogs. Compose
-ancestors by reference; do not copy their bodies into child artifacts.
-
-Resolve current integration and workspace authorization before effects. Host
-coordination in this declared ecosystem follows
-`rules/communication/ecosystem-systems-registry.md` and
-`rules/coordination/inter-session-mail.md`. Resolve the available channel through its
-owner; suspension never silently cancels the cooperation obligation.
-Source validation, reviewed integration and installed delivery are separate receipts.
+Obligations live in `rules/`, conditional procedures in `skills/`, invocation grammar in
+`commands/`. A child artifact references its ancestor and never copies it. Coordinate
+through `rules/coordination/inter-session-mail.md`.
 <!-- AIHUB-AGENTS-SCOPE-LOCAL-END -->

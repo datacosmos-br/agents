@@ -64,32 +64,16 @@ state.
 
 ### Minimum-effect publication
 
-Before activation, apply `rules/runtime/atomic-effects.md` and the project's
-owning projection ADR. Resolve enabled surfaces and owned selectors from declarations.
-Native adapters preserve format and validate consumers; the existing planner and
-publisher compose the complete effects for each destination.
-
-Reuse typed declaration collections and each authenticated capture/parse within the
-operation; retain source/target identity rechecks. Supported entry or value changes
-belong to policy data, not mirrored protocol/model properties or provider dispatch.
-Generated artifacts must already meet their declared strict contracts; repair their
-producer rather than appending a fixer or changing a projection.
-
-Capture existing target bytes, ownership and metadata without treating them as source
-policy. Stage only the necessary owned field, entry, block or artifact changes.
-Validate each declared consumer separately and preserve foreign/manual content outside
-the changed spans. Disabled capabilities must remain disabled across every producer.
-
-Retirement requires authenticated current ownership as well as declared scope; a path,
-glob, version mismatch or missing marker is insufficient. Conflicting edits, ambiguous
-ownership, invalid syntax and changed source/target identities fail before publication.
-Reconcile forward through the existing owner, without a competing publisher or parser.
-Apply the cooperative barrier, authenticated effects and fix-forward recovery contract
-of `rules/runtime/atomic-effects.md`. Its 2026-10-29 operator supersession retires the
-earlier 2026-10-28 compensation permission. Preserve published effects and reconcile
-drift at the existing owner; retain the first causal failure and partial-effect
-evidence. Discard only owned unpublished staging and release owned locks. Recovery
-does not authorize additional restarts or reverse external runtime effects.
+Activation goes through the existing planner and publisher under the project's
+projection ADR, and each effect is complete or absent (`rules/law.md` item 8). Only
+owned spans change; foreign or manual content is kept, each declared consumer is
+validated, value changes stay policy data, generated artifacts conform at their
+producer, and disabled capabilities stay disabled. Retirement needs proven current
+ownership, not a path, glob, version or marker. Conflicting edits, ambiguous ownership,
+invalid syntax and changed identities fail before publication. Recovery keeps published
+effects and the first failure, reconciles drift at the existing owner, removes only
+this run's unpublished staging and locks, and never adds restarts or reverses external
+runtime effects.
 
 ## 4. Readiness evidence (activation ≠ readiness)
 

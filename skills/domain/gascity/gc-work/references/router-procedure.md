@@ -60,20 +60,17 @@ gc bd ready --label role:worker --limit 10          # Filter by label
 gc bd show <id>                                     # Show bead details
 ```
 
-Routine reads stay bounded (rule `beads verification`): `--all` without `--flat` renders
-the whole tree and is denied by the bash guards. A conclusive inventory — including the
-pre-creation search of the city store — uses the explicit flat unbounded form on this
-surface, `gc bd list --all --flat --limit 0 --status <status>`, and records the command.
+Routine reads stay bounded (`rules/workflow/beads-traceability.md`): `--all` without
+`--flat` renders the whole tree and is denied by the bash guards. A conclusive inventory,
+including the city store's pre-creation search, uses
+`gc bd list --all --flat --limit 0 --status <status>` and records the command.
 
-`gc ready` — the federated ready frontier across every store the city uses — ships in the
-1.4.2 fork line; the 1.4.1 binary rejects it as an unknown command (exit 1). Probe with
-`gc ready --help` before relying on it. Its flag surface is narrower than
-bd's: `--assignee`, `--unassigned`, `--metadata-field`, `--exclude-type`,
-`--exclude-label`, `--sort oldest|newest`, `--limit`, `--status`, `--json` — not the
-label, parent, type or priority selectors `gc bd ready` forwards. On a city that serves
-a coordination class from its own `[storage]` binding, `gc bd ready` (and
-`gc bd list --ready`) is refused with exit 1 and that deployment must run a build
-carrying `gc ready`; on ≤1.4.1 non-split cities `gc bd ready` stays canonical.
+`gc ready` is the federated ready frontier across every store the city uses;
+`gc ready --help` on the installed binary owns whether it exists and which flags it
+takes, which are not the selectors `gc bd ready` forwards. A city that serves a
+coordination class from its own `[storage]` binding refuses `gc bd ready` and
+`gc bd list --ready` (exit 1) and uses `gc ready`; elsewhere `gc bd ready` stays
+canonical.
 
 ### Claiming and updating
 

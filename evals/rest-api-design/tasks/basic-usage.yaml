@@ -8,9 +8,8 @@ inputs:
     resource URL, query parameters, stable pagination cursor, success envelope,
     authentication and ownership behavior, rate-limit response, and concrete
     400, 403, 422, and 429 error semantics without changing the owned naming convention.
-    Include the complete preflight and prove that authorization or dependency
-    failure publishes no partial response or effect.
+    State that an authorization or dependency failure publishes no partial response.
   files:
   - path: orders-api.yaml
 expected:
-  output_contains: [GET /api/v1/orders, next_cursor, 403 Forbidden, 429 Too Many Requests, zero effects]
+  output_contains: [GET /api/v1/orders, next_cursor, 403 Forbidden, 429 Too Many Requests]

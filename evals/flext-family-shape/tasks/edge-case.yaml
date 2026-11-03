@@ -5,11 +5,10 @@ tags: [flext, family, shape, edge-case]
 inputs:
   prompt: >-
     An internal_flext module proposes a sixth private family and a second top-level
-    class. Its native semantic preview also reports a changed source epoch. Explain
-    the rejected layout and the fail-forward disposition without restoring files or
-    publishing a candidate from the stale preview.
+    class, and a concurrent session changed the same module while you were reading
+    it. Explain the rejected layout and how the change proceeds.
   files:
   - path: scenario.yaml
 expected:
-  output_contains: [five, families, one, class, reject, source, stale, candidate, abort]
-  output_not_contains: ["normalized failure"]
+  output_contains: [five, families, one, class, reject, rope, concurrent]
+  output_not_contains: ["normalized failure", older snapshot restored]

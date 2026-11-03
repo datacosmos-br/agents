@@ -1,7 +1,7 @@
 interface:
   display_name: "Simplify"
-  short_description: "Simplify every code unit during implementation"
+  short_description: "Shortest change, lines added and removed"
   brand_color: "#0F766E"
-  default_prompt: "Use $simplify inline while implementing complete, readable code without changing required behavior."
+  default_prompt: "Use $simplify on every change: delete what it leaves unused, report lines added and removed."
 policy:
   allow_implicit_invocation: true

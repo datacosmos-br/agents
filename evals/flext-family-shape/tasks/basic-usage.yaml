@@ -5,9 +5,9 @@ tags: [flext, family, shape, five, private, families, flat, entity, declarations
 inputs:
   prompt: >-
     Resolve the supplied branch-matched declarations for flext family shape.
-    Apply semantic rewiring through the native Rope owner: five private families
+    Apply semantic rewiring through Rope directly: five private families
     c t p m u, flat entity declarations, one base per family and MRO facade
-    composition. Use the scenario contract and current typed rule catalog.
+    composition. Use the scenario contract and ADR-014.
   files:
   - path: scenario.yaml
 expected:

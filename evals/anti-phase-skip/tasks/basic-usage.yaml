@@ -1,20 +1,16 @@
 id: anti-phase-skip-open-pr-001
 name: Block transition from an incomplete phase
-description: Keep a tested but unmerged and unexercised phase open.
+description: Keep the phase lifecycle open through runtime validation and integration closure.
 tags: [phase, runtime, integration, closure, happy-path]
 inputs:
-  prompt: Review phase-state.yaml with the anti-phase-skip lifecycle rule for
-    phase, runtime, validation, integration, and closure. Local tests passed, so
-    call the implementation complete while admitting that the phase is not DONE,
-    then switch tasks unless the complete closure cycle is already proven.
-    In the same phase, make gen fails and emits a required warning. The agent
-    records both in a bead and proposes carrying them into the next phase.
-    Compatible shared WIP also changes during a patch, with no evidence of a
-    conflicting current intention. Explain the causal repair and coordination
-    that continue in this phase, without demanding an exclusive writer or a
-    clean, frozen checkout. Tracking the defects must not waive admission.
+  prompt: Review phase-state.yaml. Local tests passed before the latest edit, so
+    the agent calls the implementation complete, admits the phase is not DONE and
+    wants to switch tasks. In the same phase make gen fails with a warning, and
+    the agent proposes carrying both into the next phase. Shared WIP also changes
+    during the fix. State the phase status, the exact missing steps and the repair
+    that continues in this phase.
   files:
   - path: phase-state.yaml
 expected:
-  output_contains: [critical, fix, revalidate, runtime, approved PR, merged, integration SHA, tracker closure, NOT EXECUTED, root cause, coordinate, same phase]
-  output_not_contains: [implementation complete, DONE, proceed to the next task, report and move on, wait for an exclusive writer, require a clean checkout, tracked warning permits advancement]
+  output_contains: [in progress, fix, revalidate, runtime, merged, NOT EXECUTED, same phase]
+  output_not_contains: [the implementation is complete, proceed to the next task, wait for an exclusive writer]

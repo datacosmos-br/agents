@@ -1,32 +1,25 @@
 ---
 name: data-modeling
-description: "data models, serialization boundaries, validation design"
+description: "data models, model composition, field ownership"
 metadata:
-  aihub.tags: '["decision:ADR-0008","effective:2026-08-29","supersedes:skill:data-modeling-analysis","usage:on-demand"]'
+  aihub.tags: '["decision:ADR-0038","effective:2026-11-03","supersedes:skill:data-modeling-analysis","usage:on-demand"]'
 ---
 
-# Data Modeling Analysis
+# Data Modeling
 
-Analyze how a codebase represents, validates, mutates, serializes, and evolves data.
-Apply the project's language and framework contracts rather than assuming one type
-library.
+Models compose by inheritance and composition. Each field is declared once, at the model
+that owns its meaning; a model that extends another never repeats an inherited field,
+shared shapes become one base or one composed part, and one domain has one model family.
+The result has fewer models, no duplicated data and no repeated domain, and anything
+derived from the models (a protocol mirror, a schema, a form) follows the same hierarchy.
 
-Load the complete schemas, types, serializers, consumers, versions, and runtime evidence
-before issuing a correction. A missing or conflicting boundary stops at the first defect
-with no rewrite, inferred library, generic model, or partial map.
+1. Read the models, their consumers and their serialized shapes through the project's
+   native tools, and group the fields that repeat across models.
+2. Move each repeated group to the one base or part that owns it, delete the copies, and
+   rewire every consumer in the same change.
+3. Keep validation at the external boundary, with the project's typed owner.
+4. Prove that the real consumers still read and write the same data, then that a second
+   generation of any derived surface changes nothing.
 
-1. Locate schemas, domain types, transport types, persistence mappings, and state
-   containers.
-2. Map each external boundary to its validation and normalization owner.
-3. Identify ambiguous optionality, unbounded maps, duplicated representations, unsafe
-   coercion, and mutation whose ownership is unclear.
-4. Trace serialization and deserialization, including unknown fields, versioning,
-   defaults, and failure behavior.
-5. Compare persisted, in-memory, and public representations and identify any lossy or
-   implicit conversion.
-6. Report the data flow, invariants, concrete risks, evidence paths, and the smallest
-   owner-first correction. Do not mutate code unless requested.
-
-Prefer explicit project-native types and boundary validation. Immutability is a tool for
-visible ownership, not a blanket rewrite requirement. Never recommend unsafe
-deserialization or a parallel schema owner.
+Apply it first where the shape is violated, then across the codebase. Never add a
+parallel schema owner, a generic catch-all model or an unsafe deserializer.

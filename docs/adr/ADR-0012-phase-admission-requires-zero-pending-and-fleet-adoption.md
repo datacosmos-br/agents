@@ -1,6 +1,6 @@
 # ADR-0012: Phase admission requires zero pending and fleet adoption
 
-Date: 2026-09-06 Status: Accepted; reconciled 2026-10-26
+Date: 2026-09-06 Status: Superseded by ADR-0038
 Rule: `rules/workflow/phase-admission-protocol.md`
 
 ## Context

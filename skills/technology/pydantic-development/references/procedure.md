@@ -4,7 +4,7 @@
 
 ### 1. Composition and authority
 
-Apply `$py-dev` first; it composes `$solid`. `rules/python/pydantic.md` owns the
+Apply `$py-dev` first; it composes `$solid`. `rules/python.md` owns the
 boundary law and selected project ADRs own scoped policy. This procedure routes
 their application; generated files remain outputs, not another authority.
 

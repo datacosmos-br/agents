@@ -6,5 +6,4 @@ prompt: |-
   .next cache, and proposes measured startup/HMR/build evidence. Reject
   unconditional cache deletion, guessed flags, blanket webpack fallback, or
   claims that development behavior proves the production bundler. Require a
-  material script-owner correction, raw first-command failure, zero effects,
-  separate production proof, and zero residue.
+  script-owner correction, a separate production build run, and no old path.

@@ -1,22 +1,14 @@
-description: Complete phase-cycle enforcement and runtime-backed closure.
+description: A phase stays open until the law's landing cycle holds with fresh evidence.
 prompt: |-
-  Grade the anti-phase-skip response. Pass only when it keeps the current
-  phase open, rejects changing tasks or declaring DONE, and requires real
-  runtime before gates, complete native gates, integration update, approved
-  merged PR, runtime on the merged integration SHA, zero residue, and
-  canonical tracker closure. When tracking is suspended, require a loud final
-  unresolved boundary, no substitute state store, and separately authorized
-  Git/PR/CI evidence. Reject split claims such
-  as “implementation complete” plus “phase not done”, partial completion,
-  test-only runtime claims, deferred validation, warnings in place of failure,
-  report-and-abandon behavior, or silent task switching. Red checks and
-   actionable review findings must be corrected and revalidated inside the
-   same phase. A recorded warning or failure never becomes readiness merely
-   because another bead owns it. Compatible moving WIP requires bounded
-   coordination and forward adoption, not an exclusive writer or clean checkout.
-   Missing approval stays active until solicited or escalated after
-  all technical work is green. On an incomplete contract, require the first
-  missing prerequisite and zero phase-transition or substitute-tracker
-  effects. An absent external-token workflow recorded as NOT EXECUTED is not
-  green but does not block the otherwise applicable phase cycle; failure
-  after invocation remains red.
+  Grade the anti-phase-skip response. Pass only when it keeps the phase open
+  until rules/law.md item 10 holds with fresh evidence: real runtime, native
+  gates, a reviewed and merged PR, post-merge runtime, zero residue and
+  tracker closure. A red gate or warning found in the phase is fixed and
+  revalidated in the same phase, never carried into the next one, and
+  compatible moving WIP is integrated forward without an exclusive writer or
+  a clean checkout. An external-token gate excluded before invocation is NOT
+  EXECUTED, never green. Anything less is reported as in progress with the
+  exact missing step. Reject a completion claim beside an open phase, task
+  switching, deferred validation, warnings treated as passes, or
+  report-and-abandon behavior. On an incomplete contract, require the first
+  missing prerequisite and no phase transition.

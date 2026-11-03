@@ -4,37 +4,12 @@ description: Preserve and integrate compatible changes from another lane.
 tags: [concurrent-work, integration-adoption, fix-forward, happy-path]
 inputs:
   prompt: >-
-    Handle concurrent work and anti-rollback coordination. Agent A owns a
-    dirty CI workflow and test; Agent B can work in parallel on disjoint skills
-    and docs, but later needs the same workflow. An unmanifested provider output
-    outside the authorized repository also has semantic changes and no adoption
-    rule. An exact operator-authorized rename also appears reversed after an
-    interruption, with no evidence of a competing intention or actor. Define
-    sync checkpoints, adopt both repository contributions through the integration
-    lane, continue the rename after fresh preflight without asking again, and
-    distinguish what must be preserved for operator adjudication instead of
-    promoted to canonical input. The managed city tracker is available: require
-    one shared HQ root and linked local beads for both executing rigs, explain
-    their distinct evidence ownership, and coordinate producer-SHA adoption and
-    combined revalidation through that graph rather than through mail alone.
-    The checkout branch, HEAD, and index then change concurrently before a
-    planned commit. Continue adopting compatible work without asking the
-    operator to choose a writing session. Explain how command results and
-    fresh branch/index reads prevent a queued merge after a failed commit.
-    Other agents will keep changing the checkout indefinitely; a clean or
-    globally stable Git state will never be available. A native gate executes
-    successfully but returns a null receipt because its admission rejects dirty
-    state. Continue with scoped evidence and fix the admission owner without
-    asking for cleanup, a paused writer, a cleanup commit or a new checkout,
-    and without claiming that a null receipt passed.
-    The same publisher then commits one destination and fails at another.
-    Preserve the first exception and committed effects, repair forward from the
-    durable receipt, and clean only its own unpublished staging. Two planned
-    changes also target one file: compose both intentions against the original
-    snapshot before one write; do not retain only the last plan or refresh the
-    snapshot to defeat contention.
+    Handle concurrent work and anti-rollback coordination for scenario.yaml.
+    Agent B now needs the CI workflow that Agent A owns and is still editing,
+    dev has advanced, and other agents keep changing the checkout. Bring both
+    contributions to dev.
   files:
   - path: scenario.yaml
 expected:
-  output_contains: [ownership, reread, current, preserve, adopt, integration, combined, revalidate, Git, manifest, authorized, fresh preflight, continue, shared root, local bead, producer SHA, scoped evidence]
-  output_not_contains: [stash, reset, force-push, discard, rollback code, promote external, substitute tracker, replacement ledger, parallel root, mail as ledger, severe conflict, ask again, another actor]
+  output_contains: [adopt, merge --no-ff, revalidate, combined]
+  output_not_contains: [git stash push, git reset --hard origin, git push --force]

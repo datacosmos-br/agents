@@ -10,9 +10,9 @@ metadata:
 # Session preflight
 
 Resolve each requested repository from `$ARGUMENTS`; otherwise use the active project.
-Follow `rules/coordination/session-startup-census.md` and the current operator's
-placement and scope authorization. This preflight inspects and reports; claims,
-adoption, lane creation and announcements are explicit subsequent effects.
+Follow `rules/coordination/inter-session-mail.md` and the operator's current scope.
+This preflight inspects and reports; claims, adoption, lane creation and announcements
+are later, explicit effects.
 
 1. Read the selected tracker route from its owner and prove the intended identity
    through its declared context command when that capability is selected. Installation
@@ -30,18 +30,13 @@ adoption, lane creation and announcements are explicit subsequent effects.
    first coordinated effect; do not resume suspended orchestration.
 5. Identify unpublished owned commits and incomplete prior units. Reconcile them through
    their existing lane and tracker before accumulating another independent unit.
-6. Identify the active approved plan and every affected instruction, documentation,
-   skill, rule and command owner under `rules/architecture/engineering-core.md`.
-   Report unresolved alignment before implementation; this inspection does not
-   itself perform or certify those owner updates.
-7. For an authorized transaction, identify its existing publication owner,
-   cooperative reader barrier and authenticated partial-effect/recovery receipts under
-   `rules/runtime/atomic-effects.md`. Report missing enforcement without inventing
-   a substitute transaction. Apply that rule's 2026-10-29 supersession of the earlier
-   compensation permission when inspecting incomplete publications. Preserve the
-   specification under
-   `rules/coordination/operator-precedence.md`; a faster validation route must retain
-   its declared population and acceptance evidence.
+6. Identify the active approved plan and every instruction, document, skill, rule and
+   command the planned change would contradict (`rules/law.md` item 12); report each
+   before implementation.
+7. For an authorized transaction, identify the owner that makes its effect complete or
+   absent (`rules/law.md` item 8) and report a missing one instead of inventing a
+   substitute. The agreed specification stands (`rules/law.md`); a faster validation
+   route keeps its declared population and acceptance evidence.
 
 Run only discovered public commands under `rules/workflow/canonical-commands.md`.
 Return one evidence-bearing result per inspection, its scope and the first causal

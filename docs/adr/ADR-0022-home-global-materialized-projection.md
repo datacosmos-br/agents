@@ -1,8 +1,8 @@
 # ADR-0022 — Home global `~/.agents` como projeção materializada versionada
 
-**Status:** Accepted (emendado 2026-09-18 — errata G0) **Date:** 2026-09-18 **Scope:**
-`~/.agents` (superfície de leitura global) · gestão: **AI Hub** ·
-`docs/plans/20260918-handoff-repasse-consolidado.md`
+**Status:** Amended by ADR-0038 **Date:** 2026-09-18 **Scope:** `~/.agents`, the global
+read surface managed by AI Hub (`docs/plans/20260918-handoff-repasse-consolidado.md`);
+publication effects follow laws 8 and 11 of `rules/law.md`
 
 ## Context
 
@@ -105,8 +105,8 @@ ownership; a glob, filename, missing marker or version mismatch alone grants no
 authority to delete. Conflicting ownership or changed inputs fail before effects.
 
 The owning rules are
-[`atomic-effects`](../../rules/runtime/atomic-effects.md) and
-[`distribution-routing`](../../rules/coordination/distribution-routing.md).
+[`atomic-effects`](https://github.com/datacosmos-br/agents/blob/f9161bfb/rules/runtime/atomic-effects.md) and
+[`distribution-routing`](https://github.com/datacosmos-br/agents/blob/f9161bfb/rules/coordination/distribution-routing.md).
 The conditional recovery procedure is
 [`runtime-heal`](../../skills/domain/runtime-heal/references/procedure.md).
 Provider eligibility and concrete native selectors remain consumer policy; they are

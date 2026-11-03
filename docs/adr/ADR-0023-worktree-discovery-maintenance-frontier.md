@@ -1,6 +1,6 @@
 # ADR-0023 — Fronteira única de descoberta e manutenção de worktrees (wip ↔ executor)
 
-**Status:** Accepted **Date:** 2026-09-19 **Scope:**
+**Status:** Superseded by ADR-0038 **Date:** 2026-09-19 **Scope:**
 `rules/coordination/wip-persistence.md` · consumidores: todo projeto governado ·
 owner de placement: Gas City · programa canônico: o programa wip do projeto (doc-10)
 

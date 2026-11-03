@@ -2,9 +2,9 @@ description: Flext family part shape law.
 prompt: |-
   Grade the response against the branch-matched family owner. Read the project-owned law and apply the supplied scenario contract for private
   families, entity declarations, family bases and MRO facade composition.
-  Resolve rule resources through the typed catalog and execute structural changes
-  through the shared native Rope/candidate publication cycle. Reject historical
-  resource guesses, compatibility aliases, manual generated-file edits and restoration
-  of published or shared work. Source drift fails the current candidate without
-  inventing a successful rewire. A third-party fork keeps its upstream architecture
-  even when its dependency graph contains flext-core.
+  Use Rope's move, rename and restructure directly, with no candidate or
+  preview layer, and validate the producer with every consumer through the
+  real entry point; concurrent work is kept and Git is the recovery. Reject
+  historical resource guesses, compatibility aliases, manual generated-file
+  edits and restored snapshots. A third-party fork keeps its upstream
+  architecture even when its dependency graph contains flext-core.

@@ -109,20 +109,12 @@ The development toolchain is supported on Linux x64, the platform declared in
 `.mise.toml` and resolved in `mise.lock`. The published Python sdist and wheel remain
 platform-neutral and are validated as installed artifacts by `make runtime`.
 
-The test verbs, their testmon contract, and where each runs are declared in
+The test verbs' Testmon contract is declared in
 [`rules/workflow/canonical-commands.md`](rules/workflow/canonical-commands.md). CI runs
-`make ci`, whose root Makefile composition holds only fast external gates and
-`make test`, as [`rules/workflow/gate-budget.md`](rules/workflow/gate-budget.md)
-requires; `make check` and `make test-full` run only locally. The Waza gate proves the
-projected suite schema, every skill/evaluation reference, the exact spec threshold, and
-token ceilings; model execution belongs to a selected AI Hub runtime and is not claimed
-by this package.
-
-Workspace placement has one owner:
-[`rules/coordination/gascity.md`](rules/coordination/gascity.md). Project procedures
-reference that contract rather than deriving a universal isolation requirement from
-a campaign's selected checkout. The correction and historical attribution boundary
-are recorded in [ADR-0025](docs/adr/ADR-0025-manual-worktrees-during-orchestration-suspension.md).
+`make ci`, which holds only fast external gates and `make test`; `make check` and
+`make test-full` run only locally. The Waza gate proves the projected suite schema,
+every skill/evaluation reference, the exact spec threshold, and token ceilings; model
+execution belongs to a selected AI Hub runtime and is not claimed by this package.
 
 `make check` and `make ci` validate the immutable package without requiring the host's
 AI Hub runtime. Under [ADR-0010](docs/adr/ADR-0010-optional-host-runtime-boundary.md),
@@ -143,19 +135,9 @@ API and compares its paths, bytes, modes and digests with the source snapshot.
 `make static` includes every Python resource selected from that inventory, with SDK
 dependencies owned by the development dependency group.
 
-For causal artifact-runtime diagnosis, `ARTIFACT_PROFILE=1 make check` (or the
-existing `ARTIFACT_PROFILE=1 make runtime`) enables cProfile on that same operation.
-It changes no
-gate, artifact, dependency, deadline or validation scope. Captures use unique,
-retained directories under the existing external `ARTIFACT_STATE_ROOT`: the
-parent profile measures coordination and child waits after its bootstrap; each
-isolated artifact's public-load profile starts before the package import. Make
-stage timestamps precede command activation, while profile starts and elapsed
-command times are emitted separately with parent/child capture paths. Native termination checkpoints
-preserve the original signal action and failures; missing captures remain missing
-evidence. This binding does not add a profiling verb or claim source validation
-is installed delivery. The docs-first and runtime-before-tests work remains with
-`ag-wibx`; the active Bead records command outcomes.
+`ARTIFACT_PROFILE=1 make check` (or `make runtime`) adds cProfile captures under
+`ARTIFACT_STATE_ROOT` without changing any gate, artifact, dependency, deadline or
+validation scope; a missing capture is missing evidence.
 
 For continuation, use `plan-handoff` and `strategic-compact`: retain links to the
 current owner/source revision, refs, measured gates, freshness and next action in the
@@ -178,7 +160,7 @@ configuration; AI Hub alone distributes the complete skill resources.
 
 Reconciliation transfers valid pending work to Beads and maintained documentation before
 retiring one fully accounted plan at a time; it does not implement historical proposals.
-The [tracker rule](rules/workflow/beads-traceability.md) owns AI Hub's required automatic,
-versioned, own-project `TODO.md` view, never an independent checklist or automatic Git
-publication. This governance contract does not claim that the automation is implemented
-or activated; real runtime and delivery receipts remain with AI Hub.
+The [tracker rule](rules/workflow/beads-traceability.md) makes `TODO.md` AI Hub's
+generated view of open issues, never an input. This governance contract does not claim
+that the automation is implemented or activated; real runtime and delivery receipts
+remain with AI Hub.

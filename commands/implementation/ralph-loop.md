@@ -25,8 +25,8 @@ the program or asking for authorization already given.
 3. Implement through that owner, rewire every affected consumer and remove the
    superseded path. Update documentation and generated artifacts through their owners.
 4. Exercise public behavior, then apply `$make-check` and the repository's required
-   gates. Command deadlines and profiling are owned by `rules/workflow/command-deadline.md`; test selection and result classification have
-   one owner: `rules/workflow/canonical-commands.md`.
+   gates. Deadlines, profiling, test selection and result classification follow
+   `rules/workflow/canonical-commands.md`.
 5. Review and integrate the validated candidate through the current Git/PR contract.
    Record source validation, required review, CI, integrated SHA and applicable runtime
    delivery separately. Keep an unavailable required proof open without a substitute

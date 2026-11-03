@@ -1,7 +1,8 @@
 # ADR-0031 — Contradiction resolution and test-service ownership
 
-**Status:** Accepted 2026-09-29; consolidated 2026-10-20; ordering amendment
-2026-10-23, tracked by ag-wibx. Historical tracking: ag-3l2q.
+**Status:** Amended by ADR-0038 **Date:** 2026-09-29 **Scope:** a deleted owner in the
+table now resolves to `law`, `runtime/required-environment`, `git/gitflow-branch-pr`,
+`storage`, `testing/observable-runtime` or `workflow/canonical-commands`
 
 ## Context
 

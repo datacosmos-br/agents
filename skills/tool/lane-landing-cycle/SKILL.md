@@ -8,24 +8,21 @@ metadata:
 # Lane landing cycle
 
 The verified mechanical cycle for one work unit on a governed repository lane,
-from authorized placement to any authorized retirement. Composes with the rules `full-landing-cycle`,
-`beads-canonical-epics`, and `bead-branch-pr-cadence`.
+from authorized placement to any authorized retirement, under `rules/law.md` item 10.
 
 ## 1. Lane and bead first
 
-Resolve placement through `rules/coordination/gascity.md`, environment identity
-through `shared-venv-guard` and WIP preservation through `fix-forward-collaboration`.
-This skill does not create isolation or grant checkout-changing authority.
-Resolve the selected tracker and available coordination channel through
-`rules/workflow/beads-traceability.md` and `rules/coordination/inter-session-mail.md`.
-Declare the Bead/branch/PR relationship through those owners; no Gas City mail
-command or append-notes loop is selected merely by loading this skill.
+Placement follows `rules/git/gitflow-branch-pr.md`, the environment `rules/storage.md`,
+and WIP is kept (`rules/law.md` item 11). The tracker, the coordination channel and the
+Bead/branch/PR declaration follow `rules/workflow/beads-traceability.md` and
+`rules/coordination/inter-session-mail.md`; loading this skill selects no mail command
+or append-notes loop.
 
 ## 2. The gate, in order
 
 First complete documented alignment, implementation and real public-runtime proof
-under `engineering-core` and `runtime-is-reality`. Only then enter this validation
-sequence or change regression tests; validation is not permission for test-first work.
+(`rules/law.md` items 9 and 12). Only then enter this validation sequence or change
+regression tests; validation is not permission for test-first work.
 
 Discover public verbs, contexts, population and evidence requirements from the selected
 repository's root Make catalog. `rules/workflow/canonical-commands.md` owns operation
@@ -61,8 +58,7 @@ evidence blocks the destructive retirement only, never authorizes forced removal
 ## 5. Judgment calls this cycle encodes
 
 - Before starting: research branches, PRs, and beads for prior art; adopt the
-  survivor, never re-implement (dedupe mandate,
-  `bead-branch-pr-cadence`).
+  survivor, never re-implement (`rules/coordination/inter-session-mail.md`).
 - Environmental timeouts require the profile and measured-cause repair prescribed by
   `rules/workflow/canonical-commands.md`; host load never authorizes an unchanged rerun.
 - Historical cycle reports are evidence for their recorded revision and scope, not

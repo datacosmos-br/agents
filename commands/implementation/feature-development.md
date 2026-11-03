@@ -12,12 +12,9 @@ metadata:
 Treat `$ARGUMENTS` as the approved feature contract. Refuse implementation when the
 requested outcome, consumer, boundary, or acceptance behavior is genuinely ambiguous.
 
-The approved specification is binding under
-[operator precedence](../../rules/coordination/operator-precedence.md). Before any
-deviation, present the exact difference, evidence, reason, impact and alternatives
-and obtain the operator's explicit decision. Reducing code never reduces acceptance.
-An approved requirement is supported by the specification; YAGNI never authorizes
-dropping it.
+The approved specification is binding ([the law](../../rules/law.md)): any deviation,
+including dropping an approved requirement, needs the operator's explicit decision, and
+less code never means less acceptance.
 
 When the input is an implementation plan, consume its approved `plan-review` result. A
 blocker or unresolved material decision keeps implementation closed; do not silently
@@ -28,16 +25,13 @@ complete the plan while coding.
 2. Search for equivalent or reusable behavior. Apply YAGNI to remove unsupported scope,
    elect one SSOT, and change design boundaries only where the surviving requirement
    proves they are necessary.
-3. Reconcile the owning ADRs, documentation, selected plan, tracker and canonical
-   skills/rules/commands before code. For projection or deployment, resolve enabled
-   capabilities, owned selectors and native formats from declarations; apply
-   [atomic-effects](../../rules/runtime/atomic-effects.md) through the existing
-   planner and publisher. Require a minimum per-target diff, preserved foreign
-   content, authenticated withdrawal and a byte-identical no-op. Provider-specific
-   decisions remain in the consuming project's policy.
-   Reuse typed declaration collections and authenticated captures/parsed facts.
-   Generated output must already conform; repair its producer rather than appending
-   a post-generation fixer or editing a projection.
+3. Before code, correct the owning ADRs, documentation, selected plan, tracker and
+   canonical skills, rules and commands the change would contradict. A projection or
+   deployment goes through the existing planner and publisher: each effect is complete
+   or absent, foreign content is kept and a second run changes nothing
+   ([the law](../../rules/law.md) items 5 and 8). Provider-specific decisions stay in
+   the consuming project's policy. Generated output conforms at its producer, never
+   through a post-generation fixer or an edited projection.
 4. Establish the expected public behavior from the approved contract and its real
    consumer. Reproduce the relevant current behavior before tests encode it; an
    observed defect never becomes the expected contract.
@@ -49,13 +43,11 @@ complete the plan while coding.
    Deadlines and test selection follow `rules/workflow/canonical-commands.md`.
    Respect an explicitly documentary scope; excluded implementation findings remain
    identified without an unauthorized repair or false completion.
-7. Record each delivery checkpoint through the selected available tracker under
-   [Beads traceability](../../rules/workflow/beads-traceability.md): source revision,
-   command, working directory, exit status, decisive output and next required proof.
-   Keep source, integrated-revision and installed-runtime receipts distinct. Follow
-   [Git integration](../../rules/git/gitflow-branch-pr.md) and
-   [phase admission](../../rules/workflow/phase-admission-protocol.md) before closure;
-   this invocation grants no publication, merge or activation authority by itself.
+7. Record each checkpoint with its evidence and next required proof in the selected
+   tracker ([Beads traceability](../../rules/workflow/beads-traceability.md)) and close
+   through [Git integration](../../rules/git/gitflow-branch-pr.md) and
+   [the law](../../rules/law.md) item 10; this invocation grants no publication, merge
+   or activation authority by itself.
 
 Return the accepted behavior, owner and reuse decision, consumers changed, runtime
 proof, exact gate exits, and any blocker. Do not describe a partial, branch-only, or

@@ -1,8 +1,8 @@
 description: Gas City inter-agent mail.
 prompt: |-
   Grade the gc-mail response. Pass only when it uses gc mail through the
-  canonical project facade, preserves strict execution, preflight, and
-  evidence contracts from the skill, and routes work through the declared
+  canonical project facade, carries command, directory, exit and decisive
+  output for each claim, and routes work through the declared
   owner. Reject bypass, fallback, hardcode, or unobserved success.
   Distinguish active selected city coordination from an explicitly authorized
   manual execution with suspended orchestration and a retained tracker.

@@ -1,8 +1,10 @@
 # ADR-0032 — Execution-law router skill and the coordinator ladder
 
-- **Status:** Accepted
+- **Status:** Amended by ADR-0038
 - **Date:** 2026-10-01
 - **Tracking:** `ag-f2u1` (governance alignment campaign, agents rig)
+- **Scope:** the composed law is `rules/law.md`; coordinator resolution is
+  `rules/coordination/inter-session-mail.md` and the `mayor` skill
 
 ## Context
 

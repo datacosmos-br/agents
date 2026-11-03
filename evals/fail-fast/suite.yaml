@@ -1,11 +1,11 @@
-description: Silent-failure diagnosis, owner repair, and failover extermination.
+description: Silent-failure removal, failover deletion, and raw error propagation.
 prompt: |-
-  Grade the fail-fast response. Pass only when it identifies the ignored
-  subprocess exit and stale-artifact failover, removes both at the producer
-  boundary, preserves the causal error, requires atomic fresh publication,
-  propagates the raw CalledProcessError and traceback through the owning CLI,
-  and specifies an injected-failure test. It must call the confirmed path a
-  critical runtime defect and block delivery. Reject catch/manual exit
-  normalization, retry, aggregation, alternate providers, cached success,
-  warnings/findings/skips, broad exception swallowing, partial publication,
-  or a lexical-only deletion proposal.
+  Grade the fail-fast response. Pass only when it deletes the ignored exit, the cached
+  failover, PublishError and the catches in publisher.py, keeps each independent job's
+  outcome with any failure failing the whole run, lets only the CLI translate a failure
+  while keeping the raw CalledProcessError cause and traceback, and names the real run
+  showing a failing publisher stops it. For the sourceless alert, pass only when it asks
+  for the repository and owner. For the placeholder, pass only when it improves the
+  label without calling it a fallback. Reject catch-and-continue, retry, alternate
+  providers, cached or partial success, a dropped outcome, a translation that loses the
+  cause or reports success, warnings, skips, or an exit code that hides the failure.

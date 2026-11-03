@@ -1,8 +1,9 @@
 # Skills
 
 Recursive discovery from `skills/<category>/<slug>/SKILL.md` is the identity and primary
-semantic-group authority. `config/skills.json` owns only schema version and token/line
-budgets; it never lists skills, destinations, providers, or activation state.
+semantic-group authority. `config/skills.json` owns the schema version, resource formats
+and modes, token/line budgets and tag vocabulary; it never lists skills, destinations,
+providers, or activation state.
 
 - `agent-wide` and `project-wide` state the unconditional semantic route.
 - `technology`, `framework`, `tool`, and `domain` state the primary conditional subject;
@@ -23,18 +24,9 @@ and `make waza` validate the physical inventory through their root Make owners. 
 alone interprets routing semantics for discovered projects and providers; this
 repository writes no destination or generated inventory.
 
-## Naming and tag grammar v2 (ADR-0014, ADR-0015)
+## Naming and tags (ADR-0015, ADR-0038)
 
 Slugs are one or two words, target ≤ 14 characters, family-consistent (`gc-*`, `*-dev`),
-and catalog-unique; a slug that needs three words to be understood is renamed before
-landing. The closed `aihub.tags` grammar is: `route:` (personal/project/both), `usage:`
-(waza budget class), `activation:` + `detect:` (conditional subjects), lineage
-(`decision:`, `effective:`, optional `supersedes:`), and short subject tags (`python`,
-`pydantic`, `flext`, `go`, …) paired with detector values (`dependency:<eco>:<pkg>`,
-`marker:<path>`, `selected-tag:<tag>`, `owned-glob:<glob>`). Decorative namespaces
-(`policy:`, `provenance:`, `updates:`, `role:`, `intent:`, `risk:`, long category
-subject forms) are deleted everywhere and fail validation. Conditional skills project
-into a project only on a detector hit against the project profile; opt-in skills project
-nowhere automatically; homes take personal and both skills minus opt-in. Projections
-carry the publisher's managed-by marker and bundle version; sources never do. Intake of
-external material follows `rules/workflow/capability-intake.md`.
+and catalog-unique. `aihub.tags` use only the namespaces the catalog accepts, and their
+usage, route, activation and subject values come from `config/skills.json`. External
+material enters only in this form, with its license and provenance kept in its bundle.

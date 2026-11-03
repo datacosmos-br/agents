@@ -6,11 +6,11 @@ inputs:
   prompt: |-
     Use scenario.yaml to design the requested flext gate products change. Resolve
     the current registry, configuration ownership and native primitives first;
-    the old budget table has been retired. Rewire the declared consumers,
-    regenerate at the author and prove the fixed point. Do not invent an API
+    the old budget table has been retired. Rewire the declared consumers and
+    regenerate at the author; a rerun changes nothing. Do not invent an API
     name or restore a former product table.
   files:
   - path: scenario.yaml
 expected:
-  output_contains: [registry, configuration, atomic primitive, owner, fixed point]
+  output_contains: [registry, configuration, atomic primitive, owner]
   output_not_contains: [I will restore the budget table, I will hand-edit the projection]
