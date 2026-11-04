@@ -23,12 +23,39 @@ prove nothing. Deriving scenario inputs from their configuration owner is valid;
 deriving the expected answer from the subject under test is not. Implementation and
 real-execution proof precede test edits under `runtime-is-reality`.
 
-For `internal_flext`, all construction comes from `flext-tests` and its public `tm`,
-`c`, `t`, `p`, `m`, and `u` facets. A local fixture binds scenario data but never
-redeclares that machinery. Assertions use a `tm` matcher; a bare `assert` is allowed
-only where no `tm` matcher expresses the check. Unit tests open no network socket and
-write only inside fixture-owned storage; real integration services use their public
-harness.
+For `internal_flext`, all construction comes from the generated `tests` namespace and
+its public `tm`, `c`, `t`, `p`, `m`, and `u` facets. Import only the generated test
+namespace root; never import `tests.<submodule>`, a project package, `scripts`,
+`examples`, `flext_tests`, a relative module, or a private/deep source module. A local
+fixture binds scenario data but never redeclares that machinery. Assertions use a `tm`
+matcher; a bare `assert` is allowed only where no `tm` matcher expresses the check.
+Unit tests open no network socket and write only inside fixture-owned storage; real
+integration services use their public harness.
+
+The `c/t/p/m/u` test facades follow one MRO: the outer class inherits only the
+production facade (`from <project> import m as <project>_m`), and the nested
+`Tests` class inherits `flext_tests_m.Tests` first, then the test-only mixins.
+No `@override` decorator is used.
+
+```python
+from flext_infra import m as flext_infra_m
+from flext_tests import m as flext_tests_m
+
+from tests._models import TestsFlextInfraModelsBase
+
+
+class TestsFlextInfraModels(flext_infra_m):
+    class Tests(flext_tests_m.Tests, TestsFlextInfraModelsBase):
+        """..."""
+```
+
+Strong typing is mandatory in tests too: `Any`, `object`, `cast`, `TypeGuard`,
+`TypeIs`, `assert isinstance` narrowing, implicit conversions, and every ignore hint
+(`# type: ignore`, `# pyright: ignore`, `# mypy: ignore`, `# ruff: ignore`, `# noqa`)
+are prohibited. Declare the type in `t`, the protocol in `p`, the model in `m`, the
+constant in `c`, or the helper in `u`, then consume it. Every test module declares one
+`Tests<Unit>` class; imports are the only module-level statements and the only
+declarations are canonical aliases from the generated `tests/__init__.py`.
 
 Every pytest execution goes through the test verbs declared only in
 `rules/workflow/canonical-commands.md` (section "Test verbs"), which owns how they are

@@ -1,7 +1,7 @@
 ---
 description: Internal projects enforce inward dependencies and explicit typed DI
 metadata:
-  aihub.tags: '["decision:ADR-0031","effective:2026-10-25","route:project"]'
+  aihub.tags: '["decision:ADR-0031","effective:2026-11-02","route:project"]'
 ---
 
 # Clean Architecture and DI for internal projects
@@ -37,6 +37,13 @@ local `flext-law` through its provider router. That domain owner defines facade 
 family layout, service bases, protocol ports, handler metadata, lazy exports and
 configuration access. A missing or mismatched owner fails before effects. Do not resolve
 a same-named law from another checkout or apply it to a third-party fork.
+
+The domain's current protocol-only annotation amendment and model/service projection
+own the distinction between typed contracts and executable model construction.
+Resolve ADR-028 Decision 15 and ADR-018's model/service projection in that same
+branch-matched source. Preserve concrete payload validation and JSON Schema through
+its native schema owner; a DI capability check is not payload admission. This rule
+routes to those owners and declares no parallel projection or typing exception.
 
 Correct each violation at the existing declaration, implementation or generator owner,
 rewire its public consumers, prove runtime behavior and remove the superseded path.

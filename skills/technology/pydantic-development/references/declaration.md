@@ -82,6 +82,13 @@ the older primitive-storage target is superseded. Keep enum defaults validated
 and make generated read/write annotations match the concrete model's semantics.
 See [the versioned configuration contract](https://github.com/pydantic/pydantic/blob/v2.14.1/pydantic/config.py).
 
+The underlying runtime schema keeps `strict`, `revalidate_instances` and
+`validate_default` as separate controls
+(`pydantic-core/python/pydantic_core/core_schema.py:46-128@core-v2.50.1`). A
+consumer must select those policies through its approved preset, rather than
+using a core schema or a copied config mapping to compensate for a declaration
+or trust-boundary defect.
+
 ## 5. Identity models — id, timestamps, version
 
 Continue with [identity contracts](composition.md#5-identity-models--id-timestamps-version).
