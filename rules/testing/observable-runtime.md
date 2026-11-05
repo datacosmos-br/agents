@@ -7,7 +7,10 @@ metadata:
 # Observable tests
 
 Expected results come from the public contract, never from the code under test, and
-configuration-owned values are read from their owner, never frozen. A mock, patch, fake,
+configuration-owned values are read from their owner, never frozen. Tests never
+duplicate production code: builders and fixtures declare scenario data only, never
+assert, and never re-implement what production computes (tracker memory
+`operator-order-2026-11-05-tests-never-duplicate-production`). A mock, patch, fake,
 private access or implementation assertion is replaced by public behavioral coverage of
 the same failure scenarios, or removed. Unit tests open no socket, write only inside
 fixture storage and restore any environment they change. A red test is fixed at its
