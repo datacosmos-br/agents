@@ -21,7 +21,9 @@ by the same implementation being tested. Tautologies, self-verifying receipts, a
 assertion that only echoes a reported success, or copied implementation branches
 prove nothing. Deriving scenario inputs from their configuration owner is valid;
 deriving the expected answer from the subject under test is not. Implementation and
-real-execution proof precede test edits under `runtime-is-reality`.
+real-execution proof precede test edits under `runtime-is-reality`. Tests never
+duplicate production: builders declare scenario data only and never assert
+(tracker memory `operator-order-2026-11-05-tests-never-duplicate-production`).
 
 For `internal_flext`, all construction comes from the generated `tests` namespace and
 its public `tm`, `c`, `t`, `p`, `m`, and `u` facets. Import only the generated test
