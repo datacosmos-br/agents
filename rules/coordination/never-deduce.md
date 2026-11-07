@@ -29,5 +29,7 @@ Nunca tente adivinhar ou deduzir.
    `full-landing-cycle` (the cycle defines completion): research grounds the action,
    runtime validates it, the cycle delivers it.
 
+For a reported failure, [causal diagnosis](../workflow/runtime-is-reality.md#causal-diagnosis)
+owns the evidence required before correction and the response to an unchanged error.
 See also: `validate-on-change.md` (rule file), `full-landing-cycle.md` (rule file),
 `discovery-before-decision.md` (rule file).

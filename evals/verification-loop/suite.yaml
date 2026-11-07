@@ -24,3 +24,13 @@ prompt: |-
   External-token workflows excluded before invocation must be recorded as
   NOT EXECUTED and never treated as green or as a landing blocker; once
   invoked, their missing credential or runtime failure remains red.
+  Reject speculative patch-and-see repairs: hypotheses guide observations only.
+  Require source/runtime identity, original public reproduction and diagnostic causal
+  evidence before patching; an independent probe or changed error proves no resolution.
+  Require conformance with canonical rules and researched contracts, never invented
+  exceptions. Every correction requires immediate verification through the original
+  failing operation and applicable admitted tests. Failure returns to causal diagnosis
+  before another edit; reject speculative patch stacking and delayed verification.
+  An unchanged original error leaves the defect unresolved: require debugging/tracing
+  of the loaded artifact and failing path before any further edit. An altered message
+  alone cannot prove correctness.

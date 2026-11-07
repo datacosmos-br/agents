@@ -40,11 +40,13 @@ effects.
 
 Run each applicable owner in repository order:
 
-1. environment and bootstrap health;
-2. repository check, lint, and formatting owner;
-3. static and type analysis owner;
-4. complete affected test owner;
-5. material use through the shipped public surface;
+1. environment/bootstrap identity and causal diagnosis under `workflow/runtime-is-reality`
+   (rule file), section "Causal diagnosis", before any patch;
+2. corrected original public entrypoint and negative reproduction;
+3. repository check, lint, formatting, static and type analysis owners;
+4. affected test owner under `workflow/canonical-commands` (rule file), preserving
+   incremental selection and distinguishing cache hits from execution;
+5. material use through affected shipped public consumers;
 6. generated-owner convergence and fixed point when generated surfaces changed;
 7. runtime deployment or reconciliation from the merged integration SHA when the
    repository owns the shipped facade;

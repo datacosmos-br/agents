@@ -5,7 +5,21 @@ prompt: |-
   owners, current operational mode proven from its declared authority, and material state changes only in
   separately authorized canonical Git, PR, review, check, and CI evidence;
   proves the producing owner's contract and output before choosing a repair
-  owner; fixes a nonconforming producer at its owner or a defective receiver
+  owner; requires researched contracts, public reproduction, debugging and tracing
+  that establish the causal mechanism before any implementation change in every
+  session and project; treats hypotheses only as investigation inputs and rejects
+  speculative deduplication, random edits, trial-and-error fixes and apparent success
+  as causal proof; preserves intended changes and snapshot guards, then verifies the
+  original failing public boundary and preserved behavior after the proven repair;
+  requires applicable canonical rules and verified contracts, rejects invented
+  APIs, exceptions or architecture and departures from established rules;
+   validates each adjustment immediately through the original public reproduction
+   before dependent work and returns to diagnosis and tracing after failure before
+   establishing and implementing another correction;
+   treats an unchanged original error as unresolved, rejects a fix claim based on
+   an independent green probe, and requires a decisive causal observation before
+   another patch rather than stacking implementation trials;
+  fixes a nonconforming producer at its owner or a defective receiver
   at the receiver; never changes a correct adjacent layer as accommodation;
   updates canonical owners rather than projections and reconciles every
   conflicting skill, rule, decision, document, tracker item, plan, template,
@@ -15,21 +29,23 @@ prompt: |-
   caused the incident; performs an evidence-based skill-exit review without
   cosmetic or project-specific governance churn; repeats contradiction
   search; elects the branch/PR rule for Git checkpoint cadence; requires a
-  pushed `[WIP]` checkpoint after every complete green local validation round
-  covering material tracked changes through the repository-owned WIP hook
-  path and without `--no-verify`; keeps a WIP-labelled Draft PR; selects no GitHub
-  Actions; never merges a WIP head; after a final clean local matrix creates
+  complete green local validation round covering material tracked changes before
+  a working-branch or PR checkpoint through the repository-owned hook path
+  and without `--no-verify`; follows the newer correction that incomplete work
+  may be published only to explicitly authorized preservation refs, never to
+  working branches or PRs; preserves historical Drafts without treating them as
+  current validation; never merges a WIP head; after a complete local matrix creates
   a material promotion commit without WIP, rejects an empty promotion commit,
   uses the normal hook path; removes the
   WIP label; converts Draft to Review; requires Actions and independent
   approval; merges the exact head by merge commit; revalidates the exact
   merge SHA locally and starts the next unit from current integration; binds
-  branch, PR, exact head, Draft/WIP state, gates, next action, merge SHA, and
+  branch, PR, exact head, actual validation state, gates, next action, merge SHA, and
   closure evidence to one canonical tracker item; fails closed on tracker /
   GitHub divergence and creates no parallel ledger; absorbs an advanced
   integration lane into the change branch through a `--no-ff` merge before
   landing; requires a signed repository-owned attestation bound to exact
-  repository, clean commit SHA, bead, commands, toolchain, and results before
+  repository, exact commit SHA, bead, commands, toolchain, and results before
   CI omits identical managed work; requires CI to verify signer and exact
   predicate coverage and run every uncovered gate; excludes external forks;
   rejects empty commits after remote CI, rebase, and force-push; and keeps canonical

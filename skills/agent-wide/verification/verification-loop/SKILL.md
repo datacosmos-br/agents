@@ -4,7 +4,7 @@ description: "completion evidence, runtime verification, native gates"
 license: MIT
 metadata:
   aihub.tags: '["decision:ADR-0008","effective:2026-09-03","usage:router"]'
-  version: 1.3.0
+  version: 1.2.0
 ---
 
 # Verification Loop
@@ -30,15 +30,15 @@ open PR, or local-only success as landed. When the repository owns the deployed 
 completion also requires installing or reconciling that runtime from the merged
 integration SHA and proving the public surface there.
 
-A completion boundary is also a phase boundary: no next phase starts while this loop is
-red or incomplete, and unverified work is never pushed to a working branch or PR —
-`rules/workflow/phase-admission-protocol.md` (rule file) Laws 0 and 4 own both.
-
 ## Investigation protocol delta (evidence 2026-09-11)
 
-- Define the hypothesis and the evidence method BEFORE touching anything: artifacts go
-  to files (`difflib.unified_diff` written to a log path), never relied on through
-  flooded stdout.
+- Apply `workflow/runtime-is-reality` (rule file), section "Causal diagnosis", before
+  patching. Hypotheses guide diagnostic observations only, never implementation trials.
+  Preserve decisive artifacts through the existing evidence owner, not flooded stdout.
+- Establish the governing canonical rules before selecting a correction. Validate each
+  repair immediately through the original failing operation and applicable admitted
+  tests. A failure returns to causal diagnosis before another edit, never speculative
+  patch stacking or an invented exception to obtain green.
 - An experiment that fails silently and yields nothing is NOT evidence. Never relabel
   poorly-instrumented work as "out of scope" or "pre-existing"; re-instrument until the
   diff speaks, or file the defect with the hypothesis and the trigger so the next
