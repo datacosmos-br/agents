@@ -15,7 +15,6 @@ actionlint = "latest"
 ast-grep = "latest"
 bun = "latest"
 gitleaks = "latest"
-"npm:jscpd" = "latest"
 shellcheck = "latest"
 snyk = "latest"
 
