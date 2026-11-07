@@ -7,24 +7,24 @@ model's public contract.
 ## 5. Validation runtime (pydantic-core)
 
 - The native JSON validator can parse and validate directly in the core runtime
-  (`pydantic-core/src/validators/mod.rs:471-500@v2.14.1`;
+  (`pydantic-core/src/validators/mod.rs:471-500@core-v2.50.1`;
   `validators/model_fields.rs:146-156`). Python callbacks may still receive Python
   objects. Use the direct JSON boundary and measure the actual path rather than
   claiming that every schema avoids allocation or is universally faster.
 - Strict mode is resolved per schema, then config, default lax
-  (`pydantic-core/src/build_tools.rs:44-47@v2.14.1`); in JSON, strings convert to
-  numbers or booleans only when not strict (`input/input_json.rs:152,171,191@v2.14.1`).
+  (`pydantic-core/src/build_tools.rs:44-47@core-v2.50.1`); in JSON, strings convert to
+  numbers or booleans only when not strict (`input/input_json.rs:152,171,191@core-v2.50.1`).
 - String caching (`cache_strings`, default all) interns repeated strings
-  (`pydantic-core/src/tools.rs:141-143@v2.14.1`).
+  (`pydantic-core/src/tools.rs:141-143@core-v2.50.1`).
 - The default instance policy can reuse an instance of the expected class
-  (`validators/model.rs:174-175@v2.14.1`). That is not a zero-cost guarantee or proof
+  (`validators/model.rs:174-175@core-v2.50.1`). That is not a zero-cost guarantee or proof
   that changed mutable state remains valid. Reuse admitted values under the same
   trust state; a changed boundary follows the owner's native revalidation policy.
 - `validate_assignment` copies `__dict__` twice and revalidates the field on every
-  assignment (`validators/model.rs:184-240@v2.14.1`,
-  `validators/model_fields.rs:220-243@v2.14.1`). Frozen models avoid the cost entirely.
+  assignment (`validators/model.rs:184-240@core-v2.50.1`,
+  `validators/model_fields.rs:220-243@core-v2.50.1`). Frozen models avoid the cost entirely.
 - Frozen enforcement includes Python `_check_frozen` (`pydantic/main.py:96-100@v2.14.1`)
-  and Rust `FrozenInstance`/`FrozenField` (`validators/model.rs:192-193@v2.14.1`).
+  and Rust `FrozenInstance`/`FrozenField` (`validators/model.rs:192-193@core-v2.50.1`).
 
 Neither shallow nor deep copying validates an update. Frozen and assignment policies
 do not monitor every mutation inside nested containers. Preserve the declared data
