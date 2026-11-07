@@ -181,21 +181,17 @@ hall opens one, for a new campaign.
    - worktree(s), branch, bead, and PR;
    - the files you hold;
    - your current state;
-   - the next heavy-gate window you need;
    - your ACK of, or counter to, the protocol.
 2. **Ownership before effect.** Before the first write, post the bead, the
    branch/worktree, the PR, and the exact file fence. Overlapping fences wait for city
    hall's arbitration in the thread.
-3. **Gate windows under active selected city coordination.** Post
-   `[coord] [@city-hall] gate-window START <repo> <verb>
-   <sender>` and wait for city hall's ACK. Run the gate, then post `[coord]
-   [@city-hall] gate-window END <repo> <verb> exit=<n> <sender>` with decisive output.
-   One heavy gate runs per machine.
-   A current operator-authorized manual execution follows its declared
-   coordination and serialization boundary. Orchestration suspension does not
-   suspend an independently retained tracker or silently cancel cooperation;
-   do not start orchestration to obtain an ACK. Preserve the distinction
-   between sent, readback and acknowledged evidence.
+3. **Gates need no window.** Run public verbs at any time, concurrently with
+   other sessions. The owning tool queues, coalesces and publishes optimistically
+   (`heavy-gate-serialization` (rule file), operator order 2026-11-04T16:05Z).
+   Post gate results that change a decision (a red verdict, a blocker) with
+   command, working directory, exit code and decisive output. Never ask for or
+   grant a gate window. Preserve the distinction between sent, readback and
+   acknowledged evidence.
 4. **Polling.** Nothing injects mail into an external session. Poll the campaign
    thread at every phase boundary and at least every 15 minutes.
 5. **Direct channels.** A provider's cross-session channel exists only where the
@@ -235,8 +231,6 @@ A subject without the prefix is not coordination and is not read as one.
   stalled.
 - `[coord] lane changed <lane> <sha> <sender>` asking the author why. The answer is
   the attribution; it replaces the presumption of a clobber.
-- `[coord] [@city-hall] gate-window START|END <repo> <verb> <sender>`, paired,
-  around every heavy gate, granted by the coordinator.
 - `[coord] freeze start <sender>` and `[coord] freeze end <sender>`, exact and
   paired.
 - `[coord] blocker <sender>` with command, working directory, exit code, and

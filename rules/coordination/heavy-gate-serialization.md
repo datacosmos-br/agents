@@ -1,37 +1,46 @@
 ---
-description: "One heavy gate at a time: pre-push matrices, full suites, and dependency resolution never run concurrently — shared temp/git state under load manufactures flakes that cost more to diagnose than the serialization saved."
+description: "Concurrent gates are the tools' job: agents run public make verbs at the same time in the same workspace; the owning tool (flext-infra, ai-hub) queues and coalesces identical runs and protects each file with optimistic publication. No manual gate windows, session locks or ad-hoc mutexes."
 capsule_summary: |
-  Measured 2026-09-26/27 (session gascity-23): a pre-push matrix, a full test
-  suite, and a dependency resolution running together produced an atomic-write
-  timeout flake, a misattributed test red, and three blind push retries.
-  Diagnosing any of them required re-running the very gates that were racing.
+  Operator order 2026-11-04T16:05Z supersedes ADR-0021's "one heavy gate per
+  machine": manual serialization blocked every lane behind one actor and
+  produced private locks, gate-window ceremonies and starvation loops. The
+  integrity it protected moves into the tools that write.
 metadata:
-  aihub.tags: '["decision:ADR-0021","effective:2026-09-27","route:both"]'
+  aihub.tags: '["decision:ADR-0021","effective:2026-11-04","route:both"]'
 ---
 
-# Heavy gate serialization
+# Concurrent gates, owned by the tools
 
 ## The rule
 
-One heavy gate per machine at a time. A heavy gate is any of: a pre-push
-matrix, a full test suite, a dependency resolution/lock, a release build, or
-an acceptance job. Targeted single-test runs are cheap and may interleave;
-gates may not.
+Any number of agents run public `make` verbs and `flext-infra` / `ai-hub`
+commands concurrently in the same workspace. No session waits for a window, and
+none refuses to start because another run is active.
 
-## Why (measured, not hypothetical)
+Integrity belongs to the writing tool, never to a session protocol:
 
-- Atomic file writes timed out under load and failed an unrelated test
-  (`write_atomic_bytes` during fixture setup), costing a full diagnosis cycle
-  that a rerun on a quiet machine made vanish.
-- Test-shard reds under contention misattributed causes (host-load family)
-  and forced re-runs to separate real defects from races.
+- **Optimistic publication.** A writer captures each input's state, plans, and
+  publishes each file with compare-and-swap. A destination another writer
+  changed first voids that write. The tool re-plans from disk, bounded by its
+  configured attempts. Read-only phases (planning, scanning, gates) never hold a
+  lock and never discard a whole snapshot because an unrelated file moved.
+- **Queue and coalesce.** Identical requests (same verb, root and input
+  fingerprint) join the running execution or reuse its recorded result.
+  Different requests run in parallel. Only one atomic file effect is exclusive,
+  never a whole operation.
+- **One primitive.** The atomic file-change lease in flext-cli
+  (`u.Cli.file_changes_lock`, behind `publish_file_changes`) is the only lock.
+  It is scoped to one publication. ai-hub, generated Makefiles and services
+  consume that owner. A second lock wrapper, a shell `flock`, a PID file, a
+  "busy, refuse" guard or a manual `gate-window START/END` is residue to
+  exterminate at its owner.
 
 ## Diagnostics discipline
 
-- Every gate run captures its shard logs persistently
-  (`LOCAL_TEST_LOG_DIR=...` on gascity, or the repo's equivalent): diagnosing
-  a refusal without shard logs costs a full extra gate cycle.
-- A gate failure without a captured log is re-run with capture before any
-  code is touched — the failure you guess at is not the failure you have.
-- Treat slow as a signal: a step that takes multiples of its usual time is a
-  defect to diagnose (contention, leak, wedge), not a queue to wait out.
+- Every gate run keeps its native receipt and logs persistently. A failure
+  without a captured log is re-run with capture before any code is touched.
+- Slow is a signal. A step that takes multiples of its usual time is a defect
+  in its owner (contention, leak, wedge, recompute), never a queue to wait out.
+- A flake that only appears under concurrency is a defect in the owning tool's
+  publication or isolation. Fix it there with a regression test. Never
+  serialize the callers.

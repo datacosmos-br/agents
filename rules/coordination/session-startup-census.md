@@ -33,7 +33,7 @@ metadata:
 
 ## During the session
 
-- One heavy gate at a time (see coordination/heavy-gate-serialization).
+- Gates run concurrently through their owning tools; no gate window (see coordination/heavy-gate-serialization).
 - Bead keep-alive at every boundary: effect applied, gate passed, PR opened,
   merge landed, red attributed to a named owner.
 - At the end of each phase: no inactive worktree of yours survives, your PRs

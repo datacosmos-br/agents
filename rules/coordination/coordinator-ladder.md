@@ -67,7 +67,7 @@ the active agents:
    session the default coordinator; record the assumption on the thread and
    on the active bead.
 5. The elected coordinator holds the coordinator duties — tracker state,
-   serialized gates, integration ordering, merge approval, closure, and
+   integration ordering, merge approval, closure, and
    escalation to the operator — until an explicit handoff. The mayor's
    return is announced on the same thread and duties return only through a
    handoff recorded there; a returning mayor never silently displaces an
