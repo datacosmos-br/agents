@@ -16,7 +16,7 @@ four-digit ADR records. That format does not transfer authorship of a project's
 law into the global catalog.
 
 The copied global generator-declarations rule is retired. FLEXT's active
-branch-matched ADR-018 and local law own its generator contract;
+branch-matched local law and the generator decision it cites own that contract;
 flext-development resolves that authority. Universal source/projection conduct
 remains at workflow/generators-not-projections and canonical-commands.
 

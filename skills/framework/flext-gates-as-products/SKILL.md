@@ -3,12 +3,13 @@ name: flext-gates-as-products
 description: "flext gate products, current registry, native primitives, configuration ownership"
 license: canonical flext law
 metadata:
-  aihub.tags: '["activation:detected","decision:ADR-0015","detect:dependency:python:flext-infra","detect:selected-tag:flext","effective:2026-10-20","route:project","subject:flext","usage:on-demand"]'
+  aihub.tags: '["activation:detected","decision:ADR-0015","detect:dependency:python:flext-infra","detect:selected-tag:flext","effective:2026-10-20","extends:flext-development","route:project","subject:flext","usage:on-demand"]'
 ---
 
 # Apply the current gate product contract
 
-Resolve branch-matched FLEXT law through flext-development, then inspect the
+Compose $flext-development and its declared ancestors, resolve branch-matched
+FLEXT law, then inspect the
 selected tooling registry, typed configuration and native gate implementation.
 Those authors define the product contract. This procedure does not prescribe a
 historical registry symbol, configuration key, budget table or primitive owner.

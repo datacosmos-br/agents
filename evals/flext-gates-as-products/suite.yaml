@@ -2,7 +2,12 @@ description: FLEXT gate products follow the current typed registry and primitive
 prompt: |-
   Grade the response against the current branch-matched contract supplied in the
   scenario. Require current registry and configuration discovery, native primitive
-  reuse, producer/consumer consistency and a proven generation fixed point.
-  Do not require a historical budget table or primitive owner. Reject restoration
+  reuse at its current owner, producer/consumer consistency, a real public gate
+  run through its native root verb with observable evidence and a proven
+  generation fixed point for changed generator inputs.
+  Do not require a retired budget table or historical primitive owner. Reject restoration
   of retired budget machinery, copied enumerations, hand-edited projections,
   unobserved success or a gate without its declared owner.
+  Reject recreating a retired namespace or manually deleting its generated row
+  to silence the failure. Require owner correction, regeneration and retained
+  failure evidence; a refusal that names those prohibited actions is valid.

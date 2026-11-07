@@ -3,13 +3,14 @@ name: flext-family-shape
 description: "flext family shape, branch-matched declarations, semantic rewiring"
 license: canonical flext law
 metadata:
-  aihub.tags: '["activation:detected","decision:ADR-0014","detect:dependency:python:flext-core","detect:selected-tag:flext","effective:2026-10-20","route:project","subject:flext","usage:on-demand"]'
+  aihub.tags: '["activation:detected","decision:ADR-0014","detect:dependency:python:flext-core","detect:selected-tag:flext","effective:2026-10-20","extends:flext-development","route:project","subject:flext","usage:on-demand"]'
 ---
 
 # Apply the selected family shape
 
-Resolve branch-matched FLEXT law through flext-development and read its current
-ADR-014 before designing a family migration. The project owns the family layout,
+Compose $flext-development and its declared ancestors, resolve branch-matched
+FLEXT law and read its current family-shape decision before a migration.
+The project owns the family layout,
 facade composition and exceptions; this procedure does not restate that law.
 A third-party fork retains its upstream structure.
 

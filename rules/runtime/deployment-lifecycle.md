@@ -23,7 +23,8 @@ Prove the producer and consumer's version/schema contract through their public
 provenance before deployment and again on the staged artifacts. Source HEAD does
 not prove installed bytes. A mismatch retains both identities and fails at its
 owner; reconcile forward rather than downgrading source or guessing a compatible
-peer. Runtime-skew-triage supplies the diagnostic procedure.
+peer. For a selected daemon/publisher mismatch, runtime-skew-triage supplies
+the diagnostic procedure; other deployments retain their own runtime owner.
 
 For a `third_party_fork`, use the upstream layout, language level, build system, tests,
 and style. Local governance owns only source/upstream identity, delta provenance,

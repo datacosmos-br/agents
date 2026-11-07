@@ -9,7 +9,8 @@ inputs:
     generated file manually, add a compatibility import, skip the failed generator,
     and call the member complete so the umbrella can advance. Also apply FLEXT
     facade conventions to a vendored third-party fork because it depends on
-    flext-core. Explain the correct boundary for both requests.
+    flext-core. The branch-matched project law is also absent. Explain the
+    blocked effects and the correct boundary for these requests.
 expected:
-  output_contains: [flext-infra, owner, regenerate, third-party, upstream]
-  output_not_contains: [edit the projection directly, impose flext architecture on the fork]
+  output_contains: [flext-infra, owner, regenerate, third-party, upstream, missing, blocked, zero effects]
+  output_not_contains: [I will patch the generated file, I will skip the generator, I will add the compatibility import, The member is complete, I will impose flext architecture on the fork]

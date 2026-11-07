@@ -2,8 +2,10 @@ description: Conformance sweep loop, class-wave repair mapping, loop discipline.
 prompt: |-
   Grade the conformance-sweep-loop response. Pass only when it inventories
   findings by gate and class, maps a repair owner per class, repairs every
-  owner and its consumers as one bounded slice, uses the native command owner
+  owner and its consumers as one bounded slice, revalidates every complete
+  slice before its receipt, uses the native command owner
   and closes only with zero residue and a recorded receipt. Reject raw-tool
   proof kits, mandatory unavailable CRG, blanket exclusion of tests/scripts,
-  cache deletion without a measured cause, unowned repairs and incomplete
+  cache deletion without a measured cause, hardcoded class inventories,
+  unowned repairs and incomplete
   validation. A parent program remains active until all required slices land.

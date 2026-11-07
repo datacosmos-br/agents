@@ -11,5 +11,5 @@ inputs:
   files:
   - path: scenario.yaml
 expected:
-  output_contains: [branch-matched, declarations, semantic rewiring, five, families, rope]
+  output_contains: [branch-matched, declarations, semantic rewiring, five, families, c, t, p, m, u, nested, base.py, MRO, rope]
   output_not_contains: ["invented command", "skipped gate"]

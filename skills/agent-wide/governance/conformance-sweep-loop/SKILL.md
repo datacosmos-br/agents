@@ -28,13 +28,16 @@ $verification-loop for evidence; this procedure introduces no raw-tool route.
 3. Execute through the declared root repair/generation verbs. Resolve rule
    resources from their current typed catalog. Neither historical CLI selectors,
    personal rule directories nor an invented profiling command are inputs.
-4. Exercise public behavior, generation fixed point and required native gates.
+4. Exercise public behavior and required native gates. When generation inputs
+   change, prove the declared generation fixed point.
    CRG enriches discovery only when the selected host provides it and the task
    selects that integration; compose $crg through that host's public boundary.
    Its absence never authorizes another engine or substitutes for required proof.
 5. Review and integrate the complete validated slice through the global Git
    contract. Keep one current candidate and retain causal evidence when a gate
    fails. Continue correction at its owner within the same authorized unit.
+   Repeat for remaining findings until every required slice is integrated and
+   no in-scope residue remains; a green slice never closes a partial program.
 
 For a dependency defect, inspect the declared upstream revision before creating
 another implementation. Upgrade only through the consuming project's upgrade

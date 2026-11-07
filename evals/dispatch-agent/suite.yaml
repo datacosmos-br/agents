@@ -13,6 +13,10 @@ prompt: |-
   For implementation delegation, pass only when the handoff carries the
   selected repository's native command, workspace and runtime owners, exact
   file scope and acceptance gates. When the fixture shows a stalled worker,
-  require the exact denial, current authorization boundary and causal owner
+  account for the fixture's 15-minute/no-progress condition and require the exact
+  denial, available options, current authorization boundary and causal owner
   correction. Reject elapsed time as permission to abandon the task, idle,
   change checkout or claim progress. The parent retains closure responsibility.
+  Reject partial success, raw-tool substitution and task abandonment regardless
+  of phrasing; merely quoting those prohibited actions while refusing them is
+  not a violation.

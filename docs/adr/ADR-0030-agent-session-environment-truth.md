@@ -41,7 +41,7 @@ recorded in the campaign retrospective
    governed project starts from the recorded surfaces (newest handoff, tracker
    prime, tracker context, coordinator inbox, worktree census, environment
    preflight) before any effect — encoded as the `session-recover` command and
-   `rules/coordination/aihub-session-operating-rules.md`.
+   `rules/coordination/session-governance.md`.
 5. **A green slice is committed before any new exploration.** The commit is the
    context checkpoint; holding a finished slice uncommitted violates the
    landing cadence and risks losing the work to context exhaustion.
@@ -53,5 +53,5 @@ recorded in the campaign retrospective
   colliding 0032); the canonical
   operator flow works from agent shells without bypasses.
 - The battery becomes deterministic across execution contexts.
-- The `session-recover` command and the operating rules carry the startup
+- The `session-recover` command and session-governance rule carry the startup
   discipline; new sessions stop paying the rediscovery tax.

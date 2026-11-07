@@ -11,7 +11,8 @@ history retains that evidence; those instructions are retired.
 
 ## Decision
 
-Universal execution is owned by this governance bundle. Project architecture is
+Universal execution contracts are owned by this read-only governance bundle;
+AI Hub owns its provider delivery and runtime effects. Project architecture is
 owned by that project's current branch-matched law. A selected orchestration
 contract governs its own roles and runtime; it does not become another source
 of project architecture or replace the operator's current intent.

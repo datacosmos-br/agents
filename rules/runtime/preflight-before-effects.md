@@ -6,7 +6,8 @@ metadata:
 
 # Preflight the complete bounded operation
 
-Read-only discovery belongs to preflight. Resolve current authority, inputs,
+Read-only discovery belongs to preflight and is deterministic for identical
+authenticated inputs. Resolve current authority, inputs,
 environment, source and destination identities, native capabilities, ownership,
 consumer contracts and required authorization through their declared owners.
 Do not treat discovery as publication or claim that its success proves the result.
@@ -20,7 +21,7 @@ the canonical ownership/serialization primitive through publication.
 ## Replacing divergent objects
 
 Inventory every object in the declared replacement scope, including current WIP,
-physical identity, provenance, consumers and the proposed owner. Names, age,
+physical identity, proven current ownership, provenance, consumers and the proposed owner. Names, age,
 location, description or similar shape do not prove semantic equivalence.
 Representation-only adoption requires an approved information-preserving typed
 transformation and fixed-point proof.
@@ -30,7 +31,8 @@ disposition. Revalidate it and continue within that scope; do not request the sa
 approval again merely because old and requested states differ. Fix-forward owns
 preservation and integration of current work.
 
-When competing current intentions remain unresolved, or a destructive effect
+Ambiguous ownership blocks the related replacement until its authority is
+resolved. When competing current intentions remain unresolved, or a destructive effect
 extends beyond the authorization, stop the affected publication. Present the
 exact objects, ownership, semantic delta, blast radius and proposed disposition
 as one decision packet. Preserve the current state; do not silently select,

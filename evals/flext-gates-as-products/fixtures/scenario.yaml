@@ -1,4 +1,12 @@
 objective: update one declared native gate
+gate:
+  name: lint
+  owner: FlextInfraRuffLintGate
+  source: src/flext_infra/gates/ruff_lint.py
+  configuration_key: config.Infra.codegen.make.ruff.lint_check
+  public_validation: make check
+  original_state_primitive: u.Cli.atomic_read_binary_file_state
+  generated_publication_owner: FlextInfraCodegenTransaction
 profile: internal_flext
 project: scenario member
 branch_law: supplied by the selected project owner

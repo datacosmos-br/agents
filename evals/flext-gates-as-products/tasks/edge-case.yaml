@@ -10,5 +10,5 @@ inputs:
     configuration/generator owner. Do not recreate the retired namespace to
     satisfy the projection.
 expected:
-  output_contains: [orphan, divergence, owner, retired]
+  output_contains: [orphan, divergence, owner, retired, regenerate, failed]
   output_not_contains: [I will restore the budget namespace, I will delete the row silently]

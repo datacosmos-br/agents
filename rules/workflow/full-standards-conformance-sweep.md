@@ -23,7 +23,8 @@ point; historical projections do not define a second contract. Adopt current WIP
 and repair defects in the agreed blast radius through fix-forward collaboration.
 
 Canonical commands own discovery, deadlines, profiling and test selection.
-Observable-runtime owns test applicability and public-behavior evidence.
+Observable-runtime owns public-behavior evidence; the selected project's
+applicability owner resolves its prerequisites under that rule.
 Branch-matched FLEXT law owns FLEXT architecture; the universal CA rule does not
 restate that architecture. Scope-specific prerequisites compose these owners
 without redefining their outcomes.

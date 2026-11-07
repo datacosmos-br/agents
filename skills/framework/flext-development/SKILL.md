@@ -7,7 +7,9 @@ metadata:
 
 # FLEXT development routing
 
-Activate from the selected first-party FLEXT profile and current manifest evidence.
+Activate for architecture, generation, packaging or fleet behavior in the selected
+first-party FLEXT profile, backed by current manifest evidence. Unrelated generic
+Python questions do not activate this architecture route.
 A third-party fork retains upstream governance even when it depends on flext-core.
 
 Compose $py-dev and its $solid parent, then resolve the exact active FLEXT root,

@@ -16,7 +16,10 @@ for its guards, runtime or acceptance evidence.
 Inspect the DOM before choosing selectors, wait for observable readiness and
 exercise the real user flow. Preserve console errors and failed requests.
 Snapshots and a successful page load alone do not prove the changed behavior.
-Use these examples as references, not copied project infrastructure:
+The bundled examples below are audit inputs, not execution guidance: their
+hardcoded local URLs and arbitrary sleeps violate the parent contract. Do not
+execute or copy them; use the selected project's declared base URL and observable
+readiness through its existing native tests.
 
 - [Console capture](examples/console_logging.py)
 - [Element discovery](examples/element_discovery.py)
@@ -24,17 +27,17 @@ Use these examples as references, not copied project infrastructure:
 
 ## Server helper boundary
 
-The public helper is [with_server.py](scripts/with_server.py). Read its declared
+The retained helper is [with_server.py](scripts/with_server.py). Read its declared
 help and source when auditing or diagnosing it; no instruction forbids source
 inspection. Its required contract is exact argv/cwd preservation, visible streams,
 bounded readiness and cleanup of owned processes on failures and termination.
 Shell expansion and another framework runtime are not required to execute argv.
 
-Implementation pending: the current helper and the reviewed async replacement
-must pass that public lifecycle contract, including signals and descendants,
-before any cleanup guarantee is claimed. Preserve the existing source work and
-repair this helper's author; do not create a second runner in the application.
-The selected task carries the current migration evidence and disposition.
+Implementation pending: do not execute this helper until its public lifecycle
+contract, including signals and descendants, has a native acceptance receipt
+on the selected task. No compliant receipt or cleanup guarantee is supplied by
+this skill. Preserve the existing source work and repair its author; use the
+project's existing native browser-test route, without a second application runner.
 
 ## Provenance
 

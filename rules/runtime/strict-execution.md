@@ -6,7 +6,7 @@ capsule_summary: |
   propagation, no application keyring read, zero residue.
 
   A project rule may reject more inputs; it can never relax, conceal a cause,
-  normalize failure, skip required work or route around any of them. Opposing behavior is a blocking
+  normalize failure, skip or defer required work, or route around any of them. Opposing behavior is a blocking
   violation to exterminate at its owner, never grandfathered compatibility.
 metadata:
   aihub.tags: '["decision:ADR-0008","effective:2026-10-01","route:both"]'
@@ -26,7 +26,7 @@ Every project and projected agent applies all of these policies together:
 - `zero residue` (rule file).
 
 A project rule may make them narrower or reject more inputs; it cannot relax,
-conceal a cause, normalize failure, skip required work or route around any of them. Existing opposing behavior is a
+conceal a cause, normalize failure, skip or defer required work, or route around any of them. Existing opposing behavior is a
 blocking violation to exterminate at its owner, never grandfathered compatibility.
 
 Resolve gate applicability before invocation. A dormant external-token gate is not
