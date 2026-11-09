@@ -106,7 +106,7 @@ primitives.
 - Delivery can evolve in AI Hub without making provider details part of the semantic
   package contract.
 - A source cutover rewires every consumer and removes superseded source, tests,
-  fixtures, documentation and generated projections in the same change, following
-  `rules/law.md` item 6.
+  fixtures, documentation and repository-owned generated projections in the same
+  change, following `rules/law.md` item 6.
 - Model-dependent evaluation and runtime validation remain AI Hub work; Waza here
   validates only the packaged provider-neutral skill resources.
