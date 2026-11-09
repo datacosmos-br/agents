@@ -53,8 +53,8 @@ authorities, gets one precise question with its measured cost; everything else p
    changes nothing.
 6. **Fix by deletion.** A defect is fixed by removing its cause, never by covering it
    with another layer. Code without a current consumer is deleted and Git is the
-   recovery. A change rewires every consumer it reaches and leaves no old path, except a
-   marked delegation that keeps another repository's consumer working until it migrates.
+   recovery. A change rewires its consumers and removes obsolete code, fallbacks and
+   compatibility paths immediately; only the new path remains.
    A change that only deletes and adds no new finding lands even on a red base.
 7. **Laws are data.** A law a tool can check is one authored rule for that tool, built
    only from what the tool sees, with its fixture. Nothing generates rules or their

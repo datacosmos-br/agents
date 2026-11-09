@@ -3,7 +3,7 @@
 - **Status:** Amended by ADR-0038
 - **Date:** 2026-09-03
 - **Scope:** Package ownership, public API, validation, and delivery boundary; the
-  test-verb contract is `rules/workflow/canonical-commands.md`, marked delegations are
+  test-verb contract is `rules/workflow/canonical-commands.md`, source cutovers follow
   law 6 of `rules/law.md`
 - **Supersedes:** The provider-projection, runtime CLI, and composed-delivery decisions
   formerly recorded by ADR-0003, ADR-0004, and ADR-0005
@@ -105,11 +105,8 @@ primitives.
   snapshot or the first causal failure.
 - Delivery can evolve in AI Hub without making provider details part of the semantic
   package contract.
-- A cutover removes every old consumer, test, fixture, document, generated projection,
-  backup, and archive in the same change. Old and new never coexist; an old public
-  signature that still has consumers survives only as the marked pass-through declared
-  once in `rules/runtime/zero-residue.md` (section "Deprecated-signature window",
-  tracker memory `operator-ruling-2026-10-24-deprecated-signature-window`) and is
-  deleted in the cycle its census reaches zero.
+- A source cutover rewires every consumer and removes superseded source, tests,
+  fixtures, documentation and repository-owned generated projections in the same
+  change, following `rules/law.md` item 6.
 - Model-dependent evaluation and runtime validation remain AI Hub work; Waza here
   validates only the packaged provider-neutral skill resources.
