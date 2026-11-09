@@ -77,8 +77,8 @@ nor replaces AI Hub's installed delivery owner.
 `config/beads.yaml`, `config/beads-activation.yaml`, and `.beads/identity.toml`,
 and the tracked `.envrc` from `tools/templates/agents.envrc`. Both files are
 committed. AI Hub's host connection owner binds each checkout to its existing
-Beads database and loads the live endpoint before `.envrc`; this repository never
-recomputes or overrides that endpoint. Local Dolt data remains ignored.
+Beads database. The host direnv integration loads its live endpoint; this repository
+never recomputes or overrides that endpoint. Local Dolt data remains ignored.
 
 ```text
 make help

@@ -11,12 +11,8 @@ rewire, and deletion are one atomic change, never a compatibility or rollback se
 1. Resolve the superseded owner, replacement owner, every producer and consumer, tests,
    fixtures, config, generated surfaces, documentation, and semantic term.
 2. Rewire every consumer and delete the superseded path in the same cutover
-   (`rules/law.md` item 6). Deprecated-signature window: a public signature whose
-   consumers lie outside the change survives only as a marked delegation to its new
-   owner, every use is a blocking diagnostic, and it is deleted when no consumer remains
-   (tracker memory `operator-ruling-2026-10-24-deprecated-signature-window`). Git keeps
-   history, not rollback authority: nothing is archived, quarantined, copied or
-   dual-read.
+   (`rules/law.md` item 6). Git keeps history, not rollback authority: nothing is
+   archived, quarantined, copied or dual-read.
 3. Delete tests and artifacts that exist only for the old contract; rewrite tests for
    surviving behavior.
 4. Prove zero residue, public runtime behavior, causal failure propagation, and native
