@@ -75,10 +75,10 @@ nor replaces AI Hub's installed delivery owner.
 
 `make gen` also projects the portable `.beads/metadata.json` from
 `config/beads.yaml`, `config/beads-activation.yaml`, and `.beads/identity.toml`,
-and the tracked `.envrc` from
-`tools/templates/agents.envrc`. Both files are committed so a new linked worktree
-can select the canonical Beads database before setup. The managed `gc bd context`
-route supplies the live server host and port; local Dolt data remains ignored.
+and the tracked `.envrc` from `tools/templates/agents.envrc`. Both files are
+committed. AI Hub's host connection owner binds each checkout to its existing
+Beads database and loads the live endpoint before `.envrc`; this repository never
+recomputes or overrides that endpoint. Local Dolt data remains ignored.
 
 ```text
 make help
