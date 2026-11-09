@@ -94,7 +94,7 @@ Severity follows the governance-audit ladder: P0 for an explicit correction recu
 after its owner artifact last changed, ownerless in-flight work, or a missing capsule in
 a governed checkout; P1 for friction, missed skill triggers, cost regressions, and edits
 without prior read above 20%; P2 for doc drift and remaining heuristics. Score =
-authority weight × log-scaled session count × recency decay × log-scaled cost ×
+authority weight x log-scaled session count x recency decay x log-scaled cost x
 confidence.
 
 Deterministic extraction covers every signal except two: clustering free-text

@@ -64,7 +64,7 @@ over-strict rule.
 
 `flext-core → flext-cli → flext-tests → flext-infra → charts → gitops → root`. Per repo:
 hermetic deps (`env -u VIRTUAL_ENV -u UV_PROJECT_ENVIRONMENT`), pinned lock + cooldown,
-`gen×2` fixed point, structural rewrites through `make mod` and `make mod-text` to a
+`genx2` fixed point, structural rewrites through `make mod` and `make mod-text` to a
 verified fixed point (never direct ast-grep or an engine module), `check`+`test`, scoped
 commit → **PR** (no develop bypass), merge, gates on merged SHA.
 

@@ -94,7 +94,7 @@ evidence-producing and stays within the project Make dispatcher.
 - For exact definition/reference sites during consumer rewiring, use `$crg query` with a
   fresh index; grep stays reserved for literal evidence that CRG cannot answer.
 - Pilot rollout for fleet-wide changes: converge one non-core member to full green (gen
-  ×2 fixed point, check, full test within the test budget), then propagate waves across
+  x2 fixed point, check, full test within the test budget), then propagate waves across
   remaining members with the same gates per wave. Fleet changes land on the declared
   integration branch only.
 - Graph-backed claims about code state pass the `$crg` freshness gate first; a graph

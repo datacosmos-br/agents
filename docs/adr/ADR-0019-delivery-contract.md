@@ -28,7 +28,7 @@ relative links) unenforced.
    payloads are config data, never code changes.
 2. **Budget gate at load** (`audit_delivery`): `GovernanceBundle.load()` measures the
    exact always-on composition and raises with the full breakdown when prelude +
-   bootstrap rule summaries + bootstrap skill index exceeds `budget − reserve`. Silence
+   bootstrap rule summaries + bootstrap skill index exceeds `budget - reserve`. Silence
    proves fit; the measured numbers are exposed on the bundle snapshot.
 3. **Docs linking gate** (`tools/check_docs_links.py`, wired into `make docs`): the ADR
    index table is a bijection with physical ADR files, and every relative Markdown link

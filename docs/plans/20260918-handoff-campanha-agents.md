@@ -8,7 +8,7 @@
 
 ## 1. Estado entregue (tudo medido em runtime no SHA final)
 
-- **Gates**: `make setup`/`gen`×2/`fmt`/`fix`/`check`/`test`/`ci`/`build`/
+- **Gates**: `make setup`/`gen`x2/`fmt`/`fix`/`check`/`test`/`ci`/`build`/
   `validate-artifacts`/`runtime` — todos EXIT=0 no ciclo frio revalidado. `test-full`
   = 63 passed com execução real (`executed=63 deselected=0`); `home-check` 1340
   arquivos verificados. rumdl 543/543 limpo. waza 137 skills / 265 arquivos verde.

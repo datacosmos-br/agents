@@ -1,4 +1,4 @@
-# Handoff de repasse consolidado — campanha agents (F0–F7, executada) × campanha multi-repo (G0–G5, em execução)
+# Handoff de repasse consolidado — campanha agents (F0–F7, executada) x campanha multi-repo (G0–G5, em execução)
 
 **Data**: 2026-09-18 17:41 -03 · **Mandato**: agente único dedicado ao projeto agents;
 fix-forward-adopt; colaboração com agentes de projetos paralelos por registro (nunca
@@ -34,7 +34,7 @@ Pushed `6978f43c..96f42c0d` em `dev`.
 | F6 beads+conteúdo | 18 fechamentos com evidência + skills model-as-command/settings-vs-config/flext-service; tracker 209/250 closed | `bad28882`, dolt `miujh6vv` |
 | F7 fecho | ci/build/validate/runtime EXIT=0; 63 testes executados; handoff `20260918-handoff-campanha-agents.md` | `96f42c0d` |
 
-Retrovalidação ambiente frio: `setup`/`gen`×2/`fmt`/`fix`/`check`/`test` EXIT=0 com
+Retrovalidação ambiente frio: `setup`/`gen`x2/`fmt`/`fix`/`check`/`test` EXIT=0 com
 árvore imutável. Guarda registrada: testmon não rastreia `rules/**` — `test-full` com
 execução real é obrigatório em fronteiras que tocam markdown/config (L14).
 
@@ -104,7 +104,7 @@ lane flext); `ag-bgs`/`ag-av2` se couber.
 ### G5 — agents residual + fecho geral
 `ag-a11`; `ag-9xp` (sessão viva); épicos destravados por G2 fechados com evidência
 (ag-zrh.2/.4, ag-2sc, ag-lw57, ag-m9lu); handoff final multi-repo; memory atualizada
-(errata home-projection; fronteira flext×privado); pushs por repo no verde.
+(errata home-projection; fronteira flextxprivado); pushs por repo no verde.
 
 ## Guardas permanentes
 

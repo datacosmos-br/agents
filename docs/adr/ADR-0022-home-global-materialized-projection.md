@@ -9,7 +9,7 @@ publication effects follow laws 8 and 11 of `rules/law.md`
 `~/.agents` é hoje um **symlink para o checkout fonte** `/home/marlonsc/agents`. O
 diagnóstico do rework de distribuição aprovado em 18/09 (seção §6, F6) mediu o risco:
 `make gen` reescreve config viva do usuário dentro do checkout; `git clean`/switch de
-branch no fonte pode deletar o home; hooks de dois donos (ai-hub × Gas City) convivem
+branch no fonte pode deletar o home; hooks de dois donos (ai-hub x Gas City) convivem
 nos mesmos JSONs projetados. A separação completa (home como transação do ai-hub) é a
 F6 do rework e pressupõe F1–F3 do ai-hub — hoje vermelhos. Enquanto isso, todo consumo
 catálogo-side (session-router, skills globais, waza) resolve por `~/.agents` e fica
@@ -76,8 +76,8 @@ alias do checkout.
 - O checkout fonte deixa de ser ponto único de falha do home: `git clean`/branch
   switch não tocam mais o que os consumidores leem.
 - `make gen` do checkout volta a escrever somente superfícies do próprio checkout; a
-  config viva do usuário (hooks Gas City × ai-hub) sai do raio de efeito colateral.
-- Drift catálogo×home fica visível quando o ai-hub assumir a verificação
+  config viva do usuário (hooks Gas City x ai-hub) sai do raio de efeito colateral.
+- Drift catálogoxhome fica visível quando o ai-hub assumir a verificação
   (`projection_identity_gate` já fail-closed); no intervalo, o stale é conhecido e
   aceito como estado transicional declarado.
 - A gestão transacional final é do ai-hub (F6 do rework); a fronteira

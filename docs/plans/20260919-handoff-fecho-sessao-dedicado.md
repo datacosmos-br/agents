@@ -134,9 +134,9 @@ _generate_workspace_config + _allocation) — patch arquivado em
    fora do contrato systemd. Caminho correto (documentado em
    `_host_runtime/credentials.py:87-93`): `systemd-run --user --wait
    --pipe --collect -p LoadCredentialEncrypted=<id>:$HOME/.local/state/
-   ai-hub/credentials/current/<id>.cred (×6) make deploy`.
+   ai-hub/credentials/current/<id>.cred (x6) make deploy`.
 2. **algar**: check local 100% VERDE (400→0; gm9/qou fechadas); r5t FECHADA
-   (cooldown ×4 pousado via knob + org layer).
+   (cooldown x4 pousado via knob + org layer).
 3. **flext-infra**: 6ep5y perna-2 pousada (recovery noop para package-owned);
    gen fixed-point + Docs byte-identidade restaurados; perna-1
    (root-resolution) com o dono mise-artifacts.
@@ -152,7 +152,7 @@ _generate_workspace_config + _allocation) — patch arquivado em
 
 ### algar-oud-mig (0.12.0-dev / wip/stabilize-0.12-algar)
 
-- `make check` exit 0 confirmado 2× (pré e pós-piloto C2)
+- `make check` exit 0 confirmado 2x (pré e pós-piloto C2)
 - `pytest tests`: 324 passed, 250 skipped, 1 xfailed — 0 falhas
 - Namespace 96→0; 9 gates zerados; loc-cap converter 1231→848 LOC
 - Piloto C2: symlinks→cópias carimbadas variante A (539109b2)
@@ -204,4 +204,4 @@ _generate_workspace_config + _allocation) — patch arquivado em
 5. **G2 sem dono**: ag-lw57.*/ag-vblj.*/ag-m9lu — cadeia de distribuição para pickup.
 
 ### Regras operacionais da sessão (validadas)
-bd com direnv no repo · fix-forward-adopt · gates pelo Make do dono · gen×2 em fronteiras de render · guarda de dados privados em diff público · algar PR-only · janelas de exclusão mútua por mail · nunca matar processos alheios · gc-mail: destinatários = sessões vivas (gc session list), canal human compartilhado, retry com timeout sob degradação.
+bd com direnv no repo · fix-forward-adopt · gates pelo Make do dono · genx2 em fronteiras de render · guarda de dados privados em diff público · algar PR-only · janelas de exclusão mútua por mail · nunca matar processos alheios · gc-mail: destinatários = sessões vivas (gc session list), canal human compartilhado, retry com timeout sob degradação.
