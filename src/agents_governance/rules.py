@@ -12,7 +12,7 @@ from typing import cast
 from .approvals import APPROVAL_NAMESPACES, resolve_approval_tags
 from .frontmatter import parse_frontmatter
 from .markdown_references import local_reference_targets, resolve_physical_reference
-from .resources import CatalogResource, source_text
+from .resources import CatalogResource, physical_walk, source_text
 
 _SLUG = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*\Z")
 _SCHEME = re.compile(r"[A-Za-z][A-Za-z0-9+.-]*:")
@@ -221,7 +221,7 @@ def _references(root: Path, rules: Path, source: Path, body: str) -> tuple[str, 
 
 def _walk(directory: Path) -> tuple[Path, ...]:
     files: list[Path] = []
-    for path in sorted(directory.rglob("*")):
+    for path in physical_walk(directory):
         relative = path.relative_to(directory)
         metadata = path.lstat()
         if stat.S_ISLNK(metadata.st_mode):

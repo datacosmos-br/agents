@@ -120,6 +120,28 @@ def bytecode_cache(relative: PurePath) -> bool:
     return "__pycache__" in relative.parts
 
 
+def physical_walk(root: Path) -> tuple[Path, ...]:
+    """Every path below ``root`` in sorted order, outside bytecode caches."""
+    return tuple(
+        sorted(
+            path
+            for path in root.rglob("*")
+            if not bytecode_cache(path.relative_to(root))
+        )
+    )
+
+
+def physical_children(directory: Path) -> tuple[Path, ...]:
+    """The sorted direct children of ``directory``, outside bytecode caches."""
+    return tuple(
+        sorted(
+            path
+            for path in directory.iterdir()
+            if not bytecode_cache(PurePath(path.name))
+        )
+    )
+
+
 def _catalog_files(root: Path, manifest: CatalogResource) -> tuple[Path, ...]:
     """Use the existing artifact enrollment, never scan the checkout root."""
     document = tomllib.loads(manifest.content.decode("utf-8"))

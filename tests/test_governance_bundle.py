@@ -176,6 +176,10 @@ def test_catalog_ignores_python_bytecode_caches_in_skill_bundles(
     cache.parent.mkdir(parents=True)
     # The CPython 3.13 bytecode magic: not UTF-8, as in an installed wheel.
     cache.write_bytes(b"\xf3\r\r\n" + bytes(12))
+    suite = next(path for path in sorted((root / "evals").iterdir()) if path.is_dir())
+    fixture_cache = suite / "fixtures" / "__pycache__" / "probe.cpython-313.pyc"
+    fixture_cache.parent.mkdir(parents=True)
+    fixture_cache.write_bytes(b"\xf3\r\r\n" + bytes(12))
 
     loaded = catalog_resources(GovernanceBundle.load(root))
 

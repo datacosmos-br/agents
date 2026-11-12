@@ -14,7 +14,12 @@ from typing import cast
 from .approvals import APPROVAL_NAMESPACES, resolve_approval_tags
 from .frontmatter import cast_mapping, parse_frontmatter, require_exact_fields
 from .markdown_references import local_reference_targets, resolve_physical_reference
-from .resources import CatalogResource, bytecode_cache, source_text
+from .resources import (
+    CatalogResource,
+    physical_children,
+    physical_walk,
+    source_text,
+)
 from .skill_resources import ResourcePolicy, SkillResource
 
 NON_PORTABLE_PROJECT_REFERENCE = re.compile(
@@ -241,13 +246,7 @@ class Catalog:
     def _physical_tree(directory: Path) -> tuple[Path, ...]:
         if directory.is_symlink() or not directory.is_dir():
             raise ValueError(f"skill bundle must be a physical directory: {directory}")
-        paths = tuple(
-            sorted(
-                path
-                for path in directory.rglob("*")
-                if not bytecode_cache(path.relative_to(directory))
-            )
-        )
+        paths = physical_walk(directory)
         for path in paths:
             mode = path.lstat().st_mode
             if stat.S_ISLNK(mode):
@@ -315,12 +314,12 @@ class Catalog:
         for category_root in sorted(category_roots):
             if category_root.is_symlink() or not category_root.is_dir():
                 raise ValueError(f"skill category must be physical: {category_root}")
-            for path in sorted(category_root.rglob("*")):
+            for path in physical_walk(category_root):
                 mode = path.lstat().st_mode
                 if stat.S_ISLNK(mode):
                     raise ValueError(f"symlink forbidden in skills tree: {path}")
                 if stat.S_ISDIR(mode):
-                    if not any(path.iterdir()):
+                    if not physical_children(path):
                         raise ValueError(f"empty skill directory is forbidden: {path}")
                     continue
                 if not stat.S_ISREG(mode):
