@@ -18,7 +18,7 @@ from .frontmatter import (
     require_exact_fields,
     string_array,
 )
-from .resources import CatalogResource, source_text
+from .resources import CatalogResource, catalog_members, source_text
 
 _EVAL_FIELDS = frozenset({"description", "prompt", "version"})
 _REQUIRED_EVAL_FIELDS = frozenset({"description", "prompt"})
@@ -151,7 +151,7 @@ def _mapping(
 def _physical_tree(directory: Path) -> None:
     if directory.is_symlink() or not directory.is_dir():
         raise ValueError(f"evaluation suite must be a physical directory: {directory}")
-    for path in sorted(directory.rglob("*")):
+    for path in catalog_members(directory):
         metadata = path.lstat()
         if stat.S_ISLNK(metadata.st_mode):
             raise ValueError(f"evaluation resource must be physical: {path}")
@@ -387,7 +387,7 @@ def _audit_suite(
     physical_fixtures = (
         {
             path.resolve(strict=True)
-            for path in fixture_root.rglob("*")
+            for path in catalog_members(fixture_root)
             if path.is_file()
         }
         if fixture_root.exists()

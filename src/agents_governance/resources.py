@@ -120,6 +120,17 @@ def bytecode_cache(relative: PurePath) -> bool:
     return "__pycache__" in relative.parts
 
 
+def catalog_members(directory: Path) -> tuple[Path, ...]:
+    """Every authored member below ``directory``, sorted, without bytecode caches."""
+    return tuple(
+        sorted(
+            path
+            for path in directory.rglob("*")
+            if not bytecode_cache(path.relative_to(directory))
+        )
+    )
+
+
 def _catalog_files(root: Path, manifest: CatalogResource) -> tuple[Path, ...]:
     """Use the existing artifact enrollment, never scan the checkout root."""
     document = tomllib.loads(manifest.content.decode("utf-8"))
