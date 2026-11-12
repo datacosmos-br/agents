@@ -14,7 +14,7 @@ import tomllib
 from collections.abc import Mapping
 from dataclasses import dataclass
 from io import BytesIO, TextIOWrapper
-from pathlib import Path, PurePosixPath
+from pathlib import Path, PurePath, PurePosixPath
 from typing import TYPE_CHECKING
 
 from .capsule import render_capsule
@@ -111,6 +111,15 @@ def source_text(
         return source.read()
 
 
+def bytecode_cache(relative: PurePath) -> bool:
+    """Whether a catalog path lies in a Python bytecode cache (PEP 3147).
+
+    The interpreter or an installer derives such a cache from a bundled script;
+    it is never a published resource, so no catalog walk enrolls it.
+    """
+    return "__pycache__" in relative.parts
+
+
 def _catalog_files(root: Path, manifest: CatalogResource) -> tuple[Path, ...]:
     """Use the existing artifact enrollment, never scan the checkout root."""
     document = tomllib.loads(manifest.content.decode("utf-8"))
@@ -121,7 +130,10 @@ def _catalog_files(root: Path, manifest: CatalogResource) -> tuple[Path, ...]:
     files: set[Path] = set()
 
     def collect(path: Path) -> None:
-        _relative_path(path.relative_to(root).as_posix())
+        relative = path.relative_to(root)
+        if bytecode_cache(relative):
+            return
+        _relative_path(relative.as_posix())
         mode = path.lstat().st_mode
         if stat.S_ISREG(mode):
             if path in files:

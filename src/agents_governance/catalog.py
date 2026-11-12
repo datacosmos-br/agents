@@ -14,7 +14,7 @@ from typing import cast
 from .approvals import APPROVAL_NAMESPACES, resolve_approval_tags
 from .frontmatter import cast_mapping, parse_frontmatter, require_exact_fields
 from .markdown_references import local_reference_targets, resolve_physical_reference
-from .resources import CatalogResource, source_text
+from .resources import CatalogResource, bytecode_cache, source_text
 from .skill_resources import ResourcePolicy, SkillResource
 
 NON_PORTABLE_PROJECT_REFERENCE = re.compile(
@@ -241,7 +241,13 @@ class Catalog:
     def _physical_tree(directory: Path) -> tuple[Path, ...]:
         if directory.is_symlink() or not directory.is_dir():
             raise ValueError(f"skill bundle must be a physical directory: {directory}")
-        paths = tuple(sorted(directory.rglob("*")))
+        paths = tuple(
+            sorted(
+                path
+                for path in directory.rglob("*")
+                if not bytecode_cache(path.relative_to(directory))
+            )
+        )
         for path in paths:
             mode = path.lstat().st_mode
             if stat.S_ISLNK(mode):
