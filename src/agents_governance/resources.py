@@ -14,7 +14,7 @@ import tomllib
 from collections.abc import Mapping
 from dataclasses import dataclass
 from io import BytesIO, TextIOWrapper
-from pathlib import Path, PurePosixPath
+from pathlib import Path, PurePath, PurePosixPath
 from typing import TYPE_CHECKING
 
 from .capsule import render_capsule
@@ -70,22 +70,6 @@ def resource_root() -> Path:
     return source_root()
 
 
-# PEP 3147: the importer and installers write bytecode caches beside any
-# packaged ``.py`` resource; no author owns them, so no catalog member does.
-_INTERPRETER_CACHE = "__pycache__"
-
-
-def catalog_members(directory: Path) -> tuple[Path, ...]:
-    """Every authored member below ``directory``, sorted, without bytecode caches."""
-    return tuple(
-        sorted(
-            path
-            for path in directory.rglob("*")
-            if _INTERPRETER_CACHE not in path.relative_to(directory).parts
-        )
-    )
-
-
 def _relative_path(value: str) -> PurePosixPath:
     path = PurePosixPath(value)
     if (
@@ -127,6 +111,26 @@ def source_text(
         return source.read()
 
 
+def bytecode_cache(relative: PurePath) -> bool:
+    """Whether a catalog path lies in a Python bytecode cache (PEP 3147).
+
+    The interpreter or an installer derives such a cache from a bundled script;
+    it is never a published resource, so no catalog walk enrolls it.
+    """
+    return "__pycache__" in relative.parts
+
+
+def catalog_members(directory: Path) -> tuple[Path, ...]:
+    """Every authored member below ``directory``, sorted, without bytecode caches."""
+    return tuple(
+        sorted(
+            path
+            for path in directory.rglob("*")
+            if not bytecode_cache(path.relative_to(directory))
+        )
+    )
+
+
 def _catalog_files(root: Path, manifest: CatalogResource) -> tuple[Path, ...]:
     """Use the existing artifact enrollment, never scan the checkout root."""
     document = tomllib.loads(manifest.content.decode("utf-8"))
@@ -137,7 +141,10 @@ def _catalog_files(root: Path, manifest: CatalogResource) -> tuple[Path, ...]:
     files: set[Path] = set()
 
     def collect(path: Path) -> None:
-        _relative_path(path.relative_to(root).as_posix())
+        relative = path.relative_to(root)
+        if bytecode_cache(relative):
+            return
+        _relative_path(relative.as_posix())
         mode = path.lstat().st_mode
         if stat.S_ISREG(mode):
             if path in files:
@@ -145,8 +152,7 @@ def _catalog_files(root: Path, manifest: CatalogResource) -> tuple[Path, ...]:
             files.add(path)
         elif stat.S_ISDIR(mode):
             for child in sorted(path.iterdir()):
-                if child.name != _INTERPRETER_CACHE:
-                    collect(child)
+                collect(child)
         else:
             raise ValueError(f"unsupported catalog resource type: {path}")
 

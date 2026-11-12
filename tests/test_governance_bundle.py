@@ -161,6 +161,28 @@ def test_catalog_retains_inventory_when_a_skill_resource_is_added_after_load(
     assert len(updated) == len(original) + 1
 
 
+def test_catalog_ignores_python_bytecode_caches_in_skill_bundles(
+    governance_source_fixture: Path,
+) -> None:
+    """An installer that compiles bundled scripts adds no catalog resource."""
+    root = governance_source_fixture
+    original = catalog_resources(GovernanceBundle.load(root))
+    cache = (
+        GovernanceBundle.load(root).skills[0].directory
+        / "scripts"
+        / "__pycache__"
+        / "probe.cpython-313.pyc"
+    )
+    cache.parent.mkdir(parents=True)
+    # The CPython 3.13 bytecode magic: not UTF-8, as in an installed wheel.
+    cache.write_bytes(b"\xf3\r\r\n" + bytes(12))
+
+    loaded = catalog_resources(GovernanceBundle.load(root))
+
+    assert loaded == original
+    assert all("__pycache__" not in resource.relative_path for resource in loaded)
+
+
 @pytest.mark.parametrize("identity", ["../escape", "/escape"])
 def test_public_catalog_record_rejects_invalid_identity(
     governance_bundle: GovernanceBundle,
