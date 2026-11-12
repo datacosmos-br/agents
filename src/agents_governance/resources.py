@@ -70,6 +70,22 @@ def resource_root() -> Path:
     return source_root()
 
 
+# PEP 3147: the importer and installers write bytecode caches beside any
+# packaged ``.py`` resource; no author owns them, so no catalog member does.
+_INTERPRETER_CACHE = "__pycache__"
+
+
+def catalog_members(directory: Path) -> tuple[Path, ...]:
+    """Every authored member below ``directory``, sorted, without bytecode caches."""
+    return tuple(
+        sorted(
+            path
+            for path in directory.rglob("*")
+            if _INTERPRETER_CACHE not in path.relative_to(directory).parts
+        )
+    )
+
+
 def _relative_path(value: str) -> PurePosixPath:
     path = PurePosixPath(value)
     if (
@@ -129,7 +145,8 @@ def _catalog_files(root: Path, manifest: CatalogResource) -> tuple[Path, ...]:
             files.add(path)
         elif stat.S_ISDIR(mode):
             for child in sorted(path.iterdir()):
-                collect(child)
+                if child.name != _INTERPRETER_CACHE:
+                    collect(child)
         else:
             raise ValueError(f"unsupported catalog resource type: {path}")
 
