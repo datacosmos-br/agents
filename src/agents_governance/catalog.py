@@ -241,7 +241,16 @@ class Catalog:
     def _physical_tree(directory: Path) -> tuple[Path, ...]:
         if directory.is_symlink() or not directory.is_dir():
             raise ValueError(f"skill bundle must be a physical directory: {directory}")
-        paths = tuple(sorted(directory.rglob("*")))
+        # A Python bytecode cache (PEP 3147) is derived by the interpreter or
+        # installer from a bundled script, never a published skill resource;
+        # an installed bundle compiled at install time carries one.
+        paths = tuple(
+            sorted(
+                path
+                for path in directory.rglob("*")
+                if "__pycache__" not in path.relative_to(directory).parts
+            )
+        )
         for path in paths:
             mode = path.lstat().st_mode
             if stat.S_ISLNK(mode):
