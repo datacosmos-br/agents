@@ -10,7 +10,7 @@ Every operation runs through declared verbs, each a thin call to its native tool
 does only its own operation ([law](../law.md)); a change is validated by its owner's
 scoped command, and gates cover source, tests, examples and scripts alike. Configuration
 declares the newest versions and only the upgrade verb locks them; every other verb
-installs from the committed locks, offline. One heavy job runs per machine, at idle
+installs from the committed locks, offline. Heavy jobs pass host admission at idle
 priority; under load a run narrows, never waits. A pull-request gate fits
 `gates.pr_budget_minutes` (`config/governance.json`). Every command runs under a
 deadline, the 120-second bound of `operator-order-2026-10-24-make-always-with-timeout`
