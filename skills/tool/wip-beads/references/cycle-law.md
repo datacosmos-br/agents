@@ -21,8 +21,9 @@
 
 Fetch the selected beads in batches, not one by one: the processor loads them at mode
 start with one `bd show` call per 200 ids and indexes the result by id; a per-bead
-`bd show` runs only for an id missing from that load. Never fetch the full corpus with
-`bd list --all`, which hydrates every ephemeral wisp. Reload between modes, never reuse
+`bd show` runs only for an id missing from that load. Mode preloading never fetches the full
+corpus with `bd list --all`, which hydrates every ephemeral wisp; the step 8 deep-clean
+enumeration is the one full-corpus read. Reload between modes, never reuse
 stale state.
 
 ## Evidence format (bd note)
