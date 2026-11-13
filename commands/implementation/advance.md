@@ -42,15 +42,15 @@ restart what can be resumed.
 ## Phase 2 — Reflexion checkpoint
 
 In at most three lines, state what the drift or last red gate taught and which owner
-holds the lesson, and record it as a note on the bead. Write no new rule, memory or
-document for it; a governing text that is itself wrong is corrected through
+holds the lesson, and record it as a note on the selected tracker's bead. Write no new
+rule, memory or document for it; a governing text that is itself wrong is corrected through
 `op-learning` after the plan lands.
 
 ## Phase 3 — Advance loop
 
 One work item at a time, in dependency order, with effort scaled to complexity. A
-slow gate runs in the background while
-the next step proceeds; nothing waits for another session, a queue or a quiet tree
+slow gate runs in the background while independent work proceeds and whatever depends
+on it waits for its result; nothing waits for another session, a queue or a quiet tree
 (`fix-forward`). Discovery goes to subagents briefed per `dispatch-agent`, each brief
 naming the plan path and bead; sequenced effects (merges, landings, closures) stay on
 the main thread. A new request mid-plan is classified by `focus-recovery` and the plan

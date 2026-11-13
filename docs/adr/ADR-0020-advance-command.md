@@ -1,4 +1,4 @@
-# ADR-0020 — Advance: one resumption-and-force-advance command owned by skill routing
+# ADR-0020 — Advance: one work-order-and-force-advance command owned by skill routing
 
 **Status:** Accepted **Date:** 2026-09-10 **Scope:**
 `commands/implementation/advance.md`, `docs/research/agent-instruction-design.md`,
@@ -19,7 +19,7 @@ to verified completion.
 1. One command, `advance`, owns the rebuilt work order plus forced advancement: Phase 0
    authority, Phase 1 a work order built from plan, bead and Git evidence that asks the
    operator only for a fact no surface holds and is executed in the same turn with one
-   recurring goal check, Phase 2 reflection checkpoint, Phase 3 advance loop with
+   recurring goal check where the provider schedules prompts, Phase 2 reflection checkpoint, Phase 3 advance loop with
    per-step skill routing, Phase 4 executable verification, Phase 5 landing and
    closure, and a final restatement of non-negotiables (recency effect). `$ARGUMENTS`
    carries the optional focus; session tasks are never hardcoded into the body.
