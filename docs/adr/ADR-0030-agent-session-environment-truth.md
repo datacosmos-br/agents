@@ -20,7 +20,7 @@ hours re-deriving context that an existing handoff had already documented, and
 left its most valuable slice uncommitted until context exhaustion — both
 recorded in the campaign retrospective
 (ai-hub `.kilo/plans/2026-09-27-surfaced-inventory-runtime-recovery/00-index.md`,
-`Retrospectiva crítica`).
+`Retrospectiva crítica` (critical retrospective)).
 
 ## Decision
 

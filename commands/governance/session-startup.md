@@ -9,9 +9,9 @@ metadata:
 
 Run this checklist in order before the first edit of the session.
 
-1. **Handoff index.** If a handoff document was pointed at you
-   (`~/.claude/plans/handoff-*`), read it — it is an index; follow its
-   references to the landing records, ADRs, and beads before anything else.
+1. **Handoff.** If a handoff was pointed at you, open it with `plan-handoff`:
+   a handoff is one plan directory whose `00-index.md` indexes the landing
+   records, ADRs, and beads; follow them before anything else.
 2. **Governance.** Read `rules/law.md` and the surviving rules your work touches,
    starting with `rules/coordination/inter-session-mail.md`.
 3. **Tracker.** `bd ready` and your claims: nothing you are about to do may

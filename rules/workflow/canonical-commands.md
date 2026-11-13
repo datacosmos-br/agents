@@ -16,7 +16,8 @@ Each machine runs one heavy job at a time, and a pull-request gate fits
 120-second bound of `operator-order-2026-10-24-make-always-with-timeout` unless its
 project declares a tighter one, and a timeout is a failure fixed at its cause. Each
 catalog names its test verbs: the incremental verb runs Testmon on its persistent
-database, never deleted or replaced, the full verb runs once without it, locally, and a
+database, never deleted or replaced except by Testmon's own schema migration, the full
+verb runs once without it, locally, and a
 run that executes nothing counts only as an integrity-checked cache hit. A generated file
 names its writer and regeneration command, and a block written by a tool changes only
 through that tool and loses to any rule it contradicts. Text published to a forge or
