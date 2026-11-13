@@ -23,8 +23,7 @@ Read [README.md](README.md), [rules index](docs/rules-index.md),
 `make lint` is the light gate; `make audit`, `make docs`, `make waza` validate
 bundle, links and semantic suites.
 
-`rules/` hold obligations, `skills/` procedures, `commands/` grammar; a child references,
-never copies, its ancestor. Before any effect run
-`commands/governance/session-preflight.md` and coordinate per
-`rules/coordination/inter-session-mail.md`.
+Obligations live in `rules/`, procedures in `skills/`, grammar in `commands/`; a child
+references its ancestor, never copies it. Before any effect run
+`commands/governance/session-preflight.md`.
 <!-- AIHUB-AGENTS-SCOPE-LOCAL-END -->
