@@ -42,8 +42,8 @@ authorities, gets one precise question with its measured cost; everything else p
 2. **Simplest correct path.** Code is cost. The right change is the shortest one that
    makes the real behavior correct within the requested scope: a refactor leaves less
    code than it found, and a change that grows the code is redesigned before it lands.
-   Nothing is added without a current consumer, and nothing an owner derives is copied or
-   kept by hand.
+   Nothing is added without a current consumer, and nothing an owner declares or derives
+   (a key, secret or endpoint in its stack profile) is copied into code or kept by hand.
 3. **Native tools own their jobs.** A declared tool owns its job; nothing beside it
    re-implements, mirrors, indexes or patches around it. A missing capability is first
    removed from the need; when it is truly needed, it is added to the tool, small and
