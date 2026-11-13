@@ -1,12 +1,3 @@
----
-name: context-canary
-description: "context drift, session continuity, compaction recovery"
-license: MIT
-metadata:
-  aihub.tags: '["decision:ADR-0008","effective:2026-08-29","usage:on-demand"]'
-  version: 1.0.0
----
-
 # Context Canary
 
 A tiny repeated signal that reveals instruction drift, compaction loss, or context rot
