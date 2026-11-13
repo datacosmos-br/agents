@@ -44,17 +44,6 @@ url = "https://github.com/oven-sh/bun/releases/download/bun-v1.4.4/bun-linux-x64
 checksum = "sha256:6e9c37098b293920aed28bfb51ab240e26d23bfdd9bbfecb3ad428ac166549bc"
 url = "https://github.com/oven-sh/bun/releases/download/bun-v1.4.4/bun-linux-x64-musl-baseline.zip"
 
-[[tools."github:kucherenko/jscpd"]]
-version = "5.4.2"
-backend = "github:kucherenko/jscpd"
-specifiers = ["latest"]
-
-[tools."github:kucherenko/jscpd"."platforms.linux-x64"]
-checksum = "sha256:216bae5de2b30c57f893286585c7a348e8af7cd36810949831f569d29f495a3b"
-url = "https://github.com/kucherenko/jscpd/releases/download/v5.4.2/jscpd-linux-x64-gnu.tar.gz"
-url_api = "https://api.github.com/repos/kucherenko/jscpd/releases/assets/659819461"
-provenance = "github-attestations"
-
 [[tools.gitleaks]]
 version = "8.30.1"
 backend = "aqua:gitleaks/gitleaks"
