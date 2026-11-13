@@ -25,7 +25,6 @@ _FRONTMATTER_FIELDS = frozenset(
     }
 )
 _METADATA_FIELDS = frozenset({"aihub.tags"})
-_ROUTES = frozenset({"route:both", "route:personal", "route:project"})
 _PROMPT_DEFENSE_IDENTITY = "security/prompt-defense"
 
 
@@ -38,6 +37,9 @@ class RuleDistribution(StrEnum):
     PERSONAL = "personal"
     PROJECT = "project"
     BOTH = "both"
+
+
+_ROUTES = frozenset(f"route:{distribution.value}" for distribution in RuleDistribution)
 
 
 @dataclasses.dataclass(frozen=True)
