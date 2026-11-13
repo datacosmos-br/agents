@@ -46,10 +46,10 @@ every verb runs directly, with no apply selector or mutation guard.
   artifact.
 - Everything else: decide per file, prefer fix-forward (preserve the other lane's
   legitimate work), and record every resolution.
-- Commit with an explicit merge message listing the resolution classes; validate the
-  merged SHA with `make gen` (fixed-point gate) BEFORE pushing.
-- Pushing the merge commit to the integration branch auto-merges the GitHub PR — no
-  `gh merge` needed.
+- Commit with an explicit merge message listing the resolution classes on the release
+  lane and validate that SHA with `make gen` (fixed-point gate) before pushing it; the
+  integration branch receives it only through the reviewed PR
+  (`rules/git/gitflow-branch-pr.md`), never a direct push.
 
 ## Concurrent-lane protocol (git index contention)
 
