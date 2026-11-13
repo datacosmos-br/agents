@@ -10,7 +10,7 @@ WIP preservation and isolation were improperly coupled. ADR-0025 now
 selects placement by the call, adopting the current authorized context; discovery
 does not require another checkout. `gitflow-branch-pr` governs the retirement of disposable lanes.
 The original problem was that the rules did not name **who discovers and
-plans** the WIP state of worktrees, nor guaranteed that **retirement execution**
+plans** the WIP state of worktrees, nor guarantee that **retirement execution**
 has a single owner.
 
 The 2026-09-19 deep-dive (recorded in
@@ -54,7 +54,7 @@ discovered by either of the two.
 Operator rulings of 2026-09-19, newer than the text above and adopted here:
 
 1. **Named delivering owner.** The "project's wip program" of decision 1 is the ai-hub
-   `wip` program (`ai-hub wip <verbo>`: `start`, `save`, `ship`, `land`, `clean`,
+   `wip` program (`ai-hub wip <verb>`: `start`, `save`, `ship`, `land`, `clean`,
    `status`, `next`, `doctor`; plan `wip-automation`, epic `aihub-hjsdg`). Every other
    wip implementation in ai-hub is exterminated verb by verb, with exactly one
    implementation per verb at any moment.

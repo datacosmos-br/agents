@@ -9,7 +9,7 @@ metadata:
 
 Run this checklist in order before the first edit of the session.
 
-1. **Handoff.** If a handoff was pointed at you, open it with `plan-handoff`:
+1. **Handoff.** If a handoff was pointed at you, run `plan-handoff <directory>` on it:
    a handoff is one plan directory whose `00-index.md` indexes the landing
    records, ADRs, and beads; follow them before anything else.
 2. **Governance.** Read `rules/law.md` and the surviving rules your work touches,
