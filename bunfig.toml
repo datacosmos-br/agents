@@ -1,0 +1,6 @@
+# Bun is the only JavaScript package manager; this project owns its tools.
+# `make setup` installs frozen from bun.lock and `make upg` refreshes it.
+[install]
+exact = true
+# Rolling seven-day release cooldown (seconds), never a fixed date.
+minimumReleaseAge = 604800

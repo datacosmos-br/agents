@@ -6,6 +6,9 @@ CACHE_HOME := $(if $(XDG_CACHE_HOME),$(XDG_CACHE_HOME),$(HOME)/.cache)
 PYRIGHT_CACHE_ROOT := $(CACHE_HOME)/agents-governance/pyright
 ARTIFACT_STATE_ROOT := $(CACHE_HOME)/agents-governance/artifacts
 WAZA_STATE_ROOT := $(CACHE_HOME)/agents-governance/waza
+BUN_CACHE_ROOT := $(CACHE_HOME)/agents-governance/bun
+override export TESTMON_DATAFILE := $(TESTMON_DATAFILE)
+override export BUN_INSTALL_CACHE_DIR := $(BUN_CACHE_ROOT)
 override export COVERAGE_CORE := ctrace
 override export ARTIFACT_STATE_ROOT := $(ARTIFACT_STATE_ROOT)
 # Opt-in artifact-runtime instrumentation; it never selects an operation or scope.
@@ -48,14 +51,16 @@ help: ## show the complete selector-free development surface
 
 ## environment provisioning
 setup: ## create the declared repository runtime environment
-	$(call BANNER,setup · locked mise install + uv venv + locked sync)
+	$(call BANNER,setup · locked mise install + frozen bun install + uv venv + locked sync)
 	@MISE_LOCKED=true mise install --yes
+	@MISE_LOCKED=true $(MISE_EXEC) bun install --frozen-lockfile --ignore-scripts
 	@MISE_LOCKED=true $(MISE_EXEC) uv venv --python python --clear
 	@MISE_LOCKED=true $(MISE_EXEC) uv sync --all-groups --locked
 
 upg: ## resolve newest declared tools and dependencies into committed locks
-	$(call BANNER,upg · mise lock + uv lock)
-	@MISE_LOCKED=false mise lock --upgrade --bump
+	$(call BANNER,upg · mise lock + bun lock + uv lock)
+	@mise lock --upgrade --bump
+	@MISE_LOCKED=false $(MISE_EXEC) bun update --latest --ignore-scripts
 	@MISE_LOCKED=false $(MISE_EXEC) uv lock --upgrade --refresh
 
 ## generation + mutation
@@ -144,7 +149,7 @@ shell: ## validate shell scripts and GitHub workflows
 
 duplication: ## enforce zero strict duplication in canonical source and evaluations
 	$(call BANNER,duplication · jscpd)
-	@$(MISE_EXEC) jscpd src tests tools evals --config $(CURDIR)/.jscpd.json --exit-code 1
+	@$(MISE_EXEC) bun x --no-install jscpd src tests tools evals --config $(CURDIR)/.jscpd.json --exit-code 1
 
 build: ## build source and wheel artifacts
 	$(call BANNER,build · sdist + wheel)

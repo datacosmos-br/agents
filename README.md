@@ -106,8 +106,11 @@ make ci
 ```
 
 The development toolchain is supported on Linux x64, the platform declared in
-`.mise.toml` and resolved in `mise.lock`. The published Python sdist and wheel remain
-platform-neutral and are validated as installed artifacts by `make runtime`.
+`.mise.toml` and resolved in `mise.lock`. The one JavaScript tool (`jscpd`) is a Bun
+project: declared in `package.json`, resolved in `bun.lock` under the `bunfig.toml`
+seven-day release cooldown, installed frozen by `make setup`, and refreshed by
+`make upg`. The published Python sdist and wheel remain platform-neutral and are
+validated as installed artifacts by `make runtime`.
 
 The test verbs' Testmon contract is declared in
 [`rules/workflow/canonical-commands.md`](rules/workflow/canonical-commands.md). CI runs
