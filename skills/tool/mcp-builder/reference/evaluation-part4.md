@@ -16,6 +16,7 @@ For locally-run MCP servers (script launches the server automatically):
 ```bash
 python scripts/evaluation.py \
   -t stdio \
+  -m <pipeline-model> \
   -c python \
   -a my_mcp_server.py \
   evaluation.xml
@@ -26,6 +27,7 @@ With environment variables:
 ```bash
 python scripts/evaluation.py \
   -t stdio \
+  -m <pipeline-model> \
   -c python \
   -a my_mcp_server.py \
   -e API_KEY=abc123 \
@@ -40,6 +42,7 @@ For SSE-based MCP servers (you must start the server first):
 ```bash
 python scripts/evaluation.py \
   -t sse \
+  -m <pipeline-model> \
   -u https://example.com/mcp \
   -H "Authorization: Bearer token123" \
   -H "X-Custom-Header: value" \
@@ -53,6 +56,7 @@ For HTTP-based MCP servers (you must start the server first):
 ```bash
 python scripts/evaluation.py \
   -t http \
+  -m <pipeline-model> \
   -u https://example.com/mcp \
   -H "Authorization: Bearer token123" \
   evaluation.xml
@@ -61,7 +65,7 @@ python scripts/evaluation.py \
 ## Command-Line Options
 
 ```text
-usage: evaluation.py [-h] [-t {stdio,sse,http}] [-m MODEL] [-c COMMAND]
+usage: evaluation.py [-h] [-t {stdio,sse,http}] -m MODEL [-c COMMAND]
                      [-a ARGS [ARGS ...]] [-e ENV [ENV ...]] [-u URL]
                      [-H HEADERS [HEADERS ...]] [-o OUTPUT]
                      eval_file
@@ -72,7 +76,7 @@ positional arguments:
 optional arguments:
   -h, --help            Show help message
   -t, --transport       Transport type: stdio, sse, or http (default: stdio)
-  -m, --model           Claude model to use (default: claude-3-7-sonnet-20250219)
+  -m, --model           Model to use (required; from the model pipeline's published generation)
   -o, --output          Output file for report (default: print to stdout)
 
 stdio options:
@@ -108,6 +112,7 @@ The evaluation script generates a detailed report including:
 ```bash
 python scripts/evaluation.py \
   -t stdio \
+  -m <pipeline-model> \
   -c python \
   -a my_server.py \
   -o evaluation_report.md \
@@ -149,6 +154,7 @@ export ANTHROPIC_API_KEY=your_api_key
 ```bash
 python scripts/evaluation.py \
   -t stdio \
+  -m <pipeline-model> \
   -c python \
   -a github_mcp_server.py \
   -e GITHUB_TOKEN=ghp_xxx \
@@ -186,7 +192,7 @@ If many evaluations fail:
 
 If tasks are timing out:
 
-- Use a more capable model (e.g., `claude-3-7-sonnet-20250219`)
+- Select a more capable model from the pipeline's published generation
 - Check if tools are returning too much data
 - Verify pagination is working correctly
 - Consider simplifying complex questions
