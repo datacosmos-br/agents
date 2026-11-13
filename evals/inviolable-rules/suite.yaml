@@ -1,7 +1,0 @@
-description: Universal law entry that reads rules/law.md first.
-prompt: |-
-  Grade the inviolable-rules response. Pass only when it reads rules/law.md
-  before any work, ranks it below only the operator's words and above every
-  other governance text, and adds no second copy of the law. Reject restated
-  law bodies, routing tables to retired rules, or another text treated as
-  outranking the law without the operator's words.
