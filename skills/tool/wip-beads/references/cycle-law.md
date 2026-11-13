@@ -3,7 +3,8 @@
 ## Governance law (from plans 1788975913248, 1788980150347)
 
 1. **Close only with 3 legal reasons**: `SUPERSEDED` (canonical owner named absorbs),
-   `OBSOLETE` (scope/explicit disappeared with proof), `DONE` (cmd/cwd/exit/output).
+   `OBSOLETE` (scope/explicit disappeared with proof), `DONE` (cmd/cwd/exit/output plus the commit and integration evidence that
+   `rules/workflow/beads-traceability.md` requires).
    `LEGITIMATE` = comment both, DO NOT close.
 2. **Zero parent closed with child pending** — check `↳` in `bd show` parent before
    close; re-home child by child (`bd update <child> --parent <owner>`), no batch.
@@ -18,12 +19,11 @@
 
 ## Performance law (SSOT fetch)
 
-One ledger fetch per mode, not per bead: load a single
-`bd list --all --flat --limit 0 --json` snapshot at mode start and index it by id.
-Per-bead `bd show` is a fallback only for ids missing from the snapshot. Re-fetch the
-snapshot between modes, never reuse stale. Measured on a 102-bead ledger: one `bd show`
-≈ 3.5s, so per-bead fetches cost ~6min per mode while a single snapshot runs the same
-mode in ~20s.
+Fetch the selected beads in batches, not one by one: the processor loads them at mode
+start with one `bd show` call per 200 ids and indexes the result by id; a per-bead
+`bd show` runs only for an id missing from that load. Never fetch the full corpus with
+`bd list --all`, which hydrates every ephemeral wisp. Reload between modes, never reuse
+stale state.
 
 ## Evidence format (bd note)
 

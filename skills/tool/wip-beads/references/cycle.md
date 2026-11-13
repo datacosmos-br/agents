@@ -30,16 +30,12 @@ is about to re-parent.
 
 ### 1. Regenerate CSV (source of truth)
 
-````bash
-bd list --status open --flat --limit 0 --json > ./wip-beads-open.json
 Workspace-local scratch files:
 
 ```bash
 bd list --status open --flat --limit 0 --json > ./wip-beads-open.json
 <wip-beads-bundle>/scripts/bd_json_to_csv.py ./wip-beads-open.json ./wip-beads-open.csv
-````
-
-````text
+```
 
 ### 2. Collect workspace evidence
 `scripts/wip-beads.sh --mode collect --csv ./wip-beads-open.csv`
@@ -82,7 +78,7 @@ bd list --status open --flat --limit 0 --json > ./wip-beads-open.json
 bd doctor --check=validate --json
 bd doctor --check=pollution --json
 bd orphans --json
-````
+```
 
 - **Test pollution**: `validate`/`pollution` reports a count but does not identify IDs.
   The detection criterion (extracted from bd 1.2.2) is a TITLE regex `^test[-:]`,
