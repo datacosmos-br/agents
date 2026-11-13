@@ -11,7 +11,8 @@ capsule_summary: |
   know how. 5 Validate once at the boundary; inside, trust the shared model.
   6 Fix by deletion, never by a layer on top. 7 Laws are authored data for the
   tool that checks them; nothing generates rules. 8 Fail loud on one path.
-  9 The real entry point is the proof. 10 Finish the cycle to the integration
+  9 The real entry point is the proof; a failing test is fixed in production.
+  10 Finish the cycle to the integration
   branch. 11 Never destroy another actor's work. 12 Governance stays short.
 metadata:
   aihub.tags: '["decision:ADR-0038","effective:2026-11-03","route:both"]'
@@ -80,14 +81,16 @@ authorities, gets one precise question with its measured cost; everything else p
    revision claimed, does the claimed thing, shown by the smallest real command that
    exercises it; an editable checkout proves nothing about an installed release. A change
    to a live runtime names its recovery first, and a broken runtime is restored before
-   other work. Tests confirm observed behavior through public interfaces, never define
-   it, and change only after the runtime is right.
+   other work. Tests confirm behavior through public interfaces and never define it: a
+   failing test that exposes wrong or missing behavior is fixed in production, never
+   rewritten to accept it.
 10. **Finish the cycle.** Work counts when it reaches the integration branch through
     review and green checks, under commit subjects that say what changed, and, when
     asked, runs in the target runtime with evidence. Commits, pushes, merges and deploys
-    happen only when the current request authorizes them. One slice at a time is carried
-    to the end of its scope; anything less is reported as in progress with the exact
-    missing step.
+    happen only when the current request authorizes them. Done is the whole agreed plan,
+    tested and free of errors on the integration branch: a part, a sample of cases or a
+    partial proof is in progress, named with its exact missing step, and no other work
+    starts before the slice is done.
 11. **Never destroy another actor's work.** Concurrent and unknown changes are kept,
     integrated and fixed forward. Published or shared state is never reset, restored,
     stashed, rebased, force-pushed or rolled back. Each actor stages its own files by
