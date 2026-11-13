@@ -11,7 +11,8 @@ capsule_summary: |
   know how. 5 Validate once at the boundary; inside, trust the shared model.
   6 Fix by deletion, never by a layer on top. 7 Laws are authored data for the
   tool that checks them; nothing generates rules. 8 Fail loud on one path.
-  9 The real entry point is the proof. 10 Finish the cycle to the integration
+  9 The real entry point is the proof; fix production, never fit a test to it.
+  10 Finish the cycle to the integration
   branch. 11 Never destroy another actor's work. 12 Governance stays short.
 metadata:
   aihub.tags: '["decision:ADR-0038","effective:2026-11-03","route:both"]'
@@ -80,8 +81,9 @@ authorities, gets one precise question with its measured cost; everything else p
    revision claimed, does the claimed thing, shown by the smallest real command that
    exercises it; an editable checkout proves nothing about an installed release. A change
    to a live runtime names its recovery first, and a broken runtime is restored before
-   other work. Tests confirm observed behavior through public interfaces, never define
-   it, and change only after the runtime is right.
+   other work. Tests confirm correct behavior through public interfaces and never
+   define it: when production is wrong, production is fixed first, and no test is
+   written or changed to match wrong behavior.
 10. **Finish the cycle.** Work counts when it reaches the integration branch through
     review and green checks, under commit subjects that say what changed, and, when
     asked, runs in the target runtime with evidence. Commits, pushes, merges and deploys
