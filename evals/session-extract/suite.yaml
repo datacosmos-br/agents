@@ -4,11 +4,14 @@ prompt: |-
   the provider and workspace through configured source metadata, never from
   UUID shape, and invokes the bundle-owned pure parser with the matching
   provider on adapter-authenticated private stdin: the version-1 envelope
-  for Claude and Poolside, the selected model-io rollout for ZCode. Require
+  for Claude and Poolside, the selected model-io rollout for ZCode after
+  confirming the configured ZCode data-home paths and opening its task
+  database read-only. Require
   complete structured stdout, not script-created files or truncated
   summaries: event_json and reference locators for Claude and Poolside;
   observed request messages, model responses and tool calls, source lines,
-  the final request snapshot and the terminal error for ZCode. The adapter
+  the final request snapshot and, when present, the terminal error for
+  ZCode; a failed model request is never reported as successful. The adapter
   owns source snapshots, digests, private persistence and publication.
   Preserve the conversation flow with user messages, tool calls matched to
   their results, reasoning and assistant text, identify the todo state and

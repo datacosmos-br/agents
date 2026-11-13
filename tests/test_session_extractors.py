@@ -207,6 +207,9 @@ def test_zcode_rollout_yields_private_turns_and_rejects_another_session(
     assert payload["classification"] == "private"
     assert payload["record_count"] == 2
     assert len(payload["observed_messages"]) == 1
+    assert payload["turns"][-1]["response"]["text"] == "answer"
+    assert payload["turns"][-1]["response"]["finish_reason"] == "stop"
+    assert payload["final_request_messages"] == [{"role": "user", "content": "one"}]
     mismatched = subprocess.run(
         (*command, "extract", "--session-id", "other"),
         input=rollout.encode(),
