@@ -13,7 +13,7 @@ capsule_summary: |
   tool that checks them; nothing generates rules. 8 Fail loud on one path.
   9 The real entry point is the proof; wrong production is repaired, never
   written into a test. 10 Done is the whole agreed plan landed on the
-  integration branch, tested and free of errors; nothing else starts first.
++  integration branch tip after review and green checks, tested and error-free; unfinished work is in progress with the exact missing step, and nothing else starts first.
   11 Never destroy another actor's work. 12 Governance stays short.
 metadata:
   aihub.tags: '["decision:ADR-0038","effective:2026-11-03","route:both"]'
