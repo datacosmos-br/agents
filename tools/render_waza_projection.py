@@ -60,8 +60,10 @@ def _projection_config(
     model = defaults["model"]
     if not isinstance(engine, str) or engine != "copilot-sdk":
         raise ValueError(".waza.yaml defaults.engine must select the real copilot-sdk")
-    if not isinstance(model, str) or not model.strip() or model == "auto":
-        raise ValueError(".waza.yaml defaults.model must name one concrete model")
+    if model != "auto":
+        raise ValueError(
+            ".waza.yaml defaults.model must be auto; only the model pipeline selects a model"
+        )
     paths = _mapping(source.get("paths"), ".waza.yaml paths")
     paths["skills"] = "skills"
     paths["evals"] = "evals"

@@ -25,8 +25,9 @@ paths:
   evals: evals
 
 # Development-only schema values for Waza's offline spec validator. The root
-# gate performs no authentication, model listing, or model execution.
+# gate performs no authentication, model listing, or model execution; the
+# model stays auto because only the model pipeline selects one.
 # GovernanceBundle and the wheel never include this file.
 defaults:
   engine: copilot-sdk
-  model: gpt-5.4
+  model: auto
