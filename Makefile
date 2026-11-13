@@ -7,7 +7,6 @@ PYRIGHT_CACHE_ROOT := $(CACHE_HOME)/agents-governance/pyright
 ARTIFACT_STATE_ROOT := $(CACHE_HOME)/agents-governance/artifacts
 WAZA_STATE_ROOT := $(CACHE_HOME)/agents-governance/waza
 BUN_CACHE_ROOT := $(CACHE_HOME)/agents-governance/bun
-override export TESTMON_DATAFILE := $(TESTMON_DATAFILE)
 override export BUN_INSTALL_CACHE_DIR := $(BUN_CACHE_ROOT)
 override export COVERAGE_CORE := ctrace
 override export ARTIFACT_STATE_ROOT := $(ARTIFACT_STATE_ROOT)
@@ -59,7 +58,7 @@ setup: ## create the declared repository runtime environment
 
 upg: ## resolve newest declared tools and dependencies into committed locks
 	$(call BANNER,upg · mise lock + bun lock + uv lock)
-	@mise lock --upgrade --bump
+	@MISE_LOCKED=false mise lock --upgrade --bump
 	@MISE_LOCKED=false $(MISE_EXEC) bun update --latest --ignore-scripts
 	@MISE_LOCKED=false $(MISE_EXEC) uv lock --upgrade --refresh
 
