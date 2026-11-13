@@ -12,9 +12,12 @@ capsule_summary: |
   6 Fix by deletion, never by a layer on top. 7 Laws are authored data for the
   tool that checks them; nothing generates rules. 8 Fail loud on one path.
   9 The real entry point is the proof; wrong production is repaired, never
-  written into a test. 10 Done: whole plan reviewed, green, error-free, live
-  at integration tip; nothing else first.
-  11 Never destroy another actor's work. 12 Governance stays short.
+  written into a test. 
+  10 Done is the whole agreed scope, tested, error-free at the integration tip after
+  review and green checks; nothing else is claimed before it, and in-progress work
+  names the exact missing step. 
+  11 Never destroy another actor's work. 
+  12 Governance stays short.
 metadata:
   aihub.tags: '["decision:ADR-0038","effective:2026-11-03","route:both"]'
 ---
