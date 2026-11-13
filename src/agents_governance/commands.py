@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 import re
 import stat
-from collections.abc import Iterable
+from collections.abc import Iterable, Mapping
 from dataclasses import dataclass
 from enum import StrEnum
 from pathlib import Path
@@ -13,6 +13,7 @@ from typing import cast
 
 from .approvals import APPROVAL_NAMESPACES, core_tags, resolve_approval_tags
 from .frontmatter import parse_frontmatter
+from .resources import CatalogResource, source_text
 
 _SLUG = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*\Z")
 _DESCRIPTION_LIMIT = 160
@@ -114,8 +115,10 @@ def _tags(path: Path, raw: object) -> tuple[tuple[str, ...], CommandRoute]:
     return tags, route
 
 
-def _load_command(path: Path) -> CommandSpec:
-    payload, body = parse_frontmatter(path)
+def _load_command(
+    path: Path, captured: Mapping[Path, CatalogResource] | None = None
+) -> CommandSpec:
+    payload, body = parse_frontmatter(path, text=source_text(path, captured))
     unknown = frozenset(payload) - _TOP_LEVEL_FIELDS
     if unknown:
         raise ValueError(
@@ -156,7 +159,10 @@ def _load_command(path: Path) -> CommandSpec:
 
 
 def audit_command_specs(
-    root: Path, skill_names: Iterable[str] = ()
+    root: Path,
+    skill_names: Iterable[str] = (),
+    *,
+    captured: Mapping[Path, CatalogResource] | None = None,
 ) -> tuple[CommandSpec, ...]:
     """Return all commands or raise on the first source/layout/collision defect."""
 
@@ -178,7 +184,7 @@ def audit_command_specs(
             raise ValueError(
                 f"command must use commands/<category>/<slug>.md layout: {path}"
             )
-        spec = _load_command(path)
+        spec = _load_command(path, captured)
         resolve_approval_tags(root, spec.tags, path)
         if spec.name in collisions:
             raise ValueError(

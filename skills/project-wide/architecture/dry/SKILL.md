@@ -1,29 +1,22 @@
 ---
 name: dry
-description: "semantic duplication, god patterns, structural remediation"
+description: "semantic duplication, single owner, measured reduction, less code"
 license: MIT
 metadata:
-  aihub.tags: '["decision:ADR-0008","effective:2026-09-03","usage:router"]'
-  version: 1.2.0
+  aihub.tags: '["decision:ADR-0038","effective:2026-11-03","usage:router"]'
+  version: 2.0.0
 ---
 
 # DRY
 
-Activate once for proven cross-owner semantic duplication, god responsibilities, dead
-ownership, or measured repeated work in the authorized graph. Consume the current
-requirement set from `yagni`, authority map from `ssot`, and boundaries from `solid`;
-`search-first` owns the route.
+Each fact, rule and behavior has one owner; every copy is deleted and its consumers call
+the owner (`rules/law.md` laws 2 and 3). Less code is the goal, and it is measured:
+report the lines and the duplicates the project's detector finds, before and after, on
+the same scope and configuration.
 
-Read the `structural remediation procedure` (skill file). Remove the maximum confirmed
-waste while preserving the full public contract, causal failures, security, readability,
-types, observability, and measured performance. Line reduction is evidence, never the
-goal.
-
-Treat repeated environment variables, settings, parameters, or arguments equal to a
-typed canonical default as semantic duplication. The owner keeps the default; consumers
-keep only supported overrides.
-
-Routine local cleanup belongs to `simplify`. Do not activate for textual similarity,
-prose, generated/vendor output, raw line count, or an unproven dead symbol. A jscpd
-report at its selected comparison floor is candidate evidence; read both fragments and
-prove shared semantics through the dry procedure.
+- Duplication is shared meaning or repeated work, not similar text: read both copies
+  before merging them.
+- Merge into the existing owner, never into a new utility bag, registry, framework or
+  generated copy.
+- A repeated value equal to its owner's default is a copy; consumers keep only real
+  overrides.

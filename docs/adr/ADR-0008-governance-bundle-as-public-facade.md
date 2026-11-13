@@ -1,8 +1,10 @@
 # ADR-0008 — GovernanceBundle is the read-only semantic boundary
 
-- **Status:** Accepted
+- **Status:** Amended by ADR-0038
 - **Date:** 2026-09-03
-- **Scope:** Package ownership, public API, validation, and delivery boundary
+- **Scope:** Package ownership, public API, validation, and delivery boundary; the
+  test-verb contract is `rules/workflow/canonical-commands.md`, source cutovers follow
+  law 6 of `rules/law.md`
 - **Supersedes:** The provider-projection, runtime CLI, and composed-delivery decisions
   formerly recorded by ADR-0003, ADR-0004, and ADR-0005
 
@@ -45,6 +47,16 @@ consumes `GovernanceBundle`, not that local mirror. Existing projected trees are
 deleted by this source cutover; their owned retirement belongs to AI Hub. Complete skill
 references, scripts, and evaluation resources remain part of the read-only package and
 its distribution contract.
+
+**Amendment — 2026-10-29 (development-local generation):** the later `ag-la3h`
+selection and commits `19e64c01` and `8226eafc` retain `make gen` for development
+outputs inside this repository checkout. The renderer in `tools/` is excluded
+from the distribution and proves its generated hooks, plugin and instruction
+pointers reach a deterministic fixed point. This narrows the earlier removal of
+the development route; it does not restore a package projector, HOME writer,
+installed runtime publisher or another delivery authority. AI Hub alone adapts
+and publishes installed consumer surfaces from the public bundle. Repository
+generation never establishes installed native-agent delivery.
 
 **Amendment — 2026-09-14 (resource contract):** each skill exposes its complete typed
 resource inventory, with format, executable policy, configured mode and SHA-256.
@@ -93,7 +105,8 @@ primitives.
   snapshot or the first causal failure.
 - Delivery can evolve in AI Hub without making provider details part of the semantic
   package contract.
-- A cutover removes every old consumer, test, fixture, document, generated projection,
-  backup, and archive in the same change. Old and new never coexist.
+- A source cutover rewires every consumer and removes superseded source, tests,
+  fixtures, documentation and repository-owned generated projections in the same
+  change, following `rules/law.md` item 6.
 - Model-dependent evaluation and runtime validation remain AI Hub work; Waza here
   validates only the packaged provider-neutral skill resources.

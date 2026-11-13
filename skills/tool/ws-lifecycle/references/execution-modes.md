@@ -1,6 +1,7 @@
 # Workspace execution modes
 
-Choose exactly one mode before effects.
+Choose exactly one execution mode before effects. Execution versus delegation is
+not an isolation choice.
 
 ## Delegated
 
@@ -9,19 +10,16 @@ Route the tracked item through the active city's declared surface, for example
 placement and session startup. The coordinator does not pre-create a Git worktree and
 must not describe a successful dispatch as work it executed. Before dispatch, read the
 formula's provisioning base: the `gascity` `do-work` step cuts its worktree from
-`origin/HEAD`, which must name the rig's integration lane (`rules/coordination/gascity.md`).
+`origin/HEAD`, which must name the rig's integration lane.
 
 ## Explicitly self-owned
 
 When the operator explicitly retains execution, do not invoke `gc sling` or claim a Gas
-City session. The repository owns its Git lane: fetch the declared integration ref,
-create an isolated tracked worktree with
-`git worktree add --track -b <branch> <path> origin/<integration>`, and record the exact
-`work_dir`, branch, base, and initial SHA in the repository's selected tracker. Then use
-the repository's current checkpoint and landing surface. Integrate base movement with
-`git merge --no-ff`, never `git rebase` or `git pull --rebase`. Retire the worktree only
-after `git fetch origin <integration>` refreshes the tracking ref and
-`git merge-base --is-ancestor <branch> origin/<integration>` then succeeds.
+City session. Placement, base integration and retirement follow
+`rules/git/gitflow-branch-pr.md`, and the physical environment `rules/storage.md`.
+Record the actual `work_dir`, branch, base, and initial SHA in the selected tracker. Use
+the repository's checkpoint and landing surface; coordinate WIP and serialize shared
+index mutations.
 
 `make work` owns neither mode. Never dispatch and also create a self-owned lane, or use
 a local worktree as evidence that Gas City dispatched, placed, or ran an agent. Without

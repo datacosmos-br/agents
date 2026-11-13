@@ -39,13 +39,13 @@ Evaluated from fork point, content probed in `dev` (patch archived where non-emp
 |---|---|---|---|
 | #150 plan-reconciliation make contract | empty (head is a bare dev merge) | Lane landed via #148/#149 — merge commit `cfd84f8d` in `dev`, key files verified | 0 |
 | #120 project skill distribution | empty (branch emptied before close) | Theme delivered via #108, #84, #131, #63, #59 | 0 |
-| #119 retire hooks projection surface | 25 files, +758/−1526 | Goal delivered by the ADR-0022 materialized-projection lane; no `test_hook_projection.py` nor `hook_projection` refs remain in `dev` | 2853 |
+| #119 retire hooks projection surface | 25 files, +758/-1526 | Goal delivered by the ADR-0022 materialized-projection lane; no `test_hook_projection.py` nor `hook_projection` refs remain in `dev` | 2853 |
 | #76 react-dom bump (dependabot) | empty | Absorbed with #77 | 0 |
-| #54 hotfix frontmatter v2 | 10 files, +192/−150 | `rules/coordination/beads-verification.md` exists in `dev` in a much stronger form (four independent sources); skills restructured since | 437 |
-| #53 restore frontmatter openers | 9 files, −9 | All touched skills open with `---` in `dev` | 81 |
+| #54 hotfix frontmatter v2 | 10 files, +192/-150 | `rules/coordination/beads-verification.md` exists in `dev` in a much stronger form (four independent sources); skills restructured since | 437 |
+| #53 restore frontmatter openers | 9 files, -9 | All touched skills open with `---` in `dev` | 81 |
 | #50 cosmos docgen retirement / direnv | empty | `dev` `.envrc` is generated from the same `base/.envrc.beads-workspace.j2` template | 0 |
-| #33 pr-sheriff mergeability | 1 file, +7/−1 | `pr_triage.py` surface retired in the skill cutover; mergeable/clean gate lives in `skills/tool/pr-sheriff/references/triage.md` | 26 |
-| #6 ai-hub primary contract (era artifact) | 187 files, +1291/−710 | Touched surfaces (`tests/test_waza_config.py`, `src/agents_governance/cli.py`) no longer exist; contract evolved via #139 + ADR-0022 | 5200 |
+| #33 pr-sheriff mergeability | 1 file, +7/-1 | `pr_triage.py` surface retired in the skill cutover; mergeable/clean gate lives in `skills/tool/pr-sheriff/references/triage.md` | 26 |
+| #6 ai-hub primary contract (era artifact) | 187 files, +1291/-710 | Touched surfaces (`tests/test_waza_config.py`, `src/agents_governance/cli.py`) no longer exist; contract evolved via #139 + ADR-0022 | 5200 |
 
 ## Subprojects and orphans
 

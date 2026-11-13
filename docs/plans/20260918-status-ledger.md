@@ -17,7 +17,7 @@
 | governance-runtime-program (ag-zrh) | PARCIAL | F0/F2 ✓; F1 travada no lado ai-hub (ag-ey2k walker, 7 owner-fixes já em PR #737); ag-bwqu único bloqueador de código do piloto; F3 (ag-zrh.4) aguarda deploy |
 | delivery-contract-behavioral-law (ag-p4a) | CUMPRIDO no repo | `c88cf7fd` (PR #135), release v0.5.0, ADRs 0017–0020; metade runtime (seção 5) é o elo ai-hub |
 | pydantic-governance-plan | PARCIAL — lado agents completo | fases 0–3 + PR #127 ✓; resto é `flext-vjj1s.*` (DB flext); header atualizado hoje |
-| ADR-0008 | CONTRADIÇÃO RESOLVIDA na F3 (`19e64c01`) | `cli.py`/`__main__.py` removidos; `projection.py` → `tools/governance_projection.py` (dev-only, fora do wheel); gen ponto-fixo ×2 + check + test-full 63 executados verdes |
+| ADR-0008 | CONTRADIÇÃO RESOLVIDA na F3 (`19e64c01`) | `cli.py`/`__main__.py` removidos; `projection.py` → `tools/governance_projection.py` (dev-only, fora do wheel); gen ponto-fixo x2 + check + test-full 63 executados verdes |
 | ADR-0014 intake | CUMPRIDO | `rules/workflow/capability-intake.md`; tríplice `flext-law` é defeito do consumidor (F5 do rework, dono ai-hub/flext) |
 | ADR-0015 tag grammar v2 | CUMPRIDO no catálogo; parcial nas projeções | projeções versionadas (P5) entram na F4/F5 |
 | ADR-0017/0018/0020/0021 | CUMPRIDOS | regras bootstrap presentes; v0.5.0; `advance.md` |
@@ -92,8 +92,8 @@ dono ai-hub; o piloto não destrava por trabalho catalog-side.
 
 - `bd lint`: 1 warning — ag-q6uo sem "Steps to Reproduce" (bug externo flext-infra;
   aceito, o dono detalhará lá).
-- `bd find-duplicates --limit 0`: 2 pares (ag-vblj.5×.4, ag-vblj.4×.3) — **mesma
-  classe, defeitos distintos** (k8s-mcp × github × ast-grep): manter separados.
+- `bd find-duplicates --limit 0`: 2 pares (ag-vblj.5x.4, ag-vblj.4x.3) — **mesma
+  classe, defeitos distintos** (k8s-mcp x github x ast-grep): manter separados.
   Os pares reais de duplicação (ag-p4a.1–.5) não são flaggados porque os gêmeos estão
   fechados; fechamento como duplicate na F6.
 - `bd doctor`: 71 passed + aviso de Dolt uncommitted — `bd vc commit` roda no fecho da

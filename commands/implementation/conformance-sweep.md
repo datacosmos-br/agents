@@ -19,14 +19,10 @@ argument.
 2. **Open the governance bead first** (before any mutation): one hotfix bead describing
    the delta with exact SHAs, plus one bead per discovered red with failing site,
    hypothesis, and trigger. Every later step records evidence there.
-3. **Inventory before discard/rewrite**: any history surgery requires the hunk inventory
-   per `rules/workflow/landing-and-sweep-law.md`; classify each hunk as re-derived,
-   port-back-needed, or superseded — in the bead.
-4. **Idempotency gate** (generation surface): `make gen` twice; artifacts to
-   `/tmp/fixed-point/`; `difflib.unified_diff` written to a file (code­gen stdout is
-   flooded — never read diffs from console flow). On divergence: hypotheses H1 tooling
-   determinism (taplo/uv resolve), H2 post-publish writer block, H3 stale registry; fix
-   at the block's writer; add the convergence regression test.
+3. **Keep history**: shared history is never rewritten or discarded (`rules/law.md`
+   item 11).
+4. **Idempotency gate**: a second `make gen` changes nothing; a divergence is fixed at
+   the writer of the diverging block, with a convergence regression test.
 5. **Budget check**: run the affected test files; every non-slow test must stay within
    10s. A test doing real provisioning in-line is rewritten to fixture + receipt
    assertion — never raise the limit.

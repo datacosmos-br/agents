@@ -9,12 +9,16 @@ metadata:
 # Fleet Lane Discipline
 
 Use when coordinating lanes across a superproject and submodule trees.
+Use the execution context selected by the current invocation, including an authorized
+primary/shared checkout; this procedure adds no isolation prerequisite.
 
-- Assign exactly one active owner per tree, including each submodule checkout. Never run
-  two lanes in the same checkout.
-- When a lane is stalled for more than 30 minutes by last-write mtime, resume the
-  existing `task_id`. Supply the ready decision, current evidence, next command, and
-  acceptance condition; never create a duplicate tree owner.
+- Serialize each shared Git index, merge or publication through its current owner;
+  bounded file owners collaborate in the same authorized checkout, and no cleanliness,
+  stability or exclusive-writer precondition applies (`rules/law.md` item 11).
+- Apply the abandonment test of `rules/coordination/inter-session-mail.md` to activity
+  attributable to the lane. Resume the existing `task_id` with the ready decision,
+  current evidence, next command and acceptance condition; never add a timer or tree
+  owner, or infer abandonment from mtime alone.
 - CI workspace validation follows gitlinks: gate every submodule projection before
   changing its root pointer. Land submodules first, then update pointers in a separate
   root commit.
@@ -38,9 +42,10 @@ and parallel actors.
   on its declared integration branch; re-fetch the remote and prove
   `git merge-base --is-ancestor <sha> origin/<base>` before any deletion the rollup
   justifies.
-- Retire a lane in the same cycle it lands: ancestor-proof against a just-fetched base,
-  then remove the worktree, delete the local branch, the remote branch, and prune stale
-  tracking refs. Empty `git worktree list` is the acceptance evidence.
+- Retire only an owned disposable isolated context with explicit removal authority,
+  the Git owner's preservation/runtime-reference proofs and ancestry against a
+  just-fetched base. Never remove adopted primary, integration, shared or foreign
+  contexts. Account for the authorized lane only, not an empty global worktree list.
 - Prove zero residue (`*.bak`, `*.tmp`, generated backups) through the generator itself
   — a green `make gen` fixed point — never through a manual `find` after failed or
   partial runs, and never through literal-grep heuristics (a literal environment probe
@@ -54,9 +59,10 @@ and parallel actors.
 - Close a bead only with evidence scoped to the exact gate state at closure: a partially
   failing pipeline is never cited as green; name which part is green and file the
   failing remainder as its own bead.
-- When landing under admin merge with checks still pending, rerun the affected gates on
-  the merged SHA before the next wave, and record which gates were rerun. Pending-CI
-  merges are an authorized exception, never a silent norm.
+- Integration merges follow `rules/law.md` item 10: an administrative merge may bypass
+  a missing review, never a red, missing or pending CI.
+  After every merge, rerun the affected gates on the merged SHA before the next wave and
+  record which gates were rerun.
 - Bulk edits over many files need a declared owner (Make verb or generator), per-file
   review intent, and downstream gates rerun; blanket textual replacement over prose
   without reading each diff is a residue generator.
@@ -88,7 +94,7 @@ evidence-producing and stays within the project Make dispatcher.
 - For exact definition/reference sites during consumer rewiring, use `$crg query` with a
   fresh index; grep stays reserved for literal evidence that CRG cannot answer.
 - Pilot rollout for fleet-wide changes: converge one non-core member to full green (gen
-  ×2 fixed point, check, full test within the test budget), then propagate waves across
+  x2 fixed point, check, full test within the test budget), then propagate waves across
   remaining members with the same gates per wave. Fleet changes land on the declared
   integration branch only.
 - Graph-backed claims about code state pass the `$crg` freshness gate first; a graph

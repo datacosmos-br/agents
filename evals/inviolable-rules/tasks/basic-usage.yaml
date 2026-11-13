@@ -1,12 +1,10 @@
-id: inviolablerules-basic-001
-name: Basic usage inviolable-rules
-description: Route every session gate moment to its owning rule file.
-tags: [gate, routing, rule, owners, session, sequence, basic-usage]
+id: inviolable-rules-law-entry-001
+name: Enter governance through the universal law
+description: Exercise the universal law pointer as the governance entry before work starts.
+tags: [universal-law, law-pointer, governance-entry, happy-path]
 inputs:
-  prompt: >-
-    List the gate sequence for a governance session (start, truth, execution, incident, refactor, tracker, close) and name the owning rule file for each moment instead of restating the law.
+  prompt: A session starts the work described in session-start.md. State what it reads first, what that text outranks, and what this skill adds to it.
   files:
-  - path: scenario.yaml
+  - path: session-start.md
 expected:
-  output_contains: ['gate', 'routing', 'rule', 'owners', 'session', 'sequence', 'runtime-is-reality', 'strict-execution']
-  output_not_contains: ["invented command", "skipped gate"]
+  output_contains: [rules/law.md, operator]

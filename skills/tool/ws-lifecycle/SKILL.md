@@ -7,19 +7,14 @@ metadata:
 
 ## Verification (mandatory)
 
-Before bead effects, apply the four-source cross-check in
-`rules/coordination/beads-verification.md`. Record command, working directory, exit
-code, and decisive output. Close a retired premise as obsolete with evidence; never
-execute it.
+Before bead effects, verify the bead under `rules/workflow/beads-traceability.md`.
 
 # Gas City Workspace Lifecycle
 
-Activate only when the repository contains `.beads/`, the project authorizes Gas City,
-and the workflow explicitly selects a Gas City-managed workspace decision. Installation
-or detection is not selection. Without `.beads/`, invoke or probe neither `gc` nor `bd`.
-Derive all placement and identity from the repository's Gas City owner rule and declared
-city, rig, pinned Pack, agent, formula, provider, Beads store, and physical workspace.
-Never infer or locally recreate configuration.
+Activate only when the workflow explicitly selects a Gas City-managed workspace decision
+(`gc-city` skill); installation or detection is not selection. Derive all placement and
+identity from the declared city, rig, pinned Pack, agent, formula, provider, Beads store
+and physical workspace; never infer or locally recreate configuration.
 
 While runtime is suspended, validate supplied configuration statically and make no
 workspace or runtime effect. A missing or conflicting declaration is the first cause; do

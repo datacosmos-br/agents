@@ -64,7 +64,7 @@ class TestmonAuditPlugin:
     """Observe pytest/testmon without changing execution semantics.
 
     ``incremental`` (``make test``) requires active testmon collection and
-    selection; ``full`` (``make test-full``) requires testmon to be inactive.
+    selection; ``full`` (``make test-full``) requires its plugin to be absent.
     """
 
     config: pytest.Config
@@ -79,22 +79,20 @@ class TestmonAuditPlugin:
     xfails: int = 0
 
     def validate(self) -> None:
-        """Require the exact testmon state of the selected root test verb."""
+        """Check plugin absence in full mode; inspect its fields only incrementally."""
 
-        tm_conf = cast(TestmonPytestConfig, self.config).testmon_config
         active = self.mode == "incremental"
-        if (
-            tm_conf.collect is not active
-            or tm_conf.select is not active
-            or tm_conf.tmnet
-        ):
-            raise RuntimeError(
-                f"testmon state is not canonical for {self.mode}: "
-                f"collect={tm_conf.collect} select={tm_conf.select} tmnet={tm_conf.tmnet}"
-            )
+        if active:
+            tm_conf = cast(TestmonPytestConfig, self.config).testmon_config
+            if not tm_conf.collect or not tm_conf.select or tm_conf.tmnet:
+                raise pytest.UsageError(
+                    f"testmon state is not canonical for {self.mode}: "
+                    f"collect={tm_conf.collect} select={tm_conf.select} "
+                    f"tmnet={tm_conf.tmnet}"
+                )
         for plugin in _TESTMON_PLUGINS:
             if self.config.pluginmanager.hasplugin(plugin) is not active:
-                raise RuntimeError(
+                raise pytest.UsageError(
                     f"testmon plugin {plugin} presence is not canonical for {self.mode}"
                 )
 

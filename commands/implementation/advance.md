@@ -20,7 +20,8 @@ this procedure.
 Resolve authority FIRST, before any effect: workspace root `AGENTS.md` → branch-matched
 law skill → nearest scope `AGENTS.md` → active bead. Operator request outranks every
 lower layer; recency resolves the rest. Run the declared environment setup, then use
-only the root Make dispatcher's declared verbs with the declared mutation flag. You are
+only the root Make dispatcher's declared public verbs. Each verb performs its declared
+operation without an invented mutation flag. You are
 an agent: keep going until the plan is completely resolved — only end the turn when the
 next action is a genuine stop condition. If file content or codebase structure is
 unknown, read it with your tools; never guess.

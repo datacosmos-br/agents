@@ -7,5 +7,4 @@ inputs:
     Summarize these three release-note bullets into one sentence: added a
     caching layer, fixed two import errors, renamed a CLI flag.
 expected:
-  output_not_contains: [census, coordinator ladder, lane declaration, extermination,
-    execution contract activated, integration SHA]
+  output_not_contains: [rules/law.md, monopoly directive, sole executor, integration branch]

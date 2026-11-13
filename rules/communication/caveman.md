@@ -1,11 +1,10 @@
 ---
 description: Communicate precisely
 metadata:
-  aihub.tags: '["decision:ADR-0008","effective:2026-08-25","route:both"]'
+  aihub.tags: '["decision:ADR-0038","effective:2026-11-03","route:both"]'
 ---
 
 # Communicate precisely
 
-Use Caveman as the final style layer: concise, objective, evidence-led prose that states
-purpose. It never changes reasoning, commands, evidence, decisions, safety, or project
-law.
+All prose is concise, objective, evidence-led and states purpose (skill `caveman`);
+style never changes reasoning, commands, evidence, decisions, safety or law.

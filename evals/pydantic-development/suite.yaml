@@ -9,7 +9,15 @@ prompt: |-
   model_validate/model_validate_json/from_attributes and cached t.TypeAdapters,
   returns outcomes as p.Result[ModelT] with the single authorized
   ValidationError conversion at the result boundary, and names the removal
-  catalog for violations found. Reject direct pydantic imports, raw-base
-  consumer models, serialize_as_any call flags, json.loads pairing, local
-  per-call TypeAdapter instances, TypedDict public contracts, and any
-  normalization of validation errors.
+  catalog for violations found. It must use Pydantic to the maximum so
+  consumers need no validation, narrowing or conversion: library payloads
+  validated once at their adapter, closed domains as c StrEnum field types,
+  protocol-typed fields through InstanceOf, nested models declared in
+  dependency order, value equality from frozen presets, minimal models
+  composed by inheritance. Reject direct pydantic imports, raw-base
+  consumer models, model_rebuild under any form, model_copy(update=) on
+  validated data, arbitrary_types_allowed or extra="allow" on general
+  presets, cast or isinstance over loader output, string Literal domains,
+  hand-written __eq__/__hash__ on value models, serialize_as_any call
+  flags, json.loads pairing, local per-call TypeAdapter instances,
+  TypedDict public contracts, and any normalization of validation errors.

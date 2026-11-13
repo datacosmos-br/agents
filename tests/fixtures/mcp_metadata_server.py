@@ -4,25 +4,30 @@ from __future__ import annotations
 
 import asyncio
 
-from mcp.server import Server
+from mcp.server import Server, ServerRequestContext
 from mcp.server.stdio import stdio_server
-from mcp.types import Tool
-
-server = Server("metadata-contract")
+from mcp.types import ListToolsResult, PaginatedRequestParams, Tool
 
 
-@server.list_tools()
-async def list_tools() -> list[Tool]:
+async def list_tools(
+    ctx: ServerRequestContext[object], params: PaginatedRequestParams | None
+) -> ListToolsResult:
     """Serve the three distinct metadata states allowed by the SDK."""
-    return [
-        Tool(name="absent", inputSchema={"type": "object"}),
-        Tool(name="empty", description="", inputSchema={"type": "object"}),
-        Tool(
-            name="described",
-            description="Read metadata",
-            inputSchema={"type": "object"},
-        ),
-    ]
+    del ctx, params
+    return ListToolsResult(
+        tools=[
+            Tool(name="absent", input_schema={"type": "object"}),
+            Tool(name="empty", description="", input_schema={"type": "object"}),
+            Tool(
+                name="described",
+                description="Read metadata",
+                input_schema={"type": "object"},
+            ),
+        ]
+    )
+
+
+server = Server("metadata-contract", on_list_tools=list_tools)
 
 
 async def main() -> None:

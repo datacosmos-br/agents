@@ -15,8 +15,8 @@ from agents_governance import GovernanceBundle
 def pytest_configure(config: pytest.Config) -> None:
     """Reject every pytest path outside the root test verbs.
 
-    ``make test`` runs with testmon against the shared external database;
-    ``make test-full`` runs without testmon.
+    ``make test`` runs with testmon against its default database;
+    ``make test-full`` disables its plugin, so the optional plugin flag is absent.
     """
 
     mode = os.environ.get("TESTMON_MODE")
@@ -24,17 +24,11 @@ def pytest_configure(config: pytest.Config) -> None:
         raise pytest.UsageError(
             "tests must run through `make test` or `make test-full`"
         )
-    if bool(config.getoption("testmon")) is not (mode == "incremental"):
+    incremental = mode == "incremental"
+    if config.pluginmanager.hasplugin("pytest-testmon") is not incremental:
+        raise pytest.UsageError(f"testmon plugin is not canonical for {mode}")
+    if bool(config.getoption("testmon", default=False)) is not incremental:
         raise pytest.UsageError(f"testmon activation is not canonical for {mode}")
-    if mode == "full":
-        return
-    configured = os.environ.get("TESTMON_DATAFILE")
-    if configured is None or not configured.strip():
-        raise pytest.UsageError("TESTMON_DATAFILE must select the shared cache")
-    datafile = Path(configured).expanduser().resolve()
-    repository = Path(config.rootpath).resolve()
-    if datafile.is_relative_to(repository):
-        raise pytest.UsageError("the testmon database must remain outside the checkout")
 
 
 @pytest.fixture(scope="session")

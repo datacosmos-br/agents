@@ -12,7 +12,11 @@ prompt: |-
   positives), records the built commit as evidence, lands edits through the
   project codemod owner, and rebuilds the superproject graph with
   `CRG_RECURSE_SUBMODULES=1` because incremental updates do not walk into
-  member commits. Reject answers that trust a stale or foreign checkout's
+  member commits. For a new lane worktree it stores the fresh workspace graph
+  with `vstore put`, names the absolute-path gap that makes a copied graph
+  foreign until the owner rebases it, builds the lane's own graph, and keeps
+  exactly one background `watch --repo <lane>` until retirement, unless the
+  host service already watches that graph. Reject answers that trust a stale or foreign checkout's
   graph, invent flags, treat an empty result as proof of absence, start a
   second watcher or daemon on a graph the host service already watches, run
   `code-review-graph install` or hand-edit managed daemon/MCP/hook

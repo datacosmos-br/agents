@@ -55,9 +55,10 @@ For each item to remove:
 
 - Start with SAFE items only
 - Remove one category at a time: deps -> exports -> files -> duplicates
-- Follow the cleanup order of `rules/architecture/engineering-core.md`: no heavy
-  validation between batches; tests run once, at the end
-- Commit after each batch (persistence, not validation)
+- Every consumer is rewired and no old path remains (`rules/law.md` item 6);
+  validation runs once, at the end
+- Preserve scoped evidence and publish only under `rules/git/gitflow-branch-pr.md`;
+  a persistence checkpoint is not validation or a prerequisite for shared WIP
 
 ### 4. Consolidate Duplicates
 
@@ -76,7 +77,7 @@ Before removing:
 
 After each batch:
 
-- [ ] Committed with descriptive message
+- [ ] Applied effects and remaining consumers recorded without discarding shared WIP
 
 At the end of the round (once):
 
@@ -87,16 +88,12 @@ At the end of the round (once):
 ## Key Principles
 
 1. **Start small** -- one category at a time
-2. **Test once, at the end** -- the cleanup order of
-   `rules/architecture/engineering-core.md`; never between batches
-3. **Be conservative** -- when in doubt, don't remove
-4. **Document** -- descriptive commit messages per batch
-5. **Never remove** during active feature development or before deploys
+2. **Test once, at the end** -- never between batches
+3. **Document** -- record each batch's effects and consumers; commits follow the Git
+   owner
 
 ## When NOT to Use
 
-- During active feature development
-- Right before production deployment
 - Without proper test coverage
 - On code you don't understand
 

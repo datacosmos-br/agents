@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import math
 import stat
+from collections.abc import Mapping
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -17,6 +18,7 @@ from .frontmatter import (
     require_exact_fields,
     string_array,
 )
+from .resources import CatalogResource, catalog_members, source_text
 
 _EVAL_FIELDS = frozenset({"description", "prompt", "version"})
 _REQUIRED_EVAL_FIELDS = frozenset({"description", "prompt"})
@@ -121,10 +123,12 @@ def _nonempty_text(value: object, context: str) -> str:
     return value
 
 
-def _mapping(path: Path) -> dict[str, object]:
+def _mapping(
+    path: Path, captured: Mapping[Path, CatalogResource] | None = None
+) -> dict[str, object]:
     if path.is_symlink() or not path.is_file():
         raise ValueError(f"evaluation resource must be a physical file: {path}")
-    source = path.read_text(encoding="utf-8")
+    source = source_text(path, captured)
     # One parse, through LibYAML. The node carries the duplicate-key evidence and
     # the document is constructed from that same node: composing with the
     # pure-Python loader and then calling ``safe_load`` parsed every evaluation
@@ -147,7 +151,7 @@ def _mapping(path: Path) -> dict[str, object]:
 def _physical_tree(directory: Path) -> None:
     if directory.is_symlink() or not directory.is_dir():
         raise ValueError(f"evaluation suite must be a physical directory: {directory}")
-    for path in sorted(directory.rglob("*")):
+    for path in catalog_members(directory):
         metadata = path.lstat()
         if stat.S_ISLNK(metadata.st_mode):
             raise ValueError(f"evaluation resource must be physical: {path}")
@@ -171,7 +175,7 @@ def _task_files(
     return tuple((suite / relative, role) for role, relative in declared)
 
 
-def _audit_inputs(path: Path, value: object, fixtures: set[Path]) -> str:
+def _audit_inputs(path: Path, value: object, role: str, fixtures: set[Path]) -> str:
     inputs = cast_mapping(value, f"{path}: inputs")
     fields = frozenset(inputs)
     if "prompt" not in fields or not fields <= _INPUT_FIELDS:
@@ -179,6 +183,8 @@ def _audit_inputs(path: Path, value: object, fixtures: set[Path]) -> str:
     prompt = _nonempty_text(inputs["prompt"], f"{path}: inputs.prompt")
     raw_files = inputs.get("files")
     if raw_files is None:
+        if role == "happy_path":
+            raise ValueError(f"{path}: happy_path requires inputs.files")
         return prompt
     if not isinstance(raw_files, list) or not raw_files:
         raise TypeError(f"{path}: inputs.files must be a non-empty array")
@@ -221,8 +227,9 @@ def _audit_task(
     identifiers: set[str],
     prompts: set[str],
     fixtures: set[Path],
+    captured: Mapping[Path, CatalogResource] | None = None,
 ) -> None:
-    task = _mapping(path)
+    task = _mapping(path, captured)
     require_exact_fields(task, _TASK_FIELDS, str(path))
     identifier = _trimmed_text(task["id"], f"{path}: id")
     if identifier in identifiers:
@@ -231,7 +238,7 @@ def _audit_task(
     for field in ("name", "description"):
         _trimmed_text(task[field], f"{path}: {field}")
     string_array(task["tags"], f"{path}: tags")
-    prompt = _audit_inputs(path, task["inputs"], fixtures)
+    prompt = _audit_inputs(path, task["inputs"], role, fixtures)
     if prompt in prompts:
         raise ValueError(f"{path}: evaluation prompt is duplicated")
     prompts.add(prompt)
@@ -250,8 +257,10 @@ def _suite_version(value: object, context: str) -> str:
     return version
 
 
-def _audit_defaults(path: Path) -> EvalPolicy:
-    defaults = _mapping(path)
+def _audit_defaults(
+    path: Path, captured: Mapping[Path, CatalogResource] | None = None
+) -> EvalPolicy:
+    defaults = _mapping(path, captured)
     require_exact_fields(defaults, _DEFAULT_FIELDS, str(path))
     if defaults["version"] != 1:
         raise ValueError(f"{path}: version must equal 1")
@@ -347,6 +356,7 @@ def _audit_suite(
     identifiers: set[str],
     prompts: set[str],
     policy: EvalPolicy,
+    captured: Mapping[Path, CatalogResource] | None = None,
 ) -> None:
     _physical_tree(suite)
     children = {path.name for path in suite.iterdir()}
@@ -357,7 +367,7 @@ def _audit_suite(
     }:
         raise ValueError(f"{suite}: unsupported or missing suite resources")
     source = suite / "suite.yaml"
-    evaluation = _mapping(source)
+    evaluation = _mapping(source, captured)
     fields = frozenset(evaluation)
     if not _REQUIRED_EVAL_FIELDS <= fields or not fields <= _EVAL_FIELDS:
         raise ValueError(
@@ -372,12 +382,12 @@ def _audit_suite(
         raise ValueError(f"{source}: default version must be omitted")
     fixtures: set[Path] = set()
     for task, role in _task_files(suite, policy.tasks):
-        _audit_task(task, role, identifiers, prompts, fixtures)
+        _audit_task(task, role, identifiers, prompts, fixtures, captured)
     fixture_root = suite / "fixtures"
     physical_fixtures = (
         {
             path.resolve(strict=True)
-            for path in fixture_root.rglob("*")
+            for path in catalog_members(fixture_root)
             if path.is_file()
         }
         if fixture_root.exists()
@@ -387,11 +397,16 @@ def _audit_suite(
         raise ValueError(f"{suite}: fixtures must exactly equal referenced files")
 
 
-def audit_skill_evals(root: Path, skills: tuple[SkillRecord, ...]) -> EvalPolicy:
+def audit_skill_evals(
+    root: Path,
+    skills: tuple[SkillRecord, ...],
+    *,
+    captured: Mapping[Path, CatalogResource] | None = None,
+) -> EvalPolicy:
     """Require one complete physical semantic evaluation suite per skill."""
 
     repository = root.resolve(strict=True)
-    policy = _audit_defaults(repository / "config" / "evals.json")
+    policy = _audit_defaults(repository / "config" / "evals.json", captured)
     eval_root = repository / "evals"
     if eval_root.is_symlink() or not eval_root.is_dir():
         raise ValueError(f"skill evaluation root must be physical: {eval_root}")
@@ -408,7 +423,7 @@ def audit_skill_evals(root: Path, skills: tuple[SkillRecord, ...]) -> EvalPolicy
     identifiers: set[str] = set()
     prompts: set[str] = set()
     for suite in entries:
-        _audit_suite(suite, identifiers, prompts, policy)
+        _audit_suite(suite, identifiers, prompts, policy, captured)
     return policy
 
 

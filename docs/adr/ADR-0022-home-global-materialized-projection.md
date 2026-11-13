@@ -1,15 +1,15 @@
 # ADR-0022 — Home global `~/.agents` como projeção materializada versionada
 
-**Status:** Accepted (emendado 2026-09-18 — errata G0) **Date:** 2026-09-18 **Scope:**
-`~/.agents` (superfície de leitura global) · gestão: **AI Hub** ·
-`docs/plans/20260918-handoff-repasse-consolidado.md`
+**Status:** Amended by ADR-0038 **Date:** 2026-09-18 **Scope:** `~/.agents`, the global
+read surface managed by AI Hub (`docs/plans/20260918-handoff-repasse-consolidado.md`);
+publication effects follow laws 8 and 11 of `rules/law.md`
 
 ## Context
 
 `~/.agents` é hoje um **symlink para o checkout fonte** `/home/marlonsc/agents`. O
 diagnóstico do rework de distribuição aprovado em 18/09 (seção §6, F6) mediu o risco:
 `make gen` reescreve config viva do usuário dentro do checkout; `git clean`/switch de
-branch no fonte pode deletar o home; hooks de dois donos (ai-hub × Gas City) convivem
+branch no fonte pode deletar o home; hooks de dois donos (ai-hub x Gas City) convivem
 nos mesmos JSONs projetados. A separação completa (home como transação do ai-hub) é a
 F6 do rework e pressupõe F1–F3 do ai-hub — hoje vermelhos. Enquanto isso, todo consumo
 catálogo-side (session-router, skills globais, waza) resolve por `~/.agents` e fica
@@ -22,16 +22,37 @@ alias do checkout.
 
 ## Decision
 
-1. **Projeção de leitura universal, fonte única no repo.** `~/.agents` materializa o
-   catálogo semântico do checkout (`skills/`, `rules/`, `commands/`, `agents/`,
+1. **Projeção de leitura universal, fonte semântica única no SDK.** `~/.agents` materializa o
+   catálogo semântico pela API pública `catalog_resources(bundle)` do SDK, não por
+   cópia do checkout ou override da raiz de dados no controlador (`skills/`,
+   `rules/`, `commands/`, `agents/`,
    `evals/`, `docs/adr/`, `docs/research/`, `docs/security/`, `AGENTS.md`,
    `README.md`, `metadata.json`) — e nada mais: nenhum `.git/`, `.venv/`, `.beads/`,
    `.gc/`, `worktrees/`, `dist/`, superfícies de provider do checkout (`.claude/`,
    `.codex/`, `.cursor/`, `.gemini/`, `.opencode/`, `.kilo/`) nem config viva de
-   usuário. `AGENTS.md` entra por consumidor medido: é alvo declarado do
+   usuário. O `force-include` existente do wheel em `pyproject.toml` é a autoridade
+   de inscrição dos recursos; `config/` e o próprio documento de inscrição são
+   entradas privadas do SDK, não publicações centrais. O sdist conserva as mesmas
+   fontes inscritas. A API retorna uma tupla ordenada por caminho de registros
+   congelados `CatalogResource(relative_path: str, content: bytes, mode: int,
+   sha256: str)`, com caminhos relativos físicos, bytes exatos, permissões e digest
+   SHA-256 desses bytes. Links simbólicos e tipos não regulares falham; hardlinks
+   regulares mantêm identidades por caminho, como no catálogo de skills existente.
+   Recursos de skills conservam a política e o digest do leitor já existente.
+   `AGENTS.md` central é composto de `bundle.law.prelude` e
+   `render_capsule(bundle).text`, pelos donos semânticos existentes, sem o bloco
+   de escopo local do repositório nem instruções do repositório AI Hub.
+   `UNIVERSAL_CORE.md` legado não é inscrito automaticamente: um relinker antigo
+   não cria autoridade de catálogo. `AGENTS.md` entra por consumidor medido: é
+   alvo declarado do
    `ssot_relink` e da gate fail-closed `projection_identity_gate` do ai-hub
    (`config/governance.yaml:10-16`). Consumidores lêem; nenhum consumidor escreve —
    escrita de consumer no home é defeito reportado, não estado aceito.
+   Esta fronteira declara o protocolo de fonte; não atesta publicação ou execução.
+   Igualdade de bytes, modos e digests entre fonte e distribuições instaladas exige
+   prova nativa separada, assim como o consumo transacional efetivo pelo AI Hub.
+   A adoção desta API pelo runtime AI Hub não é comprovada pela alteração de fonte
+   do SDK; os consumidores citados acima descrevem a motivação histórica.
 2. **Carimbo de versão + digest (P5/ADR-0015).** O home carrega
    `.agents-governance.json` com `owner`, versão do bundle, `generated_at` e digests
    por árvore. Convergência se decide por versão+digest, nunca por byte-diff cego.
@@ -55,10 +76,38 @@ alias do checkout.
 - O checkout fonte deixa de ser ponto único de falha do home: `git clean`/branch
   switch não tocam mais o que os consumidores leem.
 - `make gen` do checkout volta a escrever somente superfícies do próprio checkout; a
-  config viva do usuário (hooks Gas City × ai-hub) sai do raio de efeito colateral.
-- Drift catálogo×home fica visível quando o ai-hub assumir a verificação
+  config viva do usuário (hooks Gas City x ai-hub) sai do raio de efeito colateral.
+- Drift catálogoxhome fica visível quando o ai-hub assumir a verificação
   (`projection_identity_gate` já fail-closed); no intervalo, o stale é conhecido e
   aceito como estado transicional declarado.
 - A gestão transacional final é do ai-hub (F6 do rework); a fronteira
   **flext ⊄ privado / privado ⊇ flext** permanece: nada disto cria dependência do
   flext para com agents/ai-hub.
+
+## Amendment 2026-10-28 — minimum authenticated publication effects
+
+Authority: the operator's joint-runtime plan requires minimum declarative changes,
+preservation of existing native configuration and one existing publication owner.
+Execution is recorded by `ag-wibx.2.1.1`, linked to the AI Hub delivery item
+`aihub-6sls5.1`. This amendment declares the contract; it does not attest installed
+propagation.
+
+The SDK remains a read-only semantic catalog. AI Hub retains destination selection,
+native-format adaptation, ownership verification, staging, publication and activation.
+Reading current destination bytes for preservation and compare-and-swap checks does
+not import that native configuration as semantic policy.
+
+The publisher composes effects for each destination once and changes only the
+declared owned artifact, field, entry or block. Preserve foreign/manual content and
+syntax outside changed spans. A satisfied declaration produces no write, metadata
+refresh or restart. Removal requires both declared scope and authenticated current
+ownership; a glob, filename, missing marker or version mismatch alone grants no
+authority to delete. Conflicting ownership or changed inputs fail before effects.
+
+The owning rules are
+[`atomic-effects`](https://github.com/datacosmos-br/agents/blob/f9161bfb/rules/runtime/atomic-effects.md) and
+[`distribution-routing`](https://github.com/datacosmos-br/agents/blob/f9161bfb/rules/coordination/distribution-routing.md).
+The conditional recovery procedure is
+[`runtime-heal`](../../skills/domain/runtime-heal/references/procedure.md).
+Provider eligibility and concrete native selectors remain consumer policy; they are
+not copied into this package or inferred by an adapter.

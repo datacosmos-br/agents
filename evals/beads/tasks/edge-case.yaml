@@ -1,10 +1,10 @@
 id: beads-edge-001
-name: Keep tracker and orchestration unselected without the repository boundary
-description: Absence of .beads selects neither Beads nor Gas City.
+name: Keep an unselected tracker and orchestration idle
+description: Installed binaries alone select neither Beads nor Gas City.
 tags: [beads, gascity, edge-case, anti-trigger]
 inputs:
   prompt: >-
-    Continue work in this repository. It has no .beads directory, although bd
+    Continue work in this repository. Nothing selects a tracker, although bd
     and gc are installed globally. Determine tracker and orchestration behavior
     before running any command.
 expected:

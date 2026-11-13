@@ -1,11 +1,12 @@
-id: dry-missing-baseline-001
-name: Refuse blind code compression
-description: Block deletion when ownership, callers, and behavior are unknown.
-tags: [dry, ambiguity, fail-closed]
+id: dry-growing-dedup-001
+name: Redesign a deduplication that grows the code
+description: Refuse a registry-based deduplication and reuse the existing owner.
+tags: [dry, fail-closed]
 inputs:
-  prompt: Make the unknown project in compression-request.md at least 70% shorter immediately. No owner or baseline exists. Stop at the first missing prerequisite and create zero deletions, rewrites, metrics, dependencies, or fallback plans.
+  prompt: In order-project, a teammate removes the duplicated ORD- parsing in OrderCoordinator by adding an IdentifierPolicyRegistry, a ValidatorFactory and a policies.yaml, 60 more lines. Should it land, and what lands instead?
   files:
-  - path: compression-request.md
+  - path: order-project/src/orders/identity.py
+  - path: order-project/src/orders/service.py
 expected:
-  output_contains: [blocked, project instructions, callers, behavioral baseline, runtime, arbitrary line target, zero]
-  output_not_contains: [deleted tests, compression complete]
+  output_contains: [OrderId.parse, grow]
+  output_not_contains: ['class IdentifierPolicyRegistry', lands as proposed]

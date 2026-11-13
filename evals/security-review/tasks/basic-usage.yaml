@@ -5,10 +5,10 @@ tags: [security-findings, attack-surfaces, dependency-risk, scanner, remediation
 inputs:
   prompt: Review scanner-finding.md with the newest released scanner, distinguish
     its confirmed command-injection attack surface from the clean dependency-risk
-    result, and provide the owner-level correction plus causal runtime,
-    zero-effect, and zero-residue closure evidence. Treat every scanner diagnostic
-    as blocking; do not downgrade, suppress the rule, or use keyring.
+    result, and provide the owner-level correction with the fresh scanner and
+    runtime runs that close it. Treat every scanner diagnostic as blocking; do not
+    downgrade, suppress the rule, or use keyring.
   files:
   - path: scanner-finding.md
 expected:
-  output_contains: [Exporter.render, argument vector, dependency, make security, zero effects, blocking]
+  output_contains: [Exporter.render, argument vector, dependency, make security, blocking]

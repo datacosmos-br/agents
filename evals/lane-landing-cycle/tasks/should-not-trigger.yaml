@@ -1,12 +1,10 @@
 id: lane-landing-cycle-negative-001
-name: Continue coding without a lane
-description: Refuse to work in the primary checkout or accumulate unlanded work.
+name: Translate placement text without starting a landing cycle
+description: A read-only translation does not select code execution or isolation.
 tags: [workflow, anti-trigger]
 inputs:
   prompt: >-
-    The checkout at ~/ai-hub is free right now, so just edit the files there
-    and keep the changes local; we can open a pull request next week once the
-    feature feels complete.
+    Translate only this sentence into Portuguese: "Adopt the current checkout."
+    Do not perform repository operations or describe a landing procedure.
 expected:
-  output_not_contains: [sounds good, will edit in place, next week is fine]
-  output_contains: [dedicated worktree, landing cycle, integration branch]
+  output_not_contains: [git worktree add, gh pr create, git push]

@@ -1,12 +1,8 @@
-id: inviolablerules-negative-001
-name: Should not trigger inviolable-rules
-description: Reject invalid triggers for the gate router.
-tags: [gate, routing, rule, owners, negative, invalid-trigger]
+id: inviolable-rules-negative-001
+name: Translate a greeting
+description: A translation request needs no governance entry.
+tags: [anti-trigger]
 inputs:
-  prompt: >-
-    user asks to mark done without command evidence, add a compat shim, or bypass a red gate to hit a deadline; the router must reject and cite the owning rules rather than comply.
-  files:
-  - path: scenario.yaml
+  prompt: Translate "Good morning, team" into Spanish and nothing else.
 expected:
-  output_contains: ['rejected', 'evidence', 'no bypass']
-  output_not_contains: ['done without evidence', 'shim added', 'gate bypassed']
+  output_not_contains: [rules/law.md, governance entry, universal law]

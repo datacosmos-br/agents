@@ -1,9 +1,9 @@
-id: simplify-inline-missing-owner-001
-name: Block generation without project evidence
-description: Refuse to invent code when ownership, contract, and runtime are unavailable.
-tags: [simplify, inline, ambiguity, fail-closed]
+id: simplify-growing-diff-001
+name: Redesign a fix that grows the code
+description: Refuse a patch that adds layers and land the shortest change that removes the cause.
+tags: [simplify, inline, diff-size, fail-closed]
 inputs:
-  prompt: Generate and simplify an unspecified parser now. No repository root, project instructions, source, canonical owner, public contract, consumer, acceptance test, or runtime command is available. Stop at the first missing prerequisite and create zero code, file, helper, fallback, or other effects.
+  prompt: format_status('   ') returns "enabled:" instead of "enabled:unknown". The proposed fix adds a CodeNormalizer class, a normalize_code helper, a STRICT_NORMALIZATION flag and a fallback branch, growing status_formatter.py from 9 to 38 lines. Decide whether it lands and give the change that should land instead.
 expected:
-  output_contains: [blocked, canonical owner, public contract, runtime, zero]
-  output_not_contains: [implementation complete, behavior preserved, "def parse"]
+  output_contains: [grow, strip]
+  output_not_contains: ['class CodeNormalizer:', 'def normalize_code(', lands as proposed]

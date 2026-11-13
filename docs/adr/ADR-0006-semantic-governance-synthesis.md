@@ -1,8 +1,9 @@
 # ADR-0006 — Synthesize historical governance by behavior, not structure
 
-- **Status:** Accepted
+- **Status:** Amended by ADR-0038
 - **Date:** 2026-08-28
-- **Scope:** External and historical governance evidence
+- **Scope:** External and historical governance evidence; owners are selected by
+  ADR-0001 and `rules/law.md`
 
 ## Context
 

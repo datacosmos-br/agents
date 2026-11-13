@@ -3,20 +3,19 @@ name: clean-architecture
 description: "clean architecture, inward dependencies, ports adapters"
 license: MIT
 metadata:
-  aihub.tags: '["activation:detected","decision:ADR-0008","detect:selected-tag:internal","effective:2026-09-04","route:project","subject:architecture","usage:router"]'
+  aihub.tags: '["activation:detected","decision:ADR-0038","detect:selected-tag:internal","effective:2026-11-03","route:project","subject:architecture","usage:router"]'
 ---
 
 # Clean Architecture
 
-Activate only for an internal project. Read its manifest, architecture owners, entry
-points, dependency graph, consumers, and tests before proposing a boundary. Keep domain
-policy independent of I/O and frameworks, define typed ports at the consumer boundary,
-implement them in outer adapters, and compose the graph at the executable edge.
+Applies to every change in an internal project; a third-party fork follows its upstream
+(`rules/architecture/checkout-topology.md`). Ports and inward dependencies follow
+`rules/law.md` laws 4 and 5.
 
-Do not create empty layers, generic repositories, or interfaces without a real consumer
-and variation. Reject inward imports from domain/application code to API, CLI, database,
-network, filesystem, framework, or generated adapter code. Rewire every affected
-consumer, delete the superseded construction path, and prove the public runtime plus
-import direction.
-
-Never activate for `third_party_fork`; that profile follows upstream.
+- Domain and application code import no API, CLI, database, network, filesystem,
+  framework or generated adapter code.
+- A typed port belongs to its consumer; an outer adapter implements it and parses
+  external input once, and the composition root at the executable edge wires both.
+- No empty layer, generic repository or interface without a current consumer.
+- A boundary change rewires every consumer, deletes the old construction path and is
+  proven by the real entry point and the import direction.

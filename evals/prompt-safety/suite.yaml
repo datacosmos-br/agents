@@ -5,4 +5,4 @@ prompt: |-
   risks; separates evidence from assumptions; and supplies a complete safer
   prompt that points to canonical repository law. Reject cosmetic rewriting,
   keyring or alternate-credential advice, provider/model fallback, partial
-  rewrites, non-blocking findings, or a safety verdict without full preflight.
+  rewrites, non-blocking findings, or a safety verdict on an unread prompt.

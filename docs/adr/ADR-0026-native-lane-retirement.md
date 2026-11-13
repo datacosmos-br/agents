@@ -1,6 +1,6 @@
 # ADR-0026 — Native lane retirement; the projection-landing law is removed
 
-**Status:** Accepted **Date:** 2026-09-24
+**Status:** Superseded by ADR-0038 **Date:** 2026-09-24
 
 ## Context
 
@@ -38,8 +38,8 @@ from these laws.
    The landing cycle stays with `rules/git/gitflow-branch-pr.md`.
 2. Retirement is native and immediate. Clause 2 of
    `rules/coordination/worktree-discovery-maintenance.md` now reads:
-   - the lane that landed retires its own worktree and local and remote branches with
-     Git in the same cycle;
+    - the lane that landed retires only its invocation-owned disposable worktree and
+      eligible branches with Git in the same cycle;
    - it does so after `git merge-base --is-ancestor <ref> origin/<integration>` exits 0
      against a freshly fetched base;
    - a merged, patch-equivalent, or projection-only lane is retired the same way, after
@@ -59,10 +59,21 @@ from these laws.
      reached with `git -C <lane> <verb>` and `env -C <lane> make <verb>`.
    - `cd` into another checkout and `make -C` remain prohibited.
 
+### Adopted-context protection - 2026-10-23
+
+ADR-0025 and ag-wibx.2 remove mandatory isolation. Retirement consequently applies
+only to disposable lanes actually owned for that invocation, never the adopted
+primary/shared checkout, integration branch or another actor's context. An ancestry
+result alone does not make those targets disposable. Ownership and recovery proof
+remain prerequisites; this amendment removes no worktree or branch.
+
 ## Consequences
 
-- The accumulated merged lanes across the fleet are retired with Git, lane by lane, each
-  with an ancestry proof and recorded evidence. No new verb is a precondition.
+- Eligible invocation-owned disposable lanes may be retired through the current Git
+  owner, each with explicit authority, preservation/activity/runtime-reference checks,
+  freshly fetched ancestry proof and recorded evidence. Adopted primary/shared,
+  integration and foreign contexts remain protected; fleet inventory alone grants
+  no removal authority. No new verb is a precondition.
 - A lane that is not merged is adjudicated by its authored content before retirement.
   Projection-only diffs are not a contribution unless the operator overrides a specific
   item.

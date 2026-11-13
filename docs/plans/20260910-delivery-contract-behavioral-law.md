@@ -22,7 +22,7 @@ ag-p4a.11).
 | 1   | WS-A — ADR-0017 behavioral conscience                 | ✅ DONE (código+pouso pendente no PR) | Commit `c4403561`: emendas professional-integrity/engineering-core; novas change-consequence + operator-alignment no bootstrap; mediação de cápsula medida 9764/10000; `make check` exit 0; `test-full` 4/4                                                                                                                                            |
 | 2   | WS-B — ADR-0018 linha 0.5.0                           | ✅ DONE                               | Adotado pelo ator em `382b490f`; `make check` exit 0 com wheel 0.5.0 provado (artifact gate + mypy strict)                                                                                                                                                                                                                                             |
 | 3   | Correção do operador (listas/proibições, incl. tests) | ✅ ABSORVIDA                          | `delivery.py` grammar-only (sem vocabulários fechados); teste com pin exterminado e substituído por derivação (`test_catalog_structure.py`, ator adotado); waza floor adotado; engineering-core emendado — commits `29a7de58`, `40f47818`                                                                                                              |
-| 4   | WS-C — ADR-0019 delivery contract                     | ✅ DONE (código+pouso pendente no PR) | Commit `29a7de58` + fmt: gate tipado de cápsula em `load()` (falhou ao vivo 2× e mediou: 9477/9488, headroom 11); eventos grammar-validated (config é dono das instâncias); docs linking gate (bijeção 16 ADRs); marcador ADR-0015; Task 3 do .kilo medida como já implementada (testes fixam)                                                         |
+| 4   | WS-C — ADR-0019 delivery contract                     | ✅ DONE (código+pouso pendente no PR) | Commit `29a7de58` + fmt: gate tipado de cápsula em `load()` (falhou ao vivo 2x e mediou: 9477/9488, headroom 11); eventos grammar-validated (config é dono das instâncias); docs linking gate (bijeção 16 ADRs); marcador ADR-0015; Task 3 do .kilo medida como já implementada (testes fixam)                                                         |
 | 5   | Gates na worktree dedicada                            | ✅ GREEN                              | `make check` exit 0 (docs/static 29/waza 128/128/wheel 0.5.0+mypy strict); `test-full` 10/10, 0 warnings/skips, testmon integrity ok                                                                                                                                                                                                                   |
 | 6   | WS-D — ADR-0020 advance command + dossiê              | ✅ DONE                               | Commit `9318807f`: `advance.md` (15º comando); dossiê 14 fontes como evidência (garantia `instruction-design-evidence`); packaging corrigido na raiz (sdist carrega docs/research — defeito pego pelo runtime gate); check exit 0 completo (waza 128/128, wheel+sdist 0.5.0 + mypy strict); test-full 10/10                                            |
 | 7   | Pouso                                                 | ✅ DONE                               | PR #135 merged --no-ff (admin-authorized) → dev como `c88cf7fd`; gates rerun no SHA mesclado (check exit 0, test-full 10/10); prova pós-merge `GovernanceBundle.load` OK 0.5.0 (128/15/66/66, cápsula 9477/10000); release **v0.5.0** publicada (workflow 34553941894); beads ag-p4a.* fechadas com 4 evidências; colisão ag-ikwf registrada e fechada |
@@ -47,7 +47,7 @@ ag-p4a.11).
   InstructionsLoaded[...|compact], SessionEnd.
 - Princípios + crítica→revisão controlam comportamento (Constitutional AI) → valida o
   loop garantias→donos→emenda (ADR-0011).
-- Context editing + memória externa: +39% desempenho, −84% tokens (Anthropic context
+- Context editing + memória externa: +39% desempenho, -84% tokens (Anthropic context
   management) → PostCompact reinjeta cápsula; estado vive em bead/arquivo, nunca só no
   resumo do provider.
 
@@ -137,7 +137,7 @@ Reforma de tags + bump `0.5.0` (quebra gramática antiga; release consumida pelo
 ## 4. Fluxo de execução
 
 Beads (épico + filhos, absorvendo ag-zrh.2) → lane atual → WS-A..WS-D com gates por
-workstream (`make gen` ×2 fixed point, `make audit`, `make check`, `make test` via
+workstream (`make gen` x2 fixed point, `make audit`, `make check`, `make test` via
 testmon persistente) → PR → dev → review → `merge --no-ff` → gates no SHA mesclado →
 prova pós-merge `GovernanceBundle.load()` → beads fechados com 4 evidências (registro,
 git, comando/exit/output, código integrado) → `op-learning` registra a correção

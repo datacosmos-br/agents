@@ -1,6 +1,8 @@
 # ADR-0030 — Agent-session environment truth: the kernel owns process context, never inherited environment
 
-**Status:** Accepted **Date:** 2026-09-27
+**Status:** Amended by ADR-0038 **Date:** 2026-09-27 **Scope:** startup recovery and
+environment preflight in `commands/governance/session-recover.md`; the deleted operating
+rules in `rules/law.md`
 
 ## Context
 

@@ -4,9 +4,11 @@ prompt: |-
   the city, rig, pinned Pack V2 import, agent, formula, provider, and physical
   workspace from the supplied city.toml and repository `.beads/` boundary while
   keeping the suspended runtime entirely static with zero workspace effects.
-  Distinguish delegated execution
-  through gc sling from an explicitly operator-authorized self-owned Git
-  worktree, and reject make work or any mixing of those modes. Reject
+  Distinguish delegated execution through gc sling from explicitly self-owned
+  execution. Keeping execution does not select isolation: adopt its authorized
+  current context unless the invocation separately selects an isolated mode.
+  Do not demand a worktree choice merely because the checkout is primary.
+  Reject make work or any mixing of execution owners. Reject
   invented commands, unauthorized active dispatch, loose clones, temporary
   or cross-repository paths, symlinks, provider fallback, or mechanical
   command translation.

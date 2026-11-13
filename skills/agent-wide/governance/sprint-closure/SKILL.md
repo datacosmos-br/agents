@@ -31,5 +31,5 @@ credential or runtime failure blocks closure normally. This exclusion applies on
 the unavailable workflow: every independently observed alert, finding, open PR, or other
 actionable residue remains blocking until corrected and freshly revalidated. Never label
 work complete while also listing such pending work. A broken or incomplete version never
-ships: `rules/workflow/production-readiness.md` (rule file) owns adoption of every
-defect in the increment's blast radius, including pre-existing ones.
+ships: closure needs green checks on the delivered state, pre-existing defects included
+(`rules/law.md` items 6 and 10).

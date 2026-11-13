@@ -1,8 +1,7 @@
 # ADR-0028 — Census and debt maps are evidence only against the locked runtime
 
-**Status:** Accepted **Date:** 2026-09-27 **Scope:**
-`rules/runtime/locked-runtime-census.md`,
-`skills/project-wide/configuration/workspace-toolchain/SKILL.md`,
+**Status:** Amended by ADR-0038 **Date:** 2026-09-27 **Scope:** laws 1 and 9 of
+`rules/law.md`, `skills/project-wide/configuration/workspace-toolchain/SKILL.md`,
 `commands/governance/session-preflight.md`
 
 ## Context

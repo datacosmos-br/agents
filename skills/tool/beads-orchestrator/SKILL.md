@@ -19,9 +19,9 @@ When available:
 1. Read the graph revision, objective, evidence, dependencies, claims, integration,
    authority, and linked city-root/rig-local pairs. Search first: one objective has one
    shared root, never a per-agent replacement.
-2. Classify each requested node from evidence. A claim abandoned under rule
-   `bead-branch-pr-cadence` §2 is adoptable; a live foreign claim or an ambiguous
-   claim blocks mutation.
+2. Classify each requested node from evidence. A claim abandoned under
+   `rules/coordination/inter-session-mail.md` is adoptable; a live foreign claim or an
+   ambiguous claim blocks mutation.
 3. Require each executing rig to own a local bead linked by metadata to the shared root
    and child. The root owns coordination; the local bead owns repository evidence.
    Missing or divergent links fail before effects.
@@ -60,14 +60,17 @@ When coordinating an owned plan across repositories or submodules:
    per repo) refreshed at every cutoff so a resumed session reconciles from evidence,
    not memory.
 
-## Fleet landing protocol (P0 trio, 2026-09-10)
+## Fleet landing protocol
 
 - Classify every dirty file as mine vs foreign-lane before acting; never stage, stash
   away, checkout-away, or clean foreign edits in a shared checkout. Detect rival
   concurrent edits via `git status` plus file mtimes inside your own execution window;
-  in a contended clone, validate in a detached `git worktree` instead.
+  coordinate contention and serialize index mutations with the current owner;
+  contention never changes placement.
 - Check PR state (`gh pr view --json state`) before assuming a lane is mid-flight:
   merged PRs relocate your projection commits to the integration branch.
-- Baseline every gate against the merge parent (`HEAD^2` for merges) in a detached
-  worktree before attributing failures; push only strict improvements and report
-  inherited red with its owner lane.
+- Baseline every gate against the merge parent (`HEAD^2` for merges) before
+  attributing failures, using captured evidence or an authorized comparison context.
+  New isolation requires explicit invocation selection; contention alone never
+  authorizes switching away from shared WIP, which is preserved (`rules/law.md` 11).
+  Push only strict improvements and report inherited red with its owner lane.

@@ -1,0 +1,13 @@
+id: codemod-no-trigger-001
+name: Edit a unique site without inventing a rule
+description: A single unrepeatable correction is an explicit edit with a stated reason, not a new catalog rule.
+tags: [codemod, should-not-trigger]
+inputs:
+  prompt: >-
+    One function in `src/pkg/report.py` formats a date with the wrong field
+    order. No other file formats that report, and the correct form depends on
+    that function's local business rule. Say whether you write a codemod rule
+    and what you do.
+expected:
+  output_contains: [no new rule, edit]
+  output_not_contains: [make mod-snapshots]

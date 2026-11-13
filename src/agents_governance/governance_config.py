@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import re
+from collections.abc import Mapping
 from dataclasses import dataclass
 from pathlib import Path
 from types import MappingProxyType
@@ -12,6 +13,7 @@ from .catalog import Catalog
 from .commands import CommandSpec
 from .delivery import DeliveryContract
 from .frontmatter import cast_mapping, require_exact_fields, string_array
+from .resources import CatalogResource, source_text
 from .rules import RuleActivation, RuleSpec
 
 _OWNER = re.compile(r"(rule|skill|command|document):([A-Za-z0-9][A-Za-z0-9./_-]*)\Z")
@@ -76,15 +78,15 @@ def _gate_policy(value: object) -> GatePolicy:
     )
 
 
-def load_governance_config(root: Path) -> GovernanceConfig:
+def load_governance_config(
+    root: Path, *, captured: Mapping[Path, CatalogResource] | None = None
+) -> GovernanceConfig:
     """Load the only accepted composed-governance schema."""
 
     path = root / "config" / "governance.json"
     if path.is_symlink() or not path.is_file():
         raise ValueError("governance config must be a physical regular file")
-    value = cast_mapping(
-        json.loads(path.read_text(encoding="utf-8")), "governance config"
-    )
+    value = cast_mapping(json.loads(source_text(path, captured)), "governance config")
     require_exact_fields(value, _ROOT_FIELDS, "governance config")
     if value["version"] != 2:
         raise ValueError("governance config version must equal 2")

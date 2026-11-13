@@ -16,7 +16,7 @@
       <answer>7.61</answer>
    </qa_pair>
    <qa_pair>
-      <question>Calculate the pH of a solution with a hydrogen ion concentration of 3.5 × 10^-5 M. Round to 2 decimal places.</question>
+      <question>Calculate the pH of a solution with a hydrogen ion concentration of 3.5 x 10^-5 M. Round to 2 decimal places.</question>
       <answer>4.46</answer>
    </qa_pair>
 </evaluation>

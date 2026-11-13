@@ -1,13 +1,17 @@
 id: tdd-workflow-limit-001
 name: Drive a parser fix from observable behavior
-description: Exercise runtime-first RED/GREEN work through the public test owner.
+description: Require implementation and real runtime proof before final regression changes.
 tags: [tdd, tests, development, happy-path]
 inputs:
-  prompt: Build the exact runtime, RED, GREEN, and refactor sequence for
-    parser-contract.md using only public behavior and selector-free root Make
-    verbs. Preserve the first causal failure, change the owner atomically, prove
-    regression behavior, and search for superseded residue.
+  prompt: |-
+    Build the exact documentation, implementation, real runtime proof and
+    final regression-validation sequence for parser-contract.md. Use only public
+    behavior and native root Make verbs. Explain when test edits become allowed
+    and derive expected results independently of parse_limit. Preserve the first
+    causal failure, rewire consumers atomically and search for superseded residue.
+    Only a contract is supplied, not an executable checkout: propose the sequence
+    honestly without claiming any command ran or any implementation passed.
   files:
   - path: parser-contract.md
 expected:
-  output_contains: [parse_limit("0"), InvalidLimit, make test, runtime first, causal, residue]
+  output_contains: [parse_limit("0"), InvalidLimit, make test, implementation, causal, residue]
