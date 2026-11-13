@@ -77,6 +77,8 @@ class PytestAudit:
 
 
 def _stored_schema(path: Path) -> int:
+    if path.is_symlink() or not path.is_file():
+        raise ValueError(f"testmon database must be a physical file: {path}")
     with closing(
         sqlite3.connect(f"{path.as_uri()}?mode=ro&immutable=1", uri=True)
     ) as connection:
