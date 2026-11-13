@@ -14,7 +14,10 @@ assert, and never re-implement what production computes (tracker memory
 private access or implementation assertion is replaced by public behavioral coverage of
 the same failure scenarios, or removed. Unit tests open no socket, write only inside
 fixture storage and restore any environment they change. A red test is fixed at its
-contract, never by weaker assertions, xfail or lower coverage. Warnings, zero
+contract, never by weaker assertions, xfail or lower coverage. When production is the
+wrong side, production is repaired at its owner and the test keeps the intended behavior;
+a test never expects a defect (tracker memory
+`operator-order-2026-11-12-fix-production-never-test-the-defect`). Warnings, zero
 collection, a missing tool or report, and a selected suite that did not run are red; a
 skip is red unless it is the project's declared availability prerequisite, reported as
 unmet. A shared integration service is one host instance provisioned before the test
