@@ -449,6 +449,18 @@ def test_governance_config_requires_the_gates_section(
         GovernanceBundle.load(governance_source_fixture)
 
 
+def test_command_category_outside_the_declared_taxonomy_is_rejected(
+    governance_source_fixture: Path,
+) -> None:
+    source = governance_source_fixture / "commands/inspection/pr-list.md"
+    target = governance_source_fixture / "commands/flext/pr-list.md"
+    target.parent.mkdir()
+    source.rename(target)
+
+    with pytest.raises(ValueError, match="command category is undeclared or unused"):
+        GovernanceBundle.load(governance_source_fixture)
+
+
 def test_delivery_contract_rejects_payload_outside_grammar() -> None:
     with pytest.raises(ValueError, match="payload:<slug>"):
         DeliveryContract.from_mapping(

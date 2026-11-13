@@ -26,7 +26,7 @@ never inferred.
 A session opens with recovery, not rediscovery: newest handoff → tracker
 prime → tracker context → coordinator inbox → worktree census → environment
 preflight (cgroup leaf, inherited markers, generated artifacts) → present the
-cursor. Encoded as the `session-recover` command (ADR-0030).
+cursor. Encoded as the `session-preflight` command (ADR-0030).
 
 ## Coordination contract
 

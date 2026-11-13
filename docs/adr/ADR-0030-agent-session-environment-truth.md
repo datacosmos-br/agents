@@ -1,7 +1,7 @@
 # ADR-0030 — Agent-session environment truth: the kernel owns process context, never inherited environment
 
 **Status:** Amended by ADR-0038 **Date:** 2026-09-27 **Scope:** startup recovery and
-environment preflight in `commands/governance/session-recover.md`; the deleted operating
+environment preflight in `commands/governance/session-preflight.md`; the deleted operating
 rules in `rules/law.md`
 
 ## Context
@@ -42,7 +42,7 @@ recorded in the campaign retrospective
 4. **Sessions open with recovery, not rediscovery.** Every session working a
    governed project starts from the recorded surfaces (newest handoff, tracker
    prime, tracker context, coordinator inbox, worktree census, environment
-   preflight) before any effect — encoded as the `session-recover` command and
+   preflight) before any effect — encoded as the `session-preflight` command and
    `rules/coordination/aihub-session-operating-rules.md`.
 5. **A green slice is committed before any new exploration.** The commit is the
    context checkpoint; holding a finished slice uncommitted violates the
@@ -55,5 +55,5 @@ recorded in the campaign retrospective
   colliding 0032); the canonical
   operator flow works from agent shells without bypasses.
 - The battery becomes deterministic across execution contexts.
-- The `session-recover` command and the operating rules carry the startup
+- The `session-preflight` command and the operating rules carry the startup
   discipline; new sessions stop paying the rediscovery tax.

@@ -19,9 +19,18 @@ from .rules import RuleActivation, RuleSpec
 _OWNER = re.compile(r"(rule|skill|command|document):([A-Za-z0-9][A-Za-z0-9./_-]*)\Z")
 _GUARANTEE = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*\Z")
 _ROOT_FIELDS = frozenset(
-    {"bootstrap", "coordination", "delivery", "gates", "guarantees", "version"}
+    {
+        "bootstrap",
+        "commands",
+        "coordination",
+        "delivery",
+        "gates",
+        "guarantees",
+        "version",
+    }
 )
 _BOOTSTRAP_FIELDS = frozenset({"rules", "skills"})
+_COMMAND_FIELDS = frozenset({"categories"})
 _COORDINATION_FIELDS = frozenset({"abandonment_threshold_minutes"})
 _GATE_FIELDS = frozenset({"pr_budget_minutes"})
 
@@ -51,6 +60,7 @@ class GovernanceConfig:
     delivery: DeliveryContract
     coordination: CoordinationPolicy
     gates: GatePolicy
+    command_categories: tuple[str, ...]
 
 
 def _positive_minutes(value: object, label: str) -> int:
@@ -92,6 +102,8 @@ def load_governance_config(
         raise ValueError("governance config version must equal 2")
     bootstrap = cast_mapping(value["bootstrap"], "governance bootstrap")
     require_exact_fields(bootstrap, _BOOTSTRAP_FIELDS, "governance bootstrap")
+    command_policy = cast_mapping(value["commands"], "governance commands")
+    require_exact_fields(command_policy, _COMMAND_FIELDS, "governance commands")
     guarantees = cast_mapping(value["guarantees"], "governance guarantee map")
     if not guarantees:
         raise ValueError("governance guarantee map must not be empty")
@@ -132,6 +144,11 @@ def load_governance_config(
         ),
         _coordination_policy(value["coordination"]),
         _gate_policy(value["gates"]),
+        string_array(
+            command_policy["categories"],
+            "governance command categories",
+            require_sorted=True,
+        ),
     )
 
 
@@ -147,6 +164,10 @@ def audit_governance_config(
     rule_index = {rule.identity: rule for rule in rules}
     skill_names = {record.name for record in catalog.records()}
     command_names = {command.name for command in commands}
+    categories = {command.path.parent.name for command in commands}
+    if categories != set(config.command_categories):
+        mismatch = min(categories ^ set(config.command_categories))
+        raise ValueError(f"command category is undeclared or unused: {mismatch}")
     for identity in config.bootstrap_rules:
         rule = rule_index.get(identity)
         if rule is None:
