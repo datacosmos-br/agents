@@ -42,7 +42,8 @@ restart what can be resumed.
 ## Phase 2 — Reflexion checkpoint
 
 In at most three lines, state what the drift or last red gate taught and which owner
-holds the lesson, and record it as a note on the selected tracker's bead. Write no new
+holds the lesson. Record it as a bead note when the selected tracker is available;
+otherwise it stays in the authorized PR evidence and closure stays open. Write no new
 rule, memory or document for it; a governing text the operator's correction contradicts is
 rewritten through `op-learning` after the plan lands.
 
