@@ -76,6 +76,15 @@ class PytestAudit:
     xfails: int
 
 
+def _stored_schema(path: Path) -> int:
+    if path.is_symlink() or not path.is_file():
+        raise ValueError(f"testmon database must be a physical file: {path}")
+    with closing(
+        sqlite3.connect(f"{path.as_uri()}?mode=ro&immutable=1", uri=True)
+    ) as connection:
+        return cast(int, connection.execute("PRAGMA user_version").fetchone()[0])
+
+
 def _database_state(path: Path) -> DatabaseState:
     metadata = path.lstat()
     if path.is_symlink() or not path.is_file():
@@ -223,9 +232,10 @@ def _run_full(repository: Path) -> int:
 
 
 def _run(repository: Path, datafile: Path) -> int:
-    existed = datafile.exists()
+    # testmon itself discards a database written under another schema version.
+    current = datafile.exists() and _stored_schema(datafile) == _testmon_data_version()
     _validate_sidecars(datafile)
-    before = _database_state(datafile) if existed else None
+    before = _database_state(datafile) if current else None
     audit = _pytest("incremental", repository)
     _validate_sidecars(datafile)
     after = _database_state(datafile)
