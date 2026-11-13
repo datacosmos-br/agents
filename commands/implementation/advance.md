@@ -1,14 +1,14 @@
 ---
 name: advance
 description:
-  Resume the interrupted plan and force-advance it to verified completion under the
-  repository's own law.
-argument-hint: "<optional focus, scope, or project path>"
+  Rebuild the session's work order from project evidence, ask only what is missing,
+  and force the plan to verified completion under the repository's own law.
+argument-hint: "<optional focus, plan path, bead, or project path>"
 metadata:
-  aihub.tags: '["decision:ADR-0020","effective:2026-09-10","route:project"]'
+  aihub.tags: '["decision:ADR-0020","effective:2026-09-10","route:agent"]'
 ---
 
-# Advance — resume and force the plan to verified completion
+# Advance — rebuild the work order and force the plan to verified completion
 
 Treat `$ARGUMENTS` as an optional focus. Session tasks never hardcode here: they arrive
 as arguments, beads, or plan files. Load the branch-matched owning skill before
@@ -21,31 +21,40 @@ Resolve authority FIRST, before any effect: workspace root `AGENTS.md` → branc
 law skill → nearest scope `AGENTS.md` → active bead. Operator request outranks every
 lower layer; recency resolves the rest. Run the declared environment setup, then use
 only the root Make dispatcher's declared public verbs. Each verb performs its declared
-operation without an invented mutation flag. You are
-an agent: keep going until the plan is completely resolved — only end the turn when the
-next action is a genuine stop condition. If file content or codebase structure is
-unknown, read it with your tools; never guess.
+operation without an invented mutation flag. You are an agent: keep going until the
+plan is completely resolved — only end the turn at a genuine stop condition. If file
+content or codebase structure is unknown, read it with your tools; never guess.
 
-## Phase 1 — Resume state from evidence, never from transcripts
+## Phase 1 — Work order from evidence, never from transcripts
 
-Restore the working state from the tracker bead and Git reality: objective, measured
-evidence so far, owned paths, scope, explicit exclusions, accepted concurrent work, the
-first red gate, and the exact next action. If a plan file exists, its preflight commands
-run exactly as written. Adopt any actor's in-scope work and fix it forward; never
+Build the work order from the plan file, the tracker bead and Git reality: objective,
+plan path and current step, measured evidence so far, owned paths, scope, explicit
+exclusions, accepted concurrent work, the
+integration branch and gates this repository declares, the first red gate, and the
+exact next action. Read what a surface records; ask the operator only for a fact no
+surface holds, one question at a time with a recommended answer (`grilling`). State
+the work order in at most ten lines and execute it in the same turn: it is the work,
+never a report. Where the provider schedules prompts, register one recurring goal
+check naming plan, bead and lane, and remove it at closure. A plan file's preflight
+runs exactly as written. Adopt any actor's in-scope work and fix it forward; never
 restart what can be resumed.
 
 ## Phase 2 — Reflexion checkpoint
 
-Before advancing, state in one paragraph what the last red gate or blocker taught, which
-owner owns the lesson, and where it is recorded. A lesson not persisted to its owner
-(rule, skill, ADR, bead note) will be re-paid with interest.
+In at most three lines, state what the drift or last red gate taught and which owner
+holds the lesson, and record it as a note on the bead. Write no new rule, memory or
+document for it; a governing text that is itself wrong is corrected through
+`op-learning` after the plan lands.
 
 ## Phase 3 — Advance loop
 
-One work item at a time, in dependency order, with effort scaled to complexity:
-discovery work goes to lightweight subagents with an objective, output format, tool
-guidance, and task boundaries; sequenced effects (merges, landings, closures) stay on
-the main thread. Per touched unit, route to the owning skills — discovery
+One work item at a time, in dependency order, with effort scaled to complexity. A
+slow gate runs in the background while
+the next step proceeds; nothing waits for another session, a queue or a quiet tree
+(`fix-forward`). Discovery goes to subagents briefed per `dispatch-agent`, each brief
+naming the plan path and bead; sequenced effects (merges, landings, closures) stay on
+the main thread. A new request mid-plan is classified by `focus-recovery` and the plan
+resumes at its saved step. Per touched unit, route to the owning skills — discovery
 (`search-first`), necessity (`yagni`), single authority (`ssot`), boundaries (`solid`,
 `clean-architecture`), inline simplification (`simplify`), duplication (`dry`),
 configuration ownership (`anti-hardcode`), loud failure (`fail-fast`), documentation
@@ -57,8 +66,8 @@ data, never lists in code or tests; validate grammar, own instances in config.
 Each step ends with a runnable check and its evidence: exact command, working directory,
 exit code, decisive output. Warnings, skips, empty output, missing tools, and
 zero-execution runs without a typed cache-hit accounting are RED; the first exception
-escapes with its raw traceback. "Looks done" is not a signal. When a check contradicts
-observed runtime behavior, fix the check.
+escapes with its raw traceback. "Looks done" is not a signal, and an unchanged status is never reported twice. When a
+check contradicts observed runtime behavior, fix the check.
 
 ## Phase 5 — Land and close
 

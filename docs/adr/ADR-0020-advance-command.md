@@ -16,12 +16,13 @@ to verified completion.
 
 ## Decision
 
-1. One command, `advance`, owns resumption plus forced advancement: Phase 0 authority,
-   Phase 1 evidence-based state restoration, Phase 2 reflection checkpoint, Phase 3
-   advance loop with per-step skill routing, Phase 4 executable verification, Phase 5
-   landing and closure, and a final restatement of non-negotiables (recency effect).
-   `$ARGUMENTS` carries the optional focus; session tasks are never hardcoded into the
-   body.
+1. One command, `advance`, owns the rebuilt work order plus forced advancement: Phase 0
+   authority, Phase 1 a work order built from plan, bead and Git evidence that asks the
+   operator only for a fact no surface holds and is executed in the same turn with one
+   recurring goal check, Phase 2 reflection checkpoint, Phase 3 advance loop with
+   per-step skill routing, Phase 4 executable verification, Phase 5 landing and
+   closure, and a final restatement of non-negotiables (recency effect). `$ARGUMENTS`
+   carries the optional focus; session tasks are never hardcoded into the body.
 2. Stack deltas (Python, FLEXT, others) stay in their branch-matched law skills; the
    command routes to owners and duplicates nothing — parallel per-stack command variants
    are rejected.

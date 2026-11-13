@@ -18,7 +18,7 @@
 | `ADR-0017` | 2026-09-10 | Superseded by ADR-0038 | Ethics is primordial; change consequence is authorship; operator alignment is a duty; owners are refactored in place, never paralleled. |
 | `ADR-0018` | 2026-09-10 | Amended by ADR-0038 | Release line 0.5.0 carries behavioral conscience and the delivery contract; tag grammar is closed as measured. |
 | `ADR-0019` | 2026-09-10 | Accepted | The delivery contract is typed data: capsule budget gate at load, closed lifecycle event map, and enforced docs linking.                              |
-| `ADR-0020` | 2026-09-10 | Accepted | One `advance` command owns resumption and forced advancement; skill routing owns deltas; the research dossier is referenced evidence.                 |
+| `ADR-0020` | 2026-09-10 | Accepted | One `advance` command owns the work order and forced advancement; skill routing owns deltas; the research dossier is referenced evidence.                 |
 | `ADR-0021` | 2026-09-16 | Superseded by ADR-0038 | Runtime truth and complete delivery; historical universal worktree attribution rejected; placement and delegation follow current authorization; no preexisting debt; executed proof per claim, one automatic rule per law, scoped validation, generator-only patterns, foundational family placement. |
 | `ADR-0022` | 2026-09-18 | Amended by ADR-0038 | `~/.agents` becomes a materialized, version-and-digest-stamped global read-only projection (no longer a symlink), managed exclusively by AI Hub — the repo carries no home tooling. |
 | `ADR-0023` | 2026-09-19 | Superseded by ADR-0038 | Worktree discovery/planning is owned by the project's wip program; retirement retains Git preservation and authorization requirements. |
