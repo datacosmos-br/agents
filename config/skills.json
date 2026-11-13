@@ -24,11 +24,7 @@
         "format": "utf-8",
         "executable": true
       },
-      "tool/claude-session-extract/scripts/extract_claude_session.py": {
-        "format": "utf-8",
-        "executable": true
-      },
-      "tool/poolside-session-extract/scripts/extract_poolside_session.py": {
+      "tool/session-extract/scripts/extract_session.py": {
         "format": "utf-8",
         "executable": true
       },

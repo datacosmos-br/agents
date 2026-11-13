@@ -1,4 +1,4 @@
-id: claude-session-extract-happy-001
+id: session-extract-claude-001
 name: Extract a Claude session for handoff
 description: Validate Claude session extraction with complete private evidence and conversation flow through the configured source association.
 tags: [claude, session, extract, jsonl, handoff, happy-path]

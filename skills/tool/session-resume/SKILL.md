@@ -15,9 +15,8 @@ source associations. UUID shape is not provider evidence. Missing or ambiguous
 association fails closed; never probe alternate providers or guess from conversation
 keywords.
 
-Route Claude to $claude-session-extract, Poolside to
-$poolside-session-extract, and
-OpenCode to $opencode-handoff, and ZCode to $zcode-extract. Read the selected
+Route Claude, Poolside and ZCode to $session-extract with the matching `--provider`,
+and OpenCode to $opencode-handoff. Read the selected
 owner's complete procedure and use its
 current public CLI. Claude, Poolside, and ZCode emit private structured stdout; the
 consumer's transaction owns private persistence. Do not search for historical export

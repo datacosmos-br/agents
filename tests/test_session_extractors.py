@@ -60,12 +60,21 @@ def _source(provider: str, workspace: str, session: str) -> list[dict[str, str]]
 def _command(
     bundle: GovernanceBundle, provider: str, workspace: str
 ) -> tuple[str, ...]:
-    skill = next(
-        item for item in bundle.skills if item.name == f"{provider}-session-extract"
+    return (
+        sys.executable,
+        _script(bundle),
+        "--provider",
+        provider,
+        "--workspace",
+        workspace,
     )
+
+
+def _script(bundle: GovernanceBundle) -> str:
+    skill = next(item for item in bundle.skills if item.name == "session-extract")
     scripts = tuple((skill.directory / "scripts").glob("*.py"))
     assert len(scripts) == 1
-    return sys.executable, str(scripts[0]), "--workspace", workspace
+    return str(scripts[0])
 
 
 @pytest.mark.parametrize("provider", ("claude", "poolside"))
@@ -169,3 +178,43 @@ def test_ambiguous_metadata_is_not_guessed(
     assert result.returncode != 0
     assert not result.stdout
     assert b"absent or ambiguous" in result.stderr
+
+
+def _zcode_record(session: str, text: str) -> str:
+    return json.dumps(
+        {
+            "sessionId": session,
+            "type": "model_io",
+            "request": {"messages": [{"role": "user", "content": text}]},
+            "response": {"text": "answer", "finishReason": "stop"},
+        }
+    )
+
+
+def test_zcode_rollout_yields_private_turns_and_rejects_another_session(
+    governance_bundle: GovernanceBundle, tmp_path: Path
+) -> None:
+    command = (sys.executable, _script(governance_bundle), "--provider", "zcode")
+    rollout = "\n".join(_zcode_record("selected", text) for text in ("one", "one"))
+    extracted = subprocess.run(
+        (*command, "extract", "--session-id", "selected"),
+        input=rollout.encode(),
+        cwd=tmp_path,
+        capture_output=True,
+        check=True,
+    )
+    payload = json.loads(extracted.stdout)
+    assert payload["classification"] == "private"
+    assert payload["record_count"] == 2
+    assert len(payload["observed_messages"]) == 1
+    mismatched = subprocess.run(
+        (*command, "extract", "--session-id", "other"),
+        input=rollout.encode(),
+        cwd=tmp_path,
+        capture_output=True,
+        check=False,
+    )
+    assert mismatched.returncode != 0
+    assert not mismatched.stdout
+    assert b"session identity mismatch" in mismatched.stderr
+    assert not tuple(tmp_path.iterdir())
