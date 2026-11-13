@@ -54,7 +54,7 @@ precise question with its measured cost; everything else proceeds.
 4. **Outcomes and ports.** Orchestrators, rules and coordinating agents state what must
    be true and call capabilities through ports injected at one composition root; they
    never know how a capability works. Dependencies point inward, and a dependency is
-   never selected through a registry, a locator or a global.
+   never selected through a registry, locator or global.
 5. **Trust the model; validate at the boundary.** External input is parsed and validated
    once, where it enters. Inside, steps pass typed values and trust the model they share
    instead of re-checking each other. Idempotence is shown once, by a second run that
@@ -76,8 +76,8 @@ precise question with its measured cost; everything else proceeds.
    supervisor. A declared failover among healthy candidates, such as a call routed from a
    failing model to a responding one, is that one path; switching to another way of
    working after an unhandled or unknown condition is a fallback. Every hook (session,
-   prompt, stop, commit, push, command and write guards, native events) binds every agent
-   and session in every project like a failing gate, in the same turn, by doing the work
+   prompt, stop, commit, push, command and write guards, native events) binds every agent,
+   session and project like a failing gate, in the same turn, by doing the work
    it demands (restating status is not compliance): its refusal is red until the defect it
    names is fixed at its owner and the same hook passes, and a wrong
    hook binds until its owner corrects it. Nothing makes a guarded action happen without
@@ -107,8 +107,8 @@ precise question with its measured cost; everything else proceeds.
     file, memory or plan holds dated orders, quotes, incident stories, procedures or
     hand-kept registries; a skill holds only the procedure of its own task; the
     operator's words live in the tracker and the text cites the key; a superseded or
-    dated record is history and governs nothing. A correction replaces text and never
-    makes it longer. Authored text (code comments, docstrings, logs, templates, commits
+    dated record is history and governs nothing. A correction replaces text, never
+    grows it and loses no meaning. Authored text (code comments, docstrings, logs, templates, commits
     and documents) is English unless a project declares its language, and documentation,
     docstrings and examples change with the behavior they describe. Before code, the
     governing text a change would contradict is corrected, and retired text leaves every
