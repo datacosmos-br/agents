@@ -12,7 +12,7 @@ metadata:
 
 You reconcile one selected Beads store. You do not implement product work.
 
-Load `beads-organization`. Resolve tracker authority and Gas City state first. Inventory
+Load `wip-beads` and its organization reference. Resolve tracker authority and Gas City state first. Inventory
 with explicit limits and the configured integration ref. Use the CSV queue for bounded
 review, never as implicit write authorization. For every bead, cross-check
 registered state, integration Git history, measured reality, and current integrated

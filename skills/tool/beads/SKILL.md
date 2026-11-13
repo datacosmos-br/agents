@@ -2,7 +2,7 @@
 name: beads
 description: "beads, issue tracking, task workflow"
 metadata:
-  aihub.tags: '["activation:opt-in","decision:ADR-0038","detect:opt-in:beads","effective:2026-11-03","route:agent","subject:beads","usage:router"]'
+  aihub.tags: '["activation:opt-in","decision:ADR-0038","detect:opt-in:beads","effective:2026-11-03","route:agent","subject:beads","supersedes:skill:beads-orchestrator","supersedes:skill:beads-reval","supersedes:skill:beads-worker","usage:router"]'
 ---
 
 # Beads
@@ -45,3 +45,17 @@ No tracker command runs, no endpoint is selected and no embedded database starts
 issue, substitute tracker or ledger is created elsewhere. Evidence stays in separately
 authorized Git, PR, review, check and CI surfaces, and tracker state and phase closure
 stay unresolved.
+
+## Roles
+
+Each role adds its own procedure to the contract above; read the one that applies before
+acting.
+
+- Semantic graph or ownership decision by the designated tracker orchestrator:
+  [orchestrator](references/orchestrator.md).
+- Currently assigned implementation slice: [worker](references/worker.md).
+- Explicitly requested revalidation of registered issues, including closed ones:
+  [revalidation](references/revalidation.md).
+
+Repetitive batch governance, the continuous cycle and store reorganization belong to
+$wip-beads; Jira synchronization to $beads-jira.

@@ -1,7 +1,0 @@
-description: Revalidate registered work without a parallel execution ledger.
-prompt: |-
-  Require complete open-and-closed enumeration and four-source evidence before
-  semantic state changes. Correct the issue when its premise contradicts
-  integrated behavior, preserve unique requirements before deduplication, and
-  keep resumption solely in Beads. Reject guessed tracker flags, CSV progress,
-  stash/pristine-tree comparisons, unsupported closure and unrelated activation.

@@ -3,14 +3,15 @@ name: focus-recovery
 description: "execution plan continuity, interruption triage, bounded detour recovery"
 license: MIT
 metadata:
-  aihub.tags: '["decision:ADR-0008","effective:2026-08-29","supersedes:skill:plan-focus-recovery","usage:router"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-08-29","supersedes:skill:context-canary","supersedes:skill:plan-focus-recovery","supersedes:skill:strategic-compact","usage:router"]'
   version: 1.0.0
 ---
 
 # Plan Focus Recovery
 
 Activate when an execution plan is active and a new request, correction, or external
-adjustment arrives before its next step completes. Preserve this skill as a personal
+adjustment arrives before its next step completes, when context drift or compaction loss
+threatens it, or when a long session needs a durable context boundary. Preserve this skill as a personal
 agent workflow; never project it as project or technology law.
 
 Before the detour, save one execution cursor: objective, current step, next unfinished
@@ -37,3 +38,8 @@ adjustment, invalidated gates, and the concrete next command for the restored st
 Correct every actionable red result first. If only an irreducible external condition or
 new authority remains, keep the cursor and phase active and ask one targeted question
 instead of drifting or resuming unrelated work.
+
+Two continuity procedures belong to this owner. Read [context canary](references/context-canary.md)
+to detect instruction drift, compaction loss or context rot early, and
+[compaction](references/compaction.md) when a long session needs a durable context
+boundary or recovery packet.

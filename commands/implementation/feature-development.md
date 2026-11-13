@@ -4,7 +4,7 @@ description:
   Implement one approved feature through project owners, consumers, runtime, and gates.
 argument-hint: "<approved feature contract or specification>"
 metadata:
-  aihub.tags: '["decision:ADR-0008","effective:2026-10-28","route:project"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-10-28","route:agent"]'
 ---
 
 # Feature development

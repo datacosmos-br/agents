@@ -100,7 +100,7 @@ index grants no exception or automatic rewrite authority.
 Run diagnostics, generation, repair, formatting, checks, and tests only through the root
 Make dispatcher, invoking each verb directly without an apply selector. Before tests,
 exercise the real runtime path (import the facade, validate a representative payload).
-The boundary audit command (`$pydantic-boundary-audit`) inventories this removal catalog's
+The boundary audit command (`/pydantic-boundary-audit`) inventories this removal catalog's
 violations per repository and feeds `make mod` migrations. A claimed automatic cure
 must identify its actual native rule and fixtures; the table alone does not establish
 implemented coverage or semantic equivalence.

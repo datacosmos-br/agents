@@ -1,0 +1,25 @@
+description: Claude, Poolside and ZCode session extraction with complete private evidence and conversation flow.
+prompt: |-
+  Grade the session-extract response. Pass only when the response resolves
+  the provider and workspace through configured source metadata, never from
+  UUID shape, and invokes the bundle-owned pure parser with the matching
+  provider on adapter-authenticated private stdin: the version-1 envelope
+  for Claude and Poolside, the selected model-io rollout for ZCode after
+  confirming the configured ZCode data-home paths and opening its task
+  database read-only. Require
+  complete structured stdout, not script-created files or truncated
+  summaries: event_json and reference locators for Claude and Poolside;
+  observed request messages, model responses and tool calls, source lines,
+  the final request snapshot and, when present, the terminal error for
+  ZCode; a failed model request is never reported as successful. The adapter
+  owns source snapshots, digests, private persistence and publication.
+  Preserve the conversation flow with user messages, tool calls matched to
+  their results, reasoning and assistant text, identify the todo state and
+  the first unfinished step at session end, and require a current Git and
+  tracker cross-check before resumption. Reject provider or model
+  switching, a guessed provider, a plan file as conversation proof,
+  credential or header disclosure, fabricating messages absent from the
+  source, treating a failed extraction as success, a fabricated successful
+  gate after an unreturned tool call, or deleting the source. A missing
+  record or a mismatched session identity must fail closed with a request
+  for the exact missing fact.

@@ -142,7 +142,7 @@ dependencies owned by the development dependency group.
 `ARTIFACT_STATE_ROOT` without changing any gate, artifact, dependency, deadline or
 validation scope; a missing capture is missing evidence.
 
-For continuation, use `plan-handoff` and `strategic-compact`: retain links to the
+For continuation, use `plan-handoff` and `focus-recovery`: retain links to the
 current owner/source revision, refs, measured gates, freshness and next action in the
 existing authorized plan or PR, not a second status ledger. Claude and Poolside
 resources are pure private parsers; ZCode's parser likewise reads only stdin. The caller

@@ -1,8 +1,0 @@
-id: inviolable-rules-negative-001
-name: Translate a greeting
-description: A translation request needs no governance entry.
-tags: [anti-trigger]
-inputs:
-  prompt: Translate "Good morning, team" into Spanish and nothing else.
-expected:
-  output_not_contains: [rules/law.md, governance entry, universal law]

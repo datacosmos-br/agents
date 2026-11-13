@@ -1,39 +1,54 @@
 ---
 name: session-preflight
 description:
-  Run the session startup preflight covering runtime-lock verification, tracker identity, and the adoption sweep.
+  Open a session from the recorded surfaces, verify runtime and tracker identity, and present the cursor before any effect.
 argument-hint: "<optional repository paths>"
 metadata:
-  aihub.tags: '["decision:ADR-0028","effective:2026-09-27","route:project"]'
+  aihub.tags: '["decision:ADR-0028","effective:2026-09-27","route:agent","supersedes:command:session-recover","supersedes:command:session-startup"]'
 ---
 
 # Session preflight
 
 Resolve each requested repository from `$ARGUMENTS`; otherwise use the active project.
-Follow `rules/coordination/inter-session-mail.md` and the operator's current scope.
-This preflight inspects and reports; claims, adoption, lane creation and announcements
-are later, explicit effects.
+Follow `rules/coordination/inter-session-mail.md`, which owns adoption and lane
+declaration, and the operator's current scope. Run the steps in order before the first
+edit. This preflight inspects and reports; claims, adoption, lane creation and
+announcements are later, explicit effects. Each step records what it found, or that
+its surface is absent.
 
-1. Read the selected tracker route from its owner and prove the intended identity
-   through its declared context command when that capability is selected. Installation
-   or a directory alone never selects a tracker. Keep unavailable orchestration and
-   separately available tracking distinct.
-2. Establish source, physical environment, lock and consumed dependency identities
+1. Read `rules/law.md`, the rules the work touches, and the newest handoff in the
+   repository's handoff surface with the cursor plan it names. A handoff directory is
+   opened by `plan-handoff <directory>`, whose accepted cursor and claim this preflight
+   reuses. State the owning session and the next unexecuted step.
+2. Read the selected tracker route from its owner
+   (`rules/workflow/beads-traceability.md`) and prove the intended identity through its
+   declared context command before mutation. Installation, a directory or a local
+   `.beads/` neither selects nor revokes a tracker. Apply the owner's selected,
+   unavailable or explicitly suspended contract; create no substitute store or
+   discovery probe, and keep unavailable orchestration and separately available
+   tracking distinct.
+3. Establish source, physical environment, lock and consumed dependency identities
    through the project's native provenance operation. A mismatch invalidates dependent
    receipts. Setup reconciles declared locks; dependency advancement uses its separate
    owner. Reuse a currently valid environment rather than reinstalling it per gate.
-3. Inspect the integration tip, open PRs, existing branches, worktrees and recorded
-   ownership. Preserve relevant WIP and identify an adoption path before creating a
-   competing lane. Do not infer abandonment from one old signal.
 4. Resolve the coordinator and selected communication channel through their canonical
-   rules. Read current claims and conflicts. Report any missing declaration before the
-   first coordinated effect; do not resume suspended orchestration.
-5. Identify unpublished owned commits and incomplete prior units. Reconcile them through
+   rules. Read its inbox newest-first for directives, claims by other sessions,
+   conflicts and critiques that concern the mandate. Report any missing declaration
+   before the first coordinated effect; do not resume suspended orchestration.
+5. Inspect the integration tip, open PRs, local and remote branches, worktrees, recent
+   documents, ready beads and recorded ownership for the scope. Preserve relevant WIP
+   (`rules/law.md` item 11) and adopt a survivor under the abandonment test of the
+   coordination rule before creating a competing lane or bead; placement follows
+   `rules/git/gitflow-branch-pr.md`. Do not infer abandonment from one old signal.
+6. Read the session shell's own cgroup leaf (`.service` vs `.scope`), which classifies
+   the process; record inherited unit markers as non-authoritative, and whether the
+   worktree's generated artifacts exist for an honest battery.
+7. Identify unpublished owned commits and incomplete prior units. Reconcile them through
    their existing lane and tracker before accumulating another independent unit.
-6. Identify the active approved plan and every instruction, document, skill, rule and
+8. Identify the active approved plan and every instruction, document, skill, rule and
    command the planned change would contradict (`rules/law.md` item 12); report each
    before implementation.
-7. For an authorized transaction, identify the owner that makes its effect complete or
+9. For an authorized transaction, identify the owner that makes its effect complete or
    absent (`rules/law.md` item 8) and report a missing one instead of inventing a
    substitute. The agreed specification stands (`rules/law.md`); a faster validation
    route keeps its declared population and acceptance evidence.
@@ -42,3 +57,12 @@ Run only discovered public commands under `rules/workflow/canonical-commands.md`
 Return one evidence-bearing result per inspection, its scope and the first causal
 failure. A missing inspection is unresolved, not a pass. Do not use skip switches to
 omit required ownership or coordination evidence.
+
+Present the cursor: mission, measured state, ordered next steps with their owners, the
+traps that apply, and the cycle — which integration branch, which gates and what runtime
+proof close the unit (`rules/law.md` item 10). Before the first effect, record the actual
+branch and PR state in the coordination channel; a declaration grants no branch creation
+or Git publication authority. Where the selected tracker is available, also claim the
+bead, unless the handoff already did, and record that state there; with it unavailable
+or suspended, keep only separately authorized Git, PR and CI evidence and leave closure
+open. Continue the declared plan; never re-derive what the surfaces already record.

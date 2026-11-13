@@ -6,15 +6,21 @@
     ],
     "skills": [
       "caveman",
-      "context-canary",
       "crg",
       "fix-forward",
       "focus-recovery",
       "governance-audit",
       "op-learning",
       "sprint-closure",
-      "strategic-compact",
       "verification-loop"
+    ]
+  },
+  "commands": {
+    "categories": [
+      "governance",
+      "implementation",
+      "inspection",
+      "security"
     ]
   },
   "coordination": {
@@ -91,8 +97,7 @@
     ],
     "context-lifecycle": [
       "rule:law",
-      "skill:context-canary",
-      "skill:strategic-compact"
+      "skill:focus-recovery"
     ],
     "continuous-green": [
       "rule:law",
@@ -174,10 +179,8 @@
       "skill:gc-agents",
       "skill:gc-change",
       "skill:gc-city",
-      "skill:gc-dashboard",
       "skill:gc-dispatch",
       "skill:gc-mail",
-      "skill:gc-rigs",
       "skill:gc-work",
       "skill:ws-lifecycle"
     ],
