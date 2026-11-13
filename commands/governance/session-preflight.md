@@ -31,18 +31,18 @@ its surface is absent.
    through the project's native provenance operation. A mismatch invalidates dependent
    receipts. Setup reconciles declared locks; dependency advancement uses its separate
    owner. Reuse a currently valid environment rather than reinstalling it per gate.
-4. Read the session shell's own cgroup leaf (`.service` vs `.scope`), never inherited
-   unit markers, and whether the worktree's generated artifacts exist for an honest
-   battery.
-5. Resolve the coordinator and selected communication channel through their canonical
+4. Resolve the coordinator and selected communication channel through their canonical
    rules. Read its inbox newest-first for directives, claims by other sessions,
    conflicts and critiques that concern the mandate. Report any missing declaration
    before the first coordinated effect; do not resume suspended orchestration.
-6. Inspect the integration tip, open PRs, local and remote branches, worktrees, recent
+5. Inspect the integration tip, open PRs, local and remote branches, worktrees, recent
    documents, ready beads and recorded ownership for the scope. Preserve relevant WIP
    (`rules/law.md` item 11) and adopt a survivor under the abandonment test of the
    coordination rule before creating a competing lane or bead; placement follows
    `rules/git/gitflow-branch-pr.md`. Do not infer abandonment from one old signal.
+6. Read the session shell's own cgroup leaf (`.service` vs `.scope`), which classifies
+   the process; record inherited unit markers as non-authoritative, and whether the
+   worktree's generated artifacts exist for an honest battery.
 7. Identify unpublished owned commits and incomplete prior units. Reconcile them through
    their existing lane and tracker before accumulating another independent unit.
 8. Identify the active approved plan and every instruction, document, skill, rule and
@@ -60,8 +60,9 @@ omit required ownership or coordination evidence.
 
 Present the cursor: mission, measured state, ordered next steps with their owners, the
 traps that apply, and the cycle — which integration branch, which gates and what runtime
-proof close the unit (`rules/law.md` item 10). Then, in a selected tracker workflow,
-claim the bead unless the handoff already did, and record the actual branch and PR state there and in the coordination
-channel before the first effect; a declaration grants no branch creation or Git
-publication authority. Continue the declared plan; never re-derive what the surfaces
-already record.
+proof close the unit (`rules/law.md` item 10). Before the first effect, record the actual
+branch and PR state in the coordination channel; a declaration grants no branch creation
+or Git publication authority. Where the selected tracker is available, also claim the
+bead, unless the handoff already did, and record that state there; with it unavailable
+or suspended, keep only separately authorized Git, PR and CI evidence and leave closure
+open. Continue the declared plan; never re-derive what the surfaces already record.
