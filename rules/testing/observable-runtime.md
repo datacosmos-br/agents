@@ -1,5 +1,5 @@
 ---
-description: Tests confirm observed runtime behavior through public interfaces
+description: Tests confirm intended runtime behavior through public interfaces
 metadata:
   aihub.tags: '["decision:ADR-0038","effective:2026-11-03","route:both"]'
 ---
