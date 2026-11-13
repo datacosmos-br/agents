@@ -7,4 +7,4 @@ inputs:
     Continue the refactor we just discussed in this conversation. There is no
     foreign session, identifier, export, or handoff involved.
 expected:
-  output_not_contains: [extract_poolside_session.py, extract_claude_session.py, source detection]
+  output_not_contains: [extract_session.py, source detection]
