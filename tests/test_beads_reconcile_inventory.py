@@ -35,9 +35,7 @@ def _run(
     inventory: object,
     *selection: str,
 ) -> subprocess.CompletedProcess[str]:
-    skill = next(
-        item for item in governance_bundle.skills if item.name == "beads-organization"
-    )
+    skill = next(item for item in governance_bundle.skills if item.name == "wip-beads")
     script = skill.directory / "scripts" / "reconcile-inventory.sh"
     fake_bin = tmp_path / "bin"
     fake_bin.mkdir()

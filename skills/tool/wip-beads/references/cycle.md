@@ -1,22 +1,15 @@
----
-name: beads-cycle
-description: "beads cycle, continuous governance, csv workflow, classify align unblock"
-metadata:
-  aihub.tags: '["activation:opt-in","decision:ADR-0008","detect:opt-in:beads-cycle","effective:2026-09-10","route:agent","subject:beads","usage:router"]'
----
+# Continuous bead governance cycle
 
-# beads-cycle — Continuous bead governance cycle
-
-## What this skill is
+## What the cycle is
 
 The operating rhythm that keeps a `bd` ledger from rotting: regenerate the inventory,
 reconcile it against the live workspace, classify and re-home beads, verify integrity,
 and record evidence — in one repeatable cycle. Run it after every large delivery wave,
 before backlog triage, or whenever `bd doctor`/`bd stats` look wrong.
 
-Relationship to sibling skills: `wip-beads` owns the TOOL reference (flags, output
-semantics, failure modes); this skill owns the CYCLE (order, gates, who decides). When
-both apply, follow the order here and the tool detail there.
+The skill body owns the TOOL reference (flags, output semantics, failure modes); this
+reference owns the CYCLE (order, gates, who decides). When both apply, follow the order
+here and the tool detail there.
 
 ## Why the order is fixed
 
@@ -37,16 +30,12 @@ is about to re-parent.
 
 ### 1. Regenerate CSV (source of truth)
 
-````bash
-bd list --status open --flat --limit 0 --json > ./wip-beads-open.json
 Workspace-local scratch files:
 
 ```bash
 bd list --status open --flat --limit 0 --json > ./wip-beads-open.json
 <wip-beads-bundle>/scripts/bd_json_to_csv.py ./wip-beads-open.json ./wip-beads-open.csv
-````
-
-````text
+```
 
 ### 2. Collect workspace evidence
 `scripts/wip-beads.sh --mode collect --csv ./wip-beads-open.csv`
@@ -89,7 +78,7 @@ bd list --status open --flat --limit 0 --json > ./wip-beads-open.json
 bd doctor --check=validate --json
 bd doctor --check=pollution --json
 bd orphans --json
-````
+```
 
 - **Test pollution**: `validate`/`pollution` reports a count but does not identify IDs.
   The detection criterion (extracted from bd 1.2.2) is a TITLE regex `^test[-:]`,
@@ -129,51 +118,5 @@ have "succeeded" while corrupting the graph.
 - Re-run dedup gate + validation after each batch
 - Record pre/post counts on coordinator bead
 
-## Governance law (from plans 1788975913248, 1788980150347)
-
-1. **Close only with 3 legal reasons**: `SUPERSEDED` (canonical owner named absorbs),
-   `OBSOLETE` (scope/explicit disappeared with proof), `DONE` (cmd/cwd/exit/output).
-   `LEGITIMATE` = comment both, DO NOT close.
-2. **Zero parent closed with child pending** — check `↳` in `bd show` parent before
-   close; re-home child by child (`bd update <child> --parent <owner>`), no batch.
-3. **One canonical survivor per family** — defined by newest plan (ADR/§0.4/§0.7).
-   Others close with survivor name in `--reason`.
-4. **Cap 20 closes per batch** + validation gates.
-5. **Never mutate active third-party lanes** (from §0.7 + claims ≤24h).
-6. **Workspace evidence first** — root+submodules+worktrees before any status write.
-7. **Subagent batch protocol**: coordinator generates CSV → splits via `--limits` →
-   subagents dry-run per batch → coordinator reviews → `--apply` → evidence note per
-   bead.
-
-## Performance law (SSOT fetch)
-
-One ledger fetch per mode, not per bead: load a single
-`bd list --all --flat --limit 0 --json` snapshot at mode start and index it by id.
-Per-bead `bd show` is a fallback only for ids missing from the snapshot. Re-fetch the
-snapshot between modes, never reuse stale. Measured on a 102-bead ledger: one `bd show`
-≈ 3.5s, so per-bead fetches cost ~6min per mode while a single snapshot runs the same
-mode in ~20s.
-
-## Evidence format (bd note)
-
-```text
-WORKSPACE SYNC <ISO8601> (wip-beads.sh <mode> [apply|dry]): <what changed>
-beads=<n> batches=<n> apply=<0|1>
-```
-
-Co-verified with `bd show <id>` output when disputed. The note is the audit trail:
-months later, "why does this bead have no parent?" is answered by this line plus the
-classify dry-run log, not by memory.
-
-## Completion criteria
-
-- `bd doctor --check=validate` = 0 errors AND 0 warnings
-- `bd find-duplicates` = zero unadjudicated pairs
-- `bd orphans` = zero new orphans (each retained flag justified on the coordinator bead)
-- Non-closed count ≤ 20% of baseline OR justified retention per family recorded
-- All decisions documented on coordinator bead + snapshot saved
-
-A cycle that ends with any gate red is NOT done — it is a documented handoff with the
-failure named, owned, and queued.
-
-(End of file)
+Governance law, performance law, evidence format and completion criteria for the cycle:
+[cycle law](cycle-law.md).

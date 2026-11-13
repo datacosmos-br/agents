@@ -1,11 +1,4 @@
----
-name: beads-worker
-description: "beads execution, scoped work, tracker workflow"
-metadata:
-  aihub.tags: '["activation:opt-in","decision:ADR-0008","detect:opt-in:beads-worker","effective:2026-08-29","route:agent","subject:beads","usage:router"]'
----
-
-# Beads Worker
+# Beads worker role
 
 Activate only for a currently assigned implementation slice. Semantic graph changes,
 reassignment, merge, and issue closure remain owner operations.

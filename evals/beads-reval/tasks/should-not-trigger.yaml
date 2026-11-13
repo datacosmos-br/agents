@@ -1,9 +1,0 @@
-id: beads-reval-query-explanation-003
-name: Explain a receipt count without a tracker sweep
-description: A read-only SQL explanation is outside issue revalidation.
-tags: [beads, should-not-trigger]
-inputs:
-  prompt: Explain only what SELECT COUNT(*) FROM receipts returns. Do not inspect tools, projects or trackers.
-expected:
-  output_contains: [rows, receipts]
-  output_not_contains: [beads-reval, revalidation sweep, bd list]

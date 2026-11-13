@@ -3,7 +3,7 @@ name: plan-reconciliation
 description: "plan corpus reconciliation, attachment provenance, sequential integration"
 license: MIT
 metadata:
-  aihub.tags: '["activation:opt-in","decision:ADR-0038","detect:opt-in:plan-reconciliation","effective:2026-11-03","extends:arch-docs","extends:beads-reval","extends:doc-criteria","extends:focus-recovery","route:agent","subject:beads","usage:router"]'
+  aihub.tags: '["activation:opt-in","decision:ADR-0038","detect:opt-in:plan-reconciliation","effective:2026-11-03","extends:arch-docs","extends:beads","extends:doc-criteria","extends:focus-recovery","route:agent","subject:beads","usage:router"]'
 ---
 
 # Plan reconciliation
@@ -12,7 +12,7 @@ Activate for an explicit request to reconcile a project's accumulated plans, the
 attachments, implementation evidence and tracker links (`/reconcile-plans`); never for a
 single document translation, a plan review without reconciliation or an isolated code
 defect. Compose $doc-criteria for artifact selection, $arch-docs for decision evidence,
-$beads-reval for tracker revalidation and $focus-recovery for interruption continuity,
+$beads (revalidation role) for tracker revalidation and $focus-recovery for interruption continuity,
 from the same catalog.
 
 An approved plan owns its topic: reconciling it adopts every correlated owner, WIP,

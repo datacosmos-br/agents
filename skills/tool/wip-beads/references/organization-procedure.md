@@ -16,14 +16,14 @@ and whether closed history is in scope. A complete inventory requires an explici
 Preview CSV on stdout without creating a file:
 
 ```bash
-skills/tool/beads-organization/scripts/reconcile-inventory.sh \
+skills/tool/wip-beads/scripts/reconcile-inventory.sh \
   --limit 20 --integration < integration-ref > --dry-run
 ```
 
 Create a review artifact, selecting IDs with repeated or comma-separated forms:
 
 ```bash
-skills/tool/beads-organization/scripts/reconcile-inventory.sh \
+skills/tool/wip-beads/scripts/reconcile-inventory.sh \
   --limit 20 --integration <integration-ref> \
   --beads <id-1>,<id-2> --beads <id-3> --output <review.csv>
 ```
@@ -32,7 +32,7 @@ Resume a long sweep past the rows already reviewed — the page offset keeps the
 bounded without re-exporting reviewed work:
 
 ```bash
-skills/tool/beads-organization/scripts/reconcile-inventory.sh \
+skills/tool/wip-beads/scripts/reconcile-inventory.sh \
   --limit 20 --offset 20 --integration <integration-ref> --output <review.csv>
 ```
 

@@ -2,7 +2,7 @@
 name: wip-beads
 description: "wip beads, batch governance, csv workflow, classify align apply"
 metadata:
-  aihub.tags: '["activation:opt-in","decision:ADR-0008","detect:opt-in:wip-beads","effective:2026-09-10","route:agent","subject:beads","usage:router"]'
+  aihub.tags: '["activation:opt-in","decision:ADR-0008","detect:opt-in:wip-beads","effective:2026-09-10","route:agent","subject:beads","supersedes:skill:beads-cycle","supersedes:skill:beads-organization","usage:router"]'
 ---
 
 # wip-beads — Continuous bead governance
@@ -211,3 +211,12 @@ coordinator runs `--apply`, subagents stay dry-run.
 Co-verified with `bd show <id>` output pasted when disputed.
 
 (End of file)
+
+## Cycle and reorganization
+
+- The continuous governance cycle (order, gates, who decides, batch protocol):
+  [cycle](references/cycle.md).
+- Continuous reconciliation and reorganization of a selected store against
+  integration, workspace, runtime, plan, documentation, code or external-tracker
+  evidence, with `scripts/reconcile-inventory.sh`:
+  [organization](references/organization.md).
