@@ -35,12 +35,9 @@ body and in this ADR, not in ad-hoc tag namespaces.
    this session, by a sibling lane, or left by a prior session — is corrected at
    its root with criticality elevated; it is never classified out of scope,
    deferred as someone else's debt, bypassed, or worked around with a fallback.
-2. `--no-verify` and any gate bypass are prohibited as a class. Where a
-   fleet-level gate defect blocks a commit whose own diff is clean, the recorded
-   practice is: run the equivalent validation directly on the candidate diff,
-   document the bypass rationale in the commit message, and land the gate's
-   root-cause cure through its canonical owner in the same campaign. Rollback is
-   not a fix: correct or optimize forward.
+2. `--no-verify` and any gate bypass are prohibited. A fleet-level gate
+   defect blocks the task until its canonical owner repairs it; run the gate
+   honestly afterward. Rollback is not a fix: correct or optimize forward.
 3. The owning rule carries `decision:ADR-0038`, `effective:2026-10-30`,
    `route:both`, conforming to the tag contract in
    `src/agents_governance/rules.py`.
