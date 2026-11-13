@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from contextlib import AsyncExitStack
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Self
 
 import httpx2
 from mcp import ClientSession, StdioServerParameters
@@ -15,6 +15,8 @@ from mcp.client.stdio import stdio_client
 from mcp.client.streamable_http import streamable_http_client
 
 if TYPE_CHECKING:
+    from types import TracebackType
+
     from anthropic.types import ToolParam
 
 
@@ -29,7 +31,7 @@ class MCPConnection(ABC):
     async def _create_context(self, stack: AsyncExitStack) -> Transport:
         """Create the transport, entering every resource it borrows on ``stack``."""
 
-    async def __aenter__(self):
+    async def __aenter__(self) -> Self:
         """Initialize MCP server connection."""
         self._stack = AsyncExitStack()
         await self._stack.__aenter__()
@@ -46,7 +48,12 @@ class MCPConnection(ABC):
             await self._stack.__aexit__(None, None, None)
             raise
 
-    async def __aexit__(self, exc_type, exc_val, exc_tb):
+    async def __aexit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_val: BaseException | None,
+        exc_tb: TracebackType | None,
+    ) -> None:
         """Clean up MCP server connection resources."""
         if self._stack:
             await self._stack.__aexit__(exc_type, exc_val, exc_tb)

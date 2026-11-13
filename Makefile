@@ -97,7 +97,7 @@ lint: ## fast external lint and formatting check
 
 static: ## lint, formatting, and whole-program Python type analysis (local only)
 	@$(MAKE) lint
-	$(call BANNER,static · pyright + mypy)
+	$(call BANNER,static · pyrefly + pyright + mypy)
 	@PYTHON_RESOURCES_OPERATION=check $(UV_RUN) python tools/python_resources_gate.py
 
 profile-mypy-resources: ## profile native Mypy over every declared Python skill resource

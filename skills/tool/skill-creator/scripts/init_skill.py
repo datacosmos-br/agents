@@ -185,12 +185,12 @@ Note: This is a text placeholder. Actual assets can be any file type.
 """
 
 
-def title_case_skill_name(skill_name):
+def title_case_skill_name(skill_name: str) -> str:
     """Convert hyphenated skill name to Title Case for display."""
     return " ".join(word.capitalize() for word in skill_name.split("-"))
 
 
-def init_skill(skill_name, path):
+def init_skill(skill_name: str, path: str) -> Path | None:
     """Initialize a new skill directory with template SKILL.md.
 
     Args:

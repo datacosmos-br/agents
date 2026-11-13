@@ -637,8 +637,7 @@ def update_front_matter(markdown: str, updates: dict[str, str]) -> str:
     if not match:
         return markdown
     data = {
-        str(key): str(value)
-        for key, value in _parse_document(match.group("body")).items()
+        key: str(value) for key, value in _parse_document(match.group("body")).items()
     }
     data.update(updates)
     rendered = _dump_mapping(data)
