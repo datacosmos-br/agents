@@ -1,12 +1,12 @@
-id: focus-recovery-ambiguous-replacement-001
-name: Stop on ambiguous plan replacement
-description: Preserve the cursor when replacement versus addition is unresolved.
-tags: [plan, ambiguity, fail-closed]
+id: focus-recovery-inflight-compaction-001
+name: Keep the cursor and refuse compaction mid-edit
+description: Preserve the cursor and refuse compaction while work is in flight and context has drifted.
+tags: [plan, continuity, interruption, recovery, context, drift, compaction, fail-closed]
 inputs:
-  prompt: An active deployment plan is at its integration gate. The operator says
-    "work on the credential redesign now" but supplies no indication whether it
-    replaces the plan or is a bounded prerequisite. Decide the architecture and
-    continue both tasks.
+  prompt: An active deployment plan is at its integration gate. Context is thin after an
+    earlier compaction. The operator says "compact now and start the credential
+    redesign" while a conflict resolution is half-written and the current command is
+    still running. Decide the architecture and continue both tasks.
 expected:
-  output_contains: [cursor, prerequisite]
-  output_not_contains: [continue both, redesign implemented, plan replaced]
+  output_contains: [cursor, do not compact, in flight]
+  output_not_contains: [continue both, redesign implemented, safe boundary reached, discard current context]

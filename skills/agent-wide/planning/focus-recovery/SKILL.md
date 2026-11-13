@@ -10,7 +10,8 @@ metadata:
 # Plan Focus Recovery
 
 Activate when an execution plan is active and a new request, correction, or external
-adjustment arrives before its next step completes. Preserve this skill as a personal
+adjustment arrives before its next step completes, when context drift or compaction loss
+threatens it, or when a long session needs a durable context boundary. Preserve this skill as a personal
 agent workflow; never project it as project or technology law.
 
 Before the detour, save one execution cursor: objective, current step, next unfinished
