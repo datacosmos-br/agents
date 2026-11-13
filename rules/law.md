@@ -12,8 +12,8 @@ capsule_summary: |
   6 Fix by deletion, never by a layer on top. 7 Laws are authored data for the
   tool that checks them; nothing generates rules. 8 Fail loud on one path.
   9 The real entry point is the proof; wrong production is repaired, never
-  written into a test. 10 Done is the whole agreed plan landed tested and
-  error-free at the integration tip; nothing else starts first.
+  written into a test. 10 Done is the whole agreed plan landed, activated as
+  agreed, tested and error-free at the integration tip; nothing else starts first.
   11 Never destroy another actor's work. 12 Governance stays short.
 metadata:
   aihub.tags: '["decision:ADR-0038","effective:2026-11-03","route:both"]'
@@ -89,7 +89,8 @@ authorities, gets one precise question with its measured cost; everything else p
 10. **Finish the cycle.** Done means the whole agreed plan is carried to its end, every
     case and not a sample or a partial proof, and lands at the integration tip through
     review and green checks, tested and free of errors, under commit subjects that say
-    what changed, and, when asked, runs in the target runtime with evidence. Nothing is
+    what changed, recorded for real and activated up to the plan's agreed levels with
+    runtime evidence. Nothing is
     called done and no other work is taken up before that. Commits, pushes, merges and
     deploys happen only when the current request authorizes them; anything short of done
     is reported as in progress with the exact missing step.
