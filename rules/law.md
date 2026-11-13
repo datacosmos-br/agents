@@ -88,9 +88,9 @@ authorities, gets one precise question with its measured cost; everything else p
    capability.
 10. **Finish the cycle.** Done is the whole agreed plan, every case, merged at the
     integration tip after review and green checks, tested, error-free, under subjects
-    naming the change, live at agreed level with runtime proof; nothing else
-    starts first. Commits, pushes, merges, deploys need the current request's
-    authorization; anything less is in progress, naming the missing step.
+    naming the change, running live at agreed level with evidence; nothing else first.
+    Commits, pushes, merges, deploys need current-request authorization; anything less
+    is in progress, naming the exact missing step.
 11. **Never destroy another actor's work.** Concurrent and unknown changes are kept,
     integrated and fixed forward. Published or shared state is never reset, restored,
     stashed, rebased, force-pushed or rolled back. Each actor stages its own files by
