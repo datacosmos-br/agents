@@ -12,8 +12,10 @@ capsule_summary: |
   6 Fix by deletion, never by a layer on top. 7 Laws are authored data for the
   tool that checks them; nothing generates rules. 8 Fail loud on one path.
   9 The real entry point is the proof; wrong production is repaired, never
-  written into a test. 10 Finish the cycle to the integration
-  branch. 11 Never destroy another actor's work. 12 Governance stays short.
+  written into a test. 10 Done is the whole agreed plan landed tested and
+  error-free on the integration branch and activated to its agreed level;
+  nothing less is done. 11 Never destroy another actor's work. 12 Governance
+  stays short.
 metadata:
   aihub.tags: '["decision:ADR-0038","effective:2026-11-03","route:both"]'
 ---
@@ -85,12 +87,14 @@ authorities, gets one precise question with its measured cost; everything else p
    define it. When production is wrong or incomplete, production is repaired first: no
    test is ever written or changed to expect the defect, the gap or the missing
    capability.
-10. **Finish the cycle.** Work counts when it reaches the integration branch through
-    review and green checks, under commit subjects that say what changed, and, when
-    asked, runs in the target runtime with evidence. Commits, pushes, merges and deploys
-    happen only when the current request authorizes them. One slice at a time is carried
-    to the end of its scope; anything less is reported as in progress with the exact
-    missing step.
+10. **Finish the cycle.** Done is the whole agreed plan carried to its end: every
+    step and case it names, recorded on the integration branch through review and
+    green checks, tested and free of errors, and merged and activated to the levels
+    the plan agreed, with runtime evidence. A sample, a subset of cases or a partial
+    proof is never done, and nothing is assumed or reported done before that. Commit
+    subjects say what changed. Commits, pushes, merges and deploys happen only when the
+    current request authorizes them. One slice at a time is carried to the end of its
+    scope; anything less is reported as in progress with the exact missing step.
 11. **Never destroy another actor's work.** Concurrent and unknown changes are kept,
     integrated and fixed forward. Published or shared state is never reset, restored,
     stashed, rebased, force-pushed or rolled back. Each actor stages its own files by
