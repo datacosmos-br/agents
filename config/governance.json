@@ -182,10 +182,8 @@
       "skill:gc-agents",
       "skill:gc-change",
       "skill:gc-city",
-      "skill:gc-dashboard",
       "skill:gc-dispatch",
       "skill:gc-mail",
-      "skill:gc-rigs",
       "skill:gc-work",
       "skill:ws-lifecycle"
     ],
