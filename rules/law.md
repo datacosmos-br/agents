@@ -11,7 +11,8 @@ capsule_summary: |
   know how. 5 Validate once at the boundary; inside, trust the shared model.
   6 Fix by deletion, never by a layer on top. 7 Laws are authored data for the
   tool that checks them; nothing generates rules. 8 Fail loud on one path.
-  9 The real entry point is the proof; fix production, never bend a test. 10 Done is the whole scope, tested and
+  9 The real entry point is the proof; wrong production is repaired, never
+  written into a test. 10 Done is the whole scope, tested and
   error-free on the integration tip. 11 Never destroy another actor's work. 12 Governance stays short.
 metadata:
   aihub.tags: '["decision:ADR-0038","effective:2026-11-03","route:both"]'
@@ -80,9 +81,10 @@ authorities, gets one precise question with its measured cost; everything else p
    revision claimed, does the claimed thing, shown by the smallest real command that
    exercises it; an editable checkout proves nothing about an installed release. A change
    to a live runtime names its recovery first, and a broken runtime is restored before
-   other work. Tests confirm the correct contract through public interfaces and never
-   define it: when a test and production disagree, the production defect is fixed
-   first, and a test never changes to accept wrong behavior.
+   other work. Tests confirm the intended behavior through public interfaces and never
+   define it. When production is wrong or incomplete, production is repaired first: no
+   test is ever written or changed to expect the defect, the gap or the missing
+   capability.
 10. **Finish the cycle.** Done is the whole agreed scope, tested, free of errors and
     landed on the integration tip through review and green checks, under commit
     subjects that say what changed, and, when asked, running in the target runtime with
