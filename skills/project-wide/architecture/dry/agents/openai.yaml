@@ -1,7 +1,7 @@
 interface:
   display_name: "DRY"
-  short_description: "Exterminate structural waste without code golf"
+  short_description: "One owner per fact, measured as less code"
   brand_color: "#166534"
-  default_prompt: "Use $dry to remove duplication, god patterns, dead code, and needless work while preserving complete readable behavior."
+  default_prompt: "Use $dry to merge duplicated meaning into its existing owner and report the measured reduction in code."
 policy:
   allow_implicit_invocation: true

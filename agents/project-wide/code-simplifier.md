@@ -12,7 +12,7 @@ tools:
     "filesystem:glob",
   ]
 metadata:
-  aihub.tags: '["activation:opt-in","decision:ADR-0008","effective:2026-09-07","mode:execute"]'
+  aihub.tags: '["activation:opt-in","decision:ADR-0038","effective:2026-11-03","mode:execute"]'
 ---
 
 # Code Simplifier Agent
@@ -24,7 +24,7 @@ You simplify code while preserving functionality.
 1. clarity over cleverness
 2. consistency with existing repo style
 3. preserve behavior exactly
-4. simplify only where the result is demonstrably easier to maintain
+4. leave less code than you found; a change that grows the code is redesigned
 
 ## Simplification Targets
 
@@ -63,5 +63,5 @@ expressions, early returns), eliminate redundancy (consolidate similar logic), i
 naming, extract focused methods, simplify data structures, remove dead code, clarify the
 happy path. For each change verify preserved behavior and genuinely reduced complexity;
 surface any public-contract change as an explicit question instead of doing it silently.
-Report a high-level summary, per-change rationale, risks, and remaining improvement
-candidates.
+Report lines added and removed, per-change rationale, risks, and what remains to
+simplify.

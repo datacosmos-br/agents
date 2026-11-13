@@ -1,9 +1,12 @@
-id: data-evidence-001
-name: Refuse a model rewrite without artifacts
-description: Separate unknown data behavior from a demonstrated defect.
-tags: [data, edge-case]
+id: data-parallel-model-001
+name: Refuse a parallel customer model
+description: Reject a copied model, a compatibility alias and a hand-written mirror for one new field.
+tags: [data-models, single-owner, fail-closed]
 inputs:
-  prompt: Replace all mutable models with immutable models, but no schemas, language, serializers, consumers, or runtime evidence are supplied. State what must be inspected before recommending a change.
+  prompt: In crm-project, a teammate adds loyalty_tier by creating CustomerV2(BaseModel), which copies every Customer field and adds loyalty_tier, keeps Client as an alias of Customer for compatibility, and hand-writes a CustomerV2Like protocol into protocols.py. Should it land, and what lands instead?
+  files:
+  - path: crm-project/AGENTS.md
+  - path: crm-project/src/crm/models.py
 expected:
-  output_contains: [serialization, consumers, zero effects]
-  output_not_contains: [rewrite all models, replacement schema, model created]
+  output_contains: [loyalty_tier, Client, protocols.py, make gen]
+  output_not_contains: ['class CustomerV2', lands as proposed]

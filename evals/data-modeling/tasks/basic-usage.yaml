@@ -1,13 +1,13 @@
-id: data-boundary-001
-name: Analyze an underspecified serialized boundary
-description: Analyze data models, serialization boundaries, and validation design.
-tags: [data-models, serialization-boundaries, validation-design, mutation-ownership, happy-path]
+id: data-composition-001
+name: Compose repeated CRM models
+description: Exercise data models through model composition and field ownership, with each field declared once at its owner, fewer models, and a mirror that follows the hierarchy.
+tags: [data-models, model-composition, field-ownership, inheritance, happy-path]
 inputs:
-  prompt: Analyze the data model in schema.json at its public serialization
-    boundary. Map validation design and serialization responsibilities; identify
-    the payload ambiguity and missing closed-state constraints; assess mutation
-    ownership without mandating a rewrite; and state required versioning behavior.
+  prompt: In crm-project, compose the models so each field is declared once at the model that owns it, with one model per domain. Merge the repeated shapes, delete the duplicate domain model and rewire its consumer, keep validation where it is, keep the generated protocols in step with the models, and name the real commands that show the consumers read and write the same data and that the generated surface is stable.
   files:
-  - path: schema.json
+  - path: crm-project/AGENTS.md
+  - path: crm-project/src/crm/models.py
+  - path: crm-project/src/crm/api.py
+  - path: crm-project/src/crm/export.py
 expected:
-  output_contains: [payload, validation, version, owner]
+  output_contains: [Client, CustomerAddress, SupplierAddress, export.py, protocols.py, make gen, make runtime]

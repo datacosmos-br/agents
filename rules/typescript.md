@@ -1,33 +1,16 @@
 ---
 globs: ["*.ts", "*.tsx", "**/*.ts", "**/*.tsx", "tsconfig.json"]
-description: TypeScript rules
+description: TypeScript facts its compiler and linters do not enforce
 metadata:
-  aihub.tags: '["decision:ADR-0008","effective:2026-08-28","route:both"]'
+  aihub.tags: '["decision:ADR-0038","effective:2026-11-03","route:both"]'
 ---
 
-# TypeScript rules
+# TypeScript
 
-Apply local typing and language-modernization requirements only to `internal` and
-`internal_flext`. A `third_party_fork` follows its upstream TypeScript, JavaScript,
-runtime, and toolchain contract.
-
-Use the project's declared runtime, TypeScript version, module system, package manager,
-framework, and canonical command facade. Never impose a repository- specific
-architecture on a generic TypeScript project.
-
-- Enable the project's strictest supported type checks; do not use `any`, unchecked
-  casts, blanket diagnostic suppression, or workflow `catch` blocks.
-- Model nullability and external input explicitly. Validate untrusted data once at the
-  boundary with the project's declared schema owner.
-- Prefer immutable bindings/data where practical and `async`/`await` for readable
-  asynchronous control flow.
-- CLI boundaries, validators, and orchestrators do not catch workflow failures. Catch
-  only for cleanup/rollback, attach secondary failure, and throw the original error.
-  Stop validation at the first defect. A missing value is not permission to retry,
-  select an alternate, or invent a default success.
-- Run the real public runtime first, then every declared lint, format, type, test,
-  build, security, and package gate affected by the change.
-- Use project-local dependencies and physical files only: no symlink, path dependency to
-  another checkout, cross-repository reference, inherited secret, or project state under
-  `/tmp`.
-- Install TypeScript technology skills only when project-local markers prove TypeScript.
+The project's declared runtime, TypeScript version, module system, package manager and
+framework apply; no other repository's architecture is imposed. The compiler runs the
+strictest checks the project supports, with no `any`, unchecked casts or blanket
+suppressions. Nullability is explicit, and untrusted data is validated once at the
+boundary by the project's declared schema owner. Bindings and data are immutable where
+practical, and asynchronous flow uses `async`/`await`. Everything else is the
+[law](law.md).

@@ -1,4 +1,4 @@
-"""Normalize evaluation YAML EOFs after structural codemods."""
+"""Normalize evaluation YAML EOFs."""
 
 from __future__ import annotations
 

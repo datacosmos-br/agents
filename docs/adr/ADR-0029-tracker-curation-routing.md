@@ -1,6 +1,6 @@
 # ADR-0029 — Tracker curation routing: one owner per tracker, evidence per close, shared-tracker closes route through the coordinator
 
-**Status:** Proposed **Date:** 2026-09-27 **Scope:** rules/coordination/tracker-curation-routing.md
+**Status:** Superseded by ADR-0038 **Date:** 2026-09-27 **Scope:** rules/coordination/tracker-curation-routing.md
 
 ## Context
 

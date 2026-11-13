@@ -1,10 +1,17 @@
 # HANDOFF — Governance Runtime Program (ag-zrh) · 2026-09-11
 
-> Use com `bd prime` no checkout `~/agents` e leia este arquivo antes da primeira ação.
-> Plano canônico: `docs/plans/20260910-governance-runtime-program.md` (fonte única de
-> sequência/DoD).
+> Registro histórico de 2026-09-11. A seleção atual de plano, tracker e contexto
+> vem de seus owners canônicos; este arquivo não é um preflight obrigatório.
+> Plano citado à época: `docs/plans/20260910-governance-runtime-program.md`.
 
-## 1. Prompt de reinício (colar numa sessão nova)
+## 1. Registro histórico de reinício
+
+Este registro não seleciona o contexto de uma nova chamada. A exigência antiga de
+isolamento foi revogada pelo operador em 2026-10-23 (ag-wibx.2). Revalidar as demais
+instruções históricas em seus donos antes de qualquer retomada, preservando os fatos
+medidos abaixo.
+O bloco abaixo é transcrição histórica para referência, não comandos ativos ou
+autorização para executar a sequência antiga.
 
 ```text
 Handoff: Governance Runtime Program (bead épico ag-zrh).
@@ -22,9 +29,9 @@ Handoff: Governance Runtime Program (bead épico ag-zrh).
    origin/dev` (dev do ai-hub já tem 0.5.0 do ator paralelo) e re-medir.
 6. PROPOSTA aguarda aprovação do operador (seção PROPOSTA do plano; beads
    ag-q4w1 esteira, ag-m9lu piloto). Sem aprovação, o grind por classe continua
-   usando só make fix/mod/check/test + make gen ×2.
-7. Disciplina permanente: toda correção usa worktree dedicada (nunca checkout
-   compartilhado), roda gates após cada onda ({make fix → test → check}),
+   usando só make fix/mod/check/test + make gen x2.
+7. Placement segue o dono canônico e a chamada atual; não exige outra worktree.
+   Runtime real, estática e testes finais seguem seus donos vigentes,
    docs/beads/plano atualizados no mesmo passo, evidência de 4 fontes para
    qualquer fechamento, push pendente do plano dev agents (aguardar WIP do ator
    AGENTS.md/CLAUDE.md liberar, depois git pull --rebase && push).
@@ -62,7 +69,7 @@ comando exato, cwd, exit code, output decisivo; desviou = corrige o bead, nunca 
   `env -u BEADS_DOLT_SERVER_DATABASE`
 - runtime-is-reality, distribution-routing (ADR-0015), session-governance,
   anti-hardcode, fix-forward
-- generated files: regra via SSOT codegen config + make gen ×2 fixed-point — nunca
+- generated files: regra via SSOT codegen config + make gen x2 fixed-point — nunca
   hand-edit em `ast-grep-rules/`/`sgconfig.yml` gerados
 - make verbs:; CRG CLI = read-only
   (`impact/query/refactor rename/dead-code --json/large-functions`)
@@ -82,12 +89,12 @@ comando exato, cwd, exit code, output decisivo; desviou = corrige o bead, nunca 
 1. CRG sync (ag-nq7q) → check exit 0
 2. `merge --no-ff origin/dev` na fix/green-baseline → re-medir
 3. burn-down por classe (silent-failure → namespace (DI) → codemod (SSOT regras + gen
-   ×2) → testes (migração 102+35) )
+   x2) → testes (migração 102+35) )
 4. PR + merge dev ai-hub (ag-m9lu 7 critérios measuráveis) → deploy recovery → receipts+
 5. agentsctl sync (ag-7hz) → sonda R1/F3 (ag-zrh.4) → pousar (agents) + fechar épico com
    4 fontes; aposentar tudo (resíduo zero)
 
-## 7. Confrontação leis/código × ADRs/skills — pré-requisitos A CODIFICAR para o piloto
+## 7. Confrontação leis/código x ADRs/skills — pré-requisitos A CODIFICAR para o piloto
 
 Confrontado nesta sessão: skills/leis canônicas + ADR-0013/0014/0015/0016/0017/0018/0019
 vs código real (green-baseline @ d590d1cfb). Gaps de codificação, por prioridade:
@@ -108,5 +115,5 @@ verde. Sem o item 1 o piloto publicaria com aceitação simulada — proibido em
 
 ---
 
-Gerado na sessão 2026-09-11 (opencode). Nova sessão: este arquivo + bd prime + plano
-canônico = tudo que é preciso.
+Gerado na sessão 2026-09-11 (opencode). Este é um registro histórico, não uma
+autorização de execução nem substituto das regras e do estado atuais.

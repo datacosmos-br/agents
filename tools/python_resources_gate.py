@@ -1,8 +1,9 @@
-"""Validate Python resources discovered through the canonical bundle inventory."""
+"""Validate Python source and skill resources from the canonical inventory."""
 
 from __future__ import annotations
 
 import os
+import sys
 from pathlib import Path
 
 from strict_subprocess import run_strict
@@ -33,8 +34,22 @@ def main() -> None:
         commands = (
             ("ruff", "check", *resources),
             ("ruff", "format", "--check", *resources),
-            ("pyright", *resources),
-            ("mypy", *resources),
+            ("pyright", "src", "tests", "tools", *resources),
+            ("mypy", "src", "tests", "tools", *resources),
+        )
+    elif operation == "profile-mypy":
+        commands = (
+            (
+                sys.executable,
+                "-m",
+                "cProfile",
+                "-o",
+                str(root / ".reports" / "profiles" / "mypy-resources.pstats"),
+                "-m",
+                "mypy",
+                "--no-fast-exit",
+                *resources,
+            ),
         )
     else:
         raise ValueError(f"unknown Python resource operation: {operation}")

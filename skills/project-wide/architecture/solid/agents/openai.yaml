@@ -1,6 +1,6 @@
 interface:
   display_name: "SOLID"
-  short_description: "Enforce minimal evidence-backed design boundaries"
+  short_description: "Minimal boundaries that current consumers need"
   brand_color: "#1D4ED8"
   default_prompt: "Use $solid to enforce SRP, OCP, LSP, ISP, and DIP without speculative patterns or unnecessary layers."
 policy:

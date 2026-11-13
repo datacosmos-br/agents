@@ -9,9 +9,10 @@ runtime reconciliation, and global distribution.
 ## Public API
 
 ```python
-from agents_governance import GovernanceBundle
+from agents_governance import GovernanceBundle, catalog_resources
 
 bundle = GovernanceBundle.load()
+resources = catalog_resources(bundle)
 ```
 
 The returned frozen snapshot exposes `root`, `schema_version`, `distribution_version`,
@@ -19,18 +20,65 @@ The returned frozen snapshot exposes `root`, `schema_version`, `distribution_ver
 `law`. Loading is read-only and fails on the first catalog, evaluation-resource,
 approval, ownership, metadata, profile, command, rule, or strict-prelude defect.
 
+The central-catalog data boundary is `catalog_resources(bundle)`, returning a
+path-sorted tuple of frozen `CatalogResource(relative_path, content, mode, sha256)`
+records. Paths are portable relative physical-file identities, content is bytes,
+mode is the publication permission bits, and SHA-256 addresses those exact bytes.
+Construction rejects mutable content, noncanonical paths, negative/non-integer modes
+or bits outside native permissions, and digests that do not match the immutable bytes.
+Loading captures the enrolled inputs before semantic validation; the capsule and
+catalog use those same inputs. Later source edits or additions affect only a new
+load. Publication permissions are validated when the catalog API is requested;
+loading does not construct and discard a publication. Physical-file checks remain
+mandatory.
+The existing wheel `force-include` enrollment in `pyproject.toml` selects the
+catalog; configuration and the packaged enrollment document are SDK inputs, not
+central publications. The sdist retains these same enrolled sources. No arbitrary
+checkout traversal or repository-root copy is part of this protocol.
+
+As specified by [ADR-0022](docs/adr/ADR-0022-home-global-materialized-projection.md),
+AI Hub must consume these records to publish the neutral central catalog. In particular,
+the central `AGENTS.md` consists of `bundle.law.prelude` and
+`render_capsule(bundle).text`, never the checkout's repository-local scope block or
+AI Hub's own instructions. Legacy `UNIVERSAL_CORE.md` is not enrolled by this
+contract. AI Hub retains transaction, destination, activation and withdrawal ownership.
+`make audit` loads the public bundle and captures this catalog through the same public
+API; `make runtime` compares that inventory, its content digests and modes in each
+installed wheel and sdist against the public source API, separately from skill resources.
+This source contract is not an installed-artifact or live-publication receipt;
+source/installed byte, mode and digest equality must be measured separately. Native
+AI Hub adoption of this API is not established by this SDK source change.
+
 There is deliberately no executable runtime, projector, provider adapter, hook
 generator, home-directory writer, cleanup command, live model runner, security runner,
 compatibility alias, or second loading path in this package.
 
 ## Development
 
+`make upg` resolves dependency and tool locks; `make setup` installs the declared
+locked environment. Generation and gates run the existing environment without
+implicit dependency synchronization. Run setup explicitly when installation is
+required and authorized.
+
+The isolated repository toolchain declares every required gate executable in
+`.mise.toml`, including Waza. `make setup` provisions the selected locked requests;
+an executable inherited from the host PATH is not provisioning evidence. The
+committed `mise.lock` retains the selected resolution; adding a missing request
+does not authorize an unrelated tool upgrade.
+
+`make gen` retains the development-local provider outputs selected by `ag-la3h`
+and commits `19e64c01` and `8226eafc`, as clarified in
+[ADR-0008](docs/adr/ADR-0008-governance-bundle-as-public-facade.md).
+Its renderer lives outside the package, writes only inside this checkout and
+proves a deterministic fixed point. It neither publishes HOME/runtime surfaces
+nor replaces AI Hub's installed delivery owner.
+
 `make gen` also projects the portable `.beads/metadata.json` from
 `config/beads.yaml`, `config/beads-activation.yaml`, and `.beads/identity.toml`,
-and the tracked `.envrc` from
-`tools/templates/agents.envrc`. Both files are committed so a new linked worktree
-can select the canonical Beads database before setup. The managed `gc bd context`
-route supplies the live server host and port; local Dolt data remains ignored.
+and the tracked `.envrc` from `tools/templates/agents.envrc`. Both files are
+committed. AI Hub's host connection owner binds each checkout to its existing
+Beads database. The host direnv integration loads its live endpoint; this repository
+never recomputes or overrides that endpoint. Local Dolt data remains ignored.
 
 ```text
 make help
@@ -64,14 +112,12 @@ seven-day release cooldown, installed frozen by `make setup`, and refreshed by
 `make upg`. The published Python sdist and wheel remain platform-neutral and are
 validated as installed artifacts by `make runtime`.
 
-The test verbs, their testmon contract, and where each runs are declared in
+The test verbs' Testmon contract is declared in
 [`rules/workflow/canonical-commands.md`](rules/workflow/canonical-commands.md). CI runs
-`make ci`, whose root Makefile composition holds only fast external gates and
-`make test`, as [`rules/workflow/gate-budget.md`](rules/workflow/gate-budget.md)
-requires; `make check` and `make test-full` run only locally. The Waza gate proves the
-projected suite schema, every skill/evaluation reference, the exact spec threshold, and
-token ceilings; model execution belongs to a selected AI Hub runtime and is not claimed
-by this package.
+`make ci`, which holds only fast external gates and `make test`; `make check` and
+`make test-full` run only locally. The Waza gate proves the projected suite schema,
+every skill/evaluation reference, the exact spec threshold, and token ceilings; model
+execution belongs to a selected AI Hub runtime and is not claimed by this package.
 
 `make check` and `make ci` validate the immutable package without requiring the host's
 AI Hub runtime. Under [ADR-0010](docs/adr/ADR-0010-optional-host-runtime-boundary.md),
@@ -87,9 +133,14 @@ without a source checkout and performs no writes when loaded.
 
 Skill resources expose their format, SHA-256 and configured publication mode through
 `GovernanceBundle`. `make runtime` attests the exact resource inventory, bytes and
-physical modes after installing both artifacts. `make static` includes every Python
-resource selected from that inventory, with SDK dependencies owned by the development
-dependency group.
+physical modes after installing both artifacts. It also exercises the public catalog
+API and compares its paths, bytes, modes and digests with the source snapshot.
+`make static` includes every Python resource selected from that inventory, with SDK
+dependencies owned by the development dependency group.
+
+`ARTIFACT_PROFILE=1 make check` (or `make runtime`) adds cProfile captures under
+`ARTIFACT_STATE_ROOT` without changing any gate, artifact, dependency, deadline or
+validation scope; a missing capture is missing evidence.
 
 For continuation, use `plan-handoff` and `strategic-compact`: retain links to the
 current owner/source revision, refs, measured gates, freshness and next action in the
@@ -109,3 +160,10 @@ The `/reconcile-plans` command selects the
 It composes the existing documentation, architecture, tracker-revalidation, and
 interruption owners. Collection adapters and projection destinations remain consumer
 configuration; AI Hub alone distributes the complete skill resources.
+
+Reconciliation transfers valid pending work to Beads and maintained documentation before
+retiring one fully accounted plan at a time; it does not implement historical proposals.
+The [tracker rule](rules/workflow/beads-traceability.md) makes `TODO.md` AI Hub's
+generated view of open issues, never an input. This governance contract does not claim
+that the automation is implemented or activated; real runtime and delivery receipts
+remain with AI Hub.

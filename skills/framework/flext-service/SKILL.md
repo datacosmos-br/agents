@@ -26,6 +26,13 @@ Ground every edit in the consumer's own sources first: the kernel is
 `__init__.py` and `base.py`. Confirm the consumer's flext-core version exports
 the same names before relying on any member below.
 
+For automatically projected model or service contracts, first resolve the project's
+accepted, branch-matched ADR-018 "Model and service protocol projection" contract
+and the `pydantic-development` projection procedure. Keep authored DI ports and
+runtime service composition at their declared owners. Use the existing native
+semantic generator and consumer rewiring; do not hand-mirror implementation or SDK
+signatures into another contract surface.
+
 Declare `class XService(FlextService[TResult])` — the root is also exported as
 `s` — or extend the per-project `Flext<X>ServiceBase`, which already pairs `s`
 with the project utilities (one proven shape: `class ...(s, u.DbOracle)`).

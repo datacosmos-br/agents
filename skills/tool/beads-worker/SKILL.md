@@ -57,7 +57,7 @@ residue-free; never infer merge or closure.
 - Work discovered inside the slice becomes a new bead linked with `discovered-from`;
   never absorb it silently into the assigned slice.
 
-## Execution discipline (fleet slices, 2026-09-10)
+## Execution discipline
 
 - Dispatcher acceptance proof: `make help` lists the selector-free verbs and
   `make <verb>` reaches the real script; downstream credential failures belong to the

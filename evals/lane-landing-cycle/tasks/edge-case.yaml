@@ -4,10 +4,13 @@ description: Preserve source-owned generated outputs and diagnose unrelated drif
 tags: [git, github, workflow, edge-case]
 inputs:
   prompt: >-
-    After changing the tracked Beads activation source in the agents repository,
+    The operator authorizes the current primary checkout with compatible shared WIP,
+    without selecting isolation. After changing the tracked Beads activation source,
     make gen changes .envrc and .beads/metadata.json. An unrelated generated
     workflow also changes. What belongs in the PR, and how is an unexpected
-    generated change diagnosed before push?
+    generated change diagnosed before any authorized push? A colleague proposes restoring
+    those generated paths from origin, but they contain the other actor's valid WIP.
+    Assess that proposal and explain the source-owned resolution in the current context.
 expected:
   output_contains:
     [source, .envrc, .beads/metadata.json, fixed point, unrelated]

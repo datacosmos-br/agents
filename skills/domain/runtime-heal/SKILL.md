@@ -4,7 +4,7 @@ description:
   "runtime service recovery, failure diagnosis, installed-release activation, readiness"
 license: MIT
 metadata:
-  aihub.tags: '["activation:opt-in","decision:ADR-0030","detect:opt-in:runtime-heal","effective:2026-09-27","route:project","subject:deployment","usage:on-demand"]'
+  aihub.tags: '["activation:opt-in","decision:ADR-0030","detect:opt-in:runtime-heal","effective:2026-10-28","route:project","subject:deployment","usage:on-demand"]'
 ---
 
 # Runtime heal
@@ -19,6 +19,10 @@ triage, snapshot/publication contracts, compare-and-swap publication,
 development-versus-production activation contracts, credential-projection
 guard interplay, and idempotent-install proof. Every step ends in a captured
 command; a step without captured output did not happen.
+
+Configuration changes go through the existing publisher: each effect is complete or
+absent and a second run changes nothing (`rules/law.md` items 5 and 8), proven on the
+running service, never by source edits. Provider eligibility stays in consumer policy.
 
 A failure is cured at the owner the traceback names — never suppressed,
 retried, bypassed, or normalized; an inherited environment marker is never

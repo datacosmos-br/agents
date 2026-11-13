@@ -1,6 +1,6 @@
 # ADR-0034 — Runtime stability pact: real-runtime validation and no broken runtime
 
-- **Status:** Accepted
+- **Status:** Superseded by ADR-0038
 - **Date:** 2026-10-03
 - **Tracking:** bead `gc-13572e`; operator directive 2026-10-03 (consolidated)
 

@@ -14,7 +14,7 @@ die() { printf 'erro: %s\n' "$*" >&2; exit 1; }
 have() { command -v "$1" >/dev/null 2>&1; }
 have bd || die "bd nao encontrado no PATH"
 have jq || die "jq nao encontrado no PATH"
-mkdir -p "$LOGDIR"
+mkdir -p "${LOGDIR}"
 
 usage() {
   cat <<EOF
@@ -44,7 +44,7 @@ Logs: ${LOGDIR}/<ts>-log e ${LOGDIR}/latest.log
 EOF
 }
 
-CSV_FILE="$CSV_DEFAULT"
+CSV_FILE="${CSV_DEFAULT}"
 MODE="collect"
 APPLY=0
 LIMITS=25
@@ -70,8 +70,8 @@ done
 
 MODE="${MODE:-collect}"
 LOG="${LOGDIR}/${START_TS}-${PPID}-${MODE}.log"
-exec > >(tee "$LOG") 2>&1
-ln -sf "$(basename "$LOG")" "$LOGDIR/latest.log"
+exec > >(tee "${LOG}") 2>&1
+ln -sf "$(basename "${LOG}")" "${LOGDIR}/latest.log"
 
 # ---------------------------------------------------------------
 # Parse CSV
@@ -80,14 +80,14 @@ BEAD_IDS=()
 declare -A CSV_STATUS
 declare -A CSV_PARENT
 
-if [[ -n "$BEADS" ]]; then
-  IFS=',' read -ra BEAD_IDS <<< "$BEADS"
-elif [[ -f "$CSV_FILE" ]]; then
+if [[ -n "${BEADS}" ]]; then
+  IFS=',' read -ra BEAD_IDS <<< "${BEADS}"
+elif [[ -f "${CSV_FILE}" ]]; then
   # Skip header, parse CSV with proper quoting handling
-  tail -n +2 "$CSV_FILE" | while IFS=',' read -r id title status issue_type parent_id labels; do
+  tail -n +2 "${CSV_FILE}" | while IFS=',' read -r id title status issue_type parent_id labels; do
     # Remove surrounding quotes if present
     id="${id//\"/}"
-    printf '%s\n' "$id"
+    printf '%s\n' "${id}"
   done > /tmp/wip-beads-ids.$$
   mapfile -t BEAD_IDS < /tmp/wip-beads-ids.$$
   rm -f /tmp/wip-beads-ids.$$
@@ -100,13 +100,13 @@ elif [[ -f "$CSV_FILE" ]]; then
     issue_type="${issue_type//\"/}"
     parent_id="${parent_id//\"/}"
     labels="${labels//\"/}"
-    CSV_STATUS["$id"]="$status"
-    CSV_PARENT["$id"]="$parent_id"
-  done < <(tail -n +2 "$CSV_FILE")
+    CSV_STATUS["${id}"]="${status}"
+    CSV_PARENT["${id}"]="${parent}_id"
+  done < <(tail -n +2 "${CSV_FILE}")
 fi
 
 total=${#BEAD_IDS[@]}
-printf 'MODE=%s APPLY=%s DRY_RUN=%s total=%d limits=%d\n' "$MODE" "$APPLY" "$DRY_RUN" "$total" "$LIMITS"
+printf 'MODE=%s APPLY=%s DRY_RUN=%s total=%d limits=%d\n' "${MODE}" "${APPLY}" "${DRY_RUN}" "${total}" "${LIMITS}"
 
 # JSON report accumulator
 declare -A REPORT_COUNTS
@@ -122,24 +122,24 @@ log_cmd() {
   local cmd="$1"
   local id="$2"
   local mode="$3"
-  printf '  [CMD %s] %s\n' "$mode" "$cmd" >> "$LOG"
+  printf '  [CMD %s] %s\n' "${mode}" "${cmd}" >> "${LOG}"
 }
 
 mutate() {
   local id="$1"
   local mode="$2"
   local cmd="$3"
-  if [[ $APPLY -eq 1 ]]; then
-    log_cmd "$cmd" "$id" "$mode"
-    if eval "$cmd" >> "$LOG" 2>&1; then
+  if [[ ${APPLY} -eq 1 ]]; then
+    log_cmd "${cmd}" "${id}" "${mode}"
+    if eval "${cmd}" >> "${LOG}" 2>&1; then
       ((REPORT_COUNTS[mutated]+=1)) || true
-      printf '  [APPLIED %s] %s\n' "$mode" "$id"
+      printf '  [APPLIED %s] %s\n' "${mode}" "${id}"
     else
       ((REPORT_COUNTS[errors]+=1)) || true
-      printf '  [ERROR %s] %s: comando falhou\n' "$mode" "$id"
+      printf '  [ERROR %s] %s: comando falhou\n' "${mode}" "${id}"
     fi
   else
-    printf '  [DRY-RUN %s] %s: %s\n' "$mode" "$id" "$cmd"
+    printf '  [DRY-RUN %s] %s: %s\n' "${mode}" "${id}" "${cmd}"
   fi
   ((REPORT_COUNTS[processed]+=1)) || true
 }
@@ -148,22 +148,22 @@ report_skip() {
   local mode="$1"
   local id="$2"
   local reason="$3"
-  printf '  [SKIP %s] %s: %s\n' "$mode" "$id" "$reason"
+  printf '  [SKIP %s] %s: %s\n' "${mode}" "${id}" "${reason}"
   ((REPORT_COUNTS[skipped]+=1)) || true
 }
 
 write_json_report() {
-  [[ -z "$JSON_REPORT" ]] && return
+  [[ -z "${JSON_REPORT}" ]] && return
   local mode="$1"
   local -n counts=$2
   jq -n \
-    --arg mode "$mode" \
+    --arg mode "${mode}" \
     --arg timestamp "$(date -Iseconds)" \
     --argjson processed "${counts[processed]}" \
     --argjson mutated "${counts[mutated]}" \
     --argjson errors "${counts[errors]}" \
     --argjson skipped "${counts[skipped]}" \
-    '{mode: $mode, timestamp: $timestamp, processed: $processed, mutated: $mutated, errors: $errors, skipped: $skipped}' >> "$JSON_REPORT"
+    '{mode: $mode, timestamp: $timestamp, processed: $processed, mutated: $mutated, errors: $errors, skipped: $skipped}' >> "${JSON_REPORT}"
 }
 
 reset_counts() {
@@ -178,11 +178,11 @@ declare -A BEAD_JSON_CACHE
 cache_batch() {
   local snapshot id encoded
   snapshot="$(bd show "$@" --json 2>/dev/null || true)"
-  [[ -n "$snapshot" ]] || return 0
+  [[ -n "${snapshot}" ]] || return 0
   while IFS=$'\t' read -r id encoded; do
-    [[ -n "$id" ]] || continue
-    BEAD_JSON_CACHE["$id"]="$(printf '%s' "$encoded" | base64 --decode)"
-  done < <(jq -r '.[]? | [.id, (. | @base64)] | @tsv' <<< "$snapshot")
+    [[ -n "${id}" ]] || continue
+    BEAD_JSON_CACHE["${id}"]="$(printf '%s' "${encoded}" | base64 --decode)"
+  done < <(jq -r '.[]? | [.id, (. | @base64)] | @tsv' <<< "${snapshot}")
 }
 
 load_bead_json_cache() {
@@ -192,7 +192,7 @@ load_bead_json_cache() {
   # Preload only the beads this run processes. A full-corpus `bd list --all`
   # hydrates every ephemeral wisp and hangs the batch (bounded ledger reads).
   for id in "${BEAD_IDS[@]}"; do
-    chunk+=("$id")
+    chunk+=("${id}")
     if [[ ${#chunk[@]} -ge 200 ]]; then
       cache_batch "${chunk[@]}"
       chunk=()
@@ -204,16 +204,16 @@ load_bead_json_cache() {
 
 get_bead_json() {
   local id="$1"
-  if [[ -z "${BEAD_JSON_CACHE[$id]:-}" ]]; then
-    BEAD_JSON_CACHE[$id]="$(bd show "$id" --json 2>/dev/null | jq -c '.[0] // empty')"
+  if [[ -z "${BEAD_JSON_CACHE[${id}]:-}" ]]; then
+    BEAD_JSON_CACHE[${id}]="$(bd show "${id}" --json 2>/dev/null | jq -c '.[0] // empty')"
   fi
-  printf '%s' "${BEAD_JSON_CACHE[$id]}"
+  printf '%s' "${BEAD_JSON_CACHE[${id}]}"
 }
 
 get_bead_field() {
   local id="$1"
   local field="$2"
-  get_bead_json "$id" | jq -r ".$field // empty"
+  get_bead_json "${id}" | jq -r ".${field} // empty"
 }
 
 # ---------------------------------------------------------------
@@ -226,21 +226,21 @@ mode_collect() {
 
   # Get current status and parent from bd
   local curr_status curr_parent
-  curr_status=$(get_bead_field "$id" "status")
-  curr_parent=$(get_bead_field "$id" "parent")
+  curr_status=$(get_bead_field "${id}" "status")
+  curr_parent=$(get_bead_field "${id}" "parent")
 
-  local csv_status="${CSV_STATUS[$id]:-}"
-  local csv_parent="${CSV_PARENT[$id]:-}"
+  local csv_status="${CSV_STATUS[${id}]:-}"
+  local csv_parent="${CSV_PARENT[${id}]:-}"
 
   local changed=0
-  [[ "$curr_status" != "$csv_status" ]] && changed=1
-  [[ "$curr_parent" != "$csv_parent" ]] && changed=1
+  [[ "${curr_status}" != "${csv_status}" ]] && changed=1
+  [[ "${curr_parent}" != "${csv_parent}" ]] && changed=1
 
-  if [[ $changed -eq 1 ]]; then
-    local cmd="bd note \"$id\" \"$note\""
-    mutate "$id" "collect" "$cmd"
+  if [[ ${changed} -eq 1 ]]; then
+    local cmd="bd note \"${id}\" \"${note}\""
+    mutate "${id}" "collect" "${cmd}"
   else
-    report_skip "collect" "$id" "status/parent inalterados (bd=$curr_status/$curr_parent, csv=$csv_status/$csv_parent)"
+    report_skip "collect" "${id}" "status/parent inalterados (bd=${curr_status}/${curr_parent}, csv=${csv_status}/${csv_parent})"
   fi
 }
 
@@ -250,29 +250,29 @@ mode_collect() {
 mode_classify() {
   local id="$1"
   local issue_type
-  issue_type=$(get_bead_field "$id" "issue_type")
+  issue_type=$(get_bead_field "${id}" "issue_type")
   local parent_now
-  parent_now=$(get_bead_field "$id" "parent")
+  parent_now=$(get_bead_field "${id}" "parent")
 
-  case "$issue_type" in
+  case "${issue_type}" in
     bug|bugfix|hotfix)
-      if [[ -n "$parent_now" ]]; then
-        printf '  [classify] %s: %s com parent=%s -> remover parent\n' "$id" "$issue_type" "$parent_now"
-        local cmd="bd update \"$id\" --parent \"\""
-        mutate "$id" "classify" "$cmd"
+      if [[ -n "${parent}_now" ]]; then
+        printf '  [classify] %s: %s com parent=%s -> remover parent\n' "${id}" "${issue_type}" "${parent}_now"
+        local cmd="bd update \"${id}\" --parent \"\""
+        mutate "${id}" "classify" "${cmd}"
       else
-        report_skip "classify" "$id" "bug/hotfix sem parent OK"
+        report_skip "classify" "${id}" "bug/hotfix sem parent OK"
       fi
       ;;
     feature|task|chore|decision|epic|convoy|gate|rig)
-      if [[ -z "$parent_now" && "$issue_type" != "epic" ]]; then
-        printf '  [classify] %s: %s sem parent (epic esperado)\n' "$id" "$issue_type"
+      if [[ -z "${parent}_now" && "${issue_type}" != "epic" ]]; then
+        printf '  [classify] %s: %s sem parent (epic esperado)\n' "${id}" "${issue_type}"
       else
-        report_skip "classify" "$id" "$issue_type parent OK ($parent_now)"
+        report_skip "classify" "${id}" "${issue_type} parent OK (${parent}_now)"
       fi
       ;;
     *)
-      report_skip "classify" "$id" "tipo desconhecido: $issue_type"
+      report_skip "classify" "${id}" "tipo desconhecido: ${issue_type}"
       ;;
   esac
 }
@@ -283,36 +283,36 @@ mode_classify() {
 declare -A ALIGN_MAP
 
 load_align_map() {
-  [[ -z "$MAP_FILE" || ! -f "$MAP_FILE" ]] && return
+  [[ -z "${MAP_FILE}" || ! -f "${MAP_FILE}" ]] && return
   while IFS=',' read -r bead_id desired_parent; do
     bead_id="${bead_id//\"/}"
     desired_parent="${desired_parent//\"/}"
-    [[ -n "$bead_id" ]] && ALIGN_MAP["$bead_id"]="$desired_parent"
-  done < <(tail -n +2 "$MAP_FILE")
+    [[ -n "${bead_id}" ]] && ALIGN_MAP["${bead_id}"]="${desired_parent}"
+  done < <(tail -n +2 "${MAP_FILE}")
 }
 
 mode_align() {
   local id="$1"
   local issue_type
-  issue_type=$(get_bead_field "$id" "issue_type")
+  issue_type=$(get_bead_field "${id}" "issue_type")
   local curr_parent
-  curr_parent=$(get_bead_field "$id" "parent")
+  curr_parent=$(get_bead_field "${id}" "parent")
 
-  local desired_parent="${ALIGN_MAP[$id]:-}"
+  local desired_parent="${ALIGN_MAP[${id}]:-}"
 
-  if [[ -n "$desired_parent" ]]; then
-    if [[ "$curr_parent" != "$desired_parent" ]]; then
-      printf '  [align] %s: parent atual=%s desejado=%s\n' "$id" "${curr_parent:-vazio}" "$desired_parent"
-      local cmd="bd update \"$id\" --parent \"$desired_parent\""
-      mutate "$id" "align" "$cmd"
+  if [[ -n "${desired_parent}" ]]; then
+    if [[ "${curr_parent}" != "${desired_parent}" ]]; then
+      printf '  [align] %s: parent atual=%s desejado=%s\n' "${id}" "${curr_parent:-vazio}" "${desired_parent}"
+      local cmd="bd update \"${id}\" --parent \"${desired_parent}\""
+      mutate "${id}" "align" "${cmd}"
     else
-      report_skip "align" "$id" "parent ja alinhado ($curr_parent)"
+      report_skip "align" "${id}" "parent ja alinhado (${curr_parent})"
     fi
-  elif [[ "$issue_type" != "epic" && -z "$curr_parent" ]]; then
-    printf '  [align] %s: %s sem parent (map nao fornecido)\n' "$id" "$issue_type"
-    report_skip "align" "$id" "sem map para definir parent desejado"
+  elif [[ "${issue_type}" != "epic" && -z "${curr_parent}" ]]; then
+    printf '  [align] %s: %s sem parent (map nao fornecido)\n' "${id}" "${issue_type}"
+    report_skip "align" "${id}" "sem map para definir parent desejado"
   else
-    report_skip "align" "$id" "OK (parent=$curr_parent)"
+    report_skip "align" "${id}" "OK (parent=${curr_parent})"
   fi
 }
 
@@ -322,21 +322,21 @@ mode_align() {
 mode_unblock() {
   local id="$1"
   local status
-  status=$(get_bead_field "$id" "status")
+  status=$(get_bead_field "${id}" "status")
 
-  if [[ "$status" != "blocked" ]]; then
-    report_skip "unblock" "$id" "status=$status (nao blocked)"
+  if [[ "${status}" != "blocked" ]]; then
+    report_skip "unblock" "${id}" "status=${status} (nao blocked)"
     return
   fi
 
   # Get blockers (dependencies where this bead depends on others)
   local deps_json
-  deps_json=$(bd dep list "$id" --json 2>/dev/null)
+  deps_json=$(bd dep list "${id}" --json 2>/dev/null)
   local blocker_count
-  blocker_count=$(echo "$deps_json" | jq 'length')
+  blocker_count=$(echo "${deps_json}" | jq 'length')
 
-  if [[ "$blocker_count" -eq 0 ]]; then
-    printf '  [unblock] %s: blocked mas sem dependencias registradas\n' "$id"
+  if [[ "${blocker_count}" -eq 0 ]]; then
+    printf '  [unblock] %s: blocked mas sem dependencias registradas\n' "${id}"
     return
   fi
 
@@ -347,24 +347,24 @@ mode_unblock() {
   # in a subshell, so the counters below would always stay 0 at the verdict.
   while read -r dep; do
     local blocker_id blocker_status
-    blocker_id=$(echo "$dep" | jq -r '.id // empty')
-    blocker_status=$(echo "$dep" | jq -r '.status // empty')
+    blocker_id=$(echo "${dep}" | jq -r '.id // empty')
+    blocker_status=$(echo "${dep}" | jq -r '.status // empty')
 
-    if [[ "$blocker_status" == "closed" || "$blocker_status" == "done" || "$blocker_status" == "completed" ]]; then
-      printf '  [unblock] %s: blocker %s esta %s (destravavel)\n' "$id" "$blocker_id" "$blocker_status"
+    if [[ "${blocker_status}" == "closed" || "${blocker_status}" == "done" || "${blocker_status}" == "completed" ]]; then
+      printf '  [unblock] %s: blocker %s esta %s (destravavel)\n' "${id}" "${blocker_id}" "${blocker_status}"
       ((unblockable+=1)) || true
     else
-      printf '  [unblock] %s: blocker %s esta %s (aberto)\n' "$id" "$blocker_id" "$blocker_status"
+      printf '  [unblock] %s: blocker %s esta %s (aberto)\n' "${id}" "${blocker_id}" "${blocker_status}"
       ((blocked_by_open+=1)) || true
     fi
-  done < <(echo "$deps_json" | jq -c '.[]')
+  done < <(echo "${deps_json}" | jq -c '.[]')
 
-  if [[ $unblockable -gt 0 && $blocked_by_open -eq 0 ]]; then
-    printf '  [unblock] %s: TODOS blockers fechados -> pode desbloquear\n' "$id"
-  elif [[ $unblockable -gt 0 ]]; then
-    printf '  [unblock] %s: %d/%d blockers fechados, %d abertos\n' "$id" "$unblockable" "$blocker_count" "$blocked_by_open"
+  if [[ ${unblockable} -gt 0 && ${blocked_by_open} -eq 0 ]]; then
+    printf '  [unblock] %s: TODOS blockers fechados -> pode desbloquear\n' "${id}"
+  elif [[ ${unblockable} -gt 0 ]]; then
+    printf '  [unblock] %s: %d/%d blockers fechados, %d abertos\n' "${id}" "${unblockable}" "${blocker_count}" "${blocked_by_open}"
   else
-    printf '  [unblock] %s: nenhum blocker fechado (%d abertos)\n' "$id" "$blocked_by_open"
+    printf '  [unblock] %s: nenhum blocker fechado (%d abertos)\n' "${id}" "${blocked_by_open}"
   fi
 
   ((REPORT_COUNTS[processed]+=1)) || true
@@ -377,7 +377,7 @@ normalize_title() {
   local title="$1"
   # Preserve existing [scope] prefix
   local scope_prefix=""
-  if [[ "$title" =~ ^\[([^]]+)\]\ (.*)$ ]]; then
+  if [[ "${title}" =~ ^\[([^]]+)\]\ (.*)$ ]]; then
     scope_prefix="[${BASH_REMATCH[1]}] "
     title="${BASH_REMATCH[2]}"
   fi
@@ -386,46 +386,46 @@ normalize_title() {
   title="${title#\[[Ww][Ii][Pp]\][[:space:]]*}"
   title="${title#\([Ww][Ii][Pp]\)[[:space:]]*}"
   # Collapse multiple spaces
-  title="$(echo "$title" | sed 's/[[:space:]]\+/ /g' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
+  title="$(echo "${title}" | sed 's/[[:space:]]\+/ /g' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
   echo "${scope_prefix}${title}"
 }
 
 normalize_labels() {
   local labels="$1"
   # ponytail: preserve label case (priority:P0 e convenção do projeto); só trim+dedup
-  echo "$labels" | tr ';' '\n' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | awk '!seen[$0]++' | paste -sd ';' -
+  echo "${labels}" | tr ';' '\n' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | awk '!seen[$0]++' | paste -sd ';' -
 }
 
 mode_title() {
   local id="$1"
   local curr_title curr_labels
-  curr_title=$(get_bead_field "$id" "title")
-  curr_labels=$(get_bead_field "$id" "labels" | jq -r 'join(";")')
+  curr_title=$(get_bead_field "${id}" "title")
+  curr_labels=$(get_bead_field "${id}" "labels" | jq -r 'join(";")')
 
   local new_title new_labels
-  new_title=$(normalize_title "$curr_title")
-  new_labels=$(normalize_labels "$curr_labels")
+  new_title=$(normalize_title "${curr_title}")
+  new_labels=$(normalize_labels "${curr_labels}")
 
-  if [[ "$curr_title" != "$new_title" || "$curr_labels" != "$new_labels" ]]; then
-    printf '  [title] %s: titulo alterado\n' "$id"
-    printf '    OLD: %s\n' "$curr_title"
-    printf '    NEW: %s\n' "$new_title"
-    if [[ "$curr_labels" != "$new_labels" ]]; then
-      printf '    LABELS: %s -> %s\n' "$curr_labels" "$new_labels"
+  if [[ "${curr_title}" != "${new_title}" || "${curr_labels}" != "${new_labels}" ]]; then
+    printf '  [title] %s: titulo alterado\n' "${id}"
+    printf '    OLD: %s\n' "${curr_title}"
+    printf '    NEW: %s\n' "${new_title}"
+    if [[ "${curr_labels}" != "${new_labels}" ]]; then
+      printf '    LABELS: %s -> %s\n' "${curr_labels}" "${new_labels}"
     fi
-    local cmd="bd update \"$id\" --title \"$new_title\""
-    if [[ "$curr_labels" != "$new_labels" ]]; then
+    local cmd="bd update \"${id}\" --title \"${new_title}\""
+    if [[ "${curr_labels}" != "${new_labels}" ]]; then
       # Build label args
       local label_args=""
-      IFS=';' read -ra lbls <<< "$new_labels"
+      IFS=';' read -ra lbls <<< "${new_labels}"
       for lbl in "${lbls[@]}"; do
-        [[ -n "$lbl" ]] && label_args="$label_args --add-label \"$lbl\""
+        [[ -n "${lbl}" ]] && label_args="${label_args} --add-label \"${lbl}\""
       done
-      cmd="$cmd $label_args"
+      cmd="${cmd} ${label_args}"
     fi
-    mutate "$id" "title" "$cmd"
+    mutate "${id}" "title" "${cmd}"
   else
-    report_skip "title" "$id" "ja padronizado"
+    report_skip "title" "${id}" "ja padronizado"
   fi
 }
 
@@ -435,21 +435,21 @@ mode_title() {
 mode_deferred() {
   local id="$1"
   local status
-  status=$(get_bead_field "$id" "status")
+  status=$(get_bead_field "${id}" "status")
 
-  if [[ "$status" != "deferred" ]]; then
-    report_skip "deferred" "$id" "status=$status (nao deferred)"
+  if [[ "${status}" != "deferred" ]]; then
+    report_skip "deferred" "${id}" "status=${status} (nao deferred)"
     return
   fi
 
   local assignee
-  assignee=$(get_bead_field "$id" "owner")
+  assignee=$(get_bead_field "${id}" "owner")
 
   local note; note="REVALIDACAO DEFERRED $(date -Iseconds) (wip-beads.sh deferred): bead com status deferred reavaliado. Assignee: ${assignee:-sem assignee}. Verificar se deve retornar a open ou permanecer deferred."
 
-  printf '  [deferred] %s: status=deferred, assignee=%s\n' "$id" "${assignee:-vazio}"
-  local cmd="bd note \"$id\" \"$note\""
-  mutate "$id" "deferred" "$cmd"
+  printf '  [deferred] %s: status=deferred, assignee=%s\n' "${id}" "${assignee:-vazio}"
+  local cmd="bd note \"${id}\" \"${note}\""
+  mutate "${id}" "deferred" "${cmd}"
 }
 
 # ---------------------------------------------------------------
@@ -459,37 +459,37 @@ load_align_map
 
 # For 'all' mode, run each mode sequentially
 MODES_TO_RUN=()
-if [[ "$MODE" == "all" ]]; then
+if [[ "${MODE}" == "all" ]]; then
   MODES_TO_RUN=(collect classify align unblock title deferred)
 else
-  MODES_TO_RUN=("$MODE")
+  MODES_TO_RUN=("${MODE}")
 fi
 
 for run_mode in "${MODES_TO_RUN[@]}"; do
   load_bead_json_cache
-  printf '\n=== MODO: %s ===\n' "$run_mode"
+  printf '\n=== MODO: %s ===\n' "${run_mode}"
   reset_counts
 
   batch=0
   for (( i=0; i<total; i+=LIMITS )); do
     batch=$((batch+1))
     slice=("${BEAD_IDS[@]:i:LIMITS}")
-    printf '\n--- BATCH %d (%d beads) ---\n' "$batch" "${#slice[@]}"
+    printf '\n--- BATCH %d (%d beads) ---\n' "${batch}" "${#slice[@]}"
     for id in "${slice[@]}"; do
-      case "$run_mode" in
-        collect) mode_collect "$id" ;;
-        classify) mode_classify "$id" ;;
-        align) mode_align "$id" ;;
-        unblock) mode_unblock "$id" ;;
-        title) mode_title "$id" ;;
-        deferred) mode_deferred "$id" ;;
+      case "${run_mode}" in
+        collect) mode_collect "${id}" ;;
+        classify) mode_classify "${id}" ;;
+        align) mode_align "${id}" ;;
+        unblock) mode_unblock "${id}" ;;
+        title) mode_title "${id}" ;;
+        deferred) mode_deferred "${id}" ;;
       esac
     done
   done
 
   printf '\n--- RESUMO %s: processed=%d mutated=%d errors=%d skipped=%d ---\n' \
-    "$run_mode" "${REPORT_COUNTS[processed]}" "${REPORT_COUNTS[mutated]}" "${REPORT_COUNTS[errors]}" "${REPORT_COUNTS[skipped]}"
-  write_json_report "$run_mode" REPORT_COUNTS
+    "${run_mode}" "${REPORT_COUNTS[processed]}" "${REPORT_COUNTS[mutated]}" "${REPORT_COUNTS[errors]}" "${REPORT_COUNTS[skipped]}"
+  write_json_report "${run_mode}" REPORT_COUNTS
 done
 
-printf '\n%s: %d beads, %d batches. logs=%s\n' "$PROG" "$total" "$batch" "$LOG"
+printf '\n%s: %d beads, %d batches. logs=%s\n' "${PROG}" "${total}" "${batch}" "${LOG}"

@@ -1,11 +1,14 @@
 id: flext-gates-as-products-orphan-row-002
-name: Orphan budget row is red
-description: A budget row without a registry entry must fail loudly.
-tags: [flext, gates, failure]
+name: Reject a stale budget row without restoring its retired feature
+description: An orphan legacy row is repaired at its writer and consumers.
+tags: [flext, gates, fail-closed]
 inputs:
   prompt: |-
-    |-
-    A projection carries a budget row whose registry entry is missing. Diagnose the divergence as a hard error, refuse the projection, and repair at the config owner before regenerating to a proven fixed point.
+    The current branch has retired the old budget namespace, but a generated
+    projection still carries a budget row. Diagnose the stale writer and
+    consumer contract, preserve the failed result, and repair at the current
+    configuration/generator owner. Do not recreate the retired namespace to
+    satisfy the projection.
 expected:
-  output_contains: [orphan, divergence, hard error, config owner]
-  output_not_contains: [delete row silently, ignore]
+  output_contains: [orphan, divergence, owner, retired]
+  output_not_contains: [I will restore the budget namespace, I will delete the row silently]

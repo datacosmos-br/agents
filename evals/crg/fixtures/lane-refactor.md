@@ -28,4 +28,6 @@ Constraints:
 - Renames and deletions land through the project codemod owner (`make mod`), not a
   graph-side apply.
 - The host watcher service, daemon inventory, and MCP routes are managed projections;
-  the host watcher service is active.
+  the host watcher service is active, but its journal shows no cycle for
+  `<lane-worktree>`, so nothing watches the lane graph yet.
+- The workspace checkout `<workspace-root>` passes the freshness gate.

@@ -2,19 +2,12 @@
   "version": 2,
   "bootstrap": {
     "rules": [
-      "architecture/engineering-core",
-      "coordination/beads-verification",
-      "coordination/operator-alignment",
-      "coordination/operator-precedence",
-      "coordination/session-governance",
-      "ethics/change-consequence",
-      "ethics/professional-integrity",
-      "git/gitflow-branch-pr",
-      "runtime/strict-execution"
+      "law"
     ],
     "skills": [
       "caveman",
       "context-canary",
+      "crg",
       "fix-forward",
       "focus-recovery",
       "governance-audit",
@@ -25,7 +18,7 @@
     ]
   },
   "coordination": {
-    "abandonment_threshold_minutes": 60
+    "abandonment_threshold_minutes": 30
   },
   "delivery": {
     "capsule_budget_chars": 10000,
@@ -57,14 +50,14 @@
   },
   "guarantees": {
     "active-intent": [
-      "rule:coordination/plan-topic-monopoly",
+      "rule:law",
       "skill:focus-recovery"
     ],
     "atomic-effects": [
-      "rule:runtime/atomic-effects"
+      "rule:law"
     ],
     "bead-verification": [
-      "rule:coordination/beads-verification"
+      "rule:workflow/beads-traceability"
     ],
     "canonical-command-surface": [
       "rule:workflow/canonical-commands"
@@ -73,45 +66,48 @@
       "document:docs/adr/ADR-0019-delivery-contract.md"
     ],
     "causal-subprocess": [
-      "rule:runtime/causal-subprocess"
+      "rule:law"
+    ],
+    "command-deadline": [
+      "rule:workflow/canonical-commands"
     ],
     "complete-cutover": [
-      "rule:runtime/zero-residue"
+      "rule:law"
     ],
     "concise-communication": [
       "rule:communication/caveman",
       "skill:caveman"
     ],
     "configuration-authority": [
-      "rule:python/config-settings-ssot",
-      "rule:workflow/generators-not-projections"
+      "rule:law",
+      "rule:python"
     ],
     "configuration-driven-tests": [
-      "rule:python/config-settings-ssot",
-      "rule:workflow/runtime-is-reality"
+      "rule:python",
+      "rule:testing/observable-runtime"
     ],
     "consequence-aversion": [
-      "rule:ethics/change-consequence"
+      "rule:law"
     ],
     "context-lifecycle": [
-      "rule:coordination/session-governance",
+      "rule:law",
       "skill:context-canary",
       "skill:strategic-compact"
     ],
     "continuous-green": [
-      "rule:workflow/runtime-is-reality",
+      "rule:law",
       "skill:verification-loop"
     ],
     "correction-learning": [
       "skill:op-learning"
     ],
     "cross-runtime-session-handoff": [
-      "rule:coordination/session-governance",
+      "rule:law",
       "skill:opencode-handoff"
     ],
     "database-migration": [
       "command:database-migration",
-      "rule:runtime/atomic-effects"
+      "rule:law"
     ],
     "delivery-contract": [
       "document:docs/adr/ADR-0019-delivery-contract.md"
@@ -121,16 +117,15 @@
       "skill:anti-phase-skip"
     ],
     "evidence-backed-blocker": [
-      "rule:coordination/operator-precedence",
+      "rule:law",
       "skill:anti-phase-skip"
     ],
     "evidence-backed-truth": [
       "document:AGENTS.md",
-      "rule:ethics/professional-integrity"
+      "rule:law"
     ],
     "evidence-for-uncertainty": [
-      "rule:architecture/engineering-core",
-      "rule:coordination/operator-precedence"
+      "rule:law"
     ],
     "execution-persistence": [
       "skill:anti-phase-skip",
@@ -141,7 +136,7 @@
       "rule:workflow/beads-traceability"
     ],
     "fail-loud": [
-      "rule:runtime/fail-loud"
+      "rule:law"
     ],
     "feature-development": [
       "command:feature-development",
@@ -156,7 +151,7 @@
       "skill:sprint-closure"
     ],
     "fix-forward": [
-      "rule:coordination/fix-forward-collaboration",
+      "rule:law",
       "skill:fix-forward"
     ],
     "flext-cli-declarative-routes": [
@@ -169,12 +164,12 @@
       "skill:flext-service"
     ],
     "flext-strict-architecture": [
-      "rule:architecture/internal-clean-architecture",
+      "rule:law",
       "skill:flext-development"
     ],
     "gas-city-operations": [
       "command:gc-session-triage",
-      "rule:coordination/gascity",
+      "rule:coordination/inter-session-mail",
       "skill:gascity-docs",
       "skill:gc-agents",
       "skill:gc-change",
@@ -187,50 +182,49 @@
       "skill:ws-lifecycle"
     ],
     "gate-budget": [
-      "rule:workflow/gate-budget"
+      "rule:workflow/canonical-commands"
     ],
     "generated-boundaries": [
-      "rule:python/config-settings-ssot",
-      "rule:workflow/generators-not-projections"
+      "rule:law",
+      "rule:python"
     ],
     "generated-ownership": [
-      "rule:workflow/generators-not-projections"
+      "rule:workflow/canonical-commands"
     ],
     "github-issue-transparency": [
       "command:ghi-list",
-      "rule:coordination/operator-precedence"
+      "rule:law"
     ],
     "governance-artifact-composition": [
-      "rule:architecture/artifact-composition",
+      "rule:law",
       "skill:skill-governance"
     ],
     "history-evidence": [
-      "rule:coordination/fix-forward-collaboration",
-      "rule:git/destructive-git-guard"
+      "rule:law"
     ],
     "immediate-removal": [
-      "rule:runtime/zero-residue",
+      "rule:law",
       "skill:safe-delete"
     ],
     "instruction-design-evidence": [
       "document:docs/research/agent-instruction-design.md"
     ],
     "lane-ownership": [
-      "rule:coordination/fix-forward-collaboration",
+      "rule:coordination/inter-session-mail",
       "rule:git/gitflow-branch-pr"
     ],
     "language-rule-authoring": [
       "command:add-language-rules",
-      "rule:architecture/artifact-composition"
+      "rule:law"
     ],
     "legacy-source-adjudication": [
       "command:synthesize-governance",
-      "rule:architecture/artifact-composition",
+      "rule:law",
       "skill:governance-audit",
       "skill:skill-governance"
     ],
     "living-documentation": [
-      "rule:workflow/living-documentation"
+      "rule:law"
     ],
     "make-only-no-selectors": [
       "rule:workflow/canonical-commands",
@@ -238,80 +232,84 @@
     ],
     "memory-is-not-authority": [
       "document:AGENTS.md",
-      "rule:coordination/operator-precedence"
+      "rule:law"
     ],
     "no-fallback": [
-      "rule:runtime/no-fallback"
+      "rule:law"
     ],
     "no-hidden-code": [
-      "rule:architecture/engineering-core"
+      "rule:workflow/canonical-commands"
     ],
     "no-keyring": [
-      "rule:runtime/no-keyring"
+      "rule:runtime/required-environment"
     ],
     "observable-tests": [
       "rule:testing/observable-runtime"
     ],
     "operator-alignment": [
-      "rule:coordination/operator-alignment"
+      "rule:law"
     ],
     "operator-precedence": [
       "document:AGENTS.md",
-      "rule:coordination/operator-precedence"
+      "rule:law"
     ],
     "owner-reuse": [
-      "rule:architecture/engineering-core",
-      "rule:architecture/generalized-abstraction"
+      "rule:law"
     ],
     "plan-corpus-reconciliation": [
       "command:reconcile-plans",
-      "rule:coordination/plan-topic-monopoly",
+      "rule:law",
       "skill:plan-reconciliation"
     ],
     "preflight-before-effects": [
-      "rule:runtime/preflight-before-effects"
+      "rule:law"
     ],
     "production-readiness": [
-      "rule:workflow/production-readiness",
+      "rule:law",
       "skill:sprint-closure",
       "skill:verification-loop"
     ],
     "professional-integrity": [
-      "rule:ethics/professional-integrity"
+      "rule:law"
     ],
     "project-law": [
       "document:AGENTS.md",
-      "rule:coordination/fix-forward-collaboration"
+      "rule:law"
     ],
     "provenance-before-conclusion": [
-      "rule:coordination/provenance-first"
+      "rule:law"
     ],
     "pull-request-transparency": [
       "command:pr-list",
-      "rule:coordination/operator-precedence"
+      "rule:law"
     ],
     "python-bytecode-cache": [
       "rule:python",
       "skill:py-dev"
     ],
+    "remote-identity": [
+      "rule:git/remote-identity"
+    ],
     "repository-authority": [
       "document:README.md",
-      "rule:architecture/engineering-core"
+      "rule:law"
     ],
     "repository-research": [
       "document:AGENTS.md",
-      "rule:architecture/engineering-core"
+      "rule:law"
     ],
     "required-environment": [
       "rule:runtime/required-environment"
     ],
     "root-owner": [
-      "rule:architecture/engineering-core",
-      "rule:runtime/zero-residue"
+      "rule:law"
+    ],
+    "rule-exceptions": [
+      "rule:law"
     ],
     "runtime-first": [
-      "rule:testing/observable-runtime",
-      "rule:workflow/runtime-is-reality"
+      "rule:law",
+      "rule:testing/observable-runtime"
     ],
     "security-evidence-authority": [
       "document:docs/security/security-triage.md",
@@ -325,7 +323,7 @@
     ],
     "semantic-bundle-boundary": [
       "document:docs/adr/ADR-0008-governance-bundle-as-public-facade.md",
-      "rule:architecture/artifact-composition"
+      "rule:law"
     ],
     "separated-roles": [
       "document:AGENTS.md",
@@ -339,7 +337,7 @@
       "skill:verification-loop"
     ],
     "skill-specialization-hierarchy": [
-      "rule:architecture/artifact-composition",
+      "rule:law",
       "skill:skill-governance"
     ],
     "small-batches": [
@@ -353,24 +351,24 @@
       "skill:verification-loop"
     ],
     "strict-execution": [
-      "rule:runtime/strict-execution"
+      "rule:law"
     ],
     "strict-typing": [
-      "rule:python/flext-typing"
+      "rule:architecture/checkout-topology",
+      "rule:law"
     ],
     "testmon-cache-integrity": [
-      "rule:testing/observable-runtime",
-      "rule:workflow/runtime-is-reality"
+      "rule:workflow/canonical-commands"
     ],
     "topic-monopoly": [
-      "rule:coordination/plan-topic-monopoly"
+      "skill:plan-reconciliation"
     ],
     "tracker-evidence": [
       "document:AGENTS.md",
       "rule:workflow/beads-traceability"
     ],
     "zero-backup-archive": [
-      "rule:runtime/zero-residue"
+      "rule:storage"
     ]
   }
 }

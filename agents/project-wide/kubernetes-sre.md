@@ -79,7 +79,7 @@ Implement all three:
 
 - **Liveness**: Restart unhealthy containers
 - **Readiness**: Remove from load balancer when not ready
-- **Startup**: Protect slow-starting apps (failureThreshold × periodSeconds = max
+- **Startup**: Protect slow-starting apps (failureThreshold x periodSeconds = max
   startup time)
 
 ## High Availability Patterns

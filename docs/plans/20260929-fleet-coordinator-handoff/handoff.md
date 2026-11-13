@@ -12,7 +12,11 @@ The mission is P0 before any new phase:
 A phase counts as closed only when CI is green, the PR is merged, post-merge
 proof exists, and the bead is closed with evidence.
 
-## 2. Rulings and laws in force
+## 2. Historical rulings and their supersession
+
+This snapshot is not a current placement or publication authorization. The operator's
+2026-10-23 correction (ag-wibx.2, ADR-0025) adopts the current worktree; isolation is
+optional by invocation. Revalidate other historical instructions with their owners.
 
 | Item | State |
 |---|---|
@@ -23,7 +27,7 @@ proof exists, and the bead is closed with evidence.
 | Provisional `[coord]` subjects in use: `[coord] MERGING <repo>#<n> head <sha>`, `[coord] ready <repo>#<n> head <sha>`, `[coord] heavy-gate claim <lane>` / `[coord] heavy-gate release <lane> exit=<n>` | Not yet in the `rules/coordination/inter-session-mail.md` taxonomy; `ag-k47r` (merge subjects) and `ag-g29z` (heavy-gate subjects) add them there |
 | ai-hub `main` frozen; no promotion | In force |
 | Never hand-edit `.beads/config.yaml` (flext-infra projection) or commit with `core.hooksPath` overridden | In force; the rule is pending in `ag-4a82` |
-| Claim a bead only with a worktree and a first commit | In force |
+| Claim-time placement | Superseded: identity is declared in the authorized current context; neither a fresh worktree nor a first commit is a claim prerequisite. |
 | flext-infra #938: (a) `make dev` composite verb, (b) `project.dependency_sources` Git overrides | **Pending the operator.** The coordinator recommends rejecting both |
 
 ## 3. Measured state at handoff (2026-09-29 ~01:30Z)
@@ -96,7 +100,8 @@ gate runs at a time.
      profile first; the pushed `make upg` output (21fca19) is re-derived on the
      current infra tip, never promoted as is.
 3. **Root (`flext-itpd1.3.14`, claimed):**
-   - Work in a fresh root worktree from `origin/0.12.0-dev`.
+    - Adopt the authorized current root context; resolve the current integration base
+      from its owner before any integration effect.
    - Move the flext-infra gitlink to at least 8b37da306.
    - Run `make upg`, then `make gen` twice (the second run must produce no
      diff), then `make check` and `make test`.
@@ -136,7 +141,7 @@ gate runs at a time.
 
 | Theme | Defect | Rule | Correction |
 |---|---|---|---|
-| Merge authority | About 12 workers merged whenever ready; the flext-infra freeze was broken 4 times | parallel-delegation.md:23, fanout-qa-publication | One merger per repo; `ag-k47r` |
+| Merge authority | About 12 workers merged whenever ready; the flext-infra freeze was broken 4 times | parallel-delegation (current owner; duplicate fanout rule retired) | One merger per repo; `ag-k47r` |
 | Load | Load 55-68 on 20 cores; timeouts produced false reds (t8p7n, idihq, gdm8w) | heavy-gate-serialization (ADR-0021) | One heavy-gate slot; `ag-g29z` |
 | Tracker | 16 claims made at the same second with no worktree; duplicate beads (s64n2/bv8gs, d3nwq/t8p7n); merged work left in_progress | bead-branch-pr-cadence §1-3 | Fixed this session: released 10 flext and 15 ai-hub claims; closed 1um47, gdm8w, xgq4t; superseded d3nwq; contradictions filed as `ag-e3ul`, `ag-h31o` |
 | Test law | Merges with make test red; infra CI has no pytest | AGENTS #14, R-S3 | Ruling void (§2); `flext-pxonf` is first in the queue |

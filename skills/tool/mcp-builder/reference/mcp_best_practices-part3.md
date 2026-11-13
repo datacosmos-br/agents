@@ -55,6 +55,7 @@ Here's an example of implementing a basic tool in an MCP server:
     ```python
     app = Server("example-server")
 
+
     @app.list_tools()
     async def list_tools() -> list[types.Tool]:
         return [

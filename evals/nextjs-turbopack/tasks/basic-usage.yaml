@@ -3,8 +3,8 @@ name: Diagnose an explicit webpack dev script
 description: Exercise Next.js, Turbopack, and frontend performance through pinned project evidence.
 tags: [next.js, turbopack, bundling, caching, development, performance, happy-path]
 inputs:
-  prompt: Review this pinned Next.js setup for Turbopack and frontend performance. Complete version/script/config/cache preflight, verify release-specific behavior from official documentation, provide the smallest material script-owner correction, preserve `.next`, and define cold start, HMR, unchanged cache reuse, production build, raw first-command failure, zero-effect publication, and residue measurements without guessed flags or fallback bundlers.
+  prompt: Review this pinned Next.js setup for Turbopack and frontend performance. Verify release-specific behavior from official documentation, provide the smallest script-owner correction, preserve `.next`, and measure cold start, HMR, unchanged cache reuse and the production build without guessed flags or fallback bundlers.
   files:
   - path: package.json
 expected:
-  output_contains: ['16.3.3', 'next dev', '.next', 'HMR', 'zero effects']
+  output_contains: ['next dev', '.next', 'HMR']

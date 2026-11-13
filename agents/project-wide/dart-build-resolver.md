@@ -13,7 +13,7 @@ tools:
     "filesystem:glob",
   ]
 metadata:
-  aihub.tags: '["activation:detected","decision:ADR-0008","detect:marker:pubspec.yaml","effective:2026-09-07","mode:debug"]'
+  aihub.tags: '["activation:detected","decision:ADR-0038","detect:marker:pubspec.yaml","effective:2026-11-03","mode:debug"]'
 ---
 
 # Dart/Flutter Build Error Resolver
@@ -79,7 +79,7 @@ flutter build web 2>&1               # Web
 | `The class 'X' doesn't implement 'Y'`                                      | Missing `implements` or missing method   | Add method or fix class signature                                                                                  |
 | `Because X depends on Y >=A and Z depends on Y <B, version solving failed` | Pub version conflict                     | Correct the canonical dependency constraints and lockfile; never add an override as a bypass                       |
 | `Could not find a file named "pubspec.yaml"`                               | Wrong working directory                  | Run from project root                                                                                              |
-| `build_runner: No actions were run`                                        | Inputs may already be converged          | Verify source-to-generated fixed point and freshness; do not force a rewrite                                       |
+| `build_runner: No actions were run`                                        | Inputs may already be converged          | Confirm the generated files are current; do not force a rewrite                                                    |
 | `Part of directive found, but 'X' expected`                                | Generated/source contract drift          | Correct the source or generator owner, then regenerate atomically                                                  |
 
 ## Pub Dependency Troubleshooting

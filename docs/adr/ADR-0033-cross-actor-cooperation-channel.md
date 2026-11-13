@@ -1,7 +1,8 @@
 # ADR-0033 — Cross-actor cooperation through gc mail and the operator relay
 
-- **Status:** Accepted
+- **Status:** Amended by ADR-0038
 - **Date:** 2026-10-03
+- **Scope:** now owned by `rules/coordination/inter-session-mail.md`
 - **Tracking:** bead `gc-13572e` (DotGasCity hardening cutover); operator directive 2026-10-03
 
 ## Context

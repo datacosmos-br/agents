@@ -10,13 +10,11 @@ rewire, and deletion are one atomic change, never a compatibility or rollback se
 
 1. Resolve the superseded owner, replacement owner, every producer and consumer, tests,
    fixtures, config, generated surfaces, documentation, and semantic term.
-2. Delete the old tracked code, then rewire every valid consumer to the final owner, in
-   the same scoped patch and in the cleanup order of
-   `rules/architecture/engineering-core.md`. Git history is the recovery contract; do not archive, quarantine,
-   copy, deprecate, alias, dual-read, or retain a rollback path.
+2. Rewire every consumer and delete the superseded path in the same cutover
+   (`rules/law.md` item 6). Git keeps history, not rollback authority: nothing is
+   archived, quarantined, copied or dual-read.
 3. Delete tests and artifacts that exist only for the old contract; rewrite tests for
-   surviving behavior. A remaining valid consumer means the rewire continues, not that
-   compatibility is preserved.
+   surviving behavior.
 4. Prove zero residue, public runtime behavior, causal failure propagation, and native
    gates before the cutover can land.
 

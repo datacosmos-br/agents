@@ -8,8 +8,8 @@ installed signatures before editing; the facade is the contract.
 | Capability                  | Owner                                                                                                                             | Source (under `flext_cli/`)                   |
 | --------------------------- | --------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------- |
 | Route model                 | `m.Cli.ResultCommandRoute`                                                                                                        | `_models/_base/flextclimodelsbase_part_03.py` |
-| Registration                | `FlextCliCli.register_result_routes` / `register_result_route`                                                                   | `services/_cli_parts/flextclicli_part_05.py`  |
-| Model-to-command            | `FlextCliCli.model_command`                                                                                                       | `services/_cli_parts/flextclicli_part_03.py`  |
+| Registration                | `FlextCliCli.register_result_routes` / `register_result_route`                                                                   | `services/_cli/flextclicli_part_05.py`  |
+| Model-to-command            | `FlextCliCli.model_command`                                                                                                       | `services/_cli/flextclicli_part_03.py`  |
 | Private Click/Typer adapter | `u.Cli.framework_*`                                                                                                               | `_utilities/framework.py`                     |
 | Output emission             | `u.Cli.commands_resolve_success_message`, `commands_emit_success_message`, `commands_emit_result_error`                           | `_utilities/commands.py`                      |
 | Subprocess bridging         | `u.Cli.run_raw`, `run`, `run_checked`, `run_live`, `capture`                                                                      | `_utilities/_runtime_commands.py`             |

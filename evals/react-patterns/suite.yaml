@@ -5,6 +5,6 @@ prompt: |-
   and AbortController cleanup; renders loading, empty, results, and the
   supplied typed rejected outcome; lets thrown search failures remain raw;
   adds accessible live/alert semantics; removes query logging; and defines
-  material tests without new dependencies. Reject local catch normalization,
-  retry/fallback, speculative memoization, partial rewiring, or missing
-  zero-effect/unmount/residue proof.
+  behavior tests, unmount included, without new dependencies. Reject local
+  catch normalization, retry/fallback, speculative memoization, or partial
+  rewiring.

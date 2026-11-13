@@ -1,0 +1,17 @@
+[global]
+disable = ["MD022", "MD036", "MD040", "MD042", "MD046", "MD076", "MD057", "MD051", "MD025", "MD031", "MD023", "MD060", "MD001", "MD041"]
+
+[MD013]
+code-block-line-length = 500
+heading-line-length = 200
+line-length = 500
+tables = false
+
+[MD024]
+siblings-only = true
+
+[MD033]
+allowed-elements = ["br", "details", "summary", "kbd"]
+
+[MD050]
+style = "consistent"

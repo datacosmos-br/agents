@@ -9,21 +9,21 @@ metadata:
 
 # FLEXT Program Automation Cycle
 
-Execute one bead slice end-to-end without ad-hoc tool invocations. Full contract:
-`~/.agents/skills/framework/flext-gates-as-products/SKILL.md` (§ Automation cycle).
+Execute one bead slice end-to-end without ad-hoc tool invocations. Gate contract: the
+`flext-gates-as-products` skill; rule authoring: the `codemod` skill. Placement follows
+`rules/git/gitflow-branch-pr.md`, the environment `rules/storage.md`.
 
 ```bash
-# 0. Lane preflight (worktree must exist, pins fresh; NEVER primary venv)
+# 0. Authorized-context preflight (actual runtime root, pins fresh)
 export UV_PROJECT_ENVIRONMENT=$PWD/.venv VIRTUAL_ENV=$PWD/.venv
 
 # 1. Generation first (config SSOT → projections)
 make gen
 
-# 2. Scoped semantic rewrite (ast-grep + fixed point + Ruff + Pyrefly + LSP)
-#    Scope to ONE module or ONE facade slot per wave:
-# make mod  (dispatch)  — or scoped:
-# python -m flext_infra refactor mod --apply \
-#   --module flext_core._utilities --namespace u
+# 2. Structural rewrite through the declared verbs only (ast-grep catalog,
+#    text rules, fixed point). New or widened rules: codemod skill.
+make mod
+make mod-text
 
 # 3. Hygiene + gates
 make fix && make fmt && make check
@@ -34,7 +34,7 @@ code-review-graph doctor --repo "$PWD"                        # health checklist
 code-review-graph update --brief --repo "$PWD"                # per commit (build if it exits 1)
 code-review-graph detect-changes --brief --repo "$PWD"        # PR evidence
 code-review-graph dead-code --json --repo "$PWD"              # R2 residue candidates
-code-review-graph impact --files "$PWD" < changed... > --repo # blast radius
+code-review-graph impact --repo "$PWD"                        # blast radius
 
 # 5. Scoped commit → FF push → PR → --no-ff into integration → gates on
 #    merged SHA (merge --no-ff) → graph refresh on the tip (crg runbook).
@@ -42,6 +42,10 @@ code-review-graph impact --files "$PWD" < changed... > --repo # blast radius
 
 Graph operation, limits, and the manual runbook: `~/.agents/skills/tool/crg/SKILL.md`.
 
-Rules that may fire: anything under `flext-infra/src/flext_infra/codemod/rules/` and,
-agent-globally, `~/.agents/ast-grep-rules/universal/` via `~/.agents/sgconfig.yml`.
-Never hand-invent rule sources or bypass the dispatcher with raw commands.
+Rules that may fire are the engine's packaged catalogs in flext-infra:
+- ast-grep rules under `src/flext_infra/config/rules/ast-grep/`;
+- text rules in `src/flext_infra/config/rules/mod/sed.yaml`;
+- each repository's own overlay under `config/rules/`.
+
+The workspace guide `docs/guides/codemod-rules.md` documents the schema and verbs. Never
+hand-invent rule sources or bypass the verbs with raw commands.

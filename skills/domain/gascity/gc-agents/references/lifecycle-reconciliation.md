@@ -100,7 +100,7 @@ fi
 
 `request-restart` exits 0 when the controller kills the process tree, the runtime is
 already gone, or on SIGINT/SIGTERM. It exits **1 with a diagnostic** after
-`max(5 × patrol_interval, 5min)` (cap 30min) — that exit means _investigate controller
+`max(5 x patrol_interval, 5min)` (cap 30min) — that exit means _investigate controller
 health_, never _retry_. An interrupted request stays set for the next tick.
 
 `heartbeat` neither suspends the session nor changes sleep intent; wrap long silent

@@ -48,9 +48,10 @@ Violations fail before effects:
 - Catch-based defaults: `try: parse() except: return default` turns a missing or
   invalid external input into a silent fallback. Load failures surface as validation
   errors, never as defaults.
-- Point-of-use reads: `os.environ`, `Path.home`, or re-parsing a file inside a service
-  method bypasses the validated facade. Services consume injected values or the
-  validated global facades.
+ - Point-of-use reads: `os.environ`, `Path.home`, or re-parsing a file inside a service
+   method bypasses the explicit dependency and its validated owner. Services consume
+   validated values injected by the composition root; they neither read global
+   facades nor fetch their singletons.
 - Placeholder residue: unexpanded placeholders in loaded data fail the load.
 
 Missing evidence blocks the edit, not an invitation to invent it. Without the source

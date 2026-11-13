@@ -3,30 +3,19 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from contextlib import AbstractAsyncContextManager, AsyncExitStack
+from contextlib import AsyncExitStack
 from typing import TYPE_CHECKING, Any
 
-from anyio.streams.memory import MemoryObjectReceiveStream, MemoryObjectSendStream
+import httpx2
 from mcp import ClientSession, StdioServerParameters
+from mcp.client import Transport
+from mcp.client.session_group import StreamableHttpParameters
 from mcp.client.sse import sse_client
 from mcp.client.stdio import stdio_client
-from mcp.client.streamable_http import GetSessionIdCallback, streamablehttp_client
-from mcp.shared.message import SessionMessage
+from mcp.client.streamable_http import streamable_http_client
 
 if TYPE_CHECKING:
     from anthropic.types import ToolParam
-
-type TransportStreams = (
-    tuple[
-        MemoryObjectReceiveStream[SessionMessage | Exception],
-        MemoryObjectSendStream[SessionMessage],
-    ]
-    | tuple[
-        MemoryObjectReceiveStream[SessionMessage | Exception],
-        MemoryObjectSendStream[SessionMessage],
-        GetSessionIdCallback,
-    ]
-)
 
 
 class MCPConnection(ABC):
@@ -37,8 +26,8 @@ class MCPConnection(ABC):
         self._stack: AsyncExitStack | None = None
 
     @abstractmethod
-    def _create_context(self) -> AbstractAsyncContextManager[TransportStreams]:
-        """Create the connection context based on connection type."""
+    async def _create_context(self, stack: AsyncExitStack) -> Transport:
+        """Create the transport, entering every resource it borrows on ``stack``."""
 
     async def __aenter__(self):
         """Initialize MCP server connection."""
@@ -46,16 +35,8 @@ class MCPConnection(ABC):
         await self._stack.__aenter__()
 
         try:
-            ctx = self._create_context()
-            result = await self._stack.enter_async_context(ctx)
-
-            if len(result) == 2:
-                read, write = result
-            elif len(result) == 3:
-                read, write, _ = result
-            else:
-                msg = f"Unexpected context result: {result}"
-                raise ValueError(msg)
+            ctx = await self._create_context(self._stack)
+            read, write = await self._stack.enter_async_context(ctx)
 
             session_ctx = ClientSession(read, write)
             self.session = await self._stack.enter_async_context(session_ctx)
@@ -81,7 +62,7 @@ class MCPConnection(ABC):
         for tool in response.tools:
             metadata: ToolParam = {
                 "name": tool.name,
-                "input_schema": tool.inputSchema,
+                "input_schema": tool.input_schema,
             }
             if tool.description is not None:
                 metadata["description"] = tool.description
@@ -110,7 +91,8 @@ class MCPConnectionStdio(MCPConnection):
         self.args = args or []
         self.env = env
 
-    def _create_context(self):
+    async def _create_context(self, stack: AsyncExitStack) -> Transport:
+        del stack
         return stdio_client(
             StdioServerParameters(command=self.command, args=self.args, env=self.env)
         )
@@ -124,7 +106,8 @@ class MCPConnectionSSE(MCPConnection):
         self.url = url
         self.headers = headers or {}
 
-    def _create_context(self):
+    async def _create_context(self, stack: AsyncExitStack) -> Transport:
+        del stack
         return sse_client(url=self.url, headers=self.headers)
 
 
@@ -136,8 +119,17 @@ class MCPConnectionHTTP(MCPConnection):
         self.url = url
         self.headers = headers or {}
 
-    def _create_context(self):
-        return streamablehttp_client(url=self.url, headers=self.headers)
+    async def _create_context(self, stack: AsyncExitStack) -> Transport:
+        # The SDK configures headers through a caller-owned client; its timeouts
+        # come from the SDK's own streamable HTTP parameter defaults.
+        params = StreamableHttpParameters(url=self.url, headers=self.headers)
+        client = await stack.enter_async_context(
+            httpx2.AsyncClient(
+                headers=params.headers,
+                timeout=httpx2.Timeout(params.timeout, read=params.sse_read_timeout),
+            )
+        )
+        return streamable_http_client(params.url, http_client=client)
 
 
 def create_connection(

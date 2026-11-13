@@ -1,7 +1,8 @@
 # ADR-0037 - FLEXT Mypy policy and proven regression restoration
 
-**Status:** Accepted **Date:** 2026-10-05 **Scope:**
-`rules/python/pydantic.md`, `rules/ethics/strict-typed-quality.md`
+**Status:** Amended by ADR-0038 **Date:** 2026-10-05 **Scope:** the FLEXT Mypy policy,
+executed by flext-infra's typed tooling configuration; restoration follows law 11 of
+`rules/law.md`
 
 ## Authority
 

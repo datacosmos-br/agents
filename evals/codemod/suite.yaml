@@ -1,0 +1,19 @@
+description: Codemod rule authoring contract — widen the existing rule, one law per rule
+  built from what ast-grep sees, exact matching, tests and snapshots through the
+  repository verbs.
+prompt: |-
+  Grade the codemod response. Pass only if it:
+  - widens an existing rule (`constraints` on a metavariable or `any:` alternatives) into one rule that replaces the four literal siblings, whose tests and snapshots leave in the same change;
+  - states the law as one sentence naming the correct form and builds the rule only from what ast-grep sees in the file;
+  - anchors the match on node kinds or patterns with `files` scoping;
+  - turns each excluded near miss into a `not:` clause covered by a `valid` case and lists an `invalid` case for every rejected shape;
+  - regenerates snapshots only through the declared snapshot verb (`make mod-snapshots` in the scenario);
+  - applies the rule through `make mod`, shows that a second run changes nothing, and runs the affected tests;
+  - rejects the second parser and keeps the compatible uncommitted changes without waiting for a clean checkout.
+  Reject answers that:
+  - add a sibling rule or one rule per library;
+  - feed the rule from generated input or from facts ast-grep cannot see;
+  - match with a bare regex where a node kind exists;
+  - apply rules with raw `ast-grep scan --update-all` or `sg -U` on the tree;
+  - hand-edit snapshots or generated files;
+  - claim completion without the second-run result.

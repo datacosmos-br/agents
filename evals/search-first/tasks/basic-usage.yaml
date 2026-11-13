@@ -1,17 +1,14 @@
 id: search-first-pagination-owner-001
 name: Reuse the canonical pagination owner
-description: Exercise owner discovery, reusable-code decisions, and architecture research before changing code.
-tags: [search, architecture, reuse, dependencies, dry, yagni, happy-path]
+description: Exercise the decision order, native tools, owner reuse, and the smallest new code before changing code.
+tags: [search, decision-order, reuse, dependencies, happy-path]
 inputs:
   prompt: |
     The supplied mini-project must return an opaque URL-safe next-page token from
-    list_orders. Perform owner discovery, reusable-code analysis, and architecture
-    research through search-first before proposing the exact smallest patch.
-    Inspect every supplied file, identify the owner and current consumer, prove
-    the pinned dependency, and explain how the optimized
-    search-first -> YAGNI -> optional SOLID -> simplify inline -> optional DRY ->
-    YAGNI/SOLID recheck -> simplify final cycle
-    applies here. Include the runtime and native test that must prove the change.
+    list_orders. Search the supplied files, the pinned dependency and its
+    documentation, take the first option of the decision order that gives the
+    correct behavior, and report the choice, the owner it used and the exact
+    smallest patch. Include the runtime command and native test that prove it.
   files:
   - path: mini-project/AGENTS.md
   - path: mini-project/docs/architecture.md
@@ -22,4 +19,4 @@ inputs:
   - path: mini-project/src/shop/api.py
   - path: mini-project/tests/test_orders.py
 expected:
-  output_contains: [AGENTS.md, architecture.md, PageTokenCodec, list_orders, itsdangerous, 2.2.0, YAGNI, no new SOLID boundary, simplify inline, no structural DRY, make test]
+  output_contains: [PageTokenCodec, list_orders, itsdangerous, 2.2.0, encode, make runtime, make test]

@@ -3,11 +3,11 @@ name: Audit fresh runtime-first evidence
 description: Bound completion evidence with public runtime and root Make gates.
 tags: [completion-evidence, runtime-verification, native-gates, happy-path]
 inputs:
-  prompt: Evaluate gate-evidence.md as completion evidence. Check runtime before
-    tests, propagate the final exit to the composite invocation, distinguish a
-    typed testmon cache hit from tests passed, and state what remains unverified.
+  prompt: |
+    Evaluate gate-evidence.md as completion evidence. State what each entry
+    proves, what is red, what remains unverified, and the next step.
   files:
   - path: gate-evidence.md
 expected:
-  output_contains: [public bundle, make check, make ci, cache hit, NOT EXECUTED, exit 1, composite, not verified]
-  output_not_contains: [implementation complete, composite green, tests passed, providers validated]
+  output_contains: [cache hit, exit 1, red, entry point, same error]
+  output_not_contains: [composite green, implementation complete]

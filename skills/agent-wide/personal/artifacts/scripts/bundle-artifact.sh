@@ -48,7 +48,7 @@ FILE_SIZE=$(du -h bundle.html | cut -f1)
 
 echo ""
 echo "✅ Bundle complete!"
-echo "📄 Output: bundle.html ($FILE_SIZE)"
+echo "📄 Output: bundle.html (${FILE_SIZE})"
 echo ""
 echo "You can now use this single HTML file as an artifact in sessions that support artifacts."
 echo "To test locally: open bundle.html in your browser"

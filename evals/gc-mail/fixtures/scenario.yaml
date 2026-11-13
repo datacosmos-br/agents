@@ -22,6 +22,8 @@ campaign:
     executor: claude
   - alias: worker-codex@billing
     executor: codex
+    city_session_registered: false
+    hosted_account_authenticated: true
   - alias: lint-zcode@billing
     executor: zcode
     last_reply: none since lane claim msg-310 posted 50 minutes ago

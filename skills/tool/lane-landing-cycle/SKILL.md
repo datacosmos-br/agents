@@ -2,92 +2,64 @@
 name: lane-landing-cycle
 description: "beads, git worktree, landing cycle, pr merge, ci generation, lane retirement"
 metadata:
-  aihub.tags: '["activation:opt-in","decision:ADR-0021","detect:opt-in:lane-landing-cycle","effective:2026-09-27","route:agent","subject:beads","subject:git","subject:github","usage:router"]'
+  aihub.tags: '["activation:opt-in","decision:ADR-0021","detect:opt-in:lane-landing-cycle","effective:2026-10-29","route:agent","subject:beads","subject:git","subject:github","usage:router"]'
 ---
 
 # Lane landing cycle
 
 The verified mechanical cycle for one work unit on a governed repository lane,
-from lane creation to retirement. Composes with the rules `full-landing-cycle`,
-`beads-canonical-epics`, and `bead-branch-pr-cadence`.
+from authorized placement to any authorized retirement, under `rules/law.md` item 10.
 
 ## 1. Lane and bead first
 
-```bash
-git fetch origin dev
-git worktree add ~/ai-hub-worktrees/<slug>-<date> -b fix/<slug>-<date> <dev-tip>
-chmod 700 ~/ai-hub-worktrees/<slug>-<date>/.beads
-env -C ~/ai-hub-worktrees/<slug>-<date> -u VIRTUAL_ENV -u UV_PROJECT_ENVIRONMENT make setup
-```
-
-- One mandate per lane; the primary checkout is never a work surface; the
-  worktree lives on the destination filesystem, never `/tmp`, with its own
-  physical `.venv` from `make setup`.
-- Claim the bead and declare the triple (bead + branch + PR) to the
-  coordinator via `gc mail human` at claim time. `bd update --append-notes`
-  keeps the bead alive; abandonment follows rule `bead-branch-pr-cadence` §2.
+Placement follows `rules/git/gitflow-branch-pr.md`, the environment `rules/storage.md`,
+and WIP is kept (`rules/law.md` item 11). The tracker, the coordination channel and the
+Bead/branch/PR declaration follow `rules/workflow/beads-traceability.md` and
+`rules/coordination/inter-session-mail.md`; loading this skill selects no mail command
+or append-notes loop.
 
 ## 2. The gate, in order
 
-```bash
-CI=Y env -C <lane> -u VIRTUAL_ENV -u UV_PROJECT_ENVIRONMENT make gen   # twice
-env -C <lane> -u VIRTUAL_ENV -u UV_PROJECT_ENVIRONMENT make fix
-env -C <lane> -u VIRTUAL_ENV -u UV_PROJECT_ENVIRONMENT make fmt
-env -C <lane> -u VIRTUAL_ENV -u UV_PROJECT_ENVIRONMENT make check
-env -C <lane> -u VIRTUAL_ENV -u UV_PROJECT_ENVIRONMENT make test
-env -C <lane> -u VIRTUAL_ENV -u UV_PROJECT_ENVIRONMENT make test-full  # local, background
-```
+First complete documented alignment, implementation and real public-runtime proof
+(`rules/law.md` items 9 and 12). Only then enter this validation sequence or change
+regression tests; validation is not permission for test-first work.
 
-Run targeted tests first for fast feedback; the full suite is the local landing
-gate. Where each test verb runs, and its testmon contract, are declared in
-`rules/workflow/canonical-commands.md` (section "Test verbs"). A red is red: cure the
-root cause in the wave, or record it with its owner and sequence — never bypass, never
-normalize.
+Discover public verbs, contexts, population and evidence requirements from the selected
+repository's root Make catalog. `rules/workflow/canonical-commands.md` owns operation
+boundaries, deadlines and test selection. Use its current test-verb contract rather
+than a fixed test/full alias or mandatory targeted-before-full sequence. Prove any
+required generation fixed point through its owner; no hidden repeated lifecycle.
+Keep the physical environment selected by its owner. A red invocation requires causal
+repair and revalidation in the same phase; recording it alone never clears acceptance.
 
 ## 3. Classify generated outputs by owner
 
 Read the project generator declaration and inspect each changed output before
 staging. A generated file belongs in the PR when its tracked source changed and
-the canonical generator produced it. In this standalone `agents` project,
-`make gen` owns `.beads/metadata.json` and `.envrc`; both are committed for
-fresh linked worktree activation. In projects where `CI=Y` changes emission,
-regenerate through that project's declared CI context and verify the fixed
+the canonical generator produced it. Elect generated paths and their versioning
+from the repository's current declaration, not a remembered artifact list.
+Regenerate through that project's declared CI context where required and verify the fixed
 point. Preserve unrelated worktree changes and repair source drift at its owner.
 
 ## 4. Land, prove, retire
 
-```bash
-git push -u origin fix/<slug>-<date>
-gh pr create --base dev --head fix/<slug>-<date> --title '...' --body-file pr-body.md   # bead, scope, evidence
-gh pr checks <n> --repo datacosmos-br/ai-hub     # ci, merge-guard, release-plan, Kilo review
-gh pr merge <n> --repo datacosmos-br/ai-hub --merge
-```
+Resolve repository, remote identity, working branch, integration base and PR through
+`rules/git/gitflow-branch-pr.md`; its existing pipeline owns publication and reviewed
+landing. Do not copy a sibling repository/base, select a PR by number alone or build
+another merge-command workflow here. Follow its divergence, current-head CI/review,
+merged-revision and required runtime proof before tracker closure.
 
-Base movement before landing is integrated with `git merge --no-ff origin/dev` (never
-`git rebase` or `git pull --rebase`). After the PR merges, leave the lane branch
-unchanged: fetch, prove its tip is reachable from `origin/dev`, rerun the targeted tests
-on the fetched integration tip, close the bead with the evidence, then retire:
-
-```bash
-git fetch origin dev \
-  && git merge-base --is-ancestor fix/<slug>-<date> origin/dev \
-  && git switch --detach origin/dev \
-  && make test \
-  && cd ~/ai-hub \
-  && git worktree remove ~/ai-hub-worktrees/<slug>-<date> \
-  && git branch -d fix/<slug>-<date> \
-  && git push origin --delete fix/<slug>-<date>
-```
-
-A failed ancestry check, a red test, or a dirty worktree stops the chain; never force it.
+Assess retirement only through that owner's explicit disposable-lane authority,
+fresh ancestry and complete preservation/runtime-reference proof. Integration ancestry
+alone authorizes no removal. Preserve adopted primary, integration, shared and foreign
+contexts. A clean or stable checkout is not a development prerequisite; unresolved preservation
+evidence blocks the destructive retirement only, never authorizes forced removal.
 
 ## 5. Judgment calls this cycle encodes
 
 - Before starting: research branches, PRs, and beads for prior art; adopt the
-  survivor, never re-implement (dedupe mandate,
-  `bead-branch-pr-cadence`).
-- Environmental timeouts under host load: prove with a profile and a serial
-  rerun before blaming code. Template case: the deploy-staging fsync budget,
-  bead `aihub-5j4cw.5` in ai-hub.
-- End-to-end reference for the whole cycle executed under fire:
-  `docs/plans/2026-09-27-real-activation-f4-f5-landing.md` (ai-hub).
+  survivor, never re-implement (`rules/coordination/inter-session-mail.md`).
+- Environmental timeouts require the profile and measured-cause repair prescribed by
+  `rules/workflow/canonical-commands.md`; host load never authorizes an unchanged rerun.
+- Historical cycle reports are evidence for their recorded revision and scope, not
+  a command catalog or current execution permission for another project.

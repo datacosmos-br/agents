@@ -8,7 +8,7 @@
 
 ## 1. Estado entregue (tudo medido em runtime no SHA final)
 
-- **Gates**: `make setup`/`gen`×2/`fmt`/`fix`/`check`/`test`/`ci`/`build`/
+- **Gates**: `make setup`/`gen`x2/`fmt`/`fix`/`check`/`test`/`ci`/`build`/
   `validate-artifacts`/`runtime` — todos EXIT=0 no ciclo frio revalidado. `test-full`
   = 63 passed com execução real (`executed=63 deselected=0`); `home-check` 1340
   arquivos verificados. rumdl 543/543 limpo. waza 137 skills / 265 arquivos verde.
@@ -24,7 +24,7 @@
   (reval-closure EXECUTADO via PR #133 `ab27a954`; pydantic atualizado).
 - **F3** (`19e64c01`, `8f73e34e`): ADR-0008 cumprido no pacote — `cli.py`/`__main__.py`
   removidos, `projection.py` → `tools/governance_projection.py` (dev-only); **wheel
-  0.5.0 provado sem cli/__main__/projection, 18 módulos, 248 recursos exatos, sem
+  0.5.0 provado sem cli/**main**/projection, 18 módulos, 248 recursos exatos, sem
   entry_points**; zero importadores externos (medido). ADR-0022 escrito antes da F4.
   Resíduo `.kilo/` adjudicado (command/agent removidos com contagens stale;
   `kilo.json` mantido — config do operador).

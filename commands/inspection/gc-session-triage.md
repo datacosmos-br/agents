@@ -10,10 +10,9 @@ metadata:
 # Gas City session triage
 
 Treat `$ARGUMENTS` as one session ID or alias plus an optional city path. Require the
-target and reject an ambiguous or missing one before any command. Resolve the city's
-activation state from its own authority first, per `rules/coordination/gascity.md`;
-while it declares suspension, restrict this command to reading configuration and stop
-before any effect.
+target and reject an ambiguous or missing one before any command. Read the city's
+activation state from the city itself first; while it is suspended, only read
+configuration.
 
 This is a read-only diagnosis. It never starts, stops, drains, kills, or resets a
 session. Load the gc-agents skill reference `references/lifecycle-reconciliation.md` for
@@ -49,8 +48,7 @@ the state and handshake contract before interpreting anything.
    both before any `pgrep`. Distinguish a unit crash-loop (the unit exists and is
    restarting under its own policy — stop it only with `systemctl --user`, never by
    signal) from an orphan pid (`pgrep` finds a matching process with no owning unit —
-   the only process eligible for a direct signal, per
-   `rules/runtime/causal-subprocess.md`).
+   the only process eligible for a direct signal).
 
 Return the session identity, its state and capacity occupancy, the single most probable
 cause with the command, working directory, exit code, and decisive output that proves

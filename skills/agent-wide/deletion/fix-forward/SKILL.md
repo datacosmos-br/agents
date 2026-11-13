@@ -14,12 +14,11 @@ view. Activate when work overlaps another agent or lane, integration has advance
 rollback, stash, reset, revert, rebase, force-push, or whole-file replacement is
 proposed.
 
-Load the canonical invariant `rules/coordination/fix-forward-collaboration.md` and
-follow the `sync procedure` (skill file). Adopt the complete current authorized-
-worktree state regardless of provenance or age, inventory owners and intent before
-effects, preserve compatible work, integrate it forward through the repository's
-declared lane, and revalidate the combined result. Use transaction rollback only for
-effects created by the failing invocation.
+Apply `rules/law.md` item 11 and follow the `sync procedure` (skill file): adopt the
+complete current state regardless of provenance or age, keep compatible work, integrate
+it forward through the declared lane and revalidate the combined result. A clean or
+quiet tree is never a precondition, and only this invocation's own unpublished staging
+and locks may be removed.
 
 If two evidenced current intentions cannot coexist under the active authority, stop
 before the conflicting effect and ask the operator one exact question. Never classify
@@ -27,6 +26,6 @@ ordinary overlap, divergence, a failed gate, or required merge work as a severe
 conflict.
 
 Align a lane by integrating the declared integration branch with `git merge --no-ff`.
-Rebase, force-push, cherry-pick replacement, and branch rewriting are prohibited for
-authorized shared work — `git/gitflow-branch-pr` (rule file) owns that law; they destroy
-the merge history needed to prove which integration state was validated.
+Rebase, force-push, cherry-pick replacement and branch rewriting are prohibited for
+shared work (`rules/law.md` item 11); they destroy the merge history that proves which
+integration state was validated.

@@ -109,7 +109,7 @@ number is your blast radius — review it, don't skip it.
   Every mode re-reads the live ledger and compares; a `mutated=19` on collect means 19
   beads drifted since the CSV was generated — audit before applying, drift is often
   another lane's legitimate work.
-- **`bd show` per bead is the bottleneck**: ~3.5s/call × 100 beads ≈ 6min/mode. One
+- **`bd show` per bead is the bottleneck**: ~3.5s/call x 100 beads ≈ 6min/mode. One
   `bd list --all --flat --limit 0 --json` snapshot per mode cuts this to ~20s. See
   Performance below.
 - **Counter increments under `set -e`**: `((counter++))` exits 1 when the counter is 0

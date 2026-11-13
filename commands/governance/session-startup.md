@@ -7,25 +7,24 @@ metadata:
 
 # Session startup
 
-Run this checklist in order, before the first edit of the session. Each step
-existed as a rule before; this is the one-place sequence.
+Run this checklist in order before the first edit of the session.
 
 1. **Handoff index.** If a handoff document was pointed at you
    (`~/.claude/plans/handoff-*`), read it — it is an index; follow its
    references to the landing records, ADRs, and beads before anything else.
-2. **Governance.** Read `~/agents/rules/coordination/` headers relevant to
-   your work: `full-landing-cycle`, `bead-branch-pr-cadence`,
-   `lane-ownership-declaration`, `inter-session-mail`, `operator-precedence`.
+2. **Governance.** Read `rules/law.md` and the surviving rules your work touches,
+   starting with `rules/coordination/inter-session-mail.md`.
 3. **Tracker.** `bd ready` and your claims: nothing you are about to do may
-   duplicate an open bead. Adopt abandoned work (rule
-   `bead-branch-pr-cadence` §2) instead of re-creating it.
+   duplicate an open bead. Adopt abandoned work under that rule instead of
+   re-creating it.
 4. **Prior art.** Search branches (local + remote), open PRs, and recent docs
    for the scope you were given. Found a survivor? Adopt it — the mandate is
    the outcome, not the authorship.
-5. **Lane ownership.** Identify the primary checkout's owner session; hands
-   off. Your lane is a dedicated worktree on the destination filesystem.
-6. **Declare the triple.** Claim the bead, create the branch, and announce
-   bead + branch + PR to the coordinator via `gc mail human` — before the
-   first commit, not after the first scolding.
+5. **Placement and ownership.** Placement follows `rules/git/gitflow-branch-pr.md`;
+   overlapping WIP is kept (`rules/law.md` item 11).
+6. **Declare the triple.** In a selected tracker workflow, claim the bead and record
+   the actual branch and PR state there and in the coordination channel before the
+   first effect (`rules/coordination/inter-session-mail.md`). A declaration grants no
+   branch creation or Git publication authority.
 7. **Cycle declared.** State which integration branch, which gates, and what
-   runtime proof closes the unit (full-landing-cycle step 1).
+   runtime proof closes the unit (`rules/law.md` item 10).

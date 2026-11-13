@@ -3,5 +3,9 @@ prompt: |-
   Grade the doc-drift response. Pass only if it compares each documented
   command and runtime claim with the supplied canonical owner, identifies
   the exact extinct contract, proposes owner-consistent corrections and
-  contradiction checks, and never invents a replacement command or invokes
-  the explicitly suspended runtime.
+  contradiction checks, and aligns documentation before implementation. Require
+  affected guides, README, instructions, ADRs, selected tracker and skill sources
+  to be reconciled through their actual owners; installed copies are not sources.
+  Test changes follow implemented real behavior, not a static documentation claim.
+  Reject mocks, tautological proof and invented runtime receipts. Never invent a
+  replacement command or invoke the explicitly suspended runtime.

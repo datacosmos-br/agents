@@ -3,7 +3,7 @@ prompt: |-
   Grade the rest-api-design response. Pass only when it derives a plural resource contract from the supplied API
   requirements, selects stable cursor pagination for the stated workload,
   specifies semantic status and error responses, and preserves authentication,
-  ownership authorization, rate limits, and singular schema ownership. It must
-  require complete preflight before effects and causal, zero-effect failure.
+  ownership authorization, rate limits, and singular schema ownership. An
+  authorization or dependency failure publishes no partial response.
   Reject generic REST advice, arbitrary defaults, retry/fallback, partial
   mutation, or old/new compatibility paths.

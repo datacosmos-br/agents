@@ -22,27 +22,25 @@ the owner tip moves.
 
 ## G1 — discovery (read-only, start immediately)
 
-Automation surface order (research 2026-09-11):
+Automation surface order:
 
-1. **Graph refresh first** (`rules/workflow/graph-truth-freshness.md`, operated per the
-   `crg` skill freshness gate): `code-review-graph status --json --repo <root>` →
-   `update --brief` (or `build` when update exits 1 or after rewrites) — never reason
-   from a graph whose built commit differs from the target HEAD.
+1. **Graph refresh first** (the `crg` skill freshness gate): never reason from a graph
+   whose built commit differs from the target HEAD.
 2. **Facade census at the owner tooling** (cheaper and stricter than grep):
    `flext-infra refactor census --repository-root <repo> --output-format json` and
    `flext-infra refactor namespace-enforce --repository-root <repo> --namespace c|m|p|u ...`
    produce the D1/D2 consumer and composition tables directly from Rope — use them as
    the authoritative inventory; ast-grep is the _pattern-level_ complement, not the
    owner of this data.
-3. **ast-grep for fossil patterns** (branch-agnostic): global rules live in
-   `~/agents/ast-grep-rules/universal`; per-project rules are generator output
-   (`sgconfig.yml` ← `config/codegen.yaml`, `make gen` refreshes). Ad-hoc scans:
-   `ast-grep scan --rule <file> <path>`; new recurring lint goes to the project rule dir
-   via the generator SSOT, never a hand edit.
-4. **`make mod`** (`flext-infra refactor mod --apply`) executes approved ast-grep rule
-   rewrites at the declared scope — always the dispatcher, never direct ast-grep, so
-   LSP/Rope telemetry stays consistent.
-5. **CRG decision tables** (limits per the `crg` skill):
+3. **ast-grep for fossil patterns** (branch-agnostic):
+   - The rule engine's package ships the universal catalog: in FLEXT, flext-infra's
+     `src/flext_infra/config/rules/`.
+   - Each repository adds its own overlay under `config/rules/`.
+   - Rules are authored data, not generator output.
+   - Measure every rule across the fleet without rewriting through `make mod-rules`.
+   - A draft rule is tried only on scratch copies. A new recurring law extends or joins
+     the catalog per the `codemod` skill.
+4. **CRG decision tables** (limits per the `crg` skill):
    `code-review-graph dead-code --json` (dead Protocol candidates for D4, confirmed in
    source), `impact --files <changed> [--base <sha>]` (rename blast radius for the F4
    cost table), `refactor suggest` (rename candidates). Read-only verbs only during
@@ -59,15 +57,16 @@ consumer-facing mutation waits here.
 
 ## G3 — owner lawship
 
-Fix rule ambiguity at the validator owner and republish; do not burn 1,300 renames on an
+Fix rule ambiguity at the validator owner and republish; never mass-rename to satisfy an
 over-strict rule.
 
 ## G4 — per-repo conformance (dependency order)
 
 `flext-core → flext-cli → flext-tests → flext-infra → charts → gitops → root`. Per repo:
 hermetic deps (`env -u VIRTUAL_ENV -u UV_PROJECT_ENVIRONMENT`), pinned lock + cooldown,
-`gen×2` fixed point, `check`+`test`, scoped commit → **PR** (no develop bypass), merge,
-gates on merged SHA.
+`genx2` fixed point, structural rewrites through `make mod` and `make mod-text` to a
+verified fixed point (never direct ast-grep or an engine module), `check`+`test`, scoped
+commit → **PR** (no develop bypass), merge, gates on merged SHA.
 
 ## G5 — runtime truth before any completion claim
 
