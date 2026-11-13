@@ -5,7 +5,7 @@ description:
   owner.
 argument-hint: "<database and approved schema or data change>"
 metadata:
-  aihub.tags: '["decision:ADR-0008","effective:2026-08-29","route:project"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-08-29","route:agent"]'
 ---
 
 # Database migration

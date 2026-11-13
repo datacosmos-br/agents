@@ -5,7 +5,7 @@ description:
   catalog.
 argument-hint: "<repository or workspace root>"
 metadata:
-  aihub.tags: '["decision:ADR-0008","effective:2026-09-08","route:project"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-09-08","route:agent"]'
 ---
 
 # Pydantic boundary audit

@@ -5,7 +5,7 @@ description:
 argument-hint:
   "--limit N --integration REF [--beads ID,...]... [--output FILE.csv | --dry-run]"
 metadata:
-  aihub.tags: '["decision:ADR-0008","effective:2026-09-10","route:project"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-09-10","route:agent"]'
 ---
 
 # Reconcile Beads
