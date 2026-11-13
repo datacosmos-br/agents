@@ -1,18 +1,21 @@
 ---
-name: full-standards-sweep
+name: full-standards-conformance-sweep
 description:
   Sweep the hosted project to full governance standards and land the conformance result
   on the integration branch.
 argument-hint: "<optional focus, scope, or project path>"
 metadata:
-  aihub.tags: '["decision:ADR-0008","effective:2026-09-05","route:project"]'
+  aihub.tags: '["decision:ADR-0008","effective:2026-09-05","route:agent","supersedes:command:conformance-sweep","supersedes:command:full-standards-sweep"]'
 ---
 
 # Full-standards cleanup and conformance sweep
 
 Resolve the authorized scope from `$ARGUMENTS`, the current operator request and the
-canonical tracker. Read the active repository instructions and branch-matched domain
-law. A documentation-only scope authorizes documentary correction; an implementation
+canonical tracker; refuse to start when none names one. Read the active repository
+instructions and branch-matched domain law, and continue the living sweep plan when one
+exists instead of forking it. Before any mutation, open one tracker item for the delta
+with exact revisions and one per discovered red with its failing site, hypothesis and
+trigger; every later step records evidence there. A documentation-only scope authorizes documentary correction; an implementation
 finding does not silently expand it.
 
 Compose `$conformance-sweep-loop` for class-wave work and `$make-check` for native
@@ -34,13 +37,19 @@ sweep sequence, not another copy of those obligations.
    publisher, never a manual patch.
 5. Exercise the affected public behavior and native gates under
    `rules/workflow/canonical-commands.md`. Preserve the first failure and its measured
-   cause. The current unit stays open until its required proofs are complete.
-6. Review and land through `rules/git/gitflow-branch-pr.md`, retaining source, PR head,
-   integration and installed-artifact evidence separately. Continue the next unit from
+   cause. A second generation changes nothing; a divergence is fixed at the writer of
+   the diverging block with a convergence regression test. A test over its declared
+   time budget that provisions in-line is rewritten to fixture plus receipt assertion;
+   the limit is never raised. The current unit stays open until its proofs are complete.
+6. Review and land through `rules/git/gitflow-branch-pr.md` without rewriting shared
+   history (`rules/law.md` item 11), rerun the gates on the merged revision and retain
+   source, PR head, integration and installed-artifact evidence separately; a local
+   green or an open PR is never a landed state. Continue the next unit from
    the newly verified state; never infer fleet stability from a sampled repository.
 
 Report the covered population, per-unit before/after findings, owner and consumer
 changes, removed residue, command/cwd/exit evidence, integration disposition and each
 remaining obligation. The active tracker owns work state; this command creates no
-parallel queue. Release, deployment and activation require their own proofs when the
+parallel queue. A procedural failure mode found during the sweep is corrected in its
+owning skill through `op-learning`. Release, deployment and activation require their own proofs when the
 scope includes them.
