@@ -6,14 +6,12 @@
     ],
     "skills": [
       "caveman",
-      "context-canary",
       "crg",
       "fix-forward",
       "focus-recovery",
       "governance-audit",
       "op-learning",
       "sprint-closure",
-      "strategic-compact",
       "verification-loop"
     ]
   },
@@ -99,8 +97,7 @@
     ],
     "context-lifecycle": [
       "rule:law",
-      "skill:context-canary",
-      "skill:strategic-compact"
+      "skill:focus-recovery"
     ],
     "continuous-green": [
       "rule:law",
