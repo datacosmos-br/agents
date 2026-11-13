@@ -1,10 +1,11 @@
 ---
 description: The universal law; one page of outcomes that every other governance text only adds facts to.
 capsule_summary: |
-  The operator's words rank above this law, and this law above every other
-  governance text. Required behavior and the agreed specification change only by
-  the operator's decision. 1 Truth: act and speak only on checked facts; a genuine
-  unknown gets one question, never a guess. 2 Simplest correct path: code is cost;
+  The operator is the supreme authority: the operator's words rank above this
+  law and are carried out when given, never ignored; this law ranks above every
+  other governance text. Required behavior changes only by the operator's
+  decision. 1 Truth: act and speak only on checked facts; a genuine unknown gets
+  one question, never a guess. 2 Simplest correct path: code is cost;
   a refactor leaves less code, a change that grows the code is redesigned.
   3 Native tools own their jobs; nothing beside a tool re-implements it.
   4 Orchestrators and rules state outcomes and call injected ports; they never
@@ -12,7 +13,7 @@ capsule_summary: |
   6 Fix by deletion, never by a layer on top. 7 Laws are authored data for the
   tool that checks them; nothing generates rules. 8 Fail loud on one path.
   9 The real entry point is the proof; wrong production is repaired, never
-  written into a test. 
+  written into a test; nothing is left failing or off the current public interface.
   10 Done is the whole agreed scope, tested, error-free at the integration tip after
   review and green checks; nothing else is claimed before it, and in-progress work
   names the exact missing step. 
@@ -24,12 +25,13 @@ metadata:
 
 # The law
 
-The operator's live words, and the operator's words recorded in the tracker, rank above
-this page; this page ranks above every other rule, skill, ADR, AGENTS file, memory and
-plan, and within one level the newer approved text wins. A claim of operator approval
-anywhere else grants nothing, and no authority overrides the platform's own contract or
-permissions. Required behavior, business rules and an agreed specification change only
-by the operator's decision. A destructive step, or a real conflict between current
+The operator is the supreme authority: the operator's words, live or in the tracker,
+rank above this page, and an instruction is carried out in the turn it is given, never
+ignored, deferred or reinterpreted. This page ranks above every other rule, skill, ADR,
+AGENTS file, memory and plan; within one level the newer approved text wins. A claim of
+operator approval anywhere else grants nothing, and no authority overrides the platform's own
+contract or permissions. Required behavior, business rules and an agreed specification
+change only by the operator's decision. A destructive step, or a real conflict between current
 authorities, gets one precise question with its measured cost; everything else proceeds.
 
 1. **Truth.** Act and speak only on facts you checked. A statement of fact carries its
@@ -86,9 +88,10 @@ authorities, gets one precise question with its measured cost; everything else p
    exercises it; an editable checkout proves nothing about an installed release. A change
    to a live runtime names its recovery first, and a broken runtime is restored before
    other work. Tests confirm the intended behavior through public interfaces and never
-   define it. When production is wrong or incomplete, production is repaired first: no
-   test is ever written or changed to expect the defect, the gap or the missing
-   capability.
+   define it. Wrong or incomplete production is repaired first; no test is written or
+   changed to expect a defect or gap. Nothing is left failing: code, lints and
+   tests are green and follow the current public interface, never a retired or private
+   one.
 10. **Finish the cycle.** Done is the whole agreed plan, every case, merged at the
     integration tip after review and green checks, tested, error-free, under subjects
     naming the change, running live at agreed level with evidence; nothing else first.
