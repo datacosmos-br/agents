@@ -20,10 +20,10 @@ one immutable catalog. AI Hub owns provider adaptation, publication and delivery
 
 Read [README.md](README.md), [rules index](docs/rules-index.md),
 [ADR index](docs/adr/README.md) and [change validation](VALIDATE_ON_CHANGE.md).
-`make audit` validates the bundle, `make docs` checks links and `make waza` verifies the
+`make lint` checks Python, `make docs` links, `make audit` the bundle, `make waza` the
 semantic suites.
 
-Obligations live in `rules/`, conditional procedures in `skills/`, invocation grammar in
-`commands/`. A child artifact references its ancestor and never copies it. Coordinate
-through `rules/coordination/inter-session-mail.md`.
+Obligations live in `rules/`, procedures in `skills/`, grammar in `commands/`; a child
+references its ancestor, never copies it. Run `commands/governance/session-preflight.md`
+before any effect.
 <!-- AIHUB-AGENTS-SCOPE-LOCAL-END -->
