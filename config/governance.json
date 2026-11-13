@@ -17,6 +17,14 @@
       "verification-loop"
     ]
   },
+  "commands": {
+    "categories": [
+      "governance",
+      "implementation",
+      "inspection",
+      "security"
+    ]
+  },
   "coordination": {
     "abandonment_threshold_minutes": 30
   },
