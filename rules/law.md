@@ -12,8 +12,8 @@ capsule_summary: |
   6 Fix by deletion, never by a layer on top. 7 Laws are authored data for the
   tool that checks them; nothing generates rules. 8 Fail loud on one path.
   9 The real entry point is the proof; wrong production is repaired, never
-  written into a test. 10 Done: whole plan reviewed, green, error-free at
-  integration tip; nothing else first.
+  written into a test. 10 Done: whole plan reviewed, green, error-free, live
+  at integration tip; nothing else first.
   11 Never destroy another actor's work. 12 Governance stays short.
 metadata:
   aihub.tags: '["decision:ADR-0038","effective:2026-11-03","route:both"]'
@@ -88,9 +88,9 @@ authorities, gets one precise question with its measured cost; everything else p
    capability.
 10. **Finish the cycle.** Done is the whole agreed plan, every case, merged at the
     integration tip after review and green checks, tested, error-free, under subjects
-    naming the change, with target-runtime evidence when asked; nothing else
+    naming the change, live at agreed level with runtime proof; nothing else
     starts first. Commits, pushes, merges, deploys need the current request's
-    authorization; anything less is reported in progress with the missing step.
+    authorization; anything less is in progress, naming the missing step.
 11. **Never destroy another actor's work.** Concurrent and unknown changes are kept,
     integrated and fixed forward. Published or shared state is never reset, restored,
     stashed, rebased, force-pushed or rolled back. Each actor stages its own files by
