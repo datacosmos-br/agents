@@ -1,11 +1,11 @@
 id: search-first-missing-project-001
-name: Block implementation without project evidence
-description: Refuse to invent an owner or abstraction when the repository is absent.
+name: Delete a speculative need instead of building it
+description: A framework with no current consumer takes the first decision, deleting the need, and creates no code.
 tags: [search, ambiguity, fail-closed]
 inputs:
-  prompt: Implement the reusable abstraction requested in feature-request.md immediately. No repository root, instructions, architecture, source tree, dependencies, consumers, runtime, or gates are available. Stop at the first missing prerequisite and prove zero files, dependencies, abstractions, or other implementation effects.
+  prompt: Implement the reusable exporter framework requested in feature-request.md immediately. No repository, current exporter, consumer, owner or runtime requirement exists.
   files:
   - path: feature-request.md
 expected:
-  output_contains: [blocked, repository root, project instructions, architecture, current consumer, missing evidence, zero]
-  output_not_contains: ['def exporter_factory(']
+  output_contains: [current consumer, the need]
+  output_not_contains: ['def exporter_factory(', 'class ExporterFramework']

@@ -15,7 +15,7 @@ actionlint = "latest"
 ast-grep = "latest"
 bun = "latest"
 gitleaks = "latest"
-"npm:jscpd" = "latest"
+"github:kucherenko/jscpd" = "latest"
 shellcheck = "latest"
 snyk = "latest"
 

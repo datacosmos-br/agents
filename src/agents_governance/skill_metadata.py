@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import re
 import stat
+from collections.abc import Mapping
 from dataclasses import dataclass
 from pathlib import Path, PurePosixPath
 from typing import cast
@@ -12,6 +13,7 @@ import yaml
 from yaml.nodes import MappingNode, Node, ScalarNode, SequenceNode
 
 from .frontmatter import cast_mapping
+from .resources import CatalogResource, source_text
 
 _TOP_LEVEL_FIELDS = frozenset({"dependencies", "interface", "policy"})
 _LEGACY_TOP_LEVEL_FIELDS = frozenset({"description", "model", "name", "tools"})
@@ -225,14 +227,19 @@ def _structure(node: Node, field: str = "document") -> None:
         raise ValueError(f"{field} string must be quoted")
 
 
-def _load(root: Path, path: Path, skill_name: str) -> SkillMetadata | None:
+def _load(
+    root: Path,
+    path: Path,
+    skill_name: str,
+    captured: Mapping[Path, CatalogResource] | None = None,
+) -> SkillMetadata | None:
     if path.parent.is_symlink() or path.parents[1].is_symlink() or path.is_symlink():
         raise ValueError(f"metadata path must be physical: {path.relative_to(root)}")
     if not path.exists():
         return None
     if not stat.S_ISREG(path.lstat().st_mode):
         raise ValueError(f"metadata must be a regular file: {path.relative_to(root)}")
-    text = path.read_text(encoding="utf-8")
+    text = source_text(path, captured)
     # One parse, through LibYAML; the node and the document come from the same
     # loader instead of parsing every metadata file twice in pure Python.
     loader = yaml.CSafeLoader(text)
@@ -265,7 +272,9 @@ def _load(root: Path, path: Path, skill_name: str) -> SkillMetadata | None:
     return SkillMetadata(path, interface, tools, invocation)
 
 
-def validate(root: Path) -> tuple[SkillMetadata, ...]:
+def validate(
+    root: Path, *, captured: Mapping[Path, CatalogResource] | None = None
+) -> tuple[SkillMetadata, ...]:
     """Return all optional metadata documents or raise on the first defect."""
 
     canonical_root = root.resolve(strict=True)
@@ -280,6 +289,7 @@ def validate(root: Path) -> tuple[SkillMetadata, ...]:
             canonical_root,
             skill_file.parent / "agents" / "openai.yaml",
             skill_file.parent.name,
+            captured,
         )
         if metadata is not None:
             documents.append(metadata)

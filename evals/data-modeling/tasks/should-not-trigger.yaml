@@ -1,8 +1,11 @@
-id: data-negative-001
-name: Unrelated travel request
-description: Keep data-modeling analysis out of travel planning.
-tags: [anti-trigger]
+id: data-estate-negative-001
+name: Summarize an estate note
+description: Avoid model refactoring for a non-technical use of model, inheritance and composition.
+tags: [anti-trigger, estate, summary]
 inputs:
-  prompt: Plan a three-day museum itinerary for Madrid.
+  prompt: Summarize estate-note.md in two sentences for the family newsletter. No software or data system is involved; do not activate model refactoring.
+  files:
+  - path: estate-note.md
 expected:
-  output_not_contains: [serialization, schema, mutation, data-model workflow]
+  output_contains: [grandchildren, March]
+  output_not_contains: [BaseModel, base class, make gen, consumer]

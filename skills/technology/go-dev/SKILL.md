@@ -14,9 +14,9 @@ version, modules, generated owners, public APIs and consumers, runtime, and nati
 format/vet/static/race/test/build commands.
 
 Keep packages cohesive and dependencies acyclic. Preserve raw errors or the project's
-typed causal chain; never discard, aggregate, retry, log-and-continue, or replace
-failure with `nil`. Pass `context.Context` explicitly across cancellable I/O and never
-store it in a long-lived struct.
+typed causal chain; never discard, retry, log-and-continue, or replace failure with
+`nil`. Pass `context.Context` explicitly across cancellable I/O and never store it in a
+long-lived struct.
 
 Prefer synchronous code. Add goroutines only with a current requirement, explicit owner,
 cancellation, bounded lifetime, race-safe state, first-error propagation, and cleanup

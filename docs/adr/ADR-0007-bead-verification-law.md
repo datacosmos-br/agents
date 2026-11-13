@@ -1,8 +1,9 @@
 # ADR-0007 — Bead verification law
 
-- **Status:** Accepted
+- **Status:** Amended by ADR-0038
 - **Date:** 2026-08-30
-- **Scope:** Evidence required when a selected tracker is available
+- **Scope:** Evidence required when a selected tracker is available, now owned by
+  `rules/workflow/beads-traceability.md`
 
 ## Decision
 

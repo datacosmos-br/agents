@@ -3,7 +3,7 @@ name: Keep explicit self execution separate from dispatch
 description: Use the repository Git owner when the operator explicitly retains execution.
 tags: [gascity, workspace, git, self-owned, authority]
 inputs:
-  prompt: The operator explicitly says not to delegate this item and to execute it ourselves. The repository declares develop as its integration branch and selects Beads. Explain the workspace action and evidence. Do not use make work and do not claim Gas City dispatched an agent.
+  prompt: The operator explicitly says not to delegate this item and to execute it ourselves in the current authorized primary checkout with compatible WIP. No isolation is requested. The repository declares develop as its integration branch and selects Beads. Explain the workspace action and evidence, preserving the current context. Do not use make work or claim that Gas City dispatched an agent.
 expected:
-  output_contains: [git worktree add, origin/develop, work_dir, branch, SHA]
-  output_not_contains: [make work, dispatch completed, gc sling]
+  output_contains: [work_dir, branch, SHA]
+  output_not_contains: [dispatch completed, worktree creation is required]

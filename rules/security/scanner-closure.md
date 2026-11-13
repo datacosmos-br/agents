@@ -1,23 +1,17 @@
 ---
-description: Running security scanners or closing findings from security reports.
+description: Reproducible scanner findings block closure until fixed and rerun clean
 metadata:
-  aihub.tags: '["decision:ADR-0031","effective:2026-09-29","route:both"]'
+  aihub.tags: '["decision:ADR-0038","effective:2026-11-03","route:both"]'
 ---
 
-> Supersedes: `flext/scanner-closure`
+# Security findings block closure
 
-# Every reproducible security finding blocks closure
-
-Project-owned `docs/security/*-triage.md` files are evidence reports, not task trackers.
-Each finding requires the active canonical tracker, a decision, owner-source correction,
-reproducible evidence, and a clean scanner rerun. A false-positive or compatibility
-classification requires prior operator discussion, its reproducible technical proof —
-for a compatibility finding, measured against the project's declared language and
-runtime compatibility — and explicit authorization. This applies to every severity and
-every released scanner version. While the tracker is suspended, create no substitute
-tracker or ledger, preserve evidence only in separately authorized Git/PR/CI surfaces,
-and leave tracker closure open.
-
-Never close via risk acceptance, generic ignore files, `nosemgrep`, `|| true`, exit-code
-suppression, vulnerable old/new coexistence, or an unverified base image change. Never
-cap, downgrade, or substitute a released scanner to avoid its findings.
+Every reproducible finding of a released scanner, at any severity, blocks closure until
+its owner source is corrected and a clean rerun of that scanner proves it, with the
+decision and evidence on the tracker item. Project `docs/security/*-triage.md` files are
+evidence reports, never task trackers. A false-positive or compatibility classification
+needs reproducible proof, measured for compatibility against the project's declared
+language and runtime support, and the operator's explicit authorization after
+discussion. Risk acceptance, ignore files, inline suppressions such as `nosemgrep`,
+masked exit codes, vulnerable old and new code side by side, an unverified base-image
+change, and capping, downgrading or replacing the scanner never close a finding.

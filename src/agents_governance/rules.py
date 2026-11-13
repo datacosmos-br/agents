@@ -4,6 +4,7 @@ import dataclasses
 import json
 import re
 import stat
+from collections.abc import Mapping
 from enum import StrEnum
 from pathlib import Path, PurePosixPath
 from typing import cast
@@ -11,6 +12,7 @@ from typing import cast
 from .approvals import APPROVAL_NAMESPACES, resolve_approval_tags
 from .frontmatter import parse_frontmatter
 from .markdown_references import local_reference_targets, resolve_physical_reference
+from .resources import CatalogResource, catalog_members, source_text
 
 _SLUG = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*\Z")
 _SCHEME = re.compile(r"[A-Za-z][A-Za-z0-9+.-]*:")
@@ -219,7 +221,7 @@ def _references(root: Path, rules: Path, source: Path, body: str) -> tuple[str, 
 
 def _walk(directory: Path) -> tuple[Path, ...]:
     files: list[Path] = []
-    for path in sorted(directory.rglob("*")):
+    for path in catalog_members(directory):
         relative = path.relative_to(directory)
         metadata = path.lstat()
         if stat.S_ISLNK(metadata.st_mode):
@@ -240,7 +242,9 @@ def _walk(directory: Path) -> tuple[Path, ...]:
     return tuple(files)
 
 
-def audit_rule_specs(root: Path) -> tuple[RuleSpec, ...]:
+def audit_rule_specs(
+    root: Path, *, captured: Mapping[Path, CatalogResource] | None = None
+) -> tuple[RuleSpec, ...]:
     """Return every valid rule or raise on the first source defect."""
 
     repository = root.resolve(strict=True)
@@ -258,7 +262,9 @@ def audit_rule_specs(root: Path) -> tuple[RuleSpec, ...]:
                 f"case-insensitive rule identity is duplicated: {identity}"
             )
         identities.add(folded)
-        raw, body = parse_frontmatter(path, required=False)
+        raw, body = parse_frontmatter(
+            path, required=False, text=source_text(path, captured)
+        )
         description, globs, tags, capsule_summary = _metadata(path, raw)
         resolve_approval_tags(repository, tags, path)
         references = _references(repository, rules, path, body)

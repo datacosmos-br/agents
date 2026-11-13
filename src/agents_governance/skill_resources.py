@@ -10,6 +10,7 @@ from types import MappingProxyType
 from typing import Literal
 
 from .frontmatter import cast_mapping, require_exact_fields
+from .resources import CatalogResource, source_bytes
 
 
 @dataclass(frozen=True)
@@ -106,11 +107,17 @@ class ResourcePolicy:
             executable_mode,
         )
 
-    def resource(self, root: Path, path: Path) -> SkillResource:
+    def resource(
+        self,
+        root: Path,
+        path: Path,
+        *,
+        captured: Mapping[Path, CatalogResource] | None = None,
+    ) -> SkillResource:
         """Bind one physical catalog member to configured policy and exact bytes."""
         identity = path.relative_to(root / "skills").as_posix()
         options = self.overrides.get(identity, self.default)
-        content = path.read_bytes()
+        content = source_bytes(path, captured)
         if options.format == "utf-8":
             content.decode("utf-8")
         return SkillResource(

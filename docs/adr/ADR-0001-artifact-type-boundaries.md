@@ -1,8 +1,9 @@
 # ADR-0001 — Preserve semantic artifact-type boundaries
 
-- **Status:** Accepted
+- **Status:** Amended by ADR-0038
 - **Date:** 2026-08-27
-- **Scope:** Canonical skills, commands, agent profiles, and rules
+- **Scope:** Canonical skills, commands, agent profiles, and rules; the cleanup order is
+  law 6 of `rules/law.md`
 
 ## Context
 

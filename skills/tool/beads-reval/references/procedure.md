@@ -6,8 +6,8 @@ including pagination. Prove completeness; do not invent list flags or treat a fa
 truncated query as an empty result.
 
 For each issue, compare its registered premise with integration history, current
-integrated code and measured native behavior under the existing
-coordination/beads-verification rule. Include relevant operator decisions, plans, ADRs,
+integrated code and measured native behavior under
+`rules/workflow/beads-traceability.md`. Include relevant operator decisions, plans, ADRs,
 dependencies and linked issues. Record commands, working directory, exit codes, decisive
 output and integration revision in Beads.
 

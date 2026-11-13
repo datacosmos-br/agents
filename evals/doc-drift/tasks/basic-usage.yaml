@@ -8,7 +8,11 @@ inputs:
     runtime-contract owner. Compare the documentation claim and canonical owner.
     Identify each drifted command or responsibility, state the exact corrected
     contract, list consumers that require contradiction search, and define
-    static validation. Do not run the suspended runtime.
+    static validation. State the documentation-before-code ordering and which
+    affected README, instruction, ADR, selected tracker and canonical/propagated
+    skill surfaces require owner reconciliation. Do not edit tests before an
+    implemented real-runtime proof or claim static checks establish it. Do not
+    run the suspended runtime.
   files:
   - path: command-contract.md
 expected:

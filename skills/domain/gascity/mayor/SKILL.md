@@ -5,42 +5,38 @@ description:
   launch"
 allowed-tools: "Bash(gc *), Bash(python3 *)"
 metadata:
-  aihub.tags: '["activation:opt-in","decision:ADR-0008","detect:opt-in:mayor","effective:2026-08-30","route:agent","route:project","subject:gascity","usage:on-demand"]'
+  aihub.tags: '["activation:opt-in","decision:ADR-0038","detect:opt-in:mayor","effective:2026-11-03","route:agent","route:project","subject:gascity","usage:on-demand"]'
 ---
-
-## Verification (mandatory)
-
-Before acting on any bead, run the four-source cross-check in
-`rules/coordination/beads-verification.md` and attach its evidence.
 
 # GC Mayor
 
-Coordinator: inspect, interview the user, write planning artifacts, create approved
-beads, launch formulas; never implement source changes.
+The mayor coordinates and never implements source changes. With its rig and root, plan
+slug and artifact root known, it reads what the repository can answer, interviews the
+user one question at a time with a recommendation, writes planning artifacts, creates
+approved beads and launches formulas. No artifact is self-approved, every artifact path
+and bead id is concrete, and bead work follows `rules/workflow/beads-traceability.md`.
 
-## Operating Model
-
-1. Determine rig/root, plan slug, artifact root.
-2. Inspect the repo before asking anything discoverable from it.
-3. Interview one question at a time, with recommendations.
-4. Never self-approve artifacts; keep artifact paths and bead IDs concrete.
+Coordination is resolved from live evidence: the mayor coordinates while the city's
+status surface proves it active; otherwise live agents elect one coordinator on a shared
+mail thread by earliest self-nomination, ties to the lowest identifier, and duties move
+only through a handoff recorded there; with no mail channel a session coordinates alone,
+records each decision on its bead and leaves destructive steps to the operator.
 
 ## Phases
 
-Requirements → implementation plan → create beads. Templates, frontmatter, payload
-schema, launch examples: `references/procedure.md`.
+Requirements, implementation plan and beads, each only after the previous one is
+approved; templates and launch examples are in `references/procedure.md`.
 
-- **Requirements**: `requirements.md` with problem, solution, stories (2-5 acceptance
-  bullets), out of scope; no design decisions.
-- **Implementation plan**: after approval; grounded in current code; convoys group
-  co-implemented work.
-- **Create beads**: after approval; `tasks.md` carries `## Bead Creation Payload`
-  (nested `convoys[]`, local dependency keys); dry-run
-  `assets/scripts/create_beads_from_tasks.py` first.
+- **Requirements:** `requirements.md` holds the problem, solution, stories (2-5
+  acceptance bullets) and out of scope; no design decisions.
+- **Implementation plan:** grounded in current code; convoys group co-implemented work.
+- **Beads:** `tasks.md` carries `## Bead Creation Payload` (nested `convoys[]`, local
+  dependency keys); `assets/scripts/create_beads_from_tasks.py` runs with `--dry-run`
+  first.
 
 ## Formulas
 
-Runnable formulas come only from `gc formula catalog --json`; show before launch. Never
-pass reserved variables (`convoy_id`, `issue`, `bead_id`). Attach `--on <formula>` to
-approved work; `--formula` for targetless; default coordinator `gc.run-operator`. Launch
-success never proves completion.
+Runnable formulas come only from `gc formula catalog --json` and are shown before launch.
+Reserved variables (`convoy_id`, `issue`, `bead_id`) are never passed. Approved work
+launches with `--on <formula>`, targetless work with `--formula`, and the default
+coordinator is `gc.run-operator`. A successful launch never proves completion.

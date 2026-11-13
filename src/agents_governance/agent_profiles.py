@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import re
 import stat
+from collections.abc import Mapping
 from dataclasses import dataclass
 from pathlib import Path, PurePosixPath
 from typing import cast
@@ -12,6 +13,7 @@ from typing import cast
 from .approvals import APPROVAL_NAMESPACES, resolve_approval_tags
 from .catalog import NON_PORTABLE_PROJECT_REFERENCE
 from .frontmatter import parse_frontmatter
+from .resources import CatalogResource, source_text
 
 _DISTRIBUTIONS = frozenset({"agent-wide", "project-wide"})
 _ACTIVATIONS = frozenset(
@@ -55,8 +57,10 @@ class AgentProfile:
     instructions: str
 
 
-def _frontmatter(path: Path) -> tuple[dict[str, object], str]:
-    metadata, instructions = parse_frontmatter(path)
+def _frontmatter(
+    path: Path, captured: Mapping[Path, CatalogResource] | None = None
+) -> tuple[dict[str, object], str]:
+    metadata, instructions = parse_frontmatter(path, text=source_text(path, captured))
     unknown = frozenset(metadata) - _TOP_LEVEL_FIELDS
     if unknown:
         raise ValueError(f"{path}: unknown agent fields: {', '.join(sorted(unknown))}")
@@ -199,7 +203,9 @@ def _candidate_paths(agents: Path) -> tuple[Path, ...]:
     return tuple(candidates)
 
 
-def audit_agent_profiles(root: Path) -> tuple[AgentProfile, ...]:
+def audit_agent_profiles(
+    root: Path, *, captured: Mapping[Path, CatalogResource] | None = None
+) -> tuple[AgentProfile, ...]:
     """Return every agent profile or raise on the first contract defect."""
 
     repository = root.resolve(strict=True)
@@ -212,7 +218,7 @@ def audit_agent_profiles(root: Path) -> tuple[AgentProfile, ...]:
     profiles: list[AgentProfile] = []
     names: set[str] = set()
     for path in _candidate_paths(agents):
-        metadata, instructions = _frontmatter(path)
+        metadata, instructions = _frontmatter(path, captured)
         if "name" not in metadata:
             raise ValueError(f"{path}: name is required")
         name = metadata["name"]

@@ -1,79 +1,25 @@
 ---
-description:
-  Publishing work — creating a branch, commit, push, or opening a PR. Load when the user
-  asks to commit, push, land, publish, open a pull request, or before any git push.
-capsule_summary: |
-  Work on a change branch, never on `main` or the integration branch. The base is
-  what the repository declares today: read it per repository, never assume or
-  reuse one. `origin/<base>` is a cache: fetch it before any ancestry
-  proof that authorizes deletion. One git root per PR; placement follows the
-  active/manual Gas City boundary.
-  Checkpoint: scoped add, `[WIP]` subject, fast-forward push, Draft PR. `--no-verify`
-  is prohibited and a `[WIP]` commit never heads a merge.
-  Promotion: green local round, non-`[WIP]` commit, green checks, resolved review,
-  independent approval, merge commit — never squash or rebase. Revalidate the merge
-  SHA with post-merge evidence.
-  Divergence: merge the integration base in with `--no-ff`; never rebase or
-  force-push.
-  Retirement is mandatory: merge, push, PR, merge, then delete local and remote
-  branches and the worktree, only after `git merge-base --is-ancestor` exits 0
-  against a fresh base.
+description: Publishing work — commit, push, pull request, merge and lane retirement.
 metadata:
-  aihub.tags: '["decision:ADR-0025","effective:2026-10-01","route:personal"]'
+  aihub.tags: '["decision:ADR-0038","effective:2026-11-03","route:personal"]'
 ---
 
-# Branch and PR — integration by merge commit
+# Branch and pull request
 
-Work on a change branch, never on `main` or the integration branch. One git root per PR.
-Where a tracker is selected, one work item owns the branch and PR and records head OID,
-Draft state, gate evidence and next action at every checkpoint. Lane creation and
-teardown follow `rules/coordination/gascity.md`: active orchestration uses its owner;
-every manual task uses a dedicated native Git worktree and branch. Never implement in
-the primary/default checkout or reactivate suspended orchestration to provision a lane.
-
-**The base is read, never assumed.** The integration base is whatever the repository
-itself currently declares — its forge default branch. Never hardcode one, carry one from
-a sibling, or infer one from a local ref. Resolve it per repository at preflight, and
-preserve the command and output that proved it.
-
-**A ref is not evidence until it is fresh.** `origin/<base>` is a local cache. A
-truncated fetch refspec, a stale ref, or a base that simply moved makes every ancestry
-proof answer about the past, and `merge-base --is-ancestor` then reports "integrated"
-for work that is not. Fetch the base from the remote immediately before any proof that
-authorizes deletion, and confirm the refspec actually covers it. A deletion authorized
-by a stale ref destroys work and is the same class of failure as deleting without proof
-at all.
-
-**Checkpoint.** Stage scoped paths, commit with a `[WIP]` subject, push fast-forward,
-open or update a Draft PR against integration, apply the `WIP` label. Draft selects no
-validation — gates and attestations record `NOT SELECTED`, never green. `--no-verify` is
-prohibited, and a `[WIP]` commit never heads a merge into integration.
-
-**Promotion.** One green local round on the exact head, then a non-`[WIP]` commit,
-remove the label, Draft to Review, require green checks, resolved conversations and
-independent approval — never self-granted. Merge by merge commit; squash and rebase are
-prohibited. Revalidate the merge SHA, record it and post-merge evidence, and close only
-when GitHub, Git history, runtime and integrated code agree. Promotion to `main` waits
-for explicit operator approval.
-
-**Divergence.** Merge `origin/<integration>` into the lane with `--no-ff` and a `[WIP]`
-subject, preserve valid concurrent work, revalidate. `[skip ci]`, `--no-verify`, rebase
-and force-push are prohibited.
-
-**Red base.** When the base already fails its own gate, adopt those defects in the same
-PR and cite the owning commit. Never narrow a gate or exclude a failing path to look
-green on a red base.
-
-**Retirement closes the cycle; it is not optional.** A lane is carried to the
-integration branch and retired in the same cycle it opened: merge integration in,
-resolve fix-forward, push, open the PR, merge it, then delete the local branch, its
-remote branch and its worktree. Leaving a lane published-but-unmerged, or
-merged-but-not-retired, is the accumulation this rule exists to prevent. Remove a branch
-or worktree only after `git merge-base --is-ancestor <ref> origin/<integration>` exits 0
-against a base just fetched from the remote.
-
-A failed check, actionable finding or missing approval keeps the cycle active: fix and
-rerun rather than reporting the open PR and moving on.
-
-Control-plane Review transition, Draft aggregation, managed forks, attestation and the
-operator-authorized approval row are law too, kept in `docs/gitflow-landing-detail.md`.
+Each repository declares its integration branch; promotion past it needs the operator.
+Work continues in the authorized checkout, in a dedicated worktree when the project's
+lane rules ask for one. A PR has one Git root. Only small, complete, green slices reach a
+working branch or PR; unfinished work goes only to an authorized preservation ref, which
+is not delivery. A moved base enters by `git merge --no-ff`; a lane lands as a merge
+commit on its exact green head, with resolved review conversations and approval by
+another actor, never with `--no-verify` or `[skip ci]`, and an administrative merge only
+on the operator's explicit authorization. The merged revision is re-proven
+([law](../law.md) 10). Local work, in any repository or subproject, is discarded only
+once each real contribution in it is on the forge in an authorized preservation ref
+referenced by a tracker item; a patch or local copy is not preservation. Its owner, or
+the actor the operator authorized to adopt it, then deletes a lane, local and remote,
+once a just-fetched base shows it holds nothing unique. A landed lane is retired the
+same way in the same cycle; a primary or shared checkout and an integration branch are
+never retired. Preservation and retirement run through the
+operator's runtime tooling, which a consumer project never integrates or documents as
+usage (tracker `operator-order-2026-11-05-preserve-on-forge`).

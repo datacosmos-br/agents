@@ -15,9 +15,12 @@ from __future__ import annotations
 
 import hashlib
 from dataclasses import dataclass
+from typing import TYPE_CHECKING
 
 from .approvals import approval_tags
-from .bundle import GovernanceBundle
+
+if TYPE_CHECKING:
+    from .bundle import GovernanceBundle
 
 CAPSULE_MARKER = "AIHUB-GOVERNANCE-CAPSULE v1"
 OPCODE_MARKER = "AIHUB-GOVERNANCE"

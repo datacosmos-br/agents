@@ -83,7 +83,7 @@ with the captured commands.
    `hook-runtime-start`, `hook-runtime-native` (native SessionStart probe),
    `hook-runtime-verify` (synthetic dispatch through the socket).
 3. Known failure `243/CREDENTIALS File exists` at service start: systemd
-   credential-staging collision (`LoadCredentialEncrypted` ×4, sources
+   credential-staging collision (`LoadCredentialEncrypted` x4, sources
    intact). Owner: the credential provisioner. Escalated 2026-09-27.
 
 ## Install idempotence

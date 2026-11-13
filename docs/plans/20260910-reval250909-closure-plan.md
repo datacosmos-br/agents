@@ -16,7 +16,7 @@ erros"); merge registrado como operator-authorized (AGENTS.md lei 12).
 - Lane `feat/reval250909-adoption` pousada no origin. Contém: commits do ator paralelo
   (5d02942, ff2bdf7, d0774db, 17b9b5f, 04e1de7) + bb5b02d ([WIP] adoção do estado da
   árvore) + 786e59a (correções de gate) + test(evals).
-- Gates verdes NA LANE: `make setup`; `make gen` ×2 com ponto fixo; `make waza` (via
+- Gates verdes NA LANE: `make setup`; `make gen` x2 com ponto fixo; `make waza` (via
   waza_gate) verde; `make check` verde completo.
 - `make ci` interrompido pelo operador antes de conclusão — único gate pendente.
 - Tracker: dedup gate `bd find-duplicates --limit 0` = 0 pares; `bd lint` = 1 warning
@@ -44,7 +44,7 @@ erros"); merge registrado como operator-authorized (AGENTS.md lei 12).
 3. `git fetch origin --prune`; provar `git merge-base --is-ancestor` do base
    recém-buscado antes de qualquer aposentadoria.
 4. Push de `dev`.
-5. Prova pós-merge no SHA integrado: `make gen` ×2 (ponto fixo) + `make check`.
+5. Prova pós-merge no SHA integrado: `make gen` x2 (ponto fixo) + `make check`.
 
 ## Fase 3 — Aposentadoria de lanes (ciclo fechado, resíduo zero)
 
@@ -58,7 +58,7 @@ erros"); merge registrado como operator-authorized (AGENTS.md lei 12).
 | -------------- | --------------------------------------------------------------------- | ----------------------------------------- |
 | ag-645         | DONE                                                                  | `make help` lista gen/build; gates verdes |
 | ag-s8r         | DONE                                                                  | conteúdo pousado; lane aposentada         |
-| ag-aq8.2       | DONE se F1+F2 verdes                                                  | gen ×2 + check no SHA integrado           |
+| ag-aq8.2       | DONE se F1+F2 verdes                                                  | gen x2 + check no SHA integrado           |
 | ag-aq8 (epic)  | medir ag-aq8.1 vs runtime antes de claim                              | prova pública de profiles                 |
 | ag-1b5, ag-blh | re-home/defer (dono = ai-hub, artefatos medidos lá)                   | sem falso fechamento                      |
 | ag-9qg         | lane subsequente (pin `npm:jscpd = 5.1.2` + `make duplication` verde) | fora desta lane                           |

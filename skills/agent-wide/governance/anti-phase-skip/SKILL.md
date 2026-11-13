@@ -4,7 +4,7 @@ description: "phase lifecycle, runtime validation, integration closure"
 license: MIT
 metadata:
   aihub.tags: '["decision:ADR-0008","effective:2026-08-29","usage:router"]'
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 # Anti Phase Skip
@@ -16,10 +16,10 @@ failures that green unit tests cannot expose.
 Activate before changing tasks, advancing a plan phase, handing off, or claiming
 completion. Read the `complete procedure` (skill file).
 
-A phase cannot be DONE until implementation, real runtime, applicable native gates,
-integration update, commit, push, approved and merged PR, post-merge runtime, zero
-residue, and canonical tracker closure all have fresh evidence. Missing one step keeps
-the same phase open.
+A phase is DONE only when `rules/law.md` item 10 holds with fresh evidence: real
+runtime, native gates, a reviewed and merged PR, post-merge runtime, zero residue and
+tracker closure. A missing step keeps the phase open, nothing starts beside it, and
+incomplete work is pushed only to a preservation ref.
 
 An external-token validation excluded before invocation is recorded as `NOT EXECUTED`,
 not green, and does not become a missing phase step. If invoked, it is applicable and

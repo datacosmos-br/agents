@@ -8,6 +8,7 @@ from .commands import CommandRoute, CommandSpec
 from .governance_config import GovernanceConfig
 from .law_surface import LawSurface
 from .provenance import version as _distribution_version
+from .resources import CatalogResource, catalog_resources
 from .rules import RuleActivation, RuleDistribution, RuleSpec
 from .skill_evals import (
     EvalBehaviorGraderPolicy,
@@ -25,6 +26,7 @@ __all__ = (
     "OPCODE_MARKER",
     "AgentProfile",
     "Capsule",
+    "CatalogResource",
     "CommandRoute",
     "CommandSpec",
     "EvalBehaviorGraderPolicy",
@@ -43,5 +45,6 @@ __all__ = (
     "SkillRecord",
     "ToolDependency",
     "__version__",
+    "catalog_resources",
     "render_capsule",
 )

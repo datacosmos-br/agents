@@ -1,35 +1,16 @@
 ---
 globs: ["*.rs", "**/*.rs", "Cargo.toml"]
-description: Rust rules
+description: Rust facts its compiler and linters do not enforce
 metadata:
-  aihub.tags: '["decision:ADR-0008","effective:2026-08-28","route:both"]'
+  aihub.tags: '["decision:ADR-0038","effective:2026-11-03","route:both"]'
 ---
 
-# Rust rules
+# Rust
 
-Apply local typing and language-modernization requirements only to `internal` and
-`internal_flext`. A `third_party_fork` follows its upstream edition, MSRV, architecture,
-and toolchain contract.
-
-Use the project's declared Rust toolchain, workspace structure, features, and canonical
-command facade. Never impose a repository-specific architecture on a generic Rust
-project.
-
-- Propagate failure with explicit `Result`/`Option` semantics and `?`; do not catch at
-  CLI/orchestration boundaries, discard a `Result`, aggregate independent validation
-  defects, retry, or invent a default success.
-- Avoid `unwrap`/`expect` outside tests or proven invariants documented by project
-  policy.
-- Keep ownership and lifetimes explicit where they clarify public contracts; do not add
-  annotations the compiler does not require.
-- Document public APIs and safety invariants. Every `unsafe` block requires a local
-  invariant and the repository's dedicated safety review.
-- Run the real public runtime first, then every declared format, lint, type/ check,
-  test, build, documentation, security, and package gate affected by the change.
-- Use project-local dependencies and physical files only: no symlink, path dependency to
-  another checkout, cross-repository reference, inherited secret, or project state under
-  `/tmp`.
-- Install Rust technology skills only when project-local markers prove Rust.
-- Catching is limited to cleanup/rollback that re-emits the original error and attaches
-  any secondary cleanup failure. Child exit, timeout, signal, and incomplete publication
-  remain native failures.
+The project's declared toolchain and Cargo workspace own builds, features and
+dependencies; no other repository's architecture is imposed. Failure travels as `Result`
+through `?` and is never discarded; `unwrap` and `expect` appear only in tests or behind
+an invariant the project documents. Lifetimes are written only where the compiler needs
+them or they clarify a public contract. Public APIs document their contract, and every
+`unsafe` block states its local invariant and passes the repository's safety review.
+Everything else is the [law](law.md).

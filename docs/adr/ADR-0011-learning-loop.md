@@ -94,7 +94,7 @@ Severity follows the governance-audit ladder: P0 for an explicit correction recu
 after its owner artifact last changed, ownerless in-flight work, or a missing capsule in
 a governed checkout; P1 for friction, missed skill triggers, cost regressions, and edits
 without prior read above 20%; P2 for doc drift and remaining heuristics. Score =
-authority weight × log-scaled session count × recency decay × log-scaled cost ×
+authority weight x log-scaled session count x recency decay x log-scaled cost x
 confidence.
 
 Deterministic extraction covers every signal except two: clustering free-text
@@ -153,5 +153,10 @@ rig beads (`aihub-hy4lf`, `ag-759`, `gc-phvxb`); with the `aihub` and `agents` r
 suspended, execution is manual in worktrees under each checkout and tracked by `bd`.
 Operator directive, 2026-09-06: proceed to full implementation and landing under the
 same authorization.
+
+Placement in that historical suspension record is superseded by the operator's
+2026-10-23 correction (ag-wibx.2 / ADR-0025). Manual execution adopts its authorized
+current context; only the selected invocation can call for isolation. The explicitly
+isolated learning formula retains its own call-type contract.
 
 <!-- aihub.approval: decision:ADR-0011; effective:2026-09-06 -->

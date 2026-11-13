@@ -23,7 +23,7 @@ duplicating it was rejected under the SSOT law.
 The documentation landing also cured three red gates found on `dev` and one
 numbering collision, all reproduced before curing:
 
-1. `require-basic-usage-fixture` ×2 — `evals/runtime-heal/` and
+1. `require-basic-usage-fixture` x2 — `evals/runtime-heal/` and
    `evals/lane-landing-cycle/` gained physical scenario fixtures from the
    measured 2026-09-27 recovery and lane cycle (PR #188).
 2. `waza spec verify` runtime-heal coverage 0/1 — the ADR-0030 session's

@@ -3,52 +3,26 @@ name: make-check
 description: "native gates, root make verbs, runtime-first validation"
 license: MIT
 metadata:
-  aihub.tags: '["decision:ADR-0008","effective:2026-09-10","usage:router"]'
-  version: 2.3.0
+  aihub.tags: '["decision:ADR-0038","effective:2026-11-03","usage:router"]'
 ---
 
-# Make Check
+# Make check
 
-1. Read the authorized repository law and root Makefile, then use its public
-   selector-free verbs only.
-2. Provision with `make setup`. A stale generator, pin, downgrade, or version guard that
-   blocks the newest owner is RED.
-3. Exercise changed behavior through its real public runtime before tests.
-4. Run `make check` and the smallest distinct public root verb that owns each additional
-   required gate. Never invoke a raw underlying tool or private module.
-5. Invoke every test verb directly as declared in `rules/workflow/canonical-commands.md`
-   (section "Test verbs"), which owns the testmon contract and where each verb runs.
-6. Record verb, cwd, exit, decisive output, scope, warning, and cache accounting.
+Activate when selecting or running a repository's validation; an ordinary writing request
+starts no provisioning.
 
-A warning, skip, empty output, missing tool/report, zero collection, cache corruption,
-retry, catch, or normalized failure is RED. Zero execution is valid only as the typed
-`make test` cache hit of AGENTS.md law 14; never call it tests passed. Correct a broken
-Make or codegen owner and rerun the same root verb.
+Read the repository instructions and root Makefile, then run its declared verbs directly,
+never an underlying tool in their place. `rules/workflow/canonical-commands.md` owns the
+verbs, deadlines, profiling, locks and test selection.
 
-## Idempotency pre-push guard (evidence 2026-09-11, plan `docs/plans/2026-09-11-flext-conformance-sweep.md`)
+- `make setup` runs only when the environment is absent or fails its own check; a valid
+  environment is reused, and lock changes belong to the upgrade verb.
+- The changed behavior is shown through its real entry point first; then `make check`,
+  any further declared gate verb and the test verb run, each invoked explicitly and never
+  obtained as a side effect of another.
+- Each run records command, directory, exit and decisive output; a focused run proves only
+  its own scope.
 
-- Before pushing any change that touches the generation surface, run `make gen` twice
-  from the same tree and require byte-identical results. Only push on the doubled fixed
-  point.
-- A second run that diverges is a P0 product defect in the scaffolder (every fleet
-  member consumes its projections), not a flaky environment. Instrument with file-based
-  diffs (`difflib.unified_diff` to a log file; never stdout — codegen floods it), fix
-  the divergent block at its writer, and add a convergence regression test for that
-  exact block.
-- A timed-out lock on the codegen journal is a bead (`harvest`), and the lock owner
-  process is killed — never `rm -f` the lock preemptively.
-
-## Graph-informed sweep loop (research 2026-09-11, plan section 10-11)
-
-- Before structural or deletion-heavy edits, establish blast radius and rewiring maps
-  with the code-review graph operated per `$crg` (freshness gate, `impact --files`,
-  `query`); a graph built at another commit is no evidence, and the built-at commit is
-  recorded with every cited result.
-- Mechanical rewrite order per unit: crg map -> `make mod` detect/apply (cwd-scoped;
-  rules SSOT `flext-infra/codemod/rules/` + the agent ast-grep universal rules archive)
-  -> `make gen` (projection convergence) -> `make check` -> `make test`. Never bypass
-  `make mod` with raw `sg`/ast-grep invocations; inline scan rules belong in the rules
-  SSOT with a snapshot test, not ad-hoc command lines.
-- Graph dead-code output and impact depth gate deletions only as candidates: a "dead"
-  symbol with fleet callers is not dead, and a graph-versus-grep disagreement is a
-  finding, not a green.
+Compose `$crg` when the change needs structural impact; a graph hit is not dead code until
+its consumers are checked. A failure outside the authorized scope is reported with its
+evidence, never repaired in passing.

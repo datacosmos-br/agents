@@ -5,5 +5,5 @@ prompt: |-
   non-goals, unresolved retention question, and an honest implementation
   handoff from the supplied intent. Reject invented product decisions and
   implementation detail presented as approved policy. Require the one
-  project-owned capability artifact, complete evidence preflight, and no
-  fallback scope or artifact when product truth is missing.
+  project-owned capability artifact and no fallback scope or artifact when
+  product truth is missing.

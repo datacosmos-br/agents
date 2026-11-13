@@ -2,22 +2,176 @@
 
 from __future__ import annotations
 
+import cProfile
 import fcntl
 import hashlib
+import inspect
 import json
 import os
+import pstats
+import signal
 import sys
 import tempfile
+import time
 import tomllib
-from collections.abc import Mapping
+import traceback
+from collections.abc import Callable, Mapping
+from contextlib import nullcontext
 from pathlib import Path
-from typing import Literal, cast
+from textwrap import indent
+from types import FrameType, TracebackType
+from typing import Literal, Self, cast
 
 from strict_subprocess import run_strict
 
-from agents_governance import GovernanceBundle
+from agents_governance import GovernanceBundle, catalog_resources
 
 _IGNORED_DIST_FILES = frozenset({".gitignore"})
+
+
+class _ArtifactProfile:
+    """Checkpoint one native profile without replacing operation failures."""
+
+    def __init__(self, output: Path) -> None:
+        self.output = output
+        self.profile = cProfile.Profile()
+        self.captured = False
+        previous = signal.getsignal(signal.SIGTERM)
+        if previous is None:
+            raise ValueError(
+                "artifact profiling cannot preserve an unknown SIGTERM handler"
+            )
+        self.previous = previous
+        self.handler: Callable[[int, FrameType | None], None] = self._on_signal
+
+    def __enter__(self) -> Self:
+        print(
+            f"ARTIFACT profile start={self.output} epoch={time.time():.6f} "
+            f"pid={os.getpid()}",
+            file=sys.stderr,
+            flush=True,
+        )
+        signal.signal(signal.SIGTERM, self.handler)
+        try:
+            self.profile.enable()
+        except BaseException as primary:
+            self._restore(primary)
+            raise
+        return self
+
+    def __exit__(
+        self,
+        _kind: type[BaseException] | None,
+        primary: BaseException | None,
+        _traceback: TracebackType | None,
+    ) -> None:
+        try:
+            self._capture(primary)
+        except BaseException as capture_failure:
+            self._restore(capture_failure)
+            raise
+        self._restore(primary)
+
+    def _restore(self, primary: BaseException | None) -> None:
+        try:
+            if signal.getsignal(signal.SIGTERM) is self.handler:
+                signal.signal(signal.SIGTERM, self.previous)
+        except BaseException as restore_failure:
+            if primary is None:
+                raise
+            primary.add_note(
+                f"artifact profile handler restoration failed: {restore_failure!r}"
+            )
+
+    def _capture(
+        self, primary: BaseException | None, *, termination: bool = False
+    ) -> None:
+        if self.captured:
+            return
+        self.captured = True
+        try:
+            self.profile.disable()
+            descriptor, temporary = tempfile.mkstemp(
+                prefix=".profile-", dir=self.output.parent
+            )
+            os.close(descriptor)
+            staged = Path(temporary)
+            try:
+                self.profile.dump_stats(str(staged))
+                with staged.open("rb") as stream:
+                    os.fsync(stream.fileno())
+                os.link(staged, self.output)
+            except BaseException as capture_failure:
+                try:
+                    staged.unlink()
+                except BaseException as cleanup_failure:
+                    capture_failure.add_note(
+                        f"profile staging cleanup failed: {cleanup_failure!r}"
+                    )
+                    raise capture_failure from cleanup_failure
+                raise
+            staged.unlink()
+            reason = "termination" if termination else "completed"
+            if primary is not None and not termination:
+                reason = "exception"
+            report_path = self.output.with_suffix(".pstats.txt")
+            with report_path.open("x", encoding="utf-8") as report:
+                report.write(
+                    f"Native artifact profile: pid={os.getpid()} "
+                    f"executable={sys.executable}\n"
+                    f"capture={reason}\n"
+                    "Parent profiles measure coordination/waits; isolated public-load "
+                    "profiles measure their own package import and contract.\n\n"
+                )
+                stats = pstats.Stats(str(self.output), stream=report)
+                stats.sort_stats("cumtime").print_stats()
+            print(
+                f"ARTIFACT profile {self.output} pid={os.getpid()}",
+                file=sys.stderr,
+                flush=True,
+            )
+        except BaseException as capture_failure:
+            if primary is None:
+                raise
+            primary.add_note(f"artifact profile capture failed: {capture_failure!r}")
+
+    def _on_signal(self, signum: int, frame: FrameType | None) -> None:
+        try:
+            traceback.print_stack(frame)
+            self._capture(sys.exception(), termination=True)
+        finally:
+            primary = sys.exception()
+            try:
+                signal.signal(signum, self.previous)
+                if callable(self.previous):
+                    self.previous(signum, frame)
+                elif self.previous != signal.SIG_IGN:
+                    signal.raise_signal(signum)
+            except BaseException as action_failure:
+                if primary is None:
+                    raise
+                primary.add_note(
+                    f"native artifact signal action failed: {action_failure!r}"
+                )
+                raise primary from action_failure
+
+
+def _profiled_proof(proof: str, output: Path) -> str:
+    """Use this same capture owner inside the isolated public-load process."""
+    imports = (
+        "from __future__ import annotations\n"
+        "import cProfile, os, pstats, signal, sys, tempfile, time, traceback\n"
+        "from collections.abc import Callable\n"
+        "from pathlib import Path\n"
+        "from types import FrameType, TracebackType\n"
+        "from typing import Self\n"
+    )
+    return (
+        imports
+        + inspect.getsource(_ArtifactProfile)
+        + f"\nwith _ArtifactProfile(Path({str(output)!r})):\n"
+        + indent(proof, "    ")
+    )
 
 
 def _project_version(repository: Path) -> str:
@@ -59,7 +213,7 @@ def _artifacts(dist: Path) -> tuple[Path, Path]:
     return sdists[0], wheels[0]
 
 
-def _build(repository: Path) -> tuple[Path, Path]:
+def _build(repository: Path, *, profile_root: Path | None = None) -> tuple[Path, Path]:
     dist = _dist(repository)
     for entry in tuple(dist.iterdir()):
         if entry.name in _IGNORED_DIST_FILES:
@@ -69,7 +223,9 @@ def _build(repository: Path) -> tuple[Path, Path]:
         if entry.is_symlink() or not entry.is_file():
             raise ValueError(f"refusing unsupported distribution residue: {entry}")
         entry.unlink()
-    run_strict(("uv", "build"), repository, "ARTIFACT build")
+    run_strict(
+        ("uv", "build"), repository, "ARTIFACT build", timing=profile_root is not None
+    )
     return _artifacts(dist)
 
 
@@ -85,6 +241,9 @@ def _smoke(
     cache_root: Path,
     version: str,
     resources: Mapping[str, tuple[str, int, str]],
+    catalog: Mapping[str, tuple[str, int]],
+    *,
+    profile_root: Path | None = None,
 ) -> None:
     environment = _smoke_environment()
     environment["ARTIFACT_RESOURCE_EXPECTATIONS"] = json.dumps(resources)
@@ -92,12 +251,16 @@ def _smoke(
         prefix=f"{artifact.name}-", dir=cache_root
     ) as temporary:
         smoke = Path(temporary)
+        catalog_expectations = smoke / "catalog-expectations.json"
+        catalog_expectations.write_text(json.dumps(catalog), encoding="utf-8")
+        environment["ARTIFACT_CATALOG_EXPECTATIONS"] = str(catalog_expectations)
         environment_path = smoke / "venv"
         run_strict(
             ("uv", "venv", str(environment_path)),
             smoke,
             f"ARTIFACT create environment for {artifact.name}",
             environment,
+            timing=profile_root is not None,
         )
         run_strict(
             (
@@ -111,11 +274,13 @@ def _smoke(
             smoke,
             f"ARTIFACT install {artifact.name}",
             environment,
+            timing=profile_root is not None,
         )
         proof = "\n".join(
             (
-                "from agents_governance import GovernanceBundle, __version__",
+                "from agents_governance import GovernanceBundle, catalog_resources, __version__",
                 "from importlib.resources import files",
+                "from pathlib import Path",
                 "import hashlib, json, os, stat",
                 "if not files('agents_governance').joinpath('py.typed').is_file():",
                 "    raise ValueError('installed PEP 561 marker missing')",
@@ -134,14 +299,29 @@ def _smoke(
                 "if actual_resources != expected_resources:",
                 "    raise ValueError('installed resource inventory, bytes, mode or format mismatch')",
                 "print('ARTIFACT resources', len(actual_resources), 'exact bytes/modes/formats')",
+                "expected_catalog = json.loads(Path(os.environ['ARTIFACT_CATALOG_EXPECTATIONS']).read_text(encoding='utf-8'))",
+                "actual_catalog = {}",
+                "for resource in catalog_resources(bundle):",
+                "    digest = hashlib.sha256(resource.content).hexdigest()",
+                "    if digest != resource.sha256:",
+                "        raise ValueError('installed catalog digest disagrees with its bytes')",
+                "    actual_catalog[resource.relative_path] = [digest, resource.mode]",
+                "if actual_catalog != expected_catalog:",
+                "    raise ValueError('installed neutral catalog inventory, bytes or mode mismatch')",
+                "print('ARTIFACT neutral catalog', len(actual_catalog), 'exact bytes/modes/digests')",
                 "print('ARTIFACT', __version__, bundle.schema_version, len(bundle.skills))",
             )
         )
+        if profile_root is not None:
+            proof = _profiled_proof(
+                proof, profile_root / f"{artifact.name}.public-load.pstats"
+            )
         run_strict(
             (str(environment_path / "bin" / "python"), "-c", proof),
             smoke,
             f"ARTIFACT public load {artifact.name}",
             environment,
+            timing=profile_root is not None,
         )
         run_strict(
             (
@@ -155,21 +335,31 @@ def _smoke(
                 "--strict",
                 "-c",
                 (
-                    "from agents_governance import GovernanceBundle\n"
+                    "from agents_governance import GovernanceBundle, CatalogResource, catalog_resources\n"
                     "from agents_governance import agent_profiles, catalog, commands, rules\n"
                     "bundle: GovernanceBundle = GovernanceBundle.load()\n"
+                    "resources: tuple[CatalogResource, ...] = catalog_resources(bundle)\n"
                 ),
             ),
             smoke,
             f"ARTIFACT typed public imports {artifact.name}",
             environment,
+            timing=profile_root is not None,
         )
 
 
-def _validate(repository: Path, cache_root: Path) -> tuple[Path, Path]:
+def _validate(
+    repository: Path, cache_root: Path, *, profile_root: Path | None = None
+) -> tuple[Path, Path]:
     artifacts = _artifacts(_dist(repository))
     version = _project_version(repository)
     bundle = GovernanceBundle.load(repository)
+    catalog: dict[str, tuple[str, int]] = {}
+    for resource in catalog_resources(bundle):
+        digest = hashlib.sha256(resource.content).hexdigest()
+        if digest != resource.sha256:
+            raise ValueError("source catalog digest disagrees with its bytes")
+        catalog[resource.relative_path] = (digest, resource.mode)
     resources = {
         resource.path.relative_to(bundle.root).as_posix(): (
             resource.sha256,
@@ -180,7 +370,9 @@ def _validate(repository: Path, cache_root: Path) -> tuple[Path, Path]:
         for resource in skill.resources
     }
     for artifact in artifacts:
-        _smoke(artifact, cache_root, version, resources)
+        _smoke(
+            artifact, cache_root, version, resources, catalog, profile_root=profile_root
+        )
     return artifacts
 
 
@@ -237,14 +429,16 @@ def _execute(
     mode: Literal["build", "publish", "runtime", "validate"],
     repository: Path,
     cache_root: Path,
+    *,
+    profile_root: Path | None = None,
 ) -> None:
     if mode == "build":
         _build(repository)
     elif mode == "validate":
         _validate(repository, cache_root)
     elif mode == "runtime":
-        _build(repository)
-        _validate(repository, cache_root)
+        _build(repository, profile_root=profile_root)
+        _validate(repository, cache_root, profile_root=profile_root)
     else:
         _publish(repository, cache_root)
 
@@ -256,6 +450,11 @@ def main() -> None:
             "ARTIFACT_MODE must select build, publish, runtime, or validate"
         )
     mode = cast(Literal["build", "publish", "runtime", "validate"], mode)
+    profile = os.environ.get("ARTIFACT_PROFILE")
+    if profile not in {None, "", "0", "1"}:
+        raise ValueError("ARTIFACT_PROFILE must be unset, 0, or 1")
+    if profile == "1" and mode != "runtime":
+        raise ValueError("ARTIFACT_PROFILE=1 requires the existing runtime operation")
     repository = Path(__file__).resolve().parents[1]
     configured = os.environ.get("ARTIFACT_STATE_ROOT")
     if configured is None:
@@ -270,9 +469,23 @@ def main() -> None:
     lock_path = cache_root / "artifacts.lock"
     if lock_path.is_symlink() or (lock_path.exists() and not lock_path.is_file()):
         raise ValueError(f"artifact lock must be a physical file: {lock_path}")
-    with lock_path.open("a+b") as lock:
+    profile_root = (
+        Path(tempfile.mkdtemp(prefix="runtime-profile-", dir=cache_root))
+        if profile == "1"
+        else None
+    )
+    if profile_root is not None:
+        print(f"ARTIFACT profiling root={profile_root}", flush=True)
+    with (
+        (
+            _ArtifactProfile(profile_root / "parent.pstats")
+            if profile_root is not None
+            else nullcontext()
+        ),
+        lock_path.open("a+b") as lock,
+    ):
         fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
-        _execute(mode, repository, cache_root)
+        _execute(mode, repository, cache_root, profile_root=profile_root)
 
 
 if __name__ == "__main__":

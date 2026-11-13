@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
+from types import MappingProxyType
 
 from .agent_profiles import AgentProfile, audit_agent_profiles
 from .approvals import ApprovedArtifact, audit_precedence
@@ -17,7 +18,11 @@ from .governance_config import (
 )
 from .law_surface import LawSurface
 from .provenance import version as distribution_version
-from .resources import resource_root
+from .resources import (
+    CatalogResource,
+    capture_resources,
+    resource_root,
+)
 from .rules import RuleSpec, audit_rule_specs
 from .skill_evals import EvalPolicy, audit_skill_evals
 from .skill_metadata import SkillMetadata
@@ -42,23 +47,30 @@ class GovernanceBundle:
     rules: tuple[RuleSpec, ...]
     law: LawSurface
     delivery: DeliverySnapshot
+    _catalog_resources: tuple[CatalogResource, ...] = field(repr=False)
 
     @classmethod
     def load(cls, root: Path | None = None) -> GovernanceBundle:
         """Load and audit one complete snapshot or raise on its first defect."""
 
         source = (resource_root() if root is None else root).resolve(strict=True)
-        catalog = Catalog(source)
+        captured = capture_resources(source)
+        inputs = MappingProxyType(
+            {source / resource.relative_path: resource for resource in captured}
+        )
+        catalog = Catalog(source, captured=inputs)
         skills = catalog.records()
-        eval_policy = audit_skill_evals(source, skills)
-        commands = audit_command_specs(source, (skill.name for skill in skills))
-        agents = audit_agent_profiles(source)
-        rules = audit_rule_specs(source)
-        config = load_governance_config(source)
+        eval_policy = audit_skill_evals(source, skills, captured=inputs)
+        commands = audit_command_specs(
+            source, (skill.name for skill in skills), captured=inputs
+        )
+        agents = audit_agent_profiles(source, captured=inputs)
+        rules = audit_rule_specs(source, captured=inputs)
+        config = load_governance_config(source, captured=inputs)
         audit_governance_config(source, config, catalog, commands, rules)
         audit_precedence(source, _approved_artifacts(skills, commands, rules, agents))
-        metadata = validate_skill_metadata(source)
-        law = LawSurface.load(source)
+        metadata = validate_skill_metadata(source, captured=inputs)
+        law = LawSurface.load(source, captured=inputs)
         delivery = audit_delivery(
             config.delivery,
             law,
@@ -80,6 +92,7 @@ class GovernanceBundle:
             rules,
             law,
             delivery,
+            captured,
         )
 
 

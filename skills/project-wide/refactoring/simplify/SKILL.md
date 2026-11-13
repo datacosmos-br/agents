@@ -1,22 +1,22 @@
 ---
 name: simplify
-description: "inline simplification, readable code, behavior preservation"
+description: "simplest change, less code, deletion, diff size"
 license: MIT
 metadata:
-  aihub.tags: '["decision:ADR-0008","effective:2026-08-29","usage:router"]'
-  version: 2.1.0
+  aihub.tags: '["decision:ADR-0038","effective:2026-11-03","usage:router"]'
+  version: 3.0.0
 ---
 
 # Simplify
 
-Apply automatically to each cohesive code unit created or changed. Deliver the complete
-required behavior, then remove accidental complexity before leaving the unit. Consume
-necessity, authority, and boundary decisions from the upstream `search-first` route; do
-not rediscover or redesign them.
+The default pass for every change, applying laws 2 and 6 of `rules/law.md` to the paths
+the change owns.
 
-Read the `inline procedure` (skill file). Preserve public contracts, errors and causes,
-effects, ordering, security, types, observability, measured performance, tests, and
-useful owner documentation.
-
-Hand off to `dry` only for proven cross-owner structural waste. This discipline does not
-expand task scope or authorize an unrelated sweep.
+- Delete what the change leaves unused: dead branches, wrappers, conversions, restated
+  defaults, duplicated expressions, comments that narrate code.
+- Deleting internal code needs no proof beyond its missing consumer; `$yagni` covers
+  data, other repositories and published contracts.
+- Keep the public contract, each failure with its cause, and every effect.
+- Shorter is not denser: no code golf, hidden control flow or single-caller helper.
+- Report lines added and removed; a change that grew the code is redesigned before it
+  lands.

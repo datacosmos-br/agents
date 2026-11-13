@@ -21,7 +21,7 @@
    paths canônicos do catálogo (a regra de 10/09 usava paths curtos stale; fix
    fail-closed conforme a própria regra).
 2. `e735eb2e` — `docs/sync-alignment-2026-09-18.md`: acordo de sincronização de
-   superfícies (catálogo `~/.agents` × ai-hub × repos FLEXT × operador) com 6 regras,
+   superfícies (catálogo `~/.agents` x ai-hub x repos FLEXT x operador) com 6 regras,
    incluindo: `~/.claude/skills` = projeção ai-hub; `synced/` = runtime Claude Code
    intocável; superfície de workspace é do repositório; consumidor `claude` em
    `inactive_consumers` = flag para a lane ai-hub.
@@ -34,7 +34,7 @@
 | Pendência | Dono | Estado |
 | --- | --- | --- |
 | `ai-hub deploy` bloqueado no preflight ("runtime build must contain exactly one ai-hub 0.5.0 wheel: ()", com wheel em `dist/` e build verde) | ai-hub | RED medido pela sessão; 3 variantes de cwd + build + retry exauridos; não é defeito do catálogo |
-| Redeploy `ai-hub deploy --agent claude --surface skills` (espelho defasado: manifesto 06/09 × catálogo 18/09; `validate-agents` aponta `agent-browser`) | ai-hub | aguarda o item acima |
+| Redeploy `ai-hub deploy --agent claude --surface skills` (espelho defasado: manifesto 06/09 x catálogo 18/09; `validate-agents` aponta `agent-browser`) | ai-hub | aguarda o item acima |
 | Registro do consumidor `claude` (ativo vs `inactive_consumers`) e exclusão formal de `synced/` da governança | ai-hub | regra 5/6 do sync-alignment |
 | Par `gascity.mayor`+`gc.mayor` recriado pelo runtime gc (mesmo inode, 2 slugs; ownership JSONs zerados); poda no consumidor é whack-a-mole | gc / flext-infra | handoff emitido na lane flext (`.kilo` lá é gitignored — arquivo em disco) |
 | Adjudicação command-vs-router do `flext-law` na fonte flext | flext | pendente na lane |
@@ -43,7 +43,7 @@
 ## 4. Fila catalog-side herdada (consumida por esta campanha)
 
 O estado de repasse da `sess_a97a9cb3` apontava para: ledger de beads, fechamento de
-épicos com evidência, vocabulários para config-dado e a contradição contrato×código
+épicos com evidência, vocabulários para config-dado e a contradição contratoxcódigo
 (`AGENTS.md` no-CLI vs `cli.py`/`projection.py`). Tudo isso virou o plano da campanha
 corrente (`docs/plans/20260918-status-ledger.md` e fases F2–F7). Nenhuma ação das
 sessões recuperadas exige redo — apenas os donos externos acima ainda devem consumir

@@ -1,7 +1,8 @@
 # ADR-0018 — Release line 0.5.0: behavioral conscience and delivery contract
 
-**Status:** Accepted **Date:** 2026-09-10 **Scope:** `pyproject.toml`, catalog tag
-grammar, release line authority
+**Status:** Amended by ADR-0038 **Date:** 2026-09-10 **Scope:** `pyproject.toml`,
+catalog tag grammar, release line authority (now `rules/git/fork-version-locality.md`
+and law 1 of `rules/law.md`)
 
 ## Context
 

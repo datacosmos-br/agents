@@ -7,6 +7,9 @@ conforms without test edits.
 
 from __future__ import annotations
 
+import compileall
+from pathlib import Path
+
 from agents_governance import GovernanceBundle
 
 
@@ -60,3 +63,22 @@ def test_bundle_facade_records_match_physical_catalog(
     assert len(skill_dirs) == len(set(skill_dirs))
     for skill in governance_bundle.skills:
         assert (skill.directory / "SKILL.md").is_file()
+
+
+def test_bytecode_caches_beside_packaged_scripts_are_not_catalog_members(
+    governance_source_fixture: Path,
+) -> None:
+    """An installer that compiles packaged scripts leaves the catalog unchanged.
+
+    ``uv sync --compile-bytecode`` and every import of a packaged script write
+    ``__pycache__`` beside it; those caches have no author, so loading the
+    catalog neither reads them as text nor publishes them as resources.
+    """
+
+    pristine = GovernanceBundle.load(governance_source_fixture)
+    scripts = tuple(governance_source_fixture.rglob("*.py"))
+    assert scripts, "catalog ships no Python resource to compile"
+    assert compileall.compile_dir(governance_source_fixture, quiet=1, force=True)
+    assert any(governance_source_fixture.rglob("__pycache__/*.pyc"))
+    compiled = GovernanceBundle.load(governance_source_fixture)
+    assert compiled.skills == pristine.skills

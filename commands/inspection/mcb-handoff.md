@@ -21,8 +21,7 @@ pointer document, never a content duplicate: every subject names its durable sou
      rules D1–D5;
    - repo runbook `docs/developer/AGENT-OPERATIONS.md` for the battery, landing
      recipe, and quirks;
-   - fleet rules `rules/coordination/mcb-session-operating-rules.md` and
-     `rules/coordination/mimosa-advisory-triage.md` in the agents law repository;
+   - the fleet law `rules/law.md` in the agents law repository;
    - cycle record with self-critique under `~/.claude/plans/<date>-<topic>-handoff/`.
 2. **Pointer rules**: a handoff file stays under one screen, lists source paths in a
    table, and carries a one-line state summary. Any content block longer than a

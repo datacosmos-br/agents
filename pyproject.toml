@@ -1,6 +1,6 @@
 [project]
 name = "agents-governance"
-version = "0.6.3"
+version = "0.7.0"
 description = "Provider-neutral semantic governance bundle"
 requires-python = ">=3.13"
 dependencies = [
@@ -11,7 +11,7 @@ dependencies = [
 [dependency-groups]
 dev = [
   "anthropic>=0.39.0,<2",
-  "mcp>=1.1.0,<2",
+  "mcp>=1.1.0,<3",
   "mypy>=1.17,<3",
   "playwright>=1,<2",
   "pyrefly>=1.3.0",
@@ -44,7 +44,8 @@ packages = ["src/agents_governance"]
 "docs/research" = "agents_governance/_data/docs/research"
 "AGENTS.md" = "agents_governance/_data/AGENTS.md"
 "README.md" = "agents_governance/_data/README.md"
-"docs/security/security-triage.md" = "agents_governance/_data/docs/security/security-triage.md"
+"docs/security" = "agents_governance/_data/docs/security"
+"pyproject.toml" = "agents_governance/_data/pyproject.toml"
 
 [tool.hatch.build.targets.sdist]
 only-include = [
@@ -55,17 +56,18 @@ only-include = [
   ".mise.toml",
   ".waza.yaml",
   "agents",
-  "ast-grep-rule-tests",
-  "ast-grep-rules",
   "commands",
   "config",
   ".github/workflows/eval.yml",
   ".github/workflows/release.yml",
   "docs/adr",
   "docs/research",
-  "docs/security/security-triage.md",
+  "docs/security",
   "evals",
+  "bun.lock",
+  "bunfig.toml",
   "mise.lock",
+  "package.json",
   "pyproject.toml",
   "rules",
   "skills",
@@ -73,7 +75,6 @@ only-include = [
   "tests",
   "tools",
   "uv.lock",
-  "sgconfig.yml",
 ]
 
 [tool.pytest.ini_options]
