@@ -18,6 +18,10 @@ scope (`rules/workflow/canonical-commands.md`).
 - The first failure is the result: fix its cause and rerun from the runtime proof; law 6
   owns the one red-base exception.
 - A later edit voids earlier evidence for the scope it touches.
+- Each boundary (resume, before code, commit, merge) starts from live state: the
+  integration tip merged into the lane and the owner's source read; a snapshot,
+  brief or memory is a lead, never evidence. Under host load the work continues on
+  light verbs; it never waits and never shortcuts a gate.
 - A hook's refusal is a failing gate and is never bypassed (law 8).
 - Done means landed under law 10 and `rules/git/gitflow-branch-pr.md`; local green or an
   open pull request is in progress.
