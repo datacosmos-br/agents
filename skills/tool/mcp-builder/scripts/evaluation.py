@@ -227,9 +227,7 @@ TASK_TEMPLATE = """
 """
 
 
-async def run_evaluation(
-    eval_path: Path, connection: Any, model: str
-) -> str:
+async def run_evaluation(eval_path: Path, connection: Any, model: str) -> str:
     """Run evaluation with MCP server tools."""
     client = Anthropic()
 
