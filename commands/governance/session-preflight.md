@@ -60,9 +60,9 @@ omit required ownership or coordination evidence.
 
 Present the cursor: mission, measured state, ordered next steps with their owners, the
 traps that apply, and the cycle — which integration branch, which gates and what runtime
-proof close the unit (`rules/law.md` item 10). Then, where the selected
-tracker is available, claim the bead unless the handoff already did, and record the actual branch and PR state there and in the coordination
-channel before the first effect; a declaration grants no branch creation or Git
-publication authority. With the tracker unavailable or suspended, keep only separately
-authorized Git, PR and CI evidence and leave closure open. Continue the declared plan; never re-derive what the surfaces
-already record.
+proof close the unit (`rules/law.md` item 10). Before the first effect, record the actual
+branch and PR state in the coordination channel; a declaration grants no branch creation
+or Git publication authority. Where the selected tracker is available, also claim the
+bead, unless the handoff already did, and record that state there; with it unavailable
+or suspended, keep only separately authorized Git, PR and CI evidence and leave closure
+open. Continue the declared plan; never re-derive what the surfaces already record.
