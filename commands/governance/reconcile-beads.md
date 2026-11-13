@@ -11,7 +11,7 @@ metadata:
 # Reconcile Beads
 
 Treat `$ARGUMENTS` as bounds, exact bead IDs, and an optional CSV path. Load the
-`beads-organization` skill. Resolve tracker authority and Gas City state before effects.
+`wip-beads` skill (organization reference). Resolve tracker authority and Gas City state before effects.
 A suspended tracker remains read-only unless the current operator explicitly authorizes
 mutations to that exact store.
 

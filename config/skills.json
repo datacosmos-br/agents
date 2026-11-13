@@ -20,10 +20,6 @@
         "format": "utf-8",
         "executable": true
       },
-      "tool/beads-organization/scripts/reconcile-inventory.sh": {
-        "format": "utf-8",
-        "executable": true
-      },
       "tool/session-extract/scripts/extract_session.py": {
         "format": "utf-8",
         "executable": true
@@ -45,6 +41,10 @@
         "executable": true
       },
       "tool/wip-beads/scripts/bd_json_to_csv.py": {
+        "format": "utf-8",
+        "executable": true
+      },
+      "tool/wip-beads/scripts/reconcile-inventory.sh": {
         "format": "utf-8",
         "executable": true
       },

@@ -1,4 +1,21 @@
-# Revalidate registered work against reality
+# Beads revalidation role
+
+Use for an explicitly requested revalidation of registered issues, including closed
+issues. Do not activate for an unrelated implementation or translation.
+
+Read the procedure below completely before changing tracker state.
+Evidence follows `rules/workflow/beads-traceability.md`; the active intent follows
+`rules/law.md`.
+
+Beads owns execution state and the resumption cursor. Exported inventories are read-only
+evidence, never a second status ledger. Use only the selected available tracker;
+suspension does not authorize a substitute.
+
+Revalidation is semantic: a stale closed issue may require correction, while an open
+issue may already be implemented or superseded. Neither status nor text similarity
+establishes reality. Preserve unique evidence before consolidation.
+
+## Procedure: revalidate registered work against reality
 
 Resolve the authorized issue scope and active intent before writes. Inspect the
 installed tracker command contract and enumerate all matching open and closed issues,

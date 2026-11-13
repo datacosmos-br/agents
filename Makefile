@@ -144,7 +144,7 @@ mod: ## normalize evaluation YAML and audit the bundle
 shell: ## validate shell scripts and GitHub workflows
 	$(call BANNER,shell · actionlint + shellcheck)
 	@$(MISE_EXEC) actionlint .github/workflows/*.yml
-	@$(MISE_EXEC) shellcheck skills/tool/beads-organization/scripts/reconcile-inventory.sh
+	@$(MISE_EXEC) shellcheck skills/tool/wip-beads/scripts/reconcile-inventory.sh
 
 duplication: ## enforce zero strict duplication in canonical source and evaluations
 	$(call BANNER,duplication · jscpd)

@@ -1,11 +1,4 @@
----
-name: beads-orchestrator
-description: "beads orchestration, dependency governance, tracker ownership"
-metadata:
-  aihub.tags: '["activation:opt-in","decision:ADR-0008","detect:opt-in:beads-orchestration","effective:2026-08-29","route:agent","subject:beads","usage:router"]'
----
-
-# Beads Orchestrator
+# Beads orchestrator role
 
 Activate only for an explicit semantic graph or ownership decision by the designated
 tracker orchestrator. Implementation of an assigned slice belongs to the worker role.

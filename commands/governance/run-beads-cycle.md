@@ -12,7 +12,7 @@ metadata:
 
 # Beads Cycle
 
-Treat `$ARGUMENTS` as bounds for the cycle execution and run the `beads-cycle` skill,
+Treat `$ARGUMENTS` as bounds for the cycle execution and run the cycle of the `wip-beads` skill,
 which owns the order, batch limits, gates and closure reasons. Resolve tracker
 authority before effects. A suspended tracker remains read-only unless the current
 operator explicitly authorizes mutations to that exact store. `--mode` defaults to

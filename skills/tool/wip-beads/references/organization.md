@@ -1,15 +1,9 @@
----
-name: beads-organization
-description: "beads organization, reconciliation, adjudication, hierarchy repair"
-metadata:
-  aihub.tags: '["activation:opt-in","decision:ADR-0008","detect:opt-in:beads-organization","effective:2026-09-10","route:agent","subject:beads","usage:router"]'
----
-
 # Beads Organization
 
 Activate when continuously reconciling a selected Beads store against current
 integration, workspace, runtime, plan, documentation, code, or external-tracker
-evidence. Read the `complete procedure` (skill file) before any tracker write.
+evidence. Read the procedure in [organization procedure](organization-procedure.md) before any
+tracker write.
 
 ## Safety Contract
 
@@ -99,12 +93,6 @@ generated CSV, stale snapshot, partial batch, or local-only state.
 
 ## Wave Protocol
 
-- Analysis is delegated to bounded read-only subagent waves; only the coordinator
-  applies reviewed mutation batches. Every worker prompt embeds the closure rules above
-  and a fixed row contract:
-  `id, action, target, labels_add, labels_remove, status, evidence (<=15 words), exact command/SHA`,
-  plus an explicit `undecided` list when evidence is insufficient. The main thread
-  retains all sequenced decisions: dedup gate, landing, and doubtful closures.
 - Analysis is delegated to bounded read-only subagent waves; only the coordinator
   applies reviewed mutation batches. Every worker prompt embeds the closure rules above
   and a fixed row contract:
