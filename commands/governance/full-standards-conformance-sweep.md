@@ -50,6 +50,6 @@ sweep sequence, not another copy of those obligations.
 Report the covered population, per-unit before/after findings, owner and consumer
 changes, removed residue, command/cwd/exit evidence, integration disposition and each
 remaining obligation. The active tracker owns work state; this command creates no
-parallel queue. A procedural failure mode found during the sweep is corrected in its
-owning skill through `op-learning`. Release, deployment and activation require their own proofs when the
+parallel queue. A procedural failure mode found during the sweep is recorded on
+its tracker item for the owning skill. Release, deployment and activation require their own proofs when the
 scope includes them.

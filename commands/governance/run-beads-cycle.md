@@ -16,5 +16,5 @@ Treat `$ARGUMENTS` as bounds for the cycle execution and run the `beads-cycle` s
 which owns the order, batch limits, gates and closure reasons. Resolve tracker
 authority before effects. A suspended tracker remains read-only unless the current
 operator explicitly authorizes mutations to that exact store. `--mode` defaults to
-`all` and `--limits` to at least 25 per batch; each mode is a dry run, and `--apply` mutates only after the operator or the
+`all` and `--limits` to at least 25 per batch; each mode is a dry run by default, and `--apply` mutates only after the operator or the
 coordinator agent approves the consolidated plan.
