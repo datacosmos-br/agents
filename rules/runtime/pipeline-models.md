@@ -13,4 +13,5 @@ resolved and routed, never dropped because a catalog does not describe it, and a
 provider stops serving leaves routing in the next generation. No code, configuration,
 template, test or document holds a hardcoded list, default or prefix table of model
 identifiers; model identity and selection come only from the providers' live inventory
-through the pipeline.
+through the pipeline. Recorded evidence (captured logs, fixtures that replay them, dated
+plans) may quote an identifier it observed; it never selects one.

@@ -228,7 +228,7 @@ TASK_TEMPLATE = """
 
 
 async def run_evaluation(
-    eval_path: Path, connection: Any, model: str = "claude-3-7-sonnet-20250219"
+    eval_path: Path, connection: Any, model: str
 ) -> str:
     """Run evaluation with MCP server tools."""
     client = Anthropic()
@@ -316,13 +316,13 @@ async def main() -> None:
         epilog="""
 Examples:
   # Evaluate a local stdio MCP server
-  python evaluation.py -t stdio -c python -a my_server.py eval.xml
+  python evaluation.py -t stdio -c python -a my_server.py -m <pipeline-model> eval.xml
 
   # Evaluate an SSE MCP server
-  python evaluation.py -t sse -u https://example.com/mcp -H "Authorization: Bearer token" eval.xml
+  python evaluation.py -t sse -u https://example.com/mcp -H "Authorization: Bearer token" -m <pipeline-model> eval.xml
 
-  # Evaluate an HTTP MCP server with custom model
-  python evaluation.py -t http -u https://example.com/mcp -m claude-3-5-sonnet-20241022 eval.xml
+  # Evaluate an HTTP MCP server
+  python evaluation.py -t http -u https://example.com/mcp -m <pipeline-model> eval.xml
         """,
     )
 
@@ -337,8 +337,8 @@ Examples:
     parser.add_argument(
         "-m",
         "--model",
-        default="claude-3-7-sonnet-20250219",
-        help="Claude model to use (default: claude-3-7-sonnet-20250219)",
+        required=True,
+        help="Model to use, selected from the model pipeline's published generation",
     )
 
     stdio_group = parser.add_argument_group("stdio options")
