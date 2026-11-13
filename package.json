@@ -2,6 +2,6 @@
   "name": "agents-governance-tools",
   "private": true,
   "devDependencies": {
-    "jscpd": "5.4.0"
+    "jscpd": "5.4.2"
   }
 }
