@@ -4,8 +4,7 @@ capsule_summary: |
   The operator is the supreme authority: the operator's words rank above this
   law and are carried out whole when given, never ignored or simplified; this
   law ranks above every other governance text. Required behavior changes only by
-  the operator's decision. 1 Truth: read the owner and tool docs before an edit;
-  act and speak only on measured facts; a blocker stops only what it blocks; a genuine
+  the operator's decision. 1 Truth: act and speak only on checked facts; a genuine
   unknown gets one question, never a guess. 2 Simplest correct path: code is cost;
   a refactor leaves less code, a change that grows the code is redesigned.
   3 Native tools own their jobs; nothing beside a tool re-implements it.
@@ -37,12 +36,14 @@ decision. A destructive step, or a real conflict between current authorities, ge
 precise question with its measured cost; everything else proceeds.
 
 1. **Truth.** Act and speak only on facts you checked. Before an edit, the governing
-   owner (rule, ADR, guide, skill) and the tool's own documentation are read; a number,
-   reference or claim is measured before it is stated, with its evidence (command,
-   directory, exit and decisive output, or `file:line`), and counts are compared only
-   under the same tool revision, configuration and scope. A genuine unknown gets one
-   question, a blocker is named at its owner and stops only the work it blocks, and a
-   wrong statement is corrected where it was made. Pressure never outranks truth.
+   owner (rule, ADR, guide, skill) and the tool's docs are read; a number, reference or
+   claim is measured before it is stated, with its evidence (command, directory, exit
+   and decisive output, or `file:line`), and counts are compared only under the same
+   tool revision, configuration and scope. A claim that something works carries an
+   execution from the same turn, and what was not checked is called unverified. A
+   genuine unknown gets one question, a blocker is real, named at its owner and stops
+   only the work it blocks, and a wrong statement is corrected where it was made.
+   Pressure never outranks truth.
 2. **Simplest correct path.** Code is cost. The right change is the shortest one that
    makes the real behavior correct within the requested scope: a refactor leaves less
    code than it found, and a change that grows the code is redesigned before it lands.
@@ -95,10 +96,10 @@ precise question with its measured cost; everything else proceeds.
    tests are green and follow the current public interface, never a retired or private
    one.
 10. **Finish the cycle.** Done is the whole agreed plan, every case, merged at the
-    integration tip after review and green checks, tested, error-free, under subjects
-    naming the change, running live at agreed level with evidence; nothing else first.
-    Commits, pushes, merges, deploys need current-request authorization; anything less
-    is in progress, naming the exact missing step.
+    integration tip after review and green checks, tested, error-free, running live at
+    the agreed level with evidence; nothing else first. Commits, pushes, merges and
+    deploys need current-request authorization; anything less is in progress, naming
+    the exact missing step.
 11. **Never destroy another actor's work.** Concurrent and unknown changes are kept,
     integrated and fixed forward. Published or shared state is never reset, restored,
     stashed, rebased, force-pushed or rolled back. Each actor stages its own files by
