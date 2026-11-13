@@ -1,77 +1,77 @@
-# ADR-0023 — Fronteira única de descoberta e manutenção de worktrees (wip ↔ executor)
+# ADR-0023 — Single worktree discovery and maintenance boundary (wip ↔ executor)
 
 **Status:** Superseded by ADR-0038 **Date:** 2026-09-19 **Scope:**
-`rules/coordination/wip-persistence.md` · consumidores: todo projeto governado ·
-owner de placement: Gas City · programa canônico: o programa wip do projeto (doc-10)
+`rules/coordination/wip-persistence.md` · consumers: every governed project ·
+placement owner: Gas City · canonical program: the project's wip program (doc-10)
 
 ## Context
 
-Preservação de WIP e isolamento eram indevidamente acoplados. ADR-0025 agora
-seleciona placement pela chamada, adotando o contexto autorizado atual; a descoberta
-não exige outro checkout. `gitflow-branch-pr` rege a retirada de lanes descartáveis.
-O problema original era que as regras não nomeavam **quem descobre e
-planeja** o estado WIP dos worktrees, nem garante que a **execução da aposentadoria**
-tenha um dono único.
+WIP preservation and isolation were improperly coupled. ADR-0025 now
+selects placement by the call, adopting the current authorized context; discovery
+does not require another checkout. `gitflow-branch-pr` governs the retirement of disposable lanes.
+The original problem was that the rules did not name **who discovers and
+plans** the WIP state of worktrees, nor guarantee that **retirement execution**
+has a single owner.
 
-O deep-dive de 2026-09-19 (registrado em
-`docs/plans/20260919-handoff-fecho-sessao-dedicado.md`, seção de worktrees) mediu a
-lacuna: o lane de storage do ai-hub já correlaciona fatos de worktree ↔ bead/PR/ator e
-fala o vocabulário do programa `wip/`, mas **a execução está duplicada** — o planejador
-wip e o executor de storage planejam ações sobre os mesmos worktrees com políticas
-distintas (estado de merge vs. janela de atividade), com risco de aposentadoria dupla
-ou divergente. Worktrees órfãos (diretório sem registro em `.git/worktrees`) não são
-descobertos por nenhum dos dois.
+The 2026-09-19 deep-dive (recorded in
+`docs/plans/20260919-handoff-fecho-sessao-dedicado.md`, worktrees section) measured the
+gap: the ai-hub storage lane already correlates worktree ↔ bead/PR/actor facts and
+speaks the vocabulary of the `wip/` program, but **execution is duplicated** — the wip
+planner and the storage executor plan actions on the same worktrees with different
+policies (merge state vs. activity window), with a risk of double or divergent
+retirement. Orphan worktrees (directory with no record in `.git/worktrees`) are not
+discovered by either of the two.
 
 ## Decision
 
-1. **Descoberta e planejamento têm um dono: o programa wip do projeto.** O surface wip
-   declarado pelo projeto — captura/plano/aposentadoria no vocabulário do doc-10, como
-   o programa `wip/` do ai-hub — é o único que nomeia o conjunto de candidatos, a
-   correlação read-only com beads/PRs/atores e a intenção de aposentadoria. O catálogo
-   nomeia essa classe de owner; não reimplementa descoberta nem cria política paralela.
-2. **Aposentadoria tem um único executor.** O executor residente consome a MESMA fila
-   de candidatos que o planejador wip produz. Duas superfícies planejando aposentadoria
-   sobre os mesmos worktrees com políticas diferentes são proibidas.
-3. **Placement não é descoberta.** A chamada seleciona seu contexto segundo ADR-0025
-   e `gascity.md`; descobrir WIP não cria uma exigência de isolamento. A descoberta
-   lê registro e medição do projeto, nunca uma lista mantida à mão.
-4. **Escopo.** Worktrees órfãos/husks sem entrada de registro estão no escopo da
-   descoberta do projeto; worktrees de runtime de rig (estado da cidade) e clones
-   estrangeiros same-origin ficam fora, salvo flag explícita.
+1. **Discovery and planning have one owner: the project's wip program.** The wip surface
+   declared by the project — capture/plan/retirement in the doc-10 vocabulary, like
+   the ai-hub `wip/` program — is the only one that names the candidate set, the
+   read-only correlation with beads/PRs/actors and the retirement intent. The catalog
+   names this owner class; it does not reimplement discovery or create parallel policy.
+2. **Retirement has a single executor.** The resident executor consumes the SAME candidate
+   queue that the wip planner produces. Two surfaces planning retirement
+   over the same worktrees with different policies are forbidden.
+3. **Placement is not discovery.** The call selects its context according to ADR-0025
+   and `gascity.md`; discovering WIP does not create an isolation requirement. Discovery
+   reads the project's registry and measurement, never a hand-maintained list.
+4. **Scope.** Orphan worktrees/husks without a registry entry are within the scope of the
+   project's discovery; rig runtime worktrees (city state) and same-origin foreign
+   clones are out of scope, unless an explicit flag is given.
 
 ## Consequences
 
-- O lane de storage do ai-hub deixa de ser um segundo planejador: ele vira o executor
-  residente que consome a fila do wip, e o wip permanece a fronteira de
-  descoberta/captura.
-- Uma lane que introduza política de aposentadoria própria sobre worktrees passa a ser
-  defeito de conformidade, não uma variação aceitável.
-- A lacuna de husks órfãos fica dentro do escopo declarado, com dono nomeado, em vez de
-  ficar invisível aos dois lados.
+- The ai-hub storage lane stops being a second planner: it becomes the resident
+  executor that consumes the wip queue, and wip remains the
+  discovery/capture boundary.
+- A lane that introduces its own retirement policy over worktrees becomes a
+  conformance defect, not an acceptable variation.
+- The orphan husks gap falls within the declared scope, with a named owner, instead of
+  staying invisible to both sides.
 
-## Emenda 2026-09-19 — dono entregador, cálculo do caminho, medida de conformidade
+## Amendment 2026-09-19 — delivering owner, path computation, conformance measure
 
-Rulings do operador de 2026-09-19, mais novos que o texto acima e adotados aqui:
+Operator rulings of 2026-09-19, newer than the text above and adopted here:
 
-1. **Dono entregador nomeado.** O "programa wip do projeto" da decisão 1 é o programa
-   `wip` do ai-hub (`ai-hub wip <verbo>`: `start`, `save`, `ship`, `land`, `clean`,
-   `status`, `next`, `doctor`; plano `wip-automation`, épico `aihub-hjsdg`). Toda outra
-   implementação de wip no ai-hub é exterminada verbo a verbo, com exatamente uma
-   implementação por verbo em cada momento.
-2. **Placement delega o cálculo do caminho.** Apenas uma chamada que seleciona um
-   novo contexto isolado pede seu caminho ao dono de placement. Uma worktree adotada
-   não precisa ser realocada nem se torna descartável. A emenda de 2026-10-23
-   (ag-wibx.2) substitui o cálculo universal de lanes; nenhum prefixo de diretório
-   é exigência global.
-3. **Conformidade é aderência, não existência.** Violação desta fronteira é uma
-   superfície que atua fora do dono ou do placement efetivamente selecionado pela
-   chamada. A existência ou localização de uma worktree adotada não é violação.
-4. **A sonda git vive no dono autorizado.** O executor residente de storage consome fatos
-   já apurados pelo programa wip, dono autorizado de git; ele não executa git. A escada
-   de veto (dirty → unpushed → open-bead → active-session → retirável) permanece, e
-   evidência desconhecida veta a retirada.
-5. **Atores coordenam por correio.** `rules/coordination/inter-session-mail.md` rege a
-   tomada e a liberação de lanes (`[coord] lane claim`, `[coord] lane changed`).
+1. **Named delivering owner.** The "project's wip program" of decision 1 is the ai-hub
+   `wip` program (`ai-hub wip <verb>`: `start`, `save`, `ship`, `land`, `clean`,
+   `status`, `next`, `doctor`; plan `wip-automation`, epic `aihub-hjsdg`). Every other
+   wip implementation in ai-hub is exterminated verb by verb, with exactly one
+   implementation per verb at any moment.
+2. **Placement delegates path computation.** Only a call that selects a
+   new isolated context asks the placement owner for its path. An adopted worktree
+   does not need to be relocated nor does it become disposable. The 2026-10-23 amendment
+   (ag-wibx.2) replaces the universal lane computation; no directory prefix
+   is a global requirement.
+3. **Conformance is adherence, not existence.** A violation of this boundary is a
+   surface that acts outside the owner or the placement actually selected by the
+   call. The existence or location of an adopted worktree is not a violation.
+4. **The git probe lives in the authorized owner.** The resident storage executor consumes facts
+   already established by the wip program, the authorized git owner; it does not run git. The veto
+   ladder (dirty → unpushed → open-bead → active-session → retirable) remains, and
+   unknown evidence vetoes retirement.
+5. **Actors coordinate by mail.** `rules/coordination/inter-session-mail.md` governs
+   lane claiming and release (`[coord] lane claim`, `[coord] lane changed`).
    Amendment (2026-10-01; tracker memory `operator-rulings-2026-10-01-governance`,
    ruling 3): the abandonment test is declared only in
    `rules/coordination/bead-branch-pr-cadence.md` §2; retirement still honors the city
@@ -79,9 +79,9 @@ Rulings do operador de 2026-09-19, mais novos que o texto acima e adotados aqui:
 
 ## References
 
-- `rules/coordination/wip-persistence.md` (regra dona)
-- `rules/coordination/inter-session-mail.md` (coordenação entre atores)
-- `rules/coordination/gascity.md` (placement/provisionamento)
-- `rules/git/gitflow-branch-pr.md` (aposentadoria com prova de ancestralidade)
-- `rules/coordination/fleet-landing-corrections.md` (ciclo de fecho com retirada de lane)
-- `docs/plans/20260919-handoff-fecho-sessao-dedicado.md` (deep-dive medido)
+- `rules/coordination/wip-persistence.md` (owning rule)
+- `rules/coordination/inter-session-mail.md` (coordination between actors)
+- `rules/coordination/gascity.md` (placement/provisioning)
+- `rules/git/gitflow-branch-pr.md` (retirement with ancestry proof)
+- `rules/coordination/fleet-landing-corrections.md` (closing cycle with lane retirement)
+- `docs/plans/20260919-handoff-fecho-sessao-dedicado.md` (measured deep-dive)

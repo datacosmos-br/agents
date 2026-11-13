@@ -1,4 +1,4 @@
-# ADR-0022 — Home global `~/.agents` como projeção materializada versionada
+# ADR-0022 — Global home `~/.agents` as a versioned materialized projection
 
 **Status:** Amended by ADR-0038 **Date:** 2026-09-18 **Scope:** `~/.agents`, the global
 read surface managed by AI Hub (`docs/plans/20260918-handoff-repasse-consolidado.md`);
@@ -6,83 +6,83 @@ publication effects follow laws 8 and 11 of `rules/law.md`
 
 ## Context
 
-`~/.agents` é hoje um **symlink para o checkout fonte** `/home/marlonsc/agents`. O
-diagnóstico do rework de distribuição aprovado em 18/09 (seção §6, F6) mediu o risco:
-`make gen` reescreve config viva do usuário dentro do checkout; `git clean`/switch de
-branch no fonte pode deletar o home; hooks de dois donos (ai-hub x Gas City) convivem
-nos mesmos JSONs projetados. A separação completa (home como transação do ai-hub) é a
-F6 do rework e pressupõe F1–F3 do ai-hub — hoje vermelhos. Enquanto isso, todo consumo
-catálogo-side (session-router, skills globais, waza) resolve por `~/.agents` e fica
-exposto a esse acoplamento.
+`~/.agents` is today a **symlink to the source checkout** `/home/marlonsc/agents`. The
+diagnosis of the distribution rework approved on 18/09 (section §6, F6) measured the risk:
+`make gen` rewrites the user's live config inside the checkout; `git clean`/branch
+switch in the source can delete the home; hooks from two owners (ai-hub x Gas City) coexist
+in the same projected JSONs. Full separation (home as an ai-hub transaction) is
+F6 of the rework and presupposes ai-hub F1–F3 — currently red. Meanwhile, all
+catalog-side consumption (session-router, global skills, waza) resolves through `~/.agents` and is
+exposed to this coupling.
 
-Decisão do operador (2026-09-18, esta campanha): o home deixa de ser symlink **nesta
-campanha** e passa a ser **projeção global materializada** — fallback de leitura
-universal para todos os projetos e agentes — **gerenciada pelo AI Hub**, não mais como
-alias do checkout.
+Operator decision (2026-09-18, this campaign): the home stops being a symlink **in this
+campaign** and becomes a **materialized global projection** — a universal read
+fallback for all projects and agents — **managed by AI Hub**, no longer as an
+alias of the checkout.
 
 ## Decision
 
-1. **Projeção de leitura universal, fonte semântica única no SDK.** `~/.agents` materializa o
-   catálogo semântico pela API pública `catalog_resources(bundle)` do SDK, não por
-   cópia do checkout ou override da raiz de dados no controlador (`skills/`,
+1. **Universal read projection, single semantic source in the SDK.** `~/.agents` materializes the
+   semantic catalog through the SDK public API `catalog_resources(bundle)`, not by
+   copying the checkout or overriding the data root in the controller (`skills/`,
    `rules/`, `commands/`, `agents/`,
    `evals/`, `docs/adr/`, `docs/research/`, `docs/security/`, `AGENTS.md`,
-   `README.md`, `metadata.json`) — e nada mais: nenhum `.git/`, `.venv/`, `.beads/`,
-   `.gc/`, `worktrees/`, `dist/`, superfícies de provider do checkout (`.claude/`,
-   `.codex/`, `.cursor/`, `.gemini/`, `.opencode/`, `.kilo/`) nem config viva de
-   usuário. O `force-include` existente do wheel em `pyproject.toml` é a autoridade
-   de inscrição dos recursos; `config/` e o próprio documento de inscrição são
-   entradas privadas do SDK, não publicações centrais. O sdist conserva as mesmas
-   fontes inscritas. A API retorna uma tupla ordenada por caminho de registros
-   congelados `CatalogResource(relative_path: str, content: bytes, mode: int,
-   sha256: str)`, com caminhos relativos físicos, bytes exatos, permissões e digest
-   SHA-256 desses bytes. Links simbólicos e tipos não regulares falham; hardlinks
-   regulares mantêm identidades por caminho, como no catálogo de skills existente.
-   Recursos de skills conservam a política e o digest do leitor já existente.
-   `AGENTS.md` central é composto de `bundle.law.prelude` e
-   `render_capsule(bundle).text`, pelos donos semânticos existentes, sem o bloco
-   de escopo local do repositório nem instruções do repositório AI Hub.
-   `UNIVERSAL_CORE.md` legado não é inscrito automaticamente: um relinker antigo
-   não cria autoridade de catálogo. `AGENTS.md` entra por consumidor medido: é
-   alvo declarado do
-   `ssot_relink` e da gate fail-closed `projection_identity_gate` do ai-hub
-   (`config/governance.yaml:10-16`). Consumidores lêem; nenhum consumidor escreve —
-   escrita de consumer no home é defeito reportado, não estado aceito.
-   Esta fronteira declara o protocolo de fonte; não atesta publicação ou execução.
-   Igualdade de bytes, modos e digests entre fonte e distribuições instaladas exige
-   prova nativa separada, assim como o consumo transacional efetivo pelo AI Hub.
-   A adoção desta API pelo runtime AI Hub não é comprovada pela alteração de fonte
-   do SDK; os consumidores citados acima descrevem a motivação histórica.
-2. **Carimbo de versão + digest (P5/ADR-0015).** O home carrega
-   `.agents-governance.json` com `owner`, versão do bundle, `generated_at` e digests
-   por árvore. Convergência se decide por versão+digest, nunca por byte-diff cego.
-3. **Gestão é do AI Hub (emenda G0).** A única ferramenta sancionada para
-   materializar/verificar o home é a transação de deploy do **ai-hub** (surface
-   catalog-home da F6 do rework de distribuição). **O repo agents não carrega
-   ferramenta, verbos de Make nem gate de home** — ele é catálogo read-only puro
-   (ADR-0008); a cláusula original que criava `tools/home_projection.py` +
-   `home-sync`/`home-check` está **REVOGADA** (criava um mecanismo de distribuição
-   paralelo ao ai-hub).
-4. **Estado transicional (até o ai-hub assumir):** cópia estática materializada em
-   18/09 (backup do symlink em `~/.agents-archive/home-desymlink-2026-09-18/`),
-   com manifesto já no formato ai-hub; risco de stale documentado; o reparo do stale
-   é a gestão ai-hub assumir — **nunca restaurar o symlink**.
-5. **Transição com backup.** Remoção do symlink precedida de backup tar datado +
-   MANIFEST (doutrina: exclusão fora do git só com backup). O reparo de qualquer
-   falha pós-transição é forward (gestão ai-hub), nunca restauração do symlink.
+   `README.md`, `metadata.json`) — and nothing else: no `.git/`, `.venv/`, `.beads/`,
+   `.gc/`, `worktrees/`, `dist/`, checkout provider surfaces (`.claude/`,
+   `.codex/`, `.cursor/`, `.gemini/`, `.opencode/`, `.kilo/`) nor live user
+   config. The existing wheel `force-include` in `pyproject.toml` is the authority
+   for enrolling the resources; `config/` and the enrollment document itself are
+   private SDK inputs, not central publications. The sdist keeps the same
+   enrolled sources. The API returns a path-ordered tuple of frozen
+   records `CatalogResource(relative_path: str, content: bytes, mode: int,
+   sha256: str)`, with physical relative paths, exact bytes, permissions and the
+   SHA-256 digest of those bytes. Symbolic links and non-regular types fail; regular
+   hardlinks keep per-path identities, as in the existing skills catalog.
+   Skill resources keep the policy and digest of the already existing reader.
+   Central `AGENTS.md` is composed of `bundle.law.prelude` and
+   `render_capsule(bundle).text`, by the existing semantic owners, without the
+   repository's local scope block or AI Hub repository instructions.
+   Legacy `UNIVERSAL_CORE.md` is not enrolled automatically: an old relinker
+   does not create catalog authority. `AGENTS.md` enters by measured consumer: it is a
+   declared target of
+   `ssot_relink` and of the ai-hub fail-closed gate `projection_identity_gate`
+   (`config/governance.yaml:10-16`). Consumers read; no consumer writes —
+   a consumer write into the home is a reported defect, not an accepted state.
+   This boundary declares the source protocol; it does not attest publication or execution.
+   Equality of bytes, modes and digests between source and installed distributions requires
+   separate native proof, as does effective transactional consumption by AI Hub.
+   Adoption of this API by the AI Hub runtime is not proven by the SDK source
+   change; the consumers cited above describe the historical motivation.
+2. **Version stamp + digest (P5/ADR-0015).** The home carries
+   `.agents-governance.json` with `owner`, bundle version, `generated_at` and per-tree
+   digests. Convergence is decided by version+digest, never by blind byte-diff.
+3. **Management belongs to AI Hub (amendment G0).** The only sanctioned tool to
+   materialize/verify the home is the **ai-hub** deploy transaction (the
+   catalog-home surface of F6 of the distribution rework). **The agents repo carries no
+   tool, Make verbs or home gate** — it is a pure read-only catalog
+   (ADR-0008); the original clause that created `tools/home_projection.py` +
+   `home-sync`/`home-check` is **REVOKED** (it created a distribution mechanism
+   parallel to ai-hub).
+4. **Transitional state (until ai-hub takes over):** static copy materialized on
+   18/09 (symlink backup in `~/.agents-archive/home-desymlink-2026-09-18/`),
+   with a manifest already in ai-hub format; stale risk documented; the stale repair
+   is ai-hub management taking over — **never restore the symlink**.
+5. **Transition with backup.** Symlink removal preceded by a dated tar backup +
+   MANIFEST (doctrine: deletion outside git only with backup). The repair of any
+   post-transition failure is forward (ai-hub management), never symlink restoration.
 
 ## Consequences
 
-- O checkout fonte deixa de ser ponto único de falha do home: `git clean`/branch
-  switch não tocam mais o que os consumidores leem.
-- `make gen` do checkout volta a escrever somente superfícies do próprio checkout; a
-  config viva do usuário (hooks Gas City x ai-hub) sai do raio de efeito colateral.
-- Drift catálogoxhome fica visível quando o ai-hub assumir a verificação
-  (`projection_identity_gate` já fail-closed); no intervalo, o stale é conhecido e
-  aceito como estado transicional declarado.
-- A gestão transacional final é do ai-hub (F6 do rework); a fronteira
-  **flext ⊄ privado / privado ⊇ flext** permanece: nada disto cria dependência do
-  flext para com agents/ai-hub.
+- The source checkout stops being a single point of failure for the home: `git clean`/branch
+  switch no longer touch what consumers read.
+- The checkout's `make gen` goes back to writing only the checkout's own surfaces; the
+  user's live config (Gas City x ai-hub hooks) leaves the side-effect radius.
+- Catalog x home drift becomes visible when ai-hub takes over verification
+  (`projection_identity_gate` already fail-closed); in the interim, the staleness is known and
+  accepted as a declared transitional state.
+- Final transactional management belongs to ai-hub (F6 of the rework); the boundary
+  **flext ⊄ private / private ⊇ flext** remains: nothing here creates a dependency of
+  flext on agents/ai-hub.
 
 ## Amendment 2026-10-28 — minimum authenticated publication effects
 
