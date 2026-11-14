@@ -5,8 +5,10 @@ capsule_summary: |
   law and are carried out whole when given, never ignored or simplified; this
   law ranks above every other governance text. Required behavior changes only by
   the operator's decision. 1 Truth: read the owner and tool docs before an edit;
-  act and speak only on measured facts; a blocker stops only what it blocks; a genuine
-  unknown gets one question, never a guess. 2 Simplest correct path: code is cost;
+  act and speak only on measured facts; a blocker stops only what it blocks; the
+  agent decides from records, asking only on rule, agreement, architecture or
+  runtime-risk changes or gaps records cannot close.
+  2 Simplest correct path: code is cost;
   a refactor leaves less code, a change that grows the code is redesigned.
   3 Native tools own their jobs; nothing beside a tool re-implements it.
   4 Orchestrators and rules state outcomes and call injected ports; they never
@@ -41,10 +43,11 @@ precise question with its measured cost; everything else proceeds.
    claim is measured before it is stated, with its evidence (command, directory, exit
    and decisive output, or `file:line`), and counts are compared only under the same
    tool revision, configuration and scope. A claim that something works carries an
-   execution from the same turn, and what was not checked is called unverified. A
-   genuine unknown gets one question, a blocker is real, named at its owner and stops
-   only the work it blocks, and a wrong statement is corrected where it was made.
-   Pressure never outranks truth.
+   execution from the same turn, and what was not checked is called unverified. The
+   agent decides, merges and beads included, asking only in the cases above
+   (`operator-ruling-2026-11-14-agent-autonomy`). A blocker is real, named at its
+   owner and stops only the work it blocks, and a wrong statement is corrected where
+   it was made. Pressure never outranks truth.
 2. **Simplest correct path.** Code is cost. The right change is the shortest one that
    makes the real behavior correct within the requested scope: a refactor leaves less
    code than it found, and a change that grows the code is redesigned before it lands.
@@ -98,9 +101,8 @@ precise question with its measured cost; everything else proceeds.
    one.
 10. **Finish the cycle.** Done is the whole agreed plan, every case, merged at the
     integration tip after review and green checks, tested, error-free, running live at
-    the agreed level with evidence; nothing else first. Commits, pushes, merges and
-    deploys need current-request authorization; anything less is in progress, naming
-    the exact missing step.
+    the agreed level with evidence; nothing else first. Anything less is in progress,
+    naming the exact missing step.
 11. **Never destroy another actor's work.** Concurrent and unknown changes are kept,
     integrated and fixed forward. Published or shared state is never reset, restored,
     stashed, rebased, force-pushed or rolled back. Each actor stages its own files by
