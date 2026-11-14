@@ -1,0 +1,11 @@
+id: archify-no-trigger-001
+name: Plain ADR text needs no view
+description: An architecture decision record without a diagram request stays with arch-docs.
+tags: [archify, should-not-trigger]
+inputs:
+  prompt: >-
+    Draft the text of an ADR choosing PostgreSQL over SQLite for the job queue.
+    No diagram or view is requested. Say whether you run archify.
+expected:
+  output_contains: [arch-docs, no archify]
+  output_not_contains: [archify finalize, archify.json]

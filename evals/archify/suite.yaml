@@ -1,0 +1,14 @@
+description: Archify view procedure under arch-docs — CRG-narrowed scope, source-confirmed
+  facts, pinned revision, receipt-driven fixes, and finalize validation.
+prompt: |-
+  Grade the archify response. Pass only if it narrows scope with code-review-graph
+  under the freshness gate, confirms every component and relation in source with
+  `file:line`, pins `git rev-parse HEAD` into `meta.repository.revision` with a
+  credential-free origin (`link_mode: local-only` for SSH or private origins),
+  writes the IR at `docs/architecture/<view>.archify.json`, applies only receipt
+  `supportedFixes` for at most two rounds, uses `archify compare` for deltas, and
+  validates with `archify finalize ... --repo-root <rig> --json` exit 0 and a
+  receipt revision equal to `meta.repository.revision`. Reject answers that cite
+  graph output as fact, hand-patch rendered output, embed credentials in origin,
+  add third-party brand marks, edit provider instruction files, or install the
+  tool from the skill.
