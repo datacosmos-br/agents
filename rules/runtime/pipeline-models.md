@@ -15,3 +15,7 @@ template, test or document holds a hardcoded list, default or prefix table of mo
 identifiers; model identity and selection come only from the providers' live inventory
 through the pipeline. Recorded evidence (captured logs, fixtures that replay them, dated
 plans) may quote an identifier it observed; it never selects one.
+
+AI Hub publishes directly to the serving proxy's native activation contract and
+projects an agent configuration only after readback confirms that generation. Account
+tools manage credentials; they neither publish nor retain pipeline generations.
