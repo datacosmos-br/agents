@@ -46,7 +46,7 @@ bd list --status open --flat --limit 0 --json > ./wip-beads-open.json
 ### 3. Classify bugfix/hotfix/bug (no epic)
 `scripts/wip-beads.sh --mode classify --csv ./wip-beads-open.csv`
 - Reports beads with `issue_type` in {bugfix,hotfix,bug} that have a parent epic
-- Dry-run by default; `--apply` removes parent after operator approval
+- Dry-run by default; `--apply` removes the parent after the agent's review
 - Law: `bugfix`/`hotfix`/`bug` beads NEVER have epic parent
 
 ### 4. Align tasks/features to canonical epics

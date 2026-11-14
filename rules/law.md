@@ -6,8 +6,7 @@ capsule_summary: |
   law ranks above every other governance text. Required behavior changes only by
   the operator's decision. 1 Truth: read the owner and tool docs before an edit;
   act and speak only on measured facts; a blocker stops only what it blocks; the
-  agent decides from records, asking only on rule, agreement, architecture or
-  runtime-risk changes or gaps records cannot close.
+  agent decides, asking only per law 1.
   2 Simplest correct path: code is cost;
   a refactor leaves less code, a change that grows the code is redesigned.
   3 Native tools own their jobs; nothing beside a tool re-implements it.
@@ -44,10 +43,11 @@ precise question with its measured cost; everything else proceeds.
    and decisive output, or `file:line`), and counts are compared only under the same
    tool revision, configuration and scope. A claim that something works carries an
    execution from the same turn, and what was not checked is called unverified. The
-   agent decides, merges and beads included, asking only in the cases above
-   (`operator-ruling-2026-11-14-agent-autonomy`). A blocker is real, named at its
-   owner and stops only the work it blocks, and a wrong statement is corrected where
-   it was made. Pressure never outranks truth.
+   agent decides, merges and beads too, asking only on rule, agreement, architecture
+   or runtime-risk changes, divergence records cannot settle, or gaps research cannot
+   close (`operator-ruling-2026-11-14-agent-autonomy`). A blocker is real,
+   named at its owner and stops only the work it blocks, and a wrong statement is
+   corrected where it was made. Pressure never outranks truth.
 2. **Simplest correct path.** Code is cost. The right change is the shortest one that
    makes the real behavior correct within the requested scope: a refactor leaves less
    code than it found, and a change that grows the code is redesigned before it lands.
