@@ -12,10 +12,8 @@ dependencies = [
 dev = [
   "anthropic>=0.39.0,<3",
   "mcp>=1.1.0,<3",
-  "mypy>=1.17,<3",
   "playwright>=1,<2",
   "pyrefly>=1.3.0",
-  "pyright>=1.1.414,<2",
   "pytest>=8.3,<10",
   "pytest-testmon>=2.0,<3",
   "ruff>=0.12,<1",
@@ -85,15 +83,6 @@ tmp_path_retention_policy = "none"
 
 [tool.coverage.run]
 core = "ctrace"
-
-[tool.pyright]
-include = ["src", "tests", "tools"]
-extraPaths = ["tools"]
-venvPath = "."
-venv = ".venv"
-
-[tool.mypy]
-mypy_path = "tools"
 
 [tool.pyrefly]
 disable-project-excludes-heuristics = true

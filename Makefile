@@ -3,7 +3,6 @@
 MISE_EXEC := mise exec --
 UV_RUN := $(MISE_EXEC) uv run --no-sync
 CACHE_HOME := $(if $(XDG_CACHE_HOME),$(XDG_CACHE_HOME),$(HOME)/.cache)
-PYRIGHT_CACHE_ROOT := $(CACHE_HOME)/agents-governance/pyright
 ARTIFACT_STATE_ROOT := $(CACHE_HOME)/agents-governance/artifacts
 WAZA_STATE_ROOT := $(CACHE_HOME)/agents-governance/waza
 BUN_CACHE_ROOT := $(CACHE_HOME)/agents-governance/bun
@@ -12,7 +11,6 @@ override export COVERAGE_CORE := ctrace
 override export ARTIFACT_STATE_ROOT := $(ARTIFACT_STATE_ROOT)
 # Opt-in artifact-runtime instrumentation; it never selects an operation or scope.
 export ARTIFACT_PROFILE
-override export PYRIGHT_PYTHON_CACHE_DIR := $(PYRIGHT_CACHE_ROOT)
 override export WAZA_STATE_ROOT := $(WAZA_STATE_ROOT)
 override export UV_PROJECT_ENVIRONMENT := $(CURDIR)/.venv
 override export VIRTUAL_ENV := $(CURDIR)/.venv
@@ -25,7 +23,7 @@ override export MISE_OVERRIDE_TOOL_VERSIONS_FILENAMES := none
 unexport UV_PYTHON UV_PROJECT
 
 .DEFAULT_GOAL := help
-PUBLIC_VERBS := help setup upg gen docs audit check runtime waza crg-check lint static conform fmt fix mod mod-check shell duplication build test test-full ci validate-artifacts publish profile-mypy-resources profile-mypy-resources-report profile-waza profile-waza-report
+PUBLIC_VERBS := help setup upg gen docs audit check runtime waza crg-check lint static conform fmt fix mod mod-check shell duplication build test test-full ci validate-artifacts publish profile-waza profile-waza-report
 .PHONY: $(PUBLIC_VERBS)
 .DELETE_ON_ERROR:
 
@@ -97,15 +95,8 @@ lint: ## fast external lint and formatting check
 
 static: ## lint, formatting, and whole-program Python type analysis (local only)
 	@$(MAKE) lint
-	$(call BANNER,static · pyrefly + pyright + mypy)
+	$(call BANNER,static · pyrefly)
 	@PYTHON_RESOURCES_OPERATION=check $(UV_RUN) python tools/python_resources_gate.py
-
-profile-mypy-resources: ## profile native Mypy over every declared Python skill resource
-	@mkdir -p .reports/profiles
-	@PYTHON_RESOURCES_OPERATION=profile-mypy $(UV_RUN) python tools/python_resources_gate.py
-
-profile-mypy-resources-report: ## read the native Mypy resource profile
-	@$(UV_RUN) python -c 'import pstats; pstats.Stats(".reports/profiles/mypy-resources.pstats").sort_stats("cumtime").print_stats(30)'
 
 profile-waza: ## profile the Waza coordinator; child code is not instrumented
 	@mkdir -p .reports/profiles
