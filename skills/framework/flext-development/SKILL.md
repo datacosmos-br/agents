@@ -17,6 +17,9 @@ They alone own FLEXT architecture, runtime floor, family shape, MRO, ports and i
 This skill holds no second copy, and a same-named global skill, another checkout or a
 protected default branch never stands in for them.
 
+Test assertions route to that root's local `flext-test-assertions` skill (tm matchers and
+the `rewire-test-assert-*` catalog), which owns the procedure.
+
 Change the declared source owner and verify the real public contract before acceptance.
 Missing or conflicting authority stops only the dependent effect. A broken implementation
 is a pending repair, never a reason for another rule.
