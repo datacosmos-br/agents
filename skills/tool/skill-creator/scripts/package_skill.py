@@ -17,7 +17,7 @@ from pathlib import Path
 from quick_validate import validate_skill
 
 
-def package_skill(skill_path, output_dir=None):
+def package_skill(skill_path: str | Path, output_dir: str | None = None) -> Path | None:
     """Package a skill folder into a zip file.
 
     Args:

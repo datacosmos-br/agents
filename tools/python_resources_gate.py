@@ -34,6 +34,21 @@ def main() -> None:
         commands = (
             ("ruff", "check", *resources),
             ("ruff", "format", "--check", *resources),
+            (
+                "pyrefly",
+                "check",
+                "--config",
+                "pyproject.toml",
+                *(
+                    arg
+                    for parent in sorted({str(Path(path).parent) for path in resources})
+                    for arg in ("--search-path", parent)
+                ),
+                "src",
+                "tests",
+                "tools",
+                *resources,
+            ),
             ("pyright", "src", "tests", "tools", *resources),
             ("mypy", "src", "tests", "tools", *resources),
         )

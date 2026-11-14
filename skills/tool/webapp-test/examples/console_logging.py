@@ -1,6 +1,6 @@
 import pathlib
 
-from playwright.sync_api import sync_playwright
+from playwright.sync_api import ConsoleMessage, sync_playwright
 
 # Example: Capturing console logs during browser automation
 
@@ -13,7 +13,7 @@ with sync_playwright() as p:
     page = browser.new_page(viewport={"width": 1920, "height": 1080})
 
     # Set up console log capture
-    def handle_console_message(msg) -> None:
+    def handle_console_message(msg: ConsoleMessage) -> None:
         console_logs.append(f"[{msg.type}] {msg.text}")
 
     page.on("console", handle_console_message)
