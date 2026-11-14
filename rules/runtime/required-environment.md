@@ -12,8 +12,9 @@ unauthorized value fails before any effect, never trimmed, repaired, substituted
 defaulted, and evidence never shows a secret, fingerprint or whole environment. An
 external service has one credential variable for every project and tool; a missing
 credential is the tool's declared failure, never a degraded mode. Services receive only
-their declared credential subset through their deployment owner, never by opening the
-operator's keyring or statically exporting session variables.
+their declared credential subset through their deployment owner and encrypted storage
+(`LoadCredentialEncrypted=` under systemd); a missing credential fails the unit at startup,
+and services never open the operator's keyring or statically export session variables.
 
 The AI Hub credential owner reconciles only enrolled entries with the native keyring
 in the operator's unlocked session. It keeps the last confirmed OAuth or API revision,
