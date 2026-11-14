@@ -10,4 +10,6 @@ prompt: |-
   normalized failures, borrowed environments, origin-based restoration that discards
   compatible WIP, unrelated changes swept into publication,
   unrequested isolation, and deletion of adopted primary/shared/integration contexts.
+  Reject edits or commits in a worktree while its gate runs, and a green PR left
+  behind a strict base between cycles or pushed past review by rebase or force-push.
   Eligible disposable lanes retain their ownership, preservation and ancestry proofs.

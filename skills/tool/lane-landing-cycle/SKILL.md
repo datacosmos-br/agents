@@ -63,3 +63,8 @@ evidence blocks the destructive retirement only, never authorizes forced removal
   `rules/workflow/canonical-commands.md`; host load never authorizes an unchanged rerun.
 - Historical cycle reports are evidence for their recorded revision and scope, not
   a command catalog or current execution permission for another project.
+- A gate's evidence covers the tree it hashed: nothing is edited or committed in a
+  worktree while a gate runs there.
+- Where the base requires an up-to-date head and a required reviewer is slow, a fully
+  green PR that falls behind takes the moved base at once and lands the moment it is
+  clean; one watcher on the PR's merge state does both, a stop on conflict included.
