@@ -127,6 +127,7 @@
     ],
     "evidence-backed-truth": [
       "document:AGENTS.md",
+      "rule:architecture/change-admission",
       "rule:law"
     ],
     "evidence-for-uncertainty": [
@@ -169,6 +170,7 @@
       "skill:flext-service"
     ],
     "flext-strict-architecture": [
+      "rule:architecture/change-admission",
       "rule:law",
       "skill:flext-development"
     ],
@@ -203,6 +205,7 @@
       "skill:skill-governance"
     ],
     "history-evidence": [
+      "rule:architecture/change-admission",
       "rule:law"
     ],
     "immediate-removal": [
@@ -238,6 +241,7 @@
       "rule:law"
     ],
     "no-fallback": [
+      "rule:architecture/change-admission",
       "rule:law"
     ],
     "no-hidden-code": [
@@ -299,6 +303,7 @@
     ],
     "repository-research": [
       "document:AGENTS.md",
+      "rule:architecture/change-admission",
       "rule:law"
     ],
     "required-environment": [
