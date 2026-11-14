@@ -1,0 +1,361 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "agents-governance Bundle",
+    "subtitle": "Authored corpus to one audited snapshot, capsule and catalog",
+    "output": "docs/architecture/governance-bundle.html",
+    "visual_preset": "blueprint",
+    "quality_profile": "showcase",
+    "repository": {
+      "url": "https://github.com/datacosmos-br/agents",
+      "provider": "github",
+      "link_mode": "local-only",
+      "revision": "2af686ecb5d4f52f982ee6d963cd7b2ef7d84ba3"
+    }
+  },
+  "components": [
+    {
+      "id": "authors",
+      "type": "external",
+      "label": "Authors",
+      "sublabel": "reviewed PRs",
+      "pos": [
+        40,
+        200
+      ],
+      "size": [
+        130,
+        60
+      ]
+    },
+    {
+      "id": "corpus",
+      "type": "database",
+      "label": "Authored corpus",
+      "sublabel": "rules, skills, commands, agents",
+      "pos": [
+        230,
+        200
+      ],
+      "size": [
+        170,
+        60
+      ],
+      "sources": [
+        {
+          "path": "pyproject.toml",
+          "line": 34,
+          "end_line": 40,
+          "label": "wheel enrollment"
+        }
+      ]
+    },
+    {
+      "id": "capture",
+      "type": "backend",
+      "label": "capture_resources",
+      "sublabel": "immutable inputs",
+      "pos": [
+        460,
+        200
+      ],
+      "size": [
+        150,
+        60
+      ],
+      "sources": [
+        {
+          "path": "src/agents_governance/resources.py",
+          "line": 169
+        }
+      ]
+    },
+    {
+      "id": "bundle",
+      "type": "backend",
+      "label": "GovernanceBundle.load",
+      "sublabel": "fail on first defect",
+      "pos": [
+        680,
+        200
+      ],
+      "size": [
+        170,
+        60
+      ],
+      "sources": [
+        {
+          "path": "src/agents_governance/bundle.py",
+          "line": 53
+        }
+      ]
+    },
+    {
+      "id": "catalog",
+      "type": "backend",
+      "label": "Skill catalog",
+      "sublabel": "records + evals",
+      "pos": [
+        680,
+        60
+      ],
+      "size": [
+        170,
+        60
+      ],
+      "sources": [
+        {
+          "path": "src/agents_governance/catalog.py",
+          "line": 109
+        },
+        {
+          "path": "src/agents_governance/skill_evals.py",
+          "line": 400
+        }
+      ]
+    },
+    {
+      "id": "auditors",
+      "type": "security",
+      "label": "Spec auditors",
+      "sublabel": "specs, config, metadata",
+      "pos": [
+        460,
+        360
+      ],
+      "size": [
+        150,
+        60
+      ],
+      "sources": [
+        {
+          "path": "src/agents_governance/commands.py",
+          "line": 161
+        },
+        {
+          "path": "src/agents_governance/agent_profiles.py",
+          "line": 206
+        },
+        {
+          "path": "src/agents_governance/rules.py",
+          "line": 247
+        }
+      ]
+    },
+    {
+      "id": "approvals",
+      "type": "security",
+      "label": "Approval lineage",
+      "sublabel": "precedence audit",
+      "pos": [
+        680,
+        360
+      ],
+      "size": [
+        170,
+        60
+      ],
+      "sources": [
+        {
+          "path": "src/agents_governance/approvals.py",
+          "line": 201
+        }
+      ]
+    },
+    {
+      "id": "law",
+      "type": "backend",
+      "label": "Law + delivery",
+      "sublabel": "prelude, bootstrap",
+      "pos": [
+        900,
+        360
+      ],
+      "size": [
+        150,
+        60
+      ],
+      "sources": [
+        {
+          "path": "src/agents_governance/law_surface.py",
+          "line": 17
+        },
+        {
+          "path": "src/agents_governance/delivery.py",
+          "line": 114
+        }
+      ]
+    },
+    {
+      "id": "capsule",
+      "type": "backend",
+      "label": "render_capsule",
+      "sublabel": "session capsule",
+      "pos": [
+        920,
+        120
+      ],
+      "size": [
+        150,
+        60
+      ],
+      "sources": [
+        {
+          "path": "src/agents_governance/capsule.py",
+          "line": 62
+        }
+      ]
+    },
+    {
+      "id": "resources",
+      "type": "backend",
+      "label": "catalog_resources",
+      "sublabel": "path, bytes, mode, sha256",
+      "pos": [
+        920,
+        240
+      ],
+      "size": [
+        170,
+        60
+      ],
+      "sources": [
+        {
+          "path": "src/agents_governance/resources.py",
+          "line": 204
+        }
+      ]
+    },
+    {
+      "id": "aihub",
+      "type": "external",
+      "label": "AI Hub",
+      "sublabel": "publication owner",
+      "pos": [
+        1150,
+        180
+      ],
+      "size": [
+        140,
+        60
+      ]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "agents_governance package (read-only SDK)",
+      "wraps": [
+        "capture",
+        "bundle",
+        "catalog",
+        "auditors",
+        "approvals",
+        "law",
+        "capsule",
+        "resources"
+      ],
+      "pad": 18
+    }
+  ],
+  "connections": [
+    {
+      "from": "authors",
+      "to": "corpus",
+      "label": "edit",
+      "variant": "emphasis"
+    },
+    {
+      "from": "corpus",
+      "to": "capture",
+      "label": "enrolled files",
+      "variant": "emphasis"
+    },
+    {
+      "from": "capture",
+      "to": "bundle",
+      "label": "captured inputs",
+      "variant": "emphasis"
+    },
+    {
+      "from": "bundle",
+      "to": "catalog",
+      "label": "skills"
+    },
+    {
+      "from": "bundle",
+      "to": "auditors",
+      "label": "audit",
+      "variant": "security"
+    },
+    {
+      "from": "bundle",
+      "to": "approvals",
+      "label": "precedence",
+      "variant": "security"
+    },
+    {
+      "from": "bundle",
+      "to": "law",
+      "label": "law surface"
+    },
+    {
+      "from": "bundle",
+      "to": "capsule",
+      "label": "render(bundle)"
+    },
+    {
+      "from": "bundle",
+      "to": "resources",
+      "label": "catalog(bundle)"
+    },
+    {
+      "from": "capsule",
+      "to": "aihub",
+      "label": "capsule text",
+      "variant": "dashed"
+    },
+    {
+      "from": "resources",
+      "to": "aihub",
+      "label": "catalog records",
+      "variant": "dashed"
+    },
+    {
+      "from": "law",
+      "to": "capsule",
+      "label": "prelude",
+      "variant": "dashed"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "One load path",
+      "items": [
+        "GovernanceBundle.load captures inputs once",
+        "Every auditor reads the same captured inputs",
+        "The first defect fails the whole load"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Gatekeeping",
+      "items": [
+        "Approval tags resolve to decision records",
+        "Rules, commands and agent profiles are typed specs",
+        "Skills ship one semantic eval suite each"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Boundary",
+      "items": [
+        "The package has no runtime, projector or home writer",
+        "AI Hub owns publication, activation and withdrawal",
+        "Consumers read frozen records, never the checkout"
+      ]
+    }
+  ]
+}
