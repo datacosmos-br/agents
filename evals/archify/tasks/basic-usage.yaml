@@ -1,0 +1,20 @@
+id: archify-happy-path-001
+name: Service dataflow view from a private repository
+description: Exercise architecture diagrams, codebase maps, sequence dataflow, explainers, and interactive html through one pinned, validated view.
+tags: [archify, architecture, diagrams, codebase-maps, sequence, dataflow, explainers, interactive-html, happy-path]
+inputs:
+  prompt: |
+    Using the supplied scenario, give the exact steps to produce the ingest
+    dataflow view, the checks before review, how you apply fixes, and the
+    validation that proves the view is current.
+  files:
+  - path: ingest-view.md
+expected:
+  output_contains:
+  - git rev-parse HEAD
+  - local-only
+  - docs/architecture/
+  - file:line
+  - supportedFixes
+  - archify finalize
+  - --repo-root
