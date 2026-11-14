@@ -337,8 +337,18 @@ def _smoke(
             (
                 str(Path(sys.executable).parent / "pyrefly"),
                 "check",
+                # The repository's declared error set is the strictness this proof
+                # inherits, so it is not weaker than the gate that checks the source.
+                "--config",
+                str(Path(__file__).resolve().parents[1] / "pyproject.toml"),
+                # Import resolution stays on the isolated interpreter, and only the
+                # smoke directory is searched, so the installed wheel is what gets
+                # checked and never this source tree.
                 "--python-interpreter-path",
                 str(environment_path / "bin" / "python"),
+                "--search-path",
+                str(smoke),
+                "--disable-search-path-heuristics",
                 str(typed_imports),
             ),
             smoke,
