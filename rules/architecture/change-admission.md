@@ -33,5 +33,6 @@ ruling on that key.
 
 A statement without this proof is labelled unverified where it is made and justifies no
 edit, merge, closure or rule change. Relaxing a failing rule, skipping an input, adding a
-fallback, widening a type, or landing unfinished work on an integration branch is a
-workaround ([law](../law.md) 6, 8), rejected in review whoever proposes it.
+fallback, widening a type only to silence a check, or landing unfinished work on an
+integration branch is a workaround ([law](../law.md) 6, 8, 9, 10). Review rejects it from
+any author; only the operator's ruling on that point admits one.

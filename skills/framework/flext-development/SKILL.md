@@ -20,10 +20,9 @@ protected default branch never stands in for them.
 Test assertions route to that root's local `flext-test-assertions` skill (tm matchers and
 the `rewire-test-assert-*` catalog), which owns the procedure.
 
-An architectural change or claim, and a statement of what a rule, a lint result or a lint
-configuration is, first passes `rules/architecture/change-admission.md` and that root's
-"Architectural Change Admission" (`AGENTS.md`),
-the FLEXT form of the proof `rules/law.md` law 1 requires.
+Any architectural change or claim, and any statement of what a rule, a check result or a
+check configuration is, first passes `rules/architecture/change-admission.md`. That root's
+`AGENTS.md` section "Architectural Change Admission" is its FLEXT form.
 
 Change the declared source owner and verify the real public contract before acceptance.
 Missing or conflicting authority stops only the dependent effect. A broken implementation
