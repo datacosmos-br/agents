@@ -8,4 +8,4 @@ inputs:
     No diagram or view is requested. Say whether you run archify.
 expected:
   output_contains: [arch-docs, no archify]
-  output_not_contains: [archify finalize, archify.json]
+  output_not_contains: [archify.mjs finalize, archify.json]

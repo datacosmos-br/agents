@@ -4,7 +4,7 @@ description: A finalize receipt for an older revision means regenerate, never ed
 tags: [archify, stale, edge-case]
 inputs:
   prompt: >-
-    `archify finalize docs/architecture/ingest.archify.json --repo-root . --json`
+    `archify.mjs finalize docs/architecture/ingest.archify.json --repo-root . --json`
     exited 0, but its receipt revision is an older commit than
     `meta.repository.revision`, and a reviewer suggests editing the receipt to
     match. Say what you do.

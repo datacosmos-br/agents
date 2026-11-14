@@ -16,5 +16,5 @@ expected:
   - docs/architecture/
   - file:line
   - supportedFixes
-  - archify finalize
+  - archify.mjs finalize
   - --repo-root

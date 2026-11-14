@@ -11,8 +11,8 @@ metadata:
 Archify turns a typed, validated intermediate representation (IR) into architecture
 views: diagrams, codebase maps, sequence and dataflow views, explainers and interactive
 HTML. It is a view layer under `$arch-docs`, which owns evidence, ownership and review;
-code-review-graph (`$crg`) owns structural evidence. AI Hub installs the `archify` CLI;
-read its schemas and references from its install directory, and `archify --help` owns
+code-review-graph (`$crg`) owns structural evidence. AI Hub installs the `archify.mjs` CLI;
+read its schemas and references from its install directory, and `archify.mjs --help` owns
 the grammar. This skill ships no runtime files.
 
 ## Create
@@ -38,11 +38,11 @@ the grammar. This skill ships no runtime files.
 
 - Apply only the fixes the receipt lists in `supportedFixes`; never hand-patch output.
 - Two improvement rounds at most; then stop and report what remains.
-- Use `archify compare` to show the delta between rounds or revisions.
+- Use `archify.mjs compare` to show the delta between rounds or revisions.
 
 ## Validate
 
-- `archify finalize <ir> --repo-root <rig> --json` exits 0.
+- `archify.mjs finalize <ir> --repo-root <rig> --json` exits 0.
 - The receipt revision equals `meta.repository.revision`; a mismatch means the view is
   stale and is regenerated, never edited.
 
