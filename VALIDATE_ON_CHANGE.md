@@ -14,7 +14,6 @@ test selection and phase closure; this guide does not restate them.
 | Complete non-test acceptance | `make check` | Documentation, code/resources, structural rules, workflows, duplication and isolated artifacts |
 | Incremental tests | `make test` | Native testmon selection or integrity-checked cache-hit accounting |
 | Complete local tests | `make test-full` | Entire local suite; existing testmon database preserved |
-| Resource analyzer profile | `make profile-mypy-resources`, `make profile-mypy-resources-report` | cProfile data for the declared resource population |
 | Semantic gate profile | `make profile-waza`, `make profile-waza-report` | Coordinator cProfile and total wall time; child code is not instrumented |
 
 Inspect `make help` before invoking an operation. Use an existing, valid environment;

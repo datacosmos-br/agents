@@ -323,23 +323,23 @@ def _smoke(
             environment,
             timing=profile_root is not None,
         )
+        typed_imports = smoke / "typed_public_imports.py"
+        typed_imports.write_text(
+            "from agents_governance import GovernanceBundle, CatalogResource, catalog_resources\n"
+            "from agents_governance import agent_profiles, catalog, commands, rules\n"
+            "\n"
+            "bundle: GovernanceBundle = GovernanceBundle.load()\n"
+            "resources: tuple[CatalogResource, ...] = catalog_resources(bundle)\n"
+            "print(agent_profiles, catalog, commands, rules)\n",
+            encoding="utf-8",
+        )
         run_strict(
             (
-                sys.executable,
-                "-m",
-                "mypy",
-                "--python-executable",
+                str(Path(sys.executable).parent / "pyrefly"),
+                "check",
+                "--python-interpreter-path",
                 str(environment_path / "bin" / "python"),
-                "--cache-dir",
-                str(smoke / "mypy"),
-                "--strict",
-                "-c",
-                (
-                    "from agents_governance import GovernanceBundle, CatalogResource, catalog_resources\n"
-                    "from agents_governance import agent_profiles, catalog, commands, rules\n"
-                    "bundle: GovernanceBundle = GovernanceBundle.load()\n"
-                    "resources: tuple[CatalogResource, ...] = catalog_resources(bundle)\n"
-                ),
+                str(typed_imports),
             ),
             smoke,
             f"ARTIFACT typed public imports {artifact.name}",

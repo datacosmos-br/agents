@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import os
-import sys
 from pathlib import Path
 
 from strict_subprocess import run_strict
@@ -47,22 +46,6 @@ def main() -> None:
                 "src",
                 "tests",
                 "tools",
-                *resources,
-            ),
-            ("pyright", "src", "tests", "tools", *resources),
-            ("mypy", "src", "tests", "tools", *resources),
-        )
-    elif operation == "profile-mypy":
-        commands = (
-            (
-                sys.executable,
-                "-m",
-                "cProfile",
-                "-o",
-                str(root / ".reports" / "profiles" / "mypy-resources.pstats"),
-                "-m",
-                "mypy",
-                "--no-fast-exit",
                 *resources,
             ),
         )
