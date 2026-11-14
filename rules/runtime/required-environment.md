@@ -15,8 +15,9 @@ credential is the tool's declared failure, never a degraded mode. Services recei
 their declared credential subset through their deployment owner, never by opening the
 operator's keyring or statically exporting session variables.
 
-The AI Hub credential owner reconciles only enrolled entries with the native keyring
-in the operator's unlocked session. It keeps the last confirmed OAuth or API revision,
-applies updates from either side against the confirmed predecessor, and stops on
-conflicting revisions. Revocation cannot restore an older value. A locked keyring
-leaves synchronization pending without prompting from a daemon.
+Only the AI Hub credential owner reconciles enrolled proxy accounts with the native
+keyring in the operator's unlocked session. The keyring retains the last confirmed
+OAuth or API revision; the proxy owns operational use and renewal. Updates from either
+side require the confirmed predecessor; conflicting revisions stop reconciliation.
+Revocation cannot restore an older value. A locked keyring leaves synchronization
+pending without prompting from a daemon.
