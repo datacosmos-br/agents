@@ -21,4 +21,10 @@ a test never expects a defect (tracker memory
 collection, a missing tool or report, and a selected suite that did not run are red; a
 skip is red unless it is the project's declared availability prerequisite, reported as
 unmet. A costly setup is built once, before the test clock, and each test gets its own
-namespace or copy; the rest is the [law](../law.md).
+namespace or copy. The whole suite finishes within 240 s, a test declared slow within
+20 s and any other test within 2 s, setup and teardown included; a change never raises
+the suite's total time, and a limit is never raised to make a test pass (tracker memory
+`operator-order-2026-11-15-test-time-limits`). A test that would still pass with the
+behavior broken is removed. Scenario data, fixtures and constants each have one owner
+in the test namespace and its `conftest`; a test file never redeclares them; the rest
+is the [law](../law.md).
