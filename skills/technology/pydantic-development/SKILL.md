@@ -2,7 +2,7 @@
 name: pydantic-development
 description: "pydantic v2 models, validation, serialization, flext facade contracts"
 metadata:
-  aihub.tags: '["activation:detected","decision:ADR-0037","detect:dependency:python:pydantic","detect:dependency:python:pydantic-settings","detect:marker:pyproject.toml","effective:2026-09-08","extends:py-dev","route:project","subject:python","usage:router"]'
+  aihub.tags: '["activation:detected","decision:ADR-0039","detect:dependency:python:pydantic","detect:dependency:python:pydantic-settings","detect:marker:pyproject.toml","effective:2026-09-08","extends:py-dev","route:project","subject:python","usage:router"]'
 ---
 
 # Pydantic Development

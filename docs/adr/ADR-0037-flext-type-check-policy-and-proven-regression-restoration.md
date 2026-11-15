@@ -1,6 +1,6 @@
 # ADR-0037 - FLEXT type-check policy and proven regression restoration
 
-**Status:** Amended by ADR-0038 **Date:** 2026-10-05 **Scope:** the FLEXT type-check policy,
+**Status:** Superseded by ADR-0039 **Date:** 2026-10-05 **Scope:** the FLEXT type-check policy,
 executed by flext-infra's typed tooling configuration; restoration follows law 11 of
 `rules/law.md`
 
