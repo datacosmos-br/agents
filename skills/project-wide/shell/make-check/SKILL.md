@@ -15,8 +15,9 @@ Read the repository instructions and root Makefile, then run its declared verbs 
 never an underlying tool in their place. `rules/workflow/canonical-commands.md` owns the
 verbs, deadlines, profiling, locks and test selection.
 
-- `make setup` runs only when the environment is absent or fails its own check; a valid
-  environment is reused, and lock changes belong to the upgrade verb.
+- `make setup` runs first in the project's declared commit and CI sequence; elsewhere it
+  runs only when the environment is absent or fails its own check. A valid environment is
+  reused, and lock changes belong to the upgrade verb.
 - The changed behavior is shown through its real entry point first; then `make check`,
   any further declared gate verb and the test verb run, each invoked explicitly and never
   obtained as a side effect of another.
