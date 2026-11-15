@@ -12,8 +12,7 @@ duplicate production code: builders and fixtures declare scenario data only, nev
 assert, and never re-implement what production computes (tracker memory
 `operator-order-2026-11-05-tests-never-duplicate-production`). A mock, patch, fake,
 private access or implementation assertion is replaced by public behavioral coverage of
-the same failure scenarios, or removed; so is a test that stays green when the behavior
-it names is broken. Unit tests open no socket, write only inside
+the same failure scenarios, or removed. Unit tests open no socket, write only inside
 fixture storage and restore any environment they change. A red test is fixed at its
 contract, never by weaker assertions, xfail or lower coverage. When production is the
 wrong side, production is repaired at its owner and a public-behavior test guards it;
@@ -22,8 +21,10 @@ a test never expects a defect (tracker memory
 collection, a missing tool or report, and a selected suite that did not run are red; a
 skip is red unless it is the project's declared availability prerequisite, reported as
 unmet. A costly setup is built once, before the test clock, and each test gets its own
-namespace or copy; scenario data, constants and fixtures have one shared owner. The
-tooling owner declares the time limits for a test, a slow test and the suite: a test
-over the first is marked slow, none passes the second, a change never raises a limit or
-the suite's time, and a test near a limit is repaired at its setup (tracker
-`operator-order-2026-11-15-test-time-limits`); the rest is the [law](../law.md).
+namespace or copy. The whole suite finishes within 240 s, a test declared slow within
+20 s and any other test within 2 s, setup and teardown included; a change never raises
+the suite's total time, and a limit is never raised to make a test pass (tracker memory
+`operator-order-2026-11-15-test-time-limits`). A test that would still pass with the
+behavior broken is removed. Scenario data, fixtures and constants each have one owner
+in the test namespace and its `conftest`; a test file never redeclares them; the rest
+is the [law](../law.md).

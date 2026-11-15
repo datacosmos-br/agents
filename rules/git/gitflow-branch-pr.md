@@ -8,10 +8,9 @@ metadata:
 
 Each repository declares its integration branch; promotion past it needs the operator.
 Work continues in the authorized checkout, in a dedicated worktree when the project's
-lane rules ask for one. A PR has one Git root and is one complete step, neither a
-fragment nor a batch, proven locally before push; an actor merges it before opening the
-next. Unfinished work goes only to an authorized preservation ref, which is not delivery.
-A moved base enters by `git merge --no-ff`; a lane lands by the forge's automatic merge on
+lane rules ask for one. A PR has one Git root. Only small, complete, green slices reach a
+working branch or PR; unfinished work goes only to an authorized preservation ref, which
+is not delivery. A moved base enters by `git merge --no-ff`; a lane lands by the forge's automatic merge on
 its exact green head, in the method its branch class declares, once the declared checks
 pass and review conversations are resolved, never with `--no-verify` or `[skip ci]`; an
 administrative merge is the operator's own act, never an agent's (tracker
@@ -25,3 +24,8 @@ same way in the same cycle; a primary or shared checkout and an integration bran
 never retired. Preservation and retirement run through the
 operator's runtime tooling, which a consumer project never integrates or documents as
 usage (tracker `operator-order-2026-11-05-preserve-on-forge`).
+
+A pull request is one complete work step, proven on its final head by the repository's
+declared gates and at the real entry point before the first push, and it is integrated
+before the same actor opens the next one (tracker memory
+`operator-order-2026-11-15-pr-is-one-validated-step`).
