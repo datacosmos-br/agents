@@ -20,5 +20,5 @@ a test never expects a defect (tracker memory
 `operator-order-2026-11-12-fix-production-never-test-the-defect`). Warnings, zero
 collection, a missing tool or report, and a selected suite that did not run are red; a
 skip is red unless it is the project's declared availability prerequisite, reported as
-unmet. A shared integration service is one host instance provisioned before the test
-clock, with a namespace per test; the rest is the [law](../law.md).
+unmet. A costly setup is built once, before the test clock, and each test gets its own
+namespace or copy; the rest is the [law](../law.md).

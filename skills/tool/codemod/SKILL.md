@@ -11,7 +11,8 @@ metadata:
 Author the ast-grep rules a repository applies through its declared verb (`make mod` in
 FLEXT, whose workspace guide `docs/guides/codemod-rules.md` owns the engine's keys and
 verbs). Each rule is one law, stated once, built only from what ast-grep sees, with its
-test (`rules/law.md` 7). Anatomy and techniques: [authoring](references/authoring.md).
+test (`rules/law.md` 7). Anatomy and techniques: [authoring](references/authoring.md);
+running an existing catalog over a repository: [applying](references/applying.md).
 
 ## Use for
 
