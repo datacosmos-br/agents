@@ -1,4 +1,4 @@
-# ADR-0020 — Advance: one work-order-and-force-advance command owned by skill routing
+# ADR-0020 — Advance: one command for evidence-based phase transitions
 
 **Status:** Accepted **Date:** 2026-09-10 **Scope:**
 `commands/implementation/advance.md`, `docs/research/agent-instruction-design.md`,
@@ -16,13 +16,10 @@ to verified completion.
 
 ## Decision
 
-1. One command, `advance`, owns the rebuilt work order plus forced advancement: Phase 0
-   authority, Phase 1 a work order built from plan, bead and Git evidence that asks the
-   operator only for a fact no surface holds and is executed in the same turn with one
-   recurring goal check where the provider schedules prompts, Phase 2 reflection checkpoint, Phase 3 advance loop with
-   per-step skill routing, Phase 4 executable verification, Phase 5 landing and
-   closure, and a final restatement of non-negotiables (recency effect). `$ARGUMENTS`
-   carries the optional focus; session tasks are never hardcoded into the body.
+1. `advance` owns the work order and the phase readiness decision. It repairs the active
+   phase and starts the next authorized phase only when `sprint-closure` can establish
+   closure on the integrated revision. Missing proof blocks the transition and leaves
+   independent work actionable. `$ARGUMENTS` locates the plan, bead, or project.
 2. Stack deltas (Python, FLEXT, others) stay in their branch-matched law skills; the
    command routes to owners and duplicates nothing — parallel per-stack command variants
    are rejected.

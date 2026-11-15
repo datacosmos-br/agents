@@ -16,8 +16,11 @@ priority; under load a run narrows, never waits. A pull-request gate fits
 deadline, the 120-second bound of `operator-order-2026-10-24-make-always-with-timeout`
 unless its project declares tighter, and a timeout is a failure fixed at its cause. Test
 verbs: the incremental one runs Testmon on its persistent database, replaced only by its
-schema migration; the full one runs without it, within
-`operator-order-2026-11-15-ci-test-budget`, and alone states a suite's time; an empty
-run is an integrity-checked cache hit. A generated file names its writer and
+schema migration; the full one runs without it and alone states a suite's time. An empty
+run is an integrity-checked cache hit. The complete native test suite must finish within
+240 seconds of wall time, subject to any stricter declared deadline. An individual test
+taking more than 2 seconds, including setup and teardown, requires causal profiling and
+verified optimization. Every test has a hard 20-second limit
+(`operator-order-2026-11-15-ci-test-budget`). A generated file names its writer and
 regeneration command; a tool-written block changes only through that tool and loses to
 any rule it contradicts. Text published to a forge or tracker comes from a file.
