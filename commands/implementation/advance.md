@@ -10,9 +10,10 @@ metadata:
 
 # Advance — review, repair, and advance the active phase
 
-Use `$ARGUMENTS` to locate the plan, bead, or project. Run `session-preflight`;
-when the plan is a formal handoff, use `plan-handoff` as directed by preflight.
-Read the current authority and branch-matched owning skills before acting.
+Use `$ARGUMENTS` to locate the plan, bead, or project. Read the current authority
+and branch-matched owning skills before acting. For a formal handoff, run
+`plan-handoff` first; `session-preflight` then reuses its accepted cursor and claim.
+For other inputs, start with `session-preflight`.
 
 ## Rebuild the work order
 
@@ -43,4 +44,4 @@ active slice before opening the next PR in the plan.
 
 State `READY` with the closure evidence and start the next authorized step. Otherwise
 state `BLOCKED` for the phase transition, name the first missing proof, its owner and
-the exact next command, and continue independent work.
+the exact next command, and continue independent work within the active phase.

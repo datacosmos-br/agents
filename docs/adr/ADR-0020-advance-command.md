@@ -18,8 +18,8 @@ to verified completion.
 
 1. `advance` owns the work order and the phase readiness decision. It repairs the active
    phase and starts the next authorized phase only when `sprint-closure` can establish
-   closure on the integrated revision. Missing proof blocks the transition and leaves
-   independent work actionable. `$ARGUMENTS` locates the plan, bead, or project.
+   closure on the integrated revision. Missing proof blocks the transition; independent
+   work in the active phase continues. `$ARGUMENTS` locates the plan, bead, or project.
 2. Stack deltas (Python, FLEXT, others) stay in their branch-matched law skills; the
    command routes to owners and duplicates nothing — parallel per-stack command variants
    are rejected.
