@@ -24,7 +24,7 @@
 | distribution | 25 | agents 1, ai-hub 9, flext 15 | projection, surface |
 | bug/fix | 25 | agents 2, ai-hub 9, flext 14 | bugs and hotfixes |
 | epic/child | 24 | ai-hub 13, flext 11 | structural hierarchy needed |
-| types | 37 | agents 1, ai-hub 9, flext 27 | pyrefly, mypy, pyright |
+| types | 37 | agents 1, ai-hub 9, flext 27 | pyrefly |
 | duplication | 18 | ai-hub 7, flext 11 | jscpd, dedup |
 | other | 491 | all stores | needs triage |
 
@@ -78,7 +78,7 @@ Validação item-a-item contra runtime real (grep/probe no código da tip + gate
 **Fechadas com evidência (10)**:
 
 - agents: `ag-vblj.5` (rota github mise-provisionada, binário em runtime), `ag-lw57.10` (staging dry-run/output implementado), `ag-lw57.5` (artefatos aihub exterminados dos homes), `ag-lw57.4` (one-release: recovery.conf ausente, units em runtime/current), `ag-bwqu` (_noop_acceptance 0 hits; AiHubNativeDeploymentAcceptance pousada)
-- ai-hub: `aihub-aooib` (AGENTS.md real no release instalado, 19967 bytes), `aihub-zj4l3` (check 20/20 failed=0; vermelho 22:04 era corrida com merge 202e603c5), `aihub-agfq7.11` (letras d/e/h/r/x vivas em flext_core; mypy/pyright 0), `aihub-agfq7.10` (AiHubSettingsSources(FlextSettings) pousado; runtime-census 0), `aihub-6o75i` (rota generate-configs wired → services/generate_configs.py)
+- ai-hub: `aihub-aooib` (AGENTS.md real no release instalado, 19967 bytes), `aihub-zj4l3` (check 20/20 failed=0; vermelho 22:04 era corrida com merge 202e603c5), `aihub-agfq7.11` (letras d/e/h/r/x vivas em flext_core), `aihub-agfq7.10` (AiHubSettingsSources(FlextSettings) pousado; runtime-census 0), `aihub-6o75i` (rota generate-configs wired → services/generate_configs.py)
 
 **Evidência atualizada em abertas (5)**: `ag-lw57.8` (resta 1 fail: test_concurrent_fragment_creation_is_never_overwritten), `ag-vblj.1` (censo 338 linhas de import direto), `ag-lw57.7` (references/ existe mas vazio), `aihub-73b244ef` (bloqueio sistêmico: mint de credencial falha em todo run pull_request), `aihub-636vd` (esta rodada)
 
