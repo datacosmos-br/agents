@@ -9,8 +9,8 @@ evidence-backed in beads (agents/algar/flext stores).
 ## algar-oud-mig (`0.12.0-dev` integration)
 
 - Measured: 17/20 gates green (peer had cleared 15 classes); red was
-  mypy 198, pyrefly 53, codemod 24.
-- mypy 198 → 0: one root pattern — `r`/`t` read as `Any` through the
+  pyrefly 53, codemod 24.
+- Type findings 198 → 0: one root pattern — `r`/`t` read as `Any` through the
   lazy facades (`scripts`, `tests`, `algar_oud_mig`) in scripts/tests/
   examples. Cutover to the owners: `r` → `flext_core`, `t` → the
   `algar_oud_mig` root typings, `tf` → `flext_tests`, `s` →

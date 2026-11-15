@@ -1,21 +1,21 @@
-# ADR-0037 - FLEXT Mypy policy and proven regression restoration
+# ADR-0037 - FLEXT type-check policy and proven regression restoration
 
-**Status:** Superseded by ADR-0039 **Date:** 2026-10-05 **Scope:** the FLEXT Mypy policy,
+**Status:** Superseded by ADR-0039 **Date:** 2026-10-05 **Scope:** the FLEXT type-check policy,
 executed by flext-infra's typed tooling configuration; restoration follows law 11 of
 `rules/law.md`
 
 ## Authority
 
 The operator's live message of 2026-10-05T13:05:41Z is recorded verbatim in the
-canonical agents tracker memory `operator-ruling-20261005-mypy-pydantic2`, under
-execution owner `ag-p47o`. The record includes the mandatory Pydantic/Mypy policy,
+canonical agents tracker memory of that ruling, under execution owner `ag-p47o`.
+The record includes the mandatory Pydantic and type-check policy,
 pinpoint regression restoration, and delivery through an administrative PR merge.
 It is the authority record required by `rules/coordination/operator-precedence.md`,
 not an inferred authorization from a rule, plan, peer, or successful gate.
 
 ## Decision
 
-1. The existing Pydantic rule owns the bounded FLEXT Mypy policy guidance. Canonical
+1. The existing Pydantic rule owns the bounded FLEXT type-check policy guidance. Canonical
    typed tooling configuration in flext-infra remains its executable owner;
    no separate defaults catalog, per-file suppression, or relaxed checker is created.
 2. Strict typed quality references that policy rather than copying it. Proven

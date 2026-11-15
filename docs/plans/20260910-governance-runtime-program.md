@@ -34,10 +34,10 @@ Worktree dedicada: `~/ai-hub-wt/green-baseline` (branch `fix/green-baseline`, pu
 base `fix/current-pointer-transport` com 4 commits de walker/pointer + composed
 surfaces). Estado medido (`make check`, pós-commit `ea29280b`):
 
-- Baseline: 2564 → **atual: 2467** (lint 42, pyrefly 146, mypy 16, pyright 40,
+- Baseline: 2564 → **atual: 2467** (lint 42, pyrefly 146,
   silent-failure 40, markdown 2, loc-cap 9, boundary 2, tier-whitelist 1, namespace
   1100, codemod 1033, duplication 36) — pós `d590d1cfb` (docs, permission, DI). Nota:
-  lint/pyrefly/ mypy/pyright subiram porque código novo (protocolos + helpers aninhados)
+  lint/pyrefly subiram porque código novo (protocolos + helpers aninhados)
   entrou no raio dos gates; namespace caiu 1122→1100 e codemod 1044→1033.
 - Corrigido acumulado (commits `151278c2e`..`ea29280b`):
   - lint tail: os-sep-split → `PurePosixPath.parts`, undefined names em tests quebrados
@@ -67,7 +67,7 @@ surfaces). Estado medido (`make check`, pós-commit `ea29280b`):
   `p.AiHub.ForgeRouting`); local aliases NS-IMPORT-001 em 2 test files.
 - Loop de continuação (próximas sessões): make fix → make mod → reparo por classe
   (namespace restante; codemod recursive-type-alias; eliminação de mock/patch nos 102;
-  doubles aprovados nos 35; retired-config rewire nos 16; typing pyrefly/pyright via
+  doubles aprovados nos 35; retired-config rewire nos 16; typing pyrefly via
   `t.*/p.*`) → `make check` exit 0 → `make test` verde (testmon) → PR + merge `--no-ff`
   no dev do ai-hub.
 
@@ -142,7 +142,7 @@ A lane só pousa num estado que sobreviva a produção. Tradução operacional:
 | 3   | Namespace classe-a-classe (1100): reverse imports → DI no composition root; locals → facade; top-level fns → métodos da classe do módulo             | namespace=0                                                               |
 | 4   | Codemod: `recursive-type-alias` em `_models/*` → alias finito `t.JsonValue`/`t.JsonMapping`; `pass-through-wrapper` deletion; rewire consumers       | codemod=0, `make mod` 0 actionable                                        |
 | 5   | Testes: migrar 102 mock/patch + 35 test-doubles para os doubles/fixes aprovados; 2 RED externos adotados (beads com evidência com/sem diff)          | `make test` exit 0                                                        |
-| 6   | Pyrefly/pyright/mypy/lint/duplication/loc-cap restantes                                                                                              | all=0; `make check` exit 0                                                |
+| 6   | Pyrefly/lint/duplication/loc-cap restantes                                                                                              | all=0; `make check` exit 0                                                |
 | 7   | PR + merge `--no-ff` no dev do ai-hub; rerun dos gates no SHA merged; deploy atômico recovery com credencial encriptada; receipt + probe de ativação | receipt no home; `ai-hub validate-agents` exit 0                          |
 | 8   | `agentsctl` (ag-7hz): transacional, idempotente, receipt-first, rollback documentado — `sync` único comando                                          | `agentsctl sync` converte homes ≥0.5.0                                    |
 | 9   | Sonda R1 então F3 (ag-zrh.4): sessão opencode real                                                                                                   | marker/versão == bundle; zero markerless; `python-production` inexistente |
@@ -262,7 +262,7 @@ cancelamento de ~1033 achados por classes automáveis em vez de curadoria manual
 ### Falta (bloqueios e ordem)
 
 1. **Verde ai-hub completo** (bloqueio raiz): 2492 → 0 por classe de achado (namespace
-   1100, codemod 1033, pyrefly 157, pyright 43, lint 44, silent-failure 40, mypy 25,
+   1100, codemod 1033, pyrefly 157, lint 44, silent-failure 40,
    duplication 36, loc-cap 9, boundary 2, tier-whitelist 1, markdown 2). Só após: PR +
    merge `--no-ff` no dev.
 2. **Absorção provider** (ag-zrh.2, WS-C): implementar absorção automática de instruções

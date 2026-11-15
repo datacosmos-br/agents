@@ -23,10 +23,9 @@ make gen
 # 2. Structural rewrite through the declared verbs only (ast-grep catalog,
 #    text rules, fixed point). New or widened rules: codemod skill.
 make mod
-make mod-text
 
-# 3. Hygiene + gates
-make fix && make fmt && make check
+# 3. Hygiene + gates: the repair, format and check verbs in the order the
+#    project's root Make catalog declares (make help).
 
 # 4. Graph evidence (agent-side tool only; operate per the crg skill:
 #    freshness gate first, lane graph, verified verbs)

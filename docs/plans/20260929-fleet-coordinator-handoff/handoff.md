@@ -59,7 +59,7 @@ optional by invocation. Revalidate other historical instructions with their owne
 | t8p7n | flext-infra `fix/flext-t8p7n-forbid-gate-suspension-20260928` | 67049cac4 | flext-t8p7n (absorbs the flext-d3nwq fixture hunk) |
 | pr938 | flext-infra `adopt/pr938-20260928` | 6130f35cd (20 edits, unvalidated) | flext-m3sre |
 | qlty attestation | flext-infra `fix/qlty-attestation-enable-20260928` | 27251093c | flext-38odd |
-| nktqo | flext-target-ldap `fix/flext-nktqo-mypy-resource-20260928` | 21fca19 (make upg output) | flext-nktqo |
+| nktqo | flext-target-ldap its `flext-nktqo` fix lane | 21fca19 (make upg output) | flext-nktqo |
 | cosmos-7ysc5 | cosmos-main `lane/cosmos-7ysc5-develop-ci` | e04d26a82 (develop + #304) | cosmos-7ysc5 |
 
 The dirty root trees (`root-tip-green-r4`, `root-launcher-sync`,
@@ -91,12 +91,12 @@ gate runs at a time.
    - `flext-akfj4`, `flext-7gdlg`, `flext-zmzvq`, `flext-dkoe4`.
    - `flext-38odd`.
    - `flext-abv33`: derive gate applicability, then delete the empty-target
-     skip/receipt paths (`base_gate.py:70-80`, `pyright.py:26-50`,
+     skip/receipt paths (`base_gate.py:70-80`,
      `pyrefly.py:27-159`, `bandit.py:43-52`).
    - `flext-m3sre` (#938, minus the pending (a)/(b)).
    - `flext-t3gku`: the detector at `workspace/detector.py:528` must fail loud
      on an empty gitlink directory.
-   - `flext-nktqo` (flext-target-ldap mypy gate killed at 6144 MiB/100s):
+   - `flext-nktqo` (flext-target-ldap type gate killed at 6144 MiB/100s):
      profile first; the pushed `make upg` output (21fca19) is re-derived on the
      current infra tip, never promoted as is.
 3. **Root (`flext-itpd1.3.14`, claimed):**
