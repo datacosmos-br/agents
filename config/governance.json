@@ -2,6 +2,7 @@
   "version": 2,
   "bootstrap": {
     "rules": [
+      "architecture/change-admission",
       "law"
     ],
     "skills": [
