@@ -22,7 +22,7 @@ Handoff: Governance Runtime Program (bead épico ag-zrh).
    nunca de memória. Cada item carrega bead-ID e linha do plano.
 3. Estado: worktree ~/ai-hub-wt/green-baseline (branch fix/green-baseline @ d590d1cfb)
    com grind verde 2564→2467 por classe (namespace 1100, codemod 1033, pyrefly 146,
-   pyright 40, lint 42, silent-failure 40, mypy 16, duplication 36).
+   lint 42, silent-failure 40, duplication 36).
 4. PRIMEIRO passo material: ag-nq7q — `ai-hub ai-hub-sync-crg-workspaces`
    (CRG RED: drift de 10+ workspaces) até `--check` exit 0.
 5. Depois, PASO 1 do plano: em fix/green-baseline, `git fetch && git merge --no-ff
@@ -80,7 +80,7 @@ comando exato, cwd, exit code, output decisivo; desviou = corrige o bead, nunca 
 | ------------------------- | ------------ | -------------------------------------------------------------------------------------------------------------------- |
 | namespace                 | 1100         | DI no composition root; '\\' → p.AiHub.ForgeRouting; helpers aninhados; 9 xs em test files e scripts                 |
 | codemod                   | 1033         | 197 detection-only (mod-findings.json por rule_id); recursive-type-alias _models/learning.py:11; ban-test-doubles 35 |
-| pyrefly/pyright/mypy/lint | 146+40+16+42 | typing via t./p.                                                                                                     |
+| pyrefly/lint              | 146+42       | typing via t./p.                                                                                                     |
 | silent-failure            | 40           | catch/normalize a exterminar                                                                                         |
 | docs_make_verbs           | ✅ 9 passed  | 12 docs `WHAT=` aposentados consertados                                                                              |
 

@@ -48,7 +48,7 @@ dono ai-hub; o piloto não destrava por trabalho catalog-side.
   reconcile podou `gascity-build-141fc1`) + `ag-whr` fechada (isolamento
   provado). `ag-gmx` fechada (workflow dormente → épico flext-cpzjo).
 - Grind de frota mapeado na lane `wip/stabilize-0.12-algar-20260919`
-  (mypy 198→0, pyrefly 53→0 via cutover para donos tipados) e no
+  (pyrefly 53→0 via cutover para donos tipados) e no
   worktree `wip/stabilize-0.12-root-20260919` (flext-infra commitado
   `020728af4`; imports circulares do merge corrigidos).
 - Bloqueadores restantes do piloto: fix do `sync-crg-workspaces`
