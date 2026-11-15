@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import os
-import shutil
+import subprocess
 import tomllib
 from pathlib import Path
 
@@ -50,12 +50,9 @@ def governance_source_fixture(
     ]
     root = tmp_path / "bundle"
     root.mkdir()
-    for relative in inputs:
-        source = governance_bundle.root / relative
-        destination = root / relative
-        destination.parent.mkdir(parents=True, exist_ok=True)
-        if source.is_dir():
-            shutil.copytree(source, destination)
-        else:
-            shutil.copy2(source, destination)
+    subprocess.run(
+        ("cp", "-a", "--reflink=auto", "--parents", "--", *inputs, str(root)),
+        cwd=governance_bundle.root,
+        check=True,
+    )
     return root

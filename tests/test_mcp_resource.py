@@ -2,17 +2,21 @@
 
 from __future__ import annotations
 
-import json
+import asyncio
+import importlib.util
 import shutil
-import subprocess
 import sys
 from pathlib import Path
+
+import pytest
 
 from agents_governance import GovernanceBundle
 
 
 def test_optional_tool_description_is_not_normalized(
-    governance_bundle: GovernanceBundle, tmp_path: Path
+    governance_bundle: GovernanceBundle,
+    tmp_path: Path,
+    capfd: pytest.CaptureFixture[str],
 ) -> None:
     skill = next(
         item for item in governance_bundle.skills if item.name == "mcp-builder"
@@ -26,31 +30,22 @@ def test_optional_tool_description_is_not_normalized(
     staged = scripts / resource.path.name
     shutil.copy2(resource.path, staged)
     assert staged.read_bytes() == resource.path.read_bytes()
-    client = """import asyncio, json, sys
-from connections import create_connection
-async def main():
-    async with create_connection(
-        'stdio', command=sys.executable, args=[sys.argv[1]],
-    ) as connection:
-        print(json.dumps(await connection.list_tools()), flush=True)
-asyncio.run(main())
-"""
-    # Why 60s (ag-rzct): this is a stdio handshake, not a CPU assertion. Measured
-    # 2026-09-21 on the agents venv (CPython 3.13.11) the round trip takes 2.145s
-    # min / 2.439s max / 2.315s median idle, but the former 10s bound produced a
-    # false red in `make test-full` when the suite, the Make owner's other stages
-    # and unrelated sessions loaded the host concurrently. The assertion set is
-    # unchanged; only the transport bound is load-tolerant.
-    result = subprocess.run(
-        (sys.executable, "-c", client, str(server)),
-        cwd=scripts,
-        capture_output=True,
-        text=True,
-        check=True,
-        timeout=60,
-    )
-    metadata = {tool["name"]: tool for tool in json.loads(result.stdout)}
+    spec = importlib.util.spec_from_file_location("connections", staged)
+    assert spec is not None and spec.loader is not None
+    connections = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(connections)
+
+    async def list_metadata() -> list[dict[str, object]]:
+        async with (
+            asyncio.timeout(20),
+            connections.create_connection(
+                "stdio", command=sys.executable, args=[str(server)]
+            ) as connection,
+        ):
+            return await connection.list_tools()
+
+    metadata = {tool["name"]: tool for tool in asyncio.run(list_metadata())}
     assert "description" not in metadata["absent"]
     assert metadata["empty"]["description"] == ""
     assert metadata["described"]["description"] == "Read metadata"
-    assert "warning" not in result.stderr.lower()
+    assert "warning" not in capfd.readouterr().err.lower()
