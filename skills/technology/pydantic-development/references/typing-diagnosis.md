@@ -24,9 +24,8 @@ does not authorize `defer_build=True` after import. Reconcile the preset owner
 and prove a fresh public import; a later schema build is different evidence.
 
 External references: [dataclass transforms](https://typing.python.org/en/latest/spec/dataclasses.html),
-[Pydantic fields](https://docs.pydantic.dev/latest/concepts/fields/),
-[configuration](https://docs.pydantic.dev/latest/concepts/config/) and
-[mypy integration](https://docs.pydantic.dev/latest/integrations/mypy/).
+[Pydantic fields](https://docs.pydantic.dev/latest/concepts/fields/) and
+[configuration](https://docs.pydantic.dev/latest/concepts/config/).
 
 ## Complete declarations at import
 
