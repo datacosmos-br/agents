@@ -13,7 +13,9 @@ capsule_summary: |
   exist in the project or in an earlier layer.
   3 Native tools own their jobs; nothing beside a tool re-implements it.
   4 Orchestrators and rules state outcomes and call injected ports; they never
-  know how. 5 Validate once at the boundary; inside, trust the shared model.
+  know how; each class does only its own responsibility, and code in the wrong
+  place is moved or deleted in the same touch.
+  5 Validate once at the boundary; inside, trust the shared model.
   6 Fix by deletion, never by a layer on top. 7 Laws are authored data for the
   tool that checks them; nothing generates rules. 8 Fail loud on one path; no mask
   turns a red into a green.
@@ -70,7 +72,10 @@ precise question with its measured cost; everything else proceeds.
 4. **Outcomes and ports.** Orchestrators, rules and coordinating agents state what must
    be true and call capabilities through ports injected at one composition root; they
    never know how a capability works. Dependencies point inward, and a dependency is
-   never selected through a registry, a locator or a global.
+   never selected through a registry, a locator or a global. Each class declares and does
+   only its own responsibility: the declaration is read against the domain it actually
+   owns, and code found in the wrong place is moved to its owner or deleted in the same
+   touch, never kept beside the violation.
 5. **Trust the model; validate at the boundary.** External input is parsed and validated
    once, where it enters. Inside, steps pass typed values and trust the model they share
    instead of re-checking each other. Idempotence is shown once, by a second run that
