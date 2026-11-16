@@ -17,6 +17,14 @@ grammar. Invoke the binary directly, never through a project launcher such as `u
 that may resync the environment. AI Hub owns installation, watchers, MCP routing, hooks
 and generated instruction surfaces.
 
+> **Current vs target (2026-11-16).** Today AI Hub runs `ai-hub-watch.service` with a
+> `watch --manifest` process and projects `watch.toml`. The accepted target in the
+> runtime-artifact lifecycle plan (S4) is one `ai-hub-maintain.service` owning a native
+> `crg-daemon` child under an AI-Hub-owned `CRG_HOME`: CRG owns the per-repo children,
+> scheduling, health and restart backoff, while AI Hub owns only the `watch.toml`
+> selection and reads native health. `ai-hub-watch.service` and the manifest retire in
+> that slice. Do not treat the target as already implemented.
+
 ## Freshness gate
 
 - A result is evidence only when `status --json --repo <root>` reports `built_at_commit`
