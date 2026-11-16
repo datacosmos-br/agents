@@ -14,7 +14,8 @@ capsule_summary: |
   3 Native tools own their jobs; nothing beside a tool re-implements it.
   4 Orchestrators and rules state outcomes and call injected ports; they never
   know how. 5 Validate once at the boundary; inside, trust the shared model.
-  6 Fix by deletion, never by a layer on top. 7 Laws are authored data for the
+  6 Fix by deletion, never by a layer on top; no rollback before its reason is
+  understood, and an exterminated symbol stays exterminated. 7 Laws are authored data for the
   tool that checks them; nothing generates rules. 8 Fail loud on one path; no mask
   turns a red into a green.
   9 The real entry point is the proof; wrong production is repaired, never
@@ -78,8 +79,11 @@ precise question with its measured cost; everything else proceeds.
 6. **Fix by deletion.** A defect is fixed by removing its cause, never by covering it
    with another layer. Code without a current consumer is deleted and Git is the
    recovery. A change rewires its consumers and removes obsolete code, fallbacks and
-   compatibility paths immediately; only the new path remains.
-   A change that only deletes and adds no new finding lands even on a red base.
+   compatibility paths immediately; only the new path remains. A change that only
+   deletes and adds no new finding lands even on a red base. Nothing is rolled back
+   before the reason it changed is understood: a fix conforms to the current
+   declarations, and what an owner deliberately exterminated, such as a retired
+   `__version__`, stays exterminated instead of returning in an older shape.
 7. **Laws are data.** A law a tool can check is one authored rule for that tool, built
    only from what the tool sees, with its fixture. Nothing generates rules or their
    inputs, and no code branch encodes a law. A recurring correction runs as one rule or
