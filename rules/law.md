@@ -7,13 +7,16 @@ capsule_summary: |
   the operator's decision. 1 Truth: read the owner and tool docs before an edit;
   act and speak only on measured facts; a blocker stops only what it blocks; the
   agent decides, asking only per law 1.
-  2 Simplest correct path: code is cost;
-  a refactor leaves less code, a change that grows the code is redesigned.
+  2 Simplest correct path: code is cost, and code growth is a grave risk;
+  a refactor leaves less code, a change that grows the code is redesigned, and
+  nothing is added before its owner proves the capability does not already
+  exist in the project or in an earlier layer.
   3 Native tools own their jobs; nothing beside a tool re-implements it.
   4 Orchestrators and rules state outcomes and call injected ports; they never
   know how. 5 Validate once at the boundary; inside, trust the shared model.
   6 Fix by deletion, never by a layer on top. 7 Laws are authored data for the
-  tool that checks them; nothing generates rules. 8 Fail loud on one path.
+  tool that checks them; nothing generates rules. 8 Fail loud on one path; no mask
+  turns a red into a green.
   9 The real entry point is the proof; wrong production is repaired, never
   written into a test; nothing is left failing or off the current public interface.
   10 Done is the whole agreed scope, tested, error-free at the integration tip after
@@ -48,11 +51,18 @@ precise question with its measured cost; everything else proceeds.
    close (`operator-ruling-2026-11-14-agent-autonomy`). A blocker is real,
    named at its owner and stops only the work it blocks, and a wrong statement is
    corrected where it was made. Pressure never outranks truth.
-2. **Simplest correct path.** Code is cost. The right change is the shortest one that
+2. **Simplest correct path.** Code is cost, and code growth is a grave risk, never a
+   neutral cost: the standards it can break (FLEXT, PEP, Pydantic, Python 3.13+, CA/DI,
+   SSOT, SOLID, DRY, YAGNI) are the ones it breaks most. Nothing is added before its
+   owner proves the capability does not already exist in the project or in an earlier
+   layer, and that proof locks the first attempt: the new code is refused until the
+   reuse is shown, and the reused owner is extended instead of a second one beside it.
+   The right change is the shortest one that
    makes the real behavior correct within the requested scope: a refactor leaves less
    code than it found, and a change that grows the code is redesigned before it lands.
    Nothing is added without a current consumer, and nothing an owner declares or derives
    (a key, secret or endpoint in its stack profile) is copied into code or kept by hand.
+   This binds every session, project and agent.
 3. **Native tools own their jobs.** A declared tool owns its job; nothing beside it
    re-implements, mirrors, indexes or patches around it. A missing capability is first
    removed from the need; when it is truly needed, it is added to the tool, small and
@@ -77,7 +87,12 @@ precise question with its measured cost; everything else proceeds.
    Exceptions exist only as axioms declared once in tooling configuration.
 8. **Fail loud, one path.** The first failure stops dependent work with its original
    cause; only the boundary responsible for it may translate it, keeping the cause, and
-   nothing turns it into success, a default, a skip or a warning. Each operation has one
+   nothing turns it into success, a default, a skip or a warning. Nothing masks a
+   failure: an environment variable, flag, wrapper, alias, projection or default that
+   turns a refusal, a red gate or an untrusted input into a success is itself the
+   defect, it is deleted in the same change, and the failure it hid is repaired at its
+   owner; a workaround or gambiarra is forbidden, and the operator's own environment,
+   shells and projections carry no mask. Each operation has one
    path, each write is whole, and a process is stopped only by its own owner or
    supervisor. A declared failover among healthy candidates, such as a call routed from a
    failing model to a responding one, is that one path; switching to another way of
