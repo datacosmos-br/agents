@@ -17,4 +17,6 @@ Testmon database in their checkout; all are reused, never copied or tracked; a r
 removes its own temporary files, also when stopped, or leaves them to the tool's retention.
 Each checkout, or its declaring workspace, owns one physical `.venv`, built only by its
 setup verb and never borrowed, copied or cleared while in use; local supplier checkouts
-enter it only through the setup verb's supplier-root parameter.
+enter it only through the setup verb's supplier-root parameter. A test fixture checkout
+owns no environment: it runs under the test session's own runtime, passed to it
+explicitly, and creates no `.venv`.
