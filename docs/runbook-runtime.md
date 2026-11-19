@@ -76,15 +76,19 @@ keyring-read credentials, run just long enough to publish, then `make
 install` takes over and the unit is started. Record the recovery on the bead
 with the captured commands.
 
-## Hooks chain (socket → service → dispatch)
+## Hooks chain (OpenMoat)
 
-1. `systemctl --user is-active ai-hub-hooks.socket ai-hub-hooks.service`.
-2. Product verbs: `ai-hub hook-runtime-ready` (readiness exchange),
-   `hook-runtime-start`, `hook-runtime-native` (native SessionStart probe),
-   `hook-runtime-verify` (synthetic dispatch through the socket).
-3. Known failure `243/CREDENTIALS File exists` at service start: systemd
-   credential-staging collision (`LoadCredentialEncrypted` x4, sources
-   intact). Owner: the credential provisioner. Escalated 2026-09-27.
+OpenMoat owns agent hooks, their policy and their audit (ai-hub ADR-0030 hooks
+cohort; operator decision 2026-11-19). AI Hub no longer declares a hook daemon or
+socket unit.
+
+1. `openmoat status --format json`: per-agent protection level, `hook_warnings`,
+   `lock_drift`, `mcp_changes`. An agent that disables the engine's entries (for
+   example Codex `[hooks.state] enabled = false`) runs unchecked until a person
+   enables them in the agent.
+2. `openmoat doctor --format json`: lock, hooks and binary integrity.
+3. `openmoat show --recent N --format json` and `openmoat why --last`: the decisions
+   real agent calls produced; no decision means no hook ran.
 
 ## Install idempotence
 
