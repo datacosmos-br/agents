@@ -82,6 +82,12 @@ OpenMoat owns agent hooks, their policy and their audit (ai-hub ADR-0030 hooks
 cohort; operator decision 2026-11-19). AI Hub no longer declares a hook daemon or
 socket unit.
 
+Implementation status (2026-11-20, Bead `aihub-wzj8i`): Phases 2-4 (fleet hooks,
+policy pack, native acceptance carrier) are implemented on `origin/dev`.
+Phases 1 (fork sync), 5 (legacy extermination, 164 refs), 6 (advanced + live
+activation) remain. Plan: `/home/marlonsc/.opencode/plan/openmoat-v024.md`.
+ADR: ADR-0030 (amendment 2026-11-20), ADR-0045 (amendment 2026-11-20).
+
 1. `openmoat status --format json`: per-agent protection level, `hook_warnings`,
    `lock_drift`, `mcp_changes`. An agent that disables the engine's entries (for
    example Codex `[hooks.state] enabled = false`) runs unchecked until a person
