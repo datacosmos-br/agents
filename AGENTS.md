@@ -27,3 +27,14 @@ Obligations live in `rules/`, procedures in `skills/`, grammar in `commands/`; a
 references its ancestor, never copies it. Run `commands/governance/session-preflight.md`
 before any effect.
 <!-- AIHUB-AGENTS-SCOPE-LOCAL-END -->
+
+## Canonical Tool Surface Rule (learned 2026-11-20)
+
+Prohibited bash forms for evidence: cat, find, grep, head, tail, sed, awk.
+Use dedicated tools instead:
+- Read (not cat/head/tail)
+- Glob (not find)
+- Grep (not grep/rg)
+- Edit (not sed/awk)
+
+Never bypass the canonical tool surface. This is a governance rule, not a suggestion.
