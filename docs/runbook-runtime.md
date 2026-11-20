@@ -78,9 +78,9 @@ with the captured commands.
 
 ## Hooks chain (OpenMoat)
 
-OpenMoat owns agent hooks, their policy and their audit (ai-hub ADR-0030 hooks
-cohort; operator decision 2026-11-19). AI Hub no longer declares a hook daemon or
-socket unit.
+OpenMoat owns agent hooks, policy packs, stdio MCP gating and audit logs (ai-hub
+ADR-0030 hooks cohort and ADR-0045 OpenMoat amendment; Bead `aihub-wzj8i`). AI Hub no
+longer declares a hook daemon or socket unit.
 
 Implementation status (2026-11-20, Bead `aihub-wzj8i`): Phases 2-4 (fleet hooks,
 policy pack, native acceptance carrier) are implemented on `origin/dev`.
@@ -92,9 +92,17 @@ ADR: ADR-0030 (amendment 2026-11-20), ADR-0045 (amendment 2026-11-20).
    `lock_drift`, `mcp_changes`. An agent that disables the engine's entries (for
    example Codex `[hooks.state] enabled = false`) runs unchecked until a person
    enables them in the agent.
-2. `openmoat doctor --format json`: lock, hooks and binary integrity.
+2. `openmoat doctor --format json`: lock, hooks, sandbox, MCP and binary integrity.
 3. `openmoat show --recent N --format json` and `openmoat why --last`: the decisions
    real agent calls produced; no decision means no hook ran.
+4. Operator-only interactive terminal actions when `doctor` or `status` reports drift:
+   - `openmoat mcp accept ai-hub`: accept updated MCP server and tool pins.
+   - `openmoat sandbox sync`: synchronize OS sandbox profiles (requires OpenMoat
+     `>= 0.22.1` on Linux so Codex profiles exclude `/run/user` deny globs).
+   - `openmoat policy trust-key` and `openmoat policy install <pack>`: install signed
+     policy packs; `openmoat trust` enables a repository's `.moat/policy.yaml`.
+   - `openmoat policy check-diff`: verify diff compliance before PR merge.
+   - `openmoat audit anchor` and `openmoat provenance`: record closure evidence.
 
 ## Install idempotence
 
