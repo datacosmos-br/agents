@@ -26,9 +26,11 @@ regression tests; validation is not permission for test-first work.
 
 Discover public verbs, contexts, population and evidence requirements from the selected
 repository's root Make catalog. `rules/workflow/canonical-commands.md` owns operation
-boundaries, deadlines and test selection. Use its current test-verb contract rather
-than a fixed test/full alias or mandatory targeted-before-full sequence. Prove any
-required generation fixed point through its owner; no hidden repeated lifecycle.
+boundaries, deadlines and test selection. Run each verb with the selected worktree
+as the process working directory. For FLEXT lanes, use the
+[Engineering SOP](https://github.com/flext-sh/flext/blob/0.12.0-dev/docs/standards/engineering-sop.md)
+for the pre-PR and closure evidence. Prove the required generation fixed point through
+its owner.
 Keep the physical environment selected by its owner. A red invocation requires causal
 repair and revalidation in the same phase; recording it alone never clears acceptance.
 

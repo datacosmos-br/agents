@@ -26,9 +26,14 @@ regeneration command; a tool-written block changes only through that tool and lo
 any rule it contradicts. Text published to a forge or tracker comes from a file. Shell
 invocations run one plain governed command per call, typed without an `rtk` prefix (rtk's
 own hook rewrites eligible commands and never rewrites `git`), with no `;` chaining, pipes,
-`&`, `/dev/null` or file redirections, `cd`, or `||` fallback, and never bypass a hook.
+`&`, `/dev/null` or file redirections, `cd`, `env -C` or a tool's `-C` (a lane runs with
+its worktree as working directory, direnv and rtk automating;
+`operator-order-2026-11-21-worktree-cwd-only`), or `||` fallback, and never bypass a hook.
 Work a declared verb owns (`python`, `ruff`, `pyrefly`, `uv`, `pip`, `pipx`, `mise`,
-`pytest`) runs through that `make` / `ai-hub` / `cli` verb; a missing capability extends
-that owner. Run `mise trust` before `make setup` in new worktrees, never run
-silent commands exceeding 10 seconds without progress, and use `ai-hub wip sweep` for
-worktree/branch cleanup.
+`pytest`) runs through that project's `make` or CLI verb; a missing capability extends
+that owner. `make setup` only bootstraps and installs the committed locks: it trusts,
+syncs and `direnv allow`s a new worktree on its own, host load never refuses it, and
+every verb or tool that rewrites an `.envrc` re-allows it
+(`operator-order-2026-11-21-setup-self-sufficient`); never run
+silent commands exceeding 10 seconds without progress, and use the project's worktree
+sweep verb for worktree/branch cleanup.
