@@ -20,9 +20,7 @@ and integration CI and must pass there (`rules/workflow/canonical-commands.md`).
 - A later edit voids earlier evidence for the scope it touches.
 - Each boundary (resume, before code, commit, merge) starts from live state: the
   integration tip merged into the lane and the owner's source read; a snapshot,
-  brief or memory is a lead, never evidence. No separate local gate round precedes a
-  commit or push: the commit hook and integration CI are the gates, and long work runs
-  in the background or a subagent.
+  brief or memory is a lead, never evidence.
 - A hook's refusal is a failing gate and is never bypassed (law 8).
 - Done means landed under law 10 and `rules/git/gitflow-branch-pr.md`; local green or an
   open pull request is in progress.

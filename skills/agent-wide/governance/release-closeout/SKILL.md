@@ -47,7 +47,7 @@ every verb runs directly, with no apply selector or mutation guard.
 - Everything else: decide per file, prefer fix-forward (preserve the other lane's
   legitimate work), and record every resolution.
 - Commit with an explicit merge message listing the resolution classes on the release
-  lane and validate that SHA with `make gen` (fixed-point gate) before pushing it; the
+  lane (its hook runs the gates) and push it; the
   integration branch receives it only through the reviewed PR
   (`rules/git/gitflow-branch-pr.md`), never a direct push.
 
