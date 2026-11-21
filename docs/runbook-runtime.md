@@ -105,6 +105,12 @@ Bead and its children.
      policy packs; `openmoat trust` enables a repository's `.moat/policy.yaml`.
    - `openmoat policy check-diff`: verify diff compliance before PR merge.
    - `openmoat audit anchor` and `openmoat provenance`: record closure evidence.
+   - Codex `/hooks`: trust OpenMoat's hooks; Codex runs a changed hook only then.
+   - Claude Code `>= 2.1.295` in every copy (CLI and editor extensions), then
+     `openmoat init`: older copies run a call when the hook fails.
+   - `openmoat mcp wrap <server>` for each server `doctor` reports unprotected.
+   - `openmoat allow --last`: release a `session-taint` hold on a write the
+     operator wants, such as an agent memory file (Bead `aihub-wzj8i.8`).
 
 ## Install idempotence
 
