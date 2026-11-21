@@ -12,43 +12,45 @@ Every session maps code through code-review-graph (CRG) before reading files at 
 editing, then confirms the exact lines in source (tracker memory
 `operator-ruling-20261022-crg-every-session`). Pick the verb the question needs
 (`search`, `query callers_of|tests_for|importers_of`, `impact --files`, `architecture`,
-`flows`, `large-functions`, `dead-code --json`, `detect-changes`); `--help` owns the
-grammar. Invoke the binary directly, never through a project launcher such as `uv run`
-that may resync the environment. AI Hub owns installation, watchers, MCP routing, hooks
-and generated instruction surfaces.
+`flows`, `large-functions`, `dead-code --json`, `detect-changes`, `refactor`, `wiki`,
+`context-history`); `--help` owns the grammar. The `dc-use` engine (`2.4.0+dc.5+`)
+includes C3 MRO linearization, Python 3.13 typing, liveness-catalog dead-code precision,
+non-code subjects, and `migrate-shared`. Invoke the binary directly, never through a
+project launcher such as `uv run` that may resync the environment. AI Hub owns
+installation, watchers, MCP routing, hooks and generated instruction surfaces.
 
-> **Current vs target (2026-11-16).** Today AI Hub runs `ai-hub-watch.service` with a
-> `watch --manifest` process and projects `watch.toml`. The accepted target in the
-> runtime-artifact lifecycle plan (S4) is one `ai-hub-maintain.service` owning a native
-> `crg-daemon` child under an AI-Hub-owned `CRG_HOME`: CRG owns the per-repo children,
-> scheduling, health and restart backoff, while AI Hub owns only the `watch.toml`
-> selection and reads native health. `ai-hub-watch.service` and the manifest retire in
-> that slice. Do not treat the target as already implemented.
+> **Current vs target (2026-11-20).** Working checkouts share one native SQLite database
+> (`shared.db` via `CRG_SHARED_DB`, ADR-0026 D12) indexed by one unified collector, with
+> shared host embeddings (`ai-hub-embedding:latest`, 512d + task prefixes, ADR-0026 D11).
+> Today AI Hub runs `ai-hub-watch.service` with `watch --manifest` and projects
+> `watch.toml`. The accepted S4 target is one `ai-hub-maintain.service` owning a native
+> `crg-daemon` child under an AI-Hub-owned `CRG_HOME`, retiring `ai-hub-watch.service`
+> and the manifest. Do not treat S4 as already implemented.
 
 ## Freshness gate
 
 - A result is evidence only when `status --json --repo <root>` reports `built_at_commit`
-  equal to `current_sha` on the same branch, and an MCP result carries
-  `_graph.head_matches_build: true` (absent means unknown, never fresh).
-- Both compare commits: uncommitted edits count after `update`, untracked files once
-  tracked. A stale graph gets `update --brief`, or `build` when `update` exits 1; edit
-  hooks run `update --skip-flows`, so flows and communities wait for `postprocess`.
+  equal to `current_sha` on the same branch (`build_incomplete: false`), and an MCP
+  result carries `_graph.head_matches_build: true` (absent means unknown, never fresh).
+- Both compare commits: uncommitted edits count once indexed by the collector, untracked
+  files once tracked. Never launch a second per-session collector or manual `update` loop
+  against the shared database; wait for or inspect the unified collector, or run
+  `postprocess` only on an isolated bundle.
 - Every result cited in a bead or PR carries its `built_at_commit`.
 
 ## Topology
 
-- One graph per Git root. Every lane worktree gets its own graph, seeded from the fresh
-  workspace graph (`vstore put --repo <workspace>`) or built for the lane, and one
-  `watch --repo <lane>` for its whole life unless the host watcher already covers it.
-  A copied graph that still names another checkout's files is never lane evidence.
+- One unified working collector over `CRG_SHARED_DB` (`shared.db`) indexes every selected
+  workspace and linked worktree as native namespaces of that file. Per-worktree database
+  copies (`vstore seed`) and per-session watchers are retired for working checkouts;
+  immutable HEAD bundles retain their own isolated databases.
 - A superproject builds with `CRG_RECURSE_SUBMODULES=1`; `update` diffs only the root, so
-  a member commit needs a recursive rebuild or the member's own graph.
-- Data directories live in the registry and are never temporary. Before starting a
-  watcher or daemon, check both the host watcher and `daemon status`; `watch.toml` is an
-  AI Hub projection, so `daemon add|remove` never writes into it. A lane graph is built or
-  updated before a generation verb, never during it.
-- At retirement the lane watcher stops, the lane is unregistered, and `prune` is reviewed
-  before `prune --apply`. With several checkouts, every MCP call passes `repo_root`.
+  a member commit needs a recursive rebuild or the member's own graph namespace.
+- Data directories live in the registry and are never temporary. `watch.toml` is an AI
+  Hub projection, so `daemon add|remove` never writes into it.
+- At retirement the lane is unregistered and `prune` is reviewed before `prune --apply`
+  (or `migrate-shared` for legacy shared generations). With several checkouts, every MCP
+  call passes `repo_root`.
 
 ## Limits
 
