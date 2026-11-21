@@ -7,21 +7,22 @@ metadata:
 # Canonical commands
 
 Every operation uses its declared native verb ([law](../law.md)). Gates cover source,
-tests, examples and scripts. Configuration
-declares the newest versions and only the upgrade verb locks them; every other verb
-installs from the committed locks, offline. Heavy jobs pass host admission at idle
-priority; under load a run narrows, never waits or reports blocked. A long command or
-job runs in the background or in a subagent, never blocking its session on a poll
-(`operator-order-2026-11-21-long-runs-in-background`). Delivery is edit, `git add` of
-explicit paths, `git commit -F <file>`, `git merge --no-ff` of the integration tip, push,
-a pull request from `--body-file`, integration CI on its exact head, and a merge commit.
-Deploy and prove runtime where authorized. Native commit and push hooks run the project's
-declared checks. An agent hand-runs check, mod, fix, fmt or tests to diagnose a red hook
-or CI rather than to admit a commit or push. The generation
-verbs a change needs (gen, and upg on a pin change) still run
-(`operator-decision-2026-11-21-hooks-and-ci-own-gates`). A pull-request gate fits
-`gates.pr_budget_minutes` (`config/governance.json`). Every command runs under a
-deadline, the 120-second bound of `operator-order-2026-10-24-make-always-with-timeout`
+tests, examples and scripts. Configuration declares versions. Setup installs the
+committed locks offline, and upg changes pins. Stage explicit paths, commit from a
+message file, merge a moved integration tip with `git merge --no-ff`, push, and open
+the PR from `--body-file`. Native commit and push hooks run each project's declared
+checks. Required integration CI must pass on the exact PR head before the reviewed
+merge. An agent hand-runs check, mod, fix, fmt or tests only to diagnose a red result.
+Run gen when generated surfaces change and upg when pins change. Full mod and full
+tests require an explicit order. Scope authorizes runtime publication and proof.
+Repair red hooks, CI and integration findings at their owner, including warnings,
+and follow [law 8–10](../law.md)
+(`operator-decision-2026-11-21-hooks-and-ci-own-gates`).
+Long work, queue waits and CI monitoring run in the background or through authorized
+subagents while independent work advances. Heavy jobs pass host admission at idle
+priority (`operator-order-2026-11-21-long-runs-in-background`). A pull-request gate
+fits `gates.pr_budget_minutes` (`config/governance.json`). Every command runs under
+the 120-second deadline of `operator-order-2026-10-24-make-always-with-timeout`
 unless its project declares tighter, and a timeout is a failure fixed at its cause. Test
 verbs: the incremental one runs Testmon on its persistent database, replaced only by its
 schema migration; the full one runs without it and alone states a suite's time. An empty
@@ -36,7 +37,8 @@ taking more than 2 seconds, including setup and teardown, requires causal profil
 verified optimization. Every test has a hard 20-second limit
 (`operator-order-2026-11-15-ci-test-budget`). A generated file names its writer and
 regeneration command; a tool-written block changes only through that tool and loses to
-any rule it contradicts. Text published to a forge or tracker comes from a file. Shell
+any rule it contradicts. Text for a tracker, forge or mail comes from a file (`--file`,
+`--body-file`, or `xargs -0 -a <file>` when the CLI has no file flag). Shell
 invocations run one plain governed command per call, typed without an `rtk` prefix (rtk's
 own hook rewrites eligible commands and never rewrites `git`), with no `;` chaining, pipes,
 `&`, `/dev/null` or file redirections, `cd`, `env -C` or a tool's `-C` (a lane runs with
