@@ -38,7 +38,7 @@ before commit, push, review resolution, merge, or handoff:
 3. update only the canonical owner and its consumers;
 4. integrate through the declared non-destructive lane flow;
 5. let the hooks and integration CI rerun every gate the combined state invalidates
-   (`rules/workflow/canonical-commands.md`); and
+   (`rules/git/gitflow-branch-pr.md`); and
 6. publish one current checkpoint with owner, evidence, first red result, and next
    action.
 

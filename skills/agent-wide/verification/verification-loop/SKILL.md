@@ -11,7 +11,7 @@ metadata:
 
 Before claiming that a change works, is done or is ready, prove it on the smallest real
 runtime (`rules/law.md` law 9); the declared gates prove it through the hooks and the
-integration CI (`rules/workflow/canonical-commands.md`).
+integration CI (`rules/git/gitflow-branch-pr.md`).
 
 - Each claim carries law 1 evidence from this turn; a run that executed nothing is not a
   pass.

@@ -13,10 +13,8 @@ declares the newest versions and only the upgrade verb locks them; every other v
 installs from the committed locks, offline. Heavy jobs pass host admission at idle
 priority; under load a run narrows, never waits. A long command or job runs in the
 background or in a subagent, never blocking its session on a poll
-(`operator-order-2026-11-21-long-runs-in-background`). An agent does not hand-run check,
-mod, fix, fmt or tests to admit a commit or push: the commit and push hooks run them, and
-the pull request merges only with its integration CI green on its exact head
-(`operator-order-2026-11-21-hooks-and-ci-own-gates`). A pull-request gate fits
+(`operator-order-2026-11-21-long-runs-in-background`); commit, push and merge gates are
+owned by `rules/git/gitflow-branch-pr.md`. A pull-request gate fits
 `gates.pr_budget_minutes` (`config/governance.json`). Every command runs under a
 deadline, the 120-second bound of `operator-order-2026-10-24-make-always-with-timeout`
 unless its project declares tighter, and a timeout is a failure fixed at its cause. Test
@@ -38,7 +36,9 @@ A nested shell (`sh -c`, `bash -c`) is not a plain command, and a refused verb o
 denied action is repaired at its owner, never replaced by a raw fallback.
 Work a declared verb owns (`python`, `ruff`, `pyrefly`, `uv`, `pip`, `pipx`, `mise`,
 `pytest`) runs through that project's `make` or CLI verb; a missing capability extends
-that owner. `make setup` only bootstraps and installs the committed locks: it trusts,
+that owner. `make setup` is the only verb that publishes (the host tool registry
+included) and `make upg` the only one that changes a version
+(`operator-decision-2026-11-21-setup-publishes-upg-bumps-monopoly`); setup trusts,
 syncs and `direnv allow`s a new worktree on its own, host load never refuses it, and
 every verb or tool that rewrites an `.envrc` re-allows it
 (`operator-order-2026-11-21-setup-self-sufficient`); never run

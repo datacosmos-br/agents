@@ -19,7 +19,8 @@ verbs, deadlines, profiling, locks and test selection.
   runs only when the environment is absent or fails its own check. A valid environment is
   reused, and lock changes belong to the upgrade verb.
 - The changed behavior is shown through its real entry point first; the declared gates
-  then run through the commit and push hooks and the integration CI, and an explicit gate
+  then run through the commit and push hooks and the integration CI
+  (`rules/git/gitflow-branch-pr.md`), and an explicit gate
   run only diagnoses a red one.
 - Each run records command, directory, exit and decisive output; a focused run proves only
   its own scope.
