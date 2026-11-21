@@ -41,9 +41,12 @@ Complete these steps in order, repeating invalidated evidence after every edit:
    fallback, compatibility, generated, test, fixture, and documentation paths.
 3. Exercise the changed behavior through its real public runtime surface on the working
    branch. A mock, import-only smoke test, or static check is insufficient.
-4. Run the repository's complete applicable native unit, integration, static, type,
-   build, shell, security, generation, and projection fixed-point gates. Missing tools,
-   warnings, skips inside an invoked workflow, empty reports, and partial scans are red.
+4. Pass the repository's complete applicable native unit, integration, static, type,
+   build, shell, security, generation, and projection fixed-point gates through the
+   commit and push hooks and integration CI
+   ([canonical commands](../../../../../rules/workflow/canonical-commands.md)).
+   Missing tools, warnings, skips inside an invoked workflow, empty reports, and partial
+   scans are red.
 5. Fetch the configured integration branch and incorporate its current state through the
    repository-approved non-destructive merge flow. Resolve concurrent work semantically,
    then repeat runtime and every affected gate.
@@ -62,6 +65,10 @@ Complete these steps in order, repeating invalidated evidence after every edit:
    required finding.
 9. Close the canonical tracker item with the merged SHA and decisive runtime/gate
    evidence. Only then may the phase state become DONE and the next task begin.
+
+The same cycle runs between every pair of plan phases and once more at the end of the
+plan: after the last phase, steps 7–9 repeat on the final integration SHA for the whole
+plan scope, and only then is the plan DONE (operator order 2026-11-21).
 
 ## Runtime requirement
 
