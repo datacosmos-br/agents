@@ -25,4 +25,10 @@ verified optimization. Every test has a hard 20-second limit
 regeneration command; a tool-written block changes only through that tool and loses to
 any rule it contradicts. Text published to a forge or tracker comes from a file. Shell
 invocations run one governed command per call prefixed with `rtk`, with no `;` chaining,
-`/dev/null` redirection, `cd`, or `||` fallback, and never bypass a hook.
+pipes, `&`, `/dev/null` or file redirections, `cd`, or `||` fallback, and never bypass a hook.
+Raw tool invocations (`python`, `python3`, `ruff`, `pyrefly`, `uv`, `pip`, `pipx`, `mise`,
+`pytest`, `sed`, `grep`, `ugrep`, `rg`, `sg`, `gh`, `git`, `gc`, `bd`) are prohibited;
+use `rtk` or declared `make` / `ai-hub` / `cli` verbs, and extend those owners when a
+capability is missing. Run `mise trust` before `make setup` in new worktrees, never run
+silent commands exceeding 10 seconds without progress, and use `ai-hub wip sweep` for
+worktree/branch cleanup.
