@@ -8,8 +8,9 @@ metadata:
 
 Every operation runs through declared verbs, each a thin call to its native tool that
 does only its own operation ([law](../law.md)); a change is validated by its owner's
-scoped command, and gates cover source, tests, examples and scripts alike. Configuration
-declares the newest versions and only the upgrade verb locks them; every other verb
+scoped command, and gates cover source, tests, examples and scripts alike. Only `make upg`
+changes a version and only `make setup` publishes into the host
+(`operator-decision-2026-11-21-setup-publishes-upg-bumps-monopoly`); every other verb
 installs from the committed locks, offline. Heavy jobs pass host admission at idle
 priority; under load a run narrows, never waits. A pull-request gate fits
 `gates.pr_budget_minutes` (`config/governance.json`). Every command runs under a
