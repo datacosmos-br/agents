@@ -50,9 +50,8 @@ and parallel actors.
   — a green `make gen` fixed point — never through a manual `find` after failed or
   partial runs, and never through literal-grep heuristics (a literal environment probe
   cannot prove a grouped-Make variable test).
-- Never enter active reform territory of another actor (locked epic, live lane).
-  Document the boundary, claim only non-overlapping classes, and absorb their landed
-  work after merge instead of re-solving it.
+- Another actor's live lane is adopted and landed, never re-solved beside it or waited
+  on (`rules/coordination/inter-session-mail.md`).
 - Ping the fleet before claiming a shared theme (message/mail surface) and re-absorb the
   integration tip at every material step; late discovery of a moving tip costs one full
   lane cycle per miss.
