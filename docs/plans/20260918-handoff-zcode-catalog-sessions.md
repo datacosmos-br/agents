@@ -2,7 +2,7 @@
 
 > Mandato do operador: "o último handoff de zcode foi perdido, recupere". Veredito da
 > recuperação: **não houve perda de arquivo — houve não-criação.** Nenhuma sessão ZCode
-> tem workspace `/home/marlonsc/agents` (índice `~/.zcode/v2/tasks-index.sqlite`
+> tem workspace `$USER/agents` (índice `~/.zcode/v2/tasks-index.sqlite`
 > verificado read-only); o histórico git do catálogo não registra deleção de handoff e
 > o stash está vazio. O trabalho catalog-side das sessões ZCode ficou registrado apenas
 > como 2 commits em `dev`, 1 doc de acordo e seções do handoff unificado do

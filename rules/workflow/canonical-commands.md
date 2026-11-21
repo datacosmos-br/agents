@@ -23,4 +23,6 @@ taking more than 2 seconds, including setup and teardown, requires causal profil
 verified optimization. Every test has a hard 20-second limit
 (`operator-order-2026-11-15-ci-test-budget`). A generated file names its writer and
 regeneration command; a tool-written block changes only through that tool and loses to
-any rule it contradicts. Text published to a forge or tracker comes from a file.
+any rule it contradicts. Text published to a forge or tracker comes from a file. Shell
+invocations run one governed command per call prefixed with `rtk`, with no `;` chaining,
+`/dev/null` redirection, `cd`, or `||` fallback, and never bypass a hook.
