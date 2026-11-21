@@ -12,8 +12,8 @@ performed by rtk's own native hook: `rtk hook claude` as the Claude Code `PreToo
 Bash entry and `rtk hook cursor` for Cursor. AI Hub deploys those entries from its agent
 SSOT as foreign adapters; it does not rewrite commands itself. `rtk rewrite <cmd>` is
 rtk's single rewrite decision (exit 0 allow with the rewritten command, 1 no rewrite, 2
-deny, 3 ask). This skill governs the manual surface, output analysis, and the
-observability loop.
+deny, 3 ask). An agent types the plain command and never an `rtk` prefix. This skill
+governs output analysis and the observability loop.
 
 ## USE FOR
 
@@ -21,12 +21,8 @@ observability loop.
   `cargo`, `npm`, `pnpm`, `bun`, `deno`, `docker`, `kubectl`, `oc`, `aws`, `psql`,
   `dotnet`, `curl`, `wget`, `tsc`, `next`, `lint`, `prettier`, `prisma`, `playwright`,
   `jest`, `vitest`.
-- Validation loops that must surface only signal: `rtk test <cmd>` (failures only),
-  `rtk err <cmd>` (errors/warnings only) — exit codes still propagate.
-- Reading and inspection economy: `rtk read`, `rtk ls`, `rtk tree`, `rtk grep`,
-  `rtk find`, `rtk diff`, `rtk wc`, `rtk json [--keys-only]`.
-- Long-output analysis: `rtk log <file>` (filter and deduplicate), `rtk summary <cmd>`,
-  `rtk pipe -f <filter>` (filter stdin), `rtk smart`.
+- Long-output analysis of a file already written: `rtk log <file>` (filter and
+  deduplicate), `rtk json [--keys-only] <file>`.
 - Environment and dependency audits: `rtk env` (sensitive values masked), `rtk deps`
   (project dependency summary).
 - Extreme context pressure: the global `--ultra-compact` flag.
@@ -45,8 +41,8 @@ observability loop.
 - Secrets: never place credentials in rtk-wrapped commands; `rtk env` masks output, it
   does not sanitize input.
 - Auto-rewrite expectations for deferred constructs — heredocs, `$(...)` or backtick
-  substitution, and file redirects are never rewritten (anti-launder design). Use the
-  explicit manual form when one is needed.
+  substitution, and file redirects are never rewritten (anti-launder design). They run
+  plain.
 - Hand edits of `~/.config/rtk/config.toml`: AI Hub owns it from its tools SSOT
   (`tools.rtk_config`, published by deploy). Its `[hooks] exclude_commands` lists `git`.
   A project-local `.rtk/filters.toml` requires explicit `rtk trust` authorization.
@@ -55,12 +51,10 @@ observability loop.
 
 1. Prefer the automatic path: rtk's native hook already rewrites eligible Bash calls.
    Take no action.
-2. For registry gaps and deferred constructs, prefix manually: `rtk <command>`.
+2. A command the rewriter does not cover or defers runs plain. Never type an `rtk`
+   prefix in front of a command.
 3. Run a long or compound command through the agent's background execution with output
-   written to `~/tmp/<scope>/<name>.log`, then analyze it with `rtk log <file>`,
-   `rtk err <cmd>`, `rtk test <cmd>`, `rtk summary <cmd>`, or `rtk pipe -f <filter>`.
-   Never chain `| head | tail`: the bash guard allows one `|`-family and one `&`-family
-   operator at top level.
+   written to `~/tmp/<scope>/<name>.log`, then analyze it with `rtk log <file>`.
 4. On failure, read the tee-recovery path referenced in the filtered output instead of
    re-executing the command.
 5. When output still floods context, escalate once: add `--ultra-compact`, or narrow the
@@ -102,7 +96,7 @@ observability loop.
 
 - Rewrite did not happen: dry-run with `rtk rewrite "<command>"` or
   `rtk hook check --agent <agent> "<command>"`; exit 1 means no rtk equivalent or an
-  excluded command (git) — run it plain or apply the manual form.
+  excluded command (git) — it runs plain.
 - Hook integrity: `rtk init --show` and `rtk verify` must both be green; fix a red
   result at the AI Hub agent SSOT and redeploy.
 - Savings look zero: `rtk session` shows per-session adoption; `rtk discover` lists
