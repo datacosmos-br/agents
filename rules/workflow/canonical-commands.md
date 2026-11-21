@@ -28,7 +28,7 @@ invocations run one plain governed command per call, typed without an `rtk` pref
 own hook rewrites eligible commands and never rewrites `git`), with no `;` chaining, pipes,
 `&`, `/dev/null` or file redirections, `cd`, or `||` fallback, and never bypass a hook.
 Work a declared verb owns (`python`, `ruff`, `pyrefly`, `uv`, `pip`, `pipx`, `mise`,
-`pytest`) runs through that `make` / `ai-hub` / `cli` verb; a missing capability extends
+`pytest`) runs through that project's `make` or CLI verb; a missing capability extends
 that owner. `make setup` trusts and syncs a new worktree before `make gen`, never run
-silent commands exceeding 10 seconds without progress, and use `ai-hub wip sweep` for
-worktree/branch cleanup.
+silent commands exceeding 10 seconds without progress, and use the project's worktree
+sweep verb for worktree/branch cleanup.
