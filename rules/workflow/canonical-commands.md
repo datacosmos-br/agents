@@ -72,3 +72,4 @@ sweep verb for worktree/branch cleanup.
 ## Delivery
 
 A lane commits and pushes as soon as its change is complete: the pre-commit and pre-push hooks run the Make gates, and the integration CI decides the merge; no session runs check, fix, fmt or tests by hand only to commit. Only `make setup` publishes to the host and only `make upg` changes versions. Long-running work runs in the background or in a subagent, and its end wakes the session. Work that another lane holds is integrated, never waited on: merge its branch `--no-ff` or copy its fix byte for byte. Done is merged at the integration tip and active at runtime with proof.
+A red test, warning or finding on the integration tip is fixed in the same cycle by the actor that finds it; "pre-existing" and "another lane's" never defer it, and a commit is named by its full SHA read from Git, never guessed (`operator-order-2026-11-21-done-no-excuses`).

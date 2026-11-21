@@ -27,7 +27,8 @@ usage (tracker `operator-order-2026-11-05-preserve-on-forge`).
 
 A pull request needs the native hook and exact-head CI evidence defined by
 [canonical commands](../workflow/canonical-commands.md) and the real entry point proof
-in [law 9](../law.md). Integrate the step before the same actor opens the next one
+in [law 9](../law.md). Integration CI runs the project's test verb; a CI that omits it
+is a defect at its CI owner (`operator-order-2026-11-21-done-no-excuses`). Integrate the step before the same actor opens the next one
 (`operator-order-2026-11-15-pr-is-one-validated-step`). At the end of every plan phase
 and of the plan, each green PR is merged into the integration branch with a merge
 commit, and a red one is fixed forward before the next phase starts

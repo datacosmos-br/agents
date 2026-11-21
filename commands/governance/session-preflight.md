@@ -60,7 +60,9 @@ omit required ownership or coordination evidence.
 
 Present the cursor: mission, measured state, ordered next steps with their owners, the
 traps that apply, and the cycle — which integration branch, which gates and what runtime
-proof close the unit (`rules/law.md` item 10). Before the first effect, record the actual
+proof close the unit (`rules/law.md` item 10). The session keeps that goal and its
+ordered steps in the host's visible task list, current as steps change
+(`operator-order-2026-11-21-done-no-excuses`). Before the first effect, record the actual
 branch and PR state in the coordination channel; a declaration grants no branch creation
 or Git publication authority. Where the selected tracker is available, also claim the
 bead, unless the handoff already did, and record that state there; with it unavailable
