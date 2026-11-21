@@ -17,9 +17,12 @@ Activate before changing tasks, advancing a plan phase, handing off, or claiming
 completion. Read the `complete procedure` (skill file).
 
 A phase is DONE only when `rules/law.md` item 10 holds with fresh evidence: real
-runtime, native gates, a reviewed and merged PR, post-merge runtime, zero residue and
-tracker closure. A missing step keeps the phase open, nothing starts beside it, and
-incomplete work is pushed only to a preservation ref.
+runtime, native gates, a reviewed PR merged into the integration branch, post-merge
+runtime, zero residue and tracker closure. Every phase boundary and the plan's end
+apply this; a phase without its integrated PR is open
+(`operator-order-2026-11-21-pr-integration-every-phase`). A missing step keeps the
+phase open, nothing starts beside it, and incomplete work is pushed only to a
+preservation ref.
 
 An external-token validation excluded before invocation is recorded as `NOT EXECUTED`,
 not green, and does not become a missing phase step. If invoked, it is applicable and
