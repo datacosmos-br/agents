@@ -20,6 +20,10 @@ tests require an explicit order. Scope authorizes runtime publication and proof.
 Repair red hooks, CI and integration findings at their owner, including warnings,
 and follow [law 8–10](../law.md)
 (`operator-decision-2026-11-21-hooks-and-ci-own-gates`).
+Every plan phase, and the plan's end, closes integrated before the next starts: commit
+through the hook, push, PR, green CI on its head, `--no-ff` merge into the integration
+branch and Bead updated; an unintegrated PR is not a finished phase ([law 10](../law.md),
+`operator-order-2026-11-21-phase-integration`).
 Long work, queue waits and CI monitoring run in the background or through authorized
 subagents while independent work advances. Heavy jobs pass host admission at idle
 priority (`operator-order-2026-11-21-long-runs-in-background`). A pull-request gate
