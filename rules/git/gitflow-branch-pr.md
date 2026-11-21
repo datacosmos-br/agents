@@ -25,9 +25,9 @@ never retired. Preservation and retirement run through the
 operator's runtime tooling, which a consumer project never integrates or documents as
 usage (tracker `operator-order-2026-11-05-preserve-on-forge`).
 
-A pull request is one complete work step, proven at the real entry point and integrated
-before the same actor opens the next one. The commit and push hooks run the repository's
-setup and check gates and integration CI is the merge gate: no check, mod, fix, fmt or test
-verb runs by hand as a precondition to commit or push, and a red hook or CI is fixed at its
-cause (tracker `operator-order-2026-11-15-pr-is-one-validated-step`,
-`operator-order-2026-11-21-hooks-ci-are-the-gate`).
+A pull request is one complete work step, proven by the gates its repository's commit
+and push hooks run and by integration CI on its final head, with no separate manual gate
+run before a commit or push (`operator-decision-2026-11-21-hooks-and-ci-own-gates`), and
+at the real entry point; a red hook or CI is fixed at its cause, and the step is
+integrated before the same actor opens the next one (tracker memory
+`operator-order-2026-11-15-pr-is-one-validated-step`).
