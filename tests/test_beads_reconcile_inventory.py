@@ -49,7 +49,7 @@ def _run(
         encoding="utf-8",
     )
     bd.chmod(0o755)
-    environment = dict(os.environ)
+    environment = {k: v for k, v in os.environ.items() if k != "BASH_ENV"}
     environment["PATH"] = f"{fake_bin}:{environment['PATH']}"
     repository = Path(__file__).resolve().parents[1]
     return subprocess.run(
