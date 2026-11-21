@@ -8,9 +8,8 @@ metadata:
 
 Every operation runs through declared verbs, each a thin call to its native tool that
 does only its own operation ([law](../law.md)); a change is validated by its owner's
-scoped command, and gates cover source, tests, examples and scripts alike. Only `make upg`
-changes a version and only `make setup` publishes into the host
-(`operator-decision-2026-11-21-setup-publishes-upg-bumps-monopoly`); every other verb
+scoped command, and gates cover source, tests, examples and scripts alike. Configuration
+declares the newest versions and only the upgrade verb locks them; every other verb
 installs from the committed locks, offline. Heavy jobs pass host admission at idle
 priority; under load a run narrows, never waits. A pull-request gate fits
 `gates.pr_budget_minutes` (`config/governance.json`). Every command runs under a
@@ -34,7 +33,9 @@ A nested shell (`sh -c`, `bash -c`) is not a plain command, and a refused verb o
 denied action is repaired at its owner, never replaced by a raw fallback.
 Work a declared verb owns (`python`, `ruff`, `pyrefly`, `uv`, `pip`, `pipx`, `mise`,
 `pytest`) runs through that project's `make` or CLI verb; a missing capability extends
-that owner. `make setup` only bootstraps and installs the committed locks: it trusts,
+that owner. `make setup` is the only verb that publishes (the host tool registry
+included) and `make upg` the only one that changes a version
+(`operator-decision-2026-11-21-setup-publishes-upg-bumps-monopoly`); setup trusts,
 syncs and `direnv allow`s a new worktree on its own, host load never refuses it, and
 every verb or tool that rewrites an `.envrc` re-allows it
 (`operator-order-2026-11-21-setup-self-sufficient`); never run
