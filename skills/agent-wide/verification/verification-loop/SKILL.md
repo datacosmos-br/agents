@@ -10,8 +10,8 @@ metadata:
 # Verification Loop
 
 Before claiming that a change works, is done or is ready, prove it on the smallest real
-runtime (`rules/law.md` law 9); the repository's declared gates run in its commit hooks
-and integration CI and must pass there (`rules/workflow/canonical-commands.md`).
+runtime (`rules/law.md` law 9); the commit hook and the integration CI run the declared
+gates (`rules/workflow/canonical-commands.md`).
 
 - Each claim carries law 1 evidence from this turn; a run that executed nothing is not a
   pass.
