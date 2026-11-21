@@ -33,7 +33,9 @@ A nested shell (`sh -c`, `bash -c`) is not a plain command, and a refused verb o
 denied action is repaired at its owner, never replaced by a raw fallback.
 Work a declared verb owns (`python`, `ruff`, `pyrefly`, `uv`, `pip`, `pipx`, `mise`,
 `pytest`) runs through that project's `make` or CLI verb; a missing capability extends
-that owner. `make setup` only bootstraps and installs the committed locks: it trusts,
+that owner. `make setup` is the only verb that publishes (the host tool registry
+included) and `make upg` the only one that changes a version
+(`operator-decision-2026-11-21-setup-publishes-upg-bumps-monopoly`); setup trusts,
 syncs and `direnv allow`s a new worktree on its own, host load never refuses it, and
 every verb or tool that rewrites an `.envrc` re-allows it
 (`operator-order-2026-11-21-setup-self-sufficient`); never run
