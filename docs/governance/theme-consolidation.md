@@ -13,7 +13,7 @@ NO more divergences. One theme at a time.
 ## The protocol (per theme, in order)
 
 1. **Locate** every bead of the theme — open AND closed — across all stores
-   (city `$USER/gc`, agents `~/agents`, ai-hub `~/ai-hub`, algar,
+   (city `$HOME/gc`, agents `~/agents`, ai-hub `~/ai-hub`, algar,
    flext). Keyword sweep on titles + the closed corpus.
 2. **Correlate** against current code, docs, ADRs, and REALITY (runtime
    measurement, not descriptions), plus LONG-RANGE git archaeology: past

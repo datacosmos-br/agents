@@ -48,3 +48,7 @@ Hub consumes keep their identities and now resolve to the law or a surviving rul
 Hub owns re-projection of the provider homes, which retires the deleted rules' copies.
 Project governance (FLEXT `AGENTS.md`, its law skill and ADRs) is rewritten to the same
 law in its own repository.
+
+The [branch and PR rule](../../rules/git/gitflow-branch-pr.md) and
+[canonical commands](../../rules/workflow/canonical-commands.md) own delivery
+under `operator-decision-2026-11-21-hooks-and-ci-own-gates` (`ag-ri5i`).

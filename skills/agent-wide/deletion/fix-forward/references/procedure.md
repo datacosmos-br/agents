@@ -37,7 +37,8 @@ before commit, push, review resolution, merge, or handoff:
 2. attribute every new intent and preserve all compatible contributions;
 3. update only the canonical owner and its consumers;
 4. integrate through the declared non-destructive lane flow;
-5. rerun every gate invalidated by the combined state; and
+5. commit and push the combined state through its hooks and integration CI
+   (`rules/workflow/canonical-commands.md`); and
 6. publish one current checkpoint with owner, evidence, first red result, and next
    action.
 

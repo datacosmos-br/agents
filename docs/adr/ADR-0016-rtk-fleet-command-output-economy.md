@@ -23,10 +23,11 @@ pointing at a document that does not exist here, which the catalog correctly rej
 
 The bundle ships `skills/tool/rtk/` with an `evals/rtk/` suite, tagged
 `decision:ADR-0016`. The skill teaches: prefer rtk's native-hook automatic rewrite path;
-keep git plain, never prefixed with rtk; analyze long output through
-`rtk log`/`err`/`test`/`summary`/`pipe` instead of chained truncation; use the manual
-`rtk <command>` prefix only for registry gaps and the deferred constructs (heredocs,
-command substitution, file redirects); recover failures through the referenced tee file;
+type every command plain and never an `rtk` prefix (operator decision 2026-11-21, AI
+Hub ADR-0029 amendment of that date), git included; a command the rewriter does not
+cover or defers (heredocs, command substitution, file redirects) runs plain; analyze a
+long output already written to a file through `rtk log`; recover failures through the
+referenced tee file;
 treat filtered failures as failures; never hand-edit rtk config projections or install a
 parallel binary; measure with `gain`/`session`/`discover`; and never bypass canonical
 Make verbs.
