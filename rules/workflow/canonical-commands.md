@@ -11,7 +11,8 @@ tests, examples and scripts. Configuration declares versions. Setup installs the
 committed locks offline, and upg changes pins. Stage explicit paths, commit from a
 message file, merge a moved integration tip with `git merge --no-ff`, push, and open
 the PR from `--body-file`. Native commit and push hooks run each project's declared
-checks. Required integration CI must pass on the exact PR head before the reviewed
+checks on the index only, so read `git status` before committing: an unstaged slice
+path is absent from the commit the hooks passed. Required integration CI must pass on the exact PR head before the reviewed
 merge. An agent hand-runs check, mod, fix, fmt or tests only to diagnose a red result.
 Run gen when generated surfaces change and upg when pins change. Full mod and full
 tests require an explicit order. Scope authorizes runtime publication and proof.
