@@ -48,7 +48,7 @@ Complete these steps in order, repeating invalidated evidence after every edit:
    configured integration branch. The commit and push hooks and integration CI on the
    PR head run the repository's complete applicable native unit, integration, static,
    type, build, shell, security, generation, and projection fixed-point gates
-   ([canonical commands](../../../../../rules/workflow/canonical-commands.md)); missing
+   (`rules/workflow/canonical-commands.md`); missing
    tools, warnings, skips inside an invoked workflow, empty reports, and partial scans
    are red. Resolve every review thread and required check, obtain
    the required independent approval, and merge through the approved merge strategy. An
