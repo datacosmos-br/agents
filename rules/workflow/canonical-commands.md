@@ -29,6 +29,9 @@ own hook rewrites eligible commands and never rewrites `git`), with no `;` chain
 `&`, `/dev/null` or file redirections, `cd`, or `||` fallback, and never bypass a hook.
 Work a declared verb owns (`python`, `ruff`, `pyrefly`, `uv`, `pip`, `pipx`, `mise`,
 `pytest`) runs through that project's `make` or CLI verb; a missing capability extends
-that owner. `make setup` trusts and syncs a new worktree before `make gen`, never run
+that owner. `make setup` only bootstraps and installs the committed locks: it trusts,
+syncs and `direnv allow`s a new worktree on its own, host load never refuses it, and
+every verb or tool that rewrites an `.envrc` re-allows it
+(`operator-order-2026-11-21-setup-self-sufficient`); never run
 silent commands exceeding 10 seconds without progress, and use the project's worktree
 sweep verb for worktree/branch cleanup.
