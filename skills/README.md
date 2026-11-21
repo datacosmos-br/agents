@@ -19,10 +19,11 @@ knowledge from descendants. The catalog rejects missing parents, cycles, reverse
 layers, and implicit parent references.
 
 Keep `SKILL.md` as a concise activation router. Detailed procedures, scripts, and assets
-stay inside that same bundle. A change is complete only when `make audit`, `make check`,
-and `make waza` validate the physical inventory through their root Make owners. AI Hub
-alone interprets routing semantics for discovered projects and providers; this
-repository writes no destination or generated inventory.
+stay inside that same bundle. A change is complete only when its commit hook and
+integration CI are green; `make audit`, `make check` and `make waza` validate the
+physical inventory through their root Make owners. AI Hub alone interprets routing
+semantics for discovered projects and providers; this repository writes no destination
+or generated inventory.
 
 ## Naming and tags (ADR-0015, ADR-0038)
 

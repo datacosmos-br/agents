@@ -19,9 +19,14 @@ a pull request from `--body-file`, integration CI on its exact head, merge commi
 deploy and runtime proof: the commit and push hooks run check, mod, fix, fmt and tests,
 so an agent hand-runs a gate only to diagnose a red hook or CI, while the generation
 verbs a change needs (gen, and upg on a pin change) still run
-(`operator-decision-2026-11-21-hooks-and-ci-own-gates`). A pull-request gate fits
-`gates.pr_budget_minutes` (`config/governance.json`). Every command runs under a
-deadline, the 120-second bound of `operator-order-2026-10-24-make-always-with-timeout`
+(`operator-decision-2026-11-21-hooks-and-ci-own-gates`). A red check is fixed at its
+cause in the same lane and the green head merges without `--admin`; a full `make mod`
+or the full test verb runs only when ordered; a red integration branch is repaired,
+adopting its owning lane when that lane is not landing, never waited on, and
+"pre-existing" or "another lane's" is no reason to stop, warnings included
+([law](../law.md) 8–10; `operator-order-2026-11-21-hooks-and-ci-are-the-gates`).
+A pull-request gate fits `gates.pr_budget_minutes` (`config/governance.json`). Every
+command runs under a deadline, the 120-second bound of `operator-order-2026-10-24-make-always-with-timeout`
 unless its project declares tighter, and a timeout is a failure fixed at its cause. Test
 verbs: the incremental one runs Testmon on its persistent database, replaced only by its
 schema migration; the full one runs without it and alone states a suite's time. An empty
@@ -31,7 +36,8 @@ taking more than 2 seconds, including setup and teardown, requires causal profil
 verified optimization. Every test has a hard 20-second limit
 (`operator-order-2026-11-15-ci-test-budget`). A generated file names its writer and
 regeneration command; a tool-written block changes only through that tool and loses to
-any rule it contradicts. Text published to a forge or tracker comes from a file. Shell
+any rule it contradicts. Text for a tracker, forge or mail comes from a file (`--file`,
+`--body-file`, or `xargs -0 -a <file>` when the CLI has no file flag). Shell
 invocations run one plain governed command per call, typed without an `rtk` prefix (rtk's
 own hook rewrites eligible commands and never rewrites `git`), with no `;` chaining, pipes,
 `&`, `/dev/null` or file redirections, `cd`, `env -C` or a tool's `-C` (a lane runs with
