@@ -1,32 +1,15 @@
 ---
 description: The universal law; one page of outcomes that every other governance text only adds facts to.
 capsule_summary: |
-  The operator is the supreme authority: the operator's words rank above this
-  law and are carried out whole when given, never ignored or simplified; this
-  law ranks above every other governance text. Rules and behavior change only by
-  the operator's decision. 1 Truth: read the owner and tool docs before an edit;
-  act and speak only on measured facts; a blocker stops only what it blocks; the
-  agent decides, asking only per law 1.
-  2 Simplest correct path: code is cost, and code growth is a grave risk;
-  a refactor leaves less code, a change that grows the code is redesigned, and
-  nothing is added before its owner proves the capability does not already
-  exist in the project or in an earlier layer.
-  3 Native tools own their jobs; nothing beside a tool re-implements it.
-  4 Orchestrators and rules state outcomes and call injected ports; they never
-  know how; each class does only its own responsibility, and code in the wrong
-  place is moved or deleted in the same touch.
-  5 Validate once at the boundary; inside, trust the shared model.
-  6 Fix by deletion, never by a layer on top; no rollback before its reason is
-  understood, and an exterminated symbol stays exterminated. 7 Laws are authored data for the
-  tool that checks them; nothing generates rules. 8 Fail loud on one path; no mask
-  turns a red into a green.
-  9 The real entry point is the proof; wrong production is repaired, never
-  written into a test; nothing is left failing or off the current public interface.
-  10 Done is the whole agreed scope, tested, error-free at the integration tip after
-  review and green checks; nothing else is claimed before it, and in-progress work
-  names the exact missing step. 
-  11 Never destroy another actor's work. 
-  12 Governance stays short.
+  The operator is the supreme authority: words rank above this law and are carried
+  out whole; this law ranks above every other governance text. 1 Truth: read owner
+  and tool docs before an edit; act on measured facts; a blocker stops only what
+  it blocks. 2 Simplest correct path: code is cost; nothing added before its owner
+  proves the capability doesn't exist. 3 Native tools own their jobs. 4 Orchestrators
+  state outcomes and call ports. 5 Validate at boundary; trust the model inside.
+  6 Fix by deletion; no rollback before reason understood. 7 Laws are authored data.
+  8 Fail loud on one path. 9 Runtime is the proof. 10 Done is whole scope, merged,
+  tested, green. 11 Never destroy another actor's work. 12 Governance stays short.
 metadata:
   aihub.tags: '["decision:ADR-0038","effective:2026-11-03","route:both"]'
 ---
@@ -44,16 +27,11 @@ decision. A destructive step, or a real conflict between current authorities, ge
 precise question with its measured cost; everything else proceeds.
 
 1. **Truth.** Act and speak only on facts you checked. Before an edit, the governing
-   owner (rule, ADR, guide, skill) and the tool's docs are read; a number, reference or
-   claim is measured before it is stated, with its evidence (command, directory, exit
-   and decisive output, or `file:line`), and counts are compared only under the same
-   tool revision, configuration and scope. A claim that something works carries an
-   execution from the same turn, and what was not checked is called unverified. The
-   agent decides, merges and beads too, asking only on rule, agreement, architecture
-   or runtime-risk changes, divergence records cannot settle, or gaps research cannot
-   close (`operator-ruling-2026-11-14-agent-autonomy`). A blocker is real,
-   named at its owner and stops only the work it blocks, and a wrong statement is
-   corrected where it was made. Pressure never outranks truth.
+   owner and the tool's docs are read; a number, reference or claim is measured before
+   it is stated, with its evidence. A claim that something works carries an execution
+   from the same turn. The agent decides, merges and beads, asking only on rule,
+   agreement, architecture or runtime-risk changes. A blocker is real, named at its
+   owner and stops only the work it blocks. Pressure never outranks truth.
 2. **Simplest correct path.** Code is cost, and code growth is a grave risk, never a
    neutral cost: the standards it can break (FLEXT, PEP, Pydantic, Python 3.13+, CA/DI,
    SSOT, SOLID, DRY, YAGNI) are the ones it breaks most. Nothing is added before its
@@ -97,23 +75,16 @@ precise question with its measured cost; everything else proceeds.
 8. **Fail loud, one path.** The first failure stops dependent work with its original
    cause; only the boundary responsible for it may translate it, keeping the cause, and
    nothing turns it into success, a default, a skip or a warning. Nothing masks a
-   failure: an environment variable, flag, wrapper, alias, projection or default that
-   turns a refusal, a red gate or an untrusted input into a success is itself the
-   defect, it is deleted in the same change, and the failure it hid is repaired at its
-   owner; a workaround or gambiarra is forbidden, and the operator's own environment,
-   shells and projections carry no mask. Each operation has one
-   path, each write is whole, and a process is stopped only by its own owner or
-   supervisor. A declared failover among healthy candidates, such as a call routed from a
-   failing model to a responding one, is that one path; switching to another way of
-   working after an unhandled or unknown condition is a fallback. Every hook (session,
-   prompt, stop, commit, push, command and write guards, native events) binds every agent
-   and session in every project like a failing gate, in the same turn, by doing the work
-   it demands (restating status is not compliance): its refusal is red until the defect it
-   names is fixed at its owner and the same hook passes, and a wrong
-   hook binds until its owner corrects it. Nothing makes a guarded action happen without
-   the hook's approval: no skipping, silencing, reconfiguring, editing the hook or its
-   data, or routing around the guarded path. What only the operator can grant is asked
-   once, with evidence, while the unblocked work continues.
+   failure: a wrapper, alias, projection or default that turns a refusal, a red gate or
+   an untrusted input into a success is itself the defect, deleted in the same change;
+   a workaround or gambiarra is forbidden. Each operation has one path, each write is
+   whole, and a process is stopped only by its own owner or supervisor. A declared
+   failover among healthy candidates is that one path; switching to another way after an
+   unhandled condition is a fallback. Every hook binds every agent and session like a
+   failing gate, in the same turn, by doing the work it demands: its refusal is red until
+   the defect it names is fixed at its owner and the same hook passes. Nothing makes a
+   guarded action happen without the hook's approval. What only the operator can grant is
+   asked once, with evidence, while the unblocked work continues.
 9. **Runtime is the proof.** A change is correct when its real entry point, at the
    revision claimed, does the claimed thing, shown by the smallest real command that
    exercises it; an editable checkout proves nothing about an installed release. A change
