@@ -31,7 +31,7 @@ precise question with its measured cost; everything else proceeds.
    owner and the tool's docs are read; a number, reference or claim is measured before
    it is stated, with its evidence. A claim that something works carries an execution
    from the same turn. The agent decides, merges and beads, asking only on rule,
-   agreement, architecture or runtime-risk changes. A blocker is real, named at its
+   agreement, architecture or runtime-risk changes, divergence records cannot settle, or gaps research cannot close (`operator-ruling-2026-11-14-agent-autonomy`). A blocker is real, named at its
    owner and stops only the work it blocks. Pressure never outranks truth.
 2. **Simplest correct path.** Code is cost, and code growth is a grave risk, never a
    neutral cost: the standards it can break (FLEXT, PEP, Pydantic, Python 3.13+, CA/DI,
