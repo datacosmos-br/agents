@@ -11,7 +11,8 @@ does only its own operation ([law](../law.md)); a change is validated by its own
 scoped command, and gates cover source, tests, examples and scripts alike. Configuration
 declares the newest versions and only the upgrade verb locks them; every other verb
 installs from the committed locks, offline. Heavy jobs pass host admission at idle
-priority; under load a run narrows, never waits. A pull-request gate fits
+priority; long work runs in the background or in subagents, in parallel lanes, and under
+load a run narrows: a session never idles on a gate. A pull-request gate fits
 `gates.pr_budget_minutes` (`config/governance.json`). Every command runs under a
 deadline, the 120-second bound of `operator-order-2026-10-24-make-always-with-timeout`
 unless its project declares tighter, and a timeout is a failure fixed at its cause. Test

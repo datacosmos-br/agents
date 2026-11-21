@@ -10,8 +10,8 @@ metadata:
 # Verification Loop
 
 Before claiming that a change works, is done or is ready, prove it on the smallest real
-runtime (`rules/law.md` law 9), then run the repository's declared gates for the touched
-scope (`rules/workflow/canonical-commands.md`).
+runtime (`rules/law.md` law 9); the commit and push hooks and integration CI run the
+declared gates (`rules/git/gitflow-branch-pr.md`).
 
 - Each claim carries law 1 evidence from this turn; a run that executed nothing is not a
   pass.
@@ -20,10 +20,7 @@ scope (`rules/workflow/canonical-commands.md`).
 - A later edit voids earlier evidence for the scope it touches.
 - Each boundary (resume, before code, commit, merge) starts from live state: the
   integration tip merged into the lane and the owner's source read; a snapshot,
-  brief or memory is a lead, never evidence. Under host load the boundary continues
-  on the native light gates over the touched files (`ruff check`,
-  `ruff format --check`, `pyrefly check`) and defers heavy verbs to their serialized
-  slot in `rules/workflow/canonical-commands.md`; it never skips a gate.
+  brief or memory is a lead, never evidence.
 - A hook's refusal is a failing gate and is never bypassed (law 8).
 - Done means landed under law 10 and `rules/git/gitflow-branch-pr.md`; local green or an
   open pull request is in progress.

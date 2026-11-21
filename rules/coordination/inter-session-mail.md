@@ -16,6 +16,8 @@ operator's own words, and a direct channel counts once repeated in mail. Read th
 channel, adopt open work on the same scope instead of redoing it, and declare bead,
 branch and PR.
 Overlapping work and shared-infrastructure changes are announced first and continue.
+No actor waits on another lane: a needed commit enters its own lane by `git merge --no-ff`
+and work continues, ownership settled on the channel and the bead.
 A dispute between actors is settled by the active coordinator (the Gas City mayor) by
 priority, age and alignment with the approved plan, and then by the operator; its
 discussion and agreement are recorded in the mail thread and on the bead, automatically
