@@ -21,8 +21,8 @@ or append-notes loop.
 ## 2. The gate, in order
 
 First complete documented alignment, implementation and real public-runtime proof
-(`rules/law.md` items 9 and 12). Only then commit or change regression tests;
-validation is not permission for test-first work.
+(`rules/law.md` items 9 and 12). Only then enter this validation sequence or change
+regression tests; validation is not permission for test-first work.
 
 Discover native verbs in the root Make catalog and run them with the selected worktree as
 the working directory. `rules/workflow/canonical-commands.md` owns delivery gates,
