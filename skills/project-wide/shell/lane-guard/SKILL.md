@@ -10,7 +10,7 @@ metadata:
 # Bash Guard Lane Execution
 
 Use the selector-free root Make contract of `rules/workflow/canonical-commands.md`:
-plain `git` and `make` from the session's own worktree. Run Beads from the session's
+plain `git` and `make` from the session's own worktree. Run `bd` from the session's
 checkout; `BASH_ENV` loads its environment.
 Preserve exact verb, worktree, exit code, decisive output, warning, and stderr. A guard
 denial remains RED and is corrected at the command owner; it never authorizes a raw
