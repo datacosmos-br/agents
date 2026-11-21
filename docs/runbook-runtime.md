@@ -112,16 +112,22 @@ drifted).
 |---|---|
 | Every agent call denied (`kernel-integrity`) | 1. `openmoat doctor` lists the drifted file. 2. Confirm the change is yours. 3. `openmoat doctor --accept`. 4. `openmoat status` shows `Lock … intact`. |
 | MCP server refused (`mcp-server-changed`) | `openmoat mcp accept ai-hub`, then restart the agent session. |
-| Policy or sandbox changed | `openmoat sandbox sync`. |
+| Policy or sandbox changed | `openmoat sandbox sync`. It rewrites the `sandbox` block of `~/.claude/settings.json` from the policy: grant a path agents need (mise, ai-hub data and state) through `sandbox.read_roots` in the policy, never by editing that block. |
 | Repository policy added or changed | `openmoat trust` in that repository. |
 | Codex runs unchecked ("not trusted") | Open Codex, run `/hooks`, trust the OpenMoat hooks. |
+| Claude Code copy older than 2.1.295 (CLI or editor extension) | Update every copy, then `openmoat init`: older copies run a call when the hook fails. |
+| MCP server reported unprotected | `openmoat mcp wrap <server>`. |
 | A held call should run | `openmoat allow --last` (session, 24 h) or `--always --for 1w`. |
+| Writes held by `session-taint` after Claude Code desktop's own tools (`mcp__ccd_turn__update_plan`, `mcp__ccd_turn__wrap_up`) | No grant releases it (`allow --last`, approving the event and `allow --dir` were measured held again). It clears only when Bead `aihub-wzj8i.8` (those tools declared first-party in the fork's Claude Code host spec) is released and pinned. |
 | Reviews while away | `openmoat approvals connect telegram`, then `openmoat approvals install`. |
 | Upgrade | `make setup` (fork latest) → `openmoat policy upgrade` → `openmoat doctor --accept` → `openmoat sandbox sync`. |
 | Watch live | `openmoat watch` in a second pane. |
 
 A deploy refuses before any write when the lock has drifted or a publication would
 change an engine-pinned file: fix the surface that writes it, never re-pin around it.
+Closure evidence: `openmoat policy check-diff` before a PR merge, `openmoat audit anchor`
+and `openmoat provenance` at release; signed packs through `openmoat policy trust-key`
+and `openmoat policy install <pack>`.
 
 ## Install idempotence
 
