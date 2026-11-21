@@ -24,11 +24,11 @@ verified optimization. Every test has a hard 20-second limit
 (`operator-order-2026-11-15-ci-test-budget`). A generated file names its writer and
 regeneration command; a tool-written block changes only through that tool and loses to
 any rule it contradicts. Text published to a forge or tracker comes from a file. Shell
-invocations run one governed command per call prefixed with `rtk`, with no `;` chaining,
-pipes, `&`, `/dev/null` or file redirections, `cd`, or `||` fallback, and never bypass a hook.
-Raw tool invocations (`python`, `python3`, `ruff`, `pyrefly`, `uv`, `pip`, `pipx`, `mise`,
-`pytest`, `sed`, `grep`, `ugrep`, `rg`, `sg`, `gh`, `git`, `gc`, `bd`) are prohibited;
-use `rtk` or declared `make` / `ai-hub` / `cli` verbs, and extend those owners when a
-capability is missing. Run `mise trust` before `make setup` in new worktrees, never run
+invocations run one plain governed command per call, typed without an `rtk` prefix (rtk's
+own hook rewrites eligible commands and never rewrites `git`), with no `;` chaining, pipes,
+`&`, `/dev/null` or file redirections, `cd`, or `||` fallback, and never bypass a hook.
+Work a declared verb owns (`python`, `ruff`, `pyrefly`, `uv`, `pip`, `pipx`, `mise`,
+`pytest`) runs through that `make` / `ai-hub` / `cli` verb; a missing capability extends
+that owner. Run `mise trust` before `make setup` in new worktrees, never run
 silent commands exceeding 10 seconds without progress, and use `ai-hub wip sweep` for
 worktree/branch cleanup.
