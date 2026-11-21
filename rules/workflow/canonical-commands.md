@@ -7,11 +7,16 @@ metadata:
 # Canonical commands
 
 Every operation runs through declared verbs, each a thin call to its native tool that
-does only its own operation ([law](../law.md)); a change is validated by its owner's
-scoped command, and gates cover source, tests, examples and scripts alike. Configuration
-declares the newest versions and only the upgrade verb locks them; every other verb
-installs from the committed locks, offline. Heavy jobs pass host admission at idle
-priority; under load a run narrows, never waits. A pull-request gate fits
+does only its own operation ([law](../law.md)); gates cover source, tests, examples and
+scripts alike. Configuration declares the newest versions and only the upgrade verb
+locks them; every other verb installs from the committed locks, offline. The commit hook
+(`make setup`, `make check`) and the integration CI on the exact PR head are the gates:
+no agent runs a check, mod, fix, fmt or test verb by hand before committing or pushing
+(generation verbs a change needs, gen and upg on a pin change, still run), a pull
+request merges only on green CI, and a red hook or CI is fixed at its cause. Long work
+runs in the background or in subagents; heavy jobs pass host admission at idle priority, and
+admission is never a reason to wait or to report blocked
+(`operator-decision-2026-11-21-hooks-and-ci-own-gates`). A pull-request gate fits
 `gates.pr_budget_minutes` (`config/governance.json`). Every command runs under a
 deadline, the 120-second bound of `operator-order-2026-10-24-make-always-with-timeout`
 unless its project declares tighter, and a timeout is a failure fixed at its cause. Test

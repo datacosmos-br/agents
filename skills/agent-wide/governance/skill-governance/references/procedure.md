@@ -92,9 +92,9 @@ one atomic bundle change. Do not publish a router with partial evals.
 
 ## Validation
 
-Run `make runtime` to validate the installed bundle, then `make check`, `make test`, and
-`make test-full`. The official Waza spec verifier is part of the check owner and
-validates every projected skill/evaluation pair offline at the exact threshold. Any
+Run `make runtime` to validate the installed bundle; `make check`, `make test`, and
+`make test-full` run in the commit hooks and integration CI and must pass. The official
+Waza spec verifier is part of the check owner and validates every projected skill/evaluation pair offline at the exact threshold. Any
 advisory or warning is a failed validation; live model execution remains an AI Hub
 concern. Never invoke Waza, pytest, or another underlying tool directly. If the skill
 changes the public semantic contract, migrate all AI Hub consumers in the same cutover;
