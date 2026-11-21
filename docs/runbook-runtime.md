@@ -97,11 +97,13 @@ Bead and its children.
      rewrites the `sandbox` block of `~/.claude/settings.json` from the policy, so a
      path agents need (the mise and ai-hub data and state directories) is granted
      by `sandbox.read_roots` in the policy, never by editing that block.
-   - Session taint: Claude Code desktop's own status tools
-     (`mcp__ccd_turn__update_plan`, `mcp__ccd_turn__wrap_up`) re-taint every session,
-     so each protected write needs a new `openmoat allow --last`; the fix belongs
-     in the OpenMoat Claude Code host spec (Bead `aihub-wzj8i.8`), not in a policy
-     override.
+   - Session taint: after a call to Claude Code desktop's own tools
+     (`mcp__ccd_turn__update_plan`, `mcp__ccd_turn__wrap_up`), every protected write
+     of that session (agent memory, `AGENTS.md`, build files) stays held. No operator
+     grant releases it: `openmoat allow --last`, approving the event and
+     `openmoat allow --dir` were all measured held again. It clears only when the
+     fix of Bead `aihub-wzj8i.8` (those tools declared first-party in the OpenMoat
+     Claude Code host spec) is merged in the fork, released and pinned in ai-hub.
    - `openmoat policy trust-key` and `openmoat policy install <pack>`: install signed
      policy packs; `openmoat trust` enables a repository's `.moat/policy.yaml`.
    - `openmoat policy check-diff`: verify diff compliance before PR merge.
@@ -110,8 +112,6 @@ Bead and its children.
    - Claude Code `>= 2.1.295` in every copy (CLI and editor extensions), then
      `openmoat init`: older copies run a call when the hook fails.
    - `openmoat mcp wrap <server>` for each server `doctor` reports unprotected.
-   - `openmoat allow --last`: release a `session-taint` hold on a write the
-     operator wants, such as an agent memory file (Bead `aihub-wzj8i.8`).
 
 ## Install idempotence
 
