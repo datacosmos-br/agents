@@ -8,8 +8,9 @@ capsule_summary: |
   proves the capability doesn't exist. 3 Native tools own their jobs. 4 Orchestrators
   state outcomes and call ports. 5 Validate at boundary; trust the model inside.
   6 Fix by deletion; no rollback before reason understood. 7 Laws are authored data.
-  8 Fail loud on one path. 9 Runtime is the proof. 10 Done is whole scope, merged,
-  tested, green. 11 Never destroy another actor's work. 12 Governance stays short.
+  10 Done is the whole agreed scope, reviewed and merged at the integration tip with green
+  checks, tested and error-free at that tip; nothing else first. In-progress work names
+  the exact missing step. 11 Never destroy another actor's work. 12 Governance stays short.
 metadata:
   aihub.tags: '["decision:ADR-0038","effective:2026-11-03","route:both"]'
 ---
