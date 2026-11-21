@@ -26,8 +26,9 @@ regeneration command; a tool-written block changes only through that tool and lo
 any rule it contradicts. Text published to a forge or tracker comes from a file. Shell
 invocations run one plain governed command per call, typed without an `rtk` prefix (rtk's
 own hook rewrites eligible commands and never rewrites `git`), with no `;` chaining, pipes,
-`&`, `/dev/null` or file redirections, `cd` or `env -C` (the tool's own `-C` selects a
-lane root), or `||` fallback, and never bypass a hook.
+`&`, `/dev/null` or file redirections, `cd`, `env -C` or a tool's `-C` (a lane runs with
+its worktree as working directory, direnv and rtk automating;
+`operator-order-2026-11-21-worktree-cwd-only`), or `||` fallback, and never bypass a hook.
 Work a declared verb owns (`python`, `ruff`, `pyrefly`, `uv`, `pip`, `pipx`, `mise`,
 `pytest`) runs through that project's `make` or CLI verb; a missing capability extends
 that owner. `make setup` only bootstraps and installs the committed locks: it trusts,

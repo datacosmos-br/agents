@@ -55,9 +55,9 @@ from these laws.
      session's worktree. Measured on 2026-09-24, both forms run normally. The premise
      was false, and the rule made fleet-wide landing and retirement impossible from one
      coordinating session.
-   - The operator ruled on 2026-09-24 that a lane in another checkout or repository is
-     reached with `git -C <lane> <verb>` and `env -C <lane> make <verb>`.
-   - `cd` into another checkout and `make -C` remain prohibited.
+   - Superseded 2026-11-21 (`operator-order-2026-11-21-worktree-cwd-only`): a lane's
+     commands run with its worktree as working directory, direnv and rtk automating;
+     `cd`, `env -C` and a tool's `-C` are prohibited.
 
 ### Adopted-context protection - 2026-10-23
 

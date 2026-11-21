@@ -35,9 +35,9 @@ generated origin serves only the proxy key and only on a keyring miss.
 
 ## Pipeline chain (READY)
 
-1. Deploy the release from a lane: `env -C <lane> -u INVOCATION_ID -u
-   CREDENTIALS_DIRECTORY -u VIRTUAL_ENV -u UV_PROJECT_ENVIRONMENT make install`
-   (timeout 300 s).
+1. Deploy the release with the lane's worktree as working directory: `env -u
+   INVOCATION_ID -u CREDENTIALS_DIRECTORY -u VIRTUAL_ENV -u UV_PROJECT_ENVIRONMENT
+   make install` (timeout 300 s).
 2. Start: `systemctl --user start ai-hub-model-pipeline` (≤300 s). READY=1
    means one full cycle published: inventory load → probes (real PONG per
    route) → tiers → snapshot → PUT to the management API (CAS + projector
