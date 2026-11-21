@@ -80,7 +80,8 @@ with the captured commands.
 
 OpenMoat owns agent hooks, policy packs, stdio MCP gating and audit logs (ai-hub
 ADR-0030 hooks cohort and ADR-0045 OpenMoat amendment; Bead `aihub-wzj8i`). AI Hub no
-longer declares a hook daemon or socket unit.
+longer declares a hook daemon or socket unit. The cutover's progress lives on that
+Bead and its children.
 
 1. `openmoat status --format json`: per-agent protection level, `hook_warnings`,
    `lock_drift`, `mcp_changes`. An agent that disables the engine's entries (for
@@ -92,7 +93,14 @@ longer declares a hook daemon or socket unit.
 4. Operator-only interactive terminal actions when `doctor` or `status` reports drift:
    - `openmoat mcp accept ai-hub`: accept updated MCP server and tool pins.
    - `openmoat sandbox sync`: synchronize OS sandbox profiles (requires OpenMoat
-     `>= 0.22.1` on Linux so Codex profiles exclude `/run/user` deny globs).
+     `>= 0.22.1` on Linux so Codex profiles exclude `/run/user` deny globs). It
+     rewrites the `sandbox` block of `~/.claude/settings.json` from the policy, so a
+     path agents need (the mise and ai-hub data and state directories) is granted
+     by `sandbox.read_roots` in the policy, never by editing that block.
+   - Session taint: a host's own status tools (Claude Code desktop's
+     `mcp__ccd_turn__update_plan` and `mcp__ccd_turn__wrap_up`) belong in the
+     policy's `taint.metadata_tools`; otherwise every call re-taints the session and
+     each protected write needs a new `openmoat allow --last`.
    - `openmoat policy trust-key` and `openmoat policy install <pack>`: install signed
      policy packs; `openmoat trust` enables a repository's `.moat/policy.yaml`.
    - `openmoat policy check-diff`: verify diff compliance before PR merge.
