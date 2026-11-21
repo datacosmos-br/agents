@@ -30,7 +30,11 @@ own hook rewrites eligible commands and never rewrites `git`), with no `;` chain
 its worktree as working directory, direnv and rtk automating;
 `operator-order-2026-11-21-worktree-cwd-only`), or `||` fallback, and never bypass a hook.
 A nested shell (`sh -c`, `bash -c`) is not a plain command, and a refused verb or a
-denied action is repaired at its owner, never replaced by a raw fallback.
+denied action is repaired at its owner, never replaced by a raw fallback. Commit and push
+run their own hooks and the integration CI on the exact PR head is the gate: agents do
+not run check, mod, fix, fmt or tests by hand before committing or pushing, and long
+runs go to background jobs or subagents
+(`operator-order-2026-11-21-hooks-and-ci-gate-commits`).
 Work a declared verb owns (`python`, `ruff`, `pyrefly`, `uv`, `pip`, `pipx`, `mise`,
 `pytest`) runs through that project's `make` or CLI verb; a missing capability extends
 that owner. `make setup` only bootstraps and installs the committed locks: it trusts,
