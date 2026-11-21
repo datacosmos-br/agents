@@ -49,12 +49,15 @@ regeneration command; a tool-written block changes only through that tool and lo
 any rule it contradicts. Text for a tracker, forge or mail comes from a file (`--file`,
 `--body-file`, or `xargs -0 -a <file>` when the CLI has no file flag). Shell
 invocations run one plain governed command per call, typed without an `rtk` prefix (rtk's
-own hook rewrites eligible commands and never rewrites `git`), with no `;` chaining, pipes,
-`&`, `/dev/null` or file redirections, `cd`, `env -C` or a tool's `-C` (a lane runs with
-its worktree as working directory, direnv and rtk automating;
+own hook rewrites eligible commands and never rewrites `git`), with no `;` or `&&`
+chaining, pipes, `&`, `/dev/null` or file redirections, `cd`, `env -C` or a tool's `-C`
+(`git -C`, `go -C`, `make -C`; a lane command runs with its worktree as working directory
+or through the project's lane verb, direnv and rtk automating;
 `operator-order-2026-11-21-worktree-cwd-only`), or `||` fallback, and never bypass a hook.
-A nested shell (`sh -c`, `bash -c`) is not a plain command, and a refused verb or a
-denied action is repaired at its owner, never replaced by a raw fallback.
+A nested shell (`sh -c`, `bash -c`) is not a plain command; stage, commit and push are
+separate calls. A hook or classifier denial is answered in the form its message and the
+owning tool's docs give, never by a reworded retry or a raw fallback, and a refused verb
+is repaired at its owner.
 Work a declared verb owns (`python`, `ruff`, `pyrefly`, `uv`, `pip`, `pipx`, `mise`,
 `pytest`) runs through that project's `make` or CLI verb; a missing capability extends
 that owner. `make setup` is the only verb that publishes (the host tool registry
