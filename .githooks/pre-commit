@@ -1,0 +1,8 @@
+#!/bin/sh
+# Installed by `make setup` (core.hooksPath); runs the declared gate composition.
+# Git exports repository-local variables (GIT_INDEX_FILE, ...) to hooks; the
+# gates and their test repositories must resolve Git on their own.
+for variable in $(git rev-parse --local-env-vars); do
+  unset "$variable"
+done
+exec make ci

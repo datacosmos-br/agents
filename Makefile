@@ -47,12 +47,13 @@ help: ## show the complete selector-free development surface
 	@awk 'BEGIN{FS=":.*## "} /^## /{sub(/^## */,""); print ""; print} /^[a-z][a-z_-]*:.*## /{printf "  %-14s %s\n",$$1,$$2}' $(MAKEFILE_LIST)
 
 ## environment provisioning
-setup: ## create the declared repository runtime environment
-	$(call BANNER,setup · locked mise install + frozen bun install + uv venv + locked sync)
+setup: ## create the declared repository runtime environment and its commit hook
+	$(call BANNER,setup · locked mise install + frozen bun install + uv venv + locked sync + commit hook)
 	@MISE_LOCKED=true mise install --yes
 	@MISE_LOCKED=true $(MISE_EXEC) bun install --frozen-lockfile --ignore-scripts
 	@MISE_LOCKED=true $(MISE_EXEC) uv venv --python python --clear
 	@MISE_LOCKED=true $(MISE_EXEC) uv sync --all-groups --locked
+	@git config core.hooksPath .githooks
 
 upg: ## resolve newest declared tools and dependencies into committed locks
 	$(call BANNER,upg · mise lock + bun lock + uv lock)
@@ -135,7 +136,7 @@ mod: ## normalize evaluation YAML and audit the bundle
 shell: ## validate shell scripts and GitHub workflows
 	$(call BANNER,shell · actionlint + shellcheck)
 	@$(MISE_EXEC) actionlint .github/workflows/*.yml
-	@$(MISE_EXEC) shellcheck skills/tool/wip-beads/scripts/reconcile-inventory.sh
+	@$(MISE_EXEC) shellcheck .githooks/pre-commit skills/tool/wip-beads/scripts/reconcile-inventory.sh
 
 duplication: ## enforce zero strict duplication in canonical source and evaluations
 	$(call BANNER,duplication · jscpd)
