@@ -24,11 +24,11 @@ First complete documented alignment, implementation and real public-runtime proo
 (`rules/law.md` items 9 and 12). Only then enter this validation sequence or change
 regression tests; validation is not permission for test-first work.
 
-Discover public verbs, contexts, population and evidence requirements from the selected
-repository's root Make catalog. `rules/workflow/canonical-commands.md` owns operation
-boundaries, deadlines and test selection. Use its current test-verb contract rather
-than a fixed test/full alias or mandatory targeted-before-full sequence. Prove any
-required generation fixed point through its owner; no hidden repeated lifecycle.
+Discover native verbs in the root Make catalog and run them with the selected worktree as
+the working directory. `rules/workflow/canonical-commands.md` owns delivery gates,
+deadlines and test selection. For FLEXT lanes, the
+[Engineering SOP](https://github.com/flext-sh/flext/blob/0.12.0-dev/docs/standards/engineering-sop.md)
+names the closure evidence. Prove the required generation fixed point through its owner.
 Keep the physical environment selected by its owner. A red invocation requires causal
 repair and revalidation in the same phase; recording it alone never clears acceptance.
 

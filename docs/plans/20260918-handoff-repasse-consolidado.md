@@ -68,7 +68,7 @@ privados (L462–477) + `move_docs_files` cosmos-docgen (L845); `codegen-overrid
 "Datacosmos" (`stabilization-native.yml` sai inteiro; `codegen_file_plan.py`; teste);
 docs/security triages internos; fixtures `datacosmos-br/ai-hub`; prosa ADRs 006/016.
 **Untrack de runtime comitado em violação ao próprio ignore**:
-`flext-infra/.claude/settings.json` (paths `$USER/workspaces/agents-skill-sync/…`),
+`flext-infra/.claude/settings.json` (paths `$HOME/workspaces/agents-skill-sync/…`),
 `.github/hooks/aihub-governance.json`, `.github/hooks/.aihub-governance.json.agents-governance.json`
 — projeção do ai-hub; o gerador da projeção (G2.4) passa a não emitir paths de máquina.
 Overrides privados migram para camada local não-comitada do gerador

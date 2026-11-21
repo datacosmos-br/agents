@@ -38,9 +38,8 @@ complete the plan while coding.
 5. Implement through the selected owner, rewire current consumers and remove obsolete
    paths. Update tests, fixtures, examples and documentation to the final public
    interface. Generate production projections through their native owner, not pytest.
-6. Exercise the public candidate and apply `$make-check` for the affected native
-   format, lint, type, test, build, security, documentation and generation gates.
-   Deadlines and test selection follow `rules/workflow/canonical-commands.md`.
+6. Exercise the public candidate, then commit; the commit hook and the integration CI
+   run the gates in the delivery sequence of `rules/workflow/canonical-commands.md`.
    Respect an explicitly documentary scope; excluded implementation findings remain
    identified without an unauthorized repair or false completion.
 7. Record each checkpoint with its evidence and next required proof in the selected

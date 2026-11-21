@@ -30,7 +30,7 @@ target whose canonical governance owners cannot be resolved.
    suites, guarantee mapping, documentation, and the public bundle atomically. Remove
    superseded canonical identities in the same cutover; never modify or delete the
    supplied source corpus.
-6. Run `make runtime`, `make check`, `make test`, and `make test-full`, then search for
+6. Run `make runtime` and commit (the hook and CI run the gates), then search for
    duplicate owners, aliases, foreign runtimes, private paths, compatibility, fallback,
    retry, and stale consumers.
 
