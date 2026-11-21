@@ -29,6 +29,6 @@ own hook rewrites eligible commands and never rewrites `git`), with no `;` chain
 `&`, `/dev/null` or file redirections, `cd`, or `||` fallback, and never bypass a hook.
 Work a declared verb owns (`python`, `ruff`, `pyrefly`, `uv`, `pip`, `pipx`, `mise`,
 `pytest`) runs through that `make` / `ai-hub` / `cli` verb; a missing capability extends
-that owner. Run `mise trust` before `make setup` in new worktrees, never run
+that owner. `make setup` trusts and syncs a new worktree before `make gen`, never run
 silent commands exceeding 10 seconds without progress, and use `ai-hub wip sweep` for
 worktree/branch cleanup.
