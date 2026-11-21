@@ -13,7 +13,7 @@ declares the newest versions and only the upgrade verb locks them; every other v
 installs from the committed locks, offline. Heavy jobs pass host admission at idle
 priority; under load a run narrows, never waits. A long command or job runs in the
 background or in a subagent, never blocking its session on a poll
-(`operator-order-2026-11-21-long-runs-in-background`); commit, push and merge gates are
+(`operator-order-2026-11-21-hooks-and-ci-validate-commits`); commit, push and merge gates are
 owned by `rules/git/gitflow-branch-pr.md`. A pull-request gate fits
 `gates.pr_budget_minutes` (`config/governance.json`). Every command runs under a
 deadline, the 120-second bound of `operator-order-2026-10-24-make-always-with-timeout`
