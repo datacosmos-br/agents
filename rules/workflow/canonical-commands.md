@@ -7,22 +7,25 @@ metadata:
 # Canonical commands
 
 Every operation runs through declared verbs, each a thin call to its native tool that
-does only its own operation ([law](../law.md)); gates cover source, tests, examples and
-scripts alike. Configuration declares the newest versions and only the upgrade verb
-locks them; every other verb installs from the committed locks, offline. The commit hook
-(`make setup`, `make check`) and the integration CI on the exact PR head are the gates:
-no agent runs a check, mod, fix, fmt or test verb by hand before committing or pushing.
-A unit goes commit (the hook gates it), `git merge --no-ff` of the integration tip, push,
-pull request; a red hook or check is fixed at its cause in the same lane and the green
-head merges without `--admin`. Gen and upg run only when generated surfaces or
-dependencies change; a full `make mod` or the full test verb runs only when ordered.
-Work waiting on a gate queue, CI or a landing runs in the background or a subagent while
-the session keeps working; heavy jobs pass host admission at idle priority, and admission
-is never a reason to wait or to report blocked. A red integration branch is repaired,
-adopting its owning lane when that lane is not landing, never waited on; "pre-existing"
-and "another lane's" are no reason to stop, warnings included, and done follows
-[law](../law.md) 8–10 (`operator-order-2026-11-21-hooks-and-ci-are-the-gates`). A
-pull-request gate fits `gates.pr_budget_minutes` (`config/governance.json`). Every
+does only its own operation ([law](../law.md)); a change is validated by its owner's
+scoped command, and gates cover source, tests, examples and scripts alike. Configuration
+declares the newest versions and only the upgrade verb locks them; every other verb
+installs from the committed locks, offline. Heavy jobs pass host admission at idle
+priority; under load a run narrows, never waits or reports blocked. A long command or
+job runs in the background or in a subagent, never blocking its session on a poll
+(`operator-order-2026-11-21-long-runs-in-background`). Delivery is edit, `git add` of
+explicit paths, `git commit -F <file>`, `git merge --no-ff` of the integration tip, push,
+a pull request from `--body-file`, integration CI on its exact head, merge commit, then
+deploy and runtime proof: the commit and push hooks run check, mod, fix, fmt and tests,
+so an agent hand-runs a gate only to diagnose a red hook or CI, while the generation
+verbs a change needs (gen, and upg on a pin change) still run
+(`operator-decision-2026-11-21-hooks-and-ci-own-gates`). A red check is fixed at its
+cause in the same lane and the green head merges without `--admin`; a full `make mod`
+or the full test verb runs only when ordered; a red integration branch is repaired,
+adopting its owning lane when that lane is not landing, never waited on, and
+"pre-existing" or "another lane's" is no reason to stop, warnings included
+([law](../law.md) 8–10; `operator-order-2026-11-21-hooks-and-ci-are-the-gates`).
+A pull-request gate fits `gates.pr_budget_minutes` (`config/governance.json`). Every
 command runs under a deadline, the 120-second bound of `operator-order-2026-10-24-make-always-with-timeout`
 unless its project declares tighter, and a timeout is a failure fixed at its cause. Test
 verbs: the incremental one runs Testmon on its persistent database, replaced only by its

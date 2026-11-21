@@ -21,15 +21,16 @@ or append-notes loop.
 ## 2. The gate, in order
 
 First complete documented alignment, implementation and real public-runtime proof
-(`rules/law.md` items 9 and 12). Only then commit or change regression tests;
-validation is not permission for test-first work.
+(`rules/law.md` items 9 and 12). Only then enter this validation sequence or change
+regression tests; validation is not permission for test-first work.
 
-The commit hook and the integration CI run the gates, in the delivery sequence of
-`rules/workflow/canonical-commands.md`, which also owns deadlines and test selection.
-Run any verb with the selected worktree as the process working directory. For FLEXT
-lanes, the
+Discover public verbs, contexts, population and evidence requirements from the selected
+repository's root Make catalog. `rules/workflow/canonical-commands.md` owns operation
+boundaries, deadlines, test selection and the delivery flow whose hooks and integration
+CI run the gates. Run each verb with the selected worktree as the process working
+directory, and commit and push as soon as a change is coherent. For FLEXT lanes, use the
 [Engineering SOP](https://github.com/flext-sh/flext/blob/0.12.0-dev/docs/standards/engineering-sop.md)
-names the closure evidence.
+for the closure evidence. Prove the required generation fixed point through its owner.
 Keep the physical environment selected by its owner. A red invocation requires causal
 repair and revalidation in the same phase; recording it alone never clears acceptance.
 
