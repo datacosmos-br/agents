@@ -80,38 +80,54 @@ with the captured commands.
 
 OpenMoat owns agent hooks, policy packs, stdio MCP gating and audit logs (ai-hub
 ADR-0030 hooks cohort and ADR-0045 OpenMoat amendment; Bead `aihub-wzj8i`). AI Hub no
-longer declares a hook daemon or socket unit. The cutover's progress lives on that
-Bead and its children.
+longer declares a hook daemon or socket unit.
 
-1. `openmoat status --format json`: per-agent protection level, `hook_warnings`,
-   `lock_drift`, `mcp_changes`. An agent that disables the engine's entries (for
-   example Codex `[hooks.state] enabled = false`) runs unchecked until a person
-   enables them in the agent.
-2. `openmoat doctor --format json`: lock, hooks, sandbox, MCP and binary integrity.
-3. `openmoat show --recent N --format json` and `openmoat why --last`: the decisions
-   real agent calls produced; no decision means no hook ran.
-4. Operator-only interactive terminal actions when `doctor` or `status` reports drift:
-   - `openmoat mcp accept ai-hub`: accept updated MCP server and tool pins.
-   - `openmoat sandbox sync`: synchronize OS sandbox profiles (requires OpenMoat
-     `>= 0.22.1` on Linux so Codex profiles exclude `/run/user` deny globs). It
-     rewrites the `sandbox` block of `~/.claude/settings.json` from the policy, so a
-     path agents need (the mise and ai-hub data and state directories) is granted
-     by `sandbox.read_roots` in the policy, never by editing that block.
-   - Session taint: after a call to Claude Code desktop's own tools
-     (`mcp__ccd_turn__update_plan`, `mcp__ccd_turn__wrap_up`), every protected write
-     of that session (agent memory, `AGENTS.md`, build files) stays held. No operator
-     grant releases it: `openmoat allow --last`, approving the event and
-     `openmoat allow --dir` were all measured held again. It clears only when the
-     fix of Bead `aihub-wzj8i.8` (those tools declared first-party in the OpenMoat
-     Claude Code host spec) is merged in the fork, released and pinned in ai-hub.
-   - `openmoat policy trust-key` and `openmoat policy install <pack>`: install signed
-     policy packs; `openmoat trust` enables a repository's `.moat/policy.yaml`.
-   - `openmoat policy check-diff`: verify diff compliance before PR merge.
-   - `openmoat audit anchor` and `openmoat provenance`: record closure evidence.
-   - Codex `/hooks`: trust OpenMoat's hooks; Codex runs a changed hook only then.
-   - Claude Code `>= 2.1.295` in every copy (CLI and editor extensions), then
-     `openmoat init`: older copies run a call when the hook fails.
-   - `openmoat mcp wrap <server>` for each server `doctor` reports unprotected.
+Live state lives in Beads (`aihub-wzj8i` and children), never here. Normative
+owner: ai-hub ADR-0030, amendment 2026-11-21 (the deploy never leaves the lock
+drifted).
+
+### Read (any session)
+
+- `openmoat status --format json`: protection level per agent, `hook_warnings`,
+  `lock_drift`, `mcp_changes`. `ai-hub status` reports the same findings.
+- `openmoat why --last`: the rule, why and next step of the last decision.
+- `openmoat show --since today`, `openmoat report`, `openmoat audit stats`: what was
+  denied or held, and how often.
+
+### Agents: how to work under OpenMoat
+
+- One plain command per shell call, in series. Parallel calls can be denied with
+  `kernel-error` (audit database locked).
+- A denial names `rule`, `why` and `next`: use the canonical form it points to
+  (Make verb, `git -C`, `direnv exec <dir>`); never retry the same shape.
+- Never run OpenMoat's own commands (`doctor`, `init`, `trust`, `allow`, `allowed`,
+  `edit`, `sandbox sync`, `mcp accept`, `policy install`) and never read or write
+  `~/.moat/**` or `.moat/policy.yaml`: they are `kernel-self`, reserved to a person.
+- On `kernel-integrity` (every call denied): stop, do not retry, give the person the
+  recovery steps below.
+
+### Person at a terminal
+
+| Situation | Steps |
+|---|---|
+| Every agent call denied (`kernel-integrity`) | 1. `openmoat doctor` lists the drifted file. 2. Confirm the change is yours. 3. `openmoat doctor --accept`. 4. `openmoat status` shows `Lock … intact`. |
+| MCP server refused (`mcp-server-changed`) | `openmoat mcp accept ai-hub`, then restart the agent session. |
+| Policy or sandbox changed | `openmoat sandbox sync`. It rewrites the `sandbox` block of `~/.claude/settings.json` from the policy: grant a path agents need (mise, ai-hub data and state) through `sandbox.read_roots` in the policy, never by editing that block. |
+| Repository policy added or changed | `openmoat trust` in that repository. |
+| Codex runs unchecked ("not trusted") | Open Codex, run `/hooks`, trust the OpenMoat hooks. |
+| Claude Code copy older than 2.1.295 (CLI or editor extension) | Update every copy, then `openmoat init`: older copies run a call when the hook fails. |
+| MCP server reported unprotected | `openmoat mcp wrap <server>`. |
+| A held call should run | `openmoat allow --last` (session, 24 h) or `--always --for 1w`. |
+| Writes held by `session-taint` after Claude Code desktop's own tools (`mcp__ccd_turn__update_plan`, `mcp__ccd_turn__wrap_up`) | No grant releases it (`allow --last`, approving the event and `allow --dir` were measured held again). It clears only when Bead `aihub-wzj8i.8` (those tools declared first-party in the fork's Claude Code host spec) is released and pinned. |
+| Reviews while away | `openmoat approvals connect telegram`, then `openmoat approvals install`. |
+| Upgrade | `make setup` (fork latest) → `openmoat policy upgrade` → `openmoat doctor --accept` → `openmoat sandbox sync`. |
+| Watch live | `openmoat watch` in a second pane. |
+
+A deploy refuses before any write when the lock has drifted or a publication would
+change an engine-pinned file: fix the surface that writes it, never re-pin around it.
+Closure evidence: `openmoat policy check-diff` before a PR merge, `openmoat audit anchor`
+and `openmoat provenance` at release; signed packs through `openmoat policy trust-key`
+and `openmoat policy install <pack>`.
 
 ## Install idempotence
 
