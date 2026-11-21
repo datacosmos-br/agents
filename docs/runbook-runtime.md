@@ -82,27 +82,46 @@ OpenMoat owns agent hooks, policy packs, stdio MCP gating and audit logs (ai-hub
 ADR-0030 hooks cohort and ADR-0045 OpenMoat amendment; Bead `aihub-wzj8i`). AI Hub no
 longer declares a hook daemon or socket unit.
 
-Implementation status (2026-11-20, Bead `aihub-wzj8i`): Phases 2-4 (fleet hooks,
-policy pack, native acceptance carrier) are implemented on `origin/dev`.
-Phases 1 (fork sync), 5 (legacy extermination, 164 refs), 6 (advanced + live
-activation) remain. Plan: `/home/marlonsc/.opencode/plan/openmoat-v024.md`.
-ADR: ADR-0030 (amendment 2026-11-20), ADR-0045 (amendment 2026-11-20).
+Live state lives in Beads (`aihub-wzj8i` and children), never here. Normative
+owner: ai-hub ADR-0030, amendment 2026-11-21 (the deploy never leaves the lock
+drifted).
 
-1. `openmoat status --format json`: per-agent protection level, `hook_warnings`,
-   `lock_drift`, `mcp_changes`. An agent that disables the engine's entries (for
-   example Codex `[hooks.state] enabled = false`) runs unchecked until a person
-   enables them in the agent.
-2. `openmoat doctor --format json`: lock, hooks, sandbox, MCP and binary integrity.
-3. `openmoat show --recent N --format json` and `openmoat why --last`: the decisions
-   real agent calls produced; no decision means no hook ran.
-4. Operator-only interactive terminal actions when `doctor` or `status` reports drift:
-   - `openmoat mcp accept ai-hub`: accept updated MCP server and tool pins.
-   - `openmoat sandbox sync`: synchronize OS sandbox profiles (requires OpenMoat
-     `>= 0.22.1` on Linux so Codex profiles exclude `/run/user` deny globs).
-   - `openmoat policy trust-key` and `openmoat policy install <pack>`: install signed
-     policy packs; `openmoat trust` enables a repository's `.moat/policy.yaml`.
-   - `openmoat policy check-diff`: verify diff compliance before PR merge.
-   - `openmoat audit anchor` and `openmoat provenance`: record closure evidence.
+### Read (any session)
+
+- `openmoat status --format json`: protection level per agent, `hook_warnings`,
+  `lock_drift`, `mcp_changes`. `ai-hub status` reports the same findings.
+- `openmoat why --last`: the rule, why and next step of the last decision.
+- `openmoat show --since today`, `openmoat report`, `openmoat audit stats`: what was
+  denied or held, and how often.
+
+### Agents: how to work under OpenMoat
+
+- One plain command per shell call, in series. Parallel calls can be denied with
+  `kernel-error` (audit database locked).
+- A denial names `rule`, `why` and `next`: use the canonical form it points to
+  (Make verb, `git -C`, `direnv exec <dir>`); never retry the same shape.
+- Never run OpenMoat's own commands (`doctor`, `init`, `trust`, `allow`, `allowed`,
+  `edit`, `sandbox sync`, `mcp accept`, `policy install`) and never read or write
+  `~/.moat/**` or `.moat/policy.yaml`: they are `kernel-self`, reserved to a person.
+- On `kernel-integrity` (every call denied): stop, do not retry, give the person the
+  recovery steps below.
+
+### Person at a terminal
+
+| Situation | Steps |
+|---|---|
+| Every agent call denied (`kernel-integrity`) | 1. `openmoat doctor` lists the drifted file. 2. Confirm the change is yours. 3. `openmoat doctor --accept`. 4. `openmoat status` shows `Lock … intact`. |
+| MCP server refused (`mcp-server-changed`) | `openmoat mcp accept ai-hub`, then restart the agent session. |
+| Policy or sandbox changed | `openmoat sandbox sync`. |
+| Repository policy added or changed | `openmoat trust` in that repository. |
+| Codex runs unchecked ("not trusted") | Open Codex, run `/hooks`, trust the OpenMoat hooks. |
+| A held call should run | `openmoat allow --last` (session, 24 h) or `--always --for 1w`. |
+| Reviews while away | `openmoat approvals connect telegram`, then `openmoat approvals install`. |
+| Upgrade | `make setup` (fork latest) → `openmoat policy upgrade` → `openmoat doctor --accept` → `openmoat sandbox sync`. |
+| Watch live | `openmoat watch` in a second pane. |
+
+A deploy refuses before any write when the lock has drifted or a publication would
+change an engine-pinned file: fix the surface that writes it, never re-pin around it.
 
 ## Install idempotence
 
