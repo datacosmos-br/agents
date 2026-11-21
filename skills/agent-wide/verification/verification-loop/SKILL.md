@@ -10,8 +10,8 @@ metadata:
 # Verification Loop
 
 Before claiming that a change works, is done or is ready, prove it on the smallest real
-runtime (`rules/law.md` law 9); the commit hook and the integration CI run the declared
-gates, and no manual gate run precedes a commit or push (`rules/git/gitflow-branch-pr.md`).
+runtime (`rules/law.md` law 9); the declared gates prove it through the hooks and the
+integration CI (`rules/workflow/canonical-commands.md`).
 
 - Each claim carries law 1 evidence from this turn; a run that executed nothing is not a
   pass.
@@ -20,8 +20,8 @@ gates, and no manual gate run precedes a commit or push (`rules/git/gitflow-bran
 - A later edit voids earlier evidence for the scope it touches.
 - Each boundary (resume, before code, commit, merge) starts from live state: the
   integration tip merged into the lane and the owner's source read; a snapshot,
-  brief or memory is a lead, never evidence. Anything long runs in the background or
-  in a subagent and never blocks the session (`rules/workflow/canonical-commands.md`).
+  brief or memory is a lead, never evidence. No gate is skipped or hand-run in the
+  hooks' place.
 - A hook's refusal is a failing gate and is never bypassed (law 8).
 - Done means landed under law 10 and `rules/git/gitflow-branch-pr.md`; local green or an
   open pull request is in progress.
