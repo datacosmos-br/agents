@@ -25,7 +25,8 @@ never retired. Preservation and retirement run through the
 operator's runtime tooling, which a consumer project never integrates or documents as
 usage (tracker `operator-order-2026-11-05-preserve-on-forge`).
 
-A pull request is one complete work step, proven on its final head by the repository's
-declared gates and at the real entry point before the first push, and it is integrated
+A pull request is one complete work step, proven at the real entry point before the first
+push and on its final head by the declared gates its hooks and integration CI run
+(`rules/workflow/canonical-commands.md`), and it is integrated
 before the same actor opens the next one (tracker memory
 `operator-order-2026-11-15-pr-is-one-validated-step`).

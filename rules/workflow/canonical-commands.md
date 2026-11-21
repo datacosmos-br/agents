@@ -11,7 +11,12 @@ does only its own operation ([law](../law.md)); a change is validated by its own
 scoped command, and gates cover source, tests, examples and scripts alike. Configuration
 declares the newest versions and only the upgrade verb locks them; every other verb
 installs from the committed locks, offline. Heavy jobs pass host admission at idle
-priority; under load a run narrows, never waits. A pull-request gate fits
+priority; under load a run narrows, never waits. A long command or job runs in the
+background or in a subagent, never blocking its session on a poll
+(`operator-order-2026-11-21-long-runs-in-background`). An agent does not hand-run check,
+mod, fix, fmt or tests to admit a commit or push: the commit and push hooks run them, and
+the pull request merges only with its integration CI green on its exact head
+(`operator-order-2026-11-21-hooks-and-ci-own-gates`). A pull-request gate fits
 `gates.pr_budget_minutes` (`config/governance.json`). Every command runs under a
 deadline, the 120-second bound of `operator-order-2026-10-24-make-always-with-timeout`
 unless its project declares tighter, and a timeout is a failure fixed at its cause. Test
