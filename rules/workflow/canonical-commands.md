@@ -6,31 +6,32 @@ metadata:
 
 # Canonical commands
 
-Every operation runs through declared verbs, each a thin call to its native tool that
-does only its own operation ([law](../law.md)); a change is validated by its owner's
-scoped command, and gates cover source, tests, examples and scripts alike. Configuration
-declares the newest versions and only the upgrade verb locks them; every other verb
-installs from the committed locks, offline. Heavy jobs pass host admission at idle
-priority; under load a run narrows, never waits or reports blocked. A long command or
-job runs in the background or in a subagent, never blocking its session on a poll
-(`operator-order-2026-11-21-long-runs-in-background`). Delivery is edit, `git add` of
-explicit paths, `git commit -F <file>`, `git merge --no-ff` of the integration tip, push,
-a pull request from `--body-file`, integration CI on its exact head, merge commit, then
-deploy and runtime proof: the commit and push hooks run check, mod, fix, fmt and tests,
-so an agent hand-runs a gate only to diagnose a red hook or CI, while the generation
-verbs a change needs (gen, and upg on a pin change) still run
-(`operator-decision-2026-11-21-hooks-and-ci-own-gates`). A red check is fixed at its
-cause in the same lane and the green head merges without `--admin`; a full `make mod`
-or the full test verb runs only when ordered; a red integration branch is repaired,
-adopting its owning lane when that lane is not landing, never waited on, and
-"pre-existing" or "another lane's" is no reason to stop, warnings included
-([law](../law.md) 8–10; `operator-order-2026-11-21-hooks-and-ci-are-the-gates`).
-A pull-request gate fits `gates.pr_budget_minutes` (`config/governance.json`). Every
-command runs under a deadline, the 120-second bound of `operator-order-2026-10-24-make-always-with-timeout`
+Every operation uses its declared native verb ([law](../law.md)). Gates cover source,
+tests, examples and scripts. Configuration declares versions. Setup installs the
+committed locks offline, and upg changes pins. Stage explicit paths, commit from a
+message file, merge a moved integration tip with `git merge --no-ff`, push, and open
+the PR from `--body-file`. Native commit and push hooks run each project's declared
+checks. Required integration CI must pass on the exact PR head before the reviewed
+merge. An agent hand-runs check, mod, fix, fmt or tests only to diagnose a red result.
+Run gen when generated surfaces change and upg when pins change. Full mod and full
+tests require an explicit order. Scope authorizes runtime publication and proof.
+Repair red hooks, CI and integration findings at their owner, including warnings,
+and follow [law 8–10](../law.md)
+(`operator-decision-2026-11-21-hooks-and-ci-own-gates`).
+Long work, queue waits and CI monitoring run in the background or through authorized
+subagents while independent work advances. Heavy jobs pass host admission at idle
+priority (`operator-order-2026-11-21-long-runs-in-background`). A pull-request gate
+fits `gates.pr_budget_minutes` (`config/governance.json`). Every command runs under
+the 120-second deadline of `operator-order-2026-10-24-make-always-with-timeout`
 unless its project declares tighter, and a timeout is a failure fixed at its cause. Test
 verbs: the incremental one runs Testmon on its persistent database, replaced only by its
 schema migration; the full one runs without it and alone states a suite's time. An empty
-run is an integrity-checked cache hit. The complete native test suite must finish within
+run is an integrity-checked cache hit. Automated tests use private writable state with
+no access to live user configuration, credentials, runtime sockets or service control.
+The test entry point fails if it cannot establish isolation. Runtime acceptance uses a
+separate candidate and publishes evidence. Hook, sandbox and MCP publication applies
+only to the authorized agent cohort. Hook acceptance proves the executable launches
+on the recipient platform. The complete native test suite must finish within
 240 seconds of wall time, subject to any stricter declared deadline. An individual test
 taking more than 2 seconds, including setup and teardown, requires causal profiling and
 verified optimization. Every test has a hard 20-second limit
