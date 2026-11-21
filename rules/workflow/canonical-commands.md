@@ -11,8 +11,8 @@ does only its own operation ([law](../law.md)); a change is validated by its own
 scoped command, and gates cover source, tests, examples and scripts alike. Configuration
 declares the newest versions and only the upgrade verb locks them; every other verb
 installs from the committed locks, offline. Heavy jobs pass host admission at idle
-priority; under load a run narrows, never waits or reports blocked. A long command or job runs in the
-background or in a subagent, never blocking its session on a poll
+priority; under load a run narrows, never waits or reports blocked. A long command or
+job runs in the background or in a subagent, never blocking its session on a poll
 (`operator-order-2026-11-21-long-runs-in-background`). Delivery is edit, `git add` of
 explicit paths, `git commit -F <file>`, `git merge --no-ff` of the integration tip, push,
 a pull request from `--body-file`, integration CI on its exact head, merge commit, then
