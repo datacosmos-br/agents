@@ -22,9 +22,9 @@ capsule_summary: |
   turns a red into a green.
   9 The real entry point is the proof; wrong production is repaired, never
   written into a test; nothing is left failing or off the current public interface.
-  10 Done is the whole agreed scope, tested, error-free at the integration tip after
-  review and green checks; nothing else is claimed before it, and in-progress work
-  names the exact missing step. 
+  10 Done is the whole agreed scope merged at the integration tip with green CI and
+  active in runtime; nothing else is claimed before it, and in-progress work names
+  the exact missing step.
   11 Never destroy another actor's work. 
   12 Governance stays short.
 metadata:
@@ -98,7 +98,7 @@ cost; everything else proceeds.
    first and no test expects a defect. Nothing is left failing: code, lints and tests are
    green on the current public interface.
 10. **Finish the cycle.** Done is the whole agreed plan, every case, merged at the
-    integration tip after review and green checks, tested, error-free and running live at
+    integration tip after review and green CI, tested, error-free and running live at
     the agreed level with evidence; anything less is in progress, naming the exact missing
     step.
 11. **Never destroy another actor's work.** Concurrent and unknown changes are kept,
