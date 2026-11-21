@@ -11,10 +11,13 @@ tests, examples and scripts. Configuration declares versions. Setup installs the
 committed locks offline, and upg changes pins. Stage explicit paths, commit from a
 message file, merge a moved integration tip with `git merge --no-ff`, push, and open
 the PR from `--body-file`. Native commit and push hooks run each project's declared
-checks. Required integration CI must pass on the exact PR head before the reviewed
-merge. Every plan phase, and the plan's end, ends with its PR merged into the
-integration branch before the next phase starts; a missing integration PR is a grave
-failure (`operator-order-2026-11-21-integration-pr-every-phase`). An agent hand-runs check, mod, fix, fmt or tests only to diagnose a red result.
+checks on the index only, so read `git status` before committing: unstaged edits are
+absent from the commit the hooks passed. Required integration CI must pass on the
+exact PR head before the reviewed merge. Every plan phase, and the plan's end, ends
+with its PR merged into the integration branch before the next phase starts; a
+missing integration PR is a grave failure
+(`operator-order-2026-11-21-integration-pr-every-phase`). An agent hand-runs check,
+mod, fix, fmt or tests only to diagnose a red result.
 Run gen when generated surfaces change and upg when pins change. Full mod and full
 tests require an explicit order. Scope authorizes runtime publication and proof.
 Repair red hooks, CI and integration findings at their owner, including warnings,
