@@ -49,8 +49,6 @@ def _run(
         encoding="utf-8",
     )
     bd.chmod(0o755)
-    # An inherited BASH_ENV defines a `bd` shell function that outranks PATH, so
-    # the script would read the live tracker instead of this inventory.
     environment = {k: v for k, v in os.environ.items() if k != "BASH_ENV"}
     environment["PATH"] = f"{fake_bin}:{environment['PATH']}"
     repository = Path(__file__).resolve().parents[1]

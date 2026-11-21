@@ -23,4 +23,12 @@ taking more than 2 seconds, including setup and teardown, requires causal profil
 verified optimization. Every test has a hard 20-second limit
 (`operator-order-2026-11-15-ci-test-budget`). A generated file names its writer and
 regeneration command; a tool-written block changes only through that tool and loses to
-any rule it contradicts. Text published to a forge or tracker comes from a file.
+any rule it contradicts. Text published to a forge or tracker comes from a file. Shell
+invocations run one plain governed command per call, typed without an `rtk` prefix (rtk's
+own hook rewrites eligible commands and never rewrites `git`), with no `;` chaining, pipes,
+`&`, `/dev/null` or file redirections, `cd`, or `||` fallback, and never bypass a hook.
+Work a declared verb owns (`python`, `ruff`, `pyrefly`, `uv`, `pip`, `pipx`, `mise`,
+`pytest`) runs through that `make` / `ai-hub` / `cli` verb; a missing capability extends
+that owner. `make setup` trusts and syncs a new worktree before `make gen`, never run
+silent commands exceeding 10 seconds without progress, and use `ai-hub wip sweep` for
+worktree/branch cleanup.

@@ -20,7 +20,6 @@ specifiers = ["latest"]
 
 [tools.ast-grep."platforms.linux-x64"]
 checksum = "sha256:22803eb0c5bf83164fb7fd76d4721d355ecf0c8466ef47342c1ec7d80897ca47"
-checksum_source = "mise-versions"
 url = "https://github.com/ast-grep/ast-grep/releases/download/0.51.3/app-x86_64-unknown-linux-gnu.zip"
 url_api = "https://api.github.com/repos/ast-grep/ast-grep/releases/assets/753396224"
 
@@ -105,7 +104,6 @@ specifiers = ["latest"]
 
 [tools.snyk."platforms.linux-x64"]
 checksum = "sha256:4802579c2818938a2f4849d270df1139f310104286a8a5c6305328a3c2eb9e1c"
-checksum_source = "mise-versions"
 url = "https://github.com/snyk/cli/releases/download/v1.1309.0/snyk-linux"
 url_api = "https://api.github.com/repos/snyk/cli/releases/assets/768069502"
 

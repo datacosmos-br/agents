@@ -10,7 +10,7 @@ Make the ai-hub model-pipeline runtime actually work end-to-end: provenance rese
 
 | Layer | State | Proof |
 |---|---|---|
-| Provenance (CCS) | CLEARED — `model_pipeline:` block removed from `~/.ccs/config.yaml` via the fork's `DELETE /api/config/model-pipeline` (agent implemented the endpoint; binary rebuilt WITH stamping ldflags, swapped with backup, restarted 2026-09-27 14:04) | `/home/marlonsc/tmp/v8/provenance-unblock2/` |
+| Provenance (CCS) | CLEARED — `model_pipeline:` block removed from `~/.ccs/config.yaml` via the fork's `DELETE /api/config/model-pipeline` (agent implemented the endpoint; binary rebuilt WITH stamping ldflags, swapped with backup, restarted 2026-09-27 14:04) | `$HOME/tmp/v8/provenance-unblock2/` |
 | Inventory (dc12) | Validates against `AiHubModelPipelineInventory` after the stamp rebuild (the unstamped build emitted `built_at: "unknown"`) | `provenance-unblock2/15-inventory-model-valid.txt` |
 | Catalog resolution | 17/17 dc12 claude models normalize to unique `anthropic/*` entries (graph channel-identity normalization landed: commit `1119ea785`) | contract tests 37/37 |
 | Snapshot assembly | FAILS on `claude/claude-3-5-haiku-20241022` — no resolved catalog model in models.dev for that pair. THE remaining blocker | journal 14:54+ |

@@ -80,7 +80,8 @@ with the captured commands.
 
 OpenMoat owns agent hooks, policy packs, stdio MCP gating and audit logs (ai-hub
 ADR-0030 hooks cohort and ADR-0045 OpenMoat amendment; Bead `aihub-wzj8i`). AI Hub no
-longer declares a hook daemon or socket unit.
+longer declares a hook daemon or socket unit. The cutover's progress lives on that
+Bead and its children.
 
 1. `openmoat status --format json`: per-agent protection level, `hook_warnings`,
    `lock_drift`, `mcp_changes`. An agent that disables the engine's entries (for
@@ -92,11 +93,25 @@ longer declares a hook daemon or socket unit.
 4. Operator-only interactive terminal actions when `doctor` or `status` reports drift:
    - `openmoat mcp accept ai-hub`: accept updated MCP server and tool pins.
    - `openmoat sandbox sync`: synchronize OS sandbox profiles (requires OpenMoat
-     `>= 0.22.1` on Linux so Codex profiles exclude `/run/user` deny globs).
+     `>= 0.22.1` on Linux so Codex profiles exclude `/run/user` deny globs). It
+     rewrites the `sandbox` block of `~/.claude/settings.json` from the policy, so a
+     path agents need (the mise and ai-hub data and state directories) is granted
+     by `sandbox.read_roots` in the policy, never by editing that block.
+   - Session taint: Claude Code desktop's own status tools
+     (`mcp__ccd_turn__update_plan`, `mcp__ccd_turn__wrap_up`) re-taint every session,
+     so each protected write needs a new `openmoat allow --last`; the fix belongs
+     in the OpenMoat Claude Code host spec (Bead `aihub-wzj8i.8`), not in a policy
+     override.
    - `openmoat policy trust-key` and `openmoat policy install <pack>`: install signed
      policy packs; `openmoat trust` enables a repository's `.moat/policy.yaml`.
    - `openmoat policy check-diff`: verify diff compliance before PR merge.
    - `openmoat audit anchor` and `openmoat provenance`: record closure evidence.
+   - Codex `/hooks`: trust OpenMoat's hooks; Codex runs a changed hook only then.
+   - Claude Code `>= 2.1.295` in every copy (CLI and editor extensions), then
+     `openmoat init`: older copies run a call when the hook fails.
+   - `openmoat mcp wrap <server>` for each server `doctor` reports unprotected.
+   - `openmoat allow --last`: release a `session-taint` hold on a write the
+     operator wants, such as an agent memory file (Bead `aihub-wzj8i.8`).
 
 ## Install idempotence
 
