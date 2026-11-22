@@ -19,6 +19,11 @@ Overlapping work and shared-infrastructure changes are announced first and conti
 A dispute between actors is settled by the active coordinator (the Gas City mayor) by
 priority, age and alignment with the approved plan, and then by the operator; its
 discussion and agreement are recorded in the mail thread and on the bead, automatically
-wherever Gas City and Beads are selected. Work idle past
+wherever Gas City and Beads are selected. Another lane is never a reason to wait: work a
+plan needs that stalls there is messaged once on its channel, then adopted, finished and
+landed by the actor that needs it (`operator-order-2026-11-21-no-lane-excuse`); a lane
+whose owner session is measured as stopped is adopted the same way, its bead claimed before the first
+effect, and two writers never share one lane (`operator-order-2026-11-21-done-no-excuses`). Other work
+idle past
 `coordination.abandonment_threshold_minutes` (`config/governance.json`) is open to
 adoption, never to deletion or closure ([law](../law.md) 11).

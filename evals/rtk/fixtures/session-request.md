@@ -12,7 +12,8 @@ Constraints:
 
 - rtk's native hook may rewrite eligible Bash calls automatically; do not fight it and
   do not fake its output. Git stays plain.
-- State explicitly which commands ran through the automatic rewrite and which you
-  wrapped manually, with the reason (registry gap or deferred construct).
+- Type every command plain; never type an `rtk` prefix.
+- State explicitly which commands ran through the automatic rewrite and which ran
+  plain, with the reason (registry gap or deferred construct).
 - A failure is a failure: report exit codes and decisive output; recover the full
   original output from the referenced tee file instead of re-executing.

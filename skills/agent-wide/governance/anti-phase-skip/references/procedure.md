@@ -41,27 +41,33 @@ Complete these steps in order, repeating invalidated evidence after every edit:
    fallback, compatibility, generated, test, fixture, and documentation paths.
 3. Exercise the changed behavior through its real public runtime surface on the working
    branch. A mock, import-only smoke test, or static check is insufficient.
-4. Run the repository's complete applicable native unit, integration, static, type,
-   build, shell, security, generation, and projection fixed-point gates. Missing tools,
-   warnings, skips inside an invoked workflow, empty reports, and partial scans are red.
-5. Fetch the configured integration branch and incorporate its current state through the
+4. Fetch the configured integration branch and incorporate its current state through the
    repository-approved non-destructive merge flow. Resolve concurrent work semantically,
-   then repeat runtime and every affected gate.
-6. Commit the exact phase scope, push normally, and open or update a PR against the
-   configured integration branch. Resolve every review thread and required check, obtain
+   then repeat runtime.
+5. Commit the exact phase scope, push normally, and open or update a PR against the
+   configured integration branch. The commit and push hooks and integration CI on the
+   PR head run the repository's complete applicable native unit, integration, static,
+   type, build, shell, security, generation, and projection fixed-point gates
+   (`rules/workflow/canonical-commands.md`); missing
+   tools, warnings, skips inside an invoked workflow, empty reports, and partial scans
+   are red. Resolve every review thread and required check, obtain
    the required independent approval, and merge through the approved merge strategy. An
    operator statement that no independent reviewer exists, together with an explicit
    administrative-merge authorization, replaces that approval row and nothing else. Each
    red check or actionable review finding starts another owner-correction, publish, and
    invalidated-gate cycle inside this same phase; it never terminates the phase or
    authorizes another task.
-7. Update the integration checkout to the merged SHA. Run the real public runtime and
+6. Update the integration checkout to the merged SHA. Run the real public runtime and
    closure gates again on that SHA, not on the feature branch artifact.
-8. Prove zero phase residue: no dead or compatibility code, stale projection, unrewired
+7. Prove zero phase residue: no dead or compatibility code, stale projection, unrewired
    consumer/test, open PR, residual branch/worktree, unexplained warning, or unresolved
    required finding.
-9. Close the canonical tracker item with the merged SHA and decisive runtime/gate
+8. Close the canonical tracker item with the merged SHA and decisive runtime/gate
    evidence. Only then may the phase state become DONE and the next task begin.
+
+The same cycle runs between every pair of plan phases and once more at the end of the
+plan: after the last phase, steps 6–8 repeat on the final integration SHA for the whole
+plan scope, and only then is the plan DONE (operator order 2026-11-21).
 
 ## Runtime requirement
 

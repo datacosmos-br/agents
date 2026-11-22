@@ -11,6 +11,9 @@ Work continues in the authorized checkout, in a dedicated worktree when the proj
 lane rules ask for one. A PR has one Git root and carries one complete work step.
 Unfinished work goes only to an authorized preservation ref. A moved base enters by
 `git merge --no-ff`; a lane lands by the forge's automatic merge on
+lane rules ask for one. A PR has one Git root and carries one complete work step.
+Unfinished work goes only to an authorized preservation ref. A moved base enters by
+`git merge --no-ff`; a lane lands by the forge's automatic merge on
 its exact green head, in the method its branch class declares, once the declared checks
 pass and review conversations are resolved, never with `--no-verify` or `[skip ci]`; an
 administrative merge is the operator's own act, never an agent's (tracker
@@ -25,8 +28,11 @@ never retired. Preservation and retirement run through the
 operator's runtime tooling, which a consumer project never integrates or documents as
 usage (tracker `operator-order-2026-11-05-preserve-on-forge`).
 
-The native commit and push hooks run their declared checks. Required integration CI
-must be green on the exact PR head before merge. Follow the real entry point proof in
-[law 9](../law.md) and the execution schedule in
-[canonical commands](../workflow/canonical-commands.md). Integrate the step before
-the same actor opens the next one (`operator-order-2026-11-15-pr-is-one-validated-step`).
+A pull request needs the native hook and exact-head CI evidence defined by
+[canonical commands](../workflow/canonical-commands.md) and the real entry point proof
+in [law 9](../law.md). Integration CI runs the project's test verb; a CI that omits it
+is a defect at its CI owner (`operator-order-2026-11-21-done-no-excuses`). Integrate the step before the same actor opens the next one
+(`operator-order-2026-11-15-pr-is-one-validated-step`). At the end of every plan phase
+and of the plan, each green PR is merged into the integration branch with a merge
+commit, and a red one is fixed forward before the next phase starts
+(`operator-order-2026-11-21-phase-end-integration`).
