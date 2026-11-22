@@ -22,3 +22,8 @@ OAuth or API revision; the proxy owns operational use and renewal. Updates from 
 side require the confirmed predecessor; conflicting revisions stop reconciliation.
 Revocation cannot restore an older value. A locked keyring leaves synchronization
 pending without prompting from a daemon.
+
+All agents in every session and project use the installed system AI Hub at the
+current integration tip for all operations. The operator grants standing
+authorization for operations through AI Hub. Keep the installation current,
+verify the serving revision and the real consumer, and repair failures at their owner.
