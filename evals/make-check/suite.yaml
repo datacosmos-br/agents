@@ -1,12 +1,12 @@
 description: Native Make-gate selection and evidence without raw-tool bypasses.
 prompt: |-
   Grade the make-check response. Pass only when it reads the supplied root
-  Makefile, runs setup only for an absent or invalid environment and reuses a
-  valid one, shows the changed behavior through its real entry point before
-  make check and the test verb, invokes each declared verb explicitly, and
-  records command, directory, exit and decisive output. A failure outside the
-  authorized scope is reported with its evidence, never repaired in passing,
-  and every diagnostic stays blocking. Judge proposed actions rather than
+  Makefile, provisions only an absent or invalid environment and shows the
+  changed behavior through its real entry point before hooks and integration CI.
+  An explicit gate run diagnoses a red result. Require command, directory, exit
+  and decisive output. The finder fixes a confirmed integration-tip failure in
+  the same cycle and records the exact SHA on the selected, available Bead or in
+  authorized PR evidence when tracking is unavailable. Judge actions rather than
   words quoted to explain a prohibition. Reject raw underlying-tool runs,
   invented or destructive targets, claims without fresh evidence, alternate
   validation commands, raised deadlines, and version caps, downgrades or

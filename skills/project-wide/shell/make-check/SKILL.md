@@ -24,6 +24,6 @@ verbs, deadlines, profiling, locks and test selection.
 - Record each run's command, directory, exit and decisive output for its scope.
   Compare native timing receipts for the same workload and verify behavior and coverage.
 
-Check `$crg` consumers before declaring code dead. For a failure confirmed on the
-integration tip, the finder records its SHA on the Bead and fixes it in the same cycle
-through `rules/git/gitflow-branch-pr.md`.
+Check `$crg` consumers before declaring code dead. On a confirmed integration-tip red,
+the finder fixes it this cycle via `rules/git/gitflow-branch-pr.md` and records the SHA
+per `rules/workflow/beads-traceability.md`, or in the PR if tracking is unavailable.
