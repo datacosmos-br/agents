@@ -25,5 +25,8 @@ pending without prompting from a daemon.
 
 All agents in every session and project use the installed system AI Hub at the
 current integration tip for all operations. The operator grants standing
-authorization for operations through AI Hub. Keep the installation current,
-verify the serving revision and the real consumer, and repair failures at their owner.
+authorization for operations through AI Hub. Every daemon and spawner must run
+the latest integrated AI Hub binary. AI Hub propagates CRG and OpenViking triggers
+and MCP access to every configured agent, repository and worktree. Verify the
+serving revision, each hook event and each MCP at its real consumer. A runtime,
+hook or MCP failure blocks other work until repaired at its owner.
