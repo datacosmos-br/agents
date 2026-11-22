@@ -25,5 +25,5 @@ verbs, deadlines, profiling, locks and test selection.
   Compare native timing receipts for the same workload and verify behavior and coverage.
 
 Check `$crg` consumers before declaring code dead. On a confirmed integration-tip red,
-the finder fixes it this cycle via `rules/git/gitflow-branch-pr.md` and records the SHA
-per `rules/workflow/beads-traceability.md`, or in the PR if tracking is unavailable.
+the finder fixes it this cycle via `rules/git/gitflow-branch-pr.md`. Record the full SHA
+on the selected tracker when available, or in the PR otherwise.
