@@ -33,7 +33,12 @@ priority (`operator-order-2026-11-21-long-runs-in-background`); host load, admis
 refusals, queue waits and API quota exhaustion never stop a slice: the agent continues it
 and fixes the measured cause at its owner, coordinating with the other sessions, without
 weakening FLEXT rules or changing what lint, CI and make verbs check
-(`operator-decision-2026-11-22-aggregate-prs-own-load`). A pull-request gate
+(`operator-decision-2026-11-22-aggregate-prs-own-load`). A long verb started
+from an agent terminal runs detached in its worktree (`setsid nohup make <verb>`, output
+in `<worktree>/nohup.out`) and is awaited by one background
+`tail --pid=<pid> -n 0 -f <worktree>/nohup.out`, never a shell loop; lane start, commit,
+push, PR and merge use the project's `ai-hub wip` verbs
+(`operator-order-2026-11-22-long-verbs-detached`). A pull-request gate
 fits `gates.pr_budget_minutes` (`config/governance.json`). Every command runs under
 the 120-second deadline of `operator-order-2026-10-24-make-always-with-timeout`
 unless its project declares tighter, and a timeout is a failure fixed at its cause. Test

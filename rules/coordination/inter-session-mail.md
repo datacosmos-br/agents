@@ -24,6 +24,8 @@ plan needs that stalls there is messaged once on its channel, then adopted, fini
 landed by the actor that needs it (`operator-order-2026-11-21-no-lane-excuse`); a lane
 whose owner session is measured as stopped is adopted the same way, its bead claimed before the first
 effect, and two writers never share one lane (`operator-order-2026-11-21-done-no-excuses`). Other work
-idle past
-`coordination.abandonment_threshold_minutes` (`config/governance.json`) is open to
-adoption, never to deletion or closure ([law](../law.md) 11).
+idle past `coordination.abandonment_threshold_minutes` (`config/governance.json`) is
+adopted and finished by the actor that needs it, never deleted or closed
+([law](../law.md) 11); active work is joined through its owner. Nothing is handed back to
+the operator except an action only the operator can perform, given once as exact
+numbered steps.
