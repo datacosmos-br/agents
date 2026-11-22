@@ -29,7 +29,12 @@ branch and Bead updated; an unintegrated PR is not a finished phase ([law 10](..
 `operator-order-2026-11-21-phase-integration`).
 Long work, queue waits and CI monitoring run in the background or through authorized
 subagents while independent work advances. Heavy jobs pass host admission at idle
-priority (`operator-order-2026-11-21-long-runs-in-background`). A pull-request gate
+priority (`operator-order-2026-11-21-long-runs-in-background`). A long verb started
+from an agent terminal runs detached in its worktree (`setsid nohup make <verb>`, output
+in `<worktree>/nohup.out`) and is awaited by one background
+`tail --pid=<pid> -n 0 -f <worktree>/nohup.out`, never a shell loop; lane start, commit,
+push, PR and merge use the project's `ai-hub wip` verbs
+(`operator-order-2026-11-22-long-verbs-detached`). A pull-request gate
 fits `gates.pr_budget_minutes` (`config/governance.json`). Every command runs under
 the 120-second deadline of `operator-order-2026-10-24-make-always-with-timeout`
 unless its project declares tighter, and a timeout is a failure fixed at its cause. Test

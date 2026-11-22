@@ -11,6 +11,9 @@ Work continues in the authorized checkout, in a dedicated worktree when the proj
 lane rules ask for one. A PR has one Git root and carries one complete work step.
 Unfinished work goes only to an authorized preservation ref. A moved base enters by
 `git merge --no-ff`; a lane lands by the forge's automatic merge on
+lane rules ask for one. A PR has one Git root and carries one complete work step.
+Unfinished work goes only to an authorized preservation ref. A moved base enters by
+`git merge --no-ff`; a lane lands by the forge's automatic merge on
 its exact green head, in the method its branch class declares, once the declared checks
 pass and review conversations are resolved, never with `--no-verify` or `[skip ci]`; an
 administrative merge is the operator's own act, never an agent's (tracker
