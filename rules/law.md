@@ -21,7 +21,8 @@ capsule_summary: |
   place is moved or deleted in the same touch.
   5 Validate once at the boundary; inside, trust the shared model.
   6 Fix by deletion, never by a layer on top; no rollback before its reason is
-  understood, and an exterminated symbol stays exterminated. 7 Laws are authored data for the
+  understood, and an exterminated symbol stays exterminated; code or a test
+  against a rule is corrected or exterminated. 7 Laws are authored data for the
   tool that checks them; nothing generates rules. 8 Fail loud on one path; no mask
   turns a red into a green.
   9 Prove behavior at the real entry point. Every agent and session corrects or
@@ -82,7 +83,10 @@ cost; everything else proceeds.
    Code without a consumer is deleted, Git is the recovery, and a change rewires its
    consumers and removes obsolete code, fallbacks and compatibility paths at once. A pure
    deletion lands even on a red base. Nothing is rolled back before the reason it changed is
-   understood, and what an owner exterminated stays exterminated.
+   understood, and what an owner exterminated stays exterminated. Implementation and tests
+   that are wrong against the rules are corrected or exterminated (operator, 2026-11-22:
+   "implementação e testes errados contra as regras tem que ser corrigida ou
+   exterminados!", `operator-ruling-2026-11-22-corrigir-ou-exterminar`).
 7. **Laws are data.** A checkable law is one authored rule for its tool, built from what
    the tool sees, with its fixture; nothing generates rules or their inputs, and no code
    branch encodes a law. A recurring correction runs as one rule or refactoring over every
