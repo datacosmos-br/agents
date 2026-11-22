@@ -21,9 +21,9 @@ verbs, deadlines, profiling, locks and test selection.
 - The changed behavior is shown through its real entry point first; the declared gates
   then run through the commit and push hooks and the integration CI, and an explicit gate
   run only diagnoses a red one.
-- Each run records command, directory, exit and decisive output; a focused run proves only
-  its own scope.
+- Record each run's command, directory, exit and decisive output for its scope.
+  Compare native timing receipts for the same workload and verify behavior and coverage.
 
-Compose `$crg` when the change needs structural impact; a graph hit is not dead code until
-its consumers are checked. A failure outside the authorized scope is reported with its
-evidence, never repaired in passing.
+Check `$crg` consumers before declaring code dead. For a failure confirmed on the
+integration tip, the finder records its SHA on the Bead and fixes it in the same cycle
+through `rules/git/gitflow-branch-pr.md`.
