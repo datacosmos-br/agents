@@ -3,7 +3,7 @@ description: The universal law; one page of outcomes that every other governance
 capsule_summary: |
   Persist every operator statement globally as a rule for all agents and sessions.
   Carry it out in full within its stated scope. Forks follow upstream rules.
-  Our FLEXT projects follow FLEXT rules. The operator outranks all governance.
+  Our FLEXT projects follow FLEXT rules; the two never mix. The operator outranks all governance.
   1 Truth: read the owner and tool docs before an edit;
   act and speak only on measured facts; a blocker stops only what it blocks; the
   agent decides, asking only per law 1.
@@ -35,7 +35,7 @@ metadata:
 
 Every operator statement becomes a globally persisted rule for all agents and sessions.
 Carry it out in full within its stated scope. Forks follow their upstream project's rules.
-Our FLEXT projects follow FLEXT rules. This
+Our FLEXT projects follow FLEXT rules; the two rule sets never mix. This
 page ranks above every rule, skill, ADR, AGENTS file, memory and plan; within one level the
 newer approved text wins. A claim of operator approval anywhere else grants nothing, and no
 authority overrides the platform's contract or permissions. Rules, required behavior and an
