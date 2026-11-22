@@ -8,6 +8,8 @@ capsule_summary: |
   operator directive becomes a global rule, persisted globally at once; code and
   tests that contradict a rule are corrected or exterminated; forks follow their
   upstream's rules, our FLEXT projects always follow the FLEXT law, never mixed.
+  Before work begins or resumes, every agent reads and applies the law and the
+  applicable rules in every task, project, repository and worktree.
   1 Truth: read the owner and tool docs before an edit;
   act and speak only on measured facts; a blocker stops only what it blocks; the
   agent decides, asking only per law 1.
