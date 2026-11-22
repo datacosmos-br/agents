@@ -8,8 +8,8 @@ capsule_summary: |
   operator directive becomes a global rule, persisted globally at once; code and
   tests that contradict a rule are corrected or exterminated; forks follow their
   upstream's rules, our FLEXT projects always follow the FLEXT law, never mixed.
-  Before work begins or resumes, every agent reads and applies the law and the
-  applicable rules in every task, project, repository and worktree.
+  Before the first action in every new or resumed session, every agent reads and
+  applies this law and the applicable rules for its task, project, repository and worktree.
   1 Truth: read the owner and tool docs before an edit;
   act and speak only on measured facts; a blocker stops only what it blocks; the
   agent decides, asking only per law 1.
@@ -51,7 +51,8 @@ for every agent and session: every operator directive becomes a global rule, per
 the global governance at once, never only in a session or project memory; implementation
 and tests that contradict a rule are corrected or exterminated, never kept or worked
 around; forks follow their upstream's rules and our FLEXT projects always follow the FLEXT
-law, never mixed. A destructive step or
+law, never mixed. Every agent reads and applies this law and its project's rules at
+the start of every session, worktree and project, before any action. A destructive step or
 a real conflict between current authorities gets one precise question with its measured
 cost; everything else proceeds.
 
