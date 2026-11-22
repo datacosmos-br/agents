@@ -29,7 +29,11 @@ branch and Bead updated; an unintegrated PR is not a finished phase ([law 10](..
 `operator-order-2026-11-21-phase-integration`).
 Long work, queue waits and CI monitoring run in the background or through authorized
 subagents while independent work advances. Heavy jobs pass host admission at idle
-priority (`operator-order-2026-11-21-long-runs-in-background`). A long verb started
+priority (`operator-order-2026-11-21-long-runs-in-background`); host load, admission
+refusals, queue waits and API quota exhaustion never stop a slice: the agent continues it
+and fixes the measured cause at its owner, coordinating with the other sessions, without
+weakening FLEXT rules or changing what lint, CI and make verbs check
+(`operator-decision-2026-11-22-aggregate-prs-own-load`). A long verb started
 from an agent terminal runs detached in its worktree (`setsid nohup make <verb>`, output
 in `<worktree>/nohup.out`) and is awaited by one background
 `tail --pid=<pid> -n 0 -f <worktree>/nohup.out`, never a shell loop; lane start, commit,
@@ -79,5 +83,5 @@ sweep verb for worktree/branch cleanup.
 
 ## Delivery
 
-A lane commits and pushes as soon as its change is complete: the pre-commit and pre-push hooks run the Make gates, and the integration CI decides the merge; no session runs check, fix, fmt or tests by hand only to commit. Only `make setup` publishes to the host and only `make upg` changes versions. Long-running work runs in the background or in a subagent, and its end wakes the session. Work that another lane holds is integrated, never waited on: merge its branch `--no-ff` or copy its fix byte for byte. Done is merged at the integration tip and active at runtime with proof.
+A lane commits and pushes as soon as its change is complete: the pre-commit and pre-push hooks run the Make gates, and the integration CI decides the merge; no session runs check, fix, fmt or tests by hand only to commit. Only `make setup` publishes to the host and only `make upg` changes versions. Long-running work runs in the background or in a subagent, and its end wakes the session. Work that another lane holds is integrated, never waited on: merge its branch `--no-ff` or copy its fix byte for byte. Related slices may merge `--no-ff` into one lane, be validated together and land as one PR with one green integration CI, each Bead still recording its own evidence (`operator-decision-2026-11-22-aggregate-prs-own-load`). Done is merged at the integration tip and active at runtime with proof.
 A red test, warning or finding on the integration tip is fixed in the same cycle by the actor that finds it; "pre-existing" and "another lane's" never defer it, and a commit is named by its full SHA read from Git, never guessed (`operator-order-2026-11-21-done-no-excuses`).
