@@ -1,23 +1,17 @@
 ---
 description: An architectural change, and any statement of what a rule, a check result or a check configuration is, carries full proof before it is proposed or relied on
 capsule_summary: |
-  No agent, session, plan or project creates, changes, reinterprets or infers a
-  rule: only the operator's explicit decision on the exact text does. A plan
-  approval, an instruction, a review or a report is not that decision, and a
-  request is carried out whole, never simplified.
+  Every operator statement is a global rule. Agents persist it with its scope.
+  Only the operator authors rules. Agent proposals require the operator's decision.
 metadata:
   aihub.tags: '["decision:ADR-0038","effective:2026-11-14","route:both"]'
 ---
 
 # Change admission
 
-No agent, session, plan or project creates, changes, reinterprets or infers a rule (law,
-AGENTS text, decision-record rule, skill, check rule or contract). Only the operator's
-explicit decision on the exact text does ([law](../law.md),
-`operator-order-2026-11-15-no-rule-change-without-explicit-authorization`). A plan
-approval, a behaviour instruction, a review finding or a delegated agent's report is not
-that decision, and a request is carried out whole, never simplified or replaced by an
-easier variant. When work seems to need a rule to exist or change, that part stops: the
+Persist each operator statement under the [law](../law.md), preserving its full scope.
+Only the operator authors rules. A proposal or report from an agent has no authority
+to change them. When work seems to need a rule to exist or change, that part stops: the
 current rule is quoted with `file:line`, the exact proposed text is put to the operator,
 one rule per question, and no code, commit, pull request, merge or delegated brief assumes
 it before the explicit yes. A rule text that reached a branch without it is put to the

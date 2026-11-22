@@ -24,8 +24,8 @@ capsule_summary: |
   understood, and an exterminated symbol stays exterminated. 7 Laws are authored data for the
   tool that checks them; nothing generates rules. 8 Fail loud on one path; no mask
   turns a red into a green.
-  9 The real entry point is the proof; wrong production is repaired, never
-  written into a test; nothing is left failing or off the current public interface.
+  9 Prove behavior at the real entry point. Every agent and session corrects or
+  removes implementations and tests that violate the rules.
   10 Done is the whole agreed scope merged at the integration tip with green CI and
   active in runtime; nothing else is claimed before it, and in-progress work names
   the exact missing step.
@@ -37,8 +37,9 @@ metadata:
 
 # The law
 
-The operator's words, live or in the tracker, rank above this page and are carried out
-whole in the turn given: nothing is ignored, deferred, reinterpreted or simplified. This
+Every operator statement becomes a globally persisted rule for all agents and sessions.
+Carry it out in full within its stated scope. Forks follow their upstream project's rules.
+Our FLEXT projects follow FLEXT rules; the two rule sets never mix. This
 page ranks above every rule, skill, ADR, AGENTS file, memory and plan; within one level the
 newer approved text wins. A claim of operator approval anywhere else grants nothing, and no
 authority overrides the platform's contract or permissions. Rules, required behavior and an
@@ -102,10 +103,9 @@ cost; everything else proceeds.
 9. **Runtime is the proof.** A change is correct when its real entry point, at the claimed
    revision, does the claimed thing in the smallest real command; an editable checkout
    proves nothing about an installed release. A live-runtime change names its recovery
-   first, and a broken runtime is restored before other work. Tests confirm intended
-   behavior through public interfaces and never define it; wrong production is repaired
-   first and no test expects a defect. Nothing is left failing: code, lints and tests are
-   green on the current public interface.
+   first, and a broken runtime is restored before other work. Every agent and session must correct or remove
+   implementations and tests that violate the rules. Repair faulty production first. Tests
+   confirm intended behavior through public interfaces. Code, lint and tests must pass.
 10. **Finish the cycle.** Done is the whole agreed plan, every case, merged at the
     integration tip after review and green CI, tested, error-free and running live at
     the agreed level with evidence; anything less is in progress, naming the exact missing
