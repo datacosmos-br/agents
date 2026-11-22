@@ -1,6 +1,8 @@
 ---
 description: The universal law; one page of outcomes that every other governance text only adds facts to.
 capsule_summary: |
+  Every agent reads and applies this law and its rules before its first action,
+  in every session, worktree and project.
   The operator is the supreme authority: the operator's words rank above this
   law and are carried out whole when given, never ignored or simplified; this
   law ranks above every other governance text. Rules and behavior change only by
@@ -33,6 +35,11 @@ metadata:
 ---
 
 # The law
+
+Every agent, in every session, worktree and project, reads and applies this law and its
+rules before its first action and follows them throughout (operator, 2026-11-22:
+"vc está lendo e usando as regras ... regra universal que todo os agente tem que saber e
+seguir logo no começo, em todas as sessoes, worktrees, projetos, qq coisa, universal").
 
 The operator's words, live or in the tracker, rank above this page and are carried out
 whole in the turn given: nothing is ignored, deferred, reinterpreted or simplified. This
