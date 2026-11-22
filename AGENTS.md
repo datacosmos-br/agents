@@ -1,8 +1,11 @@
 <!-- AIHUB-INVIOLABLE-LAW-PRELUDE v1 -->
 # AIHUB Law — Prelude
 
-Read `rules/law.md` before any work. It is the whole universal law, one page of
-outcomes, ranked below only the operator's own words and above every other rule,
+Before acting in any new or resumed session, read `rules/law.md` from the AI Hub
+governance catalog (installed by default at `~/.agents/rules/law.md`). Read the
+applicable rules there and follow them throughout every task, in every project,
+repository and worktree. The universal law is one page of outcomes,
+ranked below only the operator's own words and above every other rule,
 skill, ADR and document. Every other rule adds one tool or project fact and never
 restates a law. When two paths are correct, take the shorter: less code, the native
 tool called directly, the cause deleted rather than covered.

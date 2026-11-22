@@ -1,5 +1,10 @@
 ---
 description: Required environment values, service credentials and the operator's keyring
+capsule_summary: |
+  Every AI Hub daemon and spawner runs the latest integrated binary. AI Hub
+  delivers CRG and OpenViking triggers and MCP to every configured agent,
+  repository and worktree. A failing runtime, hook or MCP blocks other work
+  until verified at its real consumer.
 metadata:
   aihub.tags: '["decision:ADR-0038","effective:2026-11-03","route:both"]'
 ---
