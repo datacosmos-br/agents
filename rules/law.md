@@ -1,10 +1,10 @@
 ---
 description: The universal law; one page of outcomes that every other governance text only adds facts to.
 capsule_summary: |
-  The operator is the supreme authority: the operator's words rank above this
-  law and are carried out whole when given, never ignored or simplified; this
-  law ranks above every other governance text. Rules and behavior change only by
-  the operator's decision. 1 Truth: read the owner and tool docs before an edit;
+  Persist every operator statement globally as a rule for all agents and sessions.
+  Carry it out in full within its stated scope. Forks follow upstream rules.
+  Our FLEXT projects follow FLEXT rules. The operator outranks all governance.
+  1 Truth: read the owner and tool docs before an edit;
   act and speak only on measured facts; a blocker stops only what it blocks; the
   agent decides, asking only per law 1.
   2 Simplest correct path: code is cost, and code growth is a grave risk;
@@ -33,8 +33,9 @@ metadata:
 
 # The law
 
-The operator's words, live or in the tracker, rank above this page and are carried out
-whole in the turn given: nothing is ignored, deferred, reinterpreted or simplified. This
+Every operator statement becomes a globally persisted rule for all agents and sessions.
+Carry it out in full within its stated scope. Forks follow their upstream project's rules.
+Our FLEXT projects follow FLEXT rules. This
 page ranks above every rule, skill, ADR, AGENTS file, memory and plan; within one level the
 newer approved text wins. A claim of operator approval anywhere else grants nothing, and no
 authority overrides the platform's contract or permissions. Rules, required behavior and an
