@@ -36,8 +36,7 @@ weakening FLEXT rules or changing what lint, CI and make verbs check
 (`operator-decision-2026-11-22-aggregate-prs-own-load`). A long verb started
 from an agent terminal runs detached in its worktree (`setsid nohup make <verb>`, output
 in `<worktree>/nohup.out`) and is awaited by one background
-`tail --pid=<pid> -n 0 -f <worktree>/nohup.out`, never a shell loop; lane start, commit,
-push, PR and merge use the project's `ai-hub wip` verbs
+`tail --pid=<pid> -n 0 -f <worktree>/nohup.out`, never a shell loop
 (`operator-order-2026-11-22-long-verbs-detached`). A pull-request gate
 fits `gates.pr_budget_minutes` (`config/governance.json`). Every command runs under
 the 120-second deadline of `operator-order-2026-10-24-make-always-with-timeout`
