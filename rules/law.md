@@ -20,8 +20,8 @@ capsule_summary: |
   understood, and an exterminated symbol stays exterminated. 7 Laws are authored data for the
   tool that checks them; nothing generates rules. 8 Fail loud on one path; no mask
   turns a red into a green.
-  9 The real entry point is the proof; wrong production is repaired, never
-  written into a test; nothing is left failing or off the current public interface.
+  9 Prove behavior at the real entry point. Every agent and session corrects or
+  removes implementations and tests that violate the rules.
   10 Done is the whole agreed scope merged at the integration tip with green CI and
   active in runtime; nothing else is claimed before it, and in-progress work names
   the exact missing step.
@@ -93,10 +93,9 @@ cost; everything else proceeds.
 9. **Runtime is the proof.** A change is correct when its real entry point, at the claimed
    revision, does the claimed thing in the smallest real command; an editable checkout
    proves nothing about an installed release. A live-runtime change names its recovery
-   first, and a broken runtime is restored before other work. Tests confirm intended
-   behavior through public interfaces and never define it; wrong production is repaired
-   first and no test expects a defect. Nothing is left failing: code, lints and tests are
-   green on the current public interface.
+   first, and a broken runtime is restored before other work. Every agent and session must correct or remove
+   implementations and tests that violate the rules. Repair faulty production first. Tests
+   confirm intended behavior through public interfaces. Code, lint and tests must pass.
 10. **Finish the cycle.** Done is the whole agreed plan, every case, merged at the
     integration tip after review and green CI, tested, error-free and running live at
     the agreed level with evidence; anything less is in progress, naming the exact missing
