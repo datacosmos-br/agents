@@ -21,7 +21,8 @@ For Marlon's projects, OpenViking is the primary memory. On session start, resum
 and plan revision, retrieve the global preference and the project checkpoint. Apply
 FLEXT SOP and DONE. Reconcile memory, ADRs, the selected tracker and operations docs
 with Git, CI and observed runtime. Land this alignment first on the integration tip
-with a non-fast-forward merge. Verify setup, fast primary check and fast offline tests
+with a non-fast-forward merge. Use the CI projected by flext-infra gen for each project.
+Correct drift at the generator owner and regenerate. Verify setup, fast primary check and fast offline tests
 on the integrated SHA. Record the SHA, CI run and next bead in OpenViking. Update
 the checkpoint at each milestone and follow execution through final acceptance.
 Ask the operator when a material conflict survives verification and continue independent work.
