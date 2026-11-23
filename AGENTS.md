@@ -32,7 +32,10 @@ before any effect.
 
 Use the [branch and PR rule](rules/git/gitflow-branch-pr.md) for delivery and
 [canonical commands](rules/workflow/canonical-commands.md) for native validation
-and background execution.
+and background execution. The [agent delivery doctrine](rules/workflow/agent-delivery-doctrine.md)
+binds every session: every red is the agent's own, the integration tip is the only
+base, native verbs run the work, and a phase ends only with its PR merged and its
+runtime proof.
 <!-- AIHUB-AGENTS-SCOPE-LOCAL-END -->
 
 ## Canonical Tool Surface Rule (learned 2026-11-20)
