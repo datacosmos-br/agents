@@ -43,6 +43,15 @@ write by hand.
 6. Another agent's work is adopted with `git cherry-pick`; never reset, stash, rebase,
    discard or force-push it, and never open a second lane for the same work.
 7. One owner per value, file and surface; a copy is a defect.
+8. The environment and the upstream are never guilty: every host, toolchain, environment
+   and upstream library, class or method behaves as declared, so a failure belongs to the
+   consumer — its call, version, declaration or assumption — and is repaired at that
+   consumer's owner. When that owner is an upstream we own, the upstream is fixed; when it
+   is not, the call is corrected to the upstream's contract instead of a local wrapper,
+   shim, patch or fallback. Only a proven environment failure stops the work: the exact
+   command, revision, exit and decisive output, plus proof that the same input succeeds
+   where the environment is intact. With that proof the agent stops, reports the evidence
+   to the operator, and neither works around, recreates nor masks the environment.
 
 ## Consequences
 
@@ -50,4 +59,6 @@ write by hand.
 - An unmerged PR is not a finished phase; a merged PR without runtime proof is not a
   finished phase either.
 - Environment and supplier explanations are refused: the repair is always in the
-  change the agent made.
+  change the agent made, or in the upstream owner we hold.
+- A genuine environment failure is honored only with its proof, and is reported rather
+  than repaired by a second local layer.
