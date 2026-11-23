@@ -31,6 +31,6 @@ The operator's order of 2026-11-23 binds every agent and session:
 - Keep every config in its owning domain with one SSOT (workspaces, agents, tools,
   mcp, models, services). Never duplicate a declaration or keep an unused one; a
   project adjusts only through its override.
-- Align with every other session before and during the work: gc mail from the city
-  root (or the owning Bead when mail is unavailable), and share the exact commit and
-  branch so either side cherry-picks instead of duplicating.
+- Align with every other session before and during the work: use the declared
+  coordination channel (or the owning Bead when it is unavailable), and share the
+  exact commit and branch so either side cherry-picks instead of duplicating.
