@@ -39,3 +39,12 @@ Operator order, 2026-11-23, for every session, project and agent.
    owner. A copy is a defect, not a convenience. Correct the definition, never keep
    compatibility code: a definition fix propagates atomically to every user, and the
    fast `make check` runs immediately after the propagation.
+8. **The environment and the upstream are never guilty.** Every host, environment,
+   toolchain and upstream library, class or method behaves as declared. A failure belongs
+   to the consumer — its call, version, declaration or assumption — and is repaired at that
+   consumer's owner: the upstream we own is fixed, and a call to an upstream we do not own
+   is corrected to its declared contract, never wrapped, shimmed, patched or given a
+   fallback. Only a proven environment failure stops the work: the exact command,
+   revision, exit and decisive output, plus the same input succeeding where the environment
+   is intact. With that proof the agent stops, reports the evidence to the operator, and
+   neither works around, recreates nor masks the environment.
