@@ -36,4 +36,5 @@ temp/**
 .cursor/worktrees/**
 .config/worktrees/**
 .copilot/worktrees/**
+.hermes/worktrees/**
 # END AI-HUB CRG GLOBAL POLICY
