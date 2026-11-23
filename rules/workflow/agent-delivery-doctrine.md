@@ -22,10 +22,13 @@ Operator order, 2026-11-23, for every session, project and agent.
 4. **No agent surface is touched by hand.** Agent configuration, hooks, MCP entries,
    skills and policy are published by AI Hub through its declarations. A manual edit
    or a manual agent command is a defect: change the declaration and run the verb.
-5. **Finish the DONE cycle.** Commit from a message file, push, keep the PR open on
-   the exact head, pass the required integration CI, merge the PR into the
-   integration branch, then prove the delivered behavior in runtime. No phase is
-   done without its merged PR and its runtime proof.
+5. **Runtime first, then the gates.** Make the delivered behavior work in runtime
+   first; run `make fix`, `make fmt`, `make check` and `make tests` only after it
+   works, never the other way round. Finish the DONE cycle: commit from a message
+   file, push, keep the PR open on the exact head, pass the required integration CI,
+   merge the PR into the integration branch, and prove the delivered behavior in
+   runtime again on the integrated revision. No phase is done without its merged PR
+   and its runtime proof.
 6. **Adopt, never duplicate.** Another agent's work is taken with `git cherry-pick`
    from its branch. Never reset, stash, rebase, discard or force-push it, and never
    open a second lane for the same work.

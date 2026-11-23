@@ -36,8 +36,10 @@ write by hand.
    never `--no-verify`.
 4. Agent surfaces (configuration, hooks, MCP, skills, policy) are published by AI Hub
    from declarations; a manual edit or a manual agent command is a defect.
-5. A phase ends only with its PR merged into the integration branch and the delivered
-   behavior proven in runtime.
+5. A phase runs the delivered behavior in runtime first, then `make fix`, `make fmt`,
+   `make check` and `make tests` — never the reverse — and ends only with its PR
+   merged into the integration branch and the delivered behavior proven in runtime
+   again on the integrated revision.
 6. Another agent's work is adopted with `git cherry-pick`; never reset, stash, rebase,
    discard or force-push it, and never open a second lane for the same work.
 7. One owner per value, file and surface; a copy is a defect.
