@@ -18,7 +18,10 @@ Operator order, 2026-11-23, for every session, project and agent.
    revision; a lane on a stale base is a red waiting to happen.
 3. **Native verbs run the work.** `make setup|gen|fix|fmt|check|tests|build|deploy`
    and the project CLI own their steps. Never bypass one, never add a second path
-   beside it, never hand-run what a verb owns, never `--no-verify`.
+   beside it, never hand-run what a verb owns, never `--no-verify`. The installed
+   runtime proves the changed behavior first; only then run `fix`, `fmt`, `check`
+   and `tests`, never the opposite. Never change a project rule or add a make verb
+   without the operator's explicit decision.
 4. **No agent surface is touched by hand.** Agent configuration, hooks, MCP entries,
    skills and policy are published by AI Hub through its declarations. A manual edit
    or a manual agent command is a defect: change the declaration and run the verb.
@@ -30,4 +33,6 @@ Operator order, 2026-11-23, for every session, project and agent.
    from its branch. Never reset, stash, rebase, discard or force-push it, and never
    open a second lane for the same work.
 7. **One owner per value, file and surface.** Read it at the owner, repair it at the
-   owner. A copy is a defect, not a convenience.
+   owner. A copy is a defect, not a convenience. Correct the definition, never keep
+   compatibility code: a definition fix propagates atomically to every user, and the
+   fast `make check` runs immediately after the propagation.
