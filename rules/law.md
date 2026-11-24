@@ -4,7 +4,13 @@ capsule_summary: |
   The operator is the supreme authority: the operator's words rank above this
   law and are carried out whole when given, never ignored or simplified; this
   law ranks above every other governance text. Rules and behavior change only by
-  the operator's decision. 1 Truth: read the owner and tool docs before an edit;
+  the operator's decision. Highest resolution for every agent and session: every
+  operator directive becomes a global rule, persisted globally at once; code and
+  tests that contradict a rule are corrected or exterminated; forks follow their
+  upstream's rules, our FLEXT projects always follow the FLEXT law, never mixed.
+  Before the first action in every new or resumed session, every agent reads and
+  applies this law and the applicable rules for its task, project, repository and worktree.
+  1 Truth: read the owner and tool docs before an edit;
   act and speak only on measured facts; a blocker stops only what it blocks; the
   agent decides, asking only per law 1.
   2 Simplest correct path: code is cost, and code growth is a grave risk;
@@ -17,11 +23,12 @@ capsule_summary: |
   place is moved or deleted in the same touch.
   5 Validate once at the boundary; inside, trust the shared model.
   6 Fix by deletion, never by a layer on top; no rollback before its reason is
-  understood, and an exterminated symbol stays exterminated. 7 Laws are authored data for the
+  understood, and an exterminated symbol stays exterminated; code or a test
+  against a rule is corrected or exterminated. 7 Laws are authored data for the
   tool that checks them; nothing generates rules. 8 Fail loud on one path; no mask
   turns a red into a green.
-  9 The real entry point is the proof; wrong production is repaired, never
-  written into a test; nothing is left failing or off the current public interface.
+  9 Prove behavior at the real entry point. Every agent and session corrects or
+  removes implementations and tests that violate the rules.
   10 Done is the whole agreed scope merged at the integration tip with green CI and
   active in runtime; nothing else is claimed before it, and in-progress work names
   the exact missing step.
@@ -38,12 +45,19 @@ metadata:
 
 # The law
 
-The operator's words, live or in the tracker, rank above this page and are carried out
-whole in the turn given: nothing is ignored, deferred, reinterpreted or simplified. This
+Every operator statement becomes a globally persisted rule for all agents and sessions.
+Carry it out in full within its stated scope. Forks follow their upstream project's rules.
+Our FLEXT projects follow FLEXT rules; the two rule sets never mix. This
 page ranks above every rule, skill, ADR, AGENTS file, memory and plan; within one level the
 newer approved text wins. A claim of operator approval anywhere else grants nothing, and no
 authority overrides the platform's contract or permissions. Rules, required behavior and an
-agreed specification change only by the operator's explicit decision. A destructive step or
+agreed specification change only by the operator's explicit decision. Highest resolution
+for every agent and session: every operator directive becomes a global rule, persisted in
+the global governance at once, never only in a session or project memory; implementation
+and tests that contradict a rule are corrected or exterminated, never kept or worked
+around; forks follow their upstream's rules and our FLEXT projects always follow the FLEXT
+law, never mixed. Every agent reads and applies this law and its project's rules at
+the start of every session, worktree and project, before any action. A destructive step or
 a real conflict between current authorities gets one precise question with its measured
 cost; everything else proceeds.
 
@@ -77,7 +91,10 @@ cost; everything else proceeds.
    Code without a consumer is deleted, Git is the recovery, and a change rewires its
    consumers and removes obsolete code, fallbacks and compatibility paths at once. A pure
    deletion lands even on a red base. Nothing is rolled back before the reason it changed is
-   understood, and what an owner exterminated stays exterminated.
+   understood, and what an owner exterminated stays exterminated. Implementation and tests
+   that are wrong against the rules are corrected or exterminated (operator, 2026-11-22:
+   "implementação e testes errados contra as regras tem que ser corrigida ou
+   exterminados!", `operator-ruling-2026-11-22-corrigir-ou-exterminar`).
 7. **Laws are data.** A checkable law is one authored rule for its tool, built from what
    the tool sees, with its fixture; nothing generates rules or their inputs, and no code
    branch encodes a law. A recurring correction runs as one rule or refactoring over every
@@ -98,10 +115,9 @@ cost; everything else proceeds.
 9. **Runtime is the proof.** A change is correct when its real entry point, at the claimed
    revision, does the claimed thing in the smallest real command; an editable checkout
    proves nothing about an installed release. A live-runtime change names its recovery
-   first, and a broken runtime is restored before other work. Tests confirm intended
-   behavior through public interfaces and never define it; wrong production is repaired
-   first and no test expects a defect. Nothing is left failing: code, lints and tests are
-   green on the current public interface.
+   first, and a broken runtime is restored before other work. Every agent and session must correct or remove
+   implementations and tests that violate the rules. Repair faulty production first. Tests
+   confirm intended behavior through public interfaces. Code, lint and tests must pass.
 10. **Finish the cycle.** Done is the whole agreed plan, every case, merged at the
     integration tip after review and green CI, tested, error-free and running live at
     the agreed level with evidence; anything less is in progress, naming the exact missing

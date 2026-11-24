@@ -1,8 +1,11 @@
 <!-- AIHUB-INVIOLABLE-LAW-PRELUDE v1 -->
 # AIHUB Law — Prelude
 
-Read `rules/law.md` before any work. It is the whole universal law, one page of
-outcomes, ranked below only the operator's own words and above every other rule,
+Before acting in any new or resumed session, read `rules/law.md` from the AI Hub
+governance catalog (installed by default at `~/.agents/rules/law.md`). Read the
+applicable rules there and follow them throughout every task, in every project,
+repository and worktree. The universal law is one page of outcomes,
+ranked below only the operator's own words and above every other rule,
 skill, ADR and document. Every other rule adds one tool or project fact and never
 restates a law. When two paths are correct, take the shorter: less code, the native
 tool called directly, the cause deleted rather than covered.
@@ -27,11 +30,12 @@ Obligations live in `rules/`, procedures in `skills/`, grammar in `commands/`; a
 references its ancestor, never copies it. Run `commands/governance/session-preflight.md`
 before any effect.
 
-Use the [branch and PR rule](rules/git/gitflow-branch-pr.md) for delivery,
+Use the [branch and PR rule](rules/git/gitflow-branch-pr.md) for delivery and
 [canonical commands](rules/workflow/canonical-commands.md) for native validation
-and background execution, and the
-[runtime-first and AI Hub ownership rule](rules/workflow/runtime-first-and-ai-hub-ownership.md)
-for the order of runtime proof and source gates.
+and background execution. The [agent delivery doctrine](rules/workflow/agent-delivery-doctrine.md)
+binds every session: every red is the agent's own, the integration tip is the only
+base, native verbs run the work, and a phase ends only with its PR merged and its
+runtime proof.
 <!-- AIHUB-AGENTS-SCOPE-LOCAL-END -->
 
 ## Canonical Tool Surface Rule (learned 2026-11-20)
