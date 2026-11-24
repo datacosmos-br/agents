@@ -10,6 +10,7 @@ target/**
 .worktrees/**
 worktrees/**
 .agents/worktrees/**
+.hermes/worktrees/**
 .code-review-graph/wiki/**
 .test-tmp/**
 .reports/**
@@ -36,5 +37,4 @@ temp/**
 .cursor/worktrees/**
 .config/worktrees/**
 .copilot/worktrees/**
-.hermes/worktrees/**
 # END AI-HUB CRG GLOBAL POLICY

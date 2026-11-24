@@ -34,6 +34,11 @@ capsule_summary: |
   the exact missing step.
   11 Never destroy another actor's work. 
   12 Governance stays short.
+  13 The environment is never the suspect: a runtime, tool, library, method or
+  class is assumed healthy, a failure belongs to the consumer that uses it and is
+  corrected there; when that consumer is ours, the upstream is fixed at its owner.
+  An environment fault is claimed only with certainty (reproduced, evidenced,
+  isolated) and then the agent stops and reports instead of acting on a guess.
 metadata:
   aihub.tags: '["decision:ADR-0038","effective:2026-11-03","route:both"]'
 ---
@@ -129,3 +134,9 @@ cost; everything else proceeds.
     its language, and documentation changes with the behavior it describes. Before code, the
     governing text a change would contradict is corrected, and retired text leaves every
     delivered copy in the same change.
+13. **The environment is never the suspect.** Every runtime, tool, library, method and class
+    is assumed healthy. A failure belongs to the consumer that uses it, and the consumer is
+    corrected there — never blamed on the environment, the tool or the Make verb. When that
+    consumer is ours, the upstream is fixed at its owner. An environment fault is claimed
+    only with the certainty law 1 requires — reproduced, evidenced and isolated — and then
+    the agent stops and reports (law 8) instead of acting on a guess.
