@@ -27,9 +27,11 @@ Obligations live in `rules/`, procedures in `skills/`, grammar in `commands/`; a
 references its ancestor, never copies it. Run `commands/governance/session-preflight.md`
 before any effect.
 
-Use the [branch and PR rule](rules/git/gitflow-branch-pr.md) for delivery and
+Use the [branch and PR rule](rules/git/gitflow-branch-pr.md) for delivery,
 [canonical commands](rules/workflow/canonical-commands.md) for native validation
-and background execution.
+and background execution, and the
+[runtime-first and AI Hub ownership rule](rules/workflow/runtime-first-and-ai-hub-ownership.md)
+for the order of runtime proof and source gates.
 <!-- AIHUB-AGENTS-SCOPE-LOCAL-END -->
 
 ## Canonical Tool Surface Rule (learned 2026-11-20)

@@ -54,3 +54,10 @@ native commit and push hooks and integration CI.
 [Canonical commands](../../rules/workflow/canonical-commands.md) owns background
 execution. The operator decision `operator-decision-2026-11-21-hooks-and-ci-own-gates`
 is tracked under `ag-ri5i`.
+
+The operator may combine related local branches into one complete work step and
+validate the combined result in one pull request and its exact-head integration CI.
+Each repository still owns its own commits, integration branch and runtime proof.
+The integration actor and merge method follow the project's declared contract;
+an automatic forge merge is not required when the project assigns that action to
+its orchestrator.
