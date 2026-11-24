@@ -1,7 +1,7 @@
 ---
 description: Runtime first, AI Hub owns every projection, and a red gate is the actor's defect
 metadata:
-  aihub.tags: '["decision:operator-order-2026-11-23","effective:2026-11-23","route:both"]'
+  aihub.tags: '["decision:ADR-0038","effective:2026-11-23","route:both"]'
 ---
 
 # Runtime first and AI Hub ownership

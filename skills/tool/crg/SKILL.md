@@ -1,7 +1,6 @@
 ---
 name: crg
-description:
-  "code-review-graph fleet contract, graph freshness, structural impact, worktree graphs. USE FOR: searching the code graph, querying callers/callees/tests/importers, impact analysis, refactor preview, community wiki, dead-code and change detection, worktree graph readiness. DO NOT USE FOR: editing code, rebuilding the shared database manually, per-session collectors, or repairing AI Hub engines."
+description: "code-review-graph fleet contract, graph freshness, structural impact, and worktree graphs"
 metadata:
   aihub.tags: '["activation:opt-in","decision:ADR-0038","detect:opt-in:code-review-graph","effective:2026-11-03","route:agent","subject:mcp","usage:on-demand"]'
 ---
