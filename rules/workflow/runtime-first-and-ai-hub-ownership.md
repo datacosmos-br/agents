@@ -1,7 +1,7 @@
 ---
 description: AI Hub owns every projection; config has one SSOT; FLEXT consumes nothing from AI Hub
 metadata:
-  aihub.tags: '["decision:ADR-0038","effective:2026-11-24","route:both"]'
+  aihub.tags: '["decision:ADR-0038","effective:2026-11-24","route:personal"]'
 ---
 
 # AI Hub ownership
