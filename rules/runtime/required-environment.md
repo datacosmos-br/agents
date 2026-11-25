@@ -35,3 +35,9 @@ the latest integrated AI Hub binary. AI Hub propagates CRG and OpenViking trigge
 and MCP access to every configured agent, repository and worktree. Verify the
 serving revision, each hook event and each MCP at its real consumer. A runtime,
 hook or MCP failure blocks other work until repaired at its owner.
+
+The only model proxy is CLIProxyAPI, run by AI Hub's `ai-hub-cliproxy.service` from its
+mise-installed binary; the CCS proxy, its CLI, profiles and skills are removed, and any
+process or rule that still invokes them is a defect at its owner. Hook interpreters
+resolve to the project's governed runtime, never a system interpreter or another
+checkout's path.
