@@ -6,7 +6,7 @@ inputs:
   prompt: >-
     The operator authorizes the current primary checkout with compatible shared WIP,
     without selecting isolation. After changing the tracked Beads activation source,
-    make gen changes .envrc and .beads/metadata.json. An unrelated generated
+    make check regenerates .envrc and .beads/metadata.json. An unrelated generated
     workflow also changes. What belongs in the PR, and how is an unexpected
     generated change diagnosed before any authorized push? A colleague proposes restoring
     those generated paths from origin, but they contain the other actor's valid WIP.

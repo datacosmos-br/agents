@@ -77,7 +77,7 @@ reconciled with live Argo CD; `helm template` drift-check per chart.
 
 ## Hygiene gates
 
-`make test` with 0 items selected is RED (no-tests-ran law); duplication gate thresholds
+`make tests` with 0 items selected is RED (no-tests-ran law); duplication gate thresholds
 declared fail-closed; member venv must import `flext_cli` after fresh `uv sync` from the
 committed lock.
 
