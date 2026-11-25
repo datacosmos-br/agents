@@ -1,5 +1,8 @@
 # Handoff recuperado — sessões ZCode que tocaram o catálogo (2026-09-18)
 
+> Status: registro histórico (2026-09-18). O trabalho de catálogo consolidado aqui já
+> pousou; os donos atuais são `rules/` e `skills/`.
+
 > Mandato do operador: "o último handoff de zcode foi perdido, recupere". Veredito da
 > recuperação: **não houve perda de arquivo — houve não-criação.** Nenhuma sessão ZCode
 > tem workspace `$HOME/agents` (índice `~/.zcode/v2/tasks-index.sqlite`

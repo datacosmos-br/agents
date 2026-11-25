@@ -1,5 +1,7 @@
 # 20260927 — Handoff: ai-hub runtime activation (provenance reset + pipeline READY + hooks wiring)
 
+> Status: histórico. Conteúdo carregado por ai-hub PRs #896/#898 e pelas lanes de docs.
+
 Session: zcode (this session's durable record; the ai-hub repo carries the same content via PRs #896/#898 and the docs lanes).
 
 ## 1. Mission

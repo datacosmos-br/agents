@@ -1,5 +1,8 @@
 # 20260929: fleet coordinator handoff (index)
 
+> Status: histórico (2026-09-29). A coordenação de frota agora vive em `rules/`,
+> `skills/` e `gc mail`.
+
 This is the canonical handoff for the next fleet-coordinator session. Every fact
 was measured on this host between 2026-09-29T00:45Z and 01:30Z. Execution state
 is held in Beads; this directory holds only pointers and rulings.

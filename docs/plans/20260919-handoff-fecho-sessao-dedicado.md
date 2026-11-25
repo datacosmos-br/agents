@@ -1,5 +1,8 @@
 # Handoff de fecho de sessão — agente dedicado agents (2026-09-19)
 
+> Status: handoff histórico (2026-09-19). O ciclo corrente vive em
+> `rules/workflow/agent-delivery-doctrine.md`.
+
 **Mandato**: agente único dedicado; fix-forward-adopt; colaboração por registro nos
 beads (`bd` com direnv no repo); revalidação pela realidade; PRs encerradas como
 aberto-verde-atualizado ou exterminadas com veredito; merges --no-ff com a tip da
