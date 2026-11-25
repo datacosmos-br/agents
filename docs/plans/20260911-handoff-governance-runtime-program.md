@@ -2,6 +2,9 @@
 
 > Registro histórico de 2026-09-11. A seleção atual de plano, tracker e contexto
 > vem de seus owners canônicos; este arquivo não é um preflight obrigatório.
+>
+> Ciclo de entrega superseded por [20261125-governance-alignment](20261125-governance-alignment.md):
+> `make check` absorve gen/fix/fmt (FLEXT #2791, ai-hub #1858); o `make gen` x2 aqui é histórico.
 > Plano citado à época: `docs/plans/20260910-governance-runtime-program.md`.
 
 ## 1. Registro histórico de reinício

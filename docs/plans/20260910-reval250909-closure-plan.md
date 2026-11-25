@@ -1,5 +1,9 @@
 # reval250909 — Plano de Fechamento (adoption lane → dev)
 
+> Superseded by [20261125-governance-alignment](20261125-governance-alignment.md) for the
+> delivery cycle: `make check` now absorbs gen/fix/fmt (FLEXT #2791, ai-hub #1858), so the
+> `make gen` x2 gates below are historical.
+
 Status: **EXECUTADO** (retificado 2026-09-18; o header original "aguardando aprovação"
 ficou stale após o pouso). Evidência: PR #133 com merge `--no-ff` `ab27a954` em `dev`
 (fase 2); lanes `wip/beads-governance-reval250909` e `feat/reval250909-adoption`
