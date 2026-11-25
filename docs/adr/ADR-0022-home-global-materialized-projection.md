@@ -1,8 +1,7 @@
 # ADR-0022 — Global home `~/.agents` as a versioned materialized projection
 
 **Status:** Amended by ADR-0038 **Date:** 2026-09-18 **Scope:** `~/.agents`, the global
-read surface managed by AI Hub (`docs/plans/20260918-handoff-repasse-consolidado.md`);
-publication effects follow laws 8 and 11 of `rules/law.md`
+read surface managed by AI Hub; publication effects follow laws 8 and 11 of `rules/law.md`
 
 ## Context
 

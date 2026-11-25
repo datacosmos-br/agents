@@ -13,8 +13,7 @@ The original problem was that the rules did not name **who discovers and
 plans** the WIP state of worktrees, nor guarantee that **retirement execution**
 has a single owner.
 
-The 2026-09-19 deep-dive (recorded in
-`docs/plans/20260919-handoff-fecho-sessao-dedicado.md`, worktrees section) measured the
+The 2026-09-19 deep-dive (worktrees section, retained in git history) measured the
 gap: the ai-hub storage lane already correlates worktree ↔ bead/PR/actor facts and
 speaks the vocabulary of the `wip/` program, but **execution is duplicated** — the wip
 planner and the storage executor plan actions on the same worktrees with different
@@ -84,4 +83,3 @@ Operator rulings of 2026-09-19, newer than the text above and adopted here:
 - `rules/coordination/gascity.md` (placement/provisioning)
 - `rules/git/gitflow-branch-pr.md` (retirement with ancestry proof)
 - `rules/coordination/fleet-landing-corrections.md` (closing cycle with lane retirement)
-- `docs/plans/20260919-handoff-fecho-sessao-dedicado.md` (measured deep-dive)

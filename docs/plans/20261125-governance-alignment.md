@@ -1,12 +1,14 @@
 # Governance alignment — agents ↔ FLEXT ↔ ai-hub (2026-11-25)
 
+> Status: DONE (agents scope); Phase 2 (FLEXT/ai-hub) tracked separately.
+
 Operator decision 2026-11-25: the delivery cycle of FLEXT #2791 (`4bf12d062d`) prevails;
 the Kilo sessions' 2026-11-24 17:28 cycle (separate gen/fix/fmt, `check CI=Y`) is superseded.
 Canonical text: [delivery doctrine](../../rules/workflow/agent-delivery-doctrine.md#the-delivery-cycle).
 
 | Surface | State measured 2026-11-25 | Owner of the gap |
 |---|---|---|
-| FLEXT verbs | `setup upg mod check tests tests-full`; default `check` does not converge yet | flext-infra `feat/check-converges` |
+| FLEXT verbs | `setup upg mod check tests tests-full` (#2791 `4bf12d062d`); `make check` absorbs gen/fix/fmt and converges | — |
 | FLEXT workspace | root Makefile pinned before #2791; AGENTS.md lists gen/fix/fmt | FLEXT workspace |
 | ai-hub | Makefile generated before #2791; delivers only `law.prelude`; pins agents `@dev`; OpenMoat cohort off (`5c79f0b27`) | ai-hub |
 | agents | own verbs (`gen fix fmt check test ci`) unchanged; rules aligned in this change | — |
