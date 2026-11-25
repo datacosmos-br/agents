@@ -17,8 +17,8 @@ lane:
   base: integration branch tip fetched before lane creation
 cycle:
   - lane creation from the fetched tip
-  - generation with the CI context (make gen, twice to the fixed point)
-  - real runtime, declared static gates, then the catalog-declared complete test suite
+  - the project's single gate (make check) to its fixed point
+  - real runtime proof, then the project's test verb last
   - pull request opened from the pushed lane branch
   - merge with --no-ff after green CI
   - post-merge proof on the integration tip

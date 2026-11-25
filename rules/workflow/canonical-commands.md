@@ -29,7 +29,11 @@ priority (`operator-order-2026-11-21-long-runs-in-background`); host load, admis
 refusals, queue waits and API quota exhaustion never stop a slice: the agent continues it
 and fixes the measured cause at its owner, coordinating with the other sessions, without
 weakening FLEXT rules or changing what lint, CI and make verbs check
-(`operator-decision-2026-11-22-aggregate-prs-own-load`). A long verb started
+(`operator-decision-2026-11-22-aggregate-prs-own-load`). A refusal or slow verb is a cost
+defect of the project's command: profile it and land an optimization that keeps the same
+findings, rule set, CI verdicts and Make contract, announced to the owning sessions. A
+repository without `.beads/` has no AI Hub lane; its lane is `git worktree add` from the
+declared base. A long verb started
 from an agent terminal runs detached in its worktree (`setsid nohup make <verb>`, output
 in `<worktree>/nohup.out`) and is awaited by one background
 `tail --pid=<pid> -n 0 -f <worktree>/nohup.out`, never a shell loop
