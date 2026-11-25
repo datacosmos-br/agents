@@ -3,7 +3,7 @@ name: json-validate
 description: "draft-07 schema, payload, violations, z-schema"
 license: MIT
 metadata:
-  aihub.tags: '["activation:detected","decision:ADR-0014","detect:dependency:npm:z-schema","effective:2026-09-07","route:project","subject:schema","usage:on-demand"]'
+  aihub.tags: '["activation:detected","decision:ADR-0038","detect:dependency:npm:z-schema","effective:2026-09-07","route:project","subject:schema","usage:on-demand"]'
 ---
 
 # Validating JSON Data with z-schema

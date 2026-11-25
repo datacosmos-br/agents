@@ -16,17 +16,13 @@ absent from the commit the hooks passed. Required integration CI must pass on th
 exact PR head before the reviewed merge. Every plan phase, and the plan's end, ends
 with its PR merged into the integration branch before the next phase starts; a
 missing integration PR is a grave failure
-(`operator-order-2026-11-21-integration-pr-every-phase`). An agent hand-runs check,
-mod, fix, fmt or tests only to diagnose a red result.
-Run gen when generated surfaces change and upg when pins change. Full mod and full
+(`operator-order-2026-11-21-integration-pr-every-phase`). The ordered cycle and its
+verbs are owned by the [delivery doctrine](agent-delivery-doctrine.md#the-delivery-cycle);
+outside it an agent hand-runs a gate only to diagnose a red result. Full mod and full
 tests require an explicit order. Scope authorizes runtime publication and proof.
 Repair red hooks, CI and integration findings at their owner, including warnings,
 and follow [law 8–10](../law.md)
 (`operator-decision-2026-11-21-hooks-and-ci-own-gates`).
-Every plan phase, and the plan's end, closes integrated before the next starts: commit
-through the hook, push, PR, green CI on its head, `--no-ff` merge into the integration
-branch and Bead updated; an unintegrated PR is not a finished phase ([law 10](../law.md),
-`operator-order-2026-11-21-phase-integration`).
 Long work, queue waits and CI monitoring run in the background or through authorized
 subagents while independent work advances. Heavy jobs pass host admission at idle
 priority (`operator-order-2026-11-21-long-runs-in-background`); host load, admission
@@ -82,5 +78,5 @@ sweep verb for worktree/branch cleanup.
 
 ## Delivery
 
-A lane commits and pushes as soon as its change is complete: the pre-commit and pre-push hooks run the Make gates, and the integration CI decides the merge; no session runs check, fix, fmt or tests by hand only to commit. Only `make setup` publishes to the host and only `make upg` changes versions. Long-running work runs in the background or in a subagent, and its end wakes the session. Work that another lane holds is integrated, never waited on: merge its branch `--no-ff` or copy its fix byte for byte. Related slices may merge `--no-ff` into one lane, be validated together and land as one PR with one green integration CI, each Bead still recording its own evidence (`operator-decision-2026-11-22-aggregate-prs-own-load`). Done is merged at the integration tip and active at runtime with proof.
+A lane commits and pushes once its [delivery cycle](agent-delivery-doctrine.md#the-delivery-cycle) is green; the commit and push hooks run the declared fast gates without provisioning and never wait on the full-form queue, and the integration CI decides the merge. Only `make setup` publishes to the host and only `make upg` changes versions. Long-running work runs in the background or in a subagent, and its end wakes the session. Work that another lane holds is integrated, never waited on: merge its branch `--no-ff` or `git cherry-pick -x` its commits. Related slices may merge `--no-ff` into one lane, be validated together and land as one PR with one green integration CI, each Bead still recording its own evidence (`operator-decision-2026-11-22-aggregate-prs-own-load`). Done is merged at the integration tip and active at runtime with proof.
 A red test, warning or finding on the integration tip is fixed in the same cycle by the actor that finds it; "pre-existing" and "another lane's" never defer it, and a commit is named by its full SHA read from Git, never guessed (`operator-order-2026-11-21-done-no-excuses`).

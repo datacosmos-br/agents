@@ -3,7 +3,7 @@ name: mcp-builder
 description: "mcp server, fastmcp, typed tools, transport"
 license: Apache-2.0
 metadata:
-  aihub.tags: '["activation:detected","decision:ADR-0014","detect:dependency:npm:@modelcontextprotocol/sdk","detect:dependency:python:fastmcp","effective:2026-09-07","extends:mcp-patterns","route:project","subject:mcp","usage:on-demand"]'
+  aihub.tags: '["activation:detected","decision:ADR-0038","detect:dependency:npm:@modelcontextprotocol/sdk","detect:dependency:python:fastmcp","effective:2026-09-07","extends:mcp-patterns","route:project","subject:mcp","usage:on-demand"]'
 ---
 
 Composes as the specialized delta of $mcp-patterns; the parent owns the shared conduct

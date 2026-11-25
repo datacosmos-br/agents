@@ -3,7 +3,7 @@ name: flext-config
 description:
   "flext settings, flext config, frozen config singleton, env expansion, config repoint"
 metadata:
-  aihub.tags: '["activation:detected","decision:ADR-0014","detect:dependency:python:flext-core","detect:selected-tag:flext","effective:2026-09-17","extends:flext-development","route:project","subject:flext","subject:python","usage:on-demand"]'
+  aihub.tags: '["activation:detected","decision:ADR-0038","detect:dependency:python:flext-core","detect:selected-tag:flext","effective:2026-09-17","extends:flext-development","route:project","subject:flext","subject:python","usage:on-demand"]'
 ---
 
 # FLEXT settings vs config ownership

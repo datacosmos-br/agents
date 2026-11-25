@@ -1,5 +1,7 @@
 # Delivery Contract & Behavioral Law Program — Plano Aprovado (v3)
 
+> Superseded by [20261125-governance-alignment](20261125-governance-alignment.md): the worktree and `make gen` x2 wording here no longer governs.
+
 Lane: `feat/governance-runtime-program` (repo `agents`, integração `dev`). Autoridade:
 operador, 2026-09-10 — monopólio total do tema, absorção de qualquer trabalho em
 progresso relacionado, proibição de implementação paralela (refactor-in-place codificado

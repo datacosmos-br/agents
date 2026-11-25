@@ -5,7 +5,7 @@ description:
   bead closure, lane retirement."
 argument-hint: "<bead-id> [branch-slug] [--match nextest-filter]"
 metadata:
-  aihub.tags: '["decision:ADR-0021","effective:2026-09-27","route:project"]'
+  aihub.tags: '["decision:ADR-0038","effective:2026-09-27","route:project"]'
 ---
 
 # mcb cycle

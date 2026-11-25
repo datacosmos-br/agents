@@ -2,7 +2,7 @@
 name: settings-vs-config
 description: "settings vs config, runtime adjustment, static rules, ownership frontier"
 metadata:
-  aihub.tags: '["activation:detected","decision:ADR-0014","detect:dependency:python:flext-core","detect:selected-tag:flext","effective:2026-09-18","extends:flext-development","route:project","subject:flext","usage:on-demand"]'
+  aihub.tags: '["activation:detected","decision:ADR-0038","detect:dependency:python:flext-core","detect:selected-tag:flext","effective:2026-09-18","extends:flext-development","route:project","subject:flext","usage:on-demand"]'
 ---
 
 # Settings vs Config

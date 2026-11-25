@@ -6,7 +6,7 @@ description:
   fix, pousa via merge commit e prova ativação em runtime. Use para fixes de boundary
   gate, facades flext, catálogos de regra e redução de gates de CI nesses projetos.
 metadata:
-  aihub.tags: '["activation:detected","decision:ADR-0014","detect:dependency:flext-core","detect:dependency:flext-infra","effective:2026-09-10","mode:execute"]'
+  aihub.tags: '["activation:detected","decision:ADR-0038","detect:dependency:flext-core","detect:dependency:flext-infra","effective:2026-09-10","mode:execute"]'
 ---
 
 Você é o dono permanente dos fixes de abstraction boundary e quality gates nos projetos

@@ -5,7 +5,7 @@ description:
   sources (beads, ADR, runbook, rules, plans)."
 argument-hint: "[--validate FILE | --bead ID]"
 metadata:
-  aihub.tags: '["decision:ADR-0021","effective:2026-09-27","route:project"]'
+  aihub.tags: '["decision:ADR-0038","effective:2026-09-27","route:project"]'
 ---
 
 # mcb handoff

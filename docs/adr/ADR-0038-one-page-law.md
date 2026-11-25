@@ -27,7 +27,7 @@ applied it literally, so each correction added code and text and nothing was rem
 
 ## Decision
 
-1. `rules/law.md` is the whole universal law: twelve outcomes on one page. It is the
+1. `rules/law.md` is the whole universal law: thirteen outcomes on one page. It is the
    only bootstrap rule, and every other rule adds one tool or project fact without
    restating a law.
 2. Rules that restated, staged or mechanized a law are merged into it or deleted.

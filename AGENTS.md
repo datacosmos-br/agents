@@ -37,14 +37,3 @@ binds every session: every red is the agent's own, the integration tip is the on
 base, native verbs run the work, and a phase ends only with its PR merged and its
 runtime proof.
 <!-- AIHUB-AGENTS-SCOPE-LOCAL-END -->
-
-## Canonical Tool Surface Rule (learned 2026-11-20)
-
-Prohibited bash forms for evidence: cat, find, grep, head, tail, sed, awk.
-Use dedicated tools instead:
-- Read (not cat/head/tail)
-- Glob (not find)
-- Grep (not grep/rg)
-- Edit (not sed/awk)
-
-Never bypass the canonical tool surface. This is a governance rule, not a suggestion.

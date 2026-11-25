@@ -3,7 +3,7 @@ name: flext-cli
 description:
   "flext cli routes, declarative commands, result handlers, framework execution"
 metadata:
-  aihub.tags: '["activation:detected","decision:ADR-0014","detect:dependency:python:flext-cli","detect:selected-tag:flext","effective:2026-09-17","extends:flext-development","route:project","subject:flext","subject:python","usage:on-demand"]'
+  aihub.tags: '["activation:detected","decision:ADR-0038","detect:dependency:python:flext-cli","detect:selected-tag:flext","effective:2026-09-17","extends:flext-development","route:project","subject:flext","subject:python","usage:on-demand"]'
 ---
 
 # FLEXT CLI routes

@@ -20,7 +20,7 @@ A phase is DONE only when `rules/law.md` item 10 holds with fresh evidence: real
 runtime, native gates, a reviewed PR merged into the integration branch, post-merge
 runtime, zero residue and tracker closure. Every phase boundary and the plan's end
 apply this; a phase without its integrated PR is open
-(`operator-order-2026-11-21-pr-integration-every-phase`). A missing step keeps the
+(`operator-order-2026-11-21-integration-pr-every-phase`). A missing step keeps the
 phase open, nothing starts beside it, and incomplete work is pushed only to a
 preservation ref.
 

@@ -47,7 +47,8 @@ and parallel actors.
   just-fetched base. Never remove adopted primary, integration, shared or foreign
   contexts. Account for the authorized lane only, not an empty global worktree list.
 - Prove zero residue (`*.bak`, `*.tmp`, generated backups) through the generator itself
-  — a green `make gen` fixed point — never through a manual `find` after failed or
+  — a green fixed point of the project's generation verb (`make check` once it converges,
+  see the delivery doctrine) — never through a manual `find` after failed or
   partial runs, and never through literal-grep heuristics (a literal environment probe
   cannot prove a grouped-Make variable test).
 - Another actor's live lane is adopted and landed, never re-solved beside it or waited
@@ -78,10 +79,10 @@ evidence-producing and stays within the project Make dispatcher.
   plan (universal → runtime-transitive → local layers, rules inherited through installed
   distributions, so consumers inherit the fleet rule library automatically). Run
   `make mod` from the repository root; its fixed point ("zero findings") is the
-  acceptance evidence. `make fmt` completes bulk formatting before check. A raw
+  acceptance evidence. Bulk formatting converges inside `make check`. A raw
   `ast-grep scan` invocation is a research probe only — mutations go through the Make
   owner.
-- `make gen` proves generator idempotence: one full run, then a fixed point. A second
+- The generation verb proves idempotence: one full run, then a fixed point. A second
   run that emits diffs is a defect at the generator, never a projection to hand-fix.
 - Language-level ast-grep rules (agent-law contract, hardcoded-value bands, boundary
   bans) are reusable across repos; verify rule ownership and layer scope before assuming

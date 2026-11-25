@@ -55,8 +55,8 @@ per-session collector or `update` loop; repairing AI Hub watch/maintain/MCP engi
 - Data directories live in the registry and are never temporary. `watch.toml` is an AI
   Hub projection, so `daemon add|remove` never writes into it.
 - At retirement the lane is unregistered and `prune` is reviewed before `prune --apply`
-  (or `migrate-shared` for legacy shared generations). With several checkouts, every MCP
-  call passes `repo_root`.
+  (or `migrate-shared` for legacy shared generations, an engine-owner decision; never a
+  directory deletion). With several checkouts, every MCP call passes `repo_root`.
 
 ## Limits
 
