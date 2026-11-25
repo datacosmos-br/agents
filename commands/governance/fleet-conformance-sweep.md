@@ -64,8 +64,10 @@ over-strict rule.
 
 `flext-core → flext-cli → flext-tests → flext-infra → charts → gitops → root`. Per repo:
 hermetic deps (`env -u VIRTUAL_ENV -u UV_PROJECT_ENVIRONMENT`), pinned lock + cooldown,
-`make gen` fixed point, structural rewrites through `make mod` to a verified fixed
-point (never direct ast-grep or an engine module), `check`+`test`, scoped
+structural rewrites through `make mod` to a verified fixed point (never direct ast-grep
+or an engine module), then the
+[delivery cycle](../../rules/workflow/agent-delivery-doctrine.md#the-delivery-cycle)
+(`make check`, runtime proof, `make tests`), scoped
 commit → **PR** (no develop bypass), merge, gates on merged SHA.
 
 ## G5 — runtime truth before any completion claim

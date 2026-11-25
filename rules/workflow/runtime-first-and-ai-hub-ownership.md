@@ -1,36 +1,27 @@
 ---
-description: Runtime first, AI Hub owns every projection, and a red gate is the actor's defect
+description: AI Hub owns every projection; config has one SSOT; FLEXT consumes nothing from AI Hub
 metadata:
-  aihub.tags: '["decision:ADR-0038","effective:2026-11-23","route:both"]'
+  aihub.tags: '["decision:ADR-0038","effective:2026-11-24","route:both"]'
 ---
 
-# Runtime first and AI Hub ownership
+# AI Hub ownership
 
-The operator's order of 2026-11-23 binds every agent and session:
+The delivery order, adoption and red ownership are in the
+[agent delivery doctrine](agent-delivery-doctrine.md); environment faults in
+[law 13](../law.md). This rule adds the ownership facts:
 
-- Make the runtime work first: publish through AI Hub and prove the installed runtime;
-  only then run `make fix`, `make fmt`, `make check` and `make tests`. Never the
-  opposite.
 - Never edit a live agent home, a generated projection, OpenMoat policy, the CRG graph
   or the OpenViking store by hand, and never run their commands outside AI Hub. AI Hub
-  is the only projector and publisher.
-- A failing `make`, `gen`, `check`, `test` or runtime is the actor's own defect, never
-  the environment's and never flext-infra's. Repair it at its owner within the FLEXT
-  patterns; never bypass, never `--no-verify`, never change a project rule or add a
-  make verb without the operator's explicit decision.
+  is the only projector and publisher. The hook owner is the cohort AI Hub currently
+  declares (`config/agents.yaml`, AI Hub ADR-0045/0030), never assumed.
+- Every config lives in AI Hub `config/` under its owning domain (workspaces, agents,
+  tools, mcp, models, services) with one SSOT; a project adjusts only through its
+  override, and a worktree inherits its workspace's permissions. Never duplicate or keep
+  an unused declaration.
+- FLEXT projects consume no AI Hub configuration (FLEXT ADR-036); a host tool such as
+  Cubic enters through the existing verbs, gated by a credential AI Hub delivers.
 - Always use the newest FLEXT from the integration branch.
-- Record the change, merge `origin/<integration>` with `--no-ff`, push the lane and its
-  PR, and never skip the integration PR merge.
-- DONE is merged at the integration tip with the exact-head CI green, review threads
-  resolved, and the changed behavior proven in the installed runtime.
-- Adopt another lane's work by cherry-pick or a byte-for-byte copy; never overwrite it.
-- Assume every environment, upstream library, method and class has no problem: a
-  failure is the user's usage until proven otherwise. When it is your responsibility,
-  repair it at the owner, including the upstream you own. A genuine environment fault
-  requires measured proof: stop and report it, never work around it or blame it.
-- Keep every config in its owning domain with one SSOT (workspaces, agents, tools,
-  mcp, models, services). Never duplicate a declaration or keep an unused one; a
-  project adjusts only through its override.
-- Align with every other session before and during the work: use the declared
-  coordination channel (or the owning Bead when it is unavailable), and share the
-  exact commit and branch so either side cherry-picks instead of duplicating.
+- Align with every other session before and during the work through the declared
+  coordination channel (gc mail; the owning Bead when it is unavailable), sharing the
+  exact commit and branch so either side cherry-picks instead of duplicating. An
+  OpenMoat defect is raised with the OpenMoat session there.

@@ -33,4 +33,4 @@ is a defect at its CI owner (`operator-order-2026-11-21-done-no-excuses`). Integ
 (`operator-order-2026-11-15-pr-is-one-validated-step`). At the end of every plan phase
 and of the plan, each green PR is merged into the integration branch with a merge
 commit, and a red one is fixed forward before the next phase starts
-(`operator-order-2026-11-21-phase-end-integration`).
+(`operator-order-2026-11-21-integration-pr-every-phase`).

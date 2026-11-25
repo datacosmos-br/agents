@@ -2,7 +2,7 @@
 name: flext-service
 description: "flext service composition, service wiring, dependency injection"
 metadata:
-  aihub.tags: '["activation:detected","decision:ADR-0014","detect:dependency:python:flext-core","detect:selected-tag:flext","effective:2026-09-18","extends:flext-development","route:project","subject:flext","usage:on-demand"]'
+  aihub.tags: '["activation:detected","decision:ADR-0038","detect:dependency:python:flext-core","detect:selected-tag:flext","effective:2026-09-18","extends:flext-development","route:project","subject:flext","usage:on-demand"]'
 ---
 
 # FLEXT Service Composition

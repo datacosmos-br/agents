@@ -3,7 +3,7 @@ name: webapp-test
 description: "playwright, login flow, console errors, local webapp"
 license: Apache-2.0
 metadata:
-  aihub.tags: '["activation:detected","decision:ADR-0014","detect:dependency:python:playwright","effective:2026-09-07","extends:playwright-e2e","route:project","subject:playwright","subject:web","usage:on-demand"]'
+  aihub.tags: '["activation:detected","decision:ADR-0038","detect:dependency:python:playwright","effective:2026-09-07","extends:playwright-e2e","route:project","subject:playwright","subject:web","usage:on-demand"]'
 ---
 
 # Local web application testing

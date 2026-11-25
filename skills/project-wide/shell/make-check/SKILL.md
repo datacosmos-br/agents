@@ -18,11 +18,9 @@ verbs, deadlines, profiling, locks and test selection.
 - `make setup` runs first in the project's declared commit and CI sequence; elsewhere it
   runs only when the environment is absent or fails its own check. A valid environment is
   reused, and lock changes belong to the upgrade verb.
-- The changed behavior is shown through its real, installed entry point first; only then
-  run `fix`, `fmt`, `check` and `tests`, never the opposite
-  (`rules/workflow/agent-delivery-doctrine.md`). The declared gates also run through the
-  commit and push hooks and the integration CI, and an explicit gate run only diagnoses a
-  red one.
+- The ordered cycle (`make check`, runtime proof, the test verb last) is owned by
+  `rules/workflow/agent-delivery-doctrine.md`. Outside it, an explicit gate run only
+  diagnoses a red one.
 - Record each run's command, directory, exit and decisive output for its scope.
   Compare native timing receipts for the same workload and verify behavior and coverage.
 

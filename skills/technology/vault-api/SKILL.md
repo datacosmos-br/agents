@@ -3,7 +3,7 @@ name: vault-api
 description: "vault http api, kv v2, secret, sealed"
 license: unlicensed (attributed)
 metadata:
-  aihub.tags: '["activation:opt-in","decision:ADR-0014","detect:opt-in:vault","effective:2026-09-07","route:project","subject:vault","usage:on-demand"]'
+  aihub.tags: '["activation:opt-in","decision:ADR-0038","detect:opt-in:vault","effective:2026-09-07","route:project","subject:vault","usage:on-demand"]'
 ---
 
 # Vault API

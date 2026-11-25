@@ -62,3 +62,11 @@ write by hand.
   change the agent made, or in the upstream owner we hold.
 - A genuine environment failure is honored only with its proof, and is reported rather
   than repaired by a second local layer.
+
+## Amendment 2026-11-24
+
+The operator decided on 2026-11-25 that the cycle of FLEXT #2791 prevails: `make check`
+is the only gate, followed by the runtime proof and the project's test verb last; `gen`,
+`fix` and `fmt` are no longer separate cycle steps, and adoption is by
+`git cherry-pick -x`. Decision 5 and the first consequence above are superseded by
+[the delivery cycle](../../rules/workflow/agent-delivery-doctrine.md#the-delivery-cycle).

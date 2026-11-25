@@ -78,9 +78,10 @@ with the captured commands.
 
 ## Hooks chain (OpenMoat)
 
-OpenMoat owns agent hooks, policy packs, stdio MCP gating and audit logs (ai-hub
-ADR-0030 hooks cohort and ADR-0045 OpenMoat amendment; Bead `aihub-wzj8i`). AI Hub no
-longer declares a hook daemon or socket unit.
+OpenMoat owns agent hooks, policy packs, stdio MCP gating and audit logs only while
+AI Hub declares its cohort (`config/agents.yaml`; ai-hub ADR-0030 and ADR-0045). Since
+ai-hub `5c79f0b27` (2026-11-24) the cohort is off until an anchored deploy re-pins it;
+read `ai-hub status` for the current owner (Bead `aihub-wzj8i`).
 
 Live state lives in Beads (`aihub-wzj8i` and children), never here. Normative
 owner: ai-hub ADR-0030, amendment 2026-11-21 (the deploy never leaves the lock

@@ -3,7 +3,7 @@ name: changelog
 description: "user-facing changelog, commit history, features, fixes"
 license: unlicensed (attributed)
 metadata:
-  aihub.tags: '["decision:ADR-0014","effective:2026-09-07","usage:on-demand"]'
+  aihub.tags: '["decision:ADR-0038","effective:2026-09-07","usage:on-demand"]'
 ---
 
 # Changelog Generator
