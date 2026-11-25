@@ -22,6 +22,6 @@ The delivery order, adoption and red ownership are in the
   Cubic enters through the existing verbs, gated by a credential AI Hub delivers.
 - Always use the newest FLEXT from the integration branch.
 - Align with every other session before and during the work through the declared
-  coordination channel (gc mail; the owning Bead when it is unavailable), sharing the
+  coordination channel (the inter-session mail channel; the owning Bead when it is unavailable), sharing the
   exact commit and branch so either side cherry-picks instead of duplicating. An
   OpenMoat defect is raised with the OpenMoat session there.
