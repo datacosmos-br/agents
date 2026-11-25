@@ -1,5 +1,9 @@
 # 20260929: fleet coordinator handoff
 
+> Superseded by [20261125-governance-alignment](../20261125-governance-alignment.md) for the
+> delivery cycle: `make check` now absorbs gen/fix/fmt (FLEXT #2791, ai-hub #1858), so the
+> `make gen` twice fixed-point gates below are historical.
+
 ## 1. Mission
 
 The mission is P0 before any new phase:

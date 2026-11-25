@@ -1,5 +1,9 @@
 # Governance Runtime Program — Plano de Ação e Status (ag-zrh; esteira ag-q4w1 · CRG ag-nq7q · piloto ag-m9lu)
 
+> Superseded by [20261125-governance-alignment](20261125-governance-alignment.md) for the
+> delivery cycle: `make check` now absorbs gen/fix/fmt (FLEXT #2791, ai-hub #1858), so the
+> `make gen` x2 fixed-point gates below are historical.
+
 Lane: `feat/governance-runtime-program` (repo `agents`, integração `dev`). Autoridade:
 operador (monopólio pleno dos temas, sessão 2026-09-10). Leis donas:
 `distribution-routing.md` (ADR-0015), `runtime-is-reality.md`, `session-governance.md`,

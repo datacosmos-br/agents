@@ -15,9 +15,11 @@ Read the repository instructions and root Makefile, then run its declared verbs 
 never an underlying tool in their place. `rules/workflow/canonical-commands.md` owns the
 verbs, deadlines, profiling, locks and test selection.
 
-- `make setup` runs first in the project's declared commit and CI sequence; elsewhere it
-  runs only when the environment is absent or fails its own check. A valid environment is
-  reused, and lock changes belong to the upgrade verb.
+- `make setup` provisions a lane and is never a commit-hook or CI row: the hook runs
+  only `make check CHECK_PHASE=primary` and CI is verify-only (`CI=Y make check
+  CHECK_PHASE=primary` plus `CI=Y make tests`). Elsewhere it runs only when the
+  environment is absent or fails its own check; a valid environment is reused, and lock
+  changes belong to the upgrade verb, the only lock writer.
 - The ordered cycle (`make check`, runtime proof, the test verb last) is owned by
   `rules/workflow/agent-delivery-doctrine.md`. Outside it, an explicit gate run only
   diagnoses a red one.
