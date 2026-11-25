@@ -6,8 +6,8 @@ metadata:
 
 # Agent delivery doctrine
 
-Operator orders of 2026-11-23, 2026-11-24 and 2026-11-25 (FLEXT #2791 and ai-hub
-#1858: `make check` absorbs gen/fix/fmt), for every session, project and agent.
+Operator orders of 2026-11-23, 2026-11-24 and 2026-11-25 (`make check` absorbs
+gen/fix/fmt), for every session, project and agent.
 
 1. **Every red is yours.** A failing `make` verb, hook, CI check or gate is a defect in
    the change you made; there is no "pre-existing" exemption. Repair it at its owner
