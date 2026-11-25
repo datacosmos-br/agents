@@ -15,13 +15,15 @@ Canonical text: [delivery doctrine](../../rules/workflow/agent-delivery-doctrine
 Done in agents: single cycle source, adoption by `cherry-pick -x`, duplicated rules linked,
 ADR-0040 amended, ADR-0038 count, superseded ADR tags, tool-surface rule, OpenMoat runbook.
 
-Reconciled 2026-11-25 from measurement, not assumption: one delivery-cycle section reads
-`setup → upg → check → runtime → tests → commit/PR/merge → deploy`; `upg` is the sole lock
-writer and runs before `check` when a pin changes; `mod` runs only when a rewrite is
-ordered; the queue holds `check-full`, `tests-full`, `mod-full` (flext-infra #2791
-`codegen.yaml` `gated_verbs`). `check` converges only as the `feat/check-converges` target,
-so `check-full` runs generation once until it lands. Repositories that predate #2791 keep
-their own verbs — this repo (`gen`/`fix`/`fmt`/`test`), ai-hub, and mcb (`CI=Y|N`) — and
-the `@flext-regenerate: make gen` header the generator still emits stays owned by the FLEXT
-template. A duplicate cycle section and an `ADR-037` reference that resolves to no existing
-decision were removed.
+Reconciled 2026-11-25 to the operator handoff (FLEXT #2791, ai-hub #1858): one
+delivery-cycle section reads `setup → upg → check → build (runtime/artifacts) → tests →
+commit/PR/CI/merge`; `make check` is the only gate and absorbs gen, fix and fmt internally
+— there are no public `lock`/`gen`/`gen-scope`/`fix`/`fmt` verbs; `upg` is the sole lock
+writer, and an integration-side lock conflict is re-resolved by `upg` (never a hand edit);
+the commit hook runs only `make check CHECK_PHASE=primary`, CI is verify-only (`CI=Y make
+check CHECK_PHASE=primary` plus `CI=Y make tests`) and never generates or repairs;
+`check-full`/`tests-full`/`mod-full` are diagnostics only, never a PR or CI gate.
+Repositories that predate #2791 keep their own verbs — this repo (`gen`/`fix`/`fmt`/`test`),
+ai-hub, and mcb (`CI=Y|N`) — and the `@flext-regenerate: make gen` header the generator
+still emits stays owned by the FLEXT template. A duplicate cycle section and an `ADR-037`
+reference that resolves to no existing decision were removed.
