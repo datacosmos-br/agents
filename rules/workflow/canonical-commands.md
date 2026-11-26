@@ -18,8 +18,18 @@ with its PR merged into the integration branch before the next phase starts; a
 missing integration PR is a grave failure
 (`operator-order-2026-11-21-integration-pr-every-phase`). The ordered cycle and its
 verbs are owned by the [delivery doctrine](agent-delivery-doctrine.md#the-delivery-cycle);
-outside it an agent hand-runs a gate only to diagnose a red result. Full mod and full
-tests require an explicit order. Scope authorizes runtime publication and proof.
+outside it an agent hand-runs a gate only to diagnose a red result. Full check, full
+tests and `make mod` require an explicit order of the operator or of the plan; there
+is no `make ci`. In our own repositories `make setup` leaves the checkout usable for
+development and never updates anything: every lock, pin and tool version changes only
+in `make upg`. `make check` and `make tests` give the same verdict locally and in CI,
+so the pre-commit hook runs the same rows as the GitHub CI, `make setup` included, and
+both block on generation, format, fix, lint, type check and the incremental tests. A
+project adds its own verbs and the pre/post actions of the common verbs in its
+`custom.mk`, with values from its config overrides. A fork of an external project
+keeps its upstream's verbs and hooks
+(`operator-order-2026-11-26-setup-usable-upg-only-updates`,
+`operator-decision-2026-11-26-full-verbs-on-request-precommit-equals-ci`). Scope authorizes runtime publication and proof.
 Repair red hooks, CI and integration findings at their owner, including warnings,
 and follow [law 8–10](../law.md)
 (`operator-decision-2026-11-21-hooks-and-ci-own-gates`).
