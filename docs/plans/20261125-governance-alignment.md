@@ -18,14 +18,14 @@ Done in agents: single cycle source, adoption by `cherry-pick -x`, duplicated ru
 ADR-0040 amended, ADR-0038 count, superseded ADR tags, tool-surface rule, OpenMoat runbook.
 
 Reconciled 2026-11-25 to the operator handoff (FLEXT #2791, ai-hub #1858): one
-delivery-cycle section reads `setup → upg → check → build (runtime/artifacts) → tests →
-commit/PR/CI/merge`; `make check` is the only gate and absorbs gen, fix and fmt internally
-— there are no public `lock`/`gen`/`gen-scope`/`fix`/`fmt` verbs; `upg` is the sole lock
-writer, and an integration-side lock conflict is re-resolved by `upg` (never a hand edit);
-the commit hook runs only `make check CHECK_PHASE=primary`, CI is verify-only (`CI=Y make
-check CHECK_PHASE=primary` plus `CI=Y make tests`) and never generates or repairs;
-`check-full`/`tests-full`/`mod-full` are diagnostics only, never a PR or CI gate.
-Repositories that predate #2791 keep their own verbs — this repo (`gen`/`fix`/`fmt`/`test`),
-ai-hub, and mcb (`CI=Y|N`) — and the `@flext-regenerate: make gen` header the generator
-still emits stays owned by the FLEXT template. A duplicate cycle section and an `ADR-037`
+delivery-cycle section reads `setup → upg → ci → build (runtime/artifacts) → check → tests →
+commit/PR/CI/merge`; `make ci` is the commit hook and CI gate (lint, shell, duplication,
+test); `make check` is the full non-test acceptance gate (waza, docs, audit, runtime,
+static, mod-check, conform) but is not run by hook or CI. The verbs `gen`, `fix`, `fmt`
+remain public verbs in this pre-#2791 repo. `upg` is the sole lock writer, and an
+integration-side lock conflict is re-resolved by `upg` (never a hand edit); `check-full`/
+`tests-full`/`mod-full` are diagnostics only, never a PR or CI gate. Repositories that
+predate #2791 keep their own verbs — this repo (`gen`/`fix`/`fmt`/`test`/`ci`), ai-hub,
+and mcb (`CI=Y|N`) — and the `@flext-regenerate: make gen` header the generator still
+emits stays owned by the FLEXT template. A duplicate cycle section and an `ADR-037`
 reference that resolves to no existing decision were removed.

@@ -5,4 +5,5 @@
 for variable in $(git rev-parse --local-env-vars); do
   unset "$variable"
 done
-exec make ci
+export CHECK_PHASE=primary
+exec make check

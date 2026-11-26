@@ -23,9 +23,12 @@ override export MISE_OVERRIDE_TOOL_VERSIONS_FILENAMES := none
 unexport UV_PYTHON UV_PROJECT
 
 .DEFAULT_GOAL := help
-PUBLIC_VERBS := help setup upg gen docs audit check runtime waza crg-check lint static conform fmt fix mod mod-check shell duplication build test test-full ci validate-artifacts publish profile-waza profile-waza-report
+PUBLIC_VERBS := help setup upg gen docs audit check runtime waza crg-check lint static conform fmt fix mod mod-check shell duplication build test test-full validate-artifacts publish profile-waza profile-waza-report
 .PHONY: $(PUBLIC_VERBS)
 .DELETE_ON_ERROR:
+
+CHECK_PHASE ?= primary
+export CHECK_PHASE
 
 ifeq ($(MAKELEVEL),0)
 $(PUBLIC_VERBS): _bounded
@@ -161,13 +164,6 @@ test: ## run affected tests through the testmon database at its tool default
 test-full: ## run the complete local suite without the testmon plugin or database
 	$(call BANNER,test-full · pytest without testmon)
 	$(call RUN_TESTMON,full)
-
-## CI composition: fast external gates and make test only
-ci: ## run the fast external gates and make test; check and test-full stay local
-	@$(MAKE) lint
-	@$(MAKE) shell
-	@$(MAKE) duplication
-	@$(MAKE) test
 
 ## release publication
 publish: ## publish the validated tag artifacts
