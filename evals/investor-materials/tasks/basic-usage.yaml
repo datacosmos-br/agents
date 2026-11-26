@@ -1,10 +1,11 @@
 id: investor-materials-one-pager-001
 name: Draft one consistent fundraising narrative packet
 description: Reuse one capital narrative across an investor memo and fundraising deck.
-tags: [investor, fundraising-decks, investor-memos, capital-narratives, fundraising, metrics, happy-path]
+tags: [investor, fundraising-decks, investor-memos, capital-narratives, executive-budgets, board-proposals, fundraising, metrics, happy-path]
 inputs:
   prompt: Use fundraising-facts.yaml to create one capital narrative, a concise
-    investor memo, a fundraising deck outline, and their consistency checklist.
+    investor memo, a fundraising deck outline, the executive budget for the board
+    proposal, and their consistency checklist.
     Cover wedge, traction, raise instrument, use of funds, and milestones; show
     the spending sum and add no unsupported claims.
   files:
