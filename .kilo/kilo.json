@@ -24,5 +24,6 @@
     "ask": {
       "model": "kilo/kilo-auto/free"
     }
-  }
+  },
+  "snapshot": false
 }

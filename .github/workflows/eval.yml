@@ -78,12 +78,14 @@ jobs:
     name: Runtime-first governance validation
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    env:
+      CHECK_PHASE: primary
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
       - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
-      - uses: jdx/mise-action@b44d12e7d0d8ee7461bb893e1b1993500433185b # v5.2.7
+      - uses: jdx/mise-action@236a21c3b91f5db6d4e174b348674a0f0caac06d # v5.2.9
       - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: .testmondata
@@ -93,5 +95,7 @@ jobs:
             testmon-${{ runner.os }}-
       - name: Provision declared tools and environment
         run: timeout --signal=TERM --kill-after=2s 118s make setup
-      - name: Run fast external gates and make test
-        run: timeout --signal=TERM --kill-after=2s 118s make ci
+      - name: Run fast external gates (lint, shell, duplication)
+        run: timeout --signal=TERM --kill-after=2s 118s make lint shell duplication
+      - name: Run affected tests
+        run: timeout --signal=TERM --kill-after=2s 118s make test

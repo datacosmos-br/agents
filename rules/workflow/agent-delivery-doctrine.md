@@ -6,12 +6,11 @@ metadata:
 
 # Agent delivery doctrine
 
-Operator orders of 2026-11-23, 2026-11-24 and 2026-11-25 (`make check` absorbs
-gen/fix/fmt), for every session, project and agent.
+Operator orders of 2026-11-23, 2026-11-24 and 2026-11-25, for every session, project and agent.
 
 1. **Every red is yours.** A failing `make` verb, hook, CI check or gate is a defect in
    the change you made; there is no "pre-existing" exemption. Repair it at its owner
-   before you write again: a tree whose `check` does not pass is not committable. The
+   before you write again: a tree whose `ci` does not pass is not committable. The
    environment and upstream are never the suspect ([law 13](../law.md)).
 2. **Native verbs run the work.** The project's declared Make verbs and CLI own their
    steps. Never bypass one, never add a second path beside it, never `--no-verify`, and
@@ -38,19 +37,19 @@ Strict and ordered; no skill, ADR, project instruction or memory may contradict 
    of versions and locks and always resolves the newest integrated tip; never edit
    `uv.lock`/`mise.lock` by hand — on a lock conflict take the integration side and let
    `make upg` re-resolve. `make mod` runs only when a structural rewrite is ordered.
-3. **`make check` is the only gate.** It absorbs gen, fix and fmt internally; there are
-   no public `lock`, `gen`, `gen-scope`, `fix` or `fmt` verbs — never recreate, run or
-   revert them. A Makefile that still exposes them is regenerated, never hand-edited;
-   until then it runs its own declared verbs. The commit hook runs only `make check
-   CHECK_PHASE=primary`; never add a setup row, pass `CI=C`, or use `--no-verify`. CI is
-   verify-only (`CI=Y make check CHECK_PHASE=primary` plus `CI=Y make tests`) and never
-   generates or repairs. `check-full`/`tests-full` are diagnostics only, never part of a
-   PR or of CI.
+3. **`make ci` is the commit hook and CI gate.** It runs `lint`, `shell`, `duplication`,
+   and `test`; `make check` (which includes `waza`, `docs`, `audit`, `runtime`,
+   `static`, `mod-check`, `conform`) is the full non-test acceptance gate but is not run
+   by the hook or CI. The verbs `gen`, `fix`, `fmt` remain separate public verbs and are
+   run locally as needed. The commit hook runs only `make ci`; never add a setup row,
+   pass `CI=C`, or use `--no-verify`. CI is verify-only (`make setup` plus `make ci`)
+   and never generates or repairs. `check-full`/`tests-full` are diagnostics only,
+   never part of a PR or of CI.
 4. **Validate the runtime.** When the slice ships runtime or artifacts, `make build` and
    prove the behavior at its real entry point, also through other sessions' logs. A slow
    or integration test red in a lane is expected where the lane differs from the
    integration tip; CI deselects it — never weaken the test or the lock to go green.
-5. **Do not hand-run** gen, fix, fmt, tests or check "just in case": the hook and CI are
+5. **Do not hand-run** gen, fix, fmt, tests or ci "just in case": the hook and CI are
    that gate.
 6. **Commit, push, PR, merge.** Commit only after the cycle is green, with explicit paths
    from a message file, push, open one PR on the exact head, pass the required
