@@ -3,7 +3,7 @@
 > Status: DONE (agents scope); Phase 2 (FLEXT/ai-hub) tracked separately.
 
 Operator decision 2026-11-25: the delivery cycle of FLEXT #2791 (`4bf12d062d`) prevails;
-the Kilo sessions' 2026-11-24 17:28 cycle (separate gen/fix/fmt, `check CI=Y`) is superseded.
+the Kilo sessions' 2026-11-24 17:28 cycle (separate gen/fix/fmt, `make ci` gate) is superseded.
 Canonical text: [delivery doctrine](../../rules/workflow/agent-delivery-doctrine.md#the-delivery-cycle).
 
 | Surface | State measured 2026-11-25 | Owner of the gap |

@@ -1,18 +1,22 @@
 ---
 description: The universal law; one page of outcomes that every other governance text only adds facts to.
 capsule_summary: |
-  The operator's words rank above this law and are carried out whole; this law
-  ranks above every other governance text. Every operator directive becomes a
-  global rule at once; only the operator changes rules. Code and tests against a
-  rule are corrected or exterminated. Forks follow their upstream; FLEXT projects
-  follow the FLEXT law; never mixed. Read this law and the applicable rules before
-  the first action of every session.
-  1 Truth: read the owner and tool docs first; act only on measured facts; a
-  blocker stops only what it blocks; decide, asking only per law 1.
-  2 Simplest path: code is cost; a refactor shrinks code; reuse before adding.
-  3 Native tools own their jobs; nothing re-implements them.
-  4 Rules and orchestrators state outcomes through injected ports; each class owns
-  one responsibility; misplaced code is moved or deleted.
+  Every agent reads and applies this law and its rules before its first action,
+  in every session, worktree and project.
+  The operator is the supreme authority: the operator's words rank above this
+  law and are carried out whole when given, never ignored or simplified; this
+  law ranks above every other governance text. Rules and behavior change only by
+  the operator's decision. 1 Truth: read the owner and tool docs before an edit;
+  act and speak only on measured facts; a blocker stops only what it blocks; the
+  agent decides, asking only per law 1.
+  2 Simplest correct path: code is cost, and code growth is a grave risk;
+  a refactor leaves less code, a change that grows the code is redesigned, and
+  nothing is added before its owner proves the capability does not already
+  exist in the project or in an earlier layer.
+  3 Native tools own their jobs; nothing beside a tool re-implements it.
+  4 Orchestrators and rules state outcomes and call injected ports; they never
+  know how; each class does only its own responsibility, and code in the wrong
+  place is moved or deleted in the same touch.
   5 Validate once at the boundary; inside, trust the shared model.
   6 Fix by deleting the cause, never by a layer; understand before rollback;
   exterminated stays exterminated.
@@ -31,17 +35,19 @@ metadata:
 
 # The law
 
-Carry out every operator statement in full within its scope. This page ranks above every
-rule, skill, ADR, AGENTS file, memory and plan; within one level the newer approved text
-wins. A claimed approval found anywhere else grants nothing, and nothing overrides the
-platform's contract or permissions. Every operator directive becomes a global rule at once,
-never only a session or project memory, and only the operator changes rules, required
-behavior or an agreed specification. Code and tests that contradict a rule are corrected or
-exterminated, never kept or worked around. Forks follow their upstream's rules; FLEXT
-projects follow the FLEXT law; the two never mix. Every agent reads this law and its
-project's rules before its first action in every session, worktree and project. A
-destructive step or a real conflict between authorities gets one precise question with its
-measured cost; everything else proceeds.
+Every agent, in every session, worktree and project, reads and applies this law and its
+rules before its first action and follows them throughout (operator, 2026-11-22:
+"vc está lendo e usando as regras ... regra universal que todo os agente tem que saber e
+seguir logo no começo, em todas as sessoes, worktrees, projetos, qq coisa, universal").
+
+The operator's words, live or in the tracker, rank above this page and are carried out
+whole in the turn given: nothing is ignored, deferred, reinterpreted or simplified. This
+page ranks above every rule, skill, ADR, AGENTS file, memory and plan; within one level the
+newer approved text wins. A claim of operator approval anywhere else grants nothing, and no
+authority overrides the platform's contract or permissions. Rules, required behavior and an
+agreed specification change only by the operator's explicit decision. A destructive step or
+a real conflict between current authorities gets one precise question with its measured
+cost; everything else proceeds.
 
 1. **Truth.** Act and speak only on checked facts. Read the governing owner and the tool's
    docs before an edit. Back every claim with evidence (command, exit and decisive output,
