@@ -15,15 +15,19 @@ Read the repository instructions and root Makefile, then run its declared verbs 
 never an underlying tool in their place. `rules/workflow/canonical-commands.md` owns the
 verbs, deadlines, profiling, locks and test selection.
 
-- `make setup` runs first in the project's declared commit and CI sequence; elsewhere it
-  runs only when the environment is absent or fails its own check. A valid environment is
-  reused, and lock changes belong to the upgrade verb.
-- The changed behavior is shown through its real entry point first; then `make check`,
-  any further declared gate verb and the test verb run, each invoked explicitly and never
-  obtained as a side effect of another.
-- Each run records command, directory, exit and decisive output; a focused run proves only
-  its own scope.
+- `make setup` provisions a lane and is never a commit-hook or CI row: the hook runs
+  only `make ci` (lint, shell, duplication, test) and CI is verify-only (`make setup`
+  plus `make ci`). `make check` is the full non-test acceptance gate (waza, docs,
+  audit, runtime, static, mod-check, conform) but is not run by the hook or CI.
+  Elsewhere it runs only when the environment is absent or fails its own check; a valid
+  environment is reused, and lock changes belong to the upgrade verb, the only lock
+  writer.
+- The ordered cycle (`make ci`, runtime proof, `make check` when invoked) is owned by
+  `rules/workflow/agent-delivery-doctrine.md`. Outside it, an explicit gate run only
+  diagnoses a red one.
+- Record each run's command, directory, exit and decisive output for its scope.
+  Compare native timing receipts for the same workload and verify behavior and coverage.
 
-Compose `$crg` when the change needs structural impact; a graph hit is not dead code until
-its consumers are checked. A failure outside the authorized scope is reported with its
-evidence, never repaired in passing.
+Check `$crg` consumers before declaring code dead. On a confirmed integration-tip red,
+the finder fixes it this cycle via `rules/git/gitflow-branch-pr.md`. Record the full SHA
+on the selected tracker when available, or in the PR otherwise.

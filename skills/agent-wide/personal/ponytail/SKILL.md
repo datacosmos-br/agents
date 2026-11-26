@@ -3,7 +3,7 @@ name: ponytail
 description: "ponytail mode, smallest solution, stdlib, skipped"
 license: MIT
 metadata:
-  aihub.tags: '["decision:ADR-0014","effective:2026-09-07","extends:yagni","usage:on-demand"]'
+  aihub.tags: '["decision:ADR-0038","effective:2026-09-07","extends:yagni","usage:on-demand"]'
 ---
 
 Composes as the specialized delta of $yagni; the parent owns the shared conduct and this

@@ -27,7 +27,7 @@ applied it literally, so each correction added code and text and nothing was rem
 
 ## Decision
 
-1. `rules/law.md` is the whole universal law: twelve outcomes on one page. It is the
+1. `rules/law.md` is the whole universal law: thirteen outcomes on one page. It is the
    only bootstrap rule, and every other rule adds one tool or project fact without
    restating a law.
 2. Rules that restated, staged or mechanized a law are merged into it or deleted.
@@ -48,3 +48,16 @@ Hub consumes keep their identities and now resolve to the law or a surviving rul
 Hub owns re-projection of the provider homes, which retires the deleted rules' copies.
 Project governance (FLEXT `AGENTS.md`, its law skill and ADRs) is rewritten to the same
 law in its own repository.
+
+The [branch and PR rule](../../rules/git/gitflow-branch-pr.md) owns validation by
+native commit and push hooks and integration CI.
+[Canonical commands](../../rules/workflow/canonical-commands.md) owns background
+execution. The operator decision `operator-decision-2026-11-21-hooks-and-ci-own-gates`
+is tracked under `ag-ri5i`.
+
+The operator may combine related local branches into one complete work step and
+validate the combined result in one pull request and its exact-head integration CI.
+Each repository still owns its own commits, integration branch and runtime proof.
+The integration actor and merge method follow the project's declared contract;
+an automatic forge merge is not required when the project assigns that action to
+its orchestrator.

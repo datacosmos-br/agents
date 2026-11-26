@@ -3,7 +3,7 @@ name: skill-creator
 description: "canonical skill, frontmatter, eval suite, budgets"
 license: Apache-2.0
 metadata:
-  aihub.tags: '["activation:opt-in","decision:ADR-0014","detect:opt-in:skill-creator","effective:2026-09-07","extends:skill-governance","route:agent","subject:agents","usage:on-demand"]'
+  aihub.tags: '["activation:opt-in","decision:ADR-0038","detect:opt-in:skill-creator","effective:2026-09-07","extends:skill-governance","route:agent","subject:agents","usage:on-demand"]'
 ---
 
 Composes as the specialized delta of $skill-governance; the parent owns the shared

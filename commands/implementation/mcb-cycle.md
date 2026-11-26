@@ -5,7 +5,7 @@ description:
   bead closure, lane retirement."
 argument-hint: "<bead-id> [branch-slug] [--match nextest-filter]"
 metadata:
-  aihub.tags: '["decision:ADR-0021","effective:2026-09-27","route:project"]'
+  aihub.tags: '["decision:ADR-0038","effective:2026-09-27","route:project"]'
 ---
 
 # mcb cycle
@@ -20,11 +20,10 @@ its invocation does not grant isolation, Git publication or retirement authority
    remote branches for pre-existing work on the bead; claim the bead with a
    lane-note comment; mail the coordinator the bead, branch, and (later) PR.
 2. **Placement**: `rules/git/gitflow-branch-pr.md`; runtime root: `rules/storage.md`.
-3. **Battery**: `make gen check`, `CI=Y make check`, `CI=N make check`, `make test`,
-   `make rust WHAT=test` (add `MATCH=$ARGUMENTS` filter when given). Each gate
-   isolated, exit code captured; read the logs, never trust a bare rc.
-4. **Landing**: push, `gh pr create --base develop` with the proof table in the body,
-   merge with a merge commit, post-merge proof on the integration branch.
+3. **Gates**: commit; the commit hook and CI run the battery in the delivery sequence
+   of `rules/workflow/canonical-commands.md`. Read a red gate's log, never a bare rc.
+4. **Landing**: push, `gh pr create --base develop --body-file <file>` with the proof
+   table, merge with a merge commit, post-merge proof on the integration branch.
 5. **Closure**: close the bead with the full evidence trail and mail the landing.
    Retire only an owned disposable isolated context with explicit authority and
    the Git owner's preservation proofs, never an adopted primary, integration,

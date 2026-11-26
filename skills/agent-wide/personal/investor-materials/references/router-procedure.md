@@ -82,6 +82,30 @@ Include:
 - avoid puffery
 - keep internal metrics consistent with the deck and model
 
+#### Executive Budget and Board Proposals
+
+- realized figures come from the primary system with a stated cut-off; the forecast
+  covers only the open period and never overlaps realized days
+- label the revenue basis (invoiced, cash, accrual); never mix bases in one ratio or
+  result
+- show any cost-to-revenue index with taxes alongside and its break-even point
+- resale or pass-through business enters by net commission or margin, never gross
+  price, and is not organic growth; a commission rate without evidence is a
+  highlighted assumption with a sensitivity
+- owner or partner pay splits are a management view, never an accounting
+  reclassification
+- keep scenarios and sensitivities separate; each scenario states its activation
+  condition; unsigned business is "announced", not "contracted"
+- close two bridges to zero: prior period to each scenario, and prior version to
+  current version
+- give growth percentages only across comparable scopes; otherwise the absolute
+  delta with its caveat
+- profit is not cash: show monthly cash, the minimum balance and the required cover
+- deck: answer first; each title is a conclusion its exhibit supports;
+  decision-changing caveats stay on the slide
+- the generator is the only writable authority; outputs are never hand-edited
+- deliver one folder with an index; superseded versions go to a history folder
+
 ### Red Flags to Avoid
 
 - unverifiable claims
@@ -99,3 +123,6 @@ Before delivering:
 - assumptions are visible, not buried
 - the story is clear without hype language
 - the final asset is defensible in a partner meeting
+- budget and board assets: every number is read from the model, none typed; every
+  slide is rendered and inspected; the recalculated model has zero error cells and
+  zero-residual checks; two generator runs are identical

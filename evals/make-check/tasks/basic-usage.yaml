@@ -3,13 +3,25 @@ name: Select selector-free root validation verbs
 description: Use the root Make owner for runtime-first project validation.
 tags: [make, native-gates, project-validation, command-ownership, happy-path]
 inputs:
-  prompt: The project has no provisioned environment. Read the supplied Makefile
-    and return the exact ordered commands for setup, public runtime validation,
-    static validation, and incremental tests.
-    Invoke bare Make verbs and preserve evidence required for green. Do not
-    execute commands or substitute an underlying tool.
+  prompt: The project has no provisioned environment. CI confirmed a failing
+    check on dev at d1442fe2b1ff6b88ad215dc5bb5caa1f3478d112. The selected
+    tracker is available and its owning Bead is ag-1234. Read the supplied Makefile
+    and plan setup, diagnosis, repair and integration. Show runtime before tests.
+    Explain the role of make static in the declared check path, which checks the
+    hook and CI run, who repairs the failure, and where the exact integration SHA
+    is recorded. Do not execute commands.
   files:
   - path: Makefile
 expected:
-  output_contains: [make setup, make check, make static, make test, runtime before tests, exit code]
+  output_contains:
+  - make setup
+  - make check
+  - make static
+  - make test
+  - runtime before tests
+  - hook
+  - same cycle
+  - ag-1234
+  - d1442fe2b1ff6b88ad215dc5bb5caa1f3478d112
+  - exit code
   output_not_contains: [python -m, uv run, direct tool, selector]

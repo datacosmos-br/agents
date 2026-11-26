@@ -19,3 +19,15 @@ plans) may quote an identifier it observed; it never selects one.
 AI Hub publishes directly to the serving proxy and projects agent configuration only
 after runtime readback confirms the generation. The proxy serves it and owns account
 operations. Management interfaces do not publish or replace the generation.
+
+Pipeline probing never spends a provider's quota faster than its declared budget:
+evidence is reused until the inventory or a credential changes, route health comes
+from the proxy's own quota and cooldown signals, and a probe is one minimal request
+per model, protocol and quota domain. No fast, priority or service-tier option is
+projected to any agent, and a free tier serves only the agent its provider names.
+Each consuming agent receives dedicated routes on both the OpenAI and Anthropic
+protocols, and every consumer, including tests and memory servers, names a route from
+configuration, never the real model. A shared local model serves only the consumers
+the operator names, through the proxy, with its rate and threads declared in
+configuration. While the operator's temporary free-tier ruling stands, the proxy
+admits only free-tier models from free accounts.

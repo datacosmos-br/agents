@@ -3,7 +3,7 @@ name: grilling
 description: "grilling, shared understanding, recommended answer, plan"
 license: MIT
 metadata:
-  aihub.tags: '["decision:ADR-0014","effective:2026-09-07","usage:on-demand"]'
+  aihub.tags: '["decision:ADR-0038","effective:2026-09-07","usage:on-demand"]'
 ---
 
 Interview me relentlessly about every aspect of this plan until we reach a shared

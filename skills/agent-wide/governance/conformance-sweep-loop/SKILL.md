@@ -5,7 +5,7 @@ description:
   scoping"
 license: MIT
 metadata:
-  aihub.tags: '["decision:ADR-0014","effective:2026-10-01","usage:on-demand"]'
+  aihub.tags: '["decision:ADR-0038","effective:2026-10-01","usage:on-demand"]'
   version: 1.0.0
 ---
 

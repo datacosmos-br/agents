@@ -33,7 +33,6 @@ reflects the actual state of the code.
 ## Analysis Commands
 
 ```bash
-make gen
 make check
 ```
 

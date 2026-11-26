@@ -1,6 +1,6 @@
 ---
 name: investor-materials
-description: "fundraising decks, investor memos, capital narratives"
+description: "fundraising decks, investor memos, capital narratives, executive budgets, board proposals"
 metadata:
   aihub.tags: '["decision:ADR-0008","effective:2026-08-29","usage:on-demand"]'
 ---

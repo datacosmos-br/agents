@@ -1,5 +1,10 @@
 ---
 description: Required environment values, service credentials and the operator's keyring
+capsule_summary: |
+  Every AI Hub daemon and spawner runs the latest integrated binary. AI Hub
+  delivers CRG and OpenViking triggers and MCP to every configured agent,
+  repository and worktree. A failing runtime, hook or MCP blocks other work
+  until verified at its real consumer.
 metadata:
   aihub.tags: '["decision:ADR-0038","effective:2026-11-03","route:both"]'
 ---
@@ -22,3 +27,17 @@ OAuth or API revision; the proxy owns operational use and renewal. Updates from 
 side require the confirmed predecessor; conflicting revisions stop reconciliation.
 Revocation cannot restore an older value. A locked keyring leaves synchronization
 pending without prompting from a daemon.
+
+All agents in every session and project use the installed system AI Hub at the
+current integration tip for all operations. The operator grants standing
+authorization for operations through AI Hub. Every daemon and spawner must run
+the latest integrated AI Hub binary. AI Hub propagates CRG and OpenViking triggers
+and MCP access to every configured agent, repository and worktree. Verify the
+serving revision, each hook event and each MCP at its real consumer. A runtime,
+hook or MCP failure blocks other work until repaired at its owner.
+
+The only model proxy is CLIProxyAPI, run by AI Hub's proxy service from its
+mise-installed binary; the CCS proxy, its CLI, profiles and skills are removed, and any
+process or rule that still invokes them is a defect at its owner. Hook interpreters
+resolve to the project's governed runtime, never a system interpreter or another
+checkout's path.

@@ -1,5 +1,7 @@
 # Fleet-Wide Beads Reorganization & Cleanup Plan
 
+> Status: in progress — acompanhado pelo bead aberto `ag-t8r3`. Não é histórico.
+
 **Date**: 2026-09-21
 **Author**: agents dedicated session
 **Scope**: All 4 bead stores (agents, algar-oud-mig, ai-hub, flext-infra)

@@ -2,7 +2,7 @@
 name: record-session
 description: Record the session into the five canonical destinations at close.
 metadata:
-  aihub.tags: '["decision:ADR-0021","effective:2026-09-27","route:agent"]'
+  aihub.tags: '["decision:ADR-0038","effective:2026-09-27","route:agent"]'
 ---
 
 # Record session

@@ -3,7 +3,7 @@ name: frontend-design
 description: "visual direction, palette, typography, signature"
 license: Apache-2.0
 metadata:
-  aihub.tags: '["decision:ADR-0014","effective:2026-09-07","usage:on-demand"]'
+  aihub.tags: '["decision:ADR-0038","effective:2026-09-07","usage:on-demand"]'
 ---
 
 # Frontend Design

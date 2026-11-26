@@ -2,7 +2,7 @@
 name: lane-landing-cycle
 description: "beads, git worktree, landing cycle, pr merge, ci generation, lane retirement"
 metadata:
-  aihub.tags: '["activation:opt-in","decision:ADR-0021","detect:opt-in:lane-landing-cycle","effective:2026-10-29","route:agent","subject:beads","subject:git","subject:github","usage:router"]'
+  aihub.tags: '["activation:opt-in","decision:ADR-0038","detect:opt-in:lane-landing-cycle","effective:2026-10-29","route:agent","subject:beads","subject:git","subject:github","usage:router"]'
 ---
 
 # Lane landing cycle
@@ -26,9 +26,13 @@ regression tests; validation is not permission for test-first work.
 
 Discover public verbs, contexts, population and evidence requirements from the selected
 repository's root Make catalog. `rules/workflow/canonical-commands.md` owns operation
-boundaries, deadlines and test selection. Use its current test-verb contract rather
-than a fixed test/full alias or mandatory targeted-before-full sequence. Prove any
-required generation fixed point through its owner; no hidden repeated lifecycle.
+boundaries, deadlines and test selection. Run each verb with the selected worktree
+as the process working directory. Commit and push the complete slice through its
+native hooks and let the exact-head integration CI gate the merge. Diagnose and
+repair a red hook or CI result at its owner. For FLEXT lanes, use the
+[Engineering SOP](https://github.com/flext-sh/flext/blob/0.12.0-dev/docs/standards/engineering-sop.md)
+for closure evidence. Prove the required generation fixed point through
+its owner.
 Keep the physical environment selected by its owner. A red invocation requires causal
 repair and revalidation in the same phase; recording it alone never clears acceptance.
 

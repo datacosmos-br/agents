@@ -78,9 +78,9 @@ code.
 
 ## Phase 1 — Governance documents (`agents` repo, lane `feat/pydantic-governance`)
 
-Artifacts:
+Artifacts (updated 2026-11-26 to current paths):
 
-1. `rules/python/pydantic.md` — distilled obligation rule (globs `**/*.py`).
+1. `rules/python.md` — consolidated obligation rule (globs `**/*.py`).
 2. `skills/technology/pydantic-development/SKILL.md` — router skill, extends
    `$python-development`, detects `pydantic`/`pydantic-settings`.
 3. `skills/technology/pydantic-development/references/procedure.md` — the full
@@ -89,9 +89,9 @@ Artifacts:
    (id/timestamps/version), inheritance and MRO rules, conversions
    (dict/TypedDict/dataclass/JSON), validation, serialization, `p`+`r` typing,
    performance, experimental policy, advanced types, anti-catalog, gates.
-4. `skills/technology/python-development/SKILL.md` — compose `$pydantic-development`
+4. `skills/technology/py-dev/SKILL.md` — compose `$pydantic-development`
    when the project declares Pydantic.
-5. `skills/framework/flext-development/references/procedure.md` — Pydantic paragraph
+5. `skills/framework/flext-development/SKILL.md` — Pydantic paragraph
    points at the new skill, presets, and TypeAdapter-once owners.
 6. `commands/inspection/pydantic-boundary-audit.md` — read-only audit that inventories
    violations per repository and feeds Phase 4.

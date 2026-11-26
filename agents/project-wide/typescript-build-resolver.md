@@ -99,7 +99,6 @@ For each error:
 ## Quick Recovery
 
 ```bash
-make fix
 make check
 make build
 ```

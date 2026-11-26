@@ -1,0 +1,31 @@
+# Governance alignment — agents ↔ FLEXT ↔ ai-hub (2026-11-25)
+
+> Status: DONE (agents scope); Phase 2 (FLEXT/ai-hub) tracked separately.
+
+Operator decision 2026-11-25: the delivery cycle of FLEXT #2791 (`4bf12d062d`) prevails;
+the Kilo sessions' 2026-11-24 17:28 cycle (separate gen/fix/fmt, `make ci` gate) is superseded.
+Canonical text: [delivery doctrine](../../rules/workflow/agent-delivery-doctrine.md#the-delivery-cycle).
+
+| Surface | State measured 2026-11-25 | Owner of the gap |
+|---|---|---|
+| FLEXT verbs | `setup upg mod check tests tests-full` (#2791 `4bf12d062d`); `make check` absorbs gen/fix/fmt and converges | — |
+| FLEXT workspace | root Makefile pinned before #2791; AGENTS.md lists gen/fix/fmt | FLEXT workspace |
+| ai-hub | Makefile generated before #2791; delivers only `law.prelude`; pins agents `@dev`; OpenMoat cohort off (`5c79f0b27`) | ai-hub |
+| agents | own verbs (`gen fix fmt check test ci`) unchanged; rules aligned in this change | — |
+| Trackers | `bd` from flext/ai-hub resolves to the agents store | ai-hub tracker connections |
+
+Done in agents: single cycle source, adoption by `cherry-pick -x`, duplicated rules linked,
+ADR-0040 amended, ADR-0038 count, superseded ADR tags, tool-surface rule, OpenMoat runbook.
+
+Reconciled 2026-11-25 to the operator handoff (FLEXT #2791, ai-hub #1858): one
+delivery-cycle section reads `setup → upg → ci → build (runtime/artifacts) → check → tests →
+commit/PR/CI/merge`; `make ci` is the commit hook and CI gate (lint, shell, duplication,
+test); `make check` is the full non-test acceptance gate (waza, docs, audit, runtime,
+static, mod-check, conform) but is not run by hook or CI. The verbs `gen`, `fix`, `fmt`
+remain public verbs in this pre-#2791 repo. `upg` is the sole lock writer, and an
+integration-side lock conflict is re-resolved by `upg` (never a hand edit); `check-full`/
+`tests-full`/`mod-full` are diagnostics only, never a PR or CI gate. Repositories that
+predate #2791 keep their own verbs — this repo (`gen`/`fix`/`fmt`/`test`/`ci`), ai-hub,
+and mcb (`CI=Y|N`) — and the `@flext-regenerate: make gen` header the generator still
+emits stays owned by the FLEXT template. A duplicate cycle section and an `ADR-037`
+reference that resolves to no existing decision were removed.

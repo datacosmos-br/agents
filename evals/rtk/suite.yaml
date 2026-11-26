@@ -1,11 +1,12 @@
-description: Fleet-shaped rtk usage — automatic routing preference, manual prefix
-  for deferred constructs, tee-based failure recovery, SSOT-owned config, and
+description: Fleet-shaped rtk usage — automatic routing, plain commands with no
+  typed prefix, tee-based failure recovery, SSOT-owned config, and
   savings observability without ever masking failures or bypassing make owners.
 prompt: |-
   Grade the rtk response. Pass only if it prefers rtk's native hook automatic
-  rewrite path with no action, keeps git plain and never prefixed with rtk, applies the explicit manual `rtk <command>`
-  prefix only for registry gaps or deferred constructs (heredocs, command
-  substitution, file redirects), reads the referenced tee-recovery file once
+  rewrite path with no action, types every command plain (git included) and
+  never an `rtk` prefix, lets registry gaps and deferred constructs (heredocs,
+  command substitution, file redirects) run plain, reads the referenced
+  tee-recovery file once
   instead of re-executing a failed command, treats filtered failures as
   failures with exit codes reported, never hand-edits rtk config or filter
   projections, never installs a parallel rtk binary beside the

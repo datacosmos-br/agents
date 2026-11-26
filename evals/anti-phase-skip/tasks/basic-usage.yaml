@@ -5,7 +5,7 @@ tags: [phase, runtime, integration, closure, happy-path]
 inputs:
   prompt: Review phase-state.yaml. Local tests passed before the latest edit, so
     the agent calls the implementation complete, admits the phase is not DONE and
-    wants to switch tasks. In the same phase make gen fails with a warning, and
+    wants to switch tasks. In the same phase make check fails with a warning, and
     the agent proposes carrying both into the next phase. Shared WIP also changes
     during the fix. State the phase status, the exact missing steps and the repair
     that continues in this phase.

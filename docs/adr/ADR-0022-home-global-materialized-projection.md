@@ -1,12 +1,11 @@
 # ADR-0022 — Global home `~/.agents` as a versioned materialized projection
 
 **Status:** Amended by ADR-0038 **Date:** 2026-09-18 **Scope:** `~/.agents`, the global
-read surface managed by AI Hub (`docs/plans/20260918-handoff-repasse-consolidado.md`);
-publication effects follow laws 8 and 11 of `rules/law.md`
+read surface managed by AI Hub; publication effects follow laws 8 and 11 of `rules/law.md`
 
 ## Context
 
-`~/.agents` is today a **symlink to the source checkout** `/home/marlonsc/agents`. The
+`~/.agents` is today a **symlink to the source checkout** `$HOME/agents`. The
 diagnosis of the distribution rework approved on 18/09 (section §6, F6) measured the risk:
 `make gen` rewrites the user's live config inside the checkout; `git clean`/branch
 switch in the source can delete the home; hooks from two owners (ai-hub x Gas City) coexist

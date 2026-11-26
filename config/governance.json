@@ -3,7 +3,8 @@
   "bootstrap": {
     "rules": [
       "architecture/change-admission",
-      "law"
+      "law",
+      "runtime/required-environment"
     ],
     "skills": [
       "caveman",

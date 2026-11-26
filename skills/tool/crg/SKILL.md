@@ -1,7 +1,6 @@
 ---
 name: crg
-description:
-  "code-review-graph fleet contract, graph freshness, structural impact, worktree graphs"
+description: "code-review-graph fleet contract, graph freshness, structural impact, and worktree graphs"
 metadata:
   aihub.tags: '["activation:opt-in","decision:ADR-0038","detect:opt-in:code-review-graph","effective:2026-11-03","route:agent","subject:mcp","usage:on-demand"]'
 ---
@@ -27,6 +26,13 @@ installation, watchers, MCP routing, hooks and generated instruction surfaces.
 > `crg-daemon` child under an AI-Hub-owned `CRG_HOME`, retiring `ai-hub-watch.service`
 > and the manifest. Do not treat S4 as already implemented.
 
+**USE FOR:** mapping code before an edit; `search` / `query callers_of|tests_for|importers_of`;
+`impact --files`; `architecture`; `flows`; `large-functions`; `dead-code --json`;
+`detect-changes`; `refactor` preview; `wiki`; `context-history`; worktree graph readiness.
+
+**DO NOT USE FOR:** editing or mutating code; rebuilding `shared.db` by hand; launching a
+per-session collector or `update` loop; repairing AI Hub watch/maintain/MCP engines.
+
 ## Freshness gate
 
 - A result is evidence only when `status --json --repo <root>` reports `built_at_commit`
@@ -49,8 +55,8 @@ installation, watchers, MCP routing, hooks and generated instruction surfaces.
 - Data directories live in the registry and are never temporary. `watch.toml` is an AI
   Hub projection, so `daemon add|remove` never writes into it.
 - At retirement the lane is unregistered and `prune` is reviewed before `prune --apply`
-  (or `migrate-shared` for legacy shared generations). With several checkouts, every MCP
-  call passes `repo_root`.
+  (or `migrate-shared` for legacy shared generations, an engine-owner decision; never a
+  directory deletion). With several checkouts, every MCP call passes `repo_root`.
 
 ## Limits
 

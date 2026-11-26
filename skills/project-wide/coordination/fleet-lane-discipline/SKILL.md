@@ -47,12 +47,13 @@ and parallel actors.
   just-fetched base. Never remove adopted primary, integration, shared or foreign
   contexts. Account for the authorized lane only, not an empty global worktree list.
 - Prove zero residue (`*.bak`, `*.tmp`, generated backups) through the generator itself
-  — a green `make gen` fixed point — never through a manual `find` after failed or
+  — a green fixed point of the project's generation verb — `make check` in a #2791
+  repository, which absorbs gen/fix/fmt; `make gen` twice before #2791; see the delivery
+  doctrine — never through a manual `find` after failed or
   partial runs, and never through literal-grep heuristics (a literal environment probe
   cannot prove a grouped-Make variable test).
-- Never enter active reform territory of another actor (locked epic, live lane).
-  Document the boundary, claim only non-overlapping classes, and absorb their landed
-  work after merge instead of re-solving it.
+- Another actor's live lane is adopted and landed, never re-solved beside it or waited
+  on (`rules/coordination/inter-session-mail.md`).
 - Ping the fleet before claiming a shared theme (message/mail surface) and re-absorb the
   integration tip at every material step; late discovery of a moving tip costs one full
   lane cycle per miss.
@@ -79,10 +80,10 @@ evidence-producing and stays within the project Make dispatcher.
   plan (universal → runtime-transitive → local layers, rules inherited through installed
   distributions, so consumers inherit the fleet rule library automatically). Run
   `make mod` from the repository root; its fixed point ("zero findings") is the
-  acceptance evidence. `make fmt` completes bulk formatting before check. A raw
+  acceptance evidence. Bulk formatting converges inside `make check`. A raw
   `ast-grep scan` invocation is a research probe only — mutations go through the Make
   owner.
-- `make gen` proves generator idempotence: one full run, then a fixed point. A second
+- The generation verb proves idempotence: one full run, then a fixed point. A second
   run that emits diffs is a defect at the generator, never a projection to hand-fix.
 - Language-level ast-grep rules (agent-law contract, hardcoded-value bands, boundary
   bans) are reusable across repos; verify rule ownership and layer scope before assuming
@@ -93,8 +94,9 @@ evidence-producing and stays within the project Make dispatcher.
   is RED — rebuild, do not navigate stale truth.
 - For exact definition/reference sites during consumer rewiring, use `$crg query` with a
   fresh index; grep stays reserved for literal evidence that CRG cannot answer.
-- Pilot rollout for fleet-wide changes: converge one non-core member to full green (gen
-  x2 fixed point, check, full test within the test budget), then propagate waves across
+- Pilot rollout for fleet-wide changes: converge one non-core member to full green
+  (`make check`'s generation fixed point — `make gen` twice before #2791 — then the full
+  test within the test budget), then propagate waves across
   remaining members with the same gates per wave. Fleet changes land on the declared
   integration branch only.
 - Graph-backed claims about code state pass the `$crg` freshness gate first; a graph

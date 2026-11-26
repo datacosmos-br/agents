@@ -61,6 +61,12 @@ state.
 3. Restart only authorized consumers whose accepted configuration, executable binding
    or declared dependencies changed. A no-op neither writes nor restarts. Prove
    sockets and consumer behavior after activation.
+4. For scoped native client registration, bind the command and resources to
+   the process serving the declared listener. Match the service manager's main
+   PID with the listener's peer credentials on a Unix socket. Use the deployment
+   receipt for the artifacts it published. Exercise the native client with the
+   intended authentication and transport in an isolated profile before activating
+   the live profile. Use the same profile root for registration and read-back.
 
 ### Minimum-effect publication
 
