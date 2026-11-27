@@ -32,8 +32,10 @@ jobs:
             release-testmon-${{ runner.os }}-
       - name: Provision declared tools and environment
         run: timeout --signal=TERM --kill-after=2s 118s make setup
-      - name: Run fast external gates and make test
-        run: timeout --signal=TERM --kill-after=2s 118s make ci
+      - name: Run the verify-only check gate
+        run: timeout --signal=TERM --kill-after=2s 118s make check
+      - name: Run make test
+        run: timeout --signal=TERM --kill-after=2s 118s make test
       - name: Publish validated immutable release
         env:
           GH_TOKEN: ${{ github.token }}

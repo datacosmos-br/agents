@@ -32,7 +32,7 @@ WIP, stop and coordinate instead of committing.
 
 ## Regeneration note
 
-Generated file headers read `@flext-regenerate: make gen` with no apply acknowledgement:
+Generated file headers read `@flext-regenerate: make check` with no apply acknowledgement:
 every verb runs directly, with no apply selector or mutation guard.
 
 ## Superproject PR merge playbook (release lane → integration branch)
