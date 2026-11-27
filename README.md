@@ -66,14 +66,14 @@ an executable inherited from the host PATH is not provisioning evidence. The
 committed `mise.lock` retains the selected resolution; adding a missing request
 does not authorize an unrelated tool upgrade.
 
-`make gen` retains the development-local provider outputs selected by `ag-la3h`
+Outside CI, `make check` first runs the private generation step, which retains the development-local provider outputs selected by `ag-la3h`
 and commits `19e64c01` and `8226eafc`, as clarified in
 [ADR-0008](docs/adr/ADR-0008-governance-bundle-as-public-facade.md).
 Its renderer lives outside the package, writes only inside this checkout and
 proves a deterministic fixed point. It neither publishes HOME/runtime surfaces
 nor replaces AI Hub's installed delivery owner.
 
-`make gen` also projects the portable `.beads/metadata.json` from
+That step also projects the portable `.beads/metadata.json` from
 `config/beads.yaml`, `config/beads-activation.yaml`, and `.beads/identity.toml`,
 and the tracked `.envrc` from `tools/templates/agents.envrc`. Both files are
 committed. AI Hub's host connection owner binds each checkout to its existing
@@ -92,8 +92,6 @@ make waza
 make lint
 make static
 make conform
-make fmt
-make fix
 make mod-check
 make mod
 make shell
@@ -102,7 +100,6 @@ make build
 make validate-artifacts
 make test
 make test-full
-make ci
 ```
 
 The development toolchain is supported on Linux x64, the platform declared in
@@ -114,12 +111,12 @@ validated as installed artifacts by `make runtime`.
 
 The test verbs' Testmon contract is declared in
 [`rules/workflow/canonical-commands.md`](rules/workflow/canonical-commands.md). CI runs
-`make ci`, which holds only fast external gates and `make test`; `make check` and
-`make test-full` run only locally. The Waza gate proves the projected suite schema,
+`make setup`, the verify-only `make check` and `make test`; `make test-full` runs only
+on the operator's order. The Waza gate proves the projected suite schema,
 every skill/evaluation reference, the exact spec threshold, and token ceilings; model
 execution belongs to a selected AI Hub runtime and is not claimed by this package.
 
-`make check` and `make ci` validate the immutable package without requiring the host's
+`make check` and `make test` validate the immutable package without requiring the host's
 AI Hub runtime. Under [ADR-0010](docs/adr/ADR-0010-optional-host-runtime-boundary.md),
 host CRG convergence is a separate, mandatory installed-integration acceptance step:
 run `make crg-check` alongside the package gates on the selected host. That explicit

@@ -23,12 +23,17 @@ override export MISE_OVERRIDE_TOOL_VERSIONS_FILENAMES := none
 unexport UV_PYTHON UV_PROJECT
 
 .DEFAULT_GOAL := help
-PUBLIC_VERBS := help setup upg gen docs audit check runtime waza crg-check lint static conform fmt fix mod mod-check shell duplication build test test-full validate-artifacts publish profile-waza profile-waza-report
+PUBLIC_VERBS := help setup upg docs audit check runtime waza crg-check lint static conform mod mod-check shell duplication build test test-full validate-artifacts publish profile-waza profile-waza-report
 .PHONY: $(PUBLIC_VERBS)
 .DELETE_ON_ERROR:
 
 CHECK_PHASE ?= primary
 export CHECK_PHASE
+# CI (GITHUB_ACTIONS) verifies only; outside CI `make check` converges gen, fix and fmt first (ADR-0042).
+ifeq ($(GITHUB_ACTIONS),true)
+override CI := Y
+endif
+.PHONY: _gen _fix _fmt
 
 ifeq ($(MAKELEVEL),0)
 $(PUBLIC_VERBS): _bounded
@@ -64,14 +69,15 @@ upg: ## resolve newest declared tools and dependencies into committed locks
 	@MISE_LOCKED=false $(MISE_EXEC) bun update --latest --ignore-scripts
 	@MISE_LOCKED=false $(MISE_EXEC) uv lock --upgrade --refresh
 
-## generation + mutation
-gen: ## project Beads activation and governance provider outputs
+## generation + mutation (private; `make check` runs them outside CI)
+_gen:
 	$(call BANNER,gen · Beads activation + governance projections)
 	@$(UV_RUN) python tools/sync_beads_activation.py
 	@$(UV_RUN) python tools/sync_governance.py
 
 ## development gates
-check: ## run package non-test gates; host CRG acceptance uses make crg-check
+check: ## converge gen, fix, fmt outside CI, then run the non-test gates; CRG acceptance uses make crg-check
+	$(if $(filter Y,$(CI)),,+@$(MAKE) _gen && $(MAKE) _fix && $(MAKE) _fmt)
 	$(call BANNER,check · complete non-test gate composition)
 	+@$(MAKE) --jobs=2 runtime docs static mod-check conform waza
 
@@ -115,12 +121,12 @@ conform: ## validate workflow and zero-duplication conformance
 	@$(MAKE) duplication
 	@git diff --check
 
-fmt: ## apply canonical Python formatting
+_fmt:
 	$(call BANNER,fmt · ruff format)
 	@$(UV_RUN) ruff format src tests tools
 	@PYTHON_RESOURCES_OPERATION=format $(UV_RUN) python tools/python_resources_gate.py
 
-fix: ## apply canonical corrections
+_fix:
 	$(call BANNER,fix · ruff)
 	@$(UV_RUN) ruff check --fix src tests tools
 	@PYTHON_RESOURCES_OPERATION=fix $(UV_RUN) python tools/python_resources_gate.py

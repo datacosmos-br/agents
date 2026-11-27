@@ -1,6 +1,6 @@
 # ADR-0041 — Gate contract: actual `make ci` vs aspirational `make check`
 
-**Status:** Accepted
+**Status:** Superseded by ADR-0042 (2026-11-27)
 **Date:** 2026-11-26
 **Scope:** `rules/workflow/agent-delivery-doctrine.md`, `skills/project-wide/shell/make-check/SKILL.md`, `docs/plans/20261125-governance-alignment.md`, `.githooks/pre-commit`, `.github/workflows/eval.yml`
 
