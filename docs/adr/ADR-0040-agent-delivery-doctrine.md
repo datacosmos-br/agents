@@ -70,3 +70,10 @@ is the only gate, followed by the runtime proof and the project's test verb last
 `fix` and `fmt` are no longer separate cycle steps, and adoption is by
 `git cherry-pick -x`. Decision 5 and the first consequence above are superseded by
 [the delivery cycle](../../rules/workflow/agent-delivery-doctrine.md#the-delivery-cycle).
+
+## Amendment 2026-11-27
+
+The operator ordered on 2026-11-27 the new `make check` standard everywhere: FLEXT
+ADR-037 (flext-infra #2791) makes `make check` the single gate that generates, repairs
+lint and formats to a fixed point before validating. This repository retires its own
+`gen`, `fix` and `fmt` verbs into `make check` under ADR-0042, which supersedes ADR-0041.

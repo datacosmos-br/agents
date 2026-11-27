@@ -23,7 +23,7 @@ findings:
   - gate: namespace
     class: loose-module-constant
     count: 402
-    owner: flext-infra namespace enforcer via make fix
+    owner: flext-infra namespace enforcer via make check
   - gate: loc-cap
     class: over-cap-module
     count: 8

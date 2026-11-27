@@ -66,7 +66,7 @@ Measured on 2026-09-05 and re-measured on 2026-09-06 against `dev`:
 per session   SessionEnd/Stop -> ai-hub hook daemon -> SessionRecord + VictoriaLogs
               Claude/Codex OTEL ------------------> VictoriaMetrics/VictoriaLogs
 daily         learn-cycle: ai-hub learn harvest -> ai-hub learn route -> beads (agents rig) -> gc sling learn-apply
-per bead      learn-apply: edit owner artifact + waza task -> make ci (agents) -> compound-review
+per bead      learn-apply: edit owner artifact + waza task -> make check (agents) -> compound-review
               -> PR --no-ff into dev -> administrative merge -> ai-hub learn baseline
 weekly        learn-live: ai-hub model-backed suite run (all suites) -> results feed the next harvest
 weekly        learn-evolve: EvoSkill per bad-signal skill in an isolated lane -> candidate -> learn-apply bead

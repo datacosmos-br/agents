@@ -36,9 +36,7 @@ metadata:
 # The law
 
 Every agent, in every session, worktree and project, reads and applies this law and its
-rules before its first action and follows them throughout (operator, 2026-11-22:
-"vc está lendo e usando as regras ... regra universal que todo os agente tem que saber e
-seguir logo no começo, em todas as sessoes, worktrees, projetos, qq coisa, universal").
+rules before its first action and follows them throughout.
 
 The operator's words, live or in the tracker, rank above this page and are carried out
 whole in the turn given: nothing is ignored, deferred, reinterpreted or simplified. This

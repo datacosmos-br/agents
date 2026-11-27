@@ -110,3 +110,9 @@ The conditional recovery procedure is
 [`runtime-heal`](../../skills/domain/runtime-heal/references/procedure.md).
 Provider eligibility and concrete native selectors remain consumer policy; they are
 not copied into this package or inferred by an adapter.
+
+## Amendment 2026-11-27 — generation runs inside `make check`
+
+Per the operator order of 2026-11-27 and FLEXT ADR-037, the `make gen` named above is
+retired; the same checkout-only generation now runs as the first stage of `make check`.
+The projection boundary of this decision is unchanged.
