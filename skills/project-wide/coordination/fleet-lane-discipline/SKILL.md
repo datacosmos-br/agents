@@ -47,8 +47,7 @@ and parallel actors.
   just-fetched base. Never remove adopted primary, integration, shared or foreign
   contexts. Account for the authorized lane only, not an empty global worktree list.
 - Prove zero residue (`*.bak`, `*.tmp`, generated backups) through the generator itself
-  — a green fixed point of `make check` (FLEXT ADR-037); see the delivery
-  doctrine — never through a manual `find` after failed or
+  — a green fixed point of the project's generation verb — `make check`, which absorbs gen/fix/fmt; see the delivery doctrine — never through a manual `find` after failed or
   partial runs, and never through literal-grep heuristics (a literal environment probe
   cannot prove a grouped-Make variable test).
 - Another actor's live lane is adopted and landed, never re-solved beside it or waited

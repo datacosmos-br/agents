@@ -15,15 +15,12 @@ Read the repository instructions and root Makefile, then run its declared verbs 
 never an underlying tool in their place. `rules/workflow/canonical-commands.md` owns the
 verbs, deadlines, profiling, locks and test selection.
 
-- `make setup` provisions a lane and is never a commit-hook or CI row: the hook runs
-  only `make check` — the single gate (FLEXT ADR-037) that generates, repairs and formats
-  to a fixed point, then validates; there are no `gen`, `fix` or `fmt` verbs. CI is
-  verify-only (`make setup`, `make lint shell duplication`, `make test`). Elsewhere it runs only when the environment is absent or fails its own check; a valid
-  environment is reused, and lock changes belong to the upgrade verb, the only lock
-  writer.
-- The ordered cycle (`make check`, runtime proof, tests last) is owned by
-  `rules/workflow/agent-delivery-doctrine.md`. Outside it, an explicit gate run only
-  diagnoses a red one.
+- `make setup` provisions a lane and is never a commit-hook or CI row. `make check` is
+  the single gate (ADR-0042, FLEXT ADR-037): outside CI it converges gen → fix → fmt,
+  then runs the read-only gates; in CI it is verify-only. `gen`, `fix`, `fmt`, `lock`
+  and `ci` are not public verbs. `make upg` is the only lock writer. The ordered cycle
+  is owned by `rules/workflow/agent-delivery-doctrine.md`; outside it, an explicit gate
+  run only diagnoses a red one.
 - Record each run's command, directory, exit and decisive output for its scope.
   Compare native timing receipts for the same workload and verify behavior and coverage.
 

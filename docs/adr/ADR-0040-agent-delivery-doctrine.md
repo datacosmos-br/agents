@@ -76,4 +76,4 @@ is the only gate, followed by the runtime proof and the project's test verb last
 The operator ordered on 2026-11-27 the new `make check` standard everywhere: FLEXT
 ADR-037 (flext-infra #2791) makes `make check` the single gate that generates, repairs
 lint and formats to a fixed point before validating. This repository retires its own
-`gen`, `fix` and `fmt` verbs into `make check`; ADR-0041 is superseded on that point.
+`gen`, `fix` and `fmt` verbs into `make check` under ADR-0042, which supersedes ADR-0041.

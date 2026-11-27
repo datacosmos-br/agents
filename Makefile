@@ -29,6 +29,11 @@ PUBLIC_VERBS := help setup upg docs audit check runtime waza crg-check lint stat
 
 CHECK_PHASE ?= primary
 export CHECK_PHASE
+# CI (GITHUB_ACTIONS) verifies only; outside CI `make check` converges gen, fix and fmt first (ADR-0042).
+ifeq ($(GITHUB_ACTIONS),true)
+override CI := Y
+endif
+.PHONY: _gen _fix _fmt
 
 ifeq ($(MAKELEVEL),0)
 $(PUBLIC_VERBS): _bounded
@@ -64,16 +69,16 @@ upg: ## resolve newest declared tools and dependencies into committed locks
 	@MISE_LOCKED=false $(MISE_EXEC) bun update --latest --ignore-scripts
 	@MISE_LOCKED=false $(MISE_EXEC) uv lock --upgrade --refresh
 
-## development gates
-check: ## generate, repair and format to a fixed point, then run every non-test gate (FLEXT ADR-037)
-	$(call BANNER,check · generation + lint repair + format · then validation)
+## generation + mutation (private; `make check` runs them outside CI)
+_gen:
+	$(call BANNER,gen · Beads activation + governance projections)
 	@$(UV_RUN) python tools/sync_beads_activation.py
 	@$(UV_RUN) python tools/sync_governance.py
-	@$(UV_RUN) ruff check --fix src tests tools
-	@PYTHON_RESOURCES_OPERATION=fix $(UV_RUN) python tools/python_resources_gate.py
-	@TESTMON_MODE=repair $(UV_RUN) python tools/testmon_gate.py
-	@$(UV_RUN) ruff format src tests tools
-	@PYTHON_RESOURCES_OPERATION=format $(UV_RUN) python tools/python_resources_gate.py
+
+## development gates
+check: ## converge gen, fix, fmt outside CI, then run the non-test gates; CRG acceptance uses make crg-check
+	$(if $(filter Y,$(CI)),,+@$(MAKE) _gen && $(MAKE) _fix && $(MAKE) _fmt)
+	$(call BANNER,check · complete non-test gate composition)
 	+@$(MAKE) --jobs=2 runtime docs static mod-check conform waza
 
 docs: ## validate documentation through the public bundle contract
@@ -115,6 +120,17 @@ conform: ## validate workflow and zero-duplication conformance
 	@$(MAKE) shell
 	@$(MAKE) duplication
 	@git diff --check
+
+_fmt:
+	$(call BANNER,fmt · ruff format)
+	@$(UV_RUN) ruff format src tests tools
+	@PYTHON_RESOURCES_OPERATION=format $(UV_RUN) python tools/python_resources_gate.py
+
+_fix:
+	$(call BANNER,fix · ruff)
+	@$(UV_RUN) ruff check --fix src tests tools
+	@PYTHON_RESOURCES_OPERATION=fix $(UV_RUN) python tools/python_resources_gate.py
+	@TESTMON_MODE=repair $(UV_RUN) python tools/testmon_gate.py
 
 mod-check: ## reject unnormalized evaluation YAML
 	$(call BANNER,mod-check · evaluation YAML normalization)

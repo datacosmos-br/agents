@@ -1,6 +1,6 @@
 # ADR-0041 — Gate contract: actual `make ci` vs aspirational `make check`
 
-**Status:** Accepted
+**Status:** Superseded by ADR-0042 (2026-11-27)
 **Date:** 2026-11-26
 **Scope:** `rules/workflow/agent-delivery-doctrine.md`, `skills/project-wide/shell/make-check/SKILL.md`, `docs/plans/20261125-governance-alignment.md`, `.githooks/pre-commit`, `.github/workflows/eval.yml`
 
@@ -48,10 +48,3 @@ The aspirational FLEXT #2791 cycle (`make check` absorbs `gen`/`fix`/`fmt`, hook
 - `make check` passes (complete non-test acceptance)
 - `make ci` passes (hook/CI gate)
 - PRs #444/#445 merged with required checks green
-
-## Amendment 2026-11-27 — gen/fix/fmt retired
-
-Superseded on the public-verb point by the operator order of 2026-11-27 and FLEXT
-ADR-037: `gen`, `fix` and `fmt` are retired here too, and `make check` runs generation,
-lint repair and formatting before its validators. The commit hook runs `make check`;
-CI runs `make setup`, `make lint shell duplication` and `make test`.
