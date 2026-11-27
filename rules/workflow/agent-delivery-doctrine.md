@@ -37,19 +37,17 @@ Strict and ordered; no skill, ADR, project instruction or memory may contradict 
    of versions and locks and always resolves the newest integrated tip; never edit
    `uv.lock`/`mise.lock` by hand — on a lock conflict take the integration side and let
    `make upg` re-resolve. `make mod` runs only when a structural rewrite is ordered.
-3. **`make ci` is the commit hook and CI gate.** It runs `lint`, `shell`, `duplication`,
-   and `test`; `make check` (which includes `waza`, `docs`, `audit`, `runtime`,
-   `static`, `mod-check`, `conform`) is the full non-test acceptance gate but is not run
-   by the hook or CI. The verbs `gen`, `fix`, `fmt` remain separate public verbs and are
-   run locally as needed. The commit hook runs only `make ci`; never add a setup row,
-   pass `CI=C`, or use `--no-verify`. CI is verify-only (`make setup` plus `make ci`)
-   and never generates or repairs. `check-full`/`tests-full` are diagnostics only,
-   never part of a PR or of CI.
+3. **`make check` is the single gate (FLEXT ADR-037).** It generates, repairs lint and
+   formats to a fixed point, then validates; there are no `gen`, `fix` or `fmt` verbs.
+   The commit hook runs only `make check`; never add a setup row, pass `CI=C`, or use
+   `--no-verify`. CI is verify-only (`make setup`, `make lint shell duplication`,
+   `make test`) and never generates or repairs. `check-full`/`tests-full` are
+   diagnostics only, never part of a PR or of CI.
 4. **Validate the runtime.** When the slice ships runtime or artifacts, `make build` and
    prove the behavior at its real entry point, also through other sessions' logs. A slow
    or integration test red in a lane is expected where the lane differs from the
    integration tip; CI deselects it — never weaken the test or the lock to go green.
-5. **Do not hand-run** gen, fix, fmt, tests or ci "just in case": the hook and CI are
+5. **Do not hand-run** check or tests "just in case": the hook and CI are
    that gate.
 6. **Commit, push, PR, merge.** Commit only after the cycle is green, with explicit paths
    from a message file, push, open one PR on the exact head, pass the required

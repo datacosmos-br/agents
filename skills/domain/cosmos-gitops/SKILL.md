@@ -31,7 +31,7 @@ charts package+receipt → R2 GitOps import+render → Argo CD `dc-dese` only �
 (single window) → cleanup. `develop` is the sole integration branch;
 `main`/`dc-prod`/`dc-control` receive no effect without operator order.
 
-- Canonical surface: root `make setup|deps|gen|check|test|fix|fmt` only; never invented
+- Canonical surface: root `make setup|upg|mod|check|tests` only; never invented
   selectors or raw linters; test verbs per `rules/workflow/canonical-commands.md`.
 - Receipts live in the project tracker; read the current release/import receipts from
   the tracker at activation (commit, package version, OCI digest); version drift between

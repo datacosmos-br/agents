@@ -33,7 +33,7 @@ jobs:
       - name: Provision declared tools and environment
         run: timeout --signal=TERM --kill-after=2s 118s make setup
       - name: Run fast external gates and make test
-        run: timeout --signal=TERM --kill-after=2s 118s make ci
+        run: timeout --signal=TERM --kill-after=2s 118s make lint shell duplication test
       - name: Publish validated immutable release
         env:
           GH_TOKEN: ${{ github.token }}

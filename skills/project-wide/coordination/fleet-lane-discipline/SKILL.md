@@ -47,8 +47,7 @@ and parallel actors.
   just-fetched base. Never remove adopted primary, integration, shared or foreign
   contexts. Account for the authorized lane only, not an empty global worktree list.
 - Prove zero residue (`*.bak`, `*.tmp`, generated backups) through the generator itself
-  — a green fixed point of the project's generation verb — `make check` in a #2791
-  repository, which absorbs gen/fix/fmt; `make gen` twice before #2791; see the delivery
+  — a green fixed point of `make check` (FLEXT ADR-037); see the delivery
   doctrine — never through a manual `find` after failed or
   partial runs, and never through literal-grep heuristics (a literal environment probe
   cannot prove a grouped-Make variable test).
@@ -95,7 +94,7 @@ evidence-producing and stays within the project Make dispatcher.
 - For exact definition/reference sites during consumer rewiring, use `$crg query` with a
   fresh index; grep stays reserved for literal evidence that CRG cannot answer.
 - Pilot rollout for fleet-wide changes: converge one non-core member to full green
-  (`make check`'s generation fixed point — `make gen` twice before #2791 — then the full
+  (`make check`'s generation fixed point, then the full
   test within the test budget), then propagate waves across
   remaining members with the same gates per wave. Fleet changes land on the declared
   integration branch only.

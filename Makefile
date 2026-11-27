@@ -23,7 +23,7 @@ override export MISE_OVERRIDE_TOOL_VERSIONS_FILENAMES := none
 unexport UV_PYTHON UV_PROJECT
 
 .DEFAULT_GOAL := help
-PUBLIC_VERBS := help setup upg gen docs audit check runtime waza crg-check lint static conform fmt fix mod mod-check shell duplication build test test-full validate-artifacts publish profile-waza profile-waza-report
+PUBLIC_VERBS := help setup upg docs audit check runtime waza crg-check lint static conform mod mod-check shell duplication build test test-full validate-artifacts publish profile-waza profile-waza-report
 .PHONY: $(PUBLIC_VERBS)
 .DELETE_ON_ERROR:
 
@@ -64,15 +64,16 @@ upg: ## resolve newest declared tools and dependencies into committed locks
 	@MISE_LOCKED=false $(MISE_EXEC) bun update --latest --ignore-scripts
 	@MISE_LOCKED=false $(MISE_EXEC) uv lock --upgrade --refresh
 
-## generation + mutation
-gen: ## project Beads activation and governance provider outputs
-	$(call BANNER,gen · Beads activation + governance projections)
+## development gates
+check: ## generate, repair and format to a fixed point, then run every non-test gate (FLEXT ADR-037)
+	$(call BANNER,check · generation + lint repair + format · then validation)
 	@$(UV_RUN) python tools/sync_beads_activation.py
 	@$(UV_RUN) python tools/sync_governance.py
-
-## development gates
-check: ## run package non-test gates; host CRG acceptance uses make crg-check
-	$(call BANNER,check · complete non-test gate composition)
+	@$(UV_RUN) ruff check --fix src tests tools
+	@PYTHON_RESOURCES_OPERATION=fix $(UV_RUN) python tools/python_resources_gate.py
+	@TESTMON_MODE=repair $(UV_RUN) python tools/testmon_gate.py
+	@$(UV_RUN) ruff format src tests tools
+	@PYTHON_RESOURCES_OPERATION=format $(UV_RUN) python tools/python_resources_gate.py
 	+@$(MAKE) --jobs=2 runtime docs static mod-check conform waza
 
 docs: ## validate documentation through the public bundle contract
@@ -114,17 +115,6 @@ conform: ## validate workflow and zero-duplication conformance
 	@$(MAKE) shell
 	@$(MAKE) duplication
 	@git diff --check
-
-fmt: ## apply canonical Python formatting
-	$(call BANNER,fmt · ruff format)
-	@$(UV_RUN) ruff format src tests tools
-	@PYTHON_RESOURCES_OPERATION=format $(UV_RUN) python tools/python_resources_gate.py
-
-fix: ## apply canonical corrections
-	$(call BANNER,fix · ruff)
-	@$(UV_RUN) ruff check --fix src tests tools
-	@PYTHON_RESOURCES_OPERATION=fix $(UV_RUN) python tools/python_resources_gate.py
-	@TESTMON_MODE=repair $(UV_RUN) python tools/testmon_gate.py
 
 mod-check: ## reject unnormalized evaluation YAML
 	$(call BANNER,mod-check · evaluation YAML normalization)

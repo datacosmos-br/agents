@@ -1,15 +1,6 @@
 ---
 description: The universal law; one page of outcomes that every other governance text only adds facts to.
 capsule_summary: |
-  The operator is the supreme authority: words rank above this law and are carried
-  out whole; this law ranks above every other governance text. 1 Truth: read owner
-  and tool docs before an edit; act on measured facts; a blocker stops only what
-  it blocks. 2 Simplest correct path: code is cost; nothing added before its owner
-  proves the capability doesn't exist. 3 Native tools own their jobs. 4 Orchestrators
-  state outcomes and call ports. 5 Validate at boundary; trust the model inside.
-  6 Fix by deletion; no rollback before reason understood. 7 Laws are authored data.
-  8 Fail loud on one path. 9 Runtime is the proof. 10 Done is whole scope, merged,
-  tested, green. 11 Never destroy another actor's work. 12 Governance stays short.
   Every agent reads and applies this law and its rules before its first action,
   in every session, worktree and project.
   The operator is the supreme authority: the operator's words rank above this
@@ -45,9 +36,7 @@ metadata:
 # The law
 
 Every agent, in every session, worktree and project, reads and applies this law and its
-rules before its first action and follows them throughout (operator, 2026-11-22:
-"vc está lendo e usando as regras ... regra universal que todo os agente tem que saber e
-seguir logo no começo, em todas as sessoes, worktrees, projetos, qq coisa, universal").
+rules before its first action and follows them throughout.
 
 The operator's words, live or in the tracker, rank above this page and are carried out
 whole in the turn given: nothing is ignored, deferred, reinterpreted or simplified. This

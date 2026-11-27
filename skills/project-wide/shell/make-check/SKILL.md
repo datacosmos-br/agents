@@ -16,13 +16,12 @@ never an underlying tool in their place. `rules/workflow/canonical-commands.md` 
 verbs, deadlines, profiling, locks and test selection.
 
 - `make setup` provisions a lane and is never a commit-hook or CI row: the hook runs
-  only `make ci` (lint, shell, duplication, test) and CI is verify-only (`make setup`
-  plus `make ci`). `make check` is the full non-test acceptance gate (waza, docs,
-  audit, runtime, static, mod-check, conform) but is not run by the hook or CI.
-  Elsewhere it runs only when the environment is absent or fails its own check; a valid
+  only `make check` — the single gate (FLEXT ADR-037) that generates, repairs and formats
+  to a fixed point, then validates; there are no `gen`, `fix` or `fmt` verbs. CI is
+  verify-only (`make setup`, `make lint shell duplication`, `make test`). Elsewhere it runs only when the environment is absent or fails its own check; a valid
   environment is reused, and lock changes belong to the upgrade verb, the only lock
   writer.
-- The ordered cycle (`make ci`, runtime proof, `make check` when invoked) is owned by
+- The ordered cycle (`make check`, runtime proof, tests last) is owned by
   `rules/workflow/agent-delivery-doctrine.md`. Outside it, an explicit gate run only
   diagnoses a red one.
 - Record each run's command, directory, exit and decisive output for its scope.

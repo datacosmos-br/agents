@@ -110,3 +110,9 @@ primitives.
   change, following `rules/law.md` item 6.
 - Model-dependent evaluation and runtime validation remain AI Hub work; Waza here
   validates only the packaged provider-neutral skill resources.
+
+## Amendment 2026-11-27 — development generation runs inside `make check`
+
+Per the operator order of 2026-11-27 and FLEXT ADR-037, the `make gen` route retained
+above for development-local outputs is retired; that generation is now the first stage
+of `make check`, which then validates. The facade boundary is unchanged.
