@@ -95,7 +95,7 @@ jobs:
             testmon-${{ runner.os }}-
       - name: Provision declared tools and environment
         run: timeout --signal=TERM --kill-after=2s 118s make setup
-      - name: Run fast external gates (lint, shell, duplication)
-        run: timeout --signal=TERM --kill-after=2s 118s make lint shell duplication
+      - name: Run the verify-only check gate
+        run: timeout --signal=TERM --kill-after=2s 118s make check
       - name: Run affected tests
         run: timeout --signal=TERM --kill-after=2s 118s make test

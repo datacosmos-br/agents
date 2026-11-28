@@ -10,7 +10,6 @@ target/**
 .worktrees/**
 worktrees/**
 .agents/worktrees/**
-.hermes/worktrees/**
 .code-review-graph/wiki/**
 .test-tmp/**
 .reports/**
