@@ -33,7 +33,7 @@ export CHECK_PHASE
 ifeq ($(GITHUB_ACTIONS),true)
 override CI := Y
 endif
-.PHONY: _gen _fix _fmt
+.PHONY: _converge _gen _fix _fmt
 
 ifeq ($(MAKELEVEL),0)
 $(PUBLIC_VERBS): _bounded
@@ -70,6 +70,23 @@ upg: ## resolve newest declared tools and dependencies into committed locks
 	@MISE_LOCKED=false $(MISE_EXEC) uv lock --upgrade --refresh
 
 ## generation + mutation (private; `make check` runs them outside CI)
+# _converge repeats gen, fix, fmt until the working tree, hashed as a git tree
+# through a throwaway index, stops changing (ADR-0042, FLEXT ADR-037); a tree
+# still moving after CHECK_CONVERGE_MAX_PASSES passes fails. Same shape as the
+# flext-infra template's _builtin_converge_all.
+override CHECK_CONVERGE_MAX_PASSES := 5
+_converge:
+	@tree() { idx="$$(mktemp -u)"; GIT_INDEX_FILE="$$idx" git add -A && GIT_INDEX_FILE="$$idx" git write-tree; rc=$$?; rm -f "$$idx"; return $$rc; }; \
+	before="$$(tree)" || exit 1; pass=0; \
+	while :; do \
+		pass=$$((pass + 1)); \
+		if [ "$$pass" -gt $(CHECK_CONVERGE_MAX_PASSES) ]; then printf '%s\n' "check: gen -> fix -> fmt did not reach a fixed point in $(CHECK_CONVERGE_MAX_PASSES) passes" >&2; exit 1; fi; \
+		$(MAKE) _gen && $(MAKE) _fix && $(MAKE) _fmt || exit 1; \
+		after="$$(tree)" || exit 1; \
+		if [ "$$after" = "$$before" ]; then printf '%s\n' "INFO: check: gen -> fix -> fmt fixed point after $$pass pass(es)"; break; fi; \
+		before="$$after"; \
+	done
+
 _gen:
 	$(call BANNER,gen · Beads activation + governance projections)
 	@$(UV_RUN) python tools/sync_beads_activation.py
@@ -77,7 +94,7 @@ _gen:
 
 ## development gates
 check: ## converge gen, fix, fmt outside CI, then run the non-test gates; CRG acceptance uses make crg-check
-	$(if $(filter Y,$(CI)),,+@$(MAKE) _gen && $(MAKE) _fix && $(MAKE) _fmt)
+	$(if $(filter Y,$(CI)),,+@$(MAKE) _converge)
 	$(call BANNER,check · complete non-test gate composition)
 	+@$(MAKE) --jobs=2 runtime docs static mod-check conform waza
 

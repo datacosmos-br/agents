@@ -16,7 +16,8 @@ no `ci` target, and `release.yml` still ran `make ci`.
 This repository adopts FLEXT ADR-037 (flext-infra #2791):
 
 - Public verbs drop `gen`, `fix`, `fmt` and `ci`; their recipes become private steps.
-- Outside CI, `make check` runs gen → fix → fmt, then the read-only gates. In CI
+- Outside CI, `make check` repeats gen → fix → fmt until a pass leaves the tree unchanged
+  (at most five passes, failing loudly otherwise), then runs the read-only gates. In CI
   (`GITHUB_ACTIONS=true`, so `CI := Y`) it converges nothing and is verify-only.
 - `make upg` stays the only lock writer.
 - The commit hook runs `make check`. CI runs `make setup`, `make check` and `make test`.

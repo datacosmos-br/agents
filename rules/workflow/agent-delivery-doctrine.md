@@ -37,7 +37,7 @@ Strict and ordered; no skill, ADR, project instruction or memory may contradict 
    of versions and locks and always resolves the newest integrated tip; never edit
    `uv.lock`/`mise.lock` by hand — on a lock conflict take the integration side and let
    `make upg` re-resolve. `make mod` runs only when a structural rewrite is ordered.
-3. **`make check` is the single gate** (ADR-0042, FLEXT ADR-037). Outside CI it first converges gen → fix → fmt, then runs the
+3. **`make check` is the single gate** (ADR-0042, FLEXT ADR-037). Outside CI it first converges gen → fix → fmt to a fixed point (at most five passes), then runs the
    read-only gates; in CI (`GITHUB_ACTIONS`) it converges nothing and fails on any byte
    that would change. `gen`, `fix`, `fmt`, `lock` and `ci` are not public verbs. The
    commit hook runs `make check`; never add a setup row or use `--no-verify`. CI runs
